@@ -19,6 +19,7 @@
 * MA 02110-1301, USA.
 */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GUrlUtils.h>
@@ -37,7 +38,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
-#include "ExtractProductTask.h"
+#include "InSilicoPcrWorkflowTask.h"
 #include "PrimersGrouperWorker.h"
 
 #include "InSilicoPcrWorker.h"
@@ -53,6 +54,7 @@ namespace {
     const QString MISMATCHES_ATTR_ID = "mismatches";
     const QString PERFECT_ATTR_ID = "perfect-match";
     const QString MAX_PRODUCT_ATTR_ID = "max-product";
+    const QString EXTRACT_ANNOTATIONS_ATTR_ID = "extract-annotations";
 
     const char * PAIR_NUMBER_PROP_ID = "pair-number";
 }
@@ -78,6 +80,7 @@ void InSilicoPcrWorkerFactory::init() {
 
         QMap<Descriptor, DataTypePtr> inType;
         inType[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
+        inType[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
 
         QMap<Descriptor, DataTypePtr> outType;
         outType[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
@@ -93,12 +96,14 @@ void InSilicoPcrWorkerFactory::init() {
         Descriptor mismatchesDesc(MISMATCHES_ATTR_ID, InSilicoPcrWorker::tr("Mismatches"), InSilicoPcrWorker::tr("Number of allowed mismatches."));
         Descriptor perfectDesc(PERFECT_ATTR_ID, InSilicoPcrWorker::tr("Min perfect match"), InSilicoPcrWorker::tr("Number of bases that match exactly on 3' end of primers."));
         Descriptor maxProductDesc(MAX_PRODUCT_ATTR_ID, InSilicoPcrWorker::tr("Max product size"), InSilicoPcrWorker::tr("Maximum size of amplified region."));
+        Descriptor annotationsDesc(EXTRACT_ANNOTATIONS_ATTR_ID, InSilicoPcrWorker::tr("Extract annotations"), InSilicoPcrWorker::tr("Extract annotations within a product region."));
 
         attributes << new Attribute(primersDesc, BaseTypes::STRING_TYPE(), true);
         attributes << new Attribute(reportDesc, BaseTypes::STRING_TYPE(), true, "report.html");
         attributes << new Attribute(mismatchesDesc, BaseTypes::NUM_TYPE(), false, 3);
         attributes << new Attribute(perfectDesc, BaseTypes::NUM_TYPE(), false, 15);
         attributes << new Attribute(maxProductDesc, BaseTypes::NUM_TYPE(), false, 5000);
+        attributes << new Attribute(annotationsDesc, BaseTypes::NUM_TYPE(), false, ExtractProductSettings::Inner);
     }
     QMap<QString, PropertyDelegate*> delegates;
     {
@@ -121,6 +126,13 @@ void InSilicoPcrWorkerFactory::init() {
             props["minimum"] = 0;
             props["maximum"] = 999999;
             delegates[MAX_PRODUCT_ATTR_ID] = new SpinBoxDelegate(props);
+        }
+        { // extract annotations
+            QVariantMap values;
+            values[InSilicoPcrWorker::tr("Inner")] = ExtractProductSettings::Inner;
+            values[InSilicoPcrWorker::tr("All intersected")] = ExtractProductSettings::All;
+            values[InSilicoPcrWorker::tr("None")] = ExtractProductSettings::None;
+            delegates[EXTRACT_ANNOTATIONS_ATTR_ID] = new ComboBoxDelegate(values);
         }
     }
 
@@ -183,7 +195,7 @@ void InSilicoPcrWorker::onPrepared(Task *task, U2OpStatus &os) {
 
     QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     CHECK_EXT(!objects.isEmpty(), os.setError(tr("No primer sequences in the file: ") + loadTask->getURLString()), );
-    CHECK_EXT(0 == objects.size() % 2, os.setError(tr("There is the odd number of primers int the file: ") + loadTask->getURLString()), );
+    CHECK_EXT(0 == objects.size() % 2, os.setError(tr("There is the odd number of primers in the file: ") + loadTask->getURLString()), );
 
     fetchPrimers(objects, os);
 }
@@ -236,22 +248,30 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
 
     InSilicoPcrReportTask::TableRow tableRow;
     foreach (Task *t, multiTask->getTasks()) {
-        InSilicoPcrTask *pcrTask = dynamic_cast<InSilicoPcrTask*>(t);
+        InSilicoPcrWorkflowTask *pcrTask = dynamic_cast<InSilicoPcrWorkflowTask*>(t);
         CHECK_EXT(NULL != multiTask, os.setError(L10N::nullPointerError("InSilicoPcrTask")), result);
 
         int pairNumber = pcrTask->property(PAIR_NUMBER_PROP_ID).toInt();
         SAFE_POINT_EXT(pairNumber >= 0 && pairNumber < primers.size(), os.setError(L10N::internalError("Out of range")), result);
 
-        InSilicoPcrTaskSettings settings = pcrTask->getSettings();
+        InSilicoPcrTaskSettings settings = pcrTask->getPcrSettings();
         tableRow.sequenceName = settings.sequenceName;
-        tableRow.productsNumber[pairNumber] = pcrTask->getResults().size();
+        QList<InSilicoPcrWorkflowTask::Result> pcrResults = pcrTask->takeResult();
+        tableRow.productsNumber[pairNumber] = pcrResults.size();
 
-        foreach (const InSilicoPcrProduct &product, pcrTask->getResults()) {
+        foreach (const InSilicoPcrWorkflowTask::Result &pcrResult, pcrResults) {
+            QVariant sequence = fetchSequence(pcrResult.doc);
+            QVariant annotations = fetchAnnotations(pcrResult.doc);
+            pcrResult.doc->setDocumentOwnsDbiResources(false);
+            delete pcrResult.doc;
+            if (NULL == sequence || NULL == annotations) {
+                continue;
+            }
+
             QVariantMap data;
-            data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = createProductSequence(settings, product, os);
-            CHECK_OP(os, result);
-            data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = createPrimerAnnotations(product);
-            int metadataId = createMetadata(settings, product.region, pairNumber);
+            data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = sequence;
+            data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = annotations;
+            int metadataId = createMetadata(settings, pcrResult.product.region, pairNumber);
             result << Message(output->getBusType(), data, metadataId);
         }
     }
@@ -259,28 +279,23 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
     return result;
 }
 
-QVariant InSilicoPcrWorker::createProductSequence(const InSilicoPcrTaskSettings &settings, const InSilicoPcrProduct &product, U2OpStatus &os) {
-    const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-    SAFE_POINT_EXT(NULL != alphabet, os.setError(L10N::nullPointerError("DNA Alphabet")), QVariant());
-
-    QString name = ExtractProductTask::getProductName(settings.sequenceName, settings.sequence.length(), product.region);
-    QByteArray sequence = settings.sequence.mid(product.region.startPos, product.region.length);
-    if (sequence.length() < product.region.length) {
-        assert(settings.isCircular);
-        sequence += settings.sequence.left(product.region.endPos() - settings.sequence.length());
+QVariant InSilicoPcrWorker::fetchSequence(Document *doc) {
+    QList<GObject*> seqObjects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+    if (1 != seqObjects.size()) {
+        reportError(L10N::internalError(tr("Wrong sequence objects count")));
+        return QVariant();
     }
-    DNASequence seq(name, sequence, alphabet);
-    seq.seq = ExtractProductTask::toProductSequence(seq.seq, product.forwardPrimer, product.reversePrimer, product.forwardPrimerMatchLength, product.reversePrimerMatchLength);
-
-    SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
+    SharedDbiDataHandler seqId = context->getDataStorage()->getDataHandler(seqObjects.first()->getEntityRef());
     return qVariantFromValue<SharedDbiDataHandler>(seqId);
 }
 
-QVariant InSilicoPcrWorker::createPrimerAnnotations(const InSilicoPcrProduct &product) {
-    QList<SharedAnnotationData> anns;
-    anns << ExtractProductTask::getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength, U2Strand::Direct, product.region.length);
-    anns << ExtractProductTask::getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength, U2Strand::Complementary, product.region.length);
-    SharedDbiDataHandler annsId = context->getDataStorage()->putAnnotationTable(anns);
+QVariant InSilicoPcrWorker::fetchAnnotations(Document *doc) {
+    QList<GObject*> annsObjects = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+    if (1 != annsObjects.size()) {
+        reportError(L10N::internalError(tr("Wrong annotations objects count")));
+        return QVariant();
+    }
+    SharedDbiDataHandler annsId = context->getDataStorage()->getDataHandler(annsObjects.first()->getEntityRef());
     return qVariantFromValue<SharedDbiDataHandler>(annsId);
 }
 
@@ -306,27 +321,36 @@ Task * InSilicoPcrWorker::createTask(const Message &message, U2OpStatus &os) {
     SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
     U2SequenceObject *seq = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
     SAFE_POINT(NULL != seq, L10N::nullPointerError("Sequence"), NULL);
+    QList<AnnotationTableObject*> anns = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
 
     if (seq->getSequenceLength() > InSilicoPcrTaskSettings::MAX_SEQUENCE_LENGTH) {
         os.setError(tr("The sequence is too long: ") + seq->getSequenceName());
         return NULL;
     }
 
-    InSilicoPcrTaskSettings settings;
-    settings.sequence = seq->getWholeSequenceData(os);
+    ExtractProductSettings productSettings;
+    productSettings.sequenceRef = seq->getEntityRef();
+    foreach (AnnotationTableObject *annsObject, anns) {
+        productSettings.annotationRefs << annsObject->getEntityRef();
+    }
+    productSettings.targetDbiRef = context->getDataStorage()->getDbiRef();
+    productSettings.annotationsExtraction = ExtractProductSettings::AnnotationsExtraction(getValue<int>(EXTRACT_ANNOTATIONS_ATTR_ID));
+
+    InSilicoPcrTaskSettings pcrSettings;
+    pcrSettings.sequence = seq->getWholeSequenceData(os);
     CHECK_OP(os, NULL);
-    settings.isCircular = seq->isCircular();
-    settings.forwardMismatches = getValue<int>(MISMATCHES_ATTR_ID);
-    settings.reverseMismatches = settings.forwardMismatches;
-    settings.maxProductSize = getValue<int>(MAX_PRODUCT_ATTR_ID);
-    settings.perfectMatch = getValue<int>(PERFECT_ATTR_ID);
-    settings.sequenceName = seq->getSequenceName();
+    pcrSettings.isCircular = seq->isCircular();
+    pcrSettings.forwardMismatches = getValue<int>(MISMATCHES_ATTR_ID);
+    pcrSettings.reverseMismatches = pcrSettings.forwardMismatches;
+    pcrSettings.maxProductSize = getValue<int>(MAX_PRODUCT_ATTR_ID);
+    pcrSettings.perfectMatch = getValue<int>(PERFECT_ATTR_ID);
+    pcrSettings.sequenceName = seq->getSequenceName();
 
     QList<Task*> tasks;
     for (int i=0; i<primers.size(); i++) {
-        settings.forwardPrimer = primers[i].first.sequence.toLocal8Bit();
-        settings.reversePrimer = primers[i].second.sequence.toLocal8Bit();
-        Task *pcrTask = new InSilicoPcrTask(settings);
+        pcrSettings.forwardPrimer = primers[i].first.sequence.toLocal8Bit();
+        pcrSettings.reversePrimer = primers[i].second.sequence.toLocal8Bit();
+        Task *pcrTask = new InSilicoPcrWorkflowTask(pcrSettings, productSettings);
         pcrTask->setProperty(PAIR_NUMBER_PROP_ID, i);
         tasks << pcrTask;
     }

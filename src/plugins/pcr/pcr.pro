@@ -8,6 +8,7 @@ HEADERS += src/EditPrimerDialog.h \
            src/InSilicoPcrProductsTable.h \
            src/InSilicoPcrTask.h \
            src/InSilicoPcrWorker.h \
+           src/InSilicoPcrWorkflowTask.h \
            src/PcrOptionsPanelSavableTab.h \
            src/PcrPlugin.h \
            src/Primer.h \
@@ -49,6 +50,7 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/InSilicoPcrProductsTable.cpp \
            src/InSilicoPcrTask.cpp \
            src/InSilicoPcrWorker.cpp \
+           src/InSilicoPcrWorkflowTask.cpp \
            src/PcrOptionsPanelSavableTab.cpp \
            src/PcrPlugin.cpp \
            src/Primer.cpp \

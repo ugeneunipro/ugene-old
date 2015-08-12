@@ -28,10 +28,23 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
+
+class ExtractProductSettings {
+public:
+    enum AnnotationsExtraction {Inner, All, None};
+
+    U2EntityRef sequenceRef;
+    QList<U2EntityRef> annotationRefs;
+    QString outputFile;
+    AnnotationsExtraction annotationsExtraction;
+    U2DbiRef targetDbiRef;
+};
+
 class ExtractProductTask : public Task {
     Q_OBJECT
 public:
-    ExtractProductTask(const InSilicoPcrProduct &product, const U2EntityRef &sequenceRef, const QString &outputFile = "");
+    ExtractProductTask(const InSilicoPcrProduct &product, const ExtractProductSettings &settings);
     ~ExtractProductTask();
 
     // Task
@@ -39,19 +52,22 @@ public:
 
     /* Moves the document to the main thread */
     Document * takeResult();
+    const InSilicoPcrProduct & getProduct() const;
 
-    static SharedAnnotationData getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength);
     static QString getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region, bool fileName = false);
-    static QByteArray toProductSequence(const QByteArray &targetSequence, const QByteArray &forwardPrimer, const QByteArray &reversePrimer, int forwardPrimerMatchLength, int reversePrimerMatchLength);
 
 private:
-    DNASequence getProductSequence(U2OpStatus &os) const;
-    DNASequence extractTargetSequence(U2OpStatus &os) const;
+    DNASequence getProductSequence();
+    DNASequence extractTargetSequence();
+    QByteArray toProductSequence(const QByteArray &targetSequence) const;
+    void addProductAnnotations(AnnotationTableObject *targetObject, const U2EntityRef &annsRef) const;
+
+    static SharedAnnotationData getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength);
 
 private:
     InSilicoPcrProduct product;
-    U2EntityRef sequenceRef;
-    QString outputFile;
+    ExtractProductSettings settings;
+    qint64 wholeSequenceLength;
 
     Document *result;
 };
@@ -59,7 +75,7 @@ private:
 class ExtractProductWrapperTask : public Task {
     Q_OBJECT
 public:
-    ExtractProductWrapperTask(const InSilicoPcrProduct &product, const U2EntityRef &sequenceRef, const QString &sequenceName, qint64 sequenceLength);
+    ExtractProductWrapperTask(const InSilicoPcrProduct &product, const QString &sequenceName, qint64 sequenceLength, const ExtractProductSettings &settings);
 
     // Task
     void prepare();
@@ -71,7 +87,7 @@ private:
 
 private:
     ExtractProductTask *extractTask;
-    QString outputFile;
+    ExtractProductSettings settings;
 };
 
 } // U2

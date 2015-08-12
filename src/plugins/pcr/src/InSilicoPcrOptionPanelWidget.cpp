@@ -61,7 +61,9 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     forwardPrimerBoxSubgroup->init(FORWARD_SUBGROUP_ID, tr("Forward primer"), forwardPrimerBox, true);
     reversePrimerBoxSubgroup->init(REVERSE_SUBGROUP_ID, tr("Reverse primer"), reversePrimerBox, true);
     settingsSubgroup->init(SETTINGS_SUBGROUP_ID, tr("Settings"), settingsWidget, true);
-
+    annsComboBox->addItem(tr("Inner"), ExtractProductSettings::Inner);
+    annsComboBox->addItem(tr("All intersected"), ExtractProductSettings::All);
+    annsComboBox->addItem(tr("None"), ExtractProductSettings::None);
 
     connect(forwardPrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
     connect(reversePrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
@@ -187,10 +189,16 @@ void InSilicoPcrOptionPanelWidget::sl_extractProduct() {
     SAFE_POINT(NULL != sequenceContext, L10N::nullPointerError("Sequence Context"), );
     U2SequenceObject *sequenceObject = sequenceContext->getSequenceObject();
     SAFE_POINT(NULL != sequenceObject, L10N::nullPointerError("Sequence Object"), );
+    ExtractProductSettings settings;
+    settings.sequenceRef = sequenceContext->getSequenceRef();
+    settings.annotationsExtraction = ExtractProductSettings::AnnotationsExtraction(annsComboBox->currentData().toInt());
+    foreach(AnnotationTableObject *annsObject, sequenceContext->getAnnotationObjects()) {
+        settings.annotationRefs << annsObject->getEntityRef();
+    }
 
     QList<Task*> tasks;
     foreach (const InSilicoPcrProduct &product, productsTable->getSelectedProducts()) {
-        tasks << new ExtractProductWrapperTask(product, sequenceContext->getSequenceRef(), sequenceObject->getSequenceName(), sequenceObject->getSequenceLength());
+        tasks << new ExtractProductWrapperTask(product, sequenceObject->getSequenceName(), sequenceObject->getSequenceLength(), settings);
     }
     CHECK(!tasks.isEmpty(), );
     if (1 == tasks.size()) {
