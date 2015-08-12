@@ -105,7 +105,6 @@ add-plugin linkdata_support
 add-plugin opencl_support
 add-plugin orf_marker
 add-plugin pcr
-add-plugin perf_monitor
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred
@@ -125,6 +124,7 @@ if [ "$1" == "-test" ]
    then
       add-plugin api_tests
       add-plugin CoreTests
+      add-plugin perf_monitor
       add-plugin test_runner
       add-plugin GUITestBase
 fi

@@ -105,7 +105,6 @@ PLUGIN_LIST="annotator \
             opencl_support \
             orf_marker \
             pcr \
-            perf_monitor \
             phylip \
             primer3 \
             psipred \
@@ -125,6 +124,7 @@ if [ "$1" == "-test" ]
    then
    PLUGIN_LIST="$PLUGIN_LIST CoreTests \
                              GUITestBase \
+                             perf_monitor \
                              test_runner \
                              api_tests"
 fi
