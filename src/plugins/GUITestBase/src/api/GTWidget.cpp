@@ -135,15 +135,17 @@ QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text,
 
 #define GT_METHOD_NAME "findWidget"
 void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
+
     if(parent == NULL){
         parent = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
     }
 
-    QList<QWidget*> list= parent->findChildren<QWidget*>();
+    QList<QObject*> list= parent->findChildren<QObject*>();
     QString actStr;
+    actStr.append("Getting all info about widget\n");
 
-    foreach(QWidget* act, list){
-        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "  " + QString("%1").arg(act->isVisible()) + "\n");
+    foreach(QObject* act, list){
+        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "  " + /*QString("%1").arg(act->isVisible()) + " " + QString("%1").arg(act->geometry().width()) +*/ "\n");
     }
     CHECK_SET_ERR(false, actStr);
 }

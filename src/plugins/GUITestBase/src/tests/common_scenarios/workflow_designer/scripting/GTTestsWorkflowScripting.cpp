@@ -81,7 +81,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
 
-    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "wd_scripting_test_0001"));
     GTWidget::click(os, GTAction::button(os, "createScriptAction"));
 
 //    4. Select created worker. Press toolbar button "Edit script text".
@@ -90,7 +90,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //    5. Paste "#$%not a script asdasd321 123" at the script text area. Click "Check syntax" button
 //    Expected state: messagebox "Script syntax check failed!" appears.
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "123"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "wd_scripting_test_0001"));
     GTMouseDriver::click(os);
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogSyntaxChecker(os, "#$%not a script asdasd321 123", "Script syntax check failed!"));

@@ -275,7 +275,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/tests/common_scenarios/start_page/GTTestsStartPage.h \
     src/GTutilsStartPage.h \
     src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h \
-    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.h
+    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.h \
+    src/runnables/ugene/corelibs/U2Gui/GraphSettingsDialogFiller.h \
+    src/runnables/ugene/corelibs/U2Gui/GraphLabelsSelectDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -556,4 +558,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
     src/tests/common_scenarios/start_page/GTTestsStartPage.cpp \
     src/GTutilsStartPage.cpp \
     src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.cpp \
-    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.cpp
+    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.cpp \
+    src/runnables/ugene/corelibs/U2Gui/GraphSettingsDialogFiller.cpp \
+    src/runnables/ugene/corelibs/U2Gui/GraphLabelsSelectDialogFiller.cpp

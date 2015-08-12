@@ -46,11 +46,13 @@ WindowStepSelectorWidget::WindowStepSelectorWidget(QWidget* p, const U2Region& w
     windowEdit->setRange(winRange.startPos, winRange.endPos());
     windowEdit->setValue(win);
     windowEdit->setAlignment(Qt::AlignRight);
+    windowEdit->setObjectName("windowEdit");
 
     stepsPerWindowEdit = new QSpinBox(this);
     stepsPerWindowEdit->setRange(1, winRange.endPos());
     stepsPerWindowEdit->setValue(win/step);
     stepsPerWindowEdit->setAlignment(Qt::AlignRight);
+    stepsPerWindowEdit->setObjectName("stepsPerWindowEdit");
 
     QFormLayout* l = new QFormLayout(this);
     l->addRow(tr("Window:"), windowEdit);
@@ -92,6 +94,7 @@ MinMaxSelectorWidget::MinMaxSelectorWidget(QWidget* p, double min, double max, b
     minmaxGroup = new QGroupBox(QString(tr("Cutoff for minimum and maximum values")), this);
     minmaxGroup->setCheckable(true);
     minmaxGroup->setChecked(enabled);
+    minmaxGroup->setObjectName("minmaxGroup");
 
     //for range use min max of type
     minBox = new QDoubleSpinBox;
@@ -99,12 +102,14 @@ MinMaxSelectorWidget::MinMaxSelectorWidget(QWidget* p, double min, double max, b
     minBox->setValue(min);
     minBox->setDecimals(2);
     minBox->setAlignment(Qt::AlignRight);
+    minBox->setObjectName("minBox");
 
     maxBox = new QDoubleSpinBox;
     maxBox->setRange(INT_MIN,INT_MAX);
     maxBox->setValue(max);
     maxBox->setDecimals(2);
     maxBox->setAlignment(Qt::AlignRight);
+    maxBox->setObjectName("maxBox");
 
     QFormLayout* l = new QFormLayout;
     l->addRow(tr("Minimum:"), minBox);

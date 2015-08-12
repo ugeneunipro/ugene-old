@@ -637,7 +637,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2266_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "bad permission setting");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2268);
     REGISTER_TEST(GUITest_regression_scenarios::test_2269);
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2281);
@@ -1278,6 +1278,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0050);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0050_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0051);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0052);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0052_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0053);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0054);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0055);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0056);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0057);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/

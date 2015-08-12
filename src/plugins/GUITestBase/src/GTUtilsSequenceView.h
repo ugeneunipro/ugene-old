@@ -32,6 +32,8 @@ class ADVSingleSequenceWidget;
 class PanView;
 class U2Region;
 class Overview;
+class GSequenceGraphView;
+class TextLabel;
 
 class GTUtilsSequenceView {
 public:
@@ -60,6 +62,11 @@ public:
     //clicks on simple annotation on sequence view
     static void clickAnnotationDet(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
     static void clickAnnotationPan(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
+
+    static GSequenceGraphView* getGraphView(U2OpStatus &os);
+    static QList<QVariant> getLabelPositions(U2OpStatus &os, GSequenceGraphView* graph);
+    static QList<TextLabel*> getGraphLabels(U2OpStatus &os, GSequenceGraphView* graph);
+    static QColor getGraphColor(U2OpStatus &os, GSequenceGraphView* graph);
 };
 
 } // namespace U2

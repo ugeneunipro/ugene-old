@@ -47,6 +47,7 @@
 #include <U2View/DetView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/GSequenceLineViewAnnotated.h>
+#include <U2View/GSequenceGraphView.h>
 #include <U2View/Overview.h>
 
 #include "GTUtilsDialog.h"
@@ -424,6 +425,34 @@ void GTUtilsSequenceView::clickAnnotationDet(U2OpStatus &os, QString name, int s
     GTMouseDriver::click(os, button);
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getGraphView"
+GSequenceGraphView *GTUtilsSequenceView::getGraphView(U2OpStatus &os){
+    GSequenceGraphView* graph = getSeqWidgetByNumber(os)->findChild<GSequenceGraphView*>();
+    GT_CHECK_RESULT(graph != NULL, "Graph view is NULL", NULL);
+    return graph;
+}
+#undef GT_METHOD_NAME
+
+QList<QVariant> GTUtilsSequenceView::getLabelPositions(U2OpStatus &os, GSequenceGraphView *graph){
+    Q_UNUSED(os);
+    QList<QVariant> list;
+    graph->getLabelPositions(list);
+    return list;
+}
+
+QList<TextLabel *> GTUtilsSequenceView::getGraphLabels(U2OpStatus &os, GSequenceGraphView *graph){
+    Q_UNUSED(os);
+    QList<TextLabel*> result = graph->findChildren<TextLabel*>();
+    return result;
+}
+
+QColor GTUtilsSequenceView::getGraphColor(U2OpStatus &os, GSequenceGraphView *graph){
+    ColorMap map = graph->getGSequenceGraphDrawer()->getColors();
+    QColor result = map.value("Default color");
+    return result;
+}
+
 #undef MIN_ANNOTATION_WIDTH
 
 #undef GT_CLASS_NAME

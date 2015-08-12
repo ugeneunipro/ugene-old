@@ -33,6 +33,7 @@
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTRadioButton.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -42,12 +43,15 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
+#include "runnables/qt/ColorDialogFiller.h"
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/GraphLabelsSelectDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/GraphSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
@@ -63,8 +67,11 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/Overview.h>
 #include <U2View/GSequenceLineView.h>
+#include <U2View/GSequenceGraphView.h>
 
+#include <QGroupBox>
 #include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -1582,12 +1589,205 @@ GUI_TEST_CLASS_DEFINITION(test_0050_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0051){
+
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
-    QTreeWidgetItem* item = GTUtilsAnnotHighlightingTreeView::findItem(os, "CDS");
-    GTWidget::click(os, GTUtilsAnnotHighlightingTreeView::getTreeWidget(os)->itemWidget(item, 2));
-    //GTMouseDriver::moveTo(os, GTUtilsAnnotHighlightingTreeView::getItemCenter(os, "CDS"));
+
+    QColor init = GTUtilsAnnotHighlightingTreeView::getItemColor(os, "CDS");
+    CHECK_SET_ERR(init.name() == "#9bffff", "unexpected CDS annotations color: " + init.name());
+
+    GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os, 255, 0, 0));
+    GTUtilsAnnotHighlightingTreeView::click(os, "CDS");
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20, 0));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
+
+    QColor final = GTUtilsAnnotHighlightingTreeView::getItemColor(os, "CDS");
+    CHECK_SET_ERR(final.name() == "#ff0000", "CDS annotations color changed wrong: " + init.name());
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0052){
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(1000);
+
+    DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
+    QImage image1 = GTWidget::getImage(os, det);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "complement_action"));
+    QImage image2 = GTWidget::getImage(os, det);
+    GTGlobals::sleep(1000);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "complement_action"));
+    QImage image3 = GTWidget::getImage(os, det);
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(image1 != image2, "Image was not changed");
+    CHECK_SET_ERR(image1 == image3, "Image was not restored");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0052_1){
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(1000);
+
+    DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
+    QImage image1 = GTWidget::getImage(os, det);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "translation_action"));
+    QImage image2 = GTWidget::getImage(os, det);
+    GTGlobals::sleep(1000);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "translation_action"));
+    QImage image3 = GTWidget::getImage(os, det);
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(image1 != image2, "Image was not changed");
+    CHECK_SET_ERR(image1 == image3, "Image was not restored");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Open any graph
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+    GTGlobals::sleep(500);
+//    Add label with shift+left mouse
+    QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTWidget::click(os, graphView, Qt::LeftButton, QPoint(50, 50));
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+
+    QList<QVariant> list = GTUtilsSequenceView::getLabelPositions(os, GTUtilsSequenceView::getGraphView(os));
+    CHECK_SET_ERR(list.size() == 1, QString("unexpected number of labels: ").arg(list.size()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0054){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Open any graph
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+    GTGlobals::sleep(500);
+//    Add label with shift+left mouse
+    GSequenceGraphView* graphView = GTUtilsSequenceView::getGraphView(os);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTWidget::click(os, graphView, Qt::LeftButton, QPoint(50, 50));
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(1000);
+//    Use context menu {graph->Graph settings}
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, -1, -1, 0, 0, 255, 0, 0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+    QColor c = GTUtilsSequenceView::getGraphColor(os, graphView);
+    QString s = c.name();
+    CHECK_SET_ERR(s == "#ff0000", "unexpected color: " + s);
+    GTGlobals::sleep(500);
+//    In settings dialog change label color
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0055){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Open any graph
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+    GTGlobals::sleep(500);
+    QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
+    GTWidget::click(os, graphView);
+    //GTWidget::getAllWidgetsInfo(os, GTUtilsSequenceView::getGraphView(os));
+    QWidget* pointer = NULL;
+    foreach (QWidget* w, GTUtilsSequenceView::getGraphView(os)->findChildren<QWidget*>()) {
+        if(w->geometry().width() == 10){
+            pointer = w;
+        }
+    }
+    CHECK_SET_ERR(pointer != NULL, "pointer not found");
+
+//    Use context menu {graph->Graph settings}
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, -1,-1, 10, 15));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getGraphView(os));
+    QPoint p1 = pointer->mapToGlobal(pointer->geometry().center());
+
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, -1,-1, 100, 150));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getGraphView(os));
+    QPoint p2 = pointer->mapToGlobal(pointer->geometry().center());
+
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, -1,-1, 10, 150));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getGraphView(os));
+    QPoint p3 = pointer->mapToGlobal(pointer->geometry().center());
+
+    int y1 = p1.y();
+    int y2 = p2.y();
+    int y3 = p3.y();
+    CHECK_SET_ERR(y2>y3 && y1<y3, QString("unexpected pointer coordinates: %1 %2 %3").arg(y1).arg(y2).arg(y3));
     GTGlobals::sleep();
+
+//    In settings dialog set proper cutoff values
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_0056){
+    //wrong cutoff values
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Open any graph
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+    GTGlobals::sleep(500);
+    QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
+
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Invalid cutoff values"));
+            QGroupBox* minmaxGroup = GTWidget::findExactWidget<QGroupBox*>(os, "minmaxGroup", dialog);
+            minmaxGroup->setChecked(true);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, new custom));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057){
+    //Uses processor core!!!
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Open any graph
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+    GTGlobals::sleep(500);
+    GSequenceGraphView* graphView = GTUtilsSequenceView::getGraphView(os);
+
+//    Use context menu {graph->Select all extremum points}
+    GTUtilsDialog::waitForDialog(os, new GraphLabelsSelectDialogFiller(os, 5000));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+                                                      << "select_all_extremum_points"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+    GTGlobals::sleep();
+//    In dialog select any value
+    int labelsNum = GTUtilsSequenceView::getGraphLabels(os, graphView).size();
+    CHECK_SET_ERR(labelsNum == 81, QString("unexpected labels number: %1").arg(labelsNum))
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

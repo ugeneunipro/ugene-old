@@ -107,6 +107,28 @@ QPoint GTUtilsAnnotHighlightingTreeView::getItemCenter(U2OpStatus &os, const QSt
 }
 #undef GT_METHOD_NAME
 
+void GTUtilsAnnotHighlightingTreeView::click(U2OpStatus &os, const QString &itemName){
+    QTreeWidgetItem* item = findItem(os, itemName);
+    QTreeWidget* tree = getTreeWidget(os);
+    tree->scrollToItem(item);
+
+    QPoint p = getItemCenter(os, itemName);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+}
+
+#define GT_METHOD_NAME "getItemCenter"
+QColor GTUtilsAnnotHighlightingTreeView::getItemColor(U2OpStatus &os, const QString &itemName){
+    QTreeWidgetItem* item = findItem(os, itemName);
+    QIcon icon = item->icon(1);
+    QPixmap pixmap = icon.pixmap(5, 5);
+    QImage img = pixmap.toImage();
+    QRgb rgb = img.pixel(QPoint(2,2));
+    QColor result = QColor(rgb);
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

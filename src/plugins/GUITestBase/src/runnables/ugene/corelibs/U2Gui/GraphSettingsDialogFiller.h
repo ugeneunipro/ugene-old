@@ -19,32 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
-#define _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
 
-#include "api/GTGlobals.h"
+#ifndef _U2_GRAPH_SETTINGS_DIALOG_FILLER_H_
+#define _U2_GRAPH_SETTINGS_DIALOG_FILLER_H_
 
-class QTreeWidget;
-class QTreeWidgetItem;
+#include "GTUtilsDialog.h"
 
 namespace U2 {
-class GTUtilsAnnotHighlightingTreeView {
+
+class GraphSettingsDialogFiller: public Filler
+{
 public:
-    static QTreeWidget* getTreeWidget(U2OpStatus &os);
-
-    // returns center or item's rect
-    // fails if the item wasn't found
-    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
-    static void click(U2OpStatus &os, const QString &itemName);
-
-    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QString getSelectedItem(U2OpStatus &os);
-
-    static QColor getItemColor(U2OpStatus &os, const QString &itemName);
-
-    static const QString widgetName;
+    GraphSettingsDialogFiller(U2OpStatus &os, int _window = -1, int _steps = -1, double _cutoff_min = 0, double _cutoff_max = 0,
+                              int _r = -1, int _g = -1, int _b = -1)
+        : Filler(os, "GraphSettingsDialog"), window(_window), steps(_steps), cutoff_min(_cutoff_min), cutoff_max(_cutoff_max),
+    r(_r), g(_g), b(_b){}
+    GraphSettingsDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "GraphSettingsDialog", c){}
+    virtual void commonScenario();
+private:
+    int window;
+    int steps;
+    double cutoff_min;
+    double cutoff_max;
+    int r, g, b;
 };
 
-} // namespace
-
-#endif
+}
+#endif // GRAPHSETTINGSDIALOGFILLER_H

@@ -51,13 +51,16 @@ GraphLabelsSelectDialog::GraphLabelsSelectDialog(int maxWindowSize, QWidget* par
 :QDialog(parent) {
     stepSpinBox = new QSpinBox(this);
     stepSpinBox->setRange(maxWindowSize/50, maxWindowSize);
+    stepSpinBox->setObjectName("stepSpinBox");
     usedIntervalsCheck = new QCheckBox(this);
+    usedIntervalsCheck->setObjectName("usedIntervalsCheck");
     QVBoxLayout* mainLayout = new QVBoxLayout();
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
     QHBoxLayout* spinLayout = new QHBoxLayout();
     buttonsLayout->addStretch(10);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    buttonBox->setObjectName("buttonBox");
 
     QLabel* spinLabel = new QLabel(tr("Window size"), this);
     buttonsLayout->addWidget(buttonBox);
@@ -85,6 +88,8 @@ GraphLabelsSelectDialog::GraphLabelsSelectDialog(int maxWindowSize, QWidget* par
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
 
     okButton->setDefault(true);
+
+    this->setObjectName("GraphLabelsSelectDialog");
 }
 int GraphLabelsSelectDialog::getWindowSize() {
     return stepSpinBox->value();

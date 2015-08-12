@@ -1363,7 +1363,7 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
 
         foreach(QTreeWidgetItem* item, innerList){
             QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
-            if(s == "123"){
+            if(s == "test_0768"){
                 foundItem = item;
             }
         }
@@ -1372,13 +1372,13 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
         GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
         GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
-        GTUtilsWorkflowDesigner::clickOnPalette(os, "123", Qt::RightButton);
+        GTUtilsWorkflowDesigner::clickOnPalette(os, "test_0768", Qt::RightButton);
         GTUtilsMdi::click(os, GTGlobals::Close);
         GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
         GTGlobals::sleep();
     }
 
-    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "test_0768"));
     GTWidget::click(os, GTAction::button(os, "createScriptAction"));
 
     //    4. Select created worker. Press toolbar button "Edit script text".
@@ -1387,7 +1387,7 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
     //    5. Paste "xyz" at the script text area. Click "Check syntax" button
     //    Expected state: messagebox "Syntax is OK!" appears.
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "123"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "test_0768"));
     GTMouseDriver::click(os);
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogSyntaxChecker(os, "xyz", "Syntax is OK!"));

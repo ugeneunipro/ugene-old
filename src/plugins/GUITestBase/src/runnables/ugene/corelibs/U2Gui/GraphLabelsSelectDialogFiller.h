@@ -19,32 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
-#define _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
+#ifndef _U2_GRAPH_LABELS_SELECT_DIALOG_FILLER_H_
+#define _U2_GRAPH_LABELS_SELECT_DIALOG_FILLER_H_
 
-#include "api/GTGlobals.h"
-
-class QTreeWidget;
-class QTreeWidgetItem;
+#include "GTUtilsDialog.h"
 
 namespace U2 {
-class GTUtilsAnnotHighlightingTreeView {
+
+class GraphLabelsSelectDialogFiller: public Filler
+{
 public:
-    static QTreeWidget* getTreeWidget(U2OpStatus &os);
-
-    // returns center or item's rect
-    // fails if the item wasn't found
-    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
-    static void click(U2OpStatus &os, const QString &itemName);
-
-    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QString getSelectedItem(U2OpStatus &os);
-
-    static QColor getItemColor(U2OpStatus &os, const QString &itemName);
-
-    static const QString widgetName;
+    GraphLabelsSelectDialogFiller(U2OpStatus &os, int _windowSize = -1, bool _selectedAreaCheck = false): Filler(os, "GraphLabelsSelectDialog"),
+        windowSize(_windowSize), selectedAreaCheck(_selectedAreaCheck){}
+    virtual void commonScenario();
+private:
+    int windowSize;
+    bool selectedAreaCheck;
 };
 
-} // namespace
+}
 
-#endif
+#endif // GRAPHLABELSSELECTDIALOGFILLER_H

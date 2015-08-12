@@ -68,6 +68,7 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
         cLayouts.append(cl);
     }
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    buttonBox->setObjectName("buttonBox");
 
     buttonsLayout->addWidget(buttonBox);
 
