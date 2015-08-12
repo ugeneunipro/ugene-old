@@ -37,7 +37,7 @@ namespace U2 {
 
 const int defaultRadius = 4;
 
-class TextLabel: public QLabel
+class U2VIEW_EXPORT TextLabel: public QLabel
 {
     Q_OBJECT
 public:
