@@ -34,6 +34,8 @@ class ExtractProductSettings {
 public:
     enum AnnotationsExtraction {Inner, All, None};
 
+    ExtractProductSettings();
+
     U2EntityRef sequenceRef;
     QList<U2EntityRef> annotationRefs;
     QString outputFile;

@@ -24,10 +24,11 @@
 namespace U2 {
 
 InSilicoPcrWorkflowTask::InSilicoPcrWorkflowTask(const InSilicoPcrTaskSettings &pcrSettings, const ExtractProductSettings &productSettings)
-: Task(tr("In silico PCR workflow task"), TaskFlags_NR_FOSE_COSC), pcrSettings(pcrSettings), productSettings(productSettings)
+: Task(tr("In silico PCR workflow task"), TaskFlags_NR_FOSE_COSC), productSettings(productSettings)
 {
     pcrTask = new InSilicoPcrTask(pcrSettings);
     addSubTask(pcrTask);
+    pcrTask->setSubtaskProgressWeight(0.7);
 }
 
 QList<Task*> InSilicoPcrWorkflowTask::onSubTaskFinished(Task *subTask) {
@@ -38,6 +39,7 @@ QList<Task*> InSilicoPcrWorkflowTask::onSubTaskFinished(Task *subTask) {
     if (pcrTask == subTask) {
         foreach (const InSilicoPcrProduct &product, pcrTask->getResults()) {
             ExtractProductTask *productTask = new ExtractProductTask(product, productSettings);
+            productTask->setSubtaskProgressWeight(0.3 / pcrTask->getResults().size());
             result << productTask;
             productTasks << productTask;
         }

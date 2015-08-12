@@ -44,6 +44,12 @@
 
 namespace U2 {
 
+ExtractProductSettings::ExtractProductSettings()
+: annotationsExtraction(Inner)
+{
+
+}
+
 QString ExtractProductTask::getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region, bool fileName) {
     qint64 endPos = region.endPos();
     if (endPos > sequenceLength) {
@@ -78,20 +84,20 @@ DNASequence ExtractProductTask::extractTargetSequence() {
     DNASequence result("", "");
     DbiConnection connection(settings.sequenceRef.dbiRef, stateInfo);
     CHECK_OP(stateInfo, result);
-    SAFE_POINT_EXT(NULL != connection.dbi, os.setError(L10N::nullPointerError("DBI")), result);
+    SAFE_POINT_EXT(NULL != connection.dbi, setError(L10N::nullPointerError("DBI")), result);
     U2SequenceDbi *sequenceDbi = connection.dbi->getSequenceDbi();
-    SAFE_POINT_EXT(NULL != sequenceDbi, os.setError(L10N::nullPointerError("Sequence DBI")), result);
+    SAFE_POINT_EXT(NULL != sequenceDbi, setError(L10N::nullPointerError("Sequence DBI")), result);
 
     U2Sequence sequence = sequenceDbi->getSequenceObject(settings.sequenceRef.entityId, stateInfo);
     CHECK_OP(stateInfo, result);
     wholeSequenceLength = sequence.length;
 
-    result.seq = sequenceDbi->getSequenceData(settings.sequenceRef.entityId, product.region, os);
-    CHECK_OP(os, result);
+    result.seq = sequenceDbi->getSequenceData(settings.sequenceRef.entityId, product.region, stateInfo);
+    CHECK_OP(stateInfo, result);
     if (product.region.endPos() > sequence.length) {
         U2Region tail(0, product.region.endPos() % sequence.length);
-        result.seq += sequenceDbi->getSequenceData(settings.sequenceRef.entityId, tail, os);
-        CHECK_OP(os, result);
+        result.seq += sequenceDbi->getSequenceData(settings.sequenceRef.entityId, tail, stateInfo);
+        CHECK_OP(stateInfo, result);
     }
 
     result.setName(getProductName(sequence.visualName, sequence.length, product.region));
@@ -150,7 +156,7 @@ namespace {
 
 void ExtractProductTask::addProductAnnotations(AnnotationTableObject *targetObject, const U2EntityRef &annsRef) const {
     QScopedPointer<AnnotationTableObject> annsObject(new AnnotationTableObject("features", annsRef));
-    const bool contain = (ExtractProductSettings::Inner == settings.annotationsExtraction) ? true : false;
+    const bool contain = (ExtractProductSettings::Inner == settings.annotationsExtraction);
     QSet<Annotation*> anns = annsObject->getAnnotationsByRegion(product.region, contain).toSet();
 
     U2Region begin = product.region;

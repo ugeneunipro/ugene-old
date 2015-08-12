@@ -19,14 +19,15 @@
 * MA 02110-1301, USA.
 */
 
-#ifndef _U2_INSILICO_PCR_WORKFLOW_TASK_H_
-#define _U2_INSILICO_PCR_WORKFLOW_TASK_H_
+#ifndef _U2_IN_SILICO_PCR_WORKFLOW_TASK_H_
+#define _U2_IN_SILICO_PCR_WORKFLOW_TASK_H_
 
 #include "ExtractProductTask.h"
 
 namespace U2 {
 
 class InSilicoPcrWorkflowTask : public Task {
+    Q_OBJECT
 public:
     class Result {
     public:
@@ -42,7 +43,6 @@ protected:
     QList<Task*> onSubTaskFinished(Task *subTask);
 
 private:
-    InSilicoPcrTaskSettings pcrSettings;
     ExtractProductSettings productSettings;
     InSilicoPcrTask *pcrTask;
     QList<ExtractProductTask*> productTasks;
@@ -50,4 +50,4 @@ private:
 
 } // U2
 
-#endif // _U2_INSILICO_PCR_WORKFLOW_TASK_H_
+#endif // _U2_IN_SILICO_PCR_WORKFLOW_TASK_H_

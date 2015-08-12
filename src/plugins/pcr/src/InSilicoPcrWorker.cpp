@@ -187,7 +187,7 @@ Task * InSilicoPcrWorker::createPrepareTask(U2OpStatus &os) const {
 }
 
 void InSilicoPcrWorker::onPrepared(Task *task, U2OpStatus &os) {
-    LoadDocumentTask *loadTask = dynamic_cast<LoadDocumentTask*>(task);
+    LoadDocumentTask *loadTask = qobject_cast<LoadDocumentTask*>(task);
     CHECK_EXT(NULL != loadTask, os.setError(L10N::internalError("Unexpected prepare task")), );
 
     QScopedPointer<Document> doc(loadTask->takeDocument());
@@ -220,7 +220,7 @@ void InSilicoPcrWorker::fetchPrimers(const QList<GObject*> &objects, U2OpStatus 
 
 Primer InSilicoPcrWorker::createPrimer(GObject *object, bool &skipped, U2OpStatus &os) {
     Primer result;
-    U2SequenceObject *primerSeq = dynamic_cast<U2SequenceObject*>(object);
+    U2SequenceObject *primerSeq = qobject_cast<U2SequenceObject*>(object);
     CHECK_EXT(NULL != primerSeq, os.setError(L10N::nullPointerError("Primer sequence")), result);
 
     if (primerSeq->getSequenceLength() > Primer::MAX_LEN) {
@@ -237,18 +237,18 @@ Primer InSilicoPcrWorker::createPrimer(GObject *object, bool &skipped, U2OpStatu
 
 QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
     QList<Message> result;
-    InSilicoPcrReportTask *reportTask = dynamic_cast<InSilicoPcrReportTask*>(task);
+    InSilicoPcrReportTask *reportTask = qobject_cast<InSilicoPcrReportTask*>(task);
     if (NULL != reportTask) {
         monitor()->addOutputFile(getValue<QString>(REPORT_ATTR_ID), actor->getId(), true);
         return result;
     }
 
-    MultiTask *multiTask = dynamic_cast<MultiTask*>(task);
+    MultiTask *multiTask = qobject_cast<MultiTask*>(task);
     CHECK_EXT(NULL != multiTask, os.setError(L10N::nullPointerError("MultiTask")), result);
 
     InSilicoPcrReportTask::TableRow tableRow;
     foreach (Task *t, multiTask->getTasks()) {
-        InSilicoPcrWorkflowTask *pcrTask = dynamic_cast<InSilicoPcrWorkflowTask*>(t);
+        InSilicoPcrWorkflowTask *pcrTask = qobject_cast<InSilicoPcrWorkflowTask*>(t);
         CHECK_EXT(NULL != multiTask, os.setError(L10N::nullPointerError("InSilicoPcrTask")), result);
 
         int pairNumber = pcrTask->property(PAIR_NUMBER_PROP_ID).toInt();
@@ -319,10 +319,8 @@ Task * InSilicoPcrWorker::onInputEnded() {
 Task * InSilicoPcrWorker::createTask(const Message &message, U2OpStatus &os) {
     QVariantMap data = message.getData().toMap();
     SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
-    U2SequenceObject *seq = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
-    SAFE_POINT(NULL != seq, L10N::nullPointerError("Sequence"), NULL);
-    QList<AnnotationTableObject*> anns = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
-
+    QScopedPointer<U2SequenceObject> seq(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    SAFE_POINT(!seq.isNull(), L10N::nullPointerError("Sequence"), NULL);
     if (seq->getSequenceLength() > InSilicoPcrTaskSettings::MAX_SEQUENCE_LENGTH) {
         os.setError(tr("The sequence is too long: ") + seq->getSequenceName());
         return NULL;
@@ -330,9 +328,12 @@ Task * InSilicoPcrWorker::createTask(const Message &message, U2OpStatus &os) {
 
     ExtractProductSettings productSettings;
     productSettings.sequenceRef = seq->getEntityRef();
+    QList<AnnotationTableObject*> anns = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
     foreach (AnnotationTableObject *annsObject, anns) {
         productSettings.annotationRefs << annsObject->getEntityRef();
+        delete annsObject;
     }
+    anns.clear();
     productSettings.targetDbiRef = context->getDataStorage()->getDbiRef();
     productSettings.annotationsExtraction = ExtractProductSettings::AnnotationsExtraction(getValue<int>(EXTRACT_ANNOTATIONS_ATTR_ID));
 
