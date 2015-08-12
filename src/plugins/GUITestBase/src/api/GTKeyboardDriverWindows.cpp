@@ -358,6 +358,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f10", VK_F10);
     ADD_KEY("f12", VK_F12);
     ADD_KEY("home", VK_HOME);
+    ADD_KEY("home", VK_END);
 
 // feel free to add other keys
 // macro VK_* defined in WinUser.h

@@ -3198,6 +3198,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040) {
 
 //    8. Select "Create new table" option. Check if destination table widgets are enabled or disabled.
     GTWidget::click(os, GTWidget::findWidget(os, "rbCreateNewTable"));
+    GTGlobals::sleep();
 
 //    Expected state:
 //        Existing table radio button - enabled
@@ -3217,6 +3218,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040) {
 
 //    9. Select "Existing table" option. Check if destination table widgets are enabled or disabled.
     GTWidget::click(os, GTWidget::findWidget(os, "rbExistingTable"));
+    GTGlobals::sleep();
 
 //    Expected state:
 //        Existing table radio button - enabled
@@ -3236,6 +3238,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040) {
 
 //    10. Open "Annotation parameters" group. Check "Use pattern name" checkbox state.
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+    GTGlobals::sleep();
 
 //    Expected state: it is visible and enabled.
     chbUsePatternNames = GTWidget::findExactWidget<QCheckBox *>(os, "chbUsePatternNames");
