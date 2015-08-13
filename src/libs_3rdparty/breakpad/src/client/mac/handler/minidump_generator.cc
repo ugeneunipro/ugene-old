@@ -631,7 +631,7 @@ bool MinidumpGenerator::WriteContextPPC(breakpad_thread_state_data_t state,
     REGISTER_FROM_THREADSTATE(machine_state, a))
 #define AddGPR(a) context_ptr->gpr[a] = \
     static_cast<__typeof__(context_ptr->a)>( \
-    REGISTER_FROM_THREADSTATE(machine_state, r ## a)
+    REGISTER_FROM_THREADSTATE(machine_state, r ## a))
 
   AddReg(srr0);
   AddReg(cr);
