@@ -120,7 +120,7 @@ private:
     QPointer<PhyTreeObject> phyObj;
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
-    PhyTree tempTree;
+    const PhyTree tempTree;
 };
 
 } // namespace

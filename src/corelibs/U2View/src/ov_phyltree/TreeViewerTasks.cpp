@@ -238,21 +238,26 @@ const QVariantMap& CreateMSAEditorTreeViewerTask::getStateData() {
     return stateData;
 }
 
-CreateTreeViewerTask::CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData)
-: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData) {
-    SAFE_POINT(phyObj != NULL, "Invalid tree object detected",);
-    tempTree = phyObj->getTree();
+CreateTreeViewerTask::CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData) :
+    Task(tr("Open tree viewer"), TaskFlag_NoRun),
+    viewName(name),
+    phyObj(obj),
+    subTask(NULL),
+    stateData(sData),
+    tempTree(NULL == phyObj ? PhyTree() : phyObj->getTree())
+{
+    SAFE_POINT_EXT(phyObj != NULL, setError(tr("Invalid tree object detected")), );
     connect(obj.data(), SIGNAL(destroyed(QObject *)), SLOT(cancel()));
 }
 
 void CreateTreeViewerTask::prepare() {
-    CHECK(!stateInfo.isCoR(), );
+    CHECK_OP(stateInfo, );
     subTask = new CreateRectangularBranchesTask(tempTree->getRootNode());
     addSubTask(subTask);
 }
 
 Task::ReportResult CreateTreeViewerTask::report() {
-    CHECK(!stateInfo.isCoR(), Task::ReportResult_Finished);
+    CHECK_OP(stateInfo, Task::ReportResult_Finished);
 
     GraphicsRectangularBranchItem* root = dynamic_cast<GraphicsRectangularBranchItem*>(subTask->getResult());
     TreeViewer* v = new TreeViewer(viewName, phyObj, root, subTask->getScale());
