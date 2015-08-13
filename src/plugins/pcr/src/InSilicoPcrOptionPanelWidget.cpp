@@ -191,7 +191,7 @@ void InSilicoPcrOptionPanelWidget::sl_extractProduct() {
     SAFE_POINT(NULL != sequenceObject, L10N::nullPointerError("Sequence Object"), );
     ExtractProductSettings settings;
     settings.sequenceRef = sequenceContext->getSequenceRef();
-    settings.annotationsExtraction = ExtractProductSettings::AnnotationsExtraction(annsComboBox->currentData().toInt());
+    settings.annotationsExtraction = ExtractProductSettings::AnnotationsExtraction(annsComboBox->itemData(annsComboBox->currentIndex()).toInt());
     foreach(AnnotationTableObject *annsObject, sequenceContext->getAnnotationObjects()) {
         settings.annotationRefs << annsObject->getEntityRef();
     }
