@@ -75,23 +75,23 @@
 <context>
     <name>U2::DNAFlexDialog</name>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="47"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="51"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="48"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="52"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="99"/>
-        <location filename="../src/DNAFlexDialog.cpp" line="104"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="103"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="108"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="104"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="108"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
@@ -116,6 +116,21 @@
         <source>Searches a DNA sequence for regions of high DNA helix flexibility.</source>
         <translation>Searches a DNA sequence for regions of high DNA helix flexibility.</translation>
     </message>
+    <message>
+        <location filename="../src/DNAFlexGraphAlgorithm.cpp" line="74"/>
+        <source>UGENE ran out of memory during the DNA flexibility calculating. The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.</source>
+        <translation>UGENE ran out of memory during the DNA flexibility calculating. The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAFlexGraphAlgorithm.cpp" line="77"/>
+        <source>Out of memory during the DNA flexibility calculating.</source>
+        <translation>Out of memory during the DNA flexibility calculating.</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAFlexGraphAlgorithm.cpp" line="80"/>
+        <source>Internal error occurred during the DNA flexibility calculating.</source>
+        <translation>Internal error occurred during the DNA flexibility calculating.</translation>
+    </message>
 </context>
 <context>
     <name>U2::DNAFlexTask</name>
@@ -133,12 +148,12 @@
 <context>
     <name>U2::DNAFlexViewContext</name>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="89"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="90"/>
         <source>Unsupported sequence alphabet, only standard DNA alphabet is supported</source>
         <translation>Unsupported sequence alphabet, only standard DNA alphabet is supported</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="112"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="113"/>
         <source>Find high DNA flexibility regions...</source>
         <translation>Find high DNA flexibility regions...</translation>
     </message>

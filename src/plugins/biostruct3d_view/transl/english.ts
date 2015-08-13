@@ -187,77 +187,77 @@
 <context>
     <name>U2::BioStruct3DGLWidget</name>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="776"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="773"/>
         <source>Spin</source>
         <translation>Spin</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="765"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="762"/>
         <source>Off</source>
         <translation>Off</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="772"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="769"/>
         <source>Models..</source>
         <translation>Models..</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="780"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="777"/>
         <source>Settings...</source>
         <translation>Settings...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="783"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="780"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="786"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="783"/>
         <source>Export Image...</source>
         <translation>Export Image...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="795"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="792"/>
         <source>Align With...</source>
         <translation>Align With...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="799"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="796"/>
         <source>Reset</source>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="806"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="803"/>
         <source>Render Style</source>
         <translation>Render Style</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="811"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="808"/>
         <source>Coloring Scheme</source>
         <translation>Coloring Scheme</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="816"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="813"/>
         <source>Molecular Surface Render Style</source>
         <translation>Molecular Surface Render Style</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="820"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="817"/>
         <source>Molecular Surface</source>
         <translation>Molecular Surface</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="845"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="842"/>
         <source>Structural Alignment</source>
         <translation>Structural Alignment</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="593"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="590"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="593"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="590"/>
         <source>Unable to open file %1 for writing</source>
         <translation>Unable to open file %1 for writing</translation>
     </message>

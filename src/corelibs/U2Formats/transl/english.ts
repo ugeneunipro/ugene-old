@@ -51,27 +51,27 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="82"/>
+        <location filename="../src/BAMUtils.cpp" line="99"/>
         <source>Fail to open &quot;%1&quot; for reading</source>
         <translation>Fail to open &quot;%1&quot; for reading</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="86"/>
+        <location filename="../src/BAMUtils.cpp" line="103"/>
         <source>Fail to read the header from the file: &quot;%1&quot;</source>
         <translation>Fail to read the header from the file: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="90"/>
+        <location filename="../src/BAMUtils.cpp" line="107"/>
         <source>Can not build the fasta index for the file: &quot;%1&quot;</source>
         <translation>Can not build the fasta index for the file: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="94"/>
+        <location filename="../src/BAMUtils.cpp" line="111"/>
         <source>Error parsing the reads from the file: &quot;%1&quot;</source>
         <translation>Error parsing the reads from the file: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="98"/>
+        <location filename="../src/BAMUtils.cpp" line="115"/>
         <source>Truncated file: &quot;%1&quot;</source>
         <translation>Truncated file: &quot;%1&quot;</translation>
     </message>
@@ -104,6 +104,11 @@
         <location filename="../src/GTFFormat.cpp" line="84"/>
         <source>GTF</source>
         <translation>GTF</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="766"/>
+        <source>Unexpected number of modified objects. Expected: 1, actual: %1</source>
+        <translation>Unexpected number of modified objects. Expected: 1, actual: %1</translation>
     </message>
 </context>
 <context>
@@ -254,7 +259,7 @@
         <translation>Alphabet unknown</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="538"/>
+        <location filename="../src/ace/AceFormat.cpp" line="536"/>
         <source>File doesn&apos;t contain any msa objects</source>
         <translation>File doesn&apos;t contain any msa objects</translation>
     </message>
@@ -298,12 +303,12 @@
         <translation>First line is too long</translation>
     </message>
     <message>
-        <location filename="../src/ASNFormat.h" line="148"/>
+        <location filename="../src/ASNFormat.h" line="147"/>
         <source>read error occurred</source>
         <translation>read error occurred</translation>
     </message>
     <message>
-        <location filename="../src/ASNFormat.h" line="156"/>
+        <location filename="../src/ASNFormat.h" line="155"/>
         <source>biostruct3d obj loading error: %1</source>
         <translation>biostruct3d obj loading error: %1</translation>
     </message>
@@ -319,12 +324,12 @@
 <context>
     <name>U2::AceImporter</name>
     <message>
-        <location filename="../src/ace/AceImporter.cpp" line="159"/>
+        <location filename="../src/ace/AceImporter.cpp" line="161"/>
         <source>ACE file importer</source>
         <translation>ACE file importer</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceImporter.cpp" line="163"/>
+        <location filename="../src/ace/AceImporter.cpp" line="165"/>
         <source>ACE files importer is used to convert conventional ACE files into UGENE database format.Having ACE file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content</source>
         <translation>ACE files importer is used to convert conventional ACE files into UGENE database format.Having ACE file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content</translation>
     </message>
@@ -332,17 +337,17 @@
 <context>
     <name>U2::AceImporterTask</name>
     <message>
-        <location filename="../src/ace/AceImporter.cpp" line="49"/>
+        <location filename="../src/ace/AceImporter.cpp" line="51"/>
         <source>ACE file import: %1</source>
         <translation>ACE file import: %1</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceImporter.cpp" line="84"/>
+        <location filename="../src/ace/AceImporter.cpp" line="86"/>
         <source>Can&apos;t create a temporary database</source>
         <translation>Can&apos;t create a temporary database</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceImporter.cpp" line="144"/>
+        <location filename="../src/ace/AceImporter.cpp" line="146"/>
         <source>Failed to get load task for : %1</source>
         <translation>Failed to get load task for : %1</translation>
     </message>
@@ -350,24 +355,29 @@
 <context>
     <name>U2::BAMUtils</name>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="312"/>
+        <location filename="../src/BAMUtils.cpp" line="335"/>
         <source>Sort bam file: &quot;%1&quot; using %2 Mb of memory. Result sorted file is: &quot;%3&quot;</source>
         <translation>Sort bam file: &quot;%1&quot; using %2 Mb of memory. Result sorted file is: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="323"/>
+        <location filename="../src/BAMUtils.cpp" line="346"/>
         <source>Merging BAM files: &quot;%1&quot;. Resulting merged file is: &quot;%2&quot;</source>
         <translation>Merging BAM files: &quot;%1&quot;. Resulting merged file is: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="340"/>
+        <location filename="../src/BAMUtils.cpp" line="363"/>
         <source>Remove PCR duplicate in BAM file: &quot;%1&quot;. Resulting  file is: &quot;%2&quot;</source>
         <translation>Remove PCR duplicate in BAM file: &quot;%1&quot;. Resulting  file is: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="427"/>
+        <location filename="../src/BAMUtils.cpp" line="450"/>
         <source>Build index for bam file: &quot;%1&quot;</source>
         <translation>Build index for bam file: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/BAMUtils.cpp" line="711"/>
+        <source>Wrong line in a SAM file.</source>
+        <translation>Wrong line in a SAM file.</translation>
     </message>
 </context>
 <context>
@@ -756,7 +766,7 @@
 <context>
     <name>U2::DocumentFormatUtils</name>
     <message>
-        <location filename="../src/DocumentFormatUtils.cpp" line="231"/>
+        <location filename="../src/DocumentFormatUtils.cpp" line="232"/>
         <source>Undefined sequence alphabet</source>
         <translation>Undefined sequence alphabet</translation>
     </message>
@@ -959,70 +969,70 @@
         <translation>The value cannot contain a single quote character. The qualifier is &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="533"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="535"/>
         <location filename="../src/SwissProtPlainTextFormat.cpp" line="316"/>
         <source>Annotation name is empty</source>
         <translation>Annotation name is empty</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="542"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="544"/>
         <source>Error parsing location</source>
         <translation>Error parsing location</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="570"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="572"/>
         <location filename="../src/SwissProtPlainTextFormat.cpp" line="370"/>
         <source>Unexpected line format</source>
         <translation>Unexpected line format</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="624"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="626"/>
         <source>Reading sequence %1</source>
         <translation>Reading sequence %1</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="645"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="647"/>
         <source>Error parsing sequence: unexpected empty line</source>
         <translation>Error parsing sequence: unexpected empty line</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="672"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="674"/>
         <source>Error reading sequence: invalid sequence format</source>
         <translation>Error reading sequence: invalid sequence format</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="690"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="692"/>
         <source>Error reading sequence: memory allocation failed</source>
         <translation>Error reading sequence: memory allocation failed</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="705"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="707"/>
         <source>Sequence is truncated</source>
         <translation>Sequence is truncated</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="712"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="714"/>
         <source>Reading annotations %1</source>
         <translation>Reading annotations %1</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="722"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="724"/>
         <source>Invalid format of feature table</source>
         <translation>Invalid format of feature table</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="785"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="787"/>
         <source>Line is too long.</source>
         <translation>Line is too long.</translation>
     </message>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="787"/>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="789"/>
         <source>IO error.</source>
         <translation>IO error.</translation>
     </message>
     <message>
         <location filename="../src/EMBLPlainTextFormat.cpp" line="226"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="248"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="253"/>
         <location filename="../src/SwissProtPlainTextFormat.cpp" line="207"/>
         <source>Record is truncated.</source>
         <translation>Record is truncated.</translation>
@@ -1100,9 +1110,21 @@
     <message>
         <location filename="../src/FastaFormat.cpp" line="280"/>
         <source>Skipped sequences: %1.
+</source>
+        <translation>Skipped sequences: %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/FastaFormat.cpp" line="281"/>
+        <source>The following sequences are empty:
+%1</source>
+        <translation>The following sequences are empty:
+%1</translation>
+    </message>
+    <message>
+        <source>Skipped sequences: %1.
 The following sequences are empty:
 </source>
-        <translation>Skipped sequences: %1.
+        <translation type="obsolete">Skipped sequences: %1.
 The following sequences are empty:</translation>
     </message>
     <message>
@@ -1145,12 +1167,12 @@ The following sequences are empty:</translation>
         <translation>File &quot;%1&quot; contains too many sequences to be displayed. However, you can process these data using instruments from the menu &lt;i&gt;Tools -&gt; NGS data analysis&lt;/i&gt; or pipelines built with Workflow Designer.</translation>
     </message>
     <message>
-        <location filename="../src/FastqFormat.cpp" line="489"/>
+        <location filename="../src/FastqFormat.cpp" line="491"/>
         <source>Not a valid FASTQ file, sequence name differs from quality scores name</source>
         <translation>Not a valid FASTQ file, sequence name differs from quality scores name</translation>
     </message>
     <message>
-        <location filename="../src/FastqFormat.cpp" line="498"/>
+        <location filename="../src/FastqFormat.cpp" line="500"/>
         <source>Not a valid FASTQ file. Bad quality scores: inconsistent size.</source>
         <translation>Not a valid FASTQ file. Bad quality scores: inconsistent size.</translation>
     </message>
@@ -1497,45 +1519,45 @@ The following sequences are empty:</translation>
         <translation>LOCUS is not the first line</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="100"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="105"/>
         <source>Error parsing LOCUS line</source>
         <translation>Error parsing LOCUS line</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="165"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="170"/>
         <source>incomplete SOURCE record</source>
         <translation>incomplete SOURCE record</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="391"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="624"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="396"/>
         <location filename="../src/GenbankPlainTextFormat.cpp" line="629"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="635"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="782"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="811"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="818"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="825"/>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="835"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="634"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="640"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="787"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="816"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="823"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="830"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="840"/>
         <source>Error writing document</source>
         <translation>Error writing document</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="522"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="527"/>
         <source>There is no IOAdapter registry yet</source>
         <translation>There is no IOAdapter registry yet</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="524"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="529"/>
         <source>IOAdapterFactory is NULL</source>
         <translation>IOAdapterFactory is NULL</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="526"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="531"/>
         <source>IOAdapter is NULL</source>
         <translation>IOAdapter is NULL</translation>
     </message>
     <message>
-        <location filename="../src/GenbankPlainTextFormat.cpp" line="794"/>
+        <location filename="../src/GenbankPlainTextFormat.cpp" line="799"/>
         <source>Invalid annotation table!</source>
         <translation>Invalid annotation table!</translation>
     </message>
@@ -1707,41 +1729,41 @@ The following sequences are empty:</translation>
         <translation>Alphabet is unknown</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="396"/>
-        <location filename="../src/MegaFormat.cpp" line="408"/>
+        <location filename="../src/MegaFormat.cpp" line="394"/>
+        <location filename="../src/MegaFormat.cpp" line="406"/>
         <source>No header</source>
         <translation>No header</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="401"/>
+        <location filename="../src/MegaFormat.cpp" line="399"/>
         <source>No # before header</source>
         <translation>No # before header</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="413"/>
+        <location filename="../src/MegaFormat.cpp" line="411"/>
         <source>Not MEGA-header</source>
         <translation>Not MEGA-header</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="436"/>
-        <location filename="../src/MegaFormat.cpp" line="447"/>
-        <location filename="../src/MegaFormat.cpp" line="474"/>
+        <location filename="../src/MegaFormat.cpp" line="434"/>
+        <location filename="../src/MegaFormat.cpp" line="445"/>
+        <location filename="../src/MegaFormat.cpp" line="472"/>
         <source>No data in file</source>
         <translation>No data in file</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="456"/>
-        <location filename="../src/MegaFormat.cpp" line="462"/>
+        <location filename="../src/MegaFormat.cpp" line="454"/>
+        <location filename="../src/MegaFormat.cpp" line="460"/>
         <source>Incorrect title</source>
         <translation>Incorrect title</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="506"/>
+        <location filename="../src/MegaFormat.cpp" line="504"/>
         <source>Sequence has empty part</source>
         <translation>Sequence has empty part</translation>
     </message>
     <message>
-        <location filename="../src/MegaFormat.cpp" line="526"/>
+        <location filename="../src/MegaFormat.cpp" line="524"/>
         <source>Bad symbols in a sequence</source>
         <translation>Bad symbols in a sequence</translation>
     </message>
@@ -1767,7 +1789,7 @@ The following sequences are empty:</translation>
         <translation>Nexus is a multiple alignment and phylogenetic trees file format</translation>
     </message>
     <message>
-        <location filename="../src/NEXUSFormat.cpp" line="697"/>
+        <location filename="../src/NEXUSFormat.cpp" line="695"/>
         <source>#NEXUS header missing</source>
         <translation>#NEXUS header missing</translation>
     </message>
@@ -1855,7 +1877,7 @@ The following sequences are empty:</translation>
         <translation>Alphabet is unknown</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="354"/>
+        <location filename="../src/PhylipFormat.cpp" line="352"/>
         <source>Error parsing file</source>
         <translation>Error parsing file</translation>
     </message>
@@ -1863,32 +1885,32 @@ The following sequences are empty:</translation>
 <context>
     <name>U2::PhylipInterleavedFormat</name>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="242"/>
+        <location filename="../src/PhylipFormat.cpp" line="240"/>
         <source>PHYLIP Interleaved</source>
         <translation>PHYLIP Interleaved</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="341"/>
+        <location filename="../src/PhylipFormat.cpp" line="339"/>
         <source>Illegal line</source>
         <translation>Illegal line</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="348"/>
+        <location filename="../src/PhylipFormat.cpp" line="346"/>
         <source>Wrong header</source>
         <translation>Wrong header</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="384"/>
+        <location filename="../src/PhylipFormat.cpp" line="382"/>
         <source>Block is incomplete</source>
         <translation>Block is incomplete</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="395"/>
+        <location filename="../src/PhylipFormat.cpp" line="393"/>
         <source>Block is incomlete</source>
         <translation>Block is incomlete</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="402"/>
+        <location filename="../src/PhylipFormat.cpp" line="400"/>
         <source>Number of characters does not correspond to the stated number</source>
         <translation>Number of characters does not correspond to the stated number</translation>
     </message>
@@ -1896,34 +1918,34 @@ The following sequences are empty:</translation>
 <context>
     <name>U2::PhylipSequentialFormat</name>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="123"/>
+        <location filename="../src/PhylipFormat.cpp" line="121"/>
         <source>PHYLIP Sequential</source>
         <translation>PHYLIP Sequential</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="204"/>
+        <location filename="../src/PhylipFormat.cpp" line="202"/>
         <source>Illegal line</source>
         <translation>Illegal line</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="211"/>
+        <location filename="../src/PhylipFormat.cpp" line="209"/>
         <source>Wrong header</source>
         <translation>Wrong header</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="214"/>
-        <location filename="../src/PhylipFormat.cpp" line="352"/>
+        <location filename="../src/PhylipFormat.cpp" line="212"/>
+        <location filename="../src/PhylipFormat.cpp" line="350"/>
         <source>There is not enough data</source>
         <translation>There is not enough data</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="219"/>
-        <location filename="../src/PhylipFormat.cpp" line="362"/>
+        <location filename="../src/PhylipFormat.cpp" line="217"/>
+        <location filename="../src/PhylipFormat.cpp" line="360"/>
         <source>Error parsing file</source>
         <translation>Error parsing file</translation>
     </message>
     <message>
-        <location filename="../src/PhylipFormat.cpp" line="233"/>
+        <location filename="../src/PhylipFormat.cpp" line="231"/>
         <source>Number of characters does not correspond to the stated number</source>
         <translation>Number of characters does not correspond to the stated number</translation>
     </message>
@@ -1931,12 +1953,12 @@ The following sequences are empty:</translation>
 <context>
     <name>U2::PlainTextFormat</name>
     <message>
-        <location filename="../src/PlainTextFormat.cpp" line="38"/>
+        <location filename="../src/PlainTextFormat.cpp" line="37"/>
         <source>Plain text</source>
         <translation>Plain text</translation>
     </message>
     <message>
-        <location filename="../src/PlainTextFormat.cpp" line="40"/>
+        <location filename="../src/PlainTextFormat.cpp" line="39"/>
         <source>A simple plain text file.</source>
         <translation>A simple plain text file.</translation>
     </message>
@@ -2039,18 +2061,18 @@ The following sequences are empty:</translation>
         <translation>invalid file: unknown alphabet</translation>
     </message>
     <message>
-        <location filename="../src/StockholmFormat.cpp" line="679"/>
+        <location filename="../src/StockholmFormat.cpp" line="677"/>
         <source>Stockholm</source>
         <translation>Stockholm</translation>
     </message>
     <message>
-        <location filename="../src/StockholmFormat.cpp" line="680"/>
+        <location filename="../src/StockholmFormat.cpp" line="678"/>
         <source>A multiple sequence alignments file format</source>
         <translation>A multiple sequence alignments file format</translation>
     </message>
     <message>
-        <location filename="../src/StockholmFormat.cpp" line="701"/>
-        <location filename="../src/StockholmFormat.cpp" line="718"/>
+        <location filename="../src/StockholmFormat.cpp" line="699"/>
+        <location filename="../src/StockholmFormat.cpp" line="716"/>
         <source>unknown error occurred</source>
         <translation>unknown error occurred</translation>
     </message>
@@ -2126,11 +2148,11 @@ The following sequences are empty:</translation>
         <translation>Vector NTI sequence format is a rich format based on NCBI GenBank format for storing sequences and associated annotations</translation>
     </message>
     <message>
-        <location filename="../src/VectorNtiSequenceFormat.cpp" line="299"/>
-        <location filename="../src/VectorNtiSequenceFormat.cpp" line="315"/>
-        <location filename="../src/VectorNtiSequenceFormat.cpp" line="319"/>
-        <location filename="../src/VectorNtiSequenceFormat.cpp" line="324"/>
-        <location filename="../src/VectorNtiSequenceFormat.cpp" line="330"/>
+        <location filename="../src/VectorNtiSequenceFormat.cpp" line="300"/>
+        <location filename="../src/VectorNtiSequenceFormat.cpp" line="316"/>
+        <location filename="../src/VectorNtiSequenceFormat.cpp" line="320"/>
+        <location filename="../src/VectorNtiSequenceFormat.cpp" line="325"/>
+        <location filename="../src/VectorNtiSequenceFormat.cpp" line="331"/>
         <source>Error writing document</source>
         <translation>Error writing document</translation>
     </message>
@@ -2264,8 +2286,8 @@ The following sequences are empty:</translation>
     <message>
         <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="586"/>
         <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="619"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1092"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1101"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1100"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1109"/>
         <source>Unexpected modification type &apos;%1&apos;</source>
         <translation>Unexpected modification type &apos;%1&apos;</translation>
     </message>
@@ -2335,54 +2357,54 @@ The following sequences are empty:</translation>
         <translation>An error occurred during addition of a row</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="590"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="586"/>
         <source>Can&apos;t undo an operation for the object</source>
         <translation>Can&apos;t undo an operation for the object</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="653"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="649"/>
         <source>Can&apos;t redo an operation for the object</source>
         <translation>Can&apos;t redo an operation for the object</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="783"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="875"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="791"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="883"/>
         <source>Object not found</source>
         <translation>Object not found</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="824"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="832"/>
         <source>Folder not found: %1 (canonical: %2)</source>
         <translation>Folder not found: %1 (canonical: %2)</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1005"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1013"/>
         <source>Not an object, id: %1, type: %2</source>
         <translation>Not an object, id: %1, type: %2</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1028"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1036"/>
         <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="289"/>
         <source>Unknown object type! Id: %1, type: %2</source>
         <translation>Unknown object type! Id: %1, type: %2</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1070"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1078"/>
         <source>Can&apos;t undo an unknown operation: &apos;%1&apos;</source>
         <translation>Can&apos;t undo an unknown operation: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1083"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1091"/>
         <source>Can&apos;t redo an unknown operation: &apos;%1&apos;</source>
         <translation>Can&apos;t redo an unknown operation: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1114"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1122"/>
         <source>An error occurred during updating an object name</source>
         <translation>An error occurred during updating an object name</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1132"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1140"/>
         <source>An error occurred during updating an object name!</source>
         <translation>An error occurred during updating an object name!</translation>
     </message>
@@ -2392,22 +2414,26 @@ The following sequences are empty:</translation>
         <translation>Sequence object not found</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="118"/>
         <source>Exception was thrown</source>
-        <translation>Exception was thrown</translation>
+        <translation type="obsolete">Exception was thrown</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="119"/>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="125"/>
+        <source>Internal error occurred during the sequence processing</source>
+        <translation>Internal error occurred during the sequence processing</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="126"/>
         <source>An exception was thrown during reading sequence data from dbi</source>
         <translation>An exception was thrown during reading sequence data from dbi</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="380"/>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="387"/>
         <source>An error occurred during reverting replacing sequence data</source>
         <translation>An error occurred during reverting replacing sequence data</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="395"/>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="402"/>
         <source>An error occurred during replacing sequence data</source>
         <translation>An error occurred during replacing sequence data</translation>
     </message>

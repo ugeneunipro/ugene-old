@@ -240,61 +240,71 @@
 <context>
     <name>U2::MuscleAdapter</name>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="77"/>
+        <location filename="../src/MuscleAdapter.cpp" line="79"/>
         <source>No sequences in input file</source>
         <translation>No sequences in input file</translation>
     </message>
     <message>
         <location filename="../src/MuscleAdapter.cpp" line="51"/>
-        <location filename="../src/MuscleAdapter.cpp" line="203"/>
-        <location filename="../src/MuscleAdapter.cpp" line="292"/>
-        <location filename="../src/MuscleAdapter.cpp" line="477"/>
+        <location filename="../src/MuscleAdapter.cpp" line="205"/>
+        <location filename="../src/MuscleAdapter.cpp" line="296"/>
+        <location filename="../src/MuscleAdapter.cpp" line="483"/>
         <source>Internal MUSCLE error: %1</source>
         <translation>Internal MUSCLE error: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="55"/>
-        <location filename="../src/MuscleAdapter.cpp" line="207"/>
-        <location filename="../src/MuscleAdapter.cpp" line="296"/>
-        <location filename="../src/MuscleAdapter.cpp" line="481"/>
+        <location filename="../src/MuscleAdapter.cpp" line="57"/>
+        <location filename="../src/MuscleAdapter.cpp" line="211"/>
+        <location filename="../src/MuscleAdapter.cpp" line="302"/>
+        <location filename="../src/MuscleAdapter.cpp" line="489"/>
         <source>Undefined internal MUSCLE error</source>
         <translation>Undefined internal MUSCLE error</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="104"/>
+        <location filename="../src/MuscleAdapter.cpp" line="106"/>
         <source>Alignment is empty</source>
         <translation>Alignment is empty</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="285"/>
+        <location filename="../src/MuscleAdapter.cpp" line="289"/>
         <source>Invalid input alignment</source>
         <translation>Invalid input alignment</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="304"/>
-        <location filename="../src/MuscleAdapter.cpp" line="489"/>
+        <location filename="../src/MuscleAdapter.cpp" line="310"/>
+        <location filename="../src/MuscleAdapter.cpp" line="497"/>
         <source>Incompatible alphabets</source>
         <translation>Incompatible alphabets</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="332"/>
+        <location filename="../src/MuscleAdapter.cpp" line="338"/>
         <source>Aligning profiles</source>
         <translation>Aligning profiles</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="335"/>
+        <location filename="../src/MuscleAdapter.cpp" line="341"/>
         <source>Building output</source>
         <translation>Building output</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="514"/>
+        <location filename="../src/MuscleAdapter.cpp" line="522"/>
         <source>Aligning sequence %1 of %2</source>
         <translation>Aligning sequence %1 of %2</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="547"/>
+        <location filename="../src/MuscleAdapter.cpp" line="555"/>
         <source>Merging results: %1 of %2</source>
         <translation>Merging results: %1 of %2</translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAdapter.cpp" line="570"/>
+        <source>Not enough memory to do this alignment. You can try the 64-bit version of UGENE. In this case, more available memory will be used for aligning.</source>
+        <translation>Not enough memory to do this alignment. You can try the 64-bit version of UGENE. In this case, more available memory will be used for aligning.</translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAdapter.cpp" line="571"/>
+        <source>Not enough memory to do this alignment.</source>
+        <translation>Not enough memory to do this alignment.</translation>
     </message>
     <message>
         <location filename="../src/MuscleUtils.cpp" line="91"/>
@@ -320,12 +330,12 @@
         <translation>Sequences in file have different alphabets %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="329"/>
+        <location filename="../src/MuscleTask.cpp" line="331"/>
         <source>No sequences found in file %1</source>
         <translation>No sequences found in file %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="331"/>
+        <location filename="../src/MuscleTask.cpp" line="333"/>
         <source>No alignment found in file %1</source>
         <translation>No alignment found in file %1</translation>
     </message>
@@ -450,17 +460,17 @@
 <context>
     <name>U2::MuscleGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="597"/>
+        <location filename="../src/MuscleTask.cpp" line="603"/>
         <source>Workflow wrapper &apos;%1&apos;</source>
         <translation>Workflow wrapper &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="610"/>
+        <location filename="../src/MuscleTask.cpp" line="616"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation>MUSCLE align &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="613"/>
+        <location filename="../src/MuscleTask.cpp" line="619"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation>MUSCLE refine &apos;%1&apos;</translation>
     </message>
@@ -468,27 +478,27 @@
 <context>
     <name>U2::MuscleGObjectTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="361"/>
+        <location filename="../src/MuscleTask.cpp" line="363"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation>MUSCLE align &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="364"/>
+        <location filename="../src/MuscleTask.cpp" line="366"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation>MUSCLE refine &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="367"/>
+        <location filename="../src/MuscleTask.cpp" line="369"/>
         <source>MUSCLE add to profile &apos;%1&apos;</source>
         <translation>MUSCLE add to profile &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="370"/>
+        <location filename="../src/MuscleTask.cpp" line="372"/>
         <source>MUSCLE align profiles</source>
         <translation>MUSCLE align profiles</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="416"/>
+        <location filename="../src/MuscleTask.cpp" line="418"/>
         <source>MAlignment object has been changed</source>
         <translation>MAlignment object has been changed</translation>
     </message>
@@ -496,29 +506,29 @@
 <context>
     <name>U2::MuscleMSAEditorContext</name>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="143"/>
+        <location filename="../src/MusclePlugin.cpp" line="141"/>
         <source>Align with MUSCLE...</source>
         <translation>Align with MUSCLE...</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="152"/>
+        <location filename="../src/MusclePlugin.cpp" line="150"/>
         <source>Align sequences to profile with MUSCLE...</source>
         <translation>Align sequences to profile with MUSCLE...</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="161"/>
+        <location filename="../src/MusclePlugin.cpp" line="159"/>
         <source>Align profile to profile with MUSCLE...</source>
         <translation>Align profile to profile with MUSCLE...</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="239"/>
-        <location filename="../src/MusclePlugin.cpp" line="242"/>
+        <location filename="../src/MusclePlugin.cpp" line="238"/>
+        <location filename="../src/MusclePlugin.cpp" line="241"/>
         <source>Select file with sequences</source>
         <translation>Select file with sequences</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="267"/>
-        <location filename="../src/MusclePlugin.cpp" line="271"/>
+        <location filename="../src/MusclePlugin.cpp" line="266"/>
+        <location filename="../src/MusclePlugin.cpp" line="270"/>
         <source>Select file with alignment</source>
         <translation>Select file with alignment</translation>
     </message>
@@ -534,17 +544,17 @@
 <context>
     <name>U2::MusclePlugin</name>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="65"/>
+        <location filename="../src/MusclePlugin.cpp" line="60"/>
         <source>MUSCLE</source>
         <translation>MUSCLE</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="66"/>
+        <location filename="../src/MusclePlugin.cpp" line="61"/>
         <source>A port of MUSCLE package for multiple sequence alignment. Check http://www.drive5.com/muscle/ for the original version</source>
         <translation>A port of MUSCLE package for multiple sequence alignment. Check http://www.drive5.com/muscle/ for the original version</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="74"/>
+        <location filename="../src/MusclePlugin.cpp" line="69"/>
         <source>Align with MUSCLE...</source>
         <translation>Align with MUSCLE...</translation>
     </message>

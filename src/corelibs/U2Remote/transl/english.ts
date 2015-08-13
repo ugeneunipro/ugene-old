@@ -4,7 +4,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="48"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="45"/>
         <source>Run</source>
         <translation>Run</translation>
     </message>
@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DistributedComputingUtil</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="67"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="64"/>
         <source>Remote machines monitor...</source>
         <translation>Remote machines monitor...</translation>
     </message>
@@ -236,27 +236,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RemoteMachineMonitorDialogImpl</name>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="83"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="80"/>
         <source>Found %1 remote machine records</source>
         <translation>Found %1 remote machine records</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="130"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="127"/>
         <source>Save machine...</source>
         <translation>Save machine...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="137"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="134"/>
         <source>Can&apos;t add %1 machine. The machine is already registered</source>
         <translation>Can&apos;t add %1 machine. The machine is already registered</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="208"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="205"/>
         <source>Add remote macnine</source>
         <translation>Add remote macnine</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="208"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="205"/>
         <source>No protocols for distributed computing are found.
 Please check your plugin list.</source>
         <translation>No protocols for distributed computing are found.
@@ -319,12 +319,12 @@ Please check your plugin list.</translation>
         <translation>Select a file to save</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="49"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="48"/>
         <source>Selecting machines error!</source>
         <translation>Selecting machines error!</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="50"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="49"/>
         <source>You didn&apos;t select a machine to run remote task!</source>
         <translation>You didn&apos;t select a machine to run remote task!</translation>
     </message>
@@ -493,22 +493,22 @@ Please check your plugin list.</translation>
 <context>
     <name>U2::UpdateActiveTasks</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="99"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="98"/>
         <source>Updating active tasks...</source>
         <translation>Updating active tasks...</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="124"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="123"/>
         <source>Found active task: %1</source>
         <translation>Found active task: %1</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="128"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="127"/>
         <source>Active tasks update finished!</source>
         <translation>Active tasks update finished!</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="103"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="102"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation>Cannot create remote machine from remote machine settings: %1</translation>
     </message>

@@ -636,17 +636,17 @@
         <translation>Can not create the directory: </translation>
     </message>
     <message>
-        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="238"/>
+        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="241"/>
         <source>Can not run %1 tool</source>
         <translation>Can not run %1 tool</translation>
     </message>
     <message>
-        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="244"/>
+        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="247"/>
         <source>%1 tool exited with code %2</source>
         <translation>%1 tool exited with code %2</translation>
     </message>
     <message>
-        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="246"/>
+        <location filename="../src/AssemblySamtoolsMpileup.cpp" line="249"/>
         <source>Tool %1 finished successfully</source>
         <translation>Tool %1 finished successfully</translation>
     </message>

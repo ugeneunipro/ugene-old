@@ -17,12 +17,12 @@
 <context>
     <name>U2::GUITestBasePlugin</name>
     <message>
-        <location filename="../src/GUITestBasePlugin.cpp" line="129"/>
+        <location filename="../src/GUITestBasePlugin.cpp" line="130"/>
         <source>GUITestBase</source>
         <translation>GUITestBase</translation>
     </message>
     <message>
-        <location filename="../src/GUITestBasePlugin.cpp" line="129"/>
+        <location filename="../src/GUITestBasePlugin.cpp" line="130"/>
         <source>GUI Test Base</source>
         <translation>GUI Test Base</translation>
     </message>

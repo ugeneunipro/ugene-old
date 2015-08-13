@@ -512,57 +512,57 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::GenomeAlignerTask</name>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="133"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="131"/>
         <source>Genome Aligner settings</source>
         <translation>Genome Aligner settings</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="134"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="132"/>
         <source>Index file name: %1</source>
         <translation>Index file name: %1</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="135"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="133"/>
         <source>Use prebuilt index: %2</source>
         <translation>Use prebuilt index: %2</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="210"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="206"/>
         <source>Can not init short reads loader.</source>
         <translation>Can not init short reads loader.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="341"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="333"/>
         <source>The aligning is finished.</source>
         <translation>The aligning is finished.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="342"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="334"/>
         <source>Whole working time = %1.</source>
         <translation>Whole working time = %1.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="343"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="335"/>
         <source>%1% reads aligned.</source>
         <translation>%1% reads aligned.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="345"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="337"/>
         <source>Short-reads loading time = %1</source>
         <translation>Short-reads loading time = %1</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="346"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="338"/>
         <source>Results writing time = %1</source>
         <translation>Results writing time = %1</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="348"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="340"/>
         <source>Index loading time = %1</source>
         <translation>Index loading time = %1</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="349"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="341"/>
         <source>Short-reads IO time = %1</source>
         <translation>Short-reads IO time = %1</translation>
     </message>
@@ -570,7 +570,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerBuildPrompter</name>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="147"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="151"/>
         <source>Build genome aligner index from %1 and send it url to output.</source>
         <translation>Build genome aligner index from %1 and send it url to output.</translation>
     </message>
@@ -636,7 +636,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerIndexReaderPrompter</name>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="221"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="229"/>
         <source>Read genome aligner index from %1 and send it url to output.</source>
         <translation>Read genome aligner index from %1 and send it url to output.</translation>
     </message>
@@ -644,42 +644,42 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerIndexReaderWorker</name>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="157"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="161"/>
         <source>Genome aligner index</source>
         <translation>Genome aligner index</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="157"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="161"/>
         <source>Result of genome aligner index builder.</source>
         <translation>Result of genome aligner index builder.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="163"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="167"/>
         <source>Genome aligner index reader</source>
         <translation>Genome aligner index reader</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="164"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="168"/>
         <source>Read a set of several files with extensions .idx, .ref, .X.sarr. These files together constitute the index: they are all that is needed to align reads to that reference.</source>
         <translation>Read a set of several files with extensions .idx, .ref, .X.sarr. These files together constitute the index: they are all that is needed to align reads to that reference.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="165"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="169"/>
         <source>Index</source>
         <translation>Index</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="166"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="170"/>
         <source>Select an index file with the .idx extension</source>
         <translation>Select an index file with the .idx extension</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="197"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="201"/>
         <source>Index URL is empty</source>
         <translation>Index URL is empty</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="210"/>
+        <location filename="../src/GenomeAlignerIndexWorker.cpp" line="214"/>
         <source>Reading genome aligner index finished. Result name is %1</source>
         <translation>Reading genome aligner index finished. Result name is %1</translation>
     </message>

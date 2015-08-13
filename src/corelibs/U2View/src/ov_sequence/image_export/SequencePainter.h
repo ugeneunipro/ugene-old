@@ -63,6 +63,7 @@ private:
 /* CurrentViewPainter */
 /************************************************************************/
 class CurrentViewPainter : public ExportImagePainter {
+    Q_OBJECT
 public:
     CurrentViewPainter(ADVSingleSequenceWidget* seqWidget)
         : ExportImagePainter(),

@@ -96,17 +96,17 @@
 <context>
     <name>U2::GTest_SmithWatermnan</name>
     <message>
-        <location filename="../src/SmithWatermanTests.cpp" line="226"/>
+        <location filename="../src/SmithWatermanTests.cpp" line="229"/>
         <source>**</source>
         <translation>**</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanTests.cpp" line="229"/>
+        <location filename="../src/SmithWatermanTests.cpp" line="232"/>
         <source>,</source>
         <translation>,</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanTests.cpp" line="236"/>
+        <location filename="../src/SmithWatermanTests.cpp" line="239"/>
         <source>..</source>
         <translation>..</translation>
     </message>
@@ -277,44 +277,44 @@
         <translation>complementary strand</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="385"/>
+        <location filename="../src/SWWorker.cpp" line="389"/>
         <source>Null sequence supplied to Smith-Waterman: %1</source>
         <translation>Null sequence supplied to Smith-Waterman: %1</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="482"/>
+        <location filename="../src/SWWorker.cpp" line="486"/>
         <source>Incorrect value: pattern alphabet doesn&apos;t match sequence alphabet </source>
         <translation>Incorrect value: pattern alphabet doesn&apos;t match sequence alphabet </translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="483"/>
+        <location filename="../src/SWWorker.cpp" line="487"/>
         <source>Pattern symbols not matching to alphabet</source>
         <translation>Pattern symbols not matching to alphabet</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="422"/>
-        <location filename="../src/SWWorker.cpp" line="423"/>
+        <location filename="../src/SWWorker.cpp" line="426"/>
+        <location filename="../src/SWWorker.cpp" line="427"/>
         <source>Incorrect value: score value must lay between 0 and 100</source>
         <translation>Incorrect value: score value must lay between 0 and 100</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="433"/>
+        <location filename="../src/SWWorker.cpp" line="437"/>
         <source>Incorrect value:  filter name incorrect, default value used</source>
         <translation>Incorrect value:  filter name incorrect, default value used</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="440"/>
+        <location filename="../src/SWWorker.cpp" line="444"/>
         <source>Incorrect value: result name is empty, default value used</source>
         <translation>Incorrect value: result name is empty, default value used</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="455"/>
+        <location filename="../src/SWWorker.cpp" line="459"/>
         <source>Could not find complement translation for %1, searching only direct strand</source>
         <translation>Could not find complement translation for %1, searching only direct strand</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="394"/>
-        <location filename="../src/SWWorker.cpp" line="395"/>
+        <location filename="../src/SWWorker.cpp" line="398"/>
+        <location filename="../src/SWWorker.cpp" line="399"/>
         <source>Invalid value: weight matrix with given name not exists</source>
         <translation>Invalid value: weight matrix with given name not exists</translation>
     </message>
@@ -334,48 +334,48 @@
         <translation>An input reference sequence to search in.</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="359"/>
+        <location filename="../src/SWWorker.cpp" line="361"/>
         <source>Null pattern supplied to Smith-Waterman: %1</source>
         <translation>Null pattern supplied to Smith-Waterman: %1</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="405"/>
+        <location filename="../src/SWWorker.cpp" line="409"/>
         <source>Can&apos;t find weight matrix name: &apos;%1&apos;!</source>
         <translation>Can&apos;t find weight matrix name: &apos;%1&apos;!</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="405"/>
+        <location filename="../src/SWWorker.cpp" line="409"/>
         <source>&lt;empty&gt;</source>
         <translation>&lt;empty&gt;</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="412"/>
+        <location filename="../src/SWWorker.cpp" line="416"/>
         <source>Wrong matrix selected. Alphabets do not match</source>
         <translation>Wrong matrix selected. Alphabets do not match</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="471"/>
+        <location filename="../src/SWWorker.cpp" line="475"/>
         <source>SmithWaterman algorithm not found: %1</source>
         <translation>SmithWaterman algorithm not found: %1</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="476"/>
-        <location filename="../src/SWWorker.cpp" line="477"/>
+        <location filename="../src/SWWorker.cpp" line="480"/>
+        <location filename="../src/SWWorker.cpp" line="481"/>
         <source>Incorrect value: search pattern, pattern is empty</source>
         <translation>Incorrect value: search pattern, pattern is empty</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="498"/>
+        <location filename="../src/SWWorker.cpp" line="502"/>
         <source>smith_waterman_task</source>
         <translation>Smith waterman task</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="505"/>
+        <location filename="../src/SWWorker.cpp" line="509"/>
         <source>Smith waterman subtasks</source>
         <translation>Smith waterman subtasks</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="548"/>
+        <location filename="../src/SWWorker.cpp" line="552"/>
         <source>Found %1 matches of pattern &apos;%2&apos;</source>
         <translation>Found %1 matches of pattern &apos;%2&apos;</translation>
     </message>

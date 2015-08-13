@@ -13,11 +13,11 @@
         <location filename="../src/EditAlignmentTests.cpp" line="289"/>
         <location filename="../src/EditAlignmentTests.cpp" line="298"/>
         <location filename="../src/EditAlignmentTests.cpp" line="307"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="65"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="81"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="95"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="102"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="140"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="66"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="82"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="96"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="103"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="141"/>
         <source>value not set %1</source>
         <translation>value not set %1</translation>
     </message>
@@ -50,13 +50,13 @@
         <location filename="../src/EditAlignmentTests.cpp" line="329"/>
         <location filename="../src/EditAlignmentTests.cpp" line="381"/>
         <location filename="../src/EditSequenceTests.cpp" line="93"/>
-        <location filename="../src/EditSequenceTests.cpp" line="227"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="200"/>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="94"/>
+        <location filename="../src/EditSequenceTests.cpp" line="229"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="201"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="95"/>
         <location filename="../src/PWMatrixTests.cpp" line="151"/>
         <location filename="../src/PWMatrixTests.cpp" line="174"/>
-        <location filename="../src/PWMatrixTests.cpp" line="320"/>
-        <location filename="../src/PWMatrixTests.cpp" line="338"/>
+        <location filename="../src/PWMatrixTests.cpp" line="321"/>
+        <location filename="../src/PWMatrixTests.cpp" line="339"/>
         <source>context not found %1</source>
         <translation>context not found %1</translation>
     </message>
@@ -68,11 +68,11 @@
         <location filename="../src/EditAlignmentTests.cpp" line="323"/>
         <location filename="../src/EditAlignmentTests.cpp" line="335"/>
         <location filename="../src/EditAlignmentTests.cpp" line="387"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="205"/>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="99"/>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="105"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="206"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="100"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="106"/>
         <location filename="../src/PWMatrixTests.cpp" line="157"/>
-        <location filename="../src/PWMatrixTests.cpp" line="326"/>
+        <location filename="../src/PWMatrixTests.cpp" line="327"/>
         <source>container of object with type &quot;%1&quot; is empty</source>
         <translation>container of object with type &quot;%1&quot; is empty</translation>
     </message>
@@ -103,106 +103,106 @@
     </message>
     <message>
         <location filename="../src/EditSequenceTests.cpp" line="98"/>
-        <location filename="../src/EditSequenceTests.cpp" line="232"/>
-        <location filename="../src/EditSequenceTests.cpp" line="355"/>
+        <location filename="../src/EditSequenceTests.cpp" line="234"/>
+        <location filename="../src/EditSequenceTests.cpp" line="359"/>
         <source>Sequence %1 not found</source>
         <translation>Sequence %1 not found</translation>
     </message>
     <message>
         <location filename="../src/EditSequenceTests.cpp" line="110"/>
-        <location filename="../src/EditSequenceTests.cpp" line="242"/>
-        <location filename="../src/EditSequenceTests.cpp" line="367"/>
+        <location filename="../src/EditSequenceTests.cpp" line="244"/>
+        <location filename="../src/EditSequenceTests.cpp" line="371"/>
         <source>Length of sequence is incorrect. Expected:%2, but Actual:%1</source>
         <translation>Length of sequence is incorrect. Expected:%2, but Actual:%1</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="117"/>
-        <location filename="../src/EditSequenceTests.cpp" line="249"/>
+        <location filename="../src/EditSequenceTests.cpp" line="118"/>
+        <location filename="../src/EditSequenceTests.cpp" line="252"/>
         <source>Sequence is incorrect. Expected:%1, but Actual:%2</source>
         <translation>Sequence is incorrect. Expected:%1, but Actual:%2</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="133"/>
-        <location filename="../src/EditSequenceTests.cpp" line="263"/>
-        <location filename="../src/EditSequenceTests.cpp" line="280"/>
-        <location filename="../src/EditSequenceTests.cpp" line="388"/>
+        <location filename="../src/EditSequenceTests.cpp" line="135"/>
+        <location filename="../src/EditSequenceTests.cpp" line="267"/>
+        <location filename="../src/EditSequenceTests.cpp" line="284"/>
+        <location filename="../src/EditSequenceTests.cpp" line="394"/>
         <source>Regions is incorrect. Expected size:%1 Actual size:%2</source>
         <translation>Regions is incorrect. Expected size:%1 Actual size:%2</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="139"/>
-        <location filename="../src/EditSequenceTests.cpp" line="269"/>
-        <location filename="../src/EditSequenceTests.cpp" line="394"/>
+        <location filename="../src/EditSequenceTests.cpp" line="141"/>
+        <location filename="../src/EditSequenceTests.cpp" line="273"/>
+        <location filename="../src/EditSequenceTests.cpp" line="400"/>
         <source>Regions is incorrect. Expected:%3,%4, but Actual:%1,%2</source>
         <translation>Regions is incorrect. Expected:%3,%4, but Actual:%1,%2</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="158"/>
+        <location filename="../src/EditSequenceTests.cpp" line="160"/>
         <source>Regions is incorrect. actual region didn&apos;t found in expected region list</source>
         <translation>Regions is incorrect. actual region didn&apos;t found in expected region list</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="350"/>
+        <location filename="../src/EditSequenceTests.cpp" line="354"/>
         <source>Context not found %1</source>
         <translation>Context not found %1</translation>
     </message>
     <message>
-        <location filename="../src/EditSequenceTests.cpp" line="374"/>
+        <location filename="../src/EditSequenceTests.cpp" line="379"/>
         <source>Sequence is incorrect. Actual:%1, but expected:%2</source>
         <translation>Sequence is incorrect. Actual:%1, but expected:%2</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="75"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="76"/>
         <source>value for %1 is incorrect</source>
         <translation>value for %1 is incorrect</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="113"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="119"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="129"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="154"/>
-        <location filename="../src/FindAlgorithmTests.cpp" line="191"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="114"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="120"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="130"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="155"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="192"/>
         <source>value incorrect for %1</source>
         <translation>value incorrect for %1</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="133"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="134"/>
         <source>%1 attribute value greater or equal pattern length</source>
         <translation>%1 attribute value greater or equal pattern length</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="159"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="160"/>
         <source>value for %1 incorrect</source>
         <translation>value for %1 incorrect</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="230"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="233"/>
         <source>Expected and actual result sizes are different: %1 , %2</source>
         <translation>Expected and actual result sizes are different: %1 , %2</translation>
     </message>
     <message>
-        <location filename="../src/FindAlgorithmTests.cpp" line="238"/>
+        <location filename="../src/FindAlgorithmTests.cpp" line="241"/>
         <source>Expected and actual regions are different: %1..%2 , %3..%4</source>
         <translation>Expected and actual regions are different: %1..%2 , %3..%4</translation>
     </message>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="122"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="123"/>
         <source>Could find a loaded document</source>
         <translation>Could find a loaded document</translation>
     </message>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="127"/>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="133"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="128"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="134"/>
         <source>No sequence in the document loaded</source>
         <translation>No sequence in the document loaded</translation>
     </message>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="149"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="151"/>
         <source>Actual sequence %1 does not match expected sequence %2</source>
         <translation>Actual sequence %1 does not match expected sequence %2</translation>
     </message>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="171"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="174"/>
         <source>Expected annotation %1 has not been found in the actual annotations. If the test fails, please, load the sequence %2 with annotation from DAS, manually compare the annotations and update the test. There might be updates in the DAS databases.</source>
         <translation>Expected annotation %1 has not been found in the actual annotations. If the test fails, please, load the sequence %2 with annotation from DAS, manually compare the annotations and update the test. There might be updates in the DAS databases.</translation>
     </message>
@@ -213,40 +213,40 @@
     </message>
     <message>
         <location filename="../src/PWMatrixTests.cpp" line="180"/>
-        <location filename="../src/PWMatrixTests.cpp" line="344"/>
+        <location filename="../src/PWMatrixTests.cpp" line="345"/>
         <source>container of object with type &quot;%1&quot; is empty or less than %2</source>
         <translation>container of object with type &quot;%1&quot; is empty or less than %2</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="201"/>
-        <location filename="../src/PWMatrixTests.cpp" line="372"/>
+        <location filename="../src/PWMatrixTests.cpp" line="202"/>
+        <location filename="../src/PWMatrixTests.cpp" line="374"/>
         <source>Actual results not equal with expected, row %1 column %2
 Expected %3, got %4</source>
         <translation>Actual results not equal with expected, row %1 column %2
 Expected %3, got %4</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="307"/>
+        <location filename="../src/PWMatrixTests.cpp" line="308"/>
         <source>algorithm not found %1</source>
         <translation>algorithm not found %1</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="312"/>
+        <location filename="../src/PWMatrixTests.cpp" line="313"/>
         <source>unable to create algorithm %1</source>
         <translation>unable to create algorithm %1</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="351"/>
+        <location filename="../src/PWMatrixTests.cpp" line="352"/>
         <source>wrong length of %1 sequence: %2</source>
         <translation>wrong length of %1 sequence: %2</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="355"/>
+        <location filename="../src/PWMatrixTests.cpp" line="356"/>
         <source>Wrong %1 sequence alphabet</source>
         <translation>Wrong %1 sequence alphabet</translation>
     </message>
     <message>
-        <location filename="../src/PWMatrixTests.cpp" line="365"/>
+        <location filename="../src/PWMatrixTests.cpp" line="367"/>
         <source>wrong value: %1</source>
         <translation>wrong value: %1</translation>
     </message>
@@ -254,7 +254,7 @@ Expected %3, got %4</translation>
 <context>
     <name>U2::GTest_CheckAnnotationsQualifiersInTwoObjects</name>
     <message>
-        <location filename="../src/AnnotationTableObjectTest.cpp" line="841"/>
+        <location filename="../src/AnnotationTableObjectTest.cpp" line="846"/>
         <source>annotations qualifiers  in position %1 not matched</source>
         <translation>annotations qualifiers  in position %1 not matched</translation>
     </message>
@@ -283,12 +283,12 @@ Expected %3, got %4</translation>
 <context>
     <name>U2::GTest_LoadDASDocumentTask</name>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="74"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="75"/>
         <source>No DASSourceRegistry</source>
         <translation>No DASSourceRegistry</translation>
     </message>
     <message>
-        <location filename="../src/LoadDASDocumentTests.cpp" line="79"/>
+        <location filename="../src/LoadDASDocumentTests.cpp" line="80"/>
         <source>Cannot find das source by DB name given: %1</source>
         <translation>Cannot find das source by DB name given: %1</translation>
     </message>

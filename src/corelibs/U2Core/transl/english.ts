@@ -233,12 +233,12 @@
         <translation>Unsupported object type: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="389"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="405"/>
         <source>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</source>
         <translation>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="544"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="560"/>
         <source>Invalid number of symbols: %1</source>
         <translation>Invalid number of symbols: %1</translation>
     </message>
@@ -692,6 +692,16 @@
         <source>Unexpected feature operator value detected.</source>
         <translation>Unexpected feature operator value detected.</translation>
     </message>
+    <message>
+        <location filename="../src/util/MAlignmentImporter.cpp" line="45"/>
+        <source>Unexpected number of sequences in a multiple alignment</source>
+        <translation>Unexpected number of sequences in a multiple alignment</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentImporter.cpp" line="82"/>
+        <source>Unexpected error on MSA rows import</source>
+        <translation>Unexpected error on MSA rows import</translation>
+    </message>
 </context>
 <context>
     <name>U2::AbstractProjectFilterTask</name>
@@ -736,12 +746,12 @@
 <context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="52"/>
         <source>Object is empty.</source>
         <translation>Object is empty.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="56"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="57"/>
         <source>Object is locked for modifications.</source>
         <translation>Object is locked for modifications.</translation>
     </message>
@@ -759,22 +769,22 @@
 <context>
     <name>U2::AppResourcePool</name>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="54"/>
+        <location filename="../src/globals/AppResources.cpp" line="56"/>
         <source>Threads</source>
         <translation>Threads</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="65"/>
+        <location filename="../src/globals/AppResources.cpp" line="67"/>
         <source>Memory</source>
         <translation>Memory</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="65"/>
+        <location filename="../src/globals/AppResources.cpp" line="67"/>
         <source>Mb</source>
         <translation>Mb</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="68"/>
+        <location filename="../src/globals/AppResources.cpp" line="70"/>
         <source>Project</source>
         <translation>Project</translation>
     </message>
@@ -1013,17 +1023,18 @@ The session database file is removed after closing of UGENE.</translation>
     <message>
         <location filename="../src/tasks/CreateAnnotationTask.cpp" line="37"/>
         <location filename="../src/tasks/CreateAnnotationTask.cpp" line="47"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="59"/>
         <source>Create annotations</source>
         <translation>Create annotations</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="40"/>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="58"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="68"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="74"/>
         <source>Annotation table has been removed unexpectedly</source>
         <translation>Annotation table has been removed unexpectedly</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="92"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="110"/>
         <source>Annotation object &apos;%1&apos; not found in active project: %2</source>
         <translation>Annotation object &apos;%1&apos; not found in active project: %2</translation>
     </message>
@@ -1529,12 +1540,12 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::DocumentUtils</name>
     <message>
-        <location filename="../src/models/DocumentUtils.cpp" line="259"/>
+        <location filename="../src/models/DocumentUtils.cpp" line="260"/>
         <source>Format does not support writing of alignments</source>
         <translation>Format does not support writing of alignments</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentUtils.cpp" line="270"/>
+        <location filename="../src/models/DocumentUtils.cpp" line="271"/>
         <source>File content was merged</source>
         <translation>File content was merged</translation>
     </message>
@@ -1547,22 +1558,22 @@ these match a protein, A between residue 3 and 125 and B between residue
         <translation> tool</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="111"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="114"/>
         <source>Can not run %1 tool.</source>
         <translation>Can not run %1 tool.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="113"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="116"/>
         <source>Can not run %1 tool. May be tool path &apos;%2&apos; not valid?</source>
         <translation>Can not run %1 tool. May be tool path &apos;%2&apos; not valid?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="128"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="131"/>
         <source>%1 tool exited with code %2</source>
         <translation>%1 tool exited with code %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="130"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="133"/>
         <source>Tool %1 finished successfully</source>
         <translation>Tool %1 finished successfully</translation>
     </message>
@@ -1570,47 +1581,47 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::ExternalToolSupportUtils</name>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="324"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="327"/>
         <source>Can not remove temporary directory: path is empty.</source>
         <translation>Can not remove temporary directory: path is empty.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="330"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="333"/>
         <source>Can not remove files from temporary directory.</source>
         <translation>Can not remove files from temporary directory.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="335"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="338"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Can not remove directory for temporary files.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="348"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="351"/>
         <source>Can not create directory for temporary files: %1</source>
         <translation>Can not create directory for temporary files: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="379"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="382"/>
         <source>Can&apos;t run an executable file &quot;%1&quot; as it is. Try to run it as a cmd line command: &quot;%2&quot;</source>
         <translation>Can&apos;t run an executable file &quot;%1&quot; as it is. Try to run it as a cmd line command: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="395"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="398"/>
         <source>Undefined tool: &apos;%1&apos;</source>
         <translation>Undefined tool: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="399"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="402"/>
         <source>Path for &apos;%1&apos; tool not set</source>
         <translation>Path for &apos;%1&apos; tool not set</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="440"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="443"/>
         <source>Working directory is &quot;%1&quot;</source>
         <translation>Working directory is &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="449"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="452"/>
         <source>Launching %1 tool: %2 %3</source>
         <translation>Launching %1 tool: %2 %3</translation>
     </message>
@@ -2253,28 +2264,28 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="178"/>
+        <location filename="../src/util/MSAUtils.cpp" line="181"/>
         <source>Alphabets of the alignment and the sequence cannot be derived</source>
         <translation>Alphabets of the alignment and the sequence cannot be derived</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="186"/>
+        <location filename="../src/util/MSAUtils.cpp" line="189"/>
         <source>Sequences have different alphabets.</source>
         <translation>Sequences have different alphabets.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="214"/>
-        <location filename="../src/util/MSAUtils.cpp" line="219"/>
+        <location filename="../src/util/MSAUtils.cpp" line="217"/>
+        <location filename="../src/util/MSAUtils.cpp" line="222"/>
         <source>Alignment is empty!</source>
         <translation>Alignment is empty!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="226"/>
+        <location filename="../src/util/MSAUtils.cpp" line="229"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Sequences in alignment have different sizes!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="313"/>
+        <location filename="../src/util/MSAUtils.cpp" line="338"/>
         <source>Can&apos;t find a row in an alignment!</source>
         <translation>Can&apos;t find a row in an alignment!</translation>
     </message>
@@ -2330,28 +2341,27 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::MsaDbiUtils</name>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="783"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="756"/>
         <source>Can&apos;t rename an alignment to an empty name!</source>
         <translation>Can&apos;t rename an alignment to an empty name!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="812"/>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="819"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="785"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="792"/>
         <source>Failed to insert gaps into an alignment!</source>
         <translation>Failed to insert gaps into an alignment!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="956"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="930"/>
         <source>Failed to crop an alignment!</source>
         <translation>Failed to crop an alignment!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1060"/>
         <source>Failed to add a row to an alignment!</source>
-        <translation>Failed to add a row to an alignment!</translation>
+        <translation type="obsolete">Failed to add a row to an alignment!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1090"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1055"/>
         <source>Can&apos;t rename a row to an empty name!</source>
         <translation>Can&apos;t rename a row to an empty name!</translation>
     </message>
@@ -2359,22 +2369,22 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="353"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="349"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>Relocate document %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="356"/>
         <source>No active project found</source>
         <translation>No active project found</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="364"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
         <source>Project is locked</source>
         <translation>Project is locked</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="373"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="369"/>
         <source>Only unloaded objects can be relocated</source>
         <translation>Only unloaded objects can be relocated</translation>
     </message>
@@ -2460,22 +2470,22 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="313"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="309"/>
         <source>Save a copy %1</source>
         <translation>Save a copy %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="331"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="327"/>
         <source>No active project found</source>
         <translation>No active project found</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="328"/>
         <source>Project is locked</source>
         <translation>Project is locked</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="336"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
         <source>Document is already added to the project %1</source>
         <translation>Document is already added to the project %1</translation>
     </message>
@@ -2491,50 +2501,50 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::SaveDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="61"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="78"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="55"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="72"/>
         <source>Save document</source>
         <translation>Save document</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="71"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="84"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="65"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="78"/>
         <source>No permission to write to &apos;%1&apos; file.</source>
         <translation>No permission to write to &apos;%1&apos; file.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="106"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="100"/>
         <source>Saving document %1
 </source>
         <translation>Saving document %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="127"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="121"/>
         <source>Can&apos;t create tmp file</source>
         <translation>Can&apos;t create tmp file</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="132"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="126"/>
         <source>Can&apos;t copy file to tmp file while trying to save document by append</source>
         <translation>Can&apos;t copy file to tmp file while trying to save document by append</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="149"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="143"/>
         <source>Can&apos;t remove original file to place tmp file instead</source>
         <translation>Can&apos;t remove original file to place tmp file instead</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="152"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="146"/>
         <source>Can&apos;t rename saved tmp file to original file</source>
         <translation>Can&apos;t rename saved tmp file to original file</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>Document &apos;%1&apos; can&apos;t be unloaded: </source>
         <translation>Document &apos;%1&apos; can&apos;t be unloaded: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>unexpected error</source>
         <translation>unexpected error</translation>
     </message>
@@ -2542,34 +2552,34 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::SaveMultipleDocuments</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="208"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="202"/>
         <source>Save multiple documents</source>
         <translation>Save multiple documents</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="220"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
         <source>Question?</source>
         <translation>Question?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="220"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
         <source>Save document: %1</source>
         <translation>Save document: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="271"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="265"/>
         <source>You have no permission to write to &apos;%1&apos; file.
 UGENE contains unsaved modifications.</source>
         <translation>You have no permission to write to &apos;%1&apos; file.
 UGENE contains unsaved modifications.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="272"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="266"/>
         <source>Do you want to save changes to another file?</source>
         <translation>Do you want to save changes to another file?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="291"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="287"/>
         <source>Save as</source>
         <translation>Save as</translation>
     </message>
@@ -2772,12 +2782,12 @@ UGENE contains unsaved modifications.</translation>
 <context>
     <name>U2::U2SequenceObject</name>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="194"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="200"/>
         <source>Internal error, sequence alphabet id &apos;%1&apos; is invalid</source>
         <translation>Internal error, sequence alphabet id &apos;%1&apos; is invalid</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="203"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="209"/>
         <source>Modified sequence &amp; region have different alphabet</source>
         <translation>Modified sequence &amp; region have different alphabet</translation>
     </message>
@@ -2785,19 +2795,19 @@ UGENE contains unsaved modifications.</translation>
 <context>
     <name>U2::U2SequenceUtils</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="54"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="55"/>
         <source>Alphabet is not found!</source>
         <translation>Alphabet is not found!</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="97"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="110"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="98"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="111"/>
         <source>Invalid sequence DBI</source>
         <translation>Invalid sequence DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="354"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="533"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="370"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="549"/>
         <source>Failed to derive sequence alphabet!</source>
         <translation>Failed to derive sequence alphabet!</translation>
     </message>
@@ -2857,7 +2867,7 @@ UGENE contains unsaved modifications.</translation>
 <context>
     <name>U2SequenceImporter</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="276"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="292"/>
         <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
         <translation>Sequence was not imported. Probably, this is because the sequence is empty.</translation>
     </message>

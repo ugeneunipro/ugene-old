@@ -47,227 +47,227 @@
         <translation>Ограничения не могут быть размещены между элементами той же группы</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="172"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="212"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="234"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="255"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="268"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="307"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="333"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="349"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="365"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="383"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="399"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="423"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="478"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="496"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="548"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="584"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="612"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="649"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="675"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="691"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="707"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="723"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="779"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="809"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="848"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="874"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="901"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="928"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="955"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="982"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="175"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="215"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="237"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="258"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="271"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="310"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="336"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="352"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="368"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="386"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="402"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="426"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="481"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="499"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="551"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="587"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="615"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="652"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="678"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="694"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="710"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="726"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="782"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="812"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="851"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="877"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="904"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="931"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="958"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="985"/>
         <source>Incorrect number of arguments</source>
         <translation>Некорректное число аргументов</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="192"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="219"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="239"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="273"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="312"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="338"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="354"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="388"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="404"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="445"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="483"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="565"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="590"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="599"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="618"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="728"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="195"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="222"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="242"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="276"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="315"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="341"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="357"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="391"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="407"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="448"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="486"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="568"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="593"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="602"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="621"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="731"/>
         <source>Empty or invalid sequence</source>
         <translation>Пустая или некорректная последовательность</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="242"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="277"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="245"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="280"/>
         <source>Alphabet must be nucleotide</source>
         <translation>Алфавит должен быть нуклеотидным</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="285"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="288"/>
         <source>Offset must be from interval [0,2]</source>
         <translation>Смещение должно быть в интервале [0,2]</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="292"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="295"/>
         <source>Translation table is empty</source>
         <translation>Таблица трансляций пуста</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="182"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="318"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="435"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="508"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="661"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="859"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="185"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="321"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="438"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="511"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="664"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="862"/>
         <source>Second argument must be a number</source>
         <translation>Второй аргумент должен быть числовым</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="195"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="198"/>
         <source>Subsequence&apos;s start offset is out of range</source>
         <translation>Начало смещения подпоследовательности выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="198"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="201"/>
         <source>Subsequence&apos;s end offset is out of range</source>
         <translation>Конец смещения подпоследовательности выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="201"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="204"/>
         <source>Invalid subsequence region</source>
         <translation>Некорректный регион последовательности</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="322"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="325"/>
         <source>Position is out of range</source>
         <translation>Позиция выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="501"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="555"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="654"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="680"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="696"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="712"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="504"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="558"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="657"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="683"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="699"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="715"/>
         <source>Invalid alignment</source>
         <translation>Некорректное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="511"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="665"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="514"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="668"/>
         <source>Row is out of range</source>
         <translation>Строка выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="528"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="531"/>
         <source>Fourth argument must be a number</source>
         <translation>Четвертый аргумент должен быть числовым</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="532"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="535"/>
         <source>Offset is out of range</source>
         <translation>Смещение выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="535"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="538"/>
         <source>Length is out of range</source>
         <translation>Длина выходит за рамки допустимого региона</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="602"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="605"/>
         <source>Alphabets of each sequence must be the same</source>
         <translation>Алфавиты всех последовательностей должны быть одинаковыми</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="628"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="631"/>
         <source>Alphabets don&apos;t match</source>
         <translation>Алфавиты не совпадают</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="883"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="886"/>
         <source>Empty annotation name</source>
         <translation>Имя аннотации пусто</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="906"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="933"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="960"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="909"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="936"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="963"/>
         <source>Invalid file path</source>
         <translation>Некорректный путь до файла</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="911"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="938"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="914"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="941"/>
         <source>No data to write</source>
         <translation>Нет данных для записи</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="916"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="943"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="965"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="919"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="946"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="968"/>
         <source>Cannot open the file by given path</source>
         <translation>Невозможно открыть файл по указанному пути</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="987"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="990"/>
         <source>Empty file path</source>
         <translation>Empty file path</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="992"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="995"/>
         <source>Can&apos;t detect the sequence file format: </source>
         <translation>Can&apos;t detect the sequence file format: </translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="1008"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="1011"/>
         <source>There are no sequences in the file: </source>
         <translation>There are no sequences in the file: </translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="188"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="441"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="522"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="634"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="191"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="444"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="525"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="637"/>
         <source>Third argument must be a number</source>
         <translation>Третий аргумент должен быть числовым</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="733"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="784"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="814"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="853"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="879"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="736"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="787"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="817"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="856"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="882"/>
         <source>Invalid annotations</source>
         <translation>Некорректные аннотации</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="737"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="740"/>
         <source>Empty name</source>
         <translation>Имя пусто</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="788"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="818"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="791"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="821"/>
         <source>Empty qualifier name</source>
         <translation>Имя квалификатора пусто</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="792"/>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="822"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="795"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="825"/>
         <source>Empty qualifier value</source>
         <translation>Значение квалификатора пусто</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="828"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="831"/>
         <source>forth argument must be a string</source>
         <translation>Четвертый аргумент должен быть строкой</translation>
     </message>
     <message>
-        <location filename="../src/library/script/ScriptLibrary.cpp" line="863"/>
+        <location filename="../src/library/script/ScriptLibrary.cpp" line="866"/>
         <source>Index is out of range</source>
         <translation>Индекс выходит за рамки допустимого региона</translation>
     </message>
@@ -1389,32 +1389,32 @@
 <context>
     <name>U2::RunCmdlineWorkflowTask</name>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="538"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="536"/>
         <source>Workflow process</source>
         <translation>Процесс схемы</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="588"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="586"/>
         <source>Cannot start process &apos;%1&apos;</source>
         <translation>Cannot start process &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="595"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="593"/>
         <source>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</source>
         <translation>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="599"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="597"/>
         <source>The process &apos;%1&apos; crashed some time after starting successfully</source>
         <translation>The process &apos;%1&apos; crashed some time after starting successfully</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="603"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="601"/>
         <source>Error occurred while reading from or writing to channel</source>
         <translation>Error occurred while reading from or writing to channel</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="606"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="604"/>
         <source>Unknown error occurred</source>
         <translation>Unknown error occurred</translation>
     </message>
@@ -1472,17 +1472,17 @@
         <translation>Object &apos;%1&apos; is locked</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="204"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="206"/>
         <source>Result document not found!</source>
         <translation>Result document not found!</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="205"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="207"/>
         <source>Result document content not matched! %1</source>
         <translation>Result document content not matched! %1</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="207"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="209"/>
         <source>Result document contains no MSA! %1</source>
         <translation>Result document contains no MSA! %1</translation>
     </message>
@@ -1902,42 +1902,42 @@
 <context>
     <name>U2::WorkflowIterationRunTask</name>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="202"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="200"/>
         <source>Workflow run</source>
         <translation>Запуск схемы</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="218"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="216"/>
         <source>Unknown domain %1</source>
         <translation>Неизвестное имя среды исполнения: %1</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="268"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="266"/>
         <source>Failed to preprocess the workflow. Some of included files are broken</source>
         <translation>Не удалось предварительно обработать схему. Некоторые из включенных файлов некорректны</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="276"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="274"/>
         <source>Failed to create worker %1 %2 in domain %3</source>
         <translation>Не удалось создать процесс %1 %2 для среды исполнения %3</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="284"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="282"/>
         <source>Failed to create connection %1 %2 in domain %3</source>
         <translation>Не удалось создать соединение процессов %1 %2 для среды исполнения %3</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="297"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="295"/>
         <source>Failed to create a workflow context</source>
         <translation>Невозможно создать контекст схемы</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="385"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="383"/>
         <source>No workers are ready, while not all workers are done. Workflow is broken?</source>
         <translation>Все процессы находятся в состоянии &quot;не готовы&quot; (обработали входные данные), но не все процессы находятся в состоянии &quot;завершил исполнение&quot;. Пожалуйста, проверьте схему?</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="303"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="301"/>
         <source>Failed to create scheduler in domain %1</source>
         <translation>Не удалось создать планировщик для среды исполнения %1</translation>
     </message>
@@ -1953,7 +1953,7 @@
 <context>
     <name>U2::WorkflowRunTask</name>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="97"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="95"/>
         <source>Execute workflow</source>
         <translation>Выполнение схемы</translation>
     </message>

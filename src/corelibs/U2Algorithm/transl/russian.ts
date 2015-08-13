@@ -92,47 +92,47 @@
 <context>
     <name>U2::AlignInAminoFormTask</name>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="97"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="99"/>
         <source>Align in amino form</source>
         <translation>Выравнивание в амино форму</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="107"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="109"/>
         <source>Invalid MSA object detected</source>
         <translation>Обнаружен некорректный MSA объект</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="108"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="110"/>
         <source>AlignInAminoFormTask: Input alphabet is not nucleic!</source>
         <translation>AlignInAminoFormTask: Входной алфавит не является нуклеотидным!</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="109"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="111"/>
         <source>AlignInAminoFormTask: Input alignment is empty!</source>
         <translation>AlignInAminoFormTask: Входное выравнивание пустое!</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="116"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="118"/>
         <source>Invalid applications settings detected</source>
         <translation>Обнаружены некорректные настройки приложений</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="119"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="121"/>
         <source>Invalid users applications settings detected</source>
         <translation>Обнаружены некорректные настройки приложений</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="126"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="128"/>
         <source>Invalid MSA document detected</source>
         <translation>Обнаружен некорректный MSA документ</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="147"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="148"/>
         <source>NULL clonedObj in AlignInAminoFormTask::prepare!</source>
         <translation>NULL clonedObj in AlignInAminoFormTask::prepare!</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="157"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="158"/>
         <source>Can not find row %1 in original alignment.</source>
         <translation>Строка %1 не может быть найдена в исходном выравнивании.</translation>
     </message>
@@ -181,7 +181,7 @@
 <context>
     <name>U2::BestPositionFindTask</name>
     <message>
-        <location filename="../src/msa_alignment/SimpleAddingToAlignment.cpp" line="102"/>
+        <location filename="../src/msa_alignment/SimpleAddingToAlignment.cpp" line="105"/>
         <source>Best position find task</source>
         <translation>Best position find task</translation>
     </message>
@@ -189,12 +189,12 @@
 <context>
     <name>U2::CreateSubalignmentTask</name>
     <message>
-        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="40"/>
+        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="55"/>
         <source>Create sub-alignment: %1</source>
         <translation>Создание участка выравнивания: %1</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="75"/>
+        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="89"/>
         <source>Document is locked: %1</source>
         <translation>Документ заблокирован: %1</translation>
     </message>
@@ -242,6 +242,72 @@
         <location filename="../src/misc/FindAlgorithmTask.cpp" line="128"/>
         <source>Detecting format error for file %1</source>
         <translation>Ошибка распознавания формата для файла %1</translation>
+    </message>
+</context>
+<context>
+    <name>U2::MSAColorSchemeRegistry</name>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1003"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1018"/>
+        <source>No colors</source>
+        <translation>Без цвета</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1011"/>
+        <source>Jalview</source>
+        <translation>Раскраска Jalview</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1013"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1052"/>
+        <source>Percentage Identity</source>
+        <translation>По процентному соотношению</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1014"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1053"/>
+        <source>Percentage Identity (gray)</source>
+        <translation>По процентному соотношению (серый)</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1026"/>
+        <source>Zappo</source>
+        <translation>Zappo</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1030"/>
+        <source>Tailor</source>
+        <translation>Tailor</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1034"/>
+        <source>Hydrophobicity</source>
+        <translation>Гидрофобность</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1038"/>
+        <source>Helix propensity</source>
+        <translation>Склонность к спиральности</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1042"/>
+        <source>Strand propensity</source>
+        <translation>Склонность к линейности</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1046"/>
+        <source>Turn propensity</source>
+        <translation>Склонность к сворачиванию</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1050"/>
+        <source>Buried index</source>
+        <translation>Индекс</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1055"/>
+        <source>Clustal X</source>
+        <translation>Clustal X</translation>
     </message>
 </context>
 <context>
@@ -356,6 +422,49 @@ For every column selects the most rare symbol in the whole alignment with percen
     </message>
 </context>
 <context>
+    <name>U2::MSAHighlightingSchemeRegistry</name>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1062"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1063"/>
+        <source>No highlighting</source>
+        <translation>Без подсветки</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1065"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1066"/>
+        <source>Agreements</source>
+        <translation>Соответствия</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1068"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1069"/>
+        <source>Disagreements</source>
+        <translation>Различия</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1071"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1072"/>
+        <source>Gaps</source>
+        <translation>Пробелы</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1074"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1075"/>
+        <source>Conservation level</source>
+        <translation>Уровень сохранения</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1077"/>
+        <source>Transitions</source>
+        <translation>Транзиции</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1078"/>
+        <source>Transversions</source>
+        <translation>Трансверсии</translation>
+    </message>
+</context>
+<context>
     <name>U2::MolecularSurfaceCalcTask</name>
     <message>
         <location filename="../src/molecular_geometry/MolecularSurface.cpp" line="122"/>
@@ -421,7 +530,7 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::PairwiseAlignmentTask</name>
     <message>
-        <location filename="../src/pairwise_alignment/PairwiseAlignmentTask.cpp" line="47"/>
+        <location filename="../src/pairwise_alignment/PairwiseAlignmentTask.cpp" line="48"/>
         <source>Pairwise alignment task</source>
         <translation>Pairwise alignment task</translation>
     </message>
@@ -503,57 +612,57 @@ For every column selects the most rare symbol in the whole alignment with percen
     </message>
     <message>
         <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="222"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="310"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="308"/>
         <source>Failed to create an alignment.</source>
         <translation>Неудачная попытка создания выравнивания.</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="253"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="332"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="251"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="328"/>
         <source>Smith-Waterman pairwise alignment: no results</source>
         <translation>Парное выравнивание Smith-Waterman: нет результатов</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="260"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="338"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="258"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="334"/>
         <source>Sequences aren&apos;t stored in the source msa dbi</source>
         <translation>Последовательности не хранятся в источнике msa dbi</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="274"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="272"/>
         <source>SmithWatermanReportCallback failed to create new MA document.</source>
         <translation>SmithWatermanReportCallback не может создать новый MA документ.</translation>
     </message>
     <message>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="278"/>
         <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="280"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="282"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="348"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="350"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="344"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="346"/>
         <source>Failed to get the sequence object.</source>
         <translation>Неудачная попытка получения объекта последовательности.</translation>
     </message>
     <message>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="294"/>
         <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="296"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="298"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="364"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="367"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="360"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="363"/>
         <source>Failed to get the sequence data.</source>
         <translation>Неудачная попытка получения данных последовательности.</translation>
     </message>
     <message>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="303"/>
         <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="305"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="307"/>
         <source>Failed to add row to result msa.</source>
         <translation>Неудачная попытка добавления строки в результирующее выравнивание.</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="376"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="372"/>
         <source>Failed to get msa from dbi</source>
         <translation>Неудачная попытка получения msa из dbi</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="397"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="399"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="393"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="395"/>
         <source>Failed to update row gap model</source>
         <translation>Неудачная попытка обновить модель пропусков строк</translation>
     </message>
@@ -638,30 +747,30 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::TranslateMSA2AminoTask</name>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="46"/>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="59"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="48"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="61"/>
         <source>Translate nucleic alignment to amino</source>
         <translation>Трансляция нуклеотидного выравнивания в амино</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="48"/>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="61"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="50"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="63"/>
         <source>Invalid MSA object detected</source>
         <translation>Обнаружен некорректный MSA объект</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="49"/>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="62"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="51"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="64"/>
         <source>Multiple alignment already has amino-acid alphabet</source>
         <translation>Выравнивание уже имеет аминокислотный алфавит</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="53"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="55"/>
         <source>Unable to find suitable translation for %1</source>
         <translation>Невозможно найти подходящую трансляцию для %1</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="69"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="71"/>
         <source>Invalid translation object</source>
         <translation>Некорректный объект трансляции</translation>
     </message>

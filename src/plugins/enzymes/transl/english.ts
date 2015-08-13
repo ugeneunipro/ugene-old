@@ -575,12 +575,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="52"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="53"/>
         <source>The restrictions sites are being updated. Please wait</source>
         <translation>The restrictions sites are being updated. Please wait</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="53"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="54"/>
         <source>Hint: there are no available enzymes. Use &quot;Analyze-&gt;Find Restrictions Sites&quot; feature to find them.</source>
         <translation>Hint: there are no available enzymes. Use &quot;Analyze-&gt;Find Restrictions Sites&quot; feature to find them.</translation>
     </message>
@@ -588,59 +588,59 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ConstructMoleculeDialog</name>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="89"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="86"/>
         <source>No fragments are selected!
  Please construct molecule from available fragments.</source>
         <translation>No fragments are selected!
  Please construct molecule from available fragments.</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="117"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="114"/>
         <source>Set new molecule file name</source>
         <translation>Set new molecule file name</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="117"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="114"/>
         <source>Genbank (*.gb )</source>
         <translation>Genbank (*.gb )</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="206"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="203"/>
         <source>Blunt</source>
         <translation>Blunt</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="207"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="204"/>
         <source>Fwd</source>
         <translation>Fwd</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="208"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="205"/>
         <source>Rev</source>
         <translation>Rev</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="225"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="222"/>
         <source>Left end</source>
         <translation>Left end</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="234"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="231"/>
         <source>Right end</source>
         <translation>Right end</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="236"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="233"/>
         <source>yes</source>
         <translation>yes</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="236"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="233"/>
         <source>no</source>
         <translation>no</translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="237"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="234"/>
         <source>Make fragment reverse complement</source>
         <translation>Make fragment reverse complement</translation>
     </message>
@@ -679,37 +679,37 @@ Choose another region.</translation>
 <context>
     <name>U2::DigestSequenceDialog</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="122"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="123"/>
         <source>No enzymes are selected! Please select enzymes.</source>
         <translation>No enzymes are selected! Please select enzymes.</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="128"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="129"/>
         <source>Cannot load enzymes library</source>
         <translation>Cannot load enzymes library</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="146"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="147"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="146"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="147"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="242"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="243"/>
         <source> : %1 cut(s)</source>
         <translation> : %1 cut(s)</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="326"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="327"/>
         <source>Auto-annotations update task is NULL.</source>
         <translation>Auto-annotations update task is NULL.</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="348"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="349"/>
         <source>Select annotations</source>
         <translation>Select annotations</translation>
     </message>
@@ -760,42 +760,42 @@ Choose another region.</translation>
 <context>
     <name>U2::EditFragmentDialog</name>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="133"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="137"/>
         <source>Left overhang is empty. Please enter the overhang or set blunt left end.</source>
         <translation>Left overhang is empty. Please enter the overhang or set blunt left end.</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="137"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="141"/>
         <source>Invalid left overhang: unsupported alphabet!</source>
         <translation>Invalid left overhang: unsupported alphabet!</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="157"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="161"/>
         <source>Right overhang is empty. Please enter the overhang or set blunt right end.</source>
         <translation>Right overhang is empty. Please enter the overhang or set blunt right end.</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="161"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="165"/>
         <source>Invalid right overhang: unsupported alphabet!</source>
         <translation>Invalid right overhang: unsupported alphabet!</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="182"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="186"/>
         <source> (INVERTED)</source>
         <translation> (INVERTED)</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="184"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="188"/>
         <source>Fragment of %1%2&lt;br&gt;</source>
         <translation>Fragment of %1%2&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="199"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="203"/>
         <source>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt; &lt;/tr&gt;</source>
         <translation>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt; &lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="205"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="209"/>
         <source>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt; &lt;/tr&gt;</source>
         <translation>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt; &lt;/tr&gt;</translation>
     </message>
@@ -803,17 +803,17 @@ Choose another region.</translation>
 <context>
     <name>U2::EnzymesADVContext</name>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="202"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="198"/>
         <source>Find restriction sites...</source>
         <translation>Find restriction sites...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="207"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="203"/>
         <source>Create PCR product...</source>
         <translation>Create PCR product...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="235"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="231"/>
         <source>Cloning</source>
         <translation>Cloning</translation>
     </message>
@@ -869,60 +869,60 @@ Choose another region.</translation>
 <context>
     <name>U2::EnzymesPlugin</name>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="69"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="65"/>
         <source>Finds and annotates restriction sites on a DNA sequence.</source>
         <translation>Finds and annotates restriction sites on a DNA sequence.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="110"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="106"/>
         <source>Create Fragment...</source>
         <translation>Create Fragment...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="106"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="102"/>
         <source>Digest into fragments...</source>
         <translation>Digest into fragments...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="108"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="104"/>
         <source>Construct molecule...</source>
         <translation>Construct molecule...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="126"/>
-        <location filename="../src/EnzymesPlugin.cpp" line="133"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="122"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="129"/>
         <source>There is no active sequence object.
 To start partition open sequence document.</source>
         <translation>There is no active sequence object.
 To start partition open sequence document.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="140"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="136"/>
         <source>Can not digest into fragments non-nucleic sequence.</source>
         <translation>Can not digest into fragments non-nucleic sequence.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="154"/>
-        <location filename="../src/EnzymesPlugin.cpp" line="161"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="150"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="157"/>
         <source>There is no active sequence object.
 To create fragment open sequence document.</source>
         <translation>There is no active sequence object.
 To create fragment open sequence document.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="170"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="166"/>
         <source>The sequence doesn&apos;t have nucleic alphabet, it can not be used in cloning.</source>
         <translation>The sequence doesn&apos;t have nucleic alphabet, it can not be used in cloning.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="182"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="178"/>
         <source>There is no active project.
 To start ligation create a project or open an existing.</source>
         <translation>There is no active project.
 To start ligation create a project or open an existing.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="69"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="65"/>
         <source>Restriction analysis</source>
         <translation>Restriction analysis</translation>
     </message>
@@ -1033,7 +1033,7 @@ To start ligation create a project or open an existing.</translation>
 <context>
     <name>U2::FindEnzymesAutoAnnotationUpdater</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="321"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="319"/>
         <source>Restriction Sites</source>
         <translation>Restriction Sites</translation>
     </message>
@@ -1064,18 +1064,18 @@ To start ligation create a project or open an existing.</translation>
 <context>
     <name>U2::FindEnzymesTask</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="129"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="126"/>
         <source>Find Enzymes</source>
         <translation>Find Enzymes</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="145"/>
-        <location filename="../src/FindEnzymesTask.cpp" line="271"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="142"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="268"/>
         <source>Number of results exceed %1, stopping</source>
         <translation>Number of results exceed %1, stopping</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="223"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="220"/>
         <source>Found %1 restriction sites</source>
         <translation>Number of results exceed %1, stopping</translation>
     </message>
@@ -1106,27 +1106,27 @@ To start ligation create a project or open an existing.</translation>
 <context>
     <name>U2::FindSingleEnzymeTask</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="238"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="235"/>
         <source>Find enzyme &apos;%1&apos;</source>
         <translation>Find enzyme &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="261"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="258"/>
         <source>Find enzyme &apos;%1&apos; parallel</source>
         <translation>Find enzyme &apos;%1&apos; parallel</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="287"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="284"/>
         <source>No enzyme alphabet</source>
         <translation>No enzyme alphabet</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="289"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="286"/>
         <source>Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..</source>
         <translation>Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..</translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="294"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="291"/>
         <source>Failed to get sequence alphabet</source>
         <translation>Failed to get sequence alphabet</translation>
     </message>
@@ -1149,7 +1149,7 @@ To start ligation create a project or open an existing.</translation>
         <translation>Unknown DNA alphabet in fragment %1 of %2</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="487"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="488"/>
         <source>Add constructed molecule</source>
         <translation>Add constructed molecule</translation>
     </message>

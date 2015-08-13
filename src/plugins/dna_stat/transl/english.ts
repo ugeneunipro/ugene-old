@@ -135,7 +135,7 @@
 <context>
     <name>U2::DNAStatMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="77"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="75"/>
         <source>Generate grid profile</source>
         <translation>Generate grid profile</translation>
     </message>
@@ -229,12 +229,12 @@
 <context>
     <name>U2::DNAStatPlugin</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="54"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="52"/>
         <source>DNA Statistics</source>
         <translation>DNA Statistics</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="54"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="52"/>
         <source>Provides statistical reports for sequences and alignments</source>
         <translation>Provides statistical reports for sequences and alignments</translation>
     </message>
@@ -328,7 +328,7 @@
 <context>
     <name>U2::DNAViewStatsContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="164"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="162"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
@@ -336,7 +336,7 @@
 <context>
     <name>U2::DistanceMatrixMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="114"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="112"/>
         <source>Generate distance matrix</source>
         <translation>Generate distance matrix</translation>
     </message>

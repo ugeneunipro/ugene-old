@@ -241,22 +241,22 @@
 <context>
     <name>U2::RemoteServiceSettingsUI</name>
     <message>
-        <location filename="../src/RemoteServiceSettingsUI.cpp" line="85"/>
+        <location filename="../src/RemoteServiceSettingsUI.cpp" line="83"/>
         <source>Url is empty!</source>
         <translation>Путь пуст!</translation>
     </message>
     <message>
-        <location filename="../src/RemoteServiceSettingsUI.cpp" line="87"/>
+        <location filename="../src/RemoteServiceSettingsUI.cpp" line="85"/>
         <source>Unknown URL schema. The url must start from http(s)://</source>
         <translation>Unknown URL schema. The url must start from http(s)://</translation>
     </message>
     <message>
-        <location filename="../src/RemoteServiceSettingsUI.cpp" line="92"/>
+        <location filename="../src/RemoteServiceSettingsUI.cpp" line="90"/>
         <source>User name is not valid!</source>
         <translation>Имя пользователя неверно!</translation>
     </message>
     <message>
-        <location filename="../src/RemoteServiceSettingsUI.cpp" line="95"/>
+        <location filename="../src/RemoteServiceSettingsUI.cpp" line="93"/>
         <source>Password is empty!</source>
         <translation>Пароль пуст!</translation>
     </message>

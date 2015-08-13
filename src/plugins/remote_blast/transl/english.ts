@@ -71,7 +71,7 @@
         <translation>Cannot evaluate the location</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="105"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="106"/>
         <source>Incorrect list of Blastn databases</source>
         <translation>Incorrect list of Blastn databases</translation>
     </message>
@@ -523,17 +523,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::RemoteBLASTPrompter</name>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="206"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="207"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="207"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="208"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation> from &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="209"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="210"/>
         <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
@@ -541,158 +541,158 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::RemoteBLASTWorker</name>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="53"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="54"/>
         <source>Input sequence</source>
         <translation>Input sequence</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="54"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="55"/>
         <source>The sequence to search the annotations for</source>
         <translation>The sequence to search the annotations for</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="55"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="56"/>
         <source>Annotations</source>
         <translation>Annotations</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="56"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="57"/>
         <source>Found annotations</source>
         <translation>Found annotations</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="65"/>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="67"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="66"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="68"/>
         <source>Database</source>
         <translation>Database</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="69"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="70"/>
         <source>Expected value</source>
         <translation>Expected value</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="70"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="71"/>
         <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
         <translation>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="75"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="76"/>
         <source>Short sequence</source>
         <translation>Short sequence</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="76"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="77"/>
         <source>Optimize search for short sequences.</source>
         <translation>Optimize search for short sequences.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="79"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="80"/>
         <source>Annotate as</source>
         <translation>Annotate as</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="66"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="67"/>
         <source>Select the database to search through. Available databases are blastn, blastp and cdd.</source>
         <translation>Select the database to search through. Available databases are blastn, blastp and cdd.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="68"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="69"/>
         <source>Select the database to search through.</source>
         <translation>Select the database to search through.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="71"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
         <source>Results limit</source>
         <translation>Results limit</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
         <source>The maximum number of results.</source>
         <translation>The maximum number of results.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
         <source>Megablast</source>
         <translation>Megablast</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="75"/>
         <source>Use megablast.</source>
         <translation>Use megablast.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="77"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="78"/>
         <source>Entrez query</source>
         <translation>Entrez query</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="78"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="79"/>
         <source>Enter an Entrez query to limit search.</source>
         <translation>Enter an Entrez query to limit search.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="80"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="81"/>
         <source>Name for annotations.</source>
         <translation>Name for annotations.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="81"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="82"/>
         <source>BLAST output</source>
         <translation>BLAST output</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="82"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="83"/>
         <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
         <translation>Location of BLAST output file. This parameter insignificant for cdd search.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="84"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="85"/>
         <source>Gap costs</source>
         <translation>Gap costs</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="85"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="86"/>
         <source>Cost to create and extend a gap in an alignment.</source>
         <translation>Cost to create and extend a gap in an alignment.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="86"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="87"/>
         <source>Match scores</source>
         <translation>Match scores</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="87"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="88"/>
         <source>Reward and penalty for matching and mismatching bases.</source>
         <translation>Reward and penalty for matching and mismatching bases.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="140"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="141"/>
         <source>Remote BLAST</source>
         <translation>Remote BLAST</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="141"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="142"/>
         <source>Finds annotations for DNA sequence in remote database.</source>
         <translation>Finds annotations for DNA sequence in remote database.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="221"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="222"/>
         <source>Annotations name is empty, default name used</source>
         <translation>Annotations name is empty, default name used</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="240"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="241"/>
         <source>Incorrect value for the &apos;e-value&apos; parameter, default value passed to the workflow</source>
         <translation>Incorrect value for the &apos;e-value&apos; parameter, default value passed to the workflow</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="297"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="299"/>
         <source>Selected nucleotide database</source>
         <translation>Selected nucleotide database</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="303"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="305"/>
         <source>Selected amino acid database</source>
         <translation>Selected amino acid database</translation>
     </message>
@@ -807,12 +807,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RemoteBLASTPlugin</name>
     <message>
-        <location filename="../src/RemoteBLASTPlugin.cpp" line="64"/>
+        <location filename="../src/RemoteBLASTPlugin.cpp" line="62"/>
         <source>Performs remote database queries: BLAST, CDD, etc...</source>
         <translation>Performs remote database queries: BLAST, CDD, etc...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTPlugin.cpp" line="64"/>
+        <location filename="../src/RemoteBLASTPlugin.cpp" line="62"/>
         <source>Remote BLAST</source>
         <translation>Remote BLAST</translation>
     </message>
@@ -847,12 +847,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RemoteBLASTViewContext</name>
     <message>
-        <location filename="../src/RemoteBLASTPlugin.cpp" line="102"/>
+        <location filename="../src/RemoteBLASTPlugin.cpp" line="100"/>
         <source>Query NCBI BLAST database...</source>
         <translation>Query NCBI BLAST database...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTPlugin.cpp" line="134"/>
+        <location filename="../src/RemoteBLASTPlugin.cpp" line="137"/>
         <source>Sequence objects is NULL</source>
         <translation>Sequence objects is NULL</translation>
     </message>
@@ -873,28 +873,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SendSelectionDialog</name>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="140"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="141"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="141"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="142"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="214"/>
-        <location filename="../src/SendSelectionDialog.cpp" line="314"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="215"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="315"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="214"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="215"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="399"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="400"/>
         <source>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</source>
         <translation>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</translation>
     </message>

@@ -233,12 +233,12 @@
         <translation>Неподдерживаемый тип объекта: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="389"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="405"/>
         <source>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</source>
         <translation>Невозможно определить алфавит последовательности. Возможно это вызвано тем, что некоторые из последовательностей являются пустыми.</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="544"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="560"/>
         <source>Invalid number of symbols: %1</source>
         <translation>Неверное число символов: %1</translation>
     </message>
@@ -692,6 +692,16 @@
         <source>Unexpected feature operator value detected.</source>
         <translation>Unexpected feature operator value detected.</translation>
     </message>
+    <message>
+        <location filename="../src/util/MAlignmentImporter.cpp" line="45"/>
+        <source>Unexpected number of sequences in a multiple alignment</source>
+        <translation>Unexpected number of sequences in a multiple alignment</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentImporter.cpp" line="82"/>
+        <source>Unexpected error on MSA rows import</source>
+        <translation>Unexpected error on MSA rows import</translation>
+    </message>
 </context>
 <context>
     <name>U2::AbstractProjectFilterTask</name>
@@ -736,12 +746,12 @@
 <context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="52"/>
         <source>Object is empty.</source>
         <translation>Объект пуст.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="56"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="57"/>
         <source>Object is locked for modifications.</source>
         <translation>Объект заблокирован для редактирования.</translation>
     </message>
@@ -759,22 +769,22 @@
 <context>
     <name>U2::AppResourcePool</name>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="54"/>
+        <location filename="../src/globals/AppResources.cpp" line="56"/>
         <source>Threads</source>
         <translation>Потоки</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="65"/>
+        <location filename="../src/globals/AppResources.cpp" line="67"/>
         <source>Memory</source>
         <translation>Память</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="65"/>
+        <location filename="../src/globals/AppResources.cpp" line="67"/>
         <source>Mb</source>
         <translation>Mb</translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="68"/>
+        <location filename="../src/globals/AppResources.cpp" line="70"/>
         <source>Project</source>
         <translation>Проект</translation>
     </message>
@@ -1013,17 +1023,18 @@ The session database file is removed after closing of UGENE.</source>
     <message>
         <location filename="../src/tasks/CreateAnnotationTask.cpp" line="37"/>
         <location filename="../src/tasks/CreateAnnotationTask.cpp" line="47"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="59"/>
         <source>Create annotations</source>
         <translation>Сохранение аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="40"/>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="58"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="68"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="74"/>
         <source>Annotation table has been removed unexpectedly</source>
         <translation>Annotation table has been removed unexpectedly</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="92"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="110"/>
         <source>Annotation object &apos;%1&apos; not found in active project: %2</source>
         <translation>Таблица аннотаций &quot;%1&quot; не найдена в проекте: %2</translation>
     </message>
@@ -1532,12 +1543,12 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::DocumentUtils</name>
     <message>
-        <location filename="../src/models/DocumentUtils.cpp" line="259"/>
+        <location filename="../src/models/DocumentUtils.cpp" line="260"/>
         <source>Format does not support writing of alignments</source>
         <translation>Формат не поддерживает запись выравниваний</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentUtils.cpp" line="270"/>
+        <location filename="../src/models/DocumentUtils.cpp" line="271"/>
         <source>File content was merged</source>
         <translation>Содержимое файла было соединено</translation>
     </message>
@@ -1550,22 +1561,22 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation> tool</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="111"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="114"/>
         <source>Can not run %1 tool.</source>
         <translation>Невозможно запустить %1 инструмент.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="113"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="116"/>
         <source>Can not run %1 tool. May be tool path &apos;%2&apos; not valid?</source>
         <translation>Невозможно запустить %1 инструмент. Возможно путь до инструмента &apos;%2&apos; указан неверно?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="128"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="131"/>
         <source>%1 tool exited with code %2</source>
         <translation>%1 инструмент завершил работу с кодом %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="130"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="133"/>
         <source>Tool %1 finished successfully</source>
         <translation>Инструмент %1 завершил работу корректно</translation>
     </message>
@@ -1573,47 +1584,47 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::ExternalToolSupportUtils</name>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="324"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="327"/>
         <source>Can not remove temporary directory: path is empty.</source>
         <translation>Невозможно удалить временную директорию: пустой путь.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="330"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="333"/>
         <source>Can not remove files from temporary directory.</source>
         <translation>Невозможно удалить файлы из временной директории.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="335"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="338"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Невозможно удалить директорию для временных файлов.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="348"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="351"/>
         <source>Can not create directory for temporary files: %1</source>
         <translation>Невозможно создать директорию для временных файлов: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="379"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="382"/>
         <source>Can&apos;t run an executable file &quot;%1&quot; as it is. Try to run it as a cmd line command: &quot;%2&quot;</source>
         <translation>Невозможно запустить исполняемый файл &quot;%1&quot;. Попробуйте запустить его из командной строки: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="395"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="398"/>
         <source>Undefined tool: &apos;%1&apos;</source>
         <translation>Неопределенный инструмент: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="399"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="402"/>
         <source>Path for &apos;%1&apos; tool not set</source>
         <translation>Путь до инструмента &apos;%1&apos; не установлен</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="440"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="443"/>
         <source>Working directory is &quot;%1&quot;</source>
         <translation>Рабочая директория &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="449"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="452"/>
         <source>Launching %1 tool: %2 %3</source>
         <translation>Запуск инструмента %1: %2 %3</translation>
     </message>
@@ -2257,28 +2268,28 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="178"/>
+        <location filename="../src/util/MSAUtils.cpp" line="181"/>
         <source>Alphabets of the alignment and the sequence cannot be derived</source>
         <translation>Алфавиты выравнивания и последовательности не могут быть получены</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="186"/>
+        <location filename="../src/util/MSAUtils.cpp" line="189"/>
         <source>Sequences have different alphabets.</source>
         <translation>Алфавиты последовательностей не совпадают.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="214"/>
-        <location filename="../src/util/MSAUtils.cpp" line="219"/>
+        <location filename="../src/util/MSAUtils.cpp" line="217"/>
+        <location filename="../src/util/MSAUtils.cpp" line="222"/>
         <source>Alignment is empty!</source>
         <translation>Выравнивание пусто!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="226"/>
+        <location filename="../src/util/MSAUtils.cpp" line="229"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Последовательности в выравнивании имеют разный размер!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="313"/>
+        <location filename="../src/util/MSAUtils.cpp" line="338"/>
         <source>Can&apos;t find a row in an alignment!</source>
         <translation>Невозможно найти строку в выравнивании!</translation>
     </message>
@@ -2334,28 +2345,27 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::MsaDbiUtils</name>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="783"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="756"/>
         <source>Can&apos;t rename an alignment to an empty name!</source>
         <translation>Невозможно переименовать выравнивание, т.к. имя пустое!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="812"/>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="819"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="785"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="792"/>
         <source>Failed to insert gaps into an alignment!</source>
         <translation>Не удалось вставить пробелы в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="956"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="930"/>
         <source>Failed to crop an alignment!</source>
         <translation>Не удалось обрезать выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1060"/>
         <source>Failed to add a row to an alignment!</source>
-        <translation>Не удалось добавить строку в выравнивание!</translation>
+        <translation type="obsolete">Не удалось добавить строку в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1090"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1055"/>
         <source>Can&apos;t rename a row to an empty name!</source>
         <translation>Не удалось переименовать строку, т.к. имя пустое!</translation>
     </message>
@@ -2363,22 +2373,22 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="353"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="349"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>Перемещение документа %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="356"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="364"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="373"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="369"/>
         <source>Only unloaded objects can be relocated</source>
         <translation>Можно перемещать только выгруженные документы</translation>
     </message>
@@ -2464,22 +2474,22 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="313"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="309"/>
         <source>Save a copy %1</source>
         <translation>Сохранение копии %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="331"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="327"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="328"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="336"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
         <source>Document is already added to the project %1</source>
         <translation>Документ уже добавлен в проект: %1</translation>
     </message>
@@ -2495,50 +2505,50 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::SaveDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="61"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="78"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="55"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="72"/>
         <source>Save document</source>
         <translation>Сохранение документа</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="71"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="84"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="65"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="78"/>
         <source>No permission to write to &apos;%1&apos; file.</source>
         <translation>Нет прав на запись в &apos;%1&apos; файл.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="106"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="100"/>
         <source>Saving document %1
 </source>
         <translation>Сохранение документа: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="127"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="121"/>
         <source>Can&apos;t create tmp file</source>
         <translation>Невозможно создать временный файл</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="132"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="126"/>
         <source>Can&apos;t copy file to tmp file while trying to save document by append</source>
         <translation>Невозможно скопировать скопировать файл во временный файл при попытке сохранения файла при добавлении</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="149"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="143"/>
         <source>Can&apos;t remove original file to place tmp file instead</source>
         <translation>Невозможно удалить оригинальный файл чтобы заменить его временным</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="152"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="146"/>
         <source>Can&apos;t rename saved tmp file to original file</source>
         <translation>Невозможно переименовать сохраненный временный файл в оригинальный</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>Document &apos;%1&apos; can&apos;t be unloaded: </source>
         <translation>Документ &apos;%1&apos; не может быть выгружен: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>unexpected error</source>
         <translation>неожиданная ошибка</translation>
     </message>
@@ -2546,34 +2556,34 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::SaveMultipleDocuments</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="208"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="202"/>
         <source>Save multiple documents</source>
         <translation>Сохранение нескольких документов</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="220"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
         <source>Question?</source>
         <translation>Вопрос?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="220"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
         <source>Save document: %1</source>
         <translation>Сохранить документ: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="271"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="265"/>
         <source>You have no permission to write to &apos;%1&apos; file.
 UGENE contains unsaved modifications.</source>
         <translation>У вас недостаточно прав для записи в &apos;%1&apos; файл.
 UGENE содержит несохраненные изменения.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="272"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="266"/>
         <source>Do you want to save changes to another file?</source>
         <translation>Хотите сохранить изменения в другой файл?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="291"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="287"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>
@@ -2776,12 +2786,12 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::U2SequenceObject</name>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="194"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="200"/>
         <source>Internal error, sequence alphabet id &apos;%1&apos; is invalid</source>
         <translation>Внутренняя ошибка, неверный алфавит последовательности &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="203"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="209"/>
         <source>Modified sequence &amp; region have different alphabet</source>
         <translation>Измененная последовательность и регион имеют разные алфавиты</translation>
     </message>
@@ -2789,19 +2799,19 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::U2SequenceUtils</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="54"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="55"/>
         <source>Alphabet is not found!</source>
         <translation>Алфавит не найден!</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="97"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="110"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="98"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="111"/>
         <source>Invalid sequence DBI</source>
         <translation>Invalid sequence DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="354"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="533"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="370"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="549"/>
         <source>Failed to derive sequence alphabet!</source>
         <translation>Не удалось распознать алфавит!</translation>
     </message>
@@ -2861,7 +2871,7 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2SequenceImporter</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="276"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="292"/>
         <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
         <translation>Последовательность не была импортирована. Возможно это произошло из-за того, что последовательность является пустой.</translation>
     </message>

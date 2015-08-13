@@ -37,6 +37,7 @@ namespace U2{
 
 ////////////////////////////////////////////////////////////////////////////////
 class PrepareMsaClipboardDataTask : public Task {
+    Q_OBJECT
 public:
     PrepareMsaClipboardDataTask(const U2Region &window, const QStringList &names);
     QString getResult() const;
@@ -49,6 +50,7 @@ protected:
 
 ////////////////////////////////////////////////////////////////////////////////
 class FormatsMsaClipboardTask : public PrepareMsaClipboardDataTask {
+    Q_OBJECT
 public:
     FormatsMsaClipboardTask(MAlignmentObject *msaObj, const U2Region &window, const QStringList &names, const DocumentFormatId &formatId);
 
@@ -87,6 +89,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 class SubalignmentToClipboardTask : public Task {
+    Q_OBJECT
 public:
     SubalignmentToClipboardTask(MSAEditor *context, const QRect &selection, const DocumentFormatId &formatId);
 

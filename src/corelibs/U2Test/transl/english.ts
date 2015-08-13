@@ -51,37 +51,37 @@
 <context>
     <name>U2::GUITestLauncher</name>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="128"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="127"/>
         <source>No tests to run</source>
         <translation>No tests to run</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="138"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="137"/>
         <source>Invalid suite number: %1. There are %2 suites</source>
         <translation>Invalid suite number: %1. There are %2 suites</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="227"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="226"/>
         <source>An error occurred while starting UGENE: </source>
         <translation>An error occurred while starting UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="244"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="243"/>
         <source>An error occurred while finishing UGENE: </source>
         <translation>An error occurred while finishing UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="246"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="245"/>
         <source>Test fails because of timeout.</source>
         <translation>Test fails because of timeout.</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="278"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="277"/>
         <source>Test name</source>
         <translation>Test name</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="278"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="277"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>

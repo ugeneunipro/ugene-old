@@ -233,7 +233,7 @@
 <context>
     <name>U2::GTest_CompareSiteconModels</name>
     <message>
-        <location filename="../src/SiteconAlgorithmTests.cpp" line="586"/>
+        <location filename="../src/SiteconAlgorithmTests.cpp" line="588"/>
         <source>Models not equal</source>
         <translation>Models not equal</translation>
     </message>
@@ -368,22 +368,22 @@
 <context>
     <name>U2::LocalWorkflow::SiteconSearchPrompter</name>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="150"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="151"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="151"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="152"/>
         <source>For each sequence from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>For each sequence from &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="165"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="166"/>
         <source>%1 search transcription factor binding sites (TFBS) %2.&lt;br&gt;Recognize sites with &lt;u&gt;similarity %3%&lt;/u&gt;, process &lt;u&gt;%4&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation>%1 search transcription factor binding sites (TFBS) %2.&lt;br&gt;Recognize sites with &lt;u&gt;similarity %3%&lt;/u&gt;, process &lt;u&gt;%4&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="152"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="153"/>
         <source>with all profiles provided by &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>with all profiles provided by &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
@@ -391,132 +391,132 @@
 <context>
     <name>U2::LocalWorkflow::SiteconSearchWorker</name>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="159"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="160"/>
         <source>both strands</source>
         <translation>both strands</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="160"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="161"/>
         <source>direct strand</source>
         <translation>direct strand</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="161"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="162"/>
         <source>complement strand</source>
         <translation>complement strand</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="65"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="66"/>
         <source>Sitecon Model</source>
         <translation>Sitecon Model</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="66"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="67"/>
         <source>Sequence</source>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="67"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="68"/>
         <source>SITECON annotations</source>
         <translation>SITECON annotations</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="81"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="82"/>
         <source>Result annotation</source>
         <translation>Result annotation</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="84"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="85"/>
         <source>Recognition quality percentage threshold.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;the lowest&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</source>
         <translation>Recognition quality percentage threshold.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;the lowest&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="87"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="88"/>
         <source>Alternative setting for filtering results, minimal value of Error type I.&lt;br&gt;Note that all thresholds (by score, by err1 and by err2) are applied when filtering results.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;&quot;0&quot;&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</source>
         <translation>Alternative setting for filtering results, minimal value of Error type I.&lt;br&gt;Note that all thresholds (by score, by err1 and by err2) are applied when filtering results.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;&quot;0&quot;&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="91"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="92"/>
         <source>Alternative setting for filtering results, max value of Error type II.&lt;br&gt;Note that all thresholds (by score, by err1 and by err2) are applied when filtering results.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;&quot;1&quot;&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</source>
         <translation>Alternative setting for filtering results, max value of Error type II.&lt;br&gt;Note that all thresholds (by score, by err1 and by err2) are applied when filtering results.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;&quot;1&quot;&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="101"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="102"/>
         <source>Search for TFBS with SITECON</source>
         <translation>Search for TFBS with SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="204"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="205"/>
         <source>Min score can not be less 60% or more 100%</source>
         <translation>Min score can not be less 60% or more 100%</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="207"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="208"/>
         <source>Min Err1 can not be less 0 or more 1</source>
         <translation>Min Err1 can not be less 0 or more 1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="210"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="211"/>
         <source>Max Err2 can not be less 0 or more 1</source>
         <translation>Max Err2 can not be less 0 or more 1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="213"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="214"/>
         <source>Search in strand can only be 0(both) or 1(direct) or -1(complement)</source>
         <translation>Search in strand can only be 0(both) or 1(direct) or -1(complement)</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="251"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="254"/>
         <source>Search TFBS in %1</source>
         <translation>Search TFBS in %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="255"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="258"/>
         <source>Bad sequence supplied to SiteconSearch: %1</source>
         <translation>Bad sequence supplied to SiteconSearch: %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="279"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="282"/>
         <source>Found %1 TFBS</source>
         <translation>Found %1 TFBS</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="65"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="66"/>
         <source>Profile data to search with.</source>
         <translation>Profile data to search with.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="66"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="67"/>
         <source>Input nucleotide sequence to search in.</source>
         <translation>Input nucleotide sequence to search in.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="68"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="69"/>
         <source>Annotations marking found TFBS sites.</source>
         <translation>Annotations marking found TFBS sites.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="82"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="83"/>
         <source>Annotation name for marking found regions.</source>
         <translation>Annotation name for marking found regions.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="102"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="103"/>
         <source>Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.</source>
         <translation>Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="83"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="84"/>
         <source>Min score</source>
         <translation>Min score</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="86"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="87"/>
         <source>Min Err1</source>
         <translation>Min Err1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="90"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="91"/>
         <source>Max Err2</source>
         <translation>Max Err2</translation>
     </message>
@@ -661,7 +661,7 @@
 <context>
     <name>U2::SiteconADVContext</name>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="121"/>
+        <location filename="../src/SiteconPlugin.cpp" line="118"/>
         <source>Search TFBS with SITECON...</source>
         <translation>Search TFBS with SITECON...</translation>
     </message>
@@ -976,17 +976,17 @@
 <context>
     <name>U2::SiteconPlugin</name>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="61"/>
+        <location filename="../src/SiteconPlugin.cpp" line="60"/>
         <source>SITECON</source>
         <translation>SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="61"/>
+        <location filename="../src/SiteconPlugin.cpp" line="60"/>
         <source>SITECON - is a program package for revealing and analysis of conservative conformational and physicochemical properties in transcription factor binding sites sets.</source>
         <translation>SITECON - is a program package for revealing and analysis of conservative conformational and physicochemical properties in transcription factor binding sites sets.</translation>
     </message>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="67"/>
+        <location filename="../src/SiteconPlugin.cpp" line="66"/>
         <source>Build SITECON model...</source>
         <translation>Build SITECON Model...</translation>
     </message>
@@ -1010,71 +1010,71 @@
 <context>
     <name>U2::SiteconSearchDialogController</name>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="86"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="90"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="87"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="149"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="91"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="153"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="149"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="153"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="161"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="165"/>
         <source>Progress: %1% </source>
         <translation>Progress: %1% </translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="163"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="167"/>
         <source>%1 results found</source>
         <translation>%1 results found</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="182"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="186"/>
         <source>Select file with SITECON model</source>
         <translation>Select file with SITECON model</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="191"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="292"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="302"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="312"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="195"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="299"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="309"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="321"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="227"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="231"/>
         <source>%1%,  first type error %2,  second type error %3</source>
         <translation>%1%,  first type error %2,  second type error %3</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="292"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="299"/>
         <source>No model selected</source>
         <translation>No model selected</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="302"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="309"/>
         <source>Range is too small</source>
         <translation>Range is too small</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="312"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="321"/>
         <source>Error parsing minumum score</source>
         <translation>Error parsing minumum score</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="376"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="385"/>
         <source>Complement strand</source>
         <translation>Complement strand</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="376"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="385"/>
         <source>Direct strand</source>
         <translation>Direct strand</translation>
     </message>

@@ -168,7 +168,7 @@
 <context>
     <name>U2::KalignMSAEditorContext</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="157"/>
+        <location filename="../src/KalignPlugin.cpp" line="154"/>
         <source>Align with Kalign...</source>
         <translation>Align with Kalign...</translation>
     </message>
@@ -176,17 +176,17 @@
 <context>
     <name>U2::KalignPlugin</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="74"/>
+        <location filename="../src/KalignPlugin.cpp" line="70"/>
         <source>Kalign</source>
         <translation>Kalign</translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="75"/>
+        <location filename="../src/KalignPlugin.cpp" line="71"/>
         <source>A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version</source>
         <translation>A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version</translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="85"/>
+        <location filename="../src/KalignPlugin.cpp" line="81"/>
         <source>Align with Kalign...</source>
         <translation>Align with Kalign...</translation>
     </message>

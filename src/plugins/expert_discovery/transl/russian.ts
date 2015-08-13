@@ -746,7 +746,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
         <source>Save File</source>
@@ -804,7 +804,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
 </context>
 <context>
@@ -826,7 +826,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
 </context>
 <context>

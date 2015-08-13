@@ -25,63 +25,87 @@
     </message>
     <message>
         <location filename="../src/ConvertToSQLiteDialog.ui" line="69"/>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="175"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="193"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="78"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;The SAM file does not contain the header. Please, choose the reference sequence.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;SAM файл не может содержать заголовок. Выберите референсную последовательность.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="89"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Index file (*.bai) is not available. Partial import is going to be slowed down.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Индексный файл (*.bai) недоступен.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
+    <message utf8="true">
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="84"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;left&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Input SAM file does not contain a header. Сhoose a file with reference sequences or references info will be generated.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;left&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SAM файл не содержит заголовка. Выберите референсную последовательность.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="119"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="98"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;left&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Index file (*.bai) is not available. Partial import is going to be slowed down.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;left&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Индексный файл (*.bai) недоступен.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="137"/>
         <source>Select All</source>
         <translation>Выбрать все</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="126"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="144"/>
         <source>Deselect All</source>
         <translation>Снять выбор со всех</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="133"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="151"/>
         <source>Invert Selection</source>
         <translation>Инвертировать выделение</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="156"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="174"/>
         <source>Import unmapped reads</source>
         <translation>Импорт несопоставленных ридов</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="165"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="183"/>
         <source>Destination URL:</source>
         <translation>Путь для сохранения:</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.ui" line="186"/>
+        <location filename="../src/ConvertToSQLiteDialog.ui" line="204"/>
         <source>Add to project</source>
         <translation>Добавить в проект</translation>
     </message>
@@ -89,8 +113,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="256"/>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="259"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="247"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="250"/>
         <source>Reference File</source>
         <translation>Референсный файл</translation>
     </message>
@@ -145,12 +169,12 @@ p, li { white-space: pre-wrap; }
         <translation>Can&apos;t write output</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="80"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="73"/>
         <source>BAM format support</source>
         <translation>Поддержка формата BAM</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="80"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="73"/>
         <source>Interface for indexed read-only access to BAM files</source>
         <translation>Поддержка формата BAM</translation>
     </message>
@@ -220,183 +244,182 @@ p, li { white-space: pre-wrap; }
         <translation>CIGAR must contain at least one real operation (ins/del/match/skip)</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="88"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="82"/>
         <source>Assembly name</source>
         <translation>Имя сборки</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="88"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="82"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="88"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="82"/>
         <source>URI</source>
         <translation>URI</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="155"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="146"/>
         <source>%1 file info</source>
         <translation>%1 file info</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="161"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="152"/>
         <source>Property name</source>
         <translation>Имя свойства</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="161"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="152"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="168"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="159"/>
         <source>Unsorted</source>
         <translation>Несортированный</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="169"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="160"/>
         <source>Unknown</source>
         <translation>Неизвестный</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="170"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="161"/>
         <source>Coordinate</source>
         <translation>Координата</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="171"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="162"/>
         <source>Query name</source>
         <translation>Имя запроса</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="174"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="165"/>
         <source>URL</source>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="175"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="166"/>
         <source>Format version</source>
         <translation>Версия формата</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="176"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="167"/>
         <source>Sorting order</source>
         <translation>Порядок сортировки</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="196"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="187"/>
         <source>Sequencing center</source>
         <translation>Центр секвенирования</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="196"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="187"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="196"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="187"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="197"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="188"/>
         <source>Library</source>
         <translation>Библиотека</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="197"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="188"/>
         <source>Programs</source>
         <translation>Программы</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="197"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="188"/>
         <source>Predicted median insert size</source>
         <translation>Прогнозируемый средний размер вставки</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="197"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="188"/>
         <source>Platform/technology</source>
         <translation>Платформа/технология</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="198"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="189"/>
         <source>Platform unit</source>
         <translation>Блок платформы</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="198"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="189"/>
         <source>Sample</source>
         <translation>Пример</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="215"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="206"/>
         <source>Read groups:</source>
         <translation>Группы ридов:</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="222"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="213"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="222"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="213"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="222"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="213"/>
         <source>Command</source>
         <translation>Команда</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="222"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="213"/>
         <source>Previous ID</source>
         <translation>Предыдущий идентификатор</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="238"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="229"/>
         <source>Programs:</source>
         <translation>Программы:</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="293"/>
         <source>Please select the file with the reference sequence</source>
-        <translation>Выберите файл с референсной последовательностью</translation>
+        <translation type="obsolete">Выберите файл с референсной последовательностью</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="305"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="293"/>
         <source>Please select assemblies to be imported</source>
         <translation>Выберите сборку, которая будет импортирована</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="328"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="316"/>
         <source>Destination URL is not specified</source>
         <translation>Путь для сохранения не указан</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="331"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="319"/>
         <source>Destination URL must point to a local file</source>
         <translation>Путь должен указывать на локальный файл</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="334"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="322"/>
         <source>Destination URL directory has not write permissions</source>
         <translation>Нет прав на запись в указанную директорию</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="344"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="332"/>
         <source>There is opened view with destination file.
 Close it or choose different file</source>
         <translation>Указанный файл открыт. Закройте его или укажите другой файл</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="353"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="341"/>
         <source>Destination directory &apos;%1&apos; is not writable, please choose different destination URL</source>
         <translation>Невозможно записать в указанную директорию &apos;%1&apos; , укажите другую директорию</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="359"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="347"/>
         <source>Destination file already exists.
 To overwrite the file, press &apos;Replace&apos;.
 To append data to existing file press &apos;Append&apos;.</source>
@@ -405,34 +428,34 @@ To append data to existing file press &apos;Append&apos;.</source>
 Чтобы добавить данные к существующему файлу выберите &apos;Добавить&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="362"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="350"/>
         <source>Replace</source>
         <translation>Переписать</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="363"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="351"/>
         <source>Append</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="364"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="352"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="370"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="358"/>
         <source>Destination file &apos;%1&apos; cannot be removed</source>
         <translation>Файл &apos;%1&apos; не может быть удален</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="393"/>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="396"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="381"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="384"/>
         <source>Destination UGENEDB File</source>
         <translation>Destination UGENEDB File</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="393"/>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="396"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="381"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="384"/>
         <source>UGENEDB Files (*.ugenedb);;All Files (*)</source>
         <translation>UGENEDB Files (*.ugenedb);;All Files (*)</translation>
     </message>
@@ -484,13 +507,13 @@ To append data to existing file press &apos;Append&apos;.</source>
         <location filename="../src/Dbi.cpp" line="503"/>
         <location filename="../src/Dbi.cpp" line="515"/>
         <location filename="../src/Dbi.cpp" line="530"/>
-        <location filename="../src/Dbi.cpp" line="565"/>
-        <location filename="../src/Dbi.cpp" line="585"/>
-        <location filename="../src/Dbi.cpp" line="613"/>
-        <location filename="../src/Dbi.cpp" line="654"/>
-        <location filename="../src/Dbi.cpp" line="687"/>
-        <location filename="../src/Dbi.cpp" line="715"/>
-        <location filename="../src/Dbi.cpp" line="762"/>
+        <location filename="../src/Dbi.cpp" line="568"/>
+        <location filename="../src/Dbi.cpp" line="588"/>
+        <location filename="../src/Dbi.cpp" line="616"/>
+        <location filename="../src/Dbi.cpp" line="657"/>
+        <location filename="../src/Dbi.cpp" line="690"/>
+        <location filename="../src/Dbi.cpp" line="718"/>
+        <location filename="../src/Dbi.cpp" line="765"/>
         <location filename="../src/SamtoolsBasedDbi.cpp" line="72"/>
         <source>Invalid DBI state</source>
         <translation>Invalid DBI state</translation>
@@ -536,18 +559,18 @@ To append data to existing file press &apos;Append&apos;.</source>
         <translation>No such folder: %1</translation>
     </message>
     <message>
-        <location filename="../src/Dbi.cpp" line="568"/>
-        <location filename="../src/Dbi.cpp" line="588"/>
-        <location filename="../src/Dbi.cpp" line="616"/>
-        <location filename="../src/Dbi.cpp" line="690"/>
-        <location filename="../src/Dbi.cpp" line="718"/>
-        <location filename="../src/Dbi.cpp" line="765"/>
-        <location filename="../src/SamtoolsBasedDbi.cpp" line="557"/>
+        <location filename="../src/Dbi.cpp" line="571"/>
+        <location filename="../src/Dbi.cpp" line="591"/>
+        <location filename="../src/Dbi.cpp" line="619"/>
+        <location filename="../src/Dbi.cpp" line="693"/>
+        <location filename="../src/Dbi.cpp" line="721"/>
+        <location filename="../src/Dbi.cpp" line="768"/>
+        <location filename="../src/SamtoolsBasedDbi.cpp" line="561"/>
         <source>The specified object is not an assembly</source>
         <translation>The specified object is not an assembly</translation>
     </message>
     <message>
-        <location filename="../src/Dbi.cpp" line="657"/>
+        <location filename="../src/Dbi.cpp" line="660"/>
         <source>The specified object is not an assembly read</source>
         <translation>The specified object is not an assembly read</translation>
     </message>
@@ -812,7 +835,7 @@ To append data to existing file press &apos;Append&apos;.</source>
         <location filename="../src/SamtoolsBasedDbi.cpp" line="324"/>
         <location filename="../src/SamtoolsBasedDbi.cpp" line="331"/>
         <location filename="../src/SamtoolsBasedDbi.cpp" line="341"/>
-        <location filename="../src/SamtoolsBasedDbi.cpp" line="551"/>
+        <location filename="../src/SamtoolsBasedDbi.cpp" line="555"/>
         <source>Invalid samtools DBI state</source>
         <translation>Invalid samtools DBI state</translation>
     </message>
@@ -825,12 +848,12 @@ To append data to existing file press &apos;Append&apos;.</source>
 <context>
     <name>U2::BAM::BAMImporter</name>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="92"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="85"/>
         <source>BAM/SAM file import</source>
         <translation>Импорт BAM/SAM файлов</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="103"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="96"/>
         <source>BAM files importer is used to convert conventional BAM and SAM files into UGENE database format. Having BAM or SAM file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content</source>
         <translation>Импорт BAM файлов используется для того, чтобы конвертировать BAM и SAM файлы в формат базы данных UGENE</translation>
     </message>
@@ -838,22 +861,22 @@ To append data to existing file press &apos;Append&apos;.</source>
 <context>
     <name>U2::BAM::BAMImporterTask</name>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="132"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="125"/>
         <source>BAM/SAM file import: %1</source>
         <translation>BAM/SAM file import: %1</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="241"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="234"/>
         <source>Can&apos;t create a temporary database</source>
         <translation>Can&apos;t create a temporary database</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="262"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="257"/>
         <source>SAM cannot be converted to BAM: neither reference nor header in SAM file is present</source>
         <translation>SAM cannot be converted to BAM: neither reference nor header in SAM file is present</translation>
     </message>
     <message>
-        <location filename="../src/BAMDbiPlugin.cpp" line="310"/>
+        <location filename="../src/BAMDbiPlugin.cpp" line="305"/>
         <source>Failed to get load task for : %1</source>
         <translation>Failed to get load task for : %1</translation>
     </message>
@@ -861,23 +884,23 @@ To append data to existing file press &apos;Append&apos;.</source>
 <context>
     <name>U2::BAM::ConvertToSQLiteDialog</name>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="59"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="53"/>
         <source>Import</source>
         <translation>Импорт</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="60"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="54"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="63"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="57"/>
         <source>Import SAM File</source>
         <translation>Импорт SAM файла</translation>
     </message>
     <message>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="65"/>
-        <location filename="../src/ConvertToSQLiteDialog.cpp" line="67"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="59"/>
+        <location filename="../src/ConvertToSQLiteDialog.cpp" line="61"/>
         <source>Import BAM File</source>
         <translation>Импорт BAM файла</translation>
     </message>

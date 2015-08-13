@@ -110,12 +110,12 @@
 <context>
     <name>U2::AnnotatorPlugin</name>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="61"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="56"/>
         <source>DNA Annotator</source>
         <translation>DNA Annotator</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="61"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="56"/>
         <source>This plugin contains routines to manipulate and search DNA sequence annotations</source>
         <translation>This plugin contains routines to manipulate and search DNA sequence annotations</translation>
     </message>
@@ -123,22 +123,22 @@
 <context>
     <name>U2::AnnotatorViewContext</name>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="102"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="97"/>
         <source>Find annotated regions...</source>
         <translation>Find annotated regions...</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="106"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="101"/>
         <source>Annotate plasmid and custom features...</source>
         <translation>Annotate plasmid and custom features...</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="121"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="121"/>
         <source>No annotations found</source>
         <translation>No annotations found</translation>
     </message>
@@ -146,8 +146,8 @@
 <context>
     <name>U2::CollocationSearchTask</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="323"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="353"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="327"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="357"/>
         <source>Search for annotated regions</source>
         <translation>Search for annotated regions</translation>
     </message>
@@ -155,48 +155,48 @@
 <context>
     <name>U2::CollocationsDialogController</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="60"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="61"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="61"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="62"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="104"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="64"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="65"/>
         <source>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</source>
         <translation>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="104"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="109"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="110"/>
         <source>Searching... found %1 regions. Progress: %2%</source>
         <translation>Searching... found %1 regions. Progress: %2%</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="111"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="112"/>
         <source>Found %1 regions</source>
         <translation>Found %1 regions</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="114"/>
         <source>Ready</source>
         <translation>Ready</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="114"/>
         <source>Select annotation names to search</source>
         <translation>Select annotation names to search</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="132"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="133"/>
         <source>No annotations left</source>
         <translation>No annotations left</translation>
     </message>
@@ -212,7 +212,7 @@
 <context>
     <name>U2::CustomPatternAnnotationTask</name>
     <message>
-        <location filename="../src/CustomPatternAnnotationTask.cpp" line="51"/>
+        <location filename="../src/CustomPatternAnnotationTask.cpp" line="52"/>
         <source>Custom pattern annotation</source>
         <translation>Custom pattern annotation</translation>
     </message>
@@ -220,7 +220,7 @@
 <context>
     <name>U2::CustomPatternAutoAnnotationUpdater</name>
     <message>
-        <location filename="../src/CustomPatternAnnotationTask.cpp" line="209"/>
+        <location filename="../src/CustomPatternAnnotationTask.cpp" line="211"/>
         <source>Plasmid features</source>
         <translation>Plasmid features</translation>
     </message>
@@ -372,32 +372,32 @@
 <context>
     <name>U2::LocalWorkflow::GeneByGeneReportPrompter</name>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="231"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="232"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="239"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="240"/>
         <source>For annotated genes from &lt;u&gt;%1&lt;/u&gt; build gene-by-gene approach report.</source>
         <translation>For annotated genes from &lt;u&gt;%1&lt;/u&gt; build gene-by-gene approach report.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="240"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="241"/>
         <source> With sequence identity of &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation> With sequence identity of &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="241"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="242"/>
         <source> Using &lt;u&gt;%1&lt;/u&gt; to compare gene and genome sequences.</source>
         <translation> Using &lt;u&gt;%1&lt;/u&gt; to compare gene and genome sequences.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="242"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="243"/>
         <source> Output result table to &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation> Output result table to &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="243"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="244"/>
         <source> If a report file already exists, &lt;u&gt;%1&lt;/u&gt; it</source>
         <translation> If a report file already exists, &lt;u&gt;%1&lt;/u&gt; it</translation>
     </message>
@@ -405,82 +405,82 @@
 <context>
     <name>U2::LocalWorkflow::GeneByGeneReportWorker</name>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="152"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="153"/>
         <source>Input annotations</source>
         <translation>Input annotations</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="153"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="154"/>
         <source>Gene annotations.</source>
         <translation>Gene annotations.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="156"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="157"/>
         <source>Input sequences</source>
         <translation>Input sequences</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="157"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="158"/>
         <source>Gene sequences.</source>
         <translation>Gene sequences.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="161"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="162"/>
         <source>Gene by gene report data.</source>
         <translation>Gene by gene report data.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="162"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="163"/>
         <source>Gene with similar regions to for report.</source>
         <translation>Gene with similar regions to for report.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="170"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="171"/>
         <source>Output file</source>
         <translation>Output file</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="171"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="172"/>
         <source>File to store a report.</source>
         <translation>File to store a report.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="173"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="174"/>
         <source>Annotation name</source>
         <translation>Annotation name</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="174"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="175"/>
         <source>Annotation name used to compare genes and reference genomes.</source>
         <translation>Annotation name used to compare genes and reference genomes.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="176"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="177"/>
         <source>Existing file</source>
         <translation>Existing file</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="177"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="178"/>
         <source>If a target report already exists you should specify how to handle that. &lt;b&gt;Merge&lt;/b&gt; two table in one. &lt;b&gt;Overwrite&lt;/b&gt; or &lt;b&gt;Rename&lt;/b&gt; existing file.</source>
         <translation>If a target report already exists you should specify how to handle that. &lt;b&gt;Merge&lt;/b&gt; two table in one. &lt;b&gt;Overwrite&lt;/b&gt; or &lt;b&gt;Rename&lt;/b&gt; existing file.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="180"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="181"/>
         <source>Identity cutoff</source>
         <translation>Identity cutoff</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="181"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="182"/>
         <source>Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after.</source>
         <translation>Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after.</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="212"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="213"/>
         <source>Gene-by-gene Approach Report</source>
         <translation>Gene-by-gene Approach Report</translation>
     </message>
     <message>
-        <location filename="../src/GeneByGeneReportWorker.cpp" line="213"/>
+        <location filename="../src/GeneByGeneReportWorker.cpp" line="214"/>
         <source>Output a table of genes found in a reference sequence.</source>
         <translation>Output a table of genes found in a reference sequence.</translation>
     </message>
