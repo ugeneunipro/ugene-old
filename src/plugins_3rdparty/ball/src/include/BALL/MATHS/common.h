@@ -175,7 +175,7 @@ namespace BALL
                 #ifdef BALL_OS_WINDOWS
                     return (_isnan(t) != 0);
                 #else
-                    return (isnan(t) != 0);
+                    return (std::isnan(t) != 0);
                 #endif
             #endif
         }

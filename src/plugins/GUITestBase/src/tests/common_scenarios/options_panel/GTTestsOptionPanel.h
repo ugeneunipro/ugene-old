@@ -20,13 +20,16 @@ k
  * MA 02110-1301, USA.
  */
 
-#ifndef GTTESTS_OPTION_PANEL_H_
-#define GTTESTS_OPTION_PANEL_H_
+#ifndef _U2_GT_TESTS_OPTION_PANEL_H_
+#define _U2_GT_TESTS_OPTION_PANEL_H_
+
+#include <QApplication>
 
 #include <U2Test/GUITestBase.h>
+
+#include "GTUtilsDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
-#include "GTUtilsDialog.h"
 
 namespace U2 {
 
@@ -93,4 +96,4 @@ GUI_TEST_CLASS_DECLARATION(test_0020)
 
 } //namespace
 
-#endif // GTTESTSMSAEDITOR_H
+#endif // _U2_GT_TESTS_OPTION_PANEL_H_

@@ -45,6 +45,8 @@ namespace U2 {
 
 class UnitTest {
 public:
+    virtual ~UnitTest() {}
+
     virtual void Test() = 0;
     virtual void SetUp() {}
     virtual void TearDown() {}
