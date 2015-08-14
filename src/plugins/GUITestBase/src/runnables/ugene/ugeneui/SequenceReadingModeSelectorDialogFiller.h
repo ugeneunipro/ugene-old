@@ -30,14 +30,15 @@ namespace U2 {
     public:
         enum ReadingMode {Separate, Merge, Join, Align};
 
-        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, ReadingMode _mode = Separate, int _bases=10):
-        Filler(_os, "SequenceReadingModeSelectorDialog"), readingMode(_mode), bases(_bases) {}
-        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "SequenceReadingModeSelectorDialog", c){}
+        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, ReadingMode _mode = Separate, int _bases=10, bool cancel = false):
+        Filler(_os, "SequenceReadingModeSelectorDialog"), readingMode(_mode), bases(_bases), cancel(cancel) {}
+        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "SequenceReadingModeSelectorDialog", c), cancel(cancel){}
 
         virtual void commonScenario();
     private:
         ReadingMode readingMode;
         int bases;
+        bool cancel;
     };
 }
 

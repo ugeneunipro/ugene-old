@@ -156,6 +156,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 #endif
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0007){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
+}
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){
     GTUtilsDialog::cleanup(os);

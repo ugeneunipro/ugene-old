@@ -1170,6 +1170,23 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0038_1);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0039);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0040);
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_common_scenarios_project::test_0041);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0042);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0043);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0044);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0045);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0046);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0047);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0048);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0049);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0050);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0051);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0052);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0053);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0054);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0055);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0056);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0057);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/
@@ -2462,6 +2479,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0004, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0005, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0006, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0007, GUITestBase::PreAdditional);
 
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditionalChecks);
 

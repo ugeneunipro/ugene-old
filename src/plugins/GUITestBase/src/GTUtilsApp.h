@@ -29,6 +29,7 @@ namespace U2 {
 class GTUtilsApp {
 public:
     static void checkUGENETitle(U2OpStatus &os, const QString& title);
+    static void checkUGENETitleContains(U2OpStatus &os, const QString& string);
 };
 
 } // namespace

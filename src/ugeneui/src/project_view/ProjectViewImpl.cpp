@@ -488,7 +488,9 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
     GUrl url(pastedFileUrl, GUrl_File);
     if (df->checkFlags(DocumentFormatFlag_SupportWriting)
         && !(df->checkFlags(DocumentFormatFlag_LockedIfNotCreatedByUGENE)
-            || df->checkFlags(DocumentFormatFlag_CannotBeCreated)))
+        || df->checkFlags(DocumentFormatFlag_CannotBeCreated) 
+        || hints.contains(DocumentReadingMode_SequenceMergeGapSize)
+        || hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)))
     {
         hints[ProjectLoaderHint_DontCheckForExistence] = true;
         hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
@@ -504,18 +506,29 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         info.loadDocuments = true;
         info.markLoadedAsModified = true;
         docInfoList << info;
-        AddDocumentsToProjectTask *addToProjtask = new AddDocumentsToProjectTask(docInfoList, empty);
-        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjtask);
+        AddDocumentsToProjectTask *addToProjTask = new AddDocumentsToProjectTask(docInfoList, empty);
+        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjTask);
         connect(loadTaskSignalMapper, SIGNAL(si_taskFinished(Task *)), SLOT(sl_setLocaFilelAdapter()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(addToProjtask);
+        AppContext::getTaskScheduler()->registerTopLevelTask(addToProjTask);
     } else {
+        QVariantMap additionalHints;
+        if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
+            additionalHints[DocumentReadingMode_SequenceMergeGapSize] = hints.value(DocumentReadingMode_SequenceMergeGapSize);
+        }else if (hints.contains(DocumentReadingMode_SequenceAsAlignmentHint)) {
+            additionalHints[DocumentReadingMode_SequenceAsAlignmentHint] = hints.value(DocumentReadingMode_SequenceAsAlignmentHint);
+        }else if (hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)){
+            additionalHints[DocumentReadingMode_SequenceAsShortReadsHint] = hints.value(DocumentReadingMode_SequenceAsShortReadsHint);
+        }
         QFile outputFile(pastedFileUrl);
         outputFile.open(QIODevice::WriteOnly);
         outputFile.write(clipboardText.toLatin1());
         outputFile.close();
         QList<GUrl> urlList;
         urlList << url;
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(urlList));
+        Task *t = AppContext::getProjectLoader()->openWithProjectTask(urlList, additionalHints);
+        if (t != NULL) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+        }
     }
 }
 
@@ -563,12 +576,10 @@ DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVaria
         if (canceled) {
             return NULL;
         }
-        if (!ProjectLoaderImpl::processHints(dr)) {
-            hints = dr.rawDataCheckResult.properties;
-            if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
-                hints[DocumentReadingMode_MaxObjectsInDoc] = ProjectLoaderImpl::maxObjectsInSingleDocument;
-            }   
-        }
+        hints = dr.rawDataCheckResult.properties;
+        if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
+            hints[DocumentReadingMode_MaxObjectsInDoc] = ProjectLoaderImpl::maxObjectsInSingleDocument;
+        }   
     }
     if (dr.format != NULL) {
         return dr.format;

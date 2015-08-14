@@ -20,6 +20,11 @@
  */
 
 #include <QMdiSubWindow>
+#include <QWebElement>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AssemblyBrowserFactory.h>
@@ -33,6 +38,7 @@
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include "GTutilsStartPage.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
 #include "api/GTClipboard.h"
@@ -43,14 +49,18 @@
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWebView.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
@@ -626,7 +636,18 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
     GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCS");
 }
 
+QString readFileToStr(const QString &path){
+    GUrl url(path);
+    QFile f(url.getURLString());
+    if (!f.open(QFile::ReadOnly | QFile::Text)) {
+        return QString();
+    }
+    QTextStream in(&f);
+    return in.readAll();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0040){
+    //check adding document with 2 sequences in separate mode
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
@@ -638,6 +659,301 @@ GUI_TEST_CLASS_DEFINITION(test_0040){
     GTGlobals::sleep();
     GTUtilsProjectTreeView::findIndex(os, "human_T1");
     GTUtilsProjectTreeView::findIndex(os, "human_T2");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0041){
+    //check shift+insert instead Ctrl+V
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1 (UCS\r\nACGT\r\nACG");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCS");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042){
+    //check adding schemes (WD QD) in project, it should not appear in project vie
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "workflow_samples/Alignment/basic_align.uwl");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(GTUtilsMdi::activeWindowTitle(os).contains("Workflow Designer"), "Mdi window is not a WD window");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0043){
+    //check newick format because there was crash
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/Newick/COI.nwk");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "Tree");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0044){
+    //check document which format cant be saved by UGENE
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/HMM/aligment15900.hmm");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "aligment15900");
+
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.hmm"), false);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0045){
+    //check document which format cant be saved by UGENE
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/Stockholm/CBS.sto");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "CBS");
+
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.sto"), false);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0046){
+    //check document which format can't be saved by UGENE has no locked state
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/PDB/1CF7.pdb");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "1CF7");
+
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.pdb"), false);
+    GTutilsStartPage::openStartPage(os);
+    QWebElement recentDocElement = GTWebView::findElement(os, GTutilsStartPage::getStartPage(os), "- clipboard.pdb", "A");
+    QString elem = recentDocElement.toPlainText();
+    CHECK_SET_ERR(elem == "- clipboard.pdb", "Recent doc not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0047){
+    //check document which format can't be saved by UGENE has no locked state
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/FASTA/human_T1.fa");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), true);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0048){
+    //pasting same data 10 times
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    for(int i = 0; i < 10; i++){
+        GTUtilsProjectTreeView::click(os, "COI.aln");
+        GTClipboard::setText(os, QString(">human_T%1 (UCS\r\nACGT\r\nACG").arg(QString::number(i)));
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
+        GTGlobals::sleep();
+    }
+
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    for(int i = 0; i < 10; i++) {
+        GTUtilsProjectTreeView::findIndex(os, QString(">human_T%1").arg(QString::number(i)));
+    }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0049){
+    //check no crash after closing project without saving
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/FASTA/human_T1.fa");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsProject::closeProject(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0050){
+    //'usual' scenario
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/FASTA/human_T1.fa");
+    GTClipboard::setText(os, fileContent);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsProject::closeProject(os);
+    
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QFile savedFile(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard.fa");
+    CHECK_SET_ERR(savedFile.exists(), "Saved file didn't exists");    
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0051){
+    //check adding document with 2 sequences in align mode
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n>human_T2\r\nACCTGA");
+
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::findIndex(os, "Multiple alignment");
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), true);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0052){
+    //check adding document with 2 sequences in merge mode
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n>human_T2\r\nACCTGA");
+
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::findIndex(os, "Sequence");
+    GTUtilsProjectTreeView::findIndex(os, "Contigs");
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), false);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053){
+    //check adding document with 2 sequences in separate mode, with file which cannot be written by UGENE
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(testDir + "_common_data/samples/FASTA/human_T1.fa");
+    GTClipboard::setText(os, fileContent);
+
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), false);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0054){
+    //check adding document with 2 sequences in separate mode, with file which cannot be written by UGENE
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(testDir + "_common_data/genbank/multi.gb");
+    GTClipboard::setText(os, fileContent);
+
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate, 10, true));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0055){
+    //check document format dialog cancelling
+    class CustomScenarioCancel: public CustomScenario {
+    public:
+        CustomScenarioCancel(){}
+        virtual void run(U2::U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(testDir + "_common_data/fasta/broken/broken_doc.fa");
+    GTClipboard::setText(os, fileContent);
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new CustomScenarioCancel()));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0056){
+    //check opening brocken fasta document as text
+
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(testDir + "_common_data/fasta/broken/broken_doc.fa");
+    GTClipboard::setText(os, fileContent);
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057){
+    //check adding document with 2 sequences in short reads mode
+    class CheckPathScenario: public CustomScenario {
+    public:
+        CheckPathScenario(){}
+        virtual void run(U2::U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            
+            QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "shortReadsTable", dialog));
+            CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
+            QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+            QTreeWidgetItem* firstItem = treeItems.first();
+            QString path = firstItem->text(0);
+            CHECK_SET_ERR(!path.isEmpty(), "Reads filepath should not be empty");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n>human_T2\r\nACCTGA");
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new CheckPathScenario()));
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Align));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 }
 
 }

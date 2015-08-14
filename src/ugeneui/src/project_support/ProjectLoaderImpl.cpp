@@ -495,8 +495,11 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                     dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
                         bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
-                        bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
-                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
+                        bool optionsAlreadyChosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool() 
+                            || hints.value((DocumentReadingMode_SequenceMergeGapSize), false).toBool() 
+                            || hints.value((DocumentReadingMode_SequenceAsAlignmentHint), false).toBool()
+                            || hints.value((DocumentReadingMode_SequenceAsShortReadsHint), false).toBool();
+                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChosen);
                         if (!ok) {
                             continue;
                         }
@@ -963,6 +966,7 @@ QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* t) {
     foreach (Document *d, docsToMarkAsModified) {
         if (d->isLoaded() && !d->isModified()) {
             d->setModified(true);
+            docsToMarkAsModified.removeOne(d);
         }
     }
     return res;

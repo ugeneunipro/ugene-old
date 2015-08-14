@@ -40,6 +40,20 @@ void GTUtilsApp::checkUGENETitle(U2OpStatus &os, const QString &title) {
     QString ugeneTitle = w->windowTitle();
     GT_CHECK(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
 }
+
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsApp"
+
+#define GT_METHOD_NAME "checkUGENETitleContains"
+void GTUtilsApp::checkUGENETitleContains(U2OpStatus &os, const QString& string) {
+    QMainWindow* w = AppContext::getMainWindow()->getQMainWindow();
+    GT_CHECK(w, "main window is NULL");
+    QString ugeneTitle = w->windowTitle();
+    GT_CHECK(ugeneTitle.contains(string), "UGENE title is <" + ugeneTitle + ">, and it not contains <" + string + ">");
+}
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
