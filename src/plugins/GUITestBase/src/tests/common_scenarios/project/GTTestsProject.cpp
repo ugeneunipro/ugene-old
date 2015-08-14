@@ -22,6 +22,7 @@
 #include <QMdiSubWindow>
 #include <QWebElement>
 #include <QApplication>
+#include <QTreeWidget>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
