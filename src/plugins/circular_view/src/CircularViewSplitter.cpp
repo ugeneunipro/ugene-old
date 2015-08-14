@@ -53,24 +53,24 @@ namespace U2 {
 CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view)
     : ADVSplitWidget(view)
 {
-    zoomInAction = new QAction(this);
+    zoomInAction = new QAction(tr("Zoom In"), this);
     zoomInAction->setIcon(QIcon(":/core/images/zoom_in.png"));
     zoomInAction->setToolTip(tr("Zoom In"));
     zoomInAction->setObjectName("tbZoomIn_" + view->getName());
 
-    zoomOutAction = new QAction(this);
+    zoomOutAction = new QAction(tr("Zoom Out"), this);
     zoomOutAction->setIcon(QIcon(":/core/images/zoom_out.png"));
     zoomOutAction->setToolTip(tr("Zoom Out"));
 
-    fitInViewAction = new QAction(this);
+    fitInViewAction = new QAction(tr("Fit To Full View"), this);
     fitInViewAction->setIcon(QIcon(":/core/images/zoom_whole.png"));
     fitInViewAction->setToolTip(tr("Fit To Full View"));
 
-    exportAction = new QAction(this);
+    exportAction = new QAction(tr("Save circular view as image"), this);
     exportAction->setIcon(QIcon(":/core/images/cam2.png"));
     exportAction->setToolTip(tr("Save circular view as image"));
 
-    toggleRestrictionMapAction = new QAction(this);
+    toggleRestrictionMapAction = new QAction(tr("Show/hide restriction sites map"), this);
     toggleRestrictionMapAction->setIcon(QIcon(":/circular_view/images/side_list.png"));
     toggleRestrictionMapAction->setToolTip(tr("Show/hide restriction sites map"));
     toggleRestrictionMapAction->setCheckable(true);
@@ -82,6 +82,7 @@ CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view)
     splitter = new QSplitter(Qt::Horizontal);
 
     WidgetWithLocalToolbar* widgetWithToolBar = new WidgetWithLocalToolbar(this);
+    widgetWithToolBar->setLocalToolBarObjectName("circular_view_local_toolbar");
     widgetWithToolBar->addActionToLocalToolbar(zoomInAction);
     widgetWithToolBar->addActionToLocalToolbar(zoomOutAction);
     widgetWithToolBar->addActionToLocalToolbar(fitInViewAction);

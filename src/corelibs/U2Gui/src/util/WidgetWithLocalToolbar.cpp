@@ -60,6 +60,10 @@ QToolButton* WidgetWithLocalToolbar::addActionToLocalToolbar(QAction *action) {
     return qobject_cast<QToolButton*>(toolBar->widgetForAction(action));
 }
 
+void WidgetWithLocalToolbar::setLocalToolBarObjectName(const QString &name) {
+    toolBar->setObjectName(name);
+}
+
 void WidgetWithLocalToolbar::setLocalToolbarVisible(bool visible) {
     toolBar->setVisible(visible);
     update();

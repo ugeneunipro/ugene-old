@@ -41,6 +41,8 @@ public:
 
     QToolButton* addActionToLocalToolbar(QAction* action);
 
+    void setLocalToolBarObjectName(const QString& name);
+
 protected:
     void setLocalToolbarVisible(bool visible);
     QWidget*                contentWidget;

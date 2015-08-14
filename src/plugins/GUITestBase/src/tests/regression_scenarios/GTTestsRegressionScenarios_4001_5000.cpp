@@ -2337,6 +2337,45 @@ GUI_TEST_CLASS_DEFINITION(test_4368) {
     GTRadioButton::click(os, radio2);
     CHECK_SET_ERR(nameLabel->text() == "score", "percentsButton not found!");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4373) {
+    // 1. Open any sequence
+    // 2. Open CV
+    // 3. Resize CV to make some buttons hidden
+    // Expected state: there is a button with an arrows at the bottom of toolbar and it shows the hidden action
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+
+    GTUtilsCv::commonCvBtn::click(os);
+
+    QWidget* splitterHandler = GTWidget::findWidget(os, "qt_splithandle_annotated_DNA_scrollarea");
+    CHECK_SET_ERR(splitterHandler != NULL, "SplitterHandle not found");
+    GTWidget::click(os, splitterHandler);
+
+    QWidget* mainToolBar = GTWidget::findWidget(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR(mainToolBar != NULL, "mwtoolbar_activemdi not found");
+
+    QPoint point = mainToolBar->geometry().bottomLeft();
+    point = mainToolBar->mapToGlobal(point);
+    point.setY( point.y() + 150);
+    GTGlobals::sleep();
+
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, point);
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    QWidget* toolBar = GTWidget::findWidget(os, "circular_view_local_toolbar");
+    CHECK_SET_ERR(toolBar != NULL, "Cannot find circular_view_local_toolbar");
+
+    QWidget* extButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", toolBar);
+    CHECK_SET_ERR(extButton != NULL, "Cannot find qt_toolbar_ext_button");
+    CHECK_SET_ERR(extButton->isEnabled(), "qt_toolbar_ext_button is disabled");
+
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Show/hide restriction sites map"));
+    GTWidget::click(os, extButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4377) {
     // 1. Open "_common_data/fasta/Gene.fa".
     // 2. Choose the separate reading mode.
