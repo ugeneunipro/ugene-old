@@ -33,6 +33,8 @@ namespace U2 {
 class QDDocument;
 class QDDocStatement {
 public:
+    virtual ~QDDocStatement();
+
     const QList< QPair<QString, QString> >& getAttributes() const { return attributes; }
     QString getAttribute(const QString& name) const;
     void setAttribute(const QString& name, const QString& value);

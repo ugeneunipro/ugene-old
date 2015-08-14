@@ -28,7 +28,6 @@
 #include <QTime>
 #include <QtOpenGL>
 
-#include <U2Algorithm/MolecularSurface.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 
@@ -61,7 +60,6 @@
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DGLWidget.h"
 #include "GLFrameManager.h"
-#include "MolecularSurfaceRenderer.h"
 #include "SelectModelsDialog.h"
 #include "SettingsDialog.h"
 #include "StructuralAlignmentDialog.h"

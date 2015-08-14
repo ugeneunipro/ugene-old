@@ -62,7 +62,7 @@ public:
 
     virtual QList<U2DbiFactoryId> getRegisteredDbiFactories() const;
 
-    virtual U2DbiFactory *getDbiFactoryById(U2DbiFactoryId id) const;
+    virtual U2DbiFactory *getDbiFactoryById(const U2DbiFactoryId &id) const;
 
     U2DbiPool* getGlobalDbiPool() const {return pool;}
 

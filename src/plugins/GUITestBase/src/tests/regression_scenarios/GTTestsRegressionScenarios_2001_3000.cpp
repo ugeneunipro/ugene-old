@@ -4727,9 +4727,9 @@ GUI_TEST_CLASS_DEFINITION(test_2651) {
     const QModelIndex firstIndex = GTUtilsProjectTreeView::findIndex(os, "AB797210 features", safeOptions);
     CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797210 features\" item has not been deleted");
     const QModelIndex secondIndex = GTUtilsProjectTreeView::findIndex(os, "AB797204 features", safeOptions);
-    CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797204 features\" item has not been deleted");
+    CHECK_SET_ERR(!secondIndex.isValid(), "The \"AB797204 features\" item has not been deleted");
     const QModelIndex thirdIndex = GTUtilsProjectTreeView::findIndex(os, "AB797201 features", safeOptions);
-    CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797201 features\" item has not been deleted");
+    CHECK_SET_ERR(!thirdIndex.isValid(), "The \"AB797201 features\" item has not been deleted");
 
     GTUtilsLog::check(os, l);
 }

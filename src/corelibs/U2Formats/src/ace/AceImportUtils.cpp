@@ -337,7 +337,7 @@ void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteA
         CHECK_OP((*os), );
         readLine = (QByteArray::fromRawData(buff, len)).trimmed();
     } while (!readLine.startsWith(BS));
-    afBlock.simplified();
+    afBlock = afBlock.simplified();
 
     while (!afBlock.isEmpty()) {
         QByteArray afLine = afBlock;

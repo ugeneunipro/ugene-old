@@ -23,8 +23,8 @@
 #define _U2_MOD_H_
 
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/DbiConnection.h>
 #include <U2Core/U2Type.h>
-
 
 namespace U2 {
 
@@ -86,7 +86,6 @@ public:
  * WARNING!: you should limit the scope of the created instance to as small as possible,
  * as it "blocks" database!!
  */
-class DbiConnection;
 class U2CORE_EXPORT U2UseCommonUserModStep {
 public:
     U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& _masterObjId, U2OpStatus& os);

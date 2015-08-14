@@ -261,7 +261,7 @@ QList<U2DbiFactoryId> U2DbiRegistry::getRegisteredDbiFactories() const {
     return factories.keys();
 }
 
-U2DbiFactory *U2DbiRegistry::getDbiFactoryById(U2DbiFactoryId id) const {
+U2DbiFactory *U2DbiRegistry::getDbiFactoryById(const U2DbiFactoryId &id) const {
     return factories.value(id, NULL);
 }
 

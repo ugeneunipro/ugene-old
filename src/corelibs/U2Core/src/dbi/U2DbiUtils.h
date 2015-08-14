@@ -30,48 +30,6 @@ namespace U2 {
 class U2OpStatus;
 
 /**
-    Helper class that allocates connection in constructor and automatically releases it in the destructor
-    It uses app-global connection pool.
-
-    Note: DbiConnection caches U2OpStatus and reuses it in destructor on DBI release. Ensure that
-    U2OpStatus live range contains DbiHandle live range
-*/
-class U2CORE_EXPORT DbiConnection {
-public:
-    /** Opens connection to existing DBI */
-    DbiConnection(const U2DbiRef& ref,  U2OpStatus& os);
-
-    /** Opens connection to existing DBI or create news DBI*/
-    DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = (QHash<QString, QString>()));
-
-    DbiConnection(const DbiConnection & dbiConnection_);
-
-    /** Constructs not opened dbi connection */
-    DbiConnection();
-
-    ~DbiConnection();
-
-    /** Opens connection to existing DBI */
-    void open(const U2DbiRef& ref,  U2OpStatus& os);
-
-    /** Opens connection to existing DBI or create news DBI*/
-    void open(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = (QHash<QString, QString>()));
-
-    void close(U2OpStatus& os);
-
-    bool isOpen() const;
-
-    DbiConnection& operator=(DbiConnection const& dbiConnection);
-
-    U2Dbi*          dbi;
-
-private: //TODO
-    void copy(const DbiConnection & dbiConnection);
-
-};
-
-
-/**
     Helper class to track DBI instance live range
 */
 class U2CORE_EXPORT TmpDbiHandle {

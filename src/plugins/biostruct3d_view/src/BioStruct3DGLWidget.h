@@ -25,9 +25,12 @@
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DColorScheme.h"
 #include "AnaglyphRenderer.h"
+#include "MolecularSurfaceRenderer.h"
 
 #include <U2Core/Vector3D.h>
 #include <U2Core/BioStruct3DObject.h>
+
+#include <U2Algorithm/MolecularSurface.h>
 
 #include <QtCore/QTimer>
 #include <QtCore/QSharedPointer>
@@ -47,25 +50,23 @@
 
 namespace U2 {
 
-class Document;
+class ADVSequenceObjectContext;
+class AnnotatedDNAView;
+class Annotation;
+class AnnotationSelection;
+class AnnotationTableObject;
 class BioStruct3D;
 class BioStruct3DColorSchemeFactory;
 class BioStruct3DGLRendererFactory;
-class MolecularSurfaceRendererFactory;
-class AnnotatedDNAView;
-class Annotation;
-class AnnotationTableObject;
-class MolecularSurfaceCalcTask;
-class Task;
-class AnnotationSelection;
-class U2SequenceObject;
-class ADVSequenceObjectContext;
-class LRegionsSelection;
-class GLFrameManager;
+class Document;
 class GLFrame;
-class MolecularSurface;
-class MolecularSurfaceRenderer;
+class GLFrameManager;
+class LRegionsSelection;
+class MolecularSurfaceCalcTask;
+class MolecularSurfaceRendererFactory;
+class Task;
 class U2Region;
+class U2SequenceObject;
 
 /** Each biostruct added to scene should be represented by context */
 class BioStruct3DRendererContext {

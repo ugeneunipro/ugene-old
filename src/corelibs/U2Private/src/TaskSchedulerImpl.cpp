@@ -646,7 +646,7 @@ QDateTime TaskSchedulerImpl::estimatedFinishTime(Task* task) const {
     int secsLeft = secsTotal - secsPassed;
 
     QDateTime res = QDateTime::currentDateTime();
-    res.addSecs(secsLeft);
+    res = res.addSecs(secsLeft);
     return res;
 }
 
