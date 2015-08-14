@@ -52,7 +52,7 @@ public:
 
 protected slots:
     void sl_visibleRangeChanged();
-    void sl_tbToggled();
+    void sl_graphActionTriggered();
     void sl_annotationsAdded(const QList<Annotation *> &a);
     void sl_annotationsRemoved(const QList<Annotation *> &a);
     void sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *);
@@ -84,7 +84,6 @@ private:
     PanView*        panView;
     DetView*        detView;
     QPoint          mousePosToSlider;
-    QToolButton*    tb;
     ADVSingleSequenceWidget* seqWidget;
 
 

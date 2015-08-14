@@ -23,98 +23,61 @@
 #include "DotPlotWidget.h"
 #include "DotPlotFilterDialog.h"
 
-#include <U2Gui/HBar.h>
+#include <U2Gui/WidgetWithLocalToolbar.h>
+
 #include <U2View/AnnotatedDNAView.h>
+
 #include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QString>
 #include <QtCore/QPair>
 #include <QtCore/QSet>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolButton>
-#endif
+#include <QAction>
+#include <QVBoxLayout>
+#include <QMenu>
+#include <QToolBar>
+
 
 namespace U2 {
 
 DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
-: ADVSplitWidget(a), locked(false)
+    : ADVSplitWidget(a),
+      locked(false)
 {
-    QLayout *layout = new QHBoxLayout;
-    if (!layout) {
-        return;
-    }
-
-    layout->setSpacing(0);
-    layout->setContentsMargins(0,0,3,0);
-
-
-    syncLockButton = createToolButton(":core/images/sync_lock.png", tr("Multiple view synchronization lock"), SLOT(sl_toggleSyncLock(bool)));
-    filterButton = createToolButton(":dotplot/images/filter.png", tr("Filter results"), SLOT(sl_toggleFilter()), false);
-    aspectRatioButton = createToolButton(":dotplot/images/aspectRatio.png", tr("Keep aspect ratio"), SLOT(sl_toggleAspectRatio(bool)));
-    zoomInButton = createToolButton(":core/images/zoom_in.png", tr("Zoom in (<b> + </b>)"), SLOT(sl_toggleZoomIn()), false);
-    zoomOutButton = createToolButton(":core/images/zoom_out.png", tr("Zoom out (<b> - </b>)"), SLOT(sl_toggleZoomOut()), false);
-    resetZoomingButton = createToolButton(":core/images/zoom_whole.png", tr("Reset zooming (<b>0</b>)"), SLOT(sl_toggleZoomReset()), false);
-    selButton = createToolButton(":dotplot/images/cursor.png", tr("Select tool (<b>S</b>)"), SLOT(sl_toggleSel()));
-    handButton = createToolButton(":dotplot/images/hand_icon.png", tr("Hand tool (<b>H</b>)"), SLOT(sl_toggleHand()));
-
-
-    syncLockButton->setAutoRaise(true);
-    syncLockButton->setAutoFillBackground(true);
-
-    filterButton->setAutoRaise(true);
-    filterButton->setAutoFillBackground(true);
-
-    aspectRatioButton->setAutoRaise(true);
-
-    zoomInButton->setAutoRaise(true);
-    zoomOutButton->setAutoRaise(true);
-    resetZoomingButton->setAutoRaise(true);
-
-    selButton->setAutoRaise(true);
-    selButton->setChecked(true);
-
-    handButton->setAutoRaise(true);
-
-    buttonToolBar = new HBar(this);
-    if (!buttonToolBar) {
-        return;
-    }
-
-    buttonToolBar->setOrientation(Qt::Vertical);
-    buttonToolBar->setFloatable(false);
-    buttonToolBar->setMovable(false);
-    buttonToolBar->setStyleSheet("background: ");
-
-    buttonToolBar->addWidget(filterButton);
-    buttonToolBar->addWidget(syncLockButton);
-//  buttonToolBar->addWidget(aspectRatioButton); // todo: not implemented yet
-    buttonToolBar->addWidget(zoomInButton);
-    buttonToolBar->addWidget(zoomOutButton);
-    buttonToolBar->addWidget(resetZoomingButton);
-    buttonToolBar->addWidget(selButton);
-    buttonToolBar->addWidget(handButton);
-
+    syncLockAction =        createAction(":core/images/sync_lock.png",      tr("Multiple view synchronization lock"),   SLOT(sl_toggleSyncLock(bool)));
+    filterAction =          createAction(":dotplot/images/filter.png",      tr("Filter results"),                       SLOT(sl_toggleFilter()),            false);
+    zoomInAction =          createAction(":core/images/zoom_in.png",        tr("Zoom in (<b> + </b>)"),                 SLOT(sl_toggleZoomIn()),            false);
+    zoomOutAction =         createAction(":core/images/zoom_out.png",       tr("Zoom out (<b> - </b>)"),                SLOT(sl_toggleZoomOut()),           false);
+    resetZoomingAction =    createAction(":core/images/zoom_whole.png",     tr("Reset zooming (<b>0</b>)"),             SLOT(sl_toggleZoomReset()),         false);
+    selAction =             createAction(":dotplot/images/cursor.png",      tr("Select tool (<b>S</b>)"),               SLOT(sl_toggleSel()));
+    handAction =            createAction(":dotplot/images/hand_icon.png",   tr("Hand tool (<b>H</b>)"),                 SLOT(sl_toggleHand()));
 
     splitter = new QSplitter(Qt::Horizontal);
-    if (!splitter) {
-        return;
-    }
 
-    layout->addWidget(buttonToolBar);
-    layout->setAlignment(buttonToolBar, Qt::AlignTop);
-    layout->addWidget(splitter);
+    WidgetWithLocalToolbar* wgt = new WidgetWithLocalToolbar(this);
+    QLayout* l = new QVBoxLayout();
+    l->setMargin(0);
+    l->setSpacing(0);
+    l->addWidget(splitter);
+    wgt->setContentLayout(l);
+
+    wgt->addActionToLocalToolbar(filterAction);
+    wgt->addActionToLocalToolbar(syncLockAction);
+    wgt->addActionToLocalToolbar(zoomInAction);
+    wgt->addActionToLocalToolbar(zoomOutAction);
+    wgt->addActionToLocalToolbar(resetZoomingAction);
+    wgt->addActionToLocalToolbar(selAction);
+    wgt->addActionToLocalToolbar(handAction);
+
+    QLayout* mainLayout = new QVBoxLayout();
+    mainLayout->setSpacing(0);
+    mainLayout->setMargin(0);
+    mainLayout->addWidget(wgt);
+    setLayout(mainLayout);
+
     setAcceptDrops(false);
 
-    setLayout(layout);
     setFocus();
 }
 
@@ -130,44 +93,27 @@ bool DotPlotSplitter::onCloseEvent() {
     return true;
 }
 
-QToolButton *DotPlotSplitter::createToolButton(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable) {
+QAction *DotPlotSplitter::createAction(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable) {
 
-    QToolButton *toolButton = new QToolButton(this);
-    if (toolButton) {
-        toolButton->setIcon(ic);
-        toolButton->setToolTip(toolTip);
-        toolButton->setFixedWidth(20);
-        toolButton->setFixedHeight(20);
-        toolButton->setCheckable(checkable);
+    QAction *a = new QAction(this);
+    if (a != NULL) {
+        a->setIcon(ic);
+        a->setToolTip(toolTip);
+        a->setCheckable(checkable);
         if (checkable) {
-            connect(toolButton, SIGNAL(toggled(bool)), this, slot);
+            connect(a, SIGNAL(toggled(bool)), this, slot);
         }
         else {
-            connect(toolButton, SIGNAL(clicked()), this, slot);
+            connect(a, SIGNAL(triggered()), this, slot);
         }
     }
 
-    return toolButton;
+    return a;
 }
 
-QToolButton *DotPlotSplitter::createToolButton(const QString& iconPath, const QString& toolTip, const char *slot, bool checkable) {
+QAction *DotPlotSplitter::createAction(const QString& iconPath, const QString& toolTip, const char *slot, bool checkable) {
 
-    return createToolButton(QIcon(iconPath), toolTip, slot, checkable);
-}
-
-DotPlotSplitter::~DotPlotSplitter() {
-
-    delete syncLockButton;
-    delete filterButton;
-    delete aspectRatioButton;
-    delete zoomInButton;
-    delete zoomOutButton;
-    delete resetZoomingButton;
-    delete handButton;
-    delete selButton;
-
-    delete buttonToolBar;
-    delete splitter;
+    return createAction(QIcon(iconPath), toolTip, slot, checkable);
 }
 
 void DotPlotSplitter::addView(DotPlotWidget* view) {
@@ -226,10 +172,10 @@ void DotPlotSplitter::checkLockButtonState() {
         }
     }
 
-    if (syncLockButton) {
-        syncLockButton->setEnabled(enableLockButton);
+    if (syncLockAction) {
+        syncLockAction->setEnabled(enableLockButton);
         if (!enableLockButton) { // disabled button should not be checked
-            syncLockButton->setChecked(false);
+            syncLockAction->setChecked(false);
         }
     }
 }
@@ -329,17 +275,17 @@ void DotPlotSplitter::sl_toggleZoomReset() {
 }
 
 void DotPlotSplitter::sl_toggleSel(){
-    handButton->setChecked(!selButton->isChecked());
+    handAction->setChecked(!selAction->isChecked());
 
     foreach (DotPlotWidget *dpWidget, dotPlotList) {
-        dpWidget->setSelActive(selButton->isChecked());
+        dpWidget->setSelActive(selAction->isChecked());
     }
 }
 void DotPlotSplitter::sl_toggleHand(){
-    selButton->setChecked(!handButton->isChecked());
+    selAction->setChecked(!handAction->isChecked());
 
     foreach (DotPlotWidget *dpWidget, dotPlotList) {
-        dpWidget->setSelActive(selButton->isChecked());
+        dpWidget->setSelActive(selAction->isChecked());
     }
 }
 
@@ -373,29 +319,29 @@ void DotPlotSplitter::updateButtonState(){
     bool noFocus = true;
     foreach (DotPlotWidget *dpWidget, dotPlotList) {
         if (dpWidget->hasFocus()){
-            zoomInButton->setEnabled(dpWidget->canZoomIn());
-            zoomOutButton->setEnabled(dpWidget->canZoomOut());
-            resetZoomingButton->setEnabled(dpWidget->canZoomOut());
+            zoomInAction->setEnabled(dpWidget->canZoomIn());
+            zoomOutAction->setEnabled(dpWidget->canZoomOut());
+            resetZoomingAction->setEnabled(dpWidget->canZoomOut());
             noFocus = false;
             break;
         }
     }
     if (noFocus && !dotPlotList.isEmpty()){
         DotPlotWidget *dpWidget = dotPlotList.first();
-        zoomInButton->setEnabled(dpWidget->canZoomIn());
-        zoomOutButton->setEnabled(dpWidget->canZoomOut());
-        resetZoomingButton->setEnabled(dpWidget->canZoomOut());
-        handButton->setShortcut(QKeySequence());
-        selButton->setShortcut(QKeySequence());
-        zoomInButton->setShortcut(QKeySequence());
-        zoomOutButton->setShortcut(QKeySequence());
-        resetZoomingButton->setShortcut(QKeySequence());
+        zoomInAction->setEnabled(dpWidget->canZoomIn());
+        zoomOutAction->setEnabled(dpWidget->canZoomOut());
+        resetZoomingAction->setEnabled(dpWidget->canZoomOut());
+        handAction->setShortcut(QKeySequence());
+        selAction->setShortcut(QKeySequence());
+        zoomInAction->setShortcut(QKeySequence());
+        zoomOutAction->setShortcut(QKeySequence());
+        resetZoomingAction->setShortcut(QKeySequence());
     } else {
-        handButton->setShortcut('H');
-        selButton->setShortcut('S');
-        zoomInButton->setShortcut('+');
-        zoomOutButton->setShortcut('-');
-        resetZoomingButton->setShortcut('0');
+        handAction->setShortcut('H');
+        selAction->setShortcut('S');
+        zoomInAction->setShortcut('+');
+        zoomOutAction->setShortcut('-');
+        resetZoomingAction->setShortcut('0');
     }
 }
 

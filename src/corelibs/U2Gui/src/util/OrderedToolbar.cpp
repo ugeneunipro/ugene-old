@@ -19,16 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "HBar.h"
+#include "OrderedToolbar.h"
+
+#include <QLayout>
+#include <QToolButton>
+
+#define TOOLBAR_BUTTON_SIZE 25
 
 namespace U2 {
 
-void HBar::setButtonTabOrderList(QList<QString> * buttonNamesInNeededOrder) {
+OrderedToolbar::OrderedToolbar(QWidget* parent, Qt::Orientation orientation)
+    : QToolBar(parent),
+      tabOrdered(false),
+      buttonTabOrderList(NULL) {
+    setOrientation(orientation);
+}
+
+void OrderedToolbar::setButtonTabOrderList(QList<QString> * buttonNamesInNeededOrder) {
     assert(NULL != buttonNamesInNeededOrder);
     buttonTabOrderList = buttonNamesInNeededOrder;
 }
 
-void HBar::setVisible(bool visible)
+void OrderedToolbar::setVisible(bool visible)
 {
     QWidget::setVisible(visible);
 
@@ -38,7 +50,7 @@ void HBar::setVisible(bool visible)
     }
 }
 
-void HBar::setButtonsTabOrder() const {
+void OrderedToolbar::setButtonsTabOrder() const {
     assert(!buttonTabOrderList->isEmpty());
 
     QList<QObject *> barElements = children();
@@ -56,7 +68,7 @@ void HBar::setButtonsTabOrder() const {
                 if(NULL == curButton || NULL == prevButton) {
                     break;
                 }
-                
+
                 QWidget::setTabOrder(prevButton, curButton);
                 prevButton = curButton;
 

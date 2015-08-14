@@ -54,16 +54,14 @@ Overview::Overview(ADVSingleSequenceWidget *p, ADVSequenceObjectContext *ctx)
     panView = p->getPanView();
     detView = p->getDetView();
 
-    tb = new QToolButton(this);
-    tb->setFixedWidth(16);
-    tb->setFixedHeight(20);
-    tb->setCheckable(true);
-    tb->setIcon(QIcon(":core/images/sum.png"));
-    tb->setToolTip(tr("Toggle annotation density graph"));
+    QAction* densityGraphAction = new QAction( QIcon(":core/images/sum.png"), "", this);
+    densityGraphAction->setCheckable(true);
+    densityGraphAction->setToolTip(tr("Toggle annotation density graph"));
+    addActionToLocalToolbar(densityGraphAction);
 
+    connect(densityGraphAction, SIGNAL(triggered()), SLOT(sl_graphActionTriggered()));
     connect(panView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
     connect(detView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
-    connect(tb, SIGNAL(pressed()), SLOT(sl_tbToggled()));
     connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject *)), SLOT(sl_annotationObjectAdded(AnnotationTableObject *)));
     connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject *)), SLOT(sl_annotationObjectRemoved(AnnotationTableObject *)));
     foreach (AnnotationTableObject *at, ctx->getAnnotationObjects(true)) {
@@ -135,18 +133,16 @@ void Overview::sl_sequenceChanged() {
 }
 
 void Overview::pack() {
-    assert(layout() == NULL);
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(renderArea);
-    layout->addWidget(tb);
-    setLayout(layout);
+    setContentLayout(layout);
     scrollBar->setHidden(true);
     setFixedHeight(renderArea->height());
 }
 
-void Overview::sl_tbToggled() {
+void Overview::sl_graphActionTriggered() {
     OverviewRenderArea* ra = qobject_cast<OverviewRenderArea*>(renderArea);
     ra->showGraph = !ra->showGraph;
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
@@ -385,7 +381,7 @@ DetView *Overview::getDet() const {
 
 //////////////////////////////////////////////////////////////////////////
 /// GlobalViewRenderArea
-#define ANNOTATION_GRAPH_HEIGHT 4
+#define ANNOTATION_GRAPH_HEIGHT 9
 #define RULER_NOTCH_SIZE 2
 #define SLIDER_MIN_WIDTH 3
 #define ARROW_WIDTH 12

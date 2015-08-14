@@ -67,6 +67,7 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     setObjectName(objectName);
 
     showQVAction = new QAction(tr("Show quality bars"), this);
+    showQVAction->setIcon(QIcon(":chroma_view/images/bars.png"));
     showQVAction->setCheckable(true);
     showQVAction->setChecked(chroma.hasQV);
     showQVAction->setEnabled(chroma.hasQV);
@@ -120,17 +121,19 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
 
     connect(ctx->getAnnotatedDNAView(), SIGNAL(si_objectRemoved(GObjectView*, GObject*)), SLOT(sl_onObjectRemoved(GObjectView*, GObject*)));
     pack();
+
+    addActionToLocalToolbar(showQVAction);
+    QToolButton* traceButton = addActionToLocalToolbar(traceActionMenu->menuAction());
+    traceButton->setIcon(QIcon(":chroma_view/images/traces.png"));
+    traceButton->setPopupMode(QToolButton::InstantPopup);
 }
 
 void ChromatogramView::pack() {
-
-    assert(layout() == NULL);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->addWidget(renderArea);
     layout->addWidget(scaleBar);
-    setLayout(layout);
+    setContentLayout(layout);
 
     scrollBar->setHidden(true); //todo: support mode without scrollbar at all??
 

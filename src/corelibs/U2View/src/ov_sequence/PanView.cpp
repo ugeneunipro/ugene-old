@@ -146,6 +146,11 @@ PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
     toggleCustomRulersAction->setEnabled(!getRenderArea()->customRulers.isEmpty());
     connect(toggleCustomRulersAction, SIGNAL(triggered(bool)), SLOT(sl_toggleCustomRulersVisibility(bool)));
 
+    addActionToLocalToolbar(zoomInAction);
+    addActionToLocalToolbar(zoomOutAction);
+    addActionToLocalToolbar(zoomToSelectionAction);
+    addActionToLocalToolbar(zoomToSequenceAction);
+
     drawSettings.drawAnnotationArrows = true;
     drawSettings.drawAnnotationNames = true;
     drawSettings.drawCutSites = false;
@@ -167,14 +172,13 @@ PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
 }
 
 void PanView::pack() {
-    assert(layout() == NULL);
     QGridLayout* layout = new QGridLayout();
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(renderArea, 0, 0, 1, 1);
     layout->addWidget(rowBar, 0, 1, 2, 1);
     layout->addWidget(scrollBar, 1, 0, 1, 1);
-    setLayout(layout);
+    setContentLayout(layout);
 }
 
 PanView::~PanView() {

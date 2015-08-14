@@ -213,7 +213,6 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
         assert(!m->actions().isEmpty());
 
         QMenu* dotPlotMenu = new QMenu(tr("Dotplot"), m);
-        //dotPlotMenu->set
         dotPlotMenu->menuAction()->setObjectName("Dotplot");
         QMenu* saveMenu = new QMenu(tr("Save/Load"), dotPlotMenu);
         saveMenu->menuAction()->setObjectName("Save/Load");

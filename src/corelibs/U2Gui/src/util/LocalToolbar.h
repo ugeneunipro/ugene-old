@@ -19,35 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ADV_SPLIT_WIDGET_H_
-#define _U2_ADV_SPLIT_WIDGET_H_
+#ifndef _U2_LOCAL_TOOLBAR_H_
+#define _U2_LOCAL_TOOLBAR_H_
+
+#include <U2Gui/OrderedToolbar.h>
 
 #include <U2Core/global.h>
 
-#include <QSplitter>
-
+#include <QToolBar>
 
 namespace U2 {
 
-
-class AnnotatedDNAView;
-class GObject;
-
-class U2VIEW_EXPORT ADVSplitWidget : public QWidget {
-    Q_OBJECT
+class U2GUI_EXPORT LocalToolbar : public OrderedToolbar {
 public:
-    ADVSplitWidget(AnnotatedDNAView* view) : dnaView(view) { }
-    AnnotatedDNAView* getAnnotatedDNAView() const {return dnaView;}
-    virtual bool acceptsGObject(GObject* objects)  = 0;
-    virtual void updateState(const QVariantMap& m) = 0;
-    virtual void saveState(QVariantMap& m) = 0;
+    LocalToolbar(QWidget* p);
 
-    virtual bool onCloseEvent() { return true; }
-protected:
-    AnnotatedDNAView* dnaView;
+    virtual void addAction(QAction* a);
 };
 
+} // namespace
 
-}//namespace
-
-#endif //_U2_ADV_SPLIT_WIDGET_H_
+#endif // _U2_LOCAL_TOOLBAR_H_

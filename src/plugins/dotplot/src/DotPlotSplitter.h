@@ -35,18 +35,16 @@ namespace U2 {
 class GObjectView;
 class DotPlotWidget;
 class ADVSequenceObjectContext;
-class HBar;
 
 class DotPlotSplitter : public ADVSplitWidget {
     Q_OBJECT
 
 public:
     DotPlotSplitter(AnnotatedDNAView*);
-    ~DotPlotSplitter();
 
     virtual bool acceptsGObject(GObject* objects) {Q_UNUSED(objects);return false;}
-    virtual void updateState(const QVariantMap&){};
-    virtual void saveState(QVariantMap&){};
+    virtual void updateState(const QVariantMap&){}
+    virtual void saveState(QVariantMap&){}
 
     void addView(DotPlotWidget*);
     void removeView(DotPlotWidget*);
@@ -57,16 +55,21 @@ protected:
     virtual bool onCloseEvent();
 
 private:
-    QToolButton *createToolButton(const QString& iconPath, const QString& toolTip, const char *slot, bool checkable = true);
-    QToolButton *createToolButton(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable = true);
+    QAction *createAction(const QString& iconPath, const QString& toolTip, const char *slot, bool checkable = true);
+    QAction *createAction(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable = true);
 
     QSplitter *splitter;
-    HBar *buttonToolBar;
     QList<DotPlotWidget*> dotPlotList;
 
     bool locked;
-    QToolButton *syncLockButton, *filterButton, *aspectRatioButton, *zoomInButton, *zoomOutButton,
-        *resetZoomingButton, *zoomToButton, *handButton, *selButton;
+    QAction*    syncLockAction;
+    QAction*    filterAction;
+    QAction*    zoomInAction;
+    QAction*    zoomOutAction;
+    QAction*    resetZoomingAction;
+    QAction*    zoomToAction;
+    QAction*    handAction;
+    QAction*    selAction;
 
     void updateButtonState();
     void checkLockButtonState();

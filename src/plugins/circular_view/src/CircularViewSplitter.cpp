@@ -34,13 +34,14 @@
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Gui/HBar.h>
-#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/OrderedToolbar.h>
+#include <U2Gui/WidgetWithLocalToolbar.h>
 
 #include "CircularView.h"
 #include "CircularViewImageExportTask.h"
@@ -49,54 +50,49 @@
 
 namespace U2 {
 
-CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view) : ADVSplitWidget(view) {
-    tbZoomIn = new QToolButton(this);
-    tbZoomIn->setIcon(QIcon(":/core/images/zoom_in.png"));
-    tbZoomIn->setToolTip(tr("Zoom In"));
-    tbZoomIn->setFixedSize(20,20);
-    tbZoomIn->setObjectName("tbZoomIn_" + view->getName());
+CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view)
+    : ADVSplitWidget(view)
+{
+    zoomInAction = new QAction(this);
+    zoomInAction->setIcon(QIcon(":/core/images/zoom_in.png"));
+    zoomInAction->setToolTip(tr("Zoom In"));
+    zoomInAction->setObjectName("tbZoomIn_" + view->getName());
 
-    tbZoomOut = new QToolButton(this);
-    tbZoomOut->setIcon(QIcon(":/core/images/zoom_out.png"));
-    tbZoomOut->setToolTip(tr("Zoom Out"));
-    tbZoomOut->setFixedSize(20,20);
+    zoomOutAction = new QAction(this);
+    zoomOutAction->setIcon(QIcon(":/core/images/zoom_out.png"));
+    zoomOutAction->setToolTip(tr("Zoom Out"));
 
-    tbFitInView = new QToolButton(this);
-    tbFitInView->setIcon(QIcon(":/core/images/zoom_whole.png"));
-    tbFitInView->setToolTip(tr("Fit To Full View"));
-    tbFitInView->setFixedSize(20,20);
+    fitInViewAction = new QAction(this);
+    fitInViewAction->setIcon(QIcon(":/core/images/zoom_whole.png"));
+    fitInViewAction->setToolTip(tr("Fit To Full View"));
 
-    tbExport = new QToolButton(this);
-    tbExport->setIcon(QIcon(":/core/images/cam2.png"));
-    tbExport->setToolTip(tr("Save circular view as image"));
-    tbExport->setFixedSize(20,20);
+    exportAction = new QAction(this);
+    exportAction->setIcon(QIcon(":/core/images/cam2.png"));
+    exportAction->setToolTip(tr("Save circular view as image"));
 
-    tbToggleRestrictionMap = new QToolButton(this);
-    tbToggleRestrictionMap->setIcon(QIcon(":/circular_view/images/side_list.png"));
-    tbToggleRestrictionMap->setToolTip(tr("Show/hide restriction sites map"));
-    tbToggleRestrictionMap->setFixedSize(20,20);
-    tbToggleRestrictionMap->setCheckable(true);
-    tbToggleRestrictionMap->setChecked(true);
-    connect(tbToggleRestrictionMap, SIGNAL(toggled(bool)),SLOT(sl_toggleRestrictionMap(bool)));
+    toggleRestrictionMapAction = new QAction(this);
+    toggleRestrictionMapAction->setIcon(QIcon(":/circular_view/images/side_list.png"));
+    toggleRestrictionMapAction->setToolTip(tr("Show/hide restriction sites map"));
+    toggleRestrictionMapAction->setCheckable(true);
+    toggleRestrictionMapAction->setChecked(true);
+    connect(toggleRestrictionMapAction, SIGNAL(triggered(bool)),SLOT(sl_toggleRestrictionMap(bool)));
 
-    toolBar = new HBar(this);
-    toolBar->setOrientation(Qt::Vertical);
-
-    toolBar->addWidget(tbZoomIn);
-    toolBar->addWidget(tbZoomOut);
-    toolBar->addWidget(tbFitInView);
-    toolBar->addWidget(tbExport);
-    toolBar->addWidget(tbToggleRestrictionMap);
-
-    connect(tbExport, SIGNAL(pressed()), SLOT(sl_export()));
+    connect(exportAction, SIGNAL(triggered()), SLOT(sl_export()));
 
     splitter = new QSplitter(Qt::Horizontal);
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    WidgetWithLocalToolbar* widgetWithToolBar = new WidgetWithLocalToolbar(this);
+    widgetWithToolBar->addActionToLocalToolbar(zoomInAction);
+    widgetWithToolBar->addActionToLocalToolbar(zoomOutAction);
+    widgetWithToolBar->addActionToLocalToolbar(fitInViewAction);
+    widgetWithToolBar->addActionToLocalToolbar(exportAction);
+    widgetWithToolBar->addActionToLocalToolbar(toggleRestrictionMapAction);
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setSpacing(0);
-    layout->setContentsMargins(0,0,3,0);
-    layout->addWidget(toolBar);
+    layout->setMargin(0);
     layout->addWidget(splitter);
+    widgetWithToolBar->setContentLayout(layout);
+
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     setBaseSize(600,600);
     setAcceptDrops(false);
@@ -111,7 +107,7 @@ CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view) : ADVSplitWid
     horScroll->setSingleStep(5);
     connect(horScroll, SIGNAL(valueChanged(int)), SLOT(sl_horSliderMoved(int)));
 
-    outerLayout->addLayout(layout);
+    outerLayout->addWidget(widgetWithToolBar);
     outerLayout->insertWidget(-1, horScroll);
 }
 
@@ -126,10 +122,10 @@ void CircularViewSplitter::saveState( QVariantMap& m ) {
 }
 
 void CircularViewSplitter::addView(CircularView* view, RestrctionMapWidget* rmapWidget) {
-    tbFitInView->setDisabled(true);
-    connect(tbZoomIn, SIGNAL(pressed()), view, SLOT(sl_zoomIn()));
-    connect(tbZoomOut, SIGNAL(pressed()), view, SLOT(sl_zoomOut()));
-    connect(tbFitInView, SIGNAL(pressed()), view, SLOT(sl_fitInView()));
+    fitInViewAction->setDisabled(true);
+    connect(zoomInAction, SIGNAL(triggered()), view, SLOT(sl_zoomIn()));
+    connect(zoomOutAction, SIGNAL(triggered()), view, SLOT(sl_zoomOut()));
+    connect(fitInViewAction, SIGNAL(triggered()), view, SLOT(sl_fitInView()));
 
     connect(view, SIGNAL(si_zoomInDisabled(bool)), SLOT(sl_updateZoomInAction(bool)));
     connect(view, SIGNAL(si_zoomOutDisabled(bool)), SLOT(sl_updateZoomOutAction(bool)));
@@ -229,8 +225,6 @@ void CircularViewSplitter::sl_export() {
                                                                       "circular_" + seqObj->getSequenceName());
     dialog->exec();
     CHECK(!dialog.isNull(), );
-
-    tbExport->setDown(false);
 }
 
 void CircularViewSplitter::sl_horSliderMoved(int newVal) {
@@ -289,15 +283,15 @@ void CircularViewSplitter::adaptSize() {
 }
 
 void CircularViewSplitter::sl_updateZoomInAction( bool disabled) {
-    tbZoomIn->setDisabled(disabled);
+    zoomInAction->setDisabled(disabled);
 }
 
 void CircularViewSplitter::sl_updateZoomOutAction( bool disabled) {
-    tbZoomOut->setDisabled(disabled);
+    zoomOutAction->setDisabled(disabled);
 }
 
 void CircularViewSplitter::sl_updateFitInViewAction( bool disabled) {
-    tbFitInView->setDisabled(disabled);
+    fitInViewAction->setDisabled(disabled);
 }
 
 void CircularViewSplitter::sl_toggleRestrictionMap( bool toggle)

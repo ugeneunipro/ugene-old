@@ -124,9 +124,10 @@ void GSequenceGraphView::leaveEvent(QEvent * /*le*/) {
 
 void GSequenceGraphView::addLabel(float xPos) {
     foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
-        if(NULL != graph->graphLabels.findLabelByPosition(xPos))
+        if(NULL != graph->graphLabels.findLabelByPosition(xPos)) {
             continue;
-        GraphLabel* newLabel = new GraphLabel(xPos, this);
+        }
+        GraphLabel* newLabel = new GraphLabel(xPos, renderArea);
         newLabel->show();
 
         graph->graphLabels.addLabel(newLabel);
@@ -170,7 +171,6 @@ void GSequenceGraphView::hideLabel() {
 }
 
 void GSequenceGraphView::pack() {
-    assert(layout() == NULL);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->setMargin(0);
     vLayout->setSpacing(0);
@@ -186,7 +186,7 @@ void GSequenceGraphView::pack() {
     hLayout->addLayout(vLayout);
     hLayout->addWidget(fakeBar);
 
-    setLayout(hLayout);
+    setContentLayout(hLayout);
 
     scrollBar->setHidden(true); //todo: support mode without scrollbar at all??
 
@@ -195,7 +195,7 @@ void GSequenceGraphView::pack() {
 
 void GSequenceGraphView::addGraphData(const QSharedPointer<GSequenceGraphData> &g) {
     assert(!graphs.contains(g));
-    g->graphLabels.getMovingLabel().setParent(this);
+    g->graphLabels.getMovingLabel().setParent(renderArea);
     graphs.append(g);
 }
 
@@ -322,8 +322,8 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
     p.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
     p.setPen(Qt::black);
 
-    if (graphRect != QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2)) {
-        graphRect = QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2);
+    if (graphRect != QRect(1, headerHeight + 1, pd->width() - 2, pd->height() - headerHeight - 2)) {
+        graphRect = QRect(1, headerHeight + 1, pd->width() - 2, pd->height() - headerHeight - 2);
         emit si_graphRectChanged(graphRect);
     }
 

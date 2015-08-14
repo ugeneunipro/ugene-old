@@ -24,14 +24,14 @@
 
 #include <U2Core/U2Region.h>
 
+#include <U2Gui/WidgetWithLocalToolbar.h>
+
 #include <QtCore/QFlag>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMenu>
-#endif
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QWidget>
+#include <QToolButton>
+
 #include <QtGui/QMouseEvent>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QFocusEvent>
@@ -67,7 +67,7 @@ typedef QFlags<GSLV_UpdateFlag> GSLV_UpdateFlags;
 typedef QFlags<GSLV_FeatureFlag> GSLV_FeatureFlags;
 
 //single-line sequence view
-class U2VIEW_EXPORT GSequenceLineView : public QWidget {
+class U2VIEW_EXPORT GSequenceLineView : public WidgetWithLocalToolbar {
     Q_OBJECT
 public:
     GSequenceLineView(QWidget* p, ADVSequenceObjectContext* ctx);

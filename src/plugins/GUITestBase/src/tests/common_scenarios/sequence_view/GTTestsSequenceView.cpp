@@ -1158,7 +1158,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
 }
 #undef GET_ACTIONS
 
-GUI_TEST_CLASS_DEFINITION(test_0034){    
+GUI_TEST_CLASS_DEFINITION(test_0034){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     QWidget* panView = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
@@ -1788,6 +1788,40 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
 //    In dialog select any value
     int labelsNum = GTUtilsSequenceView::getGraphLabels(os, graphView).size();
     CHECK_SET_ERR(labelsNum == 81, QString("unexpected labels number: %1").arg(labelsNum))
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0058){
+    // complex test on local toolbars buttons
+
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+
+    QAction* zoomIn = GTAction::findAction(os, "action_zoom_in_A1#berezikov");
+    CHECK_SET_ERR(zoomIn != NULL, "Cannot find action_zoom_in_A1#berezikov");
+
+    GTWidget::click(os, GTAction::button(os, zoomIn));
+    GTWidget::click(os, GTAction::button(os, zoomIn));
+    GTWidget::click(os, GTAction::button(os, zoomIn));
+
+    QWidget* chromView = GTWidget::findWidget(os, "chromatogram_view_A1#berezikov");
+    CHECK_SET_ERR(chromView != NULL, "Cannot find chromatogram_view_A1#berezikov");
+    QPixmap pix = QPixmap::grabWidget(chromView, chromView->rect());
+
+    QAction* bars = GTAction::findActionByText(os, "Show quality bars");
+    CHECK_SET_ERR(bars, "Cannot find 'Show quality bars' action");
+    GTWidget::click(os, GTAction::button(os, bars));
+    CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Bars adding");
+    pix = QPixmap::grabWidget(chromView, chromView->rect());
+
+    QAction* traces = GTAction::findActionByText(os, "Show/hide trace");
+    CHECK_SET_ERR(traces != NULL, "Cannot find 'Show/hide trace' action");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "A"));
+    GTWidget::click(os, GTAction::button(os, traces));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "C"));
+    GTWidget::click(os, GTAction::button(os, traces));
+
+    CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Traces hiding");
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

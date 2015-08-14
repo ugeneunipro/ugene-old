@@ -79,6 +79,8 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularVi
     connect(ctx->getSequenceGObject(), SIGNAL(si_nameChanged(const QString&)), this, SLOT(sl_onSequenceObjectRenamed(const QString&)));
     connect(ctx->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()), this, SLOT(sl_onCircularTopologyChange()));
     pack();
+
+    setLocalToolbarVisible(false);
 }
 
 void CircularView::pack() {
@@ -86,7 +88,8 @@ void CircularView::pack() {
     layout = new QVBoxLayout();
     layout->setContentsMargins(0,0,0,0);
     layout->addWidget(renderArea);
-    setLayout(layout);
+    setContentLayout(layout);
+    scrollBar->setHidden(true);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
 

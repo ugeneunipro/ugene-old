@@ -19,35 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ADV_SPLIT_WIDGET_H_
-#define _U2_ADV_SPLIT_WIDGET_H_
+#include "LocalToolbar.h"
 
-#include <U2Core/global.h>
+#include <QLayout>
+#include <QToolButton>
 
-#include <QSplitter>
-
+#define TOOLBAR_BUTTON_SIZE 25
 
 namespace U2 {
 
+LocalToolbar::LocalToolbar(QWidget *p)
+    : OrderedToolbar(p, Qt::Vertical) {
+    setBackgroundRole(QPalette::Window);
+    setAutoFillBackground(true);
 
-class AnnotatedDNAView;
-class GObject;
+    layout()->setSpacing(0);
+    layout()->setMargin(0);
 
-class U2VIEW_EXPORT ADVSplitWidget : public QWidget {
-    Q_OBJECT
-public:
-    ADVSplitWidget(AnnotatedDNAView* view) : dnaView(view) { }
-    AnnotatedDNAView* getAnnotatedDNAView() const {return dnaView;}
-    virtual bool acceptsGObject(GObject* objects)  = 0;
-    virtual void updateState(const QVariantMap& m) = 0;
-    virtual void saveState(QVariantMap& m) = 0;
+    setMinimumWidth(TOOLBAR_BUTTON_SIZE + 4);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+}
 
-    virtual bool onCloseEvent() { return true; }
-protected:
-    AnnotatedDNAView* dnaView;
-};
+void LocalToolbar::addAction(QAction* a) {
+    QToolBar::addAction(a);
 
+    QToolButton* button = qobject_cast<QToolButton*>(widgetForAction(a));
+    button->setFixedSize(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE);
+}
 
-}//namespace
-
-#endif //_U2_ADV_SPLIT_WIDGET_H_
+} // namespace

@@ -49,18 +49,20 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ExportDocumentDialogController.h \
            src/util/ExportImageDialog.h \
            src/util/ExportObjectUtils.h \
+           src/util/GenbankLocationValidator.h \
            src/util/GlassView.h \
            src/util/GObjectComboBoxController.h \
            src/util/GraphUtils.h \
            src/util/GScrollBar.h \
            src/util/GUIUtils.h \
-           src/util/HBar.h \
            src/util/HelpButton.h \
            src/util/ImportDialogsFactories.h \
            src/util/InputWidgetsControllers.h \
            src/util/LabelClickTransmitter.h \
            src/util/LastUsedDirHelper.h \
+           src/util/LocalToolbar.h \
            src/util/ObjectViewTreeController.h \
+           src/util/OrderedToolbar.h \
            src/util/PositionSelector.h \
            src/util/ProjectDocumentComboBoxController.h \
            src/util/ProjectTreeItemSelectorDialog.h \
@@ -81,10 +83,10 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/TreeWidgetUtils.h \
            src/util/U2FileDialog.h \
            src/util/U2LongLongValidator.h \
+           src/util/WidgetWithLocalToolbar.h \
            src/util/imageExport/ImageExportTask.h \
            src/util/imageExport/WidgetScreenshotExportTask.h \
            src/util/ImportDialogs/AceImportDialog.h \
-           src/util/GenbankLocationValidator.h \
            src/util/logview/LogView.h \
            src/util/project/filter_tasks/FeatureKeyFilterTask.h \
            src/util/project/filter_tasks/MsaContentFilterTask.h \
@@ -186,18 +188,20 @@ SOURCES += src/MainWindow.cpp \
            src/util/ExportDocumentDialogController.cpp \
            src/util/ExportImageDialog.cpp \
            src/util/ExportObjectUtils.cpp \
+           src/util/GenbankLocationValidator.cpp \
            src/util/GlassView.cpp \
            src/util/GObjectComboBoxController.cpp \
            src/util/GraphUtils.cpp \
            src/util/GScrollBar.cpp \
            src/util/GUIUtils.cpp \
-           src/util/HBar.cpp \
            src/util/HelpButton.cpp \
            src/util/ImportDialogsFactories.cpp \
            src/util/InputWidgetsControllers.cpp \
            src/util/LabelClickTransmitter.cpp \
            src/util/LastUsedDirHelper.cpp \
+           src/util/LocalToolbar.cpp \
            src/util/ObjectViewTreeController.cpp \
+           src/util/OrderedToolbar.cpp \
            src/util/PositionSelector.cpp \
            src/util/ProjectDocumentComboBoxController.cpp \
            src/util/ProjectTreeItemSelectorDialog.cpp \
@@ -217,7 +221,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/U2FileDialog.cpp \
            src/util/U2LongLongValidator.cpp \
-           src/util/GenbankLocationValidator.cpp \
+           src/util/WidgetWithLocalToolbar.cpp \
            src/util/imageExport/ImageExportTask.cpp \
            src/util/imageExport/WidgetScreenshotExportTask.cpp \
            src/util/ImportDialogs/AceImportDialog.cpp \

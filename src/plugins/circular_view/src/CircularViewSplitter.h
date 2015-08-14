@@ -27,13 +27,7 @@
 
 #include <U2View/ADVSplitWidget.h>
 
-#include <QToolBar>
-#include <QToolButton>
-#if (QT_VERSION < 0x050000) //Qt 5
 #include <QAction>
-#else
-#include <QtWidgets/QAction>
-#endif
 
 
 class QScrollBar;
@@ -41,10 +35,9 @@ class QScrollBar;
 namespace U2 {
 
 class CircularViewHeaderWidget;
-class HBar;
 class RestrctionMapWidget;
 
-class CircularViewSplitter : public ADVSplitWidget{
+class CircularViewSplitter : public ADVSplitWidget {
     Q_OBJECT
 public:
     CircularViewSplitter( AnnotatedDNAView* view);
@@ -69,15 +62,14 @@ protected slots:
     void sl_updateFitInViewAction(bool);
     void sl_toggleRestrictionMap(bool);
 private:
-    QSplitter* splitter;
-    HBar* toolBar;
-    QScrollBar* horScroll;
+    QSplitter*          splitter;
+    QScrollBar*         horScroll;
 
-    QToolButton* tbZoomIn;
-    QToolButton* tbZoomOut;
-    QToolButton* tbFitInView;
-    QToolButton* tbExport;
-    QToolButton* tbToggleRestrictionMap;
+    QAction* zoomInAction;
+    QAction* zoomOutAction;
+    QAction* fitInViewAction;
+    QAction* exportAction;
+    QAction* toggleRestrictionMapAction;
 
     QList<CircularView*> circularViewList;
     QList<RestrctionMapWidget*> restrictionMapWidgets;

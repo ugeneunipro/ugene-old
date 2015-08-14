@@ -19,42 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_HBAR_H_
-#define _U2_HBAR_H_
+#ifndef _U2_ORDERED_TOOLBAR_H_
+#define _U2_ORDERED_TOOLBAR_H_
 
 #include <U2Core/global.h>
-#if (QT_VERSION < 0x050000) //Qt 5
+
 #include <QAction>
-#include <QtGui/QToolBar>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QToolBar>
-#endif
+#include <QToolBar>
+
 
 namespace U2 {
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Header widget toolbar
-
-class U2GUI_EXPORT HBar : public QToolBar {
+class U2GUI_EXPORT OrderedToolbar : public QToolBar {
 public:
-    HBar(QWidget* w) : QToolBar(w), tabOrdered(false), buttonTabOrderList(NULL) {}
+    OrderedToolbar(QWidget* parent, Qt::Orientation orientation = Qt::Horizontal);
 
     void setButtonTabOrderList(QList<QString> * buttonNamesInNeededOrder);
+
+    virtual void setVisible(bool visible);
 
 protected:
     void paintEvent(QPaintEvent* ) {
         //do not draw any special toolbar control -> make is merged with parent widget
     }
-    virtual void setVisible(bool visible);
 
 private:
     void setButtonsTabOrder() const;
 
-    bool tabOrdered;
-    QList<QString> * buttonTabOrderList;
+    bool                tabOrdered;
+    QList<QString>*     buttonTabOrderList;
 };
 
 } //namespace
 
-#endif
+#endif // _U2_ORDERED_TOOLBAR_H_

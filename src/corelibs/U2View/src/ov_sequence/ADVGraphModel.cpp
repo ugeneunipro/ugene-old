@@ -603,7 +603,7 @@ bool GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVecto
         label->hide();
         return false;
     }
-    if (xcoordInRect >= points.firstPoints.size()) {
+    if (xcoordInRect >= points.firstPoints.size() || xcoordInRect < 0) {
         label->hide();
         return false;
     }
@@ -621,9 +621,9 @@ bool GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVecto
         float minValue = points.secondPoints.at(xcoordInRect);
         if(maxValue != minValue) {
             text = GSequenceGraphView::tr("[%2, max:%3, min:%4]").arg(QString::number(pos)).arg(QString::number(maxValue)).arg(QString::number(minValue));
-        } 
+        }
     }
-    
+
     label->setValue(value);
     if (commdata.enableCuttoff) {
         if (value >= commdata.maxEdge) {
@@ -674,7 +674,7 @@ float GSequenceGraphDrawer::calculatePointValue(int nPoints, const PairVector &p
     } else {
         value = points.firstPoints.at(xcoordInRect);
     }
-    
+
     float prevValue = value;
     int prevX;
     for(prevX = xcoordInRect; isUnknownValue(prevValue); prevX--) {
@@ -906,7 +906,16 @@ bool PairVector::isEmpty()const {
 }
 
 CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange)
-: BackgroundTask<PairVector>(tr("Calculate graph points"), TaskFlag_None), d(d), drawer(drawer), result(points), alignedFirst(alignedFirst), alignedLast(alignedLast), expandMode(expandMode), wdata(wdata), o(o), visibleRange(visibleRange) {}
+    : BackgroundTask<PairVector>(tr("Calculate graph points"), TaskFlag_None),
+      d(d),
+      drawer(drawer),
+      result(points),
+      alignedFirst(alignedFirst),
+      alignedLast(alignedLast),
+      expandMode(expandMode),
+      wdata(wdata),
+      o(o),
+      visibleRange(visibleRange) {}
 
 void CalculatePointsTask::run() {
     if(o.isNull()){

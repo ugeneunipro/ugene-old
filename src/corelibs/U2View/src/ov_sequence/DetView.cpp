@@ -40,19 +40,12 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTextEdit>
-#include <QtGui/QMenu>
-#include <QtGui/QLayout>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QMessageBox>
-#endif
+
+#include <QApplication>
+#include <QTextEdit>
+#include <QMenu>
+#include <QLayout>
+#include <QMessageBox>
 
 namespace U2 {
 
@@ -72,10 +65,10 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     showComplementAction->setCheckable(true);
     showTranslationAction->setCheckable(true);
 
-    bool hasComplement = ctx->getComplementTT()!=NULL;
+    bool hasComplement = ctx->getComplementTT() != NULL;
     showComplementAction->setChecked(hasComplement);
 
-    bool hasAmino = ctx->getAminoTT()!=NULL;
+    bool hasAmino = ctx->getAminoTT() != NULL;
     showTranslationAction->setChecked(hasAmino);
 
     assert(ctx->getSequenceObject()!=NULL);
@@ -85,6 +78,13 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 
     connect(ctx, SIGNAL(si_aminoTranslationChanged()), SLOT(sl_onAminoTTChanged()));
     connect(ctx, SIGNAL(si_translationRowsChanged()), SLOT(sl_translationRowsChanged()));
+
+    if (hasComplement) {
+        addActionToLocalToolbar(showComplementAction);
+    }
+    if (hasAmino) {
+        addActionToLocalToolbar(showTranslationAction);
+    }
 
     pack();
 
@@ -102,7 +102,7 @@ void DetView::updateSize() {
 }
 
 void DetView::resizeEvent(QResizeEvent *e) {
-    int w = width();
+    int w = contentWidget->width();
     int charWidth = renderArea->getCharWidth();
     int visibleSymbolsCount = w / charWidth;
 

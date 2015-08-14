@@ -19,30 +19,22 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QDesktopServices>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QSpinBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QToolButton>
-#include <QtGui/QSizePolicy>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QSizePolicy>
-#endif
 #include <QtGui/QPixmap>
-#include <QtGui/QDesktopServices>
-#include <QtCore/QUrl>
+
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QUrl>
+
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSizePolicy>
+#include <QSpinBox>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -52,9 +44,12 @@
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/LoadDocumentTask.h>
+
+#include <U2Gui/OrderedToolbar.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectTreeController.h>
-#include <U2Gui/HBar.h>
+#include <U2Gui/WidgetWithLocalToolbar.h>
+
 #include <U2View/AnnotatedDNAView.h>
 
 #include "BioStruct3DSplitter.h"
@@ -68,7 +63,9 @@ namespace U2 {
 #define MAX_SPLITTER_HEIGHT 1000
 
 BioStruct3DSplitter::BioStruct3DSplitter(QAction* _closeAction, AnnotatedDNAView* view)
-: ADVSplitWidget(view), glFrameManager(new GLFrameManager), parentSplitter(NULL)
+    : ADVSplitWidget(view),
+      glFrameManager(new GLFrameManager),
+      parentSplitter(NULL)
 {
     closeAction = _closeAction;
 
@@ -79,11 +76,20 @@ BioStruct3DSplitter::BioStruct3DSplitter(QAction* _closeAction, AnnotatedDNAView
     splitterHeight = 400;
     setMinimumHeight(HEADER_HEIGHT);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
     setAcceptDrops(true);
+
+    widgetWithToolbar = new WidgetWithLocalToolbar(this);
+    QLayout* l = new QVBoxLayout();
+    l->setMargin(0);
+    l->setSpacing(0);
+    l->addWidget(splitter);
+    widgetWithToolbar->setContentLayout(l);
+
     header = new SplitterHeaderWidget(this);
+
     layout->addWidget(header);
-    layout->addWidget(splitter);
+    layout->addWidget(widgetWithToolbar);
+
     isViewCollapsed = false;
 
     setLayout(layout);
@@ -200,6 +206,10 @@ void BioStruct3DSplitter::dropEvent(QDropEvent *event)
     Q_ASSERT(bioStrucObj != NULL);
     addBioStruct3DGLWidget(bioStrucObj);
 
+}
+
+void BioStruct3DSplitter::addActionToLocalToolBar(QAction *action) {
+    widgetWithToolbar->addActionToLocalToolbar(action);
 }
 
 #define SPLITTER_STATE_MAP_NAME     "BIOSTRUCT3DSPLITTER_MAP"
@@ -378,7 +388,7 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
 
 
     // Menu toolbar
-    toolbar = new HBar(this);
+    toolbar = new OrderedToolbar(this);
     toolbar->layout()->setSpacing(10);
     toolbar->layout()->setMargin(0);
 
@@ -413,26 +423,22 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     restoreDefaultsAction->setText(tr("Restore Default View"));
     restoreDefaultsAction->setIcon(QIcon(":biostruct3d_view/images/restore.png"));
     connect(restoreDefaultsAction, SIGNAL(triggered()), SLOT(sl_restoreDefaults()));
-    addToolbarAction(restoreDefaultsAction);
 
     zoomInAction = new QAction(this);
     zoomInAction->setText(tr("Zoom In"));
     zoomInAction->setIcon(QIcon(":core/images/zoom_in.png"));
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
-    addToolbarAction(zoomInAction);
 
     zoomOutAction = new QAction(this);
     zoomOutAction->setIcon(QIcon(":core/images/zoom_out.png"));
     zoomOutAction->setText(tr("Zoom Out"));
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
-    addToolbarAction(zoomOutAction);
 
     syncLockAction = new QAction(this);
     syncLockAction->setIcon(QIcon(":biostruct3d_view/images/lock.png"));
     syncLockAction->setText(tr("Synchronize 3D Structure Views"));
     syncLockAction->setCheckable(true);
     connect(syncLockAction, SIGNAL(triggered(bool)), SLOT(sl_toggleSyncLock(bool)));
-    addToolbarAction(syncLockAction);
 
     displayMenuAction = new QAction(this);
     displayMenuAction->setText(tr("Display"));
@@ -447,9 +453,9 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     }
 
     addModelAction = new QAction(this);
+    addModelAction->setIcon(QIcon(":core/images/add_gobject.png"));
     addModelAction->setText(tr("Add"));
     connect(addModelAction, SIGNAL(triggered()), SLOT(sl_addModel()));
-    addToolbarAction(addModelAction);
 
     // TODO: add settings functionality
     // Note: do not use widgets on the toolbar, use actions instead
@@ -463,6 +469,12 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     widgetStateMenuAction->setToolTip(tr("Toggle view"));
     connect(widgetStateMenuAction, SIGNAL(triggered()), this, SLOT(sl_showStateMenu()));
     addToolbarAction(widgetStateMenuAction);
+
+    splitter->addActionToLocalToolBar(zoomInAction);
+    splitter->addActionToLocalToolBar(zoomOutAction);
+    splitter->addActionToLocalToolBar(restoreDefaultsAction);
+    splitter->addActionToLocalToolBar(addModelAction);
+    splitter->addActionToLocalToolBar(syncLockAction);
 }
 
 void SplitterHeaderWidget::sl_showStateMenu()

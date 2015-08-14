@@ -29,25 +29,28 @@
 #include <U2Core/Counter.h>
 
 #include <U2Gui/GScrollBar.h>
+#include <U2Gui/OrderedToolbar.h>
+
 #include <U2Gui/ObjectViewModel.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTextEdit>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QApplication>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 
 namespace U2 {
 
 GSequenceLineView::GSequenceLineView(QWidget* p, ADVSequenceObjectContext* _ctx)
-: QWidget(p), ctx(_ctx), renderArea(NULL), scrollBar(NULL), lastPressPos(-1),
-lastUpdateFlags(GSLV_UF_ViewResized), featureFlags(GSLV_FF_SupportsCustomRange),
-frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
+    : WidgetWithLocalToolbar(p),
+      ctx(_ctx),
+      renderArea(NULL),
+      scrollBar(NULL),
+      lastPressPos(-1),
+      lastUpdateFlags(GSLV_UF_ViewResized),
+      featureFlags(GSLV_FF_SupportsCustomRange),
+      frameView(NULL),
+      coherentRangeView(NULL),
+      ignoreMouseSelectionEvents(false)
 {
     GCOUNTER( cvar, tvar, "SequenceLineView" );
     seqLen = ctx->getSequenceLength();
@@ -65,14 +68,13 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
 }
 
 void GSequenceLineView::pack() {
-    assert(layout() == NULL);
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(renderArea);
     layout->addWidget(scrollBar);
-    setLayout(layout);
 
+    setContentLayout(layout);
     setMinimumHeight(layout->minimumSize().height());
 }
 
@@ -318,8 +320,8 @@ void GSequenceLineView::onVisibleRangeChanged(bool signal) {
 
 
 QPoint GSequenceLineView::toRenderAreaPoint(const QPoint& p) {
-    assert(renderArea);
-    return p - renderArea->pos();
+    assert(contentWidget);
+    return p - contentWidget->pos();
 }
 
 void GSequenceLineView::wheelEvent(QWheelEvent *we) {

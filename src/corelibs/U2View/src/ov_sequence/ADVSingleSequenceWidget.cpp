@@ -40,7 +40,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/HBar.h>
+#include <U2Gui/OrderedToolbar.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/RangeSelector.h>
 
@@ -117,6 +117,8 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
 
     linesSplitter = new QSplitter(Qt::Vertical);
     linesSplitter->setChildrenCollapsible(false);
+    linesSplitter->setBackgroundRole(QPalette::Window);
+    linesSplitter->setAutoFillBackground(true);
 
     QWidget *linesLayoutWidget = new QWidget();
     linesLayoutWidget->setObjectName("lines_layout_widget");
@@ -176,25 +178,13 @@ void ADVSingleSequenceWidget::init() {
     buttonTabOrederedNames->append(selectRangeAction1->objectName());
     hBar->addSeparator();
 
-    if (seqCtx->getComplementTT() != NULL) {
-        addButtonWithActionToToolbar(detView->getShowComplementAction(), hBar);
-        buttonTabOrederedNames->append(detView->getShowComplementAction()->objectName());
-    }
-
-    if (seqCtx->getAminoTT() != NULL) {
-        addButtonWithActionToToolbar(detView->getShowTranslationAction(), hBar);
-        buttonTabOrederedNames->append(detView->getShowTranslationAction()->objectName());
-    }
-
     if (seqCtx->getAminoTT() != NULL) {
         QMenu* ttMenu = seqCtx->createTranslationsMenu();
         tbMenues.append(ttMenu);
-        QToolButton* button = addButtonWithActionToToolbar(ttMenu->menuAction(), hBar);
+        QToolButton* button = detView->addActionToLocalToolbar(ttMenu->menuAction());
         SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
         button->setPopupMode(QToolButton::InstantPopup);
         button->setObjectName("AminoToolbarButton");
-        buttonTabOrederedNames->append(ttMenu->menuAction()->objectName());
-        hBar->addSeparator();
     } else {
         ttButton = NULL;
     }
@@ -206,17 +196,7 @@ void ADVSingleSequenceWidget::init() {
     addButtonWithActionToToolbar(shotScreenAction, hBar);
     buttonTabOrederedNames->append(shotScreenAction->objectName());
 
-    addButtonWithActionToToolbar(panView->getZoomInAction(), hBar);
-    buttonTabOrederedNames->append(panView->getZoomInAction()->objectName());
-
-    addButtonWithActionToToolbar(panView->getZoomOutAction(), hBar);
-    buttonTabOrederedNames->append(panView->getZoomOutAction()->objectName());
-
-    addButtonWithActionToToolbar(zoomToRangeAction, hBar);
-    buttonTabOrederedNames->append(zoomToRangeAction->objectName());
-
-    addButtonWithActionToToolbar(panView->getZoomToSequenceAction(), hBar);
-    buttonTabOrederedNames->append(panView->getZoomToSequenceAction()->objectName());
+    panView->addActionToLocalToolbar(zoomToRangeAction);
 
     widgetStateMenuAction = new QAction(QIcon(":core/images/adv_widget_menu.png"), tr("Toggle view"), this);
     widgetStateMenuAction->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
@@ -231,7 +211,7 @@ void ADVSingleSequenceWidget::init() {
     closeViewAction->setObjectName("remove_sequence");
     connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
 
-    dynamic_cast<HBar *>(hBar)->setButtonTabOrderList(buttonTabOrederedNames);
+    dynamic_cast<OrderedToolbar *>(hBar)->setButtonTabOrderList(buttonTabOrederedNames);
 
     updateSelectionActions();
 
@@ -976,7 +956,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     nameLabel->setObjectName("nameLabel");
 
-    toolBar = new HBar(this);
+    toolBar = new OrderedToolbar(this);
     toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
     toolBar->layout()->setSpacing(0);
     toolBar->layout()->setMargin(0);

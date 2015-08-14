@@ -22,19 +22,11 @@
 #include <U2Core/Task.h>
 #include <U2View/ADVSplitWidget.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QSplitter>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QComboBox>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QComboBox>
-#endif
+#include <QAction>
+#include <QComboBox>
+#include <QSplitter>
+#include <QToolBar>
+#include <QToolButton>
 
 namespace U2 {
 
@@ -46,7 +38,8 @@ class GObjectView;
 class SplitterHeaderWidget;
 class Document;
 class GLFrameManager;
-class HBar;
+class OrderedToolbar;
+class WidgetWithLocalToolbar;
 
 /*!
 * @class BioStruct3DSplitter BioStruct3DSplitter.h
@@ -129,6 +122,10 @@ public:
     * Removes object and its views.
     */
     bool removeObject(BioStruct3DObject* obj);
+    /*!
+    * Adds action button to the toolbar on the left
+    */
+    void addActionToLocalToolBar(QAction* action);
 
 signals:
     void si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* widget);
@@ -147,9 +144,10 @@ private:
     QSplitter*  parentSplitter;
     QAction*    closeAction;
     QLayout*    layout;
-    QList<QAction*> toggleActions;
-    int         splitterHeight;
-    bool        isViewCollapsed;
+    QList<QAction*>     toggleActions;
+    int                 splitterHeight;
+    bool                isViewCollapsed;
+    WidgetWithLocalToolbar* widgetWithToolbar;
 
     SplitterHeaderWidget* header;
 };
@@ -205,7 +203,7 @@ private:
     QMap<QAction*,QString> webActionMap;
     QList<QAction*> toggleActions;
 
-    HBar* toolbar;
+    OrderedToolbar* toolbar;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
