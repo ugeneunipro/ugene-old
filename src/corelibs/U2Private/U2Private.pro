@@ -37,10 +37,6 @@ SOURCES += src/AppContextImpl.cpp \
            src/crash_handler/CrashLogCache.cpp \
            src/crash_handler/StackWalker.cpp
 
-CONFIG(x64) {
-    win32 : SOURCES += src/crash_handler/StackRollbackX64.asm
-}
-
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
