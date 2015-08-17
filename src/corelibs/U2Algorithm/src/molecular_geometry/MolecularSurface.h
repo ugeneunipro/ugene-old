@@ -51,18 +51,21 @@ double AtomConstants::getAtomCovalentRadius( int atomicNumber ) {
 
 
 class U2ALGORITHM_EXPORT MolecularSurface {
-protected:
-    static const float TOLERANCE;
 public:
-    virtual void calculate(const QList<SharedAtom>& atoms, int& progress)=0;
+    virtual ~MolecularSurface();
+
+    virtual void calculate(const QList<SharedAtom>& atoms, int& progress) = 0;
     virtual qint64 estimateMemoryUsage(int numberOfAtoms);
-    const QVector<Face> &getFaces()const;
-protected:
-    QVector<Face> faces;
-public:
+
+    const QVector<Face> &getFaces() const;
+
     static QList<SharedAtom> findAtomNeighbors(const SharedAtom& a, const QList<SharedAtom>& atoms);
     static GeodesicSphere getAtomSurfaceDots(const SharedAtom& a, int detaillevel);
     static bool vertexNeighboursOneOf(const Vector3D& v, const QList<SharedAtom>& atoms);
+
+protected:
+    QVector<Face> faces;
+    static const float TOLERANCE;
 };
 
 

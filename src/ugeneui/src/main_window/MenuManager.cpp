@@ -20,8 +20,8 @@
  */
 
 #include "MenuManager.h"
+#include <QMainWindow>
 #include <U2Core/Log.h>
-//#include <QApplication>
 
 namespace U2 {
 #define STATIC_MENU_MODEL 1

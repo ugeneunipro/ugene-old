@@ -953,7 +953,7 @@ GUI_TEST_CLASS_DEFINITION(test_3144) {
 
     // Expected state : the folder "regression_test_3144_2" is moved to the "Recycle bin".
     QModelIndex rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
-    const QModelIndex innerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
+    GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
 
     // 5. Remove the folder "regression_test_3144_1".
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_test_3144_1"));
@@ -962,8 +962,8 @@ GUI_TEST_CLASS_DEFINITION(test_3144) {
 
     // Expected state : folders "regression_test_3144_1" is shown in the "Recycle bin", folder "regression_test_3144_2" disappears.
     rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
-    const QModelIndex outerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_1", rbIndex);
-    const QModelIndex innerFolderNotFoundIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
+    GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_1", rbIndex);
+    GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
 
     GTUtilsLog::check(os, l);
 }

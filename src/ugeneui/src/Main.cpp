@@ -148,12 +148,6 @@
 #include "task_view/TaskViewController.h"
 #include "welcome_page/WelcomePageController.h"
 
-#if defined(Q_WS_WIN) || defined(Q_WS_MAC)
-QT_BEGIN_NAMESPACE
-extern Q_GUI_EXPORT bool qt_use_native_dialogs;
-QT_END_NAMESPACE
-#endif
-
 using namespace U2;
 
 static void registerCoreServices() {
@@ -438,13 +432,6 @@ int main(int argc, char **argv)
 
     //print some settings info, can't do it earlier than logging is initialized
     coreLog.trace(QString("Active UGENE.ini file : %1").arg(AppContext::getSettings()->fileName()));
-//    logCat.trace(QString("INI-var: %1").arg(AppContext::getCMDLineRegistry()->getParameterValue( CMDLineCoreOptions::INI_FILE)));
-
-
-#if defined(Q_WS_WIN) || defined(Q_WS_MAC)
-    bool useNative = envList.indexOf("UGENE_USE_NATIVE_DIALOGS=false") < 0 && envList.indexOf("UGENE_USE_NATIVE_DIALOGS=0") < 0;
-    qt_use_native_dialogs = useNative; //using local here for debugger
-#endif
 
 #if defined(Q_OS_UNIX)
     if (envList.indexOf("UGENE_GUI_TEST=1") >= 0) {

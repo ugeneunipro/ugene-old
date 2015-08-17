@@ -79,7 +79,7 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
     } else {
         fileName = findKey(envList, U2_SYSTEM_INI);
     }
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QSettings::Format format = QSettings::NativeFormat;
 #else
         QSettings::Format format = QSettings::IniFormat;

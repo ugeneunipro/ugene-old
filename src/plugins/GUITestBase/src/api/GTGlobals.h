@@ -79,7 +79,7 @@ namespace U2 {
     GT_CHECK_RESULT(condition, errorMessage, )
 
 #define GT_CHECK_NO_MESSAGE(condition, errorMessage) \
-    if(!condition){ \
+    if (!(condition)) { \
     GT_CHECK(condition, errorMessage) \
 }
 

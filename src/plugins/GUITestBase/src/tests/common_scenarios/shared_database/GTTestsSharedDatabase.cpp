@@ -506,7 +506,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0001) {
     CHECK_OP(os, );
     CHECK_SET_ERR(1 == model->rowCount(dir2Item), "Wrong child count");
 
-    QModelIndex obj = GTUtilsProjectTreeView::findIndex(os, "pt0001_human_T1");
+    GTUtilsProjectTreeView::findIndex(os, "pt0001_human_T1");
     CHECK_OP(os, );
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

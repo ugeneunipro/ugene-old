@@ -107,6 +107,10 @@ bool MolecularSurface::vertexNeighboursOneOf( const Vector3D& v, const QList<Sha
     return false;
 }
 
+MolecularSurface::~MolecularSurface() {
+
+}
+
 qint64 MolecularSurface::estimateMemoryUsage( int numberOfAtoms )
 {
     Q_UNUSED(numberOfAtoms);

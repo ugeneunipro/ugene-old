@@ -59,12 +59,8 @@ public:
 class AnaglyphRenderer {
 public:
     /** Construct anaglyph renderer over scene renderer */
-    AnaglyphRenderer(BioStruct3DGLWidget *_renderer, const AnaglyphSettings &_settings)
-            : renderer(_renderer), settings(_settings),
-            width(1), height(1),
-            anaglyphRenderTextureLeft(0), anaglyphRenderTextureRight(0), tempAnaglyphRenderTexture(0),
-            hasErrors(false)
-    {}
+    AnaglyphRenderer(BioStruct3DGLWidget *_renderer, const AnaglyphSettings &_settings);
+    virtual ~AnaglyphRenderer();
 
     /** Checks if possible to enable anaglyph. Performs test rendering */
     virtual bool isAvailable();

@@ -32,7 +32,7 @@ namespace U2 {
 
         SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, ReadingMode _mode = Separate, int _bases=10, bool cancel = false):
         Filler(_os, "SequenceReadingModeSelectorDialog"), readingMode(_mode), bases(_bases), cancel(cancel) {}
-        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "SequenceReadingModeSelectorDialog", c), cancel(cancel){}
+        SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, CustomScenario* c);
 
         virtual void commonScenario();
     private:

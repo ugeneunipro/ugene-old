@@ -158,7 +158,7 @@ static void updateLabel(DockData* d, bool active) {
     int d1 = qMax(textWidth+iconSize+iconTextDist, MAX_LABEL_BASE_WIDTH) + MAX_LABEL_EXTRA_WIDTH;
     int d2 = qMax(IDEAL_LABEL_HEIGHT, textHeight + MIN_LABEL_EXTRA_HEIGHT);
     QPixmap pix(vertical ? d2 : d1, vertical ? d1 : d2);
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     pix.fill(Qt::transparent);
 #else
     QColor bgColor = QApplication::palette().brush(QPalette::Window).color();
@@ -172,7 +172,7 @@ static void updateLabel(DockData* d, bool active) {
     //rounded rect
     paint.setPen(Qt::black);
     QRectF roundedRect(2, 2, pixRect.width()-4,pixRect.height()-4);
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     QColor fillColor = QColor(0, 0, 0, active ? 30 : 5);
 #else
     QColor fillColor = bgColor;

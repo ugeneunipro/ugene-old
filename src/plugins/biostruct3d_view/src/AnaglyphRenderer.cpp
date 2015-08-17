@@ -230,6 +230,23 @@ void AnaglyphRenderer::drawTexture(GLuint anaglyphRenderTexture, int red, int gr
     CHECK_GL_ERROR
 }
 
+AnaglyphRenderer::AnaglyphRenderer(BioStruct3DGLWidget *_renderer, const AnaglyphSettings &_settings) :
+    renderer(_renderer),
+    settings(_settings),
+    width(1),
+    height(1),
+    anaglyphRenderTextureLeft(0),
+    anaglyphRenderTextureRight(0),
+    tempAnaglyphRenderTexture(0),
+    hasErrors(false)
+{
+
+}
+
+AnaglyphRenderer::~AnaglyphRenderer() {
+
+}
+
 bool AnaglyphRenderer::isAvailable() {
     draw();
     return !hasErrors;

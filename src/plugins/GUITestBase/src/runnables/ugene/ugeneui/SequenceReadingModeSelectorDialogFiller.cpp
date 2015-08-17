@@ -37,7 +37,15 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::SequenceReadingModeSelectorDialogFiller"
-#define GT_METHOD_NAME "run"
+
+SequenceReadingModeSelectorDialogFiller::SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, CustomScenario *c) :
+    Filler(_os, "SequenceReadingModeSelectorDialog", c),
+    cancel(false)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
 void SequenceReadingModeSelectorDialogFiller::commonScenario()
 {   GTGlobals::sleep(1000);
     QWidget *dialog = QApplication::activeModalWidget();
