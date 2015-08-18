@@ -3217,7 +3217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040) {
     CHECK_SET_ERR(!rbUseAutoTable->isVisible(), "rbUseAutoTable is unexpectedly visible");
 
 //    9. Select "Existing table" option. Check if destination table widgets are enabled or disabled.
-    GTWidget::click(os, GTWidget::findWidget(os, "rbExistingTable"));
+    GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton*>(os, "rbExistingTable"));
     GTGlobals::sleep();
 
 //    Expected state:

@@ -778,7 +778,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
 
     for(int i = 0; i < 10; i++){
         GTUtilsProjectTreeView::click(os, "COI.aln");
-        GTClipboard::setText(os, QString(">human_T%1 (UCS\r\nACGT\r\nACG").arg(QString::number(i)));
+        GTClipboard::setText(os, QString(">human_T%1\r\nACGT\r\nACG").arg(QString::number(i)));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
         GTGlobals::sleep();
     }
@@ -786,7 +786,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
     for(int i = 0; i < 10; i++) {
-        GTUtilsProjectTreeView::findIndex(os, QString(">human_T%1").arg(QString::number(i)));
+        GTUtilsProjectTreeView::findIndex(os, QString("human_T%1").arg(QString::number(i)));
     }
 }
 
@@ -866,14 +866,14 @@ GUI_TEST_CLASS_DEFINITION(test_0053){
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
-    QString fileContent = readFileToStr(testDir + "_common_data/samples/FASTA/human_T1.fa");
+    QString fileContent = readFileToStr(testDir + "_common_data/fasta/multy_fa.fa");
     GTClipboard::setText(os, fileContent);
 
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
-    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), false);
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.fa"), true);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0054){
