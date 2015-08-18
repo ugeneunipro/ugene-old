@@ -498,7 +498,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                         bool optionsAlreadyChosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool() 
                             || hints.value((DocumentReadingMode_SequenceMergeGapSize), false).toBool() 
                             || hints.value((DocumentReadingMode_SequenceAsAlignmentHint), false).toBool()
-                            || hints.value((DocumentReadingMode_SequenceAsShortReadsHint), false).toBool();
+                            || hints.value((DocumentReadingMode_SequenceAsShortReadsHint), false).toBool()
+                            || hints.value((DocumentReadingMode_SequenceAsSeparateHint), false).toBool();
                         bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChosen);
                         if (!ok) {
                             continue;

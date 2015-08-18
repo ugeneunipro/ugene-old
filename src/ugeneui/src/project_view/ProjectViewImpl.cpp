@@ -518,6 +518,8 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
             additionalHints[DocumentReadingMode_SequenceAsAlignmentHint] = hints.value(DocumentReadingMode_SequenceAsAlignmentHint);
         }else if (hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)){
             additionalHints[DocumentReadingMode_SequenceAsShortReadsHint] = hints.value(DocumentReadingMode_SequenceAsShortReadsHint);
+        }else if (hints.contains(DocumentReadingMode_SequenceAsSeparateHint)){
+            additionalHints[DocumentReadingMode_SequenceAsSeparateHint] = hints.value(DocumentReadingMode_SequenceAsSeparateHint);
         }
         QFile outputFile(pastedFileUrl);
         outputFile.open(QIODevice::WriteOnly);

@@ -114,6 +114,10 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
         props[DocumentReadingMode_SequenceMergeGapSize] = ui.mergeSpinBox->value();
         return true;
     }
+    if (ui.separateRB->isChecked()) {
+        props[DocumentReadingMode_SequenceAsSeparateHint] = true;
+        return true;
+    }
     return true;
 }
 
