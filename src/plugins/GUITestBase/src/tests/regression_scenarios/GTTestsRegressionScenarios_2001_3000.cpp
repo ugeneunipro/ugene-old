@@ -1764,6 +1764,10 @@ GUI_TEST_CLASS_DEFINITION( test_2187 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2192 ){
+    QString samtoolsPath = "samtools-0.1.19/samtools";
+#ifdef Q_OS_WIN
+    samtoolsPath = "samtools-0.1.19\\samtools";
+#endif
 //    1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Open Call Variants sample.
@@ -1792,17 +1796,14 @@ GUI_TEST_CLASS_DEFINITION( test_2192 ){
 //       Expected state: correct data was copied.
 //    8. Select some amount of text on a tree and click on "Copy selected text" which is now should be available.
     GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "SAMtools run 1"));
-    QWebElement el = GTUtilsDashboard::findElement(os, "samtools-0.1.19/samtools", "SPAN");
+    QWebElement el = GTUtilsDashboard::findElement(os, samtoolsPath, "SPAN");
     GTWebView::selectElementText(os, GTUtilsDashboard::getDashboard(os), el);
     GTUtilsDashboard::click(os, el, Qt::RightButton);
     GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy selected text"));
 //       Paste the data in any editor.
     text = GTClipboard::text(os);
-#ifdef Q_OS_WIN
-    CHECK_SET_ERR(text.contains("samtools-0.1.19\\samtools"), "copy text works wrong\n" + text);
-#else
-    CHECK_SET_ERR(text.contains("samtools-0.1.19/samtools"), "copy text works wrong\n" + text);
-#endif
+
+    CHECK_SET_ERR(text.contains(samtoolsPath), "copy text works wrong\n" + text);
 //       Expected state: selected data was copied.
 }
 

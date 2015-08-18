@@ -1824,6 +1824,50 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Traces hiding");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0059){
+    //"Invert annotation selection" action test
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Invert annotation selection"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
+    QList<QTreeWidgetItem*> selected = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    CHECK_SET_ERR(selected.size() == 3, QString("Unexpected number of selected items: %1").arg(selected.size()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0059_1){
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "CreateAnnotationDialog"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Make auto-annotations persistent"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 27)"));
+    GTGlobals::sleep();
+
+    QTreeWidgetItem* orf = GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 27)");
+    QString s = orf->parent()->text(0);
+    CHECK_SET_ERR(s == "NC_001363 features [murine.gb] *", "unexpected parent: " + s)
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0060){
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    QWidget* nameLabel = GTWidget::findWidget(os, "nameLabel");
+    GTMouseDriver::moveTo(os, GTWidget::getWidgetCenter(os, nameLabel));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(2000);
+
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_NC_001363", NULL, false);
+    QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_NC_001363", NULL, false);
+    QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_NC_001363", NULL, false);
+    QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_NC_001363", NULL, false);
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
+        zoomViewSe2->isVisible() == false
+        , "there are widgets not hidden widgets of ADV_single_sequence_widget");
+    CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
+
+}
+
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2
