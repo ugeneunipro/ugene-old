@@ -139,7 +139,7 @@ void TaskSchedulerImpl::propagateStateToParent(Task* task) {
     if (task->isFinished() && parentTask->hasFlags(TaskFlag_CollectChildrenWarnings)) {
         if (task->hasWarning()) {
             TaskStateInfo& tsi = getTaskStateInfo(parentTask);
-            tsi.addWarnings( task->getWarnings() );
+            tsi.insertWarnings( task->getWarnings() );
         }
     }
 }

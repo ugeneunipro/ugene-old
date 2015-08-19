@@ -26,6 +26,25 @@
 
 namespace U2 {
 
+void TaskStateInfo::addWarning(const QString &warning) {
+    QWriteLocker w(&lock);
+    warnings << warning;
+    taskLog.error(warning);
+}
+
+void TaskStateInfo::addWarnings(const QStringList &wList) {
+    QWriteLocker w(&lock);
+    warnings << wList;
+    foreach(const QString &warning, wList) {
+        taskLog.error(warning);
+    }
+}
+
+void TaskStateInfo::insertWarnings(const QStringList &wList) {
+    QWriteLocker w(&lock);
+    warnings << wList;
+}
+
 static qint64 genTaskId() {
     //todo: add main-thread model check
     static qint64 id = 0;

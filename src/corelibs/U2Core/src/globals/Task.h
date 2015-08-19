@@ -84,8 +84,11 @@ public:
 
     virtual bool hasWarnings() const {QReadLocker r(&lock); return !warnings.isEmpty(); }
     virtual QStringList getWarnings() const {QReadLocker r(&lock); return warnings; }
-    virtual void addWarning(const QString& _warning) {QWriteLocker w(&lock); warnings << _warning; }
-    virtual void addWarnings(const QStringList &wList) { QWriteLocker w(&lock);  warnings << wList; }
+    virtual void addWarning(const QString &warning);
+    virtual void addWarnings(const QStringList &wList);
+
+    /* The same as addWarnings() but it does not write to log. Used by TaskScheduler. */
+    void insertWarnings(const QStringList &wList);
 
 private:
     bool hasErr;
