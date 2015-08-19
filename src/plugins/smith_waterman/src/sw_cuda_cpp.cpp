@@ -36,7 +36,7 @@ extern QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, Scor
                                         ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore,
                                         U2::SmithWatermanSettings::SWResultView resultView);
 
-static U2::Logger log("Smith Waterman CUDA");
+static U2::Logger u2log("Smith Waterman CUDA");
 
 QList<resType> sw_cuda_cpp::launch(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength,
                                     ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore, U2::SmithWatermanSettings::SWResultView resultView) {
@@ -146,10 +146,10 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
 
     int sizeRow = calcSizeRow(seqLibLength, overlapLength, partsNumber, partSeqSize);
 
-    log.details(QString("partsNumber: %1 queryDevider: %2").arg(partsNumber).arg(queryDevider));
+    u2log.details(QString("partsNumber: %1 queryDevider: %2").arg(partsNumber).arg(queryDevider));
 
-    log.details(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(seqLibLength).arg(partSeqSize).arg(overlapLength));
-    log.details(QString("queryLen %1 partQuerySize: %2").arg(queryLength).arg(partQuerySize));
+    u2log.details(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(seqLibLength).arg(partSeqSize).arg(overlapLength));
+    u2log.details(QString("queryLen %1 partQuerySize: %2").arg(queryLength).arg(partQuerySize));
 
     //************************** declare some temp variables on host
 
@@ -214,7 +214,7 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
         cudaError errorBacktrace = cudaMalloc(reinterpret_cast<void **>(&g_backtraceBegins), backtraceBeginsSize);
     }
 
-    log.details(QString("GLOBAL MEMORY USED %1 KB").arg((sizeL + sizeP + sizeQ * 7
+    u2log.details(QString("GLOBAL MEMORY USED %1 KB").arg((sizeL + sizeP + sizeQ * 7
                                                         + directionMatrixSize + backtraceBeginsSize) / 1024));
 
     //************************** copy from host to device
@@ -247,7 +247,7 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
                 U2::SmithWatermanAlgorithm::STOP);
 
     size_t sh_mem_size = sizeof(ScoreType) * (dimGrid.x + 1) * 3;
-    log.details(QString("SHARED MEM SIZE USED: %1 B").arg(sh_mem_size));
+    u2log.details(QString("SHARED MEM SIZE USED: %1 B").arg(sh_mem_size));
     // start main loop
     for (int i = 0; i < queryDevider; i++) {
 
@@ -259,22 +259,8 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
         cudaError hasErrors = cudaThreadSynchronize();
 
         if (hasErrors != 0) {
-            log.trace(QString("CUDA ERROR HAPPEN, errorId: ") + QString::number(hasErrors));
+            u2log.trace(QString("CUDA ERROR HAPPEN, errorId: ") + QString::number(hasErrors));
         }
-
-//        cudaMemcpy(tempRow, g_HdataMax, sizeQQ, cudaMemcpyDeviceToHost);
-//         QString str1 = "";
-//         int maximumScore = 0;
-//         if (i == 0) {
-//         for (int j = 0; j < 26; j++) {
-//             if (j % (partSeqSize + 1) == 0 && j != 0) {
-//                 str1 += "|| ";
-//             }
-//             str1 += QString().sprintf("%2d", j) + " ";
-//         }
-//         log.details(str1);
-//         log.details("**************");
-//         }
 
         //revert arrays
         g_HdataTmp = g_HdataRec;
@@ -301,7 +287,6 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
             res.refSubseq.startPos = directionRow[j];
             res.refSubseq.length = j - res.refSubseq.startPos + 1 - (j) / (partSeqSize + 1) * overlapLength - (j) / (partSeqSize + 1);
             res.score = tempRow[j];
-//             log.info(QString("score: %1, reg: %2..%3").arg(res.score).arg(res.reg.startPos).arg(res.reg.endPos()));
             if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
                 qint32 pairAlignOffset = 0;
 
@@ -355,6 +340,5 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
 
     return pas;
 }
-
 
 #endif //SW2_BUILD_WITH_CUDA

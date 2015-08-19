@@ -20,12 +20,13 @@
  */
 
 #include <cuda.h>
-#include <QtCore/QLibrary>
+
+#include <QLibrary>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
-#include <U2Core/Settings.h>
 #include <U2Core/Log.h>
+#include <U2Core/Settings.h>
 
 #include "CudaSupportPlugin.h"
 #include "CudaSupportSettingsController.h"

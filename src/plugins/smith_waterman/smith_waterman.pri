@@ -26,26 +26,30 @@ use_cuda() {
     LIBS += -L$$UGENE_CUDA_LIB_DIR -lcudart
     INCLUDEPATH += $$UGENE_CUDA_INC_DIR
 
-    SW2_NVCC_FLAGS =
+    CONFIG(debug, debug|release) {
+        SW2_NVCC_LIBS_TYPE_FLAG = -MDd
+    }
+
+    CONFIG(release, debug|release) {
+        SW2_NVCC_LIBS_TYPE_FLAG = -MD
+    }
+
+    CONFIG(x64) {
+        SW2_NVCC_ARCH_FLAG = -m 64
+    } else {
+        SW2_NVCC_ARCH_FLAG = -m 32
+    }
+
+    SW2_NVCC_FLAGS = $${SW2_NVCC_ARCH_FLAG} -g -G -Xcompiler "-Zi,$${SW2_NVCC_LIBS_TYPE_FLAG}" -Xlinker "/DEBUG"
 
     win32 {
         #libcmt conflicts with msvcrt
         QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
     }
-#TODO: win 64?
-    !win32  {
-        SW2_NVCC_FLAGS += -Xcompiler -fPIC
-    }
-    
+
     SW2_CUDA_LIBS += -lcudart
     SW2_CUDA_FILES += src/sw_cuda.cu
 
-#workaround for nmake bug: nvcc failes with an internal error when launched from Makefile by nvcc
-    win32 {
-        SW2_CUDA_NULL_REDIRECT = > nul
-    } else {
-        SW2_CUDA_NULL_REDIRECT = 
-    }
 #manually convert INCLUDEPATH:
     SW2_CUDA_INCLUDEPATH =
     for(path, INCLUDEPATH) {
@@ -54,17 +58,14 @@ use_cuda() {
     for(path, QMAKE_INCDIR) {
         SW2_CUDA_INCLUDEPATH += -I$${path}
     }
-#    message( $$SW2_CUDA_INCLUDEPATH )
 
+    nvzz.input = SW2_CUDA_FILES
     nvzz.output = $$OBJECTS_DIR/${QMAKE_FILE_BASE}$$QMAKE_EXT_OBJ
-    nvzz.commands = $$UGENE_NVCC $$SW2_NVCC_FLAGS -c -I$$UGENE_CUDA_INC_DIR $$SW2_CUDA_INCLUDEPATH -I$$QMAKE_INCDIR_QT \
+    nvzz.name = CUDA compiler
+    nvzz.commands = $$UGENE_NVCC $$SW2_NVCC_FLAGS -c -I$$UGENE_CUDA_INC_DIR $$SW2_CUDA_INCLUDEPATH \
                     -L$$UGENE_CUDA_LIB_DIR $$SW2_CUDA_LIBS \
                     -o ${QMAKE_FILE_OUT} \
-                    ${QMAKE_FILE_NAME} \
-                    $$SW2_CUDA_NULL_REDIRECT
-    nvzz.depend_command = 
-    nvzz.input = SW2_CUDA_FILES
-
+                    ${QMAKE_FILE_IN}
     QMAKE_EXTRA_COMPILERS += nvzz
 
     DEFINES += SW2_BUILD_WITH_CUDA

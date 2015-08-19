@@ -19,19 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QCheckBox>
-#else
-#include <QtWidgets/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QCheckBox>
-#endif
+#include <QLabel>
+#include <QLayout>
+#include <QCheckBox>
+
+#include <U2Algorithm/CudaGpuRegistry.h>
 
 #include <U2Core/AppContext.h>
-#include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Core/AppResources.h>
 
 #include "CudaSupportSettingsController.h"
