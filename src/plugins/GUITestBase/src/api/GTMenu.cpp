@@ -24,10 +24,12 @@
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
 #include "api/GTWidget.h"
+#include "api/private/GTMenuPrivate.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
@@ -90,6 +92,12 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
     GTGlobals::sleep(1000);
 
     return menu->menu();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickMainMenuItem"
+void GTMenu::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method) {
+    GTMenuPrivate::clickMainMenuItem(os, itemPath, method);
 }
 #undef GT_METHOD_NAME
 

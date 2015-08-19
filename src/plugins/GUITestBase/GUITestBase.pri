@@ -22,5 +22,9 @@ win32 {
     LIBS += User32.lib Gdi32.lib
 }
 
+macx {
+    LIBS += -framework AppKit
+}
+
 
 include( ../../ugene_plugin_common.pri )

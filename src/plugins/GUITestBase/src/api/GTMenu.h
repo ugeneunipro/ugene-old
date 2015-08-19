@@ -31,7 +31,8 @@ namespace U2 {
 
 class GTMenu {
 public:
-    static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);  // should be removed in Qt5, use clickMainMenuItem instead
+    static void clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     static QMenu* showContextMenu(U2OpStatus &os, QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
     static void clickMenuItemByName(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
