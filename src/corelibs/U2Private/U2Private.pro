@@ -55,6 +55,6 @@ unix_not_mac() {
 mac {
     HEADERS += src/crash_handler/CrashHandlerPrivateMac.h \
                src/SleepPreventerMac.h
-    SOURCES += src/crash_handler/CrashHandlerPrivateMac.cpp
-    OBJECTIVE_SOURCES += src/SleepPreventerMac.mm
+    SOURCES += src/crash_handler/CrashHandlerPrivateMac.cpp \
+               src/SleepPreventerMac.cpp
 }
