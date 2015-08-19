@@ -171,8 +171,6 @@ private:
     void updateOldTasksPriority();
     void checkSerialPromotion(TaskInfo* pti, Task* subtask);
     void createSleepPreventer();
-    void logWarnings(Task *task);
-    void collectChildrenWarnings(Task *task);
 
 private:
     QTimer                  timer;
