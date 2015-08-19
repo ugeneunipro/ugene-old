@@ -33,7 +33,7 @@ namespace U2 {
 static Logger teamcityLog(ULOG_CAT_TEAMCITY);
 
 TestRunnerTask::TestRunnerTask(const QList<GTestState*>& tests, const GTestEnvironment* _env, int testSizeToRun)
-: Task( tr("Test runner"), TaskFlag_NoRun),  env(_env)
+: Task(tr("Test runner"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CollectChildrenWarnings), env(_env)
 {
     tpm = Task::Progress_Manual;
 

@@ -135,13 +135,6 @@ void TaskSchedulerImpl::propagateStateToParent(Task* task) {
             tsi.setError( tr("Subtask {%1} is failed: %2").arg(task->getTaskName()).arg(task->getError()));
         }
     }
-
-    if (task->isFinished() && parentTask->hasFlags(TaskFlag_CollectChildrenWarnings)) {
-        if (task->hasWarning()) {
-            TaskStateInfo& tsi = getTaskStateInfo(parentTask);
-            tsi.addWarnings( task->getWarnings() );
-        }
-    }
 }
 
 bool TaskSchedulerImpl::processFinishedTasks() {
@@ -219,6 +212,8 @@ bool TaskSchedulerImpl::processFinishedTasks() {
             SAFE_POINT(parentTask != NULL, "When notifying parentTask about finished task: parentTask is NULL", hasFinished);
             SAFE_POINT(task != NULL, "When notifying parentTask about finished task: task is NULL", hasFinished);
             propagateStateToParent(task);
+            logWarnings(task);
+            collectChildrenWarnings(task);
             QList<Task*> newSubTasks;
             if (parentTask->hasFlags(TaskFlag_RunMessageLoopOnly)) {
                 QCoreApplication::postEvent (pti->thread,
@@ -251,6 +246,31 @@ bool TaskSchedulerImpl::processFinishedTasks() {
         }
     }
     return hasFinished;
+}
+
+void TaskSchedulerImpl::logWarnings(Task *task) {
+    CHECK(task->isFinished(), );
+    CHECK(!task->isCanceled(), );
+
+    QStringList warnings;
+    foreach (QString warning, task->getWarnings()) {
+        if (!warning.endsWith(".")) {
+            warning += ".";
+        }
+        warnings << warning;
+    }
+
+    taskLog.error(tr("Task {%1} finished with warning(s): %2").arg(task->getTaskName()).arg(warnings.join(" ")));
+}
+
+void TaskSchedulerImpl::collectChildrenWarnings(Task *task) {
+    CHECK(task->isFinished(), );
+    CHECK(task->hasFlags(TaskFlag_CollectChildrenWarnings), );
+
+    TaskStateInfo &tsi = getTaskStateInfo(task);
+    foreach (Task *subTask, task->getSubtasks()) {
+        tsi.addWarnings(subTask->getWarnings());
+    }
 }
 
 void TaskSchedulerImpl::unregisterFinishedTopLevelTasks() {

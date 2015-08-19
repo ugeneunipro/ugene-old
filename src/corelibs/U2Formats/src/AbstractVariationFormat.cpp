@@ -62,7 +62,21 @@ AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &
     indexing = AbstractVariationFormat::ZeroBased;
 }
 
-#define READ_BUFF_SIZE 12287
+namespace {
+    const int bufferSize = 10 * 1024; // 10 Kb
+
+    inline QByteArray readLine(IOAdapter *io, char *buffer, int bufferSize) {
+        QByteArray result;
+        bool terminatorFound = false;
+        do {
+            qint64 length = io->readLine(buffer, bufferSize, &terminatorFound);
+            CHECK(-1 != length, result);
+            result += QByteArray(buffer, length);
+        } while (!terminatorFound);
+        return result;
+    }
+}
+
 #define CHR_PREFIX "chr"
 
 Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs, U2OpStatus &os) {
@@ -74,7 +88,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     SAFE_POINT(io, "IO adapter is NULL!",  NULL);
     SAFE_POINT(io->isOpen(), QString("IO adapter is not open %1").arg(io->getURL().getURLString()), NULL);
 
-    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    QByteArray readBuff(bufferSize + 1, 0);
     char* buff = readBuff.data();
 
     SplitAlleles splitting = fs.contains(DocumentReadingMode_SplitVariationAlleles)? AbstractVariationFormat::Split : AbstractVariationFormat::NoSplit;
@@ -84,30 +98,25 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
 
     QString headerText;
 
+    int lineNumber = 0;
     do {
-        bool eolFound = true;
         os.setProgress(io->getProgress());
-        qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolFound);
-        if (len == 0) { //end of stream
-            break;
-        }
-        bool lineOk = eolFound || io->isEof();
-        if (!lineOk) {
-            os.setError(L10N::tr("Line is too long"));
-            return NULL;
+        QString line = readLine(io, buff, bufferSize);
+        lineNumber++;
+        if (line.isEmpty()) {
+            continue;
         }
 
         // skip comments
-        QString line(readBuff);
-        line = line.left(len);
         if (line.startsWith(COMMENT_START)) {
-            headerText += line;
+            headerText += line + "\n";
             continue;
         }
 
         QStringList columns = sep.isEmpty() ? line.split(QRegExp("\\s+")) : line.split(sep);
 
         if (columns.size() < maxColumnNumber) {
+            os.addWarning(tr("Line %1: Too small number of columns").arg(lineNumber));
             continue;
         }
 
@@ -116,10 +125,13 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         U2Variant v;
         QString seqName;
 
+        bool skipVariation = false;
         foreach (int columnNumber, columnRoles.keys()) {
-            CHECK_EXT(columns.size() > columnNumber,
-                os.setError(L10N::tr("Incorrect number of columns in the file")),
-                NULL);
+            if (columns.size() <= columnNumber) {
+                skipVariation = true;
+                os.addWarning(tr("Line %1: Too small number of columns").arg(lineNumber));
+                break;
+            }
             const QString& columnData = columns.at(columnNumber);
             ColumnRole role = columnRoles.value(columnNumber);
             switch (role) {
@@ -158,9 +170,14 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     }
                     break;
                 default:
-                    coreLog.trace("Warning: unknown column role (%, line %, column %)");
+                    assert(0);
+                    coreLog.trace(QString("Warning: unknown column role %1 (line %2, column %3)").arg(role).arg(line).arg(columnNumber));
                     break;
             }
+        }
+
+        if (skipVariation) {
+            continue;
         }
 
         if (v.publicId.isEmpty()) {
