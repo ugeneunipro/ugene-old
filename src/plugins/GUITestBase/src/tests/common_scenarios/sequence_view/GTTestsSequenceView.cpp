@@ -1236,7 +1236,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037) {
     GTUtilsSequenceView::selectSequenceRegion(os, 10000, 11000);
 //    Press zoom to selection button
     GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os));
-    GTWidget::click(os, GTWidget::findWidget(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    GTWidget::click(os, GTAction::button(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
     PanView* pan = GTWidget::findExactWidget<PanView*>(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     U2Region r = pan->getVisibleRange();
     CHECK_SET_ERR(r.startPos == 9999, QString("Unexpected start: %1").arg(r.startPos));
@@ -1249,7 +1249,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_1) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 //    Press zoom to selection button
     GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os));
-    GTWidget::click(os, GTWidget::findWidget(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    GTWidget::click(os, GTAction::button(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
     PanView* pan = GTWidget::findExactWidget<PanView*>(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     U2Region r = pan->getVisibleRange();
     CHECK_SET_ERR(r.startPos == 0, QString("Unexpected start: %1").arg(r.startPos));
@@ -1377,7 +1377,7 @@ GUI_TEST_CLASS_DEFINITION(test_0043){
 GUI_TEST_CLASS_DEFINITION(test_0044){
     //Overview weel event
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget());
+    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget()->parentWidget());
     GTWidget::click(os, over);
     GTGlobals::sleep(1000);
     for(int i = 0; i<10; i++){
@@ -1393,7 +1393,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044){
 GUI_TEST_CLASS_DEFINITION(test_0044_1){
     //selection on overview
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget());
+    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget()->parentWidget());
     GTWidget::click(os, over);
 
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
@@ -1464,24 +1464,24 @@ GUI_TEST_CLASS_DEFINITION(test_0045){
 GUI_TEST_CLASS_DEFINITION(test_0046){
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     for(int i=0; i<5; i++){
-        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_NC_001363"));
+        GTWidget::click(os, GTAction::button(os, "action_zoom_in_NC_001363"));
     }
     int vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
     CHECK_SET_ERR(vis>2300, QString("1 wrong visiable range start: %1").arg(vis));
 
     for(int i=0; i<5; i++){
-        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_out_NC_001363"));
+        GTWidget::click(os, GTAction::button(os, "action_zoom_out_NC_001363"));
     }
     vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
     CHECK_SET_ERR(vis == 0, QString("2 wrong visiable range start: %1").arg(vis));
 
     for(int i=0; i<5; i++){
-        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_NC_001363"));
+        GTWidget::click(os, GTAction::button(os, "action_zoom_in_NC_001363"));
     }
     vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
     CHECK_SET_ERR(vis>2300, QString("3 wrong visiable range start: %1").arg(vis));
 
-    GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_to_sequence_NC_001363"));
+    GTWidget::click(os, GTAction::button(os, "action_zoom_to_sequence_NC_001363"));
     vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
     CHECK_SET_ERR(vis == 0, QString("4 wrong visiable range start: %1").arg(vis));
 }
@@ -1614,11 +1614,11 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
     QImage image1 = GTWidget::getImage(os, det);
 
-    GTWidget::click(os, GTWidget::findWidget(os, "complement_action"));
+    GTWidget::click(os, GTAction::button(os, "complement_action"));
     QImage image2 = GTWidget::getImage(os, det);
     GTGlobals::sleep(1000);
 
-    GTWidget::click(os, GTWidget::findWidget(os, "complement_action"));
+    GTWidget::click(os, GTAction::button(os, "complement_action"));
     QImage image3 = GTWidget::getImage(os, det);
     GTGlobals::sleep(1000);
 
@@ -1633,13 +1633,22 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
     QImage image1 = GTWidget::getImage(os, det);
 
-    GTWidget::click(os, GTWidget::findWidget(os, "translation_action"));
+    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    GTGlobals::sleep(2000);
     QImage image2 = GTWidget::getImage(os, det);
-    GTGlobals::sleep(1000);
 
-    GTWidget::click(os, GTWidget::findWidget(os, "translation_action"));
+    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    GTGlobals::sleep(2000);
     QImage image3 = GTWidget::getImage(os, det);
-    GTGlobals::sleep(1000);
+
+    QImageWriter writer("1test.jpg");
+    writer.write(image1);
+
+    QImageWriter writer1("2test.jpg");
+    writer.write(image3);
+
+    image1.save("/home/vmalin/1.bmp", "BMP");
+    image3.save("/home/vmalin/3.bmp", "BMP");
 
     CHECK_SET_ERR(image1 != image2, "Image was not changed");
     CHECK_SET_ERR(image1 == image3, "Image was not restored");

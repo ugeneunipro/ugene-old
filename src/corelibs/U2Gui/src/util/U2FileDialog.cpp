@@ -39,12 +39,11 @@ namespace U2 {
 
 QString U2FileDialog::getOpenFileName(QWidget *parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options) {
     QString name;
-#if defined(Q_OS_MAC) || (QT_VERSION >= 0x050000) || defined(Q_OS_LINUX)
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         name = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options | QFileDialog::DontUseNativeDialog);
-    } else
-#endif
-    name = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options);
+    } else {
+        name = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options);
+    }
     const QString result = name;
     activateWindow();
     return result;
@@ -70,12 +69,11 @@ QString U2FileDialog::getExistingDirectory(QWidget *parent, const QString &capti
 
 QString U2FileDialog::getSaveFileName(QWidget *parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options) {
     QString name;
-#if defined(Q_OS_MAC) || (QT_VERSION >= 0x050000)
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         name = QFileDialog::getSaveFileName(parent, caption, dir, filter, selectedFilter, options | QFileDialog::DontUseNativeDialog);
-    } else
-#endif
-    name = QFileDialog::getSaveFileName(parent, caption, dir, filter, selectedFilter, options);
+    } else {
+        name = QFileDialog::getSaveFileName(parent, caption, dir, filter, selectedFilter, options);
+    }
     const QString result = name;
     activateWindow();
     return result;
