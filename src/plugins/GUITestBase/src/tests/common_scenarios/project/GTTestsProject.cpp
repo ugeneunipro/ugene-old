@@ -59,6 +59,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
@@ -677,12 +678,15 @@ GUI_TEST_CLASS_DEFINITION(test_0041){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0042){
-    //check adding schemes (WD QD) in project, it should not appear in project vie
+    //check adding schemes (WD QD) in project, it should not appear in project view
+
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
     QString fileContent = readFileToStr(dataDir + "workflow_samples/Alignment/basic_align.uwl");
     GTClipboard::setText(os, fileContent);
+
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
