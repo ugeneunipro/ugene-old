@@ -39,7 +39,7 @@ inline NSString *qStringToNSString(const QString &qstr) {
 void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath) {
     NSMenu *menu = [NSApp mainMenu];
     foreach (const QString &itemTitle, itemPath) {
-        GT_CHECK(NULL != menu, "Menu is NULL");
+        GT_CHECK(NULL != menu, ("Menu not found: '%1'").arg(itemTitle));
         menu = clickMenuItem(os, menu, itemTitle);
         GTGlobals::sleep();
     }
@@ -49,7 +49,7 @@ void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &item
 #define GT_METHOD_NAME "clickMenuItem"
 NSMenu * GTMenuPrivateMac::clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle) {
     NSMenuItem *item = [menu itemWithTitle:qStringToNSString(itemTitle)];
-    GT_CHECK_RESULT(NULL != item, "Menu item is NULL", NULL);
+    GT_CHECK_RESULT(NULL != item, QString("Menu item not found: '%1'").arg(itemTitle), NULL);
     NSMenu *submenu = [item submenu];
     [menu performActionForItemAtIndex:[menu indexOfItem:item]];
     return submenu;
