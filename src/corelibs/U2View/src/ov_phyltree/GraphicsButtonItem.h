@@ -22,16 +22,18 @@
 #ifndef _U2_GRAPHICS_BUTTON_ITEM_H_
 #define _U2_GRAPHICS_BUTTON_ITEM_H_
 
-#include <qglobal.h>
+#include <QBrush>
 #include <QGraphicsEllipseItem>
-#include <QtGui/QBrush>
+
+#include <U2Core/global.h>
+
 #include "TreeSettings.h"
 
 namespace U2 {
 
 class PhyTreeObject;
 
-class GraphicsButtonItem: public QGraphicsEllipseItem {
+class U2VIEW_EXPORT GraphicsButtonItem: public QGraphicsEllipseItem {
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *e);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);

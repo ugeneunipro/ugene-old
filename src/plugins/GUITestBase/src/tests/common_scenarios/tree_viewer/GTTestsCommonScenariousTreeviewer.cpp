@@ -19,48 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsMsaEditorSequenceArea.h"
-
-#include "GTTestsCommonScenariousTreeviewer.h"
-
-#include "api/GTCheckBox.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
-#include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
-#include "api/GTGlobals.h"
-#include "api/GTAction.h"
-#include "api/GTFile.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsLog.h"
-#include "GTUtilsBookmarksTreeView.h"
-#include "GTUtilsPhyTree.h"
-#include "runnables/qt/PopupChooser.h"
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QGraphicsItem>
-#include <QtGui/QGraphicsView>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QGraphicsItem>
-#include <QtWidgets/QGraphicsView>
-#endif
-#include <U2Core/AppContext.h>
 #include <QColor>
+#include <QGraphicsItem>
+#include <QGraphicsView>
+#include <QMainWindow>
 #include <QRgb>
 
-#include <U2View/MSAEditor.h>
-#include <U2View/GraphicsRectangularBranchItem.h>
+#include <U2Core/AppContext.h>
+
 #include <U2View/GraphicsButtonItem.h>
+#include <U2View/GraphicsRectangularBranchItem.h>
+#include <U2View/MSAEditor.h>
+
+#include "GTTestsCommonScenariousTreeviewer.h"
+#include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsPhyTree.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTAction.h"
+#include "api/GTCheckBox.h"
+#include "api/GTFile.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 
 namespace U2 {
 
@@ -1131,6 +1125,63 @@ GUI_TEST_CLASS_DEFINITION( test_0025 ) {
 
     GTWidget::click(os, collapse);
     CHECK_SET_ERR( collapse->text() == "Collapse", "No Collapse action");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026) {
+//    Reroot action.
+
+//    1. Open file "data/samples/Newick/COI.nwk".
+//    Expected state: a philogenetic tree appears.
+    GTFileDialog::openFile(os, dataDir + "samples/Newick/COI.nwk");
+
+//    2. Select the parent node of "Bicolorana_bicolor_EF540830" and "Roeseliana_roeseli".
+    QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    const qreal firstNodeDistance = GTUtilsPhyTree::getNodeDistance(os, nodes.first());
+    GTUtilsPhyTree::clickNode(os, nodes.first());
+    CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
+
+//    3. Do the context menu command "Reroot tree".
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os,  QStringList() << "Reroot tree"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: the tree is rerooted. The selected node parent node becomes a new tree root.
+    nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    const qreal firstNodeDistanceNew = GTUtilsPhyTree::getNodeDistance(os, nodes.first());
+
+    CHECK_SET_ERR(firstNodeDistance != firstNodeDistanceNew, "Distances are not changed. The tree was not rerooted?")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0027) {
+//    Swap siblings action.
+
+//    1. Open file "data/samples/Newick/COI.nwk".
+//    Expected state: a phylogenetic tree appears.
+    GTFileDialog::openFile(os, dataDir + "samples/Newick/COI.nwk");
+
+//    2. Select the parent node of "Bicolorana_bicolor_EF540830" and "Roeseliana_roeseli".
+    QList<qreal> distances = GTUtilsPhyTree::getOrderedRectangularBranchesDistances(os);
+    CHECK_SET_ERR(!distances.isEmpty(), "Distances array is empty");
+    distances.swap(1, 2);
+
+    QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    GTUtilsPhyTree::clickNode(os, nodes.first());
+    CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
+
+//    3. Do the context menu command "Swap siblings".
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os,  QStringList() << "Swap Siblings"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: tree distances are not changed except two swapped branches.
+    const QList<qreal> distancesNew = GTUtilsPhyTree::getOrderedRectangularBranchesDistances(os);
+    CHECK_SET_ERR(!distancesNew.isEmpty(), "New distances array is empty");
+    CHECK_SET_ERR(distances == distancesNew, "Tree has incorrect distances");
 }
 
 } // namespace GUITest_common_scenarios_tree_viewer

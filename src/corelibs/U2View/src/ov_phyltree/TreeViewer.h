@@ -155,7 +155,7 @@ protected:
     TreeViewerUI*       ui;
 };
 
-class TreeViewerUI: public QGraphicsView {
+class U2VIEW_EXPORT TreeViewerUI: public QGraphicsView {
     Q_OBJECT
     Q_DISABLE_COPY(TreeViewerUI)
 

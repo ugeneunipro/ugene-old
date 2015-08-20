@@ -19,20 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsPhyTree.h"
-#include "api/GTWidget.h"
-#include "math.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QGraphicsItem>
-#else
-#include <QtWidgets/QGraphicsItem>
-#endif
+#include <math.h>
 
-namespace U2
-{
+#include <QGraphicsItem>
+
+#include <U2View/GraphicsButtonItem.h>
+#include <U2View/GraphicsRectangularBranchItem.h>
+
+#include "GTUtilsMdi.h"
+#include "GTUtilsPhyTree.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
+
+namespace U2 {
+
 const int widthMin = 6;
 const int widthMax = 8;
+
 #define GT_CLASS_NAME "GTUtilsPhyTree"
+
 #define GT_METHOD_NAME "getNodes"
 QList<QGraphicsItem*> GTUtilsPhyTree::getNodes(U2OpStatus &os, int width){
     QList<QGraphicsItem*> result;
@@ -180,6 +185,129 @@ QPoint GTUtilsPhyTree::getGlobalCoord(U2OpStatus& os,QGraphicsItem *item){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickNode"
+void GTUtilsPhyTree::clickNode(U2OpStatus &os, GraphicsButtonItem *node) {
+    GT_CHECK(NULL != node, "Node to click is NULL");
+    GTMouseDriver::moveTo(os, getGlobalCoord(os, node));
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getNodeDistance"
+qreal GTUtilsPhyTree::getNodeDistance(U2OpStatus &os, GraphicsButtonItem *node) {
+    GT_CHECK_RESULT(NULL != node, "Node is NULL", 0);
+    GraphicsRectangularBranchItem *branch = dynamic_cast<GraphicsRectangularBranchItem *>(node->parentItem());
+    GT_CHECK_RESULT(NULL != branch, "Node's branch' is NULL", 0);
+    return branch->getDist();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getTreeViewerUi"
+TreeViewerUI * GTUtilsPhyTree::getTreeViewerUi(U2OpStatus &os) {
+    return GTWidget::findExactWidget<TreeViewerUI *>(os, "treeView", GTUtilsMdi::activeWindow(os));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getOrderedRectangularNodes"
+QList<GraphicsButtonItem *> GTUtilsPhyTree::getOrderedRectangularNodes(U2OpStatus &os) {
+    QList<GraphicsButtonItem *> orderedRectangularNodes;
+    QList<GraphicsRectangularBranchItem *> graphicsRectangularBranchItems = getOrderedRectangularBranches(os);
+    foreach (GraphicsRectangularBranchItem *rectangularBranch, graphicsRectangularBranchItems) {
+        GT_CHECK_RESULT(NULL != rectangularBranch, "Rectangular branch is NULL", QList<GraphicsButtonItem *>());
+        GraphicsButtonItem *rectangularNode = rectangularBranch->getButton();
+        if (NULL != rectangularNode) {
+            orderedRectangularNodes << rectangularNode;
+        }
+    }
+    return orderedRectangularNodes;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getOrderedRectangularBranches"
+QList<GraphicsRectangularBranchItem *> GTUtilsPhyTree::getOrderedRectangularBranches(U2OpStatus &os) {
+    return getSubtreeOrderedRectangularBranches(os, getRootRectangularBranch(os));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRootRectangularNode"
+QList<qreal> GTUtilsPhyTree::getOrderedRectangularBranchesDistances(U2OpStatus &os) {
+    QList<GraphicsRectangularBranchItem *> orderedBranches = getOrderedRectangularBranches(os);
+    QList<qreal> orderedDistances;
+    foreach (GraphicsRectangularBranchItem *branch, orderedBranches) {
+        GT_CHECK_RESULT(NULL != branch, "Branch is NULL", QList<qreal>());
+        orderedDistances << branch->getDist();
+    }
+    return orderedDistances;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRootRectangularNode"
+GraphicsButtonItem * GTUtilsPhyTree::getRootRectangularNode(U2OpStatus &os) {
+    GraphicsRectangularBranchItem *rootBranch = getRootRectangularBranch(os);
+    GT_CHECK_RESULT(NULL != rootBranch, "Root branch is NULL", NULL);
+    return rootBranch->getButton();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRootRectangularBranch"
+GraphicsRectangularBranchItem * GTUtilsPhyTree::getRootRectangularBranch(U2OpStatus &os) {
+    TreeViewerUI *treeViewerUi = getTreeViewerUi(os);
+    GT_CHECK_RESULT(NULL != treeViewerUi, "TreeViewerUI is NULL", NULL);
+
+    QList<QGraphicsItem *> items = treeViewerUi->scene()->items();
+    foreach (QGraphicsItem *item, items) {
+        GraphicsRectangularBranchItem *rectangularBranch = dynamic_cast<GraphicsRectangularBranchItem *>(item);
+        if (NULL != rectangularBranch && NULL == rectangularBranch->getParentItem()) {
+            return rectangularBranch;
+        }
+    }
+
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSubtreeOrderedRectangularBranches"
+QList<GraphicsRectangularBranchItem *> GTUtilsPhyTree::getSubtreeOrderedRectangularBranches(U2OpStatus &os, GraphicsRectangularBranchItem *rootBranch) {
+    GT_CHECK_RESULT(NULL != rootBranch, "Subtree root branch is NULL", QList<GraphicsRectangularBranchItem *>());
+
+    const QList<QGraphicsItem *> childItems = rootBranch->getChildItems();
+    QList<GraphicsRectangularBranchItem *> childRectangularBranches;
+    foreach (QGraphicsItem *childItem, childItems) {
+        GraphicsRectangularBranchItem *childRectangularBranch = dynamic_cast<GraphicsRectangularBranchItem *>(childItem);
+        if (NULL != childRectangularBranch && NULL != childRectangularBranch->getDistanceText()) {
+            childRectangularBranches << childRectangularBranch;
+        }
+    }
+
+    std::sort(childRectangularBranches.begin(), childRectangularBranches.end(), rectangularBranchLessThan);
+
+    QList<GraphicsRectangularBranchItem *> subtreeOrderedRectangularBranches;
+    foreach (GraphicsRectangularBranchItem *childRectangularBranch, childRectangularBranches) {
+        subtreeOrderedRectangularBranches << getSubtreeOrderedRectangularBranches(os, childRectangularBranch);
+    }
+    subtreeOrderedRectangularBranches << rootBranch;
+
+    return subtreeOrderedRectangularBranches;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "rectangularBranchLessThan"
+bool GTUtilsPhyTree::rectangularBranchLessThan(GraphicsRectangularBranchItem *first, GraphicsRectangularBranchItem *second) {
+    SAFE_POINT(NULL != first, "First rectangular branch item is NULL", true);
+    SAFE_POINT(NULL != second, "Second rectangular branch item is NULL", false);
+
+    if (first->getDirection() == second->getDirection()) {
+        if (first->getDirection() == GraphicsBranchItem::up) {
+            return first->getDist() < second->getDist();
+        } else {
+            return first->getDist() > second->getDist();
+        }
+    }
+
+    return first->getDirection() > second->getDirection();
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
-}
+
+}   // namespace U2

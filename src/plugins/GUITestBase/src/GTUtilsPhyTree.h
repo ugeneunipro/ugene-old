@@ -19,16 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef GTUTILSPHYTREE_H
-#define GTUTILSPHYTREE_H
+#ifndef _U2_GT_UTILS_PHY_TREE_H_
+#define _U2_GT_UTILS_PHY_TREE_H_
+
+#include <U2View/TreeViewer.h>
 
 #include "api/GTGlobals.h"
-#include "U2View/TreeViewer.h"
 
-namespace U2{
+namespace U2 {
 
-class GTUtilsPhyTree
-{
+class GraphicsButtonItem;
+
+class GTUtilsPhyTree {
 public:
     static QList<QGraphicsItem *> getSelectedNodes(U2OpStatus& os);
     static QList<QGraphicsItem *> getUnselectedNodes(U2OpStatus& os);
@@ -41,8 +43,47 @@ public:
     static QStringList getLabelsText(U2OpStatus& os);
     static QList<double> getDistancesValues(U2OpStatus& os);
     static QPoint getGlobalCoord(U2OpStatus& os, QGraphicsItem* item);
+
+    static void clickNode(U2OpStatus &os, GraphicsButtonItem *node);
+    static qreal getNodeDistance(U2OpStatus &os, GraphicsButtonItem *node);
+
+    static TreeViewerUI * getTreeViewerUi(U2OpStatus &os);
+
+    /**
+     * Branches are enumerated:
+     * - right subtree is enumerated
+     * - left subtree is enumerated
+     * - root branch is enumerated
+     *
+     * An example:
+     *        |-0--
+     *    |-4--
+     *    |   |   |-1--
+     * -11-   |-3--
+     *    |       |-2--
+     *    |
+     *    |       |-5--
+     *    |   |-7--
+     *    |   |   |-6--
+     *    |-9--
+     *    |   |-8--
+     *    |
+     *    |-10-
+     *
+     */
+    static QList<GraphicsButtonItem *> getOrderedRectangularNodes(U2OpStatus &os);
+    static QList<GraphicsRectangularBranchItem *> getOrderedRectangularBranches(U2OpStatus &os);
+    static QList<qreal> getOrderedRectangularBranchesDistances(U2OpStatus &os);
+
+    static GraphicsButtonItem * getRootRectangularNode(U2OpStatus &os);
+    static GraphicsRectangularBranchItem * getRootRectangularBranch(U2OpStatus &os);
+
 private:
+    static QList<GraphicsRectangularBranchItem *> getSubtreeOrderedRectangularBranches(U2OpStatus &os, GraphicsRectangularBranchItem *rootBranch);
+    static bool rectangularBranchLessThan(GraphicsRectangularBranchItem *first, GraphicsRectangularBranchItem *second);
     static QList<QGraphicsItem *> getNodes(U2OpStatus& os, int width);
 };
-}
-#endif // GTUTILSPHYTREE_H
+
+}   // namespace U2
+
+#endif // _U2_GT_UTILS_PHY_TREE_H_
