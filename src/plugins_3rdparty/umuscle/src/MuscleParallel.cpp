@@ -386,6 +386,11 @@ void ProgressiveAlignWorker::run() {
             workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(tr("Can't allocate enough memory to perform aligning, try to use 64bit UGENE version"));
+        }
+    }
     TaskLocalData::detachMuscleTLSContext();
 }
 
