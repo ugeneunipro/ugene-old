@@ -3497,7 +3497,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470) {
             CHECK(NULL != w, );
             
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dbPath));
-            GTWidget::click(os, GTWidget::findWidget(os, "inputDbToolButton", w));
+            GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton", w));
             GTGlobals::sleep();
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, outputPath, GTGlobals::UseMouse, GTFileDialogUtils::Save));
             GTWidget::click(os, GTWidget::findWidget(os, "browseOutputButton", w));
@@ -3539,7 +3539,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470_1) {
             CHECK(NULL != w, );
 
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dbPath));
-            GTWidget::click(os, GTWidget::findWidget(os, "inputDbToolButton", w));
+            GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton", w));
             GTGlobals::sleep();
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, outputPath, GTGlobals::UseMouse, GTFileDialogUtils::Save));
             GTWidget::click(os, GTWidget::findWidget(os, "browseOutputButton", w));

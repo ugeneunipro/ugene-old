@@ -44,8 +44,10 @@ BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWi
 
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     fetchButton = buttonBox->button(QDialogButtonBox::Ok);
-    connect(inputDbToolButton, SIGNAL(clicked()), SLOT(sl_onSelectInputDbButtonClick()) );
-    connect(browseOutputButton, SIGNAL(clicked()), SLOT(sl_onSelectOutputFileButtonClick()) );
+    dbSelector = new BlastDBSelectorWidgetController(this);
+    dbSelectorWidget->layout()->addWidget(dbSelector);
+    connect(browseOutputButton, SIGNAL(clicked()), SLOT(sl_onSelectOutputFileButtonClick()));
+    connect(dbSelector, SIGNAL(si_dbChanged()), SLOT(sl_dbSelectorDataChanged()));
     connect(queryIdEdit, SIGNAL(textChanged( const QString& )), SLOT(sl_onQueryLineEditTextChanged()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(fetchButton, SIGNAL(clicked()), SLOT(sl_BlastDBCmd()));
@@ -58,27 +60,15 @@ BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWi
 void BlastDBCmdDialog::sl_BlastDBCmd(){
 
     settings.query = queryIdEdit->text();
-    settings.databasePath = inputDbLineEdit->text();
+    settings.databasePath = dbSelector->getDatabasePath();
     settings.outputPath = outputPathLineEdit->text();
-    settings.isNuclDatabase = nucleotideTypeRadioButton->isChecked();
+    settings.isNuclDatabase = dbSelector->isNuclDatabase();
     settings.addToProject = addToProjectBox->isChecked();
 
     accept();
 }
 
-void BlastDBCmdDialog::sl_onSelectInputDbButtonClick()
-{
-    LastUsedDirHelper lod("Database Directory");
-
-    QString name;
-    lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir);
-    if (!name.isEmpty()) {
-        QFileInfo fileInfo(name);
-        QString dbName = fileInfo.filePath().replace(QRegExp(".(phr|pin|psq|nhr|nin|nsq)", Qt::CaseInsensitive), QString());
-        inputDbLineEdit->setText(dbName);
-        //File::join()
-        //inputDbLineEdit->setText(fileInfo.dir().path() );
-    }
+void BlastDBCmdDialog::sl_dbSelectorDataChanged() {
     update();
 }
 
@@ -98,11 +88,10 @@ void BlastDBCmdDialog::sl_onSelectOutputFileButtonClick()
 
 void BlastDBCmdDialog::update()
 {
-    bool dbPathIsSet = !inputDbLineEdit->text().isEmpty();
     bool outputPathIsSet = !outputPathLineEdit->text().isEmpty();
     bool queryIsSet = !queryIdEdit->text().isEmpty();
 
-    fetchButton->setEnabled(dbPathIsSet && outputPathIsSet && queryIsSet);
+    fetchButton->setEnabled(dbSelector->isInputDataValid() && outputPathIsSet && queryIsSet);
 
 
 }

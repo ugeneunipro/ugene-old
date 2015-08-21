@@ -142,6 +142,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tophat/TopHatWorker.h \
            src/utils/AlignMsaAction.h \
            src/utils/BaseShortReadsAlignerWorker.h \
+           src/utils/BlastDBSelectorWidgetController.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
            src/utils/CistromeDelegate.h \
@@ -156,6 +157,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/vcfutils/VcfutilsSupport.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
+         src/ui/BlastDBSelectorWidget.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
          src/ui/Bowtie2Settings.ui \
@@ -312,6 +314,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tophat/TopHatSupportTask.cpp \
            src/tophat/TopHatWorker.cpp \
            src/utils/AlignMsaAction.cpp \
+           src/utils/BlastDBSelectorWidgetController.cpp \
            src/utils/BaseShortReadsAlignerWorker.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \

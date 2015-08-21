@@ -28,6 +28,7 @@
 #include <ui/ui_BlastAllSupportDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include "BlastTaskSettings.h"
+#include "BlastDBSelectorWidgetController.h"
 
 namespace U2 {
 
@@ -45,8 +46,6 @@ protected slots:
     virtual void sl_runQuery() = 0;
     virtual void sl_lineEditChanged() = 0;
 
-    void sl_onBrowseDatabasePath();
-
     void sl_onProgNameChange(int i);
     void sl_onMatchScoresChanged(int i);
     void sl_onMatrixChanged(int i);
@@ -60,11 +59,11 @@ protected:
     BlastTaskSettings                   settings;
     bool                                needRestoreDefault;
     CreateAnnotationWidgetController*   ca_c;
+    BlastDBSelectorWidgetController *dbSelector;
 
 private:
     void setupCompositionBasedStatistics();
 
-private:
     bool useCompValues;
     QStringList compValues;
 };

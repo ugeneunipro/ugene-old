@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BLAST_DB_CMD_DIALOG_H
-#define _U2_BLAST_DB_CMD_DIALOG_H
+#ifndef _U2_BLAST_DBSELECTOR_WIDGET_CONTROLLER_H_
+#define _U2_BLAST_DBSELECTOR_WIDGET_CONTROLLER_H_
 
-#include <QDialog>
-#include <U2Gui/DialogUtils.h>
-#include <ui/ui_BlastDBCmdDialog.h>
-#include "BlastDBCmdSupportTask.h"
-#include "utils/BlastDBSelectorWidgetController.h"
+#include <ui/ui_BlastDBSelectorWidget.h>
 
 namespace U2 {
 
-class BlastDBCmdDialog : public QDialog, public Ui_BlastDBCmdDialog {
+class BlastDBSelectorWidgetController : public QWidget, public Ui_BlastDBSelectorWidget {
     Q_OBJECT
 public:
-    BlastDBCmdDialog( BlastDBCmdSupportTaskSettings& settings, QWidget* parent);
-    void setQueryId(const QString& queryId);
-private slots:
-    void sl_onSelectOutputFileButtonClick();
-    void sl_onQueryLineEditTextChanged();
-    void sl_BlastDBCmd();
-    void sl_dbSelectorDataChanged();
-private:
-    void update();
+    BlastDBSelectorWidgetController(QWidget *parent = NULL);
 
-    BlastDBSelectorWidgetController *dbSelector;
-    BlastDBCmdSupportTaskSettings&    settings;
-    QPushButton* cancelButton;
-    QPushButton* fetchButton;
+    bool isNuclDatabase() const;
+    bool isInputDataValid() const;
+    QString getDatabasePath() const;
+signals:
+    void si_dbChanged();
+private slots:
+    void sl_onBrowseDatabasePath();
+    void sl_lineEditChanged();
+private:
+    bool isNuclDB;
+    bool inputDataValid;
 };
 
 }//namespace
-#endif // _U2_BLAST_DB_CMD_DIALOG_H
+#endif //_U2_BLAST_DBSELECTOR_WIDGET_CONTROLLER_H_

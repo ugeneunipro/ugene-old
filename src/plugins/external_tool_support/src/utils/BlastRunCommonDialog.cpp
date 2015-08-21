@@ -43,8 +43,6 @@
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
 
 #include "blast/BlastAllWorker.h"
 #include "blast_plus/BlastPlusWorker.h"
@@ -81,6 +79,8 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget *parent, BlastType blastType,
         default:
             FAIL("Unknown BLAST type", );
     }
+    dbSelector = new BlastDBSelectorWidgetController(this);
+    dbSelectorWidget->layout()->addWidget(dbSelector);
     hitsLabel->setToolTip(hitsToolTip);
     numberOfHitsSpinBox->setToolTip(hitsToolTip);
 
@@ -94,9 +94,6 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget *parent, BlastType blastType,
     numberOfCPUSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     //Connecting people
     connect(programName,SIGNAL(currentIndexChanged(int)),SLOT(sl_onProgNameChange(int)));
-    connect(selectDatabasePushButton,SIGNAL(clicked()),SLOT(sl_onBrowseDatabasePath()));
-    connect(databasePathLineEdit,SIGNAL(textChanged(QString)),SLOT(sl_lineEditChanged()));
-    connect(baseNameLineEdit,SIGNAL(textChanged(QString)),SLOT(sl_lineEditChanged()));
     connect(matrixComboBox,SIGNAL(currentIndexChanged(int)),SLOT(sl_onMatrixChanged(int)));
     sl_onMatrixChanged(0);
 
@@ -113,6 +110,7 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget *parent, BlastType blastType,
     okButton->setEnabled(false);
 
     connect(compStatsComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onCompStatsChanged()));
+    connect(dbSelector, SIGNAL(si_dbChanged()), SLOT(sl_lineEditChanged()));
     setupCompositionBasedStatistics();
     sl_onCompStatsChanged();
 }
@@ -283,24 +281,7 @@ void BlastRunCommonDialog::sl_megablastChecked(){
         xDropoffUnGASpinBox->setValue(10);
     }
 }
-void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
-    LastUsedDirHelper lod("Database Directory");
 
-    QFileDialog::Options options = 0;
-#ifdef Q_OS_MAC
-    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        options |= QFileDialog::DontUseNativeDialog;
-    }
-#endif
-
-    QString name;
-    lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir, "", NULL, options);
-    if (!name.isEmpty()) {
-        QFileInfo fileInfo(name);
-        baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nhr|nin|nsq)))?$", Qt::CaseInsensitive), QString()));
-        databasePathLineEdit->setText(fileInfo.dir().path());
-    }
-}
 void BlastRunCommonDialog::sl_onProgNameChange(int index){
     Q_UNUSED(index);
     setupCompositionBasedStatistics();
@@ -414,7 +395,7 @@ void BlastRunCommonDialog::sl_onCompStatsChanged() {
 
 void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
     localSettings.programName=programName->currentText();
-    localSettings.databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
+    localSettings.databaseNameAndPath = dbSelector->databasePathLineEdit->text() + "/" + dbSelector->baseNameLineEdit->text();
     localSettings.expectValue=evalueSpinBox->value();
     localSettings.wordSize=wordSizeSpinBox->value();
     localSettings.megablast=megablastCheckBox->isChecked();

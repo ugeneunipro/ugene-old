@@ -88,26 +88,13 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject *dnaso, QStr
         programName->removeItem(2);//tblastn
         settings.isNucleotideSeq=true;
     }
-    databasePathLineEdit->setText(lastDBPath);
-    baseNameLineEdit->setText(lastDBName);
+    dbSelector->databasePathLineEdit->setText(lastDBPath);
+    dbSelector->baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(reject()));
 }
 
 void BlastAllSupportRunDialog::sl_lineEditChanged(){
-    bool pathWarning = databasePathLineEdit->text().contains(' ');
-    QString pathTooltip = pathWarning ? tr("Database path contains space characters.") : "";
-    GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
-    databasePathLineEdit->setToolTip(pathTooltip);
-
-    bool nameWarning = baseNameLineEdit->text().contains(' ');
-    QString nameTooltip = nameWarning ? tr("Database name contains space characters.") : "";
-    GUIUtils::setWidgetWarning(baseNameLineEdit, nameWarning);
-    baseNameLineEdit->setToolTip(nameTooltip);
-
-    bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
-    bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
-    bool hasSpacesInDBPath = pathWarning || nameWarning;
-    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && !hasSpacesInDBPath);
+    okButton->setEnabled(dbSelector->isInputDataValid());
 }
 
 void BlastAllSupportRunDialog::sl_runQuery(){
@@ -136,8 +123,8 @@ void BlastAllSupportRunDialog::sl_runQuery(){
     settings.annDescription = ca_c->getModel().description;
     settings.alphabet = dnaso->getAlphabet();
     getSettings(settings);
-    lastDBPath = databasePathLineEdit->text();
-    lastDBName = baseNameLineEdit->text();
+    lastDBPath = dbSelector->databasePathLineEdit->text();
+    lastDBName = dbSelector->baseNameLineEdit->text();
     settings.outputType = 7;//By default set output file format to xml
     accept();
 }
@@ -176,8 +163,8 @@ BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRun
 
     programName->removeItem(2);//gpu-blastp
 
-    databasePathLineEdit->setText(lastDBPath);
-    baseNameLineEdit->setText(lastDBName);
+    dbSelector->databasePathLineEdit->setText(lastDBPath);
+    dbSelector->baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(sl_cancel()));
     connect(this,SIGNAL(rejected()),SLOT(sl_cancel()));
 }
@@ -187,21 +174,7 @@ const QList<BlastTaskSettings> &BlastAllWithExtFileSpecifySupportRunDialog::getS
 }
 
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
-    bool pathWarning = databasePathLineEdit->text().contains(' ');
-    QString pathTooltip = pathWarning ? tr("Database path contains space characters.") : "";
-    GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
-    databasePathLineEdit->setToolTip(pathTooltip);
-
-    bool nameWarning = baseNameLineEdit->text().contains(' ');
-    QString nameTooltip = nameWarning ? tr("Database name contains space characters.") : "";
-    GUIUtils::setWidgetWarning(baseNameLineEdit, nameWarning);
-    baseNameLineEdit->setToolTip(nameTooltip);
-
-    bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
-    bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
-    bool isInputFileLineEdit = !inputFileLineEdit->text().isEmpty();
-    bool hasSpacesInDBPath = pathWarning || nameWarning;
-    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit && !hasSpacesInDBPath && hasValidInput);
+    okButton->setEnabled(dbSelector->isInputDataValid() && hasValidInput);
 }
 
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString &url){
@@ -357,8 +330,8 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             AppContext::getTaskScheduler()->registerTopLevelTask(t);
         }
     }
-    lastDBPath=databasePathLineEdit->text();
-    lastDBName=baseNameLineEdit->text();
+    lastDBPath = dbSelector->databasePathLineEdit->text();
+    lastDBName = dbSelector->baseNameLineEdit->text();
     accept();
 }
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_cancel(){
