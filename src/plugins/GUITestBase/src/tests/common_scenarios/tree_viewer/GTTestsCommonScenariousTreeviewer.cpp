@@ -720,29 +720,29 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     CHECK_SET_ERR(color.name()=="#0000ff","Expected: #0000ff, found: " + color.name());
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0011){
+GUI_TEST_CLASS_DEFINITION(test_0011) {
 //    Collapse/expand action in phylogenetic tree (0002168)
-//    1. Open file _common_data/scenario/tree_view/COI.nwk
-    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
-    GTGlobals::sleep(500);
-//    Expected state: philogenetic tree appears
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
-    QList<QGraphicsItem*> list = treeView->scene()->items();
-    QList<QGraphicsItem*> nodeList;
 
-    foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==nodeWidth){
+//    1. Open file _common_data/scenario/tree_view/COI.nwk
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+
+//    Expected state: philogenetic tree appears
+    QGraphicsView *treeView = qobject_cast<QGraphicsView *>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem *> list = treeView->scene()->items();
+    QList<QGraphicsItem *> nodeList;
+
+    foreach (QGraphicsItem *item, list) {
+        if (item->boundingRect().width() == nodeWidth) {
             nodeList.append(item);
         }
     }
 
     CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
-    QGraphicsItem* node = nodeList.last();
-    QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
-    QPoint viewCord = treeView->mapFromScene(sceneCoord);
-    QPoint globalCoord = treeView->mapToGlobal(viewCord);
+    QPoint globalCoord = GTUtilsPhyTree::getGlobalCoord(os, nodeList.last());
+
 //    2. Do context menu {Collapse} for any node
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Collapse"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Collapse"));
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::click(os);
     GTMouseDriver::click(os,Qt::RightButton);
@@ -750,66 +750,66 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     GTGlobals::sleep(500);
 
     QList<QGraphicsSimpleTextItem *> branchList;
-    foreach(QGraphicsItem* item, list){
-            QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
-            if(textItem && (textItem->text().contains("0.052") || textItem->text().contains("0.045")
-                   || textItem->text().contains("bicolor") || textItem->text().contains("roeseli"))){
+    foreach (QGraphicsItem *item, list) {
+            QGraphicsSimpleTextItem *textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if (textItem && (textItem->text().contains("0.052") || textItem->text().contains("0.045") ||
+                             textItem->text().contains("bicolor") || textItem->text().contains("roeseli"))) {
                 branchList.append(textItem);
             }
         }
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visible");
     }
 //    Expected state: this node's branches has dissapered
 
 //    3. Do context menu {Expand} for same
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Collapse"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Collapse"));
     GTMouseDriver::moveTo(os, globalCoord);
-    GTMouseDriver::click(os,Qt::RightButton);
+    GTMouseDriver::click(os, Qt::RightButton);
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visible");
     }
 //    Expected state: this node's branches has dissapered
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0011_1){
+GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 //    Collapse/expand action in phylogenetic tree (0002168)
+
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
-//    Expected state: philogenetic tree appears
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
-    QList<QGraphicsItem*> list = treeView->scene()->items();
-    QList<QGraphicsItem*> nodeList;
 
-    foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==nodeWidth){
+//    Expected state: philogenetic tree appears
+    QGraphicsView *treeView = qobject_cast<QGraphicsView *>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem *> list = treeView->scene()->items();
+    QList<QGraphicsItem *> nodeList;
+
+    foreach (QGraphicsItem *item, list) {
+        if (item->boundingRect().width() == nodeWidth) {
             nodeList.append(item);
         }
     }
 
     CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
-    QGraphicsItem* node = nodeList.last();
-    QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
-    QPoint viewCord = treeView->mapFromScene(sceneCoord);
-    QPoint globalCoord = treeView->mapToGlobal(viewCord);
+    QPoint globalCoord = GTUtilsPhyTree::getGlobalCoord(os, nodeList.last());
+
 //    2. Do context menu {Collapse} for any node
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::doubleClick(os);
 
     QList<QGraphicsSimpleTextItem *> branchList;
-    foreach(QGraphicsItem* item, list){
-            QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
-            if(textItem && (textItem->text().contains("0.052") || textItem->text().contains("0.045")
-                   || textItem->text().contains("bicolor") || textItem->text().contains("roeseli"))){
+    foreach (QGraphicsItem *item, list) {
+            QGraphicsSimpleTextItem *textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if (textItem && (textItem->text().contains("0.052") || textItem->text().contains("0.045") ||
+                            textItem->text().contains("bicolor") || textItem->text().contains("roeseli"))) {
                 branchList.append(textItem);
             }
         }
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visible");
     }
 //    Expected state: this node's branches has dissapered
 
@@ -817,63 +817,64 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::doubleClick(os);
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visible");
     }
 //    Expected state: this node's branches has dissapered
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0011_2){
+GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 //    Collapse/expand action in phylogenetic tree (0002168)
-//    1. Open file _common_data/scenario/tree_view/COI.nwk
-    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view", "COI.nwk");
-    GTGlobals::sleep(500);
-//    Expected state: philogenetic tree appears
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
-    QList<QGraphicsItem*> list = treeView->scene()->items();
-    QList<QGraphicsItem*> nodeList;
 
-    foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==nodeWidth){
+//    1. Open file _common_data/scenario/tree_view/COI.nwk
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/tree_view", "COI.nwk");
+    GTGlobals::sleep(500);
+
+//    Expected state: philogenetic tree appears
+    QGraphicsView *treeView = qobject_cast<QGraphicsView *>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem *> list = treeView->scene()->items();
+    QList<QGraphicsItem *> nodeList;
+
+    foreach (QGraphicsItem * item, list) {
+        if (item->boundingRect().width() == nodeWidth) {
             nodeList.append(item);
         }
     }
 
     CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
-    QGraphicsItem* node = nodeList.at(1);
-    QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
-    QPoint viewCord = treeView->mapFromScene(sceneCoord);
-    QPoint globalCoord = treeView->mapToGlobal(viewCord);
+    QGraphicsItem *node = nodeList.at(1);
+    QPoint globalCoord = GTUtilsPhyTree::getGlobalCoord(os, node);
+
 //    2. Do context menu {Collapse} for any node
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::doubleClick(os);
 
     QList<QGraphicsSimpleTextItem *> branchList;
-    foreach(QGraphicsItem* item, list){
-            QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
-            if(textItem && !textItem->text().contains("0.106") && !textItem->text().contains("0.007") && !textItem->text().contains("0.103")
-                    && !textItem->text().contains("0")
-                    && !textItem->text().contains("Phaneroptera_falcata") && !textItem->text().contains("Isophya_altaica_EF540820")){
+    foreach (QGraphicsItem* item, list) {
+            QGraphicsSimpleTextItem *textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if (textItem && !textItem->text().contains("0.106") && !textItem->text().contains("0.007") &&
+                    !textItem->text().contains("0.103") && !textItem->text().contains("0") &&
+                    !textItem->text().contains("Phaneroptera_falcata") && !textItem->text().contains("Isophya_altaica_EF540820")) {
                 branchList.append(textItem);
             }
         }
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        CHECK_SET_ERR(!item->isVisible(), item->text() + " is visible");
     }
+
 //    Expected state: this node's branches has dissapered
+    globalCoord = GTUtilsPhyTree::getGlobalCoord(os, node);
 
-
-    sceneCoord = node->mapToScene(node->boundingRect().center());
-    viewCord = treeView->mapFromScene(sceneCoord);
-    globalCoord = treeView->mapToGlobal(viewCord);
 //    3. Do context menu {Expand} for same
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::doubleClick(os);
 
-    foreach(QGraphicsSimpleTextItem* item, branchList){
-        if(item->text() == "0.011") continue;
-        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visiable");
+    foreach (QGraphicsSimpleTextItem *item, branchList) {
+        if (item->text() == "0.011") {
+            continue;
+        }
+        CHECK_SET_ERR(item->isVisible(), item->text() + " is not visible");
     }
 //    Expected state: this node's branches has dissapered
 }

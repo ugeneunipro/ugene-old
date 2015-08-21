@@ -177,9 +177,10 @@ QPoint GTUtilsPhyTree::getGlobalCoord(U2OpStatus& os,QGraphicsItem *item){
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     GT_CHECK_RESULT(treeView, "treeView not found", QPoint());
 
-    QPointF sceneCoord = item->mapToScene(item->boundingRect().center());
+    QPointF sceneCoord = item->mapToScene(item->boundingRect().topLeft());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
     QPoint globalCoord = treeView->mapToGlobal(viewCord);
+    globalCoord += QPoint(item->boundingRect().width() / 2, item->boundingRect().height() / 2);
 
     return globalCoord;
 }
