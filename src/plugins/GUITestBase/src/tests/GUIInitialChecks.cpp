@@ -45,6 +45,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/EscapeClicker.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -134,25 +135,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     TEMPORARY TO DETECT MAC ERROR
 */
 #ifdef Q_OS_MAC
-//    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-//    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-//    GTGlobals::sleep(200);
-
-//    GTKeyboardDriver::keySequence(os, ">S");
-//    GTGlobals::sleep(200);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
-//    GTGlobals::sleep(200);
-//    GTKeyboardDriver::keySequence(os, "H");
-//    GTGlobals::sleep(200);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
-//    GTGlobals::sleep(200);
-
-//    QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
-//    QString text = textEdit->toPlainText();
-//    CHECK_SET_ERR( text == ">S\n", "Wrong pattern: " + text);
-
-//    GTUtilsProjectTreeView::click(os, "human_T1.fa");
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "QFileDialog"));
+    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION_PROJECTSUPPORT__OPEN_PROJECT);
 #endif
 }
 

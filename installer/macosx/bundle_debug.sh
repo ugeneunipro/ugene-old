@@ -32,6 +32,7 @@ echo copying data dir
 if [ "$1" == "-test" ]
     then
     ln -s "../../../../../../data" "${TARGET_EXE_DIR}/data"
+    ln -s "../../../../../../ext_tools_mac_64-bit" "${TARGET_EXE_DIR}/tools"
 else
     mkdir "${TARGET_EXE_DIR}/data"
     cp -R "$DEBUG_DIR/../../data" "${TARGET_EXE_DIR}/"
