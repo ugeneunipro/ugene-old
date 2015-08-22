@@ -72,7 +72,7 @@ void BlastDBSelectorWidgetController::sl_onBrowseDatabasePath() {
     if (!name.isEmpty()) {
         QFileInfo fileInfo(name);
         if (!fileInfo.suffix().isEmpty()) {
-            isNuclDB = (fileInfo.suffix().at(0) == "n");
+            isNuclDB = (fileInfo.suffix().at(0) == 'n');
         }
         QRegExp toReplace("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nhr|nin|nsq)))?$", Qt::CaseInsensitive);
         baseNameLineEdit->setText(fileInfo.fileName().replace(toReplace, QString()));

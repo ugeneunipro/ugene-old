@@ -6149,7 +6149,7 @@ GUI_TEST_CLASS_DEFINITION(test_2924) {
 
     //6. Click the "Zoom in" button several times until it becomes disabled.
     //Expected : UGENE does not crash.
-    QWidget *zoomInButton = GTWidget::findWidget(os, "tbZoomIn_human_T1_cutted [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    QWidget *zoomInButton = GTAction::button(os, "tbZoomIn_human_T1_cutted [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
 
     while (zoomInButton->isEnabled()) {
         GTWidget::click(os, zoomInButton);
@@ -6232,7 +6232,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "murine.gb");
     GTWidget::click(os, GTAction::button(os, "CircularViewAction"));
-    QWidget* zoomIn = GTWidget::findWidget(os, "tbZoomIn_murine [s] NC_001363");
+    QWidget* zoomIn = GTAction::button(os, "tbZoomIn_murine [s] NC_001363");
     CHECK_SET_ERR(zoomIn != NULL, "zoomIn action on CV not found");
 
     QWidget* splitterHandler = GTWidget::findWidget(os, "qt_splithandle_annotated_DNA_scrollarea");
