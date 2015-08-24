@@ -791,6 +791,13 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
     GTUtilsTaskTreeView::waitTaskFinished(os);
     for(int i = 0; i < 10; i++) {
         GTUtilsProjectTreeView::findIndex(os, QString("human_T%1").arg(QString::number(i)));
+
+    }
+
+    QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, "");\
+    uiLog.trace("All items in project tree view:");
+    foreach (QModelIndex index, list) {
+        uiLog.trace(index.data().toString());
     }
 }
 
