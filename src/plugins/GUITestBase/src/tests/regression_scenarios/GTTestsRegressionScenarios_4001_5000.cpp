@@ -2806,6 +2806,27 @@ GUI_TEST_CLASS_DEFINITION(test_4557){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4563) {
+    // 1. Open Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    // 2. Open the "Align sequences with MUSCLE" sample scheme.
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+
+    // 3. Set "data/samples/CLUSTALW/ty3.aln.gz" as the input file.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/4563", "test_ma.fa");
+    GTLogTracer l;
+    // 4. Run the workflow.
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep(5000);
+    //GTUtilsTaskTreeView::waitTaskFinished(os,1000);
+
+    // 5. check log message
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    l.checkMessage("Can't allocate enough memory");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4588) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4588", "4588.gb");
     QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
