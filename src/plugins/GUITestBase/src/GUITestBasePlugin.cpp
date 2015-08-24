@@ -1138,6 +1138,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 #ifndef UGENE_X86_64
     REGISTER_TEST(GUITest_regression_scenarios::test_4563);
 #endif
+    REGISTER_TEST(GUITest_regression_scenarios::test_4587);
     REGISTER_TEST(GUITest_regression_scenarios::test_4588);
     REGISTER_TEST(GUITest_regression_scenarios::test_4588_1);
 

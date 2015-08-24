@@ -102,6 +102,7 @@
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
@@ -2859,6 +2860,16 @@ GUI_TEST_CLASS_DEFINITION(test_4563) {
     // 5. check log message
     GTUtilsTaskTreeView::waitTaskFinished(os);
     l.checkMessage("Can't allocate enough memory");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4587) {
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4587/", "extended_dna.ace");
+    GTUtilsProjectTreeView::checkObjectTypes(os,
+        QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT,
+        GTUtilsProjectTreeView::findIndex(os, "Contig1"));
+    CHECK_SET_ERR(!l.hasError(), "logfile shouldn't contain errors");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4588) {

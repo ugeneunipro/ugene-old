@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
@@ -195,9 +196,11 @@ static QString getName(const QString &line){
 }
 
 static bool checkSeq(const QByteArray &seq){
-    for(int i =0; i <seq.length(); i++){
-        if(seq[i]!='A' && seq[i]!='C' && seq[i]!='G' && seq[i]!='T' && seq[i]!='N' && seq[i]!='*' && seq[i]!='X')
+    const DNAAlphabet* alphabet =  AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    for(int i = 0; i < seq.length(); i++) {
+        if (!(alphabet->contains(seq[i]) || seq[i] == '*')) {
             return false;
+        }
     }
     return true;
 }
