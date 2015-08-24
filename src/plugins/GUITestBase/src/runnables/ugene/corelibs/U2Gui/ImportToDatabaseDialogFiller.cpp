@@ -78,7 +78,7 @@ ImportToDatabaseDialogFiller::ImportToDatabaseDialogFiller(U2OpStatus &os, const
 }
 
 #define GT_METHOD_NAME "run"
-void ImportToDatabaseDialogFiller::run() {
+void ImportToDatabaseDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 

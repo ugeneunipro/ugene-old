@@ -785,19 +785,21 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
         GTClipboard::setText(os, QString(">human_T%1\r\nACGT\r\nACG").arg(QString::number(i)));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
         GTGlobals::sleep();
+        uiLog.trace(QString("item number %1 inserted").arg(i));
     }
 
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    for(int i = 0; i < 10; i++) {
-        GTUtilsProjectTreeView::findIndex(os, QString("human_T%1").arg(QString::number(i)));
 
-    }
-
-    QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, "");\
+    QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, "");
     uiLog.trace("All items in project tree view:");
     foreach (QModelIndex index, list) {
         uiLog.trace(index.data().toString());
+    }
+
+    for(int i = 0; i < 10; i++) {
+        GTUtilsProjectTreeView::findIndex(os, QString("human_T%1").arg(QString::number(i)));
+
     }
 }
 

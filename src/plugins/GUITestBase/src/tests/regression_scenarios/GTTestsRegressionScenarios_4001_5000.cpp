@@ -1442,8 +1442,42 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
     // Drag&drop the sequence document to "qwe" in the DB
     QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "test_4150_murine.gb");
     QModelIndex to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
-    GTUtilsProjectTreeView::dragAndDrop(os, from, to);
-    GTGlobals::sleep(1000);
+
+    class scenario_4150_proj_selector : public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os) {
+        GTGlobals::sleep(1000);
+        QWidget *dialog = QApplication::activeModalWidget();
+
+        QTreeView* treeView = dialog->findChild<QTreeView*>();
+        const QModelIndex documentIndex = GTUtilsProjectTreeView::findIndex(os, treeView, "test_4150_murine.gb");
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, treeView, documentIndex));
+        GTMouseDriver::click(os);
+
+        GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+        }
+    };
+
+    class scenario_4150 : public CustomScenario {
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, new scenario_4150_proj_selector));
+            GTWidget::click(os, GTWidget::findWidget(os, "pbAddObjects", dialog));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, new scenario_4150));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__add_menu"
+                                                       << "action_project__import_to_database"));
+    GTUtilsProjectTreeView::click(os,"test_4150", Qt::RightButton);
+    GTGlobals::sleep(5000);
     to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
 
     // Do double click on the sequence object from the "murine.gb" file

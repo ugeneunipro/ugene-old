@@ -60,8 +60,10 @@ public:
     };
 
     ImportToDatabaseDialogFiller(U2OpStatus& os, const QList<Action>& actions);
+    ImportToDatabaseDialogFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "ImportToDatabaseDialog", c){}
 
-    void run();
+    void commonScenario();
+
 
 private:
     void addFiles(const Action& action);
