@@ -1839,7 +1839,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Invert annotation selection"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
     QList<QTreeWidgetItem*> selected = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
-    CHECK_SET_ERR(selected.size() == 3, QString("Unexpected number of selected items: %1").arg(selected.size()));
+    CHECK_SET_ERR(selected.size() == 7, QString("Unexpected number of selected items: %1").arg(selected.size()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059_1){

@@ -2537,6 +2537,7 @@ GUI_TEST_CLASS_DEFINITION(test_0886) {
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l2);
+    GTGlobals::sleep(10000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0888) {
@@ -2986,7 +2987,7 @@ GUI_TEST_CLASS_DEFINITION(test_0947) {
     GTWidget::click( os, graphAction );
     GTGlobals::sleep();
 
-    QToolButton *zoomAction = GTWidget::findExactWidget<QToolButton *>(os, "action_zoom_in_A1#berezikov");
+    QAbstractButton *zoomAction = GTAction::button(os, "action_zoom_in_A1#berezikov");
     CHECK_SET_ERR( NULL != zoomAction, "zoomAction is not present" );
 
     for(int i = 0; i < 10; i++) {

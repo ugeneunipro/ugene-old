@@ -2226,7 +2226,6 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
     GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
-    GTGlobals::sleep(10000);
 
     GTUtilsLog::check(os, l);
 

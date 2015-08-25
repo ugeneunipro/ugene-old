@@ -5967,7 +5967,7 @@ GUI_TEST_CLASS_DEFINITION(test_3996) {
     GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
 
     //2. Zoom In
-    GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_A1#berezikov"));
+    GTWidget::click(os, GTAction::button(os, "action_zoom_in_A1#berezikov"));
 
     //3. Click on the chrom.view
     QWidget *chromaView = GTWidget::findWidget(os, "chromatogram_view_A1#berezikov");

@@ -135,9 +135,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     TEMPORARY TO DETECT MAC ERROR
 */
 #ifdef Q_OS_MAC
-    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "QFileDialog"));
-    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+//    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "QFileDialog"));
+//    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+//    GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION_PROJECTSUPPORT__OPEN_PROJECT);
 #endif
 }
 

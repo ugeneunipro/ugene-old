@@ -372,6 +372,7 @@ QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::getAllSelectedItems(U2OpStat
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
         if (item->isSelected()) {
+            QString s = item->text(0);
             res << item;
         }
     }
