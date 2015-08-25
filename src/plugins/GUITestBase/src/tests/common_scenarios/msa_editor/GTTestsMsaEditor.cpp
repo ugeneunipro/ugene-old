@@ -3346,7 +3346,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
 
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(5000);//some time is needed to build tree
+    GTUtilsTaskTreeView::waitTaskFinished(os);//some time is needed to build tree
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:

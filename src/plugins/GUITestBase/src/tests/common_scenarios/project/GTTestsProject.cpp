@@ -745,7 +745,7 @@ GUI_TEST_CLASS_DEFINITION(test_0046){
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
-    QString fileContent = readFileToStr(dataDir + "samples/PDB/1CF7.pdb");
+    QString fileContent = readFileToStr(dataDir + "samples/PDB/1CF7.PDB");
     GTClipboard::setText(os, fileContent);
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
@@ -834,11 +834,14 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTUtilsProject::closeProject(os);
+    GTGlobals::sleep(500);
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QFile savedFile(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard.fa");
-    CHECK_SET_ERR(savedFile.exists(), "Saved file didn't exists");    
+    CHECK_SET_ERR(savedFile.exists(), "Saved file didn't exists");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0051){

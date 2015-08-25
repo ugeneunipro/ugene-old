@@ -599,8 +599,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
 
-    GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
     GTGlobals::sleep();
     QList<U2Region> pair1 = GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(os, "pair 1  (0, 2)");
@@ -626,8 +625,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
 
-    GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
     GTGlobals::sleep();
     QList<U2Region> pair1 = GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(os, "pair 1  (0, 2)");
@@ -1612,15 +1610,17 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
     GTGlobals::sleep(1000);
 
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
+    GTWidget::click(os, det);
+    GTGlobals::sleep(1000);
     QImage image1 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "complement_action"));
-    QImage image2 = GTWidget::getImage(os, det);
     GTGlobals::sleep(1000);
+    QImage image2 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "complement_action"));
-    QImage image3 = GTWidget::getImage(os, det);
     GTGlobals::sleep(1000);
+    QImage image3 = GTWidget::getImage(os, det);
 
     CHECK_SET_ERR(image1 != image2, "Image was not changed");
     CHECK_SET_ERR(image1 == image3, "Image was not restored");
@@ -1631,6 +1631,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
     GTGlobals::sleep(1000);
 
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
+    GTWidget::click(os, det);
     QImage image1 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "translation_action"));
