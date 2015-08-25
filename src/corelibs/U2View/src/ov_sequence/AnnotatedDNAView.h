@@ -45,7 +45,6 @@ class GSequenceLineView;
 class AnnotationsTreeView;
 class AnnotationSelection;
 class AnnotationGroupSelection;
-class DNASequenceSelection;
 class Task;
 class ADVClipboard;
 class ADVSequenceWidget;
@@ -212,6 +211,7 @@ private slots:
     void sl_reverseComplementSequence();
     void sl_reverseSequence();
     void sl_complementSequence();
+    void sl_selectionChanged();
 
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
