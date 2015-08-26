@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 #include <cmath>
-#include <QtGui/QPainterPath>
-#include <QtGui/QBitmap>
+#include <QPainterPath>
+#include <QBitmap>
 #include "GraphLabelModel.h"
 
 namespace U2 {
@@ -97,8 +97,9 @@ GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius)
     text->installEventFilter(this);
     image->installEventFilter(this);
 }
-GraphLabel::~GraphLabel()
-{
+GraphLabel::~GraphLabel() {
+    delete text;
+    delete image;
 }
 
 bool GraphLabel::eventFilter(QObject *target, QEvent* e)

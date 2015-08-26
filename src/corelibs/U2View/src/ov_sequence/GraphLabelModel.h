@@ -24,13 +24,10 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2SafePoints.h>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#else
-#include <QtWidgets/QLabel>
-#endif
+
+#include <QMouseEvent>
+#include <QPainter>
+#include <QLabel>
 #include <QVariant>
 
 namespace U2 {
