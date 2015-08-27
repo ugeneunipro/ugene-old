@@ -220,7 +220,7 @@ void MuscleWorker::sl_taskFinished() {
     CHECK(wrapper->isFinished(), );
     MuscleTask* t = qobject_cast<MuscleTask*>(wrapper->originalTask());
     if (t->hasError()) {
-        coreLog.error(t->getError());
+        reportError(t->getError());
         return;
     } else if ( t->isCanceled( ) ) {
         return;

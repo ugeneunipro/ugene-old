@@ -2857,9 +2857,10 @@ GUI_TEST_CLASS_DEFINITION(test_4563) {
     GTGlobals::sleep(5000);
     //GTUtilsTaskTreeView::waitTaskFinished(os,1000);
 
-    // 5. check log message
+    // 5. check log message and WD dashboard
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    l.checkMessage("Can't allocate enough memory");
+    CHECK_SET_ERR(l.checkMessage("Can't allocate enough memory"), "Can't find error message");
+    CHECK_SET_ERR(GTUtilsDashboard::areThereProblems(os), "No problems appeared on dashboard");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4587) {
