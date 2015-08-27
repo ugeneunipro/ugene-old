@@ -303,21 +303,24 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 if (state == RS_NAME) {
                     nodeStack.top()->setName(lastStr);
                 } else {
-                    CHECK_EXT_BREAK(state == RS_WEIGHT, si.setError(DatatypeSerializers::tr("Incorrect tree parsing state")));
+                    assert(state == RS_WEIGHT);
                     if (!branchStack.isEmpty()) { //ignore root node weight if present
                         if (nodeStack.size() < 2) {
                             si.setError(DatatypeSerializers::tr("Unexpected weight: %1").arg(lastStr));
                         }
                         bool ok = false;
                         branchStack.top()->distance = lastStr.toDouble(&ok);
-                        CHECK_EXT_BREAK(ok, si.setError(DatatypeSerializers::tr("Error parsing weight: %1").arg(lastStr)));
+                        if (!ok) {
+                            si.setError(DatatypeSerializers::tr("Error parsing weight: %1").arg(lastStr));
+                            break;
+                        }
                     }
                 }
             }
 
             // advance in state
             if (c == '(') { //new child
-                CHECK_EXT_BREAK(!nodeStack.isEmpty(), si.setError(DatatypeSerializers::tr("Tree node stack is empty")));
+                assert(!nodeStack.isEmpty());
                 PhyNode* pn = new PhyNode();
                 PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(),pn, 0);
                 nodeStack.push(pn);
@@ -338,8 +341,8 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 }
                 state = RS_WEIGHT;
             } else if ( c == ',') { //new sibling
-                CHECK_EXT_BREAK(!nodeStack.isEmpty(), si.setError(DatatypeSerializers::tr("Tree node stack is empty")));
-                CHECK_EXT_BREAK(!branchStack.isEmpty(), si.setError(DatatypeSerializers::tr("Branch node stack is empty")));
+                assert(!nodeStack.isEmpty());
+                assert(!branchStack.isEmpty());
                 if (nodeStack.isEmpty() || branchStack.isEmpty()) {
                     si.setError(DatatypeSerializers::tr("Unexpected new sibling %1").arg(lastStr));
                     break;
@@ -357,7 +360,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                     si.setError(DatatypeSerializers::tr("Unexpected closing bracket :%1").arg(lastStr));
                     break;
                 }
-                CHECK_EXT_BREAK(!branchStack.isEmpty(), si.setError(DatatypeSerializers::tr("Branch node stack is empty")));
+                assert(!branchStack.isEmpty());
                 branchStack.pop();
                 state = RS_WEIGHT;
             } else if (c == ';') {

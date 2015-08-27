@@ -579,12 +579,6 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_3101){
-    //    1. Open the data/samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/3101", "enzymes");
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Newick Standard"));
-}
-
 GUI_TEST_CLASS_DEFINITION(test_3102) {
     //1. Go to 'File->Connect to shared database...'
     //    Expected state: Showed dialog 'Shared Databases Connections'
