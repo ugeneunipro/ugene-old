@@ -571,7 +571,6 @@ void URLWidget::sl_finished() {
     RunFileSystem *rfs = getRFS();
     if (NULL != rfs) {
         QString result = urlLine->text();
-        validateFilePath(result);
         if ((result != initialValue) && RFSUtils::isCorrectUrl(result)) {
             if (rfs->canAdd(result, urlLine->isPath)) {
                 U2OpStatusImpl os;
@@ -589,13 +588,6 @@ void URLWidget::sl_finished() {
 RunFileSystem * URLWidget::getRFS() {
     CHECK(NULL != schemaConfig, NULL);
     return schemaConfig->getRFS();
-}
-
-void URLWidget::validateFilePath(const QString& filePath) {
-    QFileInfo info(filePath);
-    if(!urlLine->saveFile && !info.exists()) {
-        QMessageBox::warning(parentWidget(), tr("File Not Found"), tr("File not found: \"%1\"").arg(filePath));
-    }
 }
 
 QString URLWidget::finalyze(const QString &url) {
