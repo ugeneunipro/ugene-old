@@ -273,6 +273,7 @@ AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject *aaOb
 {
     aaObjectInvalid = false;
     setMaxParallelSubtasks( 1 );
+    connect(aaObj, SIGNAL(destroyed(QObject*)), SLOT(sl_onSequenceDeleted()));
 }
 
 AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask( ) {
@@ -294,26 +295,34 @@ void AutoAnnotationsUpdateTask::prepare( ) {
 
 void AutoAnnotationsUpdateTask::cleanup( ) {
     if ( NULL != lock ) {
+        CHECK_EXT(!aa.isNull(), cancel(), );
         aaSeqObj->unlockState( lock );
         delete lock;
     }
 }
 
 Task::ReportResult AutoAnnotationsUpdateTask::report( ) {
-    // TODO: add more reliable mechanism to prevent deletion of aa objects, while they are updated
     if ( isCanceled( ) && aaObjectInvalid ) {
         return ReportResult_Finished;
     }
 
-    if ( aa != NULL ) {
-        aa->emitStateChange( false );
-    }
+    CHECK_EXT(!aa.isNull(), cancel(), ReportResult_Finished);
+    aa->emitStateChange( false );
 
     return ReportResult_Finished;
 }
 
 U2SequenceObject* AutoAnnotationsUpdateTask::getSequenceObject() const {
     return aaSeqObj;
+}
+
+void AutoAnnotationsUpdateTask::sl_onSequenceDeleted() {
+    if (NULL != lock) {
+        aaSeqObj->unlockState(lock);
+        delete lock;
+        lock = NULL;
+        cancel();
+    }
 }
 
 } //namespace U2

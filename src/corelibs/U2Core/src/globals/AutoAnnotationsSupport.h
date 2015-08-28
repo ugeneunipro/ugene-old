@@ -140,8 +140,11 @@ public:
 
     static const QString    NAME;
 
+private slots:
+    void sl_onSequenceDeleted();
+
 protected:
-    AutoAnnotationObject *  aa;
+    QPointer<AutoAnnotationObject> aa;
     U2SequenceObject *      aaSeqObj;
     StateLock *             lock;
     QList<Task *>           subTasks;
