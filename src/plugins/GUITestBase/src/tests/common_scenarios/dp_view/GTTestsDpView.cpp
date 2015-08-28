@@ -96,6 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot"<<"Remove"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));

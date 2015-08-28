@@ -25,6 +25,8 @@
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 
+#include "GTUtilsTaskTreeView.h"
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -70,6 +72,7 @@ void BuildDotPlotFiller::run() {
         GT_CHECK(button !=NULL, "cancel button is NULL");
         GTWidget::click(os, button);
     }
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
