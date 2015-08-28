@@ -106,7 +106,7 @@ private:
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
     TreeViewer* view;
-    PhyTree tempTree;
+    const PhyTree tempTree;
 };
 
 class CreateTreeViewerTask: public Task {

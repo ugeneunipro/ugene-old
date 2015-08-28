@@ -208,10 +208,16 @@ void UpdateTreeViewerTask::update() {
 //////////////////////////////////////////////////////////////////////////
 /// create view
 
-CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData)
-: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), view(NULL) {
+CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData) :
+    Task("Open tree viewer", TaskFlag_NoRun),
+    viewName(name),
+    phyObj(obj),
+    subTask(NULL),
+    stateData(sData),
+    view(NULL), 
+    tempTree(NULL == phyObj ? PhyTree() : phyObj->getTree())
+{
     SAFE_POINT(phyObj != NULL, "Invalid tree object detected",);
-    tempTree = phyObj->getTree();
     connect(obj.data(), SIGNAL(destroyed(QObject *)), SLOT(cancel()));
 }
 

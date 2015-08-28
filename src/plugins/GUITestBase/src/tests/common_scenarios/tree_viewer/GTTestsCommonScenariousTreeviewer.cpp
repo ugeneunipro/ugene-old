@@ -1185,5 +1185,70 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
     CHECK_SET_ERR(distances == distancesNew, "Tree has incorrect distances");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0028){
+    //    Swap siblings action.
+
+    //    1. Open the file "data/samples/CLUSTALW/COI.aln"
+    //    Expected state: a MSAEditor appears.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2298.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os, "Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+
+    //    2. Select the parent node of "Bicolorana_bicolor_EF540830" and "Roeseliana_roeseli".
+    QList<qreal> distances = GTUtilsPhyTree::getOrderedRectangularBranchesDistances(os);
+    CHECK_SET_ERR(!distances.isEmpty(), "Distances array is empty");
+    distances.swap(1, 2);
+
+    QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    GTUtilsPhyTree::clickNode(os, nodes.first());
+    CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
+
+    //    3. Do the context menu command "Swap siblings".
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Swap Siblings"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: tree distances are not changed except two swapped branches.
+    const QList<qreal> distancesNew = GTUtilsPhyTree::getOrderedRectangularBranchesDistances(os);
+    CHECK_SET_ERR(!distancesNew.isEmpty(), "New distances array is empty");
+    CHECK_SET_ERR(distances == distancesNew, "Tree has incorrect distances");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0029){
+    //    Reroot action.
+
+    //    1. Open the file "data/samples/CLUSTALW/COI.aln"
+    //    Expected state: a MSAEditor appears.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2298.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os, "Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+
+    //    2. Select the parent node of "Bicolorana_bicolor_EF540830" and "Roeseliana_roeseli".
+    QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    const qreal firstNodeDistance = GTUtilsPhyTree::getNodeDistance(os, nodes.first());
+    GTUtilsPhyTree::clickNode(os, nodes.first());
+    CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
+
+    //    3. Do the context menu command "Reroot tree".
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Reroot tree"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: the tree is rerooted. The selected node parent node becomes a new tree root.
+    nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
+    CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
+    const qreal firstNodeDistanceNew = GTUtilsPhyTree::getNodeDistance(os, nodes.first());
+
+    CHECK_SET_ERR(firstNodeDistance != firstNodeDistanceNew, "Distances are not changed. The tree was not rerooted?")
+}
+
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2
