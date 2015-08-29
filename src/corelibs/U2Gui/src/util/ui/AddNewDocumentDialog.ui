@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>389</width>
-    <height>120</height>
+    <height>147</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -23,8 +23,14 @@
    <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout_3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
@@ -77,9 +83,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../../U2Gui.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
