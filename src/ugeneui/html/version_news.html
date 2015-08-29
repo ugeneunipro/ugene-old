@@ -24,18 +24,23 @@
 </head>
 <body>
 <div>
-    <b>Major changes in UGENE 1.17</b>
+    <b>Major changes in UGENE 1.18</b>
     <ul>
-        <li>Alignment Editor:</li>
+        <li><i>Usability:</i> Ctrl+V in the Project View was supported.<br>
+        For example, if you have a sequence in the FASTA format, written in Microsoft Word, try to:
         <ul>
-        <li>Adding and aligning sequences to a multiple alignment</li>
-        <li>Export multiple alignments to the SVG format</li>
-        <li>Copy sub-alignment in a chosen format (Ctrl+Shift+C)</li>
+            <li>Select the text of the sequence. Press Ctrl+C.</li>
+            <li>Open UGENE and activate the Project View. Press Ctrl+V.</li>
         </ul>
-        <li><i>New workflow:</i> In silico PCR</li>
-        <li><i>New workflow:</i> Find intersections of annotations (features)</li>
-        <li><i>Usability:</i> options panel resizing</li>
-        <li><i>Sequence Viewer:</i> recalculation of regions in qualifiers after sequence editing</li>
+        You should see that a new document has been created with the corresponding data.<br>
+        Note that this feature is supported for other formats as well.</li>
+        <li><i>In silico PCR:</i> a possibility to include annotations to the extracted PCR product was added.</li>
+        <li><i>Sequence View:</i> exporting of a sequence image was improved. It is now possible to export the Details View and the Zoom View separately in different formats, including SVG.</li>
+        <li><i>NGS:</i> partially valid VCF files can now be opened. A warning notification is shown for lines that can't be parsed.</li>
+        <li><i>Usability:</i> some buttons from a toolbar of the Sequence View were moved to the left toolbars of the sequence sub-views: Zoom View, Details View, etc.</li>
+        <li><i>Usability:</i> a new icon for a circular sequence was added to the Project View.<br>
+        When you work with a circular sequence, don't forget to check "Mark as circular" in the Project View. In this case all algorithms in the Sequence View will take into account that the sequence is circular.</li>
+        <li>Optimizations of big data processing in UGENE.</li>
     </ul>
 </div>
 </body>
