@@ -93,6 +93,18 @@ void GTUtilsLog::checkContainsMessage(U2OpStatus &os, const GTLogTracer &logTrac
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getErrors"
+QStringList GTUtilsLog::getErrors(U2OpStatus &os, const GTLogTracer &logTracer) {
+    QStringList result;
+    foreach (LogMessage *message, logTracer.getMessages()) {
+        if (LogLevel_ERROR == message->level) {
+            result << message->text;
+        }
+    }
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } // namespace

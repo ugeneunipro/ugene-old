@@ -72,7 +72,7 @@ namespace {
             qint64 length = io->readLine(buffer, bufferSize, &terminatorFound);
             CHECK(-1 != length, result);
             result += QByteArray(buffer, length);
-        } while (!terminatorFound);
+        } while (!terminatorFound && !io->isEof());
         return result;
     }
 }

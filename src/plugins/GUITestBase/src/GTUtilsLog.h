@@ -55,6 +55,7 @@ public:
     static void check(U2OpStatus &os, const GTLogTracer &logTracer);
     static void checkContainsError(U2OpStatus &os, const GTLogTracer& logTracer, const QString &messagePart);
     static void checkContainsMessage(U2OpStatus &os, const GTLogTracer& logTracer, bool expected = true);
+    static QStringList getErrors(U2OpStatus &os, const GTLogTracer &logTracer);
 
 };
 
