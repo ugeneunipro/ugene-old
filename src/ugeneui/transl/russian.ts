@@ -1768,7 +1768,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="644"/>
         <source>Mark as circular</source>
-        <translation>Пометить как круговая</translation>
+        <translation>Работать как с круговой</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="648"/>
