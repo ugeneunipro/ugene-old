@@ -1328,6 +1328,7 @@ void ProjectViewImpl::sl_onToggleCircular() {
         if (objectIsModifiable && obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
             casted->setCircular(toggleCircularAction->isChecked());
+            projectTreeController->refreshObject(casted);
         }
     }
 }

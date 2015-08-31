@@ -163,6 +163,11 @@ void ProjectTreeController::highlightItem(Document *doc) {
     tree->selectionModel()->select(idx, QItemSelectionModel::Select);
 }
 
+void ProjectTreeController::refreshObject(GObject *object) {
+    SAFE_POINT(NULL != object, L10N::nullPointerError("object"), );
+    model->updateData(model->getIndexForObject(object));
+}
+
 QAction * ProjectTreeController::getLoadSeletectedDocumentsAction() const {
     return loadSelectedDocumentsAction;
 }

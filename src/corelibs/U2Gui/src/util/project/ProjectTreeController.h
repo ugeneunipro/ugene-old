@@ -57,6 +57,7 @@ public:
     bool isObjectInFolder(GObject *obj, const Folder &folder) const;
     const ProjectTreeControllerModeSettings & getModeSettings() const;
     void highlightItem(Document *doc);
+    void refreshObject(GObject *object);
     QAction * getLoadSeletectedDocumentsAction() const;
     void updateSettings(const ProjectTreeControllerModeSettings &settings);
     QSet<Document*> getDocsInSelection(bool deriveFromObjects) const;
