@@ -106,6 +106,17 @@ void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QSt
         GT_CHECK(currentText == text, "Can't set text");
     }
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getValues"
+QStringList GTComboBox::getValues(U2OpStatus &os, QComboBox *comboBox) {
+    QStringList result;
+    GT_CHECK_RESULT(NULL != comboBox, "Combobox is NULL", result);
+    for (int i = 0; i < comboBox->count(); i++) {
+        result << comboBox->itemText(i);
+    }
+    return result;
+}
 
 #undef GT_METHOD_NAME
 

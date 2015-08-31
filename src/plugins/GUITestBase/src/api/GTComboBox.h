@@ -41,6 +41,7 @@ public:
     // or a comboBox current item's text differs from a given text in the end of method's execution
     static void setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
+    static QStringList getValues(U2OpStatus &os, QComboBox *comboBox);
     static void checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
 
     static void checkValuesPresence(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);

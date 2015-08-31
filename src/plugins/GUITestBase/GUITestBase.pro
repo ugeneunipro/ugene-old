@@ -27,6 +27,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/AddNewDocumentDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
@@ -306,6 +307,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/AddNewDocumentDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \

@@ -265,7 +265,8 @@ void ChromatogramView::sl_addNewSequenceObject() {
     GUrl seqUrl = ctx->getSequenceGObject()->getDocument()->getURL();
     m.url = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_sequence.fa", DocumentUtils::getNewDocFileNameExcludesHint());
     c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    c.supportedObjectTypes+=GObjectTypes::SEQUENCE;
+    c.addFlagToExclude(DocumentFormatFlag_Hidden);
+    c.supportedObjectTypes += GObjectTypes::SEQUENCE;
     AddNewDocumentDialogController::run(NULL, m, c);
     if (!m.successful) {
         return;

@@ -47,7 +47,7 @@ DatabaseConnectionFormat::DatabaseConnectionFormat(QObject *p) :
                    | DocumentFormatFlag_AllowDuplicateNames
                    | DocumentFormatFlag_DirectWriteOperations)
 {
-    formatName = DocumentFormat::tr("DatabaseConnection");
+    formatName = DocumentFormat::tr("Database connection");
     formatDescription = DocumentFormat::tr("A fake format that was added to implement shared database connection within existing document model.");
 
     supportedObjectTypes << GObjectTypes::SEQUENCE

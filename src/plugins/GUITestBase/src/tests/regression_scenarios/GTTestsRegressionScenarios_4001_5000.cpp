@@ -23,6 +23,15 @@
 #include <QPlainTextEdit>
 #include <QWebElement>
 
+#include <U2Core/DocumentModel.h>
+
+#include <U2Gui/ToolsMenu.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/MSAEditorTreeViewer.h>
+#include <U2View/MSAGraphOverview.h>
+
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
@@ -74,6 +83,7 @@
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/AddNewDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
@@ -104,13 +114,6 @@
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
-#include <U2Gui/ToolsMenu.h>
-
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/MSAEditorTreeViewer.h>
-#include <U2View/MSAGraphOverview.h>
 
 namespace U2 {
 
@@ -2921,7 +2924,7 @@ GUI_TEST_CLASS_DEFINITION(test_4588_1) {
     class OkClicker : public Filler {
     public:
         OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
-            : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath) {};
+            : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath) {}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -2937,7 +2940,7 @@ GUI_TEST_CLASS_DEFINITION(test_4588_1) {
             QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
             CHECK(NULL != button, );
             GTWidget::click(os, button);
-        };
+        }
     private:
         const QString dbPath;
         const QString outputPath;
@@ -2950,6 +2953,48 @@ GUI_TEST_CLASS_DEFINITION(test_4588_1) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::getItemCenter(os, "gnl|BL_ORD_ID|24481 shortread24481");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4620) {
+//    1. Open "data/samples/ABIF/A01.abi".
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+
+//    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
+//    Expected state: an "Add new document" dialog appears.
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+//    3. Ensure that there is no "Database connection" format. Ensure that there are no formats with "DocumentFormatFlag_Hidden" flag.
+            const QStringList formats = GTComboBox::getValues(os, GTWidget::findExactWidget<QComboBox *>(os, "documentTypeCombo", dialog));
+            CHECK_SET_ERR(!formats.contains("Database connection"), "'Database connection' format isavailable");
+
+            QList<DocumentFormatId> registeredFormatsIds = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
+            QMap<QString, DocumentFormat *> formatsWithNames;
+            foreach (const DocumentFormatId &formatId, registeredFormatsIds) {
+                DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+                CHECK_SET_ERR(NULL != format, QString("Can't get document format by ID: '%1'").arg(formatId));
+                formatsWithNames[format->getFormatName()] = format;
+            }
+
+            foreach (const QString &formatName, formats) {
+                DocumentFormat *format = formatsWithNames.value(formatName, NULL);
+                CHECK_SET_ERR(NULL != format, QString("An unknown format: '%1'").arg(formatName));
+                CHECK_SET_ERR(!format->getFlags().testFlag(DocumentFormatFlag_Hidden), "A hidden format is offered to choose");
+            }
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new s"));
+    GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, new Scenario));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTGlobals::sleep();
 }
 
 } // namespace GUITest_regression_scenarios
