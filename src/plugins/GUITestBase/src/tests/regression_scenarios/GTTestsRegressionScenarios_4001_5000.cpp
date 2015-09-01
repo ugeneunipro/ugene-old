@@ -2997,6 +2997,35 @@ GUI_TEST_CLASS_DEFINITION(test_4620) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4621) {
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Find some restriction sites.
+    class Scenario : public CustomScenario {
+        void run(U2::U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QWidget *enzymesSelectorWidget = GTWidget::findWidget(os, "enzymesSelectorWidget");
+            CHECK_SET_ERR(NULL != enzymesSelectorWidget, "enzymesSelectorWidget is NULL");
+
+            GTWidget::click(os, GTWidget::findWidget(os, "selectAllButton", enzymesSelectorWidget));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new Scenario()));
+    GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+    GTGlobals::sleep(500);
+
+    //3. Delete sequence object
+    GTUtilsProjectTreeView::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected state: UGENE does not crash.
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
