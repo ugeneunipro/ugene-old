@@ -63,7 +63,7 @@ void StatisticalReportController::paintEvent(QPaintEvent *event) {
     while(vBar->maximum() != vBar->value()){
         newsTextEdit->setMinimumHeight(newsTextEdit->size().height() + 1);
     }
-    newsTextEdit->setMinimumHeight(newsTextEdit->size().height() + 20);
+    newsTextEdit->setMinimumHeight(newsTextEdit->size().height() + 10);
 }
 
 }

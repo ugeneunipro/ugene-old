@@ -21,24 +21,50 @@
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head profile="http://gmpg.org/xfn/11">
+    <style>
+        .features_list li {
+            margin-bottom: 14px;
+            list-style-type: square;
+        }
+        .features_list li:last-child {
+            margin-bottom: 0;
+        }
+        .sub_features_list li {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            margin-left: -6px;
+            list-style-type: none;
+        }
+        .sub_features_list li:before {
+            content: "- ";
+        }
+        .research_field {
+            font-style: italic;
+            font-weight: bold;
+            margin-right: 1px;
+        }
+    </style>
 </head>
 <body>
 <div>
-    <b>Major changes in UGENE 1.18</b>
-    <ul>
-        <li><i>Usability:</i> Ctrl+V in the Project View was supported.<br>
-        For example, if you have a sequence in the FASTA format, written in Microsoft Word, try to:
-        <ul>
-            <li>Select the text of the sequence. Press Ctrl+C.</li>
-            <li>Open UGENE and activate the Project View. Press Ctrl+V.</li>
-        </ul>
-        You should see that a new document has been created with the corresponding data.<br>
-        Note that this feature is supported for other formats as well.</li>
-        <li><i>In silico PCR:</i> a possibility to include annotations to the extracted PCR product was added.</li>
-        <li><i>Sequence View:</i> exporting of a sequence image was improved. It is now possible to export the Details View and the Zoom View separately in different formats, including SVG.</li>
-        <li><i>NGS:</i> partially valid VCF files can now be opened. A warning notification is shown for lines that can't be parsed.</li>
-        <li><i>Usability:</i> some buttons from a toolbar of the Sequence View were moved to the left toolbars of the sequence sub-views: Zoom View, Details View, etc.</li>
-        <li><i>Usability:</i> a new icon for a circular sequence was added to the Project View.<br>
+    <h3>Major changes in UGENE 1.18</h3>
+    <ul class="features_list">
+        <li><span class="research_field">Usability:</span> Ctrl+V in the Project View was supported.
+            For example, if you have a sequence in the FASTA format, written in Microsoft Word, try to:
+            <ul class="sub_features_list">
+                <li>Select the text of the sequence. Press Ctrl+C.</li>
+                <li>Open UGENE and activate the Project View. Press Ctrl+V.</li>
+            </ul>
+            <p>
+            You should see that a new document has been created with the corresponding data.<br/>
+            Note that this feature is supported for other formats as well.
+            </p>
+        </li>
+        <li><span class="research_field">In silico PCR:</span> a possibility to include annotations to the extracted PCR product was added.</li>
+        <li><span class="research_field">Sequence View:</span> exporting of a sequence image was improved. It is now possible to export the Details View and the Zoom View separately in different formats, including SVG.</li>
+        <li><span class="research_field">NGS:</span> partially valid VCF files can now be opened. A warning notification is shown for lines that can't be parsed.</li>
+        <li><span class="research_field">Usability:</span> some buttons from a toolbar of the Sequence View were moved to the left toolbars of the sequence sub-views: Zoom View, Details View, etc.</li>
+        <li><span class="research_field">Usability:</span> a new icon for a circular sequence was added to the Project View.<br/>
         When you work with a circular sequence, don't forget to check "Mark as circular" in the Project View. In this case all algorithms in the Sequence View will take into account that the sequence is circular.</li>
         <li>Optimizations of big data processing in UGENE.</li>
     </ul>
