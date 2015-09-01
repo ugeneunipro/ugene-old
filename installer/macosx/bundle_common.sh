@@ -148,7 +148,9 @@ restorePluginsQtInstallNames () {
 dump_symbols() {
     filename=`basename "${1}"`
     SYMBOL_FILE="${SYMBOLS_DIR}/$filename.sym";
-    ./dump_syms -a ${ARCHITECTURE} "$1" > "${SYMBOLS_DIR}/$filename.sym"
+
+    DUMP_SYMS=dump_syms_${ARCHITECTURE}
+    ./${DUMP_SYMS} -a ${ARCHITECTURE} "$1" > "${SYMBOLS_DIR}/$filename.sym"
 
     FILE_HEAD=`head -n 1 "${SYMBOL_FILE}"`
     FILE_HASH=`echo ${FILE_HEAD} | awk '{ print $4 }'`
