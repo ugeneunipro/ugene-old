@@ -116,7 +116,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         QStringList columns = sep.isEmpty() ? line.split(QRegExp("\\s+")) : line.split(sep);
 
         if (columns.size() < maxColumnNumber) {
-            os.addWarning(tr("Line %1: Too small number of columns").arg(lineNumber));
+            os.addWarning(tr("Line %1: There are too few columns in this line. The line was skipped.").arg(lineNumber));
             continue;
         }
 
@@ -129,7 +129,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         foreach (int columnNumber, columnRoles.keys()) {
             if (columns.size() <= columnNumber) {
                 skipVariation = true;
-                os.addWarning(tr("Line %1: Too small number of columns").arg(lineNumber));
+                os.addWarning(tr("Line %1: There are too few columns in this line. The line was skipped.").arg(lineNumber));
                 break;
             }
             const QString& columnData = columns.at(columnNumber);
