@@ -2408,7 +2408,13 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
 
     QWidget* extButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", toolBar);
     CHECK_SET_ERR(extButton != NULL, "Cannot find qt_toolbar_ext_button");
-    CHECK_SET_ERR(extButton->isEnabled(), "qt_toolbar_ext_button is disabled");
+    point.setY( point.y() - 20 );
+    while (!extButton->isVisible()) {
+        GTMouseDriver::press(os);
+        GTMouseDriver::moveTo(os, point);
+        GTMouseDriver::release(os);
+    }
+    CHECK_SET_ERR(extButton->isVisible() && extButton->isEnabled(), "qt_toolbar_ext_button is not visible and disabled");
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Show/hide restriction sites map"));
     GTWidget::click(os, extButton);

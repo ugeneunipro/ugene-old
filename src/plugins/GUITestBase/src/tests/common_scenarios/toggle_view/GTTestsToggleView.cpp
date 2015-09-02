@@ -871,7 +871,15 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
 // 2. Click on toolbar button Zoom to range for sequence se2. Select region 20..50, then click OK.
     GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os, 20, 50));
-    GTWidget::click(os, zoomButton);
+    if (zoomButton->isVisible()) {
+        GTWidget::click(os, zoomButton);
+    } else {
+        // the button is hidden, the action is in toolbar extension menu
+        QWidget* extMenuButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "pan_view_se2"));
+        CHECK_SET_ERR(extMenuButton != NULL, "Cannot find qt_toolbar_ext_button in pan_view_se2");
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Zoom to range..."));
+        GTWidget::click(os, extMenuButton);
+    }
     GTGlobals::sleep();
 
 // Expected state: sequence overview show 20..50 sequence region, all zoom buttons at this toolbar becomes enabled
