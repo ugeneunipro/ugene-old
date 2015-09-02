@@ -21,6 +21,11 @@
 
 #include "BlastDBSelectorWidgetController.h"
 
+#include <QDirIterator>
+#include <QMessageBox>
+
+#include <U2Core/L10n.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/U2FileDialog.h>
@@ -74,11 +79,36 @@ void BlastDBSelectorWidgetController::sl_onBrowseDatabasePath() {
         if (!fileInfo.suffix().isEmpty()) {
             isNuclDB = (fileInfo.suffix().at(0) == 'n');
         }
-        QRegExp toReplace("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nhr|nin|nsq)))?$", Qt::CaseInsensitive);
+        QRegExp toReplace("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nal|nhr|nin|nsq)))?$", Qt::CaseInsensitive);
         baseNameLineEdit->setText(fileInfo.fileName().replace(toReplace, QString()));
         databasePathLineEdit->setText(fileInfo.dir().path());
         lod.url = name;
     }
+}
+
+bool BlastDBSelectorWidgetController::validateDatabaseDir() {
+    QStringList extList;
+    if (isNuclDB) {
+        extList << "nal" << "nin";
+    } else {
+        extList << "pal" << "pin";
+    }
+    bool indexFound = false;
+    int hits = 0;
+    QDirIterator dirIt(databasePathLineEdit->text(), QDirIterator::Subdirectories);
+    while (dirIt.hasNext()) {
+        dirIt.next();
+        if (QFileInfo(dirIt.filePath()).isFile()) {
+            if (QFileInfo(dirIt.filePath()) == databasePathLineEdit->text() + QDir::separator() + baseNameLineEdit->text() + "." + extList[1]) {
+                return true;
+            } else if (QFileInfo(dirIt.filePath()) == databasePathLineEdit->text() + QDir::separator() + baseNameLineEdit->text() + "." + extList[0]) {
+                return true;
+            }
+        }
+    }
+    
+    QMessageBox::warning(this, L10N::warningTitle(), tr("No alias or index file found for selected database."));
+    return false;
 }
 
 }

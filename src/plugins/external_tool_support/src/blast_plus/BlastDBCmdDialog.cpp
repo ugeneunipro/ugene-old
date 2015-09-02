@@ -58,7 +58,9 @@ BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWi
 
 
 void BlastDBCmdDialog::sl_BlastDBCmd(){
-
+    if (!dbSelector->validateDatabaseDir()) {
+        return;
+    }
     settings.query = queryIdEdit->text();
     settings.databasePath = dbSelector->getDatabasePath();
     settings.outputPath = outputPathLineEdit->text();

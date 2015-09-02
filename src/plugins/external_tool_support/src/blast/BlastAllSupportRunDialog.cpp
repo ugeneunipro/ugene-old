@@ -119,6 +119,9 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         }
         settings.aobj = ca_c->getModel().getAnnotationObject();
     }
+    if (!dbSelector->validateDatabaseDir()) {
+        return;
+    }
     settings.groupName = ca_c->getModel().groupName;
     settings.annDescription = ca_c->getModel().description;
     settings.alphabet = dnaso->getAlphabet();
@@ -329,6 +332,9 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
         if (t != NULL) {
             AppContext::getTaskScheduler()->registerTopLevelTask(t);
         }
+    }
+    if (!dbSelector->validateDatabaseDir()) {
+        return;
     }
     lastDBPath = dbSelector->databasePathLineEdit->text();
     lastDBName = dbSelector->baseNameLineEdit->text();

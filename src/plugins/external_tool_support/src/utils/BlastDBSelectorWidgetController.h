@@ -34,6 +34,7 @@ public:
     bool isNuclDatabase() const;
     bool isInputDataValid() const;
     QString getDatabasePath() const;
+    bool validateDatabaseDir();
 signals:
     void si_dbChanged();
 private slots:
