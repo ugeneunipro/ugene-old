@@ -39,6 +39,7 @@ public:
     static void align2Profiles(const MAlignment& ma1, const MAlignment& ma2, MAlignment& res, TaskStateInfo& ti);
     
     static void addUnalignedSequencesToProfile( const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti);
+    static QString getBadAllocError();
 
 private:
     static void alignUnsafe(const MAlignment& ma, MAlignment& res, TaskStateInfo& ti, bool mhack);
@@ -48,8 +49,6 @@ private:
     static void align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment& ma2, MAlignment& res, TaskStateInfo& ti);
 
     static void addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti);
-
-    static QString getBadAllocError();
 };
 
 }//namespace

@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "MuscleAdapter.h"
 #include "MuscleParallel.h"
 #include "MuscleUtils.h"
 #include "MuscleConstants.h"
@@ -112,6 +113,11 @@ void MusclePrepareTask::run() {
     catch (MuscleException e) {
         if (!isCanceled()) {
             workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
+        }
+    } 
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(MuscleAdapter::getBadAllocError());
         }
     }
     TaskLocalData::detachMuscleTLSContext();
@@ -316,6 +322,11 @@ void ProgressiveAlignTask::run() {
             workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(MuscleAdapter::getBadAllocError());
+    }
+}
     TaskLocalData::detachMuscleTLSContext();
 #ifdef TRACE    
     log.info(tr("alignment \"%1\" Parallel MUSCLE Iter 1 accomplished. Time elapsed %2 ms").arg(workpool->ma.name).arg(timer.elapsed()));
@@ -388,7 +399,7 @@ void ProgressiveAlignWorker::run() {
     }
     catch (std::bad_alloc) {
         if (!isCanceled()) {
-            workpool->ti.setError(tr("Can't allocate enough memory to perform aligning, try to use 64bit UGENE version"));
+            workpool->ti.setError(MuscleAdapter::getBadAllocError());
         }
     }
     TaskLocalData::detachMuscleTLSContext();
@@ -518,6 +529,11 @@ void RefineTreeTask::run() {
             workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(MuscleAdapter::getBadAllocError());
+        }
+    }
     TaskLocalData::detachMuscleTLSContext();
 }
 
@@ -576,6 +592,11 @@ void RefineTask::run() {
         workpool->refineDone = true;
         workpool->mainSem.release(workpool->nThreads);
     }
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(tr("Can't allocate enough memory to perform aligning, try to use 64bit UGENE version"));
+        }
+    }
     TaskLocalData::detachMuscleTLSContext();
 }
 
@@ -626,6 +647,11 @@ void RefineWorker::run() {
         if (!isCanceled()) {
             workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
             workpool->childSem.release();
+        }
+    }
+    catch (std::bad_alloc) {
+        if (!isCanceled()) {
+            workpool->ti.setError(tr("Can't allocate enough memory to perform aligning, try to use 64bit UGENE version"));
         }
     }
     TaskLocalData::detachMuscleTLSContext();
