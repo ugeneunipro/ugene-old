@@ -2395,7 +2395,9 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
 
     QPoint point = mainToolBar->geometry().bottomLeft();
     point = mainToolBar->mapToGlobal(point);
-    point.setY( point.y() + 150);
+    QWidget* cv = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_SET_ERR(cv != NULL, "Cannot find CV_ADV_single_sequence_widget_0");
+    point.setY( cv->mapToGlobal( cv->geometry().topLeft()).y() + 100 );
     GTGlobals::sleep();
 
     GTMouseDriver::press(os);
@@ -2408,12 +2410,6 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
 
     QWidget* extButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", toolBar);
     CHECK_SET_ERR(extButton != NULL, "Cannot find qt_toolbar_ext_button");
-    point.setY( point.y() - 20 );
-    while (!extButton->isVisible()) {
-        GTMouseDriver::press(os);
-        GTMouseDriver::moveTo(os, point);
-        GTMouseDriver::release(os);
-    }
     CHECK_SET_ERR(extButton->isVisible() && extButton->isEnabled(), "qt_toolbar_ext_button is not visible and disabled");
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Show/hide restriction sites map"));
