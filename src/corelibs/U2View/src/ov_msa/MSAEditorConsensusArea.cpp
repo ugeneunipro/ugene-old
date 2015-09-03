@@ -92,17 +92,7 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI *_ui)
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
 
-    QString lastUsedAlgoKey = getLastUsedAlgoSettingsKey();
-    QString lastUsedAlgo = AppContext::getSettings()->getValue(lastUsedAlgoKey).toString();
-    MSAConsensusAlgorithmFactory* algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(lastUsedAlgo);
-
-    const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
-    ConsensusAlgorithmFlags alphaFlags = MSAConsensusAlgorithmFactory::getAphabetFlags(al);
-    if (algo == NULL || (algo->getFlags() & alphaFlags) != alphaFlags) {
-        algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO);
-        AppContext::getSettings()->setValue(lastUsedAlgoKey, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
-    }
-
+    MSAConsensusAlgorithmFactory* algo = getConsensusAlgorithmFactory();
     consensusCache = QSharedPointer<MSAEditorConsensusCache>(new MSAEditorConsensusCache(NULL, editor->getMSAObject(), algo));
     connect(consensusCache->getConsensusAlgorithm(), SIGNAL(si_thresholdChanged(int)), SLOT(sl_onConsensusThresholdChanged(int)));
     addAction(ui->getCopySelectionAction());
@@ -458,6 +448,31 @@ U2Region MSAEditorConsensusArea::getYRange(MSAEditorConsElement e) const {
     return res;
 }
 
+MSAConsensusAlgorithmFactory* MSAEditorConsensusArea::getConsensusAlgorithmFactory() {
+    QString lastUsedAlgoKey = getLastUsedAlgoSettingsKey();
+    QString lastUsedAlgo = AppContext::getSettings()->getValue(lastUsedAlgoKey).toString();
+    MSAConsensusAlgorithmFactory* algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(lastUsedAlgo);
+
+    const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
+    ConsensusAlgorithmFlags alphaFlags = MSAConsensusAlgorithmFactory::getAphabetFlags(al);
+    if (algo == NULL || (algo->getFlags() & alphaFlags) != alphaFlags) {
+        algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        AppContext::getSettings()->setValue(lastUsedAlgoKey, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+    }
+    return algo;
+}
+
+void MSAEditorConsensusArea::updateConsensusAlgorithm() {
+    MSAConsensusAlgorithmFactory* newAlgo = getConsensusAlgorithmFactory();
+    CHECK(consensusCache != NULL && newAlgo != NULL, );
+    ConsensusAlgorithmFlags cacheConsensusFlags = consensusCache->getConsensusAlgorithm()->getFactory()->getFlags();
+    ConsensusAlgorithmFlags curFlags = newAlgo->getFlags();
+    if ((curFlags & cacheConsensusFlags) != curFlags) {
+        consensusCache->setConsensusAlgorithm(newAlgo);
+    }
+    emit si_consensusAlgorithmChanged(newAlgo->getId());
+}
+
 void MSAEditorConsensusArea::sl_startChanged(const QPoint& p, const QPoint& prev) {
     if (p.x() == prev.x()) {
         return;
@@ -467,6 +482,7 @@ void MSAEditorConsensusArea::sl_startChanged(const QPoint& p, const QPoint& prev
 }
 
 void MSAEditorConsensusArea::sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {
+    updateConsensusAlgorithm();
     completeRedraw = true;
     update();
 }

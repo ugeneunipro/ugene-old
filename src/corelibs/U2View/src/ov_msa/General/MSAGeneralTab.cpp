@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
@@ -71,8 +72,17 @@ void MSAGeneralTab::sl_alignmentChanged(const MAlignment& al, const MAlignmentMo
 }
 
 void MSAGeneralTab::sl_algorithmChanged(const QString& algoId) {
-    consensusType->setCurrentIndex(consensusType->findData(algoId));
-    updateState();
+    // Update state for the current algorithm
+    const DNAAlphabet* alphabet = msa->getMSAObject()->getAlphabet();
+    if (curAlphabetId != alphabet->getId()) {
+        disconnect(consensusType, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_algorithmSelectionChanged(int)));
+        consensusType->clear();
+        initConsensusTypeCombo();
+        connect(consensusType, SIGNAL(currentIndexChanged(int)), SLOT(sl_algorithmSelectionChanged(int)));
+    } else {
+        consensusType->setCurrentIndex(consensusType->findData(algoId));
+        updateState();
+    }
 }
 
 void MSAGeneralTab::sl_thresholdChanged(int value) {
@@ -80,6 +90,7 @@ void MSAGeneralTab::sl_thresholdChanged(int value) {
 }
 
 void MSAGeneralTab::sl_algorithmSelectionChanged(int index) {
+    SAFE_POINT(index >= 0, "Incorrect consensus algorithm index is detected",);
     QString selectedAlgorithmId = consensusType->itemData(index).toString();
     updateState();
     emit si_algorithmChanged(selectedAlgorithmId);
@@ -164,20 +175,7 @@ void MSAGeneralTab::initializeParameters() {
     alignmentHeight->setText(QString::number(msa->getNumSequences()));
 
     // Consensus type combobox
-    MSAConsensusAlgorithmRegistry* reg = AppContext::getMSAConsensusAlgorithmRegistry();
-    SAFE_POINT(NULL != reg, "Consensus algorithm registry is NULL.", );
-    const DNAAlphabet* alphabet = msa->getMSAObject()->getAlphabet();
-    QList<MSAConsensusAlgorithmFactory*> algos = reg->getAlgorithmFactories(MSAConsensusAlgorithmFactory::getAphabetFlags(alphabet));
-
-    foreach(const MSAConsensusAlgorithmFactory* algo, algos) {
-        consensusType->addItem(algo->getName(), algo->getId());
-    }
-
-    QString currentAlgorithmName = msa->getUI()->getConsensusArea()->getConsensusAlgorithm()->getName();
-    consensusType->setCurrentIndex(consensusType->findText(currentAlgorithmName));
-
-    // Update state for the current algorithm
-    updateState();
+    initConsensusTypeCombo();
 
     //Copy formatted
     DocumentFormatConstraints constr;
@@ -228,6 +226,23 @@ void MSAGeneralTab::updateThresholdState(bool enable, int minVal, int maxVal, in
 
     thresholdSpinBox->setValue(qBound(minVal, value, maxVal));
     thresholdSlider->setValue(qBound(minVal, value, maxVal));
+}
+
+void MSAGeneralTab::initConsensusTypeCombo() {
+    MSAConsensusAlgorithmRegistry* reg = AppContext::getMSAConsensusAlgorithmRegistry();
+    SAFE_POINT(NULL != reg, "Consensus algorithm registry is NULL.", );
+
+    const DNAAlphabet* alphabet = msa->getMSAObject()->getAlphabet();
+    curAlphabetId = alphabet->getId();
+    QList<MSAConsensusAlgorithmFactory*> algos = reg->getAlgorithmFactories(MSAConsensusAlgorithmFactory::getAphabetFlags(alphabet));
+    foreach(const MSAConsensusAlgorithmFactory* algo, algos) {
+        consensusType->addItem(algo->getName(), algo->getId());
+    }
+    QString currentAlgorithmName = msa->getUI()->getConsensusArea()->getConsensusAlgorithm()->getName();
+    consensusType->setCurrentIndex(consensusType->findText(currentAlgorithmName));
+
+    // Update state for the current algorithm
+    updateState();
 }
 
 }   // namespace

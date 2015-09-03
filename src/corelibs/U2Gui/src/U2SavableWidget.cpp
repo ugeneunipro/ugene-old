@@ -157,8 +157,12 @@ void U2SavableWidget::setChildValue(const QString &childId, const QVariant &valu
         qobject_cast<QLineEdit *>(child)->setText(value.toString());
     } else if (NULL != qobject_cast<QTextEdit *>(child)) {
         qobject_cast<QTextEdit *>(child)->setText(value.toString());
-    } else if (NULL != qobject_cast<QComboBox *>(child) && qobject_cast<QComboBox *>(child)->count() > value.toInt()) {
-        qobject_cast<QComboBox *>(child)->setCurrentIndex(value.toInt());
+    } else if (NULL != qobject_cast<QComboBox *>(child) && qobject_cast<QComboBox *>(child)->count() > 0) {
+        if (qobject_cast<QComboBox *>(child)->count() <= value.toInt()) {
+            qobject_cast<QComboBox *>(child)->setCurrentIndex(0);
+        } else {
+            qobject_cast<QComboBox *>(child)->setCurrentIndex(value.toInt());
+        }
     } else if (NULL != qobject_cast<QAbstractButton *>(child)) {
         qobject_cast<QAbstractButton *>(child)->setChecked(value.toBool());
     } else if (NULL != qobject_cast<QGroupBox *>(child)) {

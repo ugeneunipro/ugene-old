@@ -60,8 +60,10 @@ private:
     void initializeParameters();
     void updateState();
     void updateThresholdState(bool enable, int minVal = 0, int maxVal = 0, int value = 0);
+    void initConsensusTypeCombo();
 
     MSAEditor* msa;
+    QString curAlphabetId;
     MsaOpSavableTab savableTab;
 };
 

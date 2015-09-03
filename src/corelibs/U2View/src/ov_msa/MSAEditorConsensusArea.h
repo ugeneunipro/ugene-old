@@ -132,6 +132,9 @@ private:
 
     U2Region getYRange(MSAEditorConsElement e) const;
 
+    MSAConsensusAlgorithmFactory* getConsensusAlgorithmFactory();
+    void updateConsensusAlgorithm();
+
     MSAEditor*          editor;
     const MSAEditorUI*  ui;
     QFont               rulerFont;
