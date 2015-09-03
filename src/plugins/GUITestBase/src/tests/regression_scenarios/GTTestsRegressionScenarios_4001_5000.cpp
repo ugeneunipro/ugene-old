@@ -3032,6 +3032,80 @@ GUI_TEST_CLASS_DEFINITION(test_4621) {
     //Expected state: UGENE does not crash.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4689_1) {
+    //    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    //    2. Open general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    QSpinBox* thresholdSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "thresholdSpinBox");
+
+    //    3. Set "Strict" consensus algorithm
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+    GTSpinBox::setValue(os, thresholdSpinBox, 50, GTGlobals::UseKeyBoard);
+
+    QLineEdit* sequenceLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "sequenceLineEdit");
+    consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    thresholdSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "thresholdSpinBox");
+
+    CHECK_SET_ERR(sequenceLineEdit->text() == "Phaneroptera_falcata", QString("unexpected reference: %1").arg(sequenceLineEdit->text()));
+    CHECK_SET_ERR(consensusType->currentText() == "Strict", QString("unexpected consensus: %1").arg(consensusType->currentText()));
+    CHECK_SET_ERR(thresholdSpinBox->value() == 50, QString("unexpected threshold value: %1").arg(thresholdSpinBox->value()));
+
+    //    4. Add amino extended sequence
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/amino_ext.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    //    5. Check that algorithm is "Strict", but set of algorithms correspont to raw alphabet
+    consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+
+    CHECK_SET_ERR(consensusType->currentText() == "Strict", QString("unexpected consensus: %1").arg(consensusType->currentText()));
+    CHECK_SET_ERR(consensusType->count() == 2, QString("Incorrect consensus algorithms count: %1").arg(consensusType->count()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4689_2) {
+    //    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //    2. Add amino extended sequence
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/amino_ext.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+    //    3. Press "Undo"
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep();
+
+    //    4. Open general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(500);
+    //    5. Set consensus algorithm "Levitsky"
+    QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    GTComboBox::setIndexWithText(os, consensusType, "Levitsky");
+    //    6. Close the tab
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(500);
+
+    //    7. Press "Redo"
+    GTUtilsMsaEditor::redo(os);
+    GTGlobals::sleep();
+
+    //    8. Open general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(500);
+
+    //    9. Check that algorithm is "ClustalW"
+    consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    CHECK_SET_ERR(consensusType->currentText() == "ClustalW", QString("unexpected consensus: %1").arg(consensusType->currentText()));
+    //    10. Change algorithm
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+    CHECK_SET_ERR(consensusType->currentText() == "Strict", QString("unexpected consensus: %1").arg(consensusType->currentText()));
+    //Expected: UGENE does not crash
+}
+
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
