@@ -2957,6 +2957,46 @@ GUI_TEST_CLASS_DEFINITION(test_4588_1) {
     GTUtilsProjectTreeView::getItemCenter(os, "gnl|BL_ORD_ID|24481 shortread24481");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4588_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4588", "4588_1.gb");
+    QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
+    GTUtilsAnnotationsTreeView::selectItems(os, blastResultItems);
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
+            : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath) {}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dbPath));
+            GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton", w));
+            GTGlobals::sleep();
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, outputPath, GTGlobals::UseMouse, GTFileDialogUtils::Save));
+            GTWidget::click(os, GTWidget::findWidget(os, "browseOutputButton", w));
+
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTWidget::click(os, button);
+            GTGlobals::sleep(8000);
+            button = buttonBox->button(QDialogButtonBox::Cancel);
+            GTWidget::click(os, button);
+        }
+    private:
+        const QString dbPath;
+        const QString outputPath;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os, testDir + "_common_data/scenarios/_regression/4588/4588_1.gb",
+        testDir + "_common_data/scenarios/sandbox/4588_1_fetched.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "fetchMenu" << "fetchSequenceById"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4620) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
