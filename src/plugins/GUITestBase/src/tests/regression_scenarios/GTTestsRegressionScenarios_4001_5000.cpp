@@ -2848,6 +2848,7 @@ GUI_TEST_CLASS_DEFINITION(test_4557){
 
 GUI_TEST_CLASS_DEFINITION(test_4563) {
     // 1. Open Workflow Designer.
+    int i = QSysInfo::WordSize;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     // 2. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
@@ -2862,10 +2863,9 @@ GUI_TEST_CLASS_DEFINITION(test_4563) {
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
     GTGlobals::sleep(5000);
 
-    // 5. check log message and WD dashboard
+    // 5. check log message
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(l.checkMessage("Not enough memory to do this alignment."), "Can't find error message");
-    CHECK_SET_ERR(GTUtilsDashboard::areThereProblems(os), "No problems appeared on dashboard");
+    l.checkMessage("Can't allocate enough memory");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4587) {

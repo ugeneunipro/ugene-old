@@ -669,7 +669,7 @@ GUI_TEST_CLASS_DEFINITION(test_0041){
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
-    GTClipboard::setText(os, ">human_T1 (UCS\r\nACGT\r\nACG");
+    GTClipboard::setText(os, ">human_T1 (UCS\nACGT\nACG");
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
     GTGlobals::sleep();

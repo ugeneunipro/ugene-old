@@ -142,7 +142,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
-    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
+    ///temporary ignored
+    //GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){

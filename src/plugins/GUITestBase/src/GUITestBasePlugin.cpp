@@ -1135,9 +1135,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4508);
     REGISTER_TEST(GUITest_regression_scenarios::test_4524);
     REGISTER_TEST(GUITest_regression_scenarios::test_4557);
-#ifndef UGENE_X86_64
-    REGISTER_TEST(GUITest_regression_scenarios::test_4563);
-#endif
+    if(QSysInfo::WordSize == 32){
+        REGISTER_TEST(GUITest_regression_scenarios::test_4563);
+    }
     REGISTER_TEST(GUITest_regression_scenarios::test_4587);
     REGISTER_TEST(GUITest_regression_scenarios::test_4588);
     REGISTER_TEST(GUITest_regression_scenarios::test_4588_1);
