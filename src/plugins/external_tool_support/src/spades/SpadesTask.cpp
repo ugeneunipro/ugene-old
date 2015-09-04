@@ -97,6 +97,9 @@ void SpadesTask::prepare() {
     arguments.append("-o");
     arguments.append(settings.outDir.getURLString());
 
+    //it uses system call gzip. it might not be installed
+    arguments.append("--disable-gzip-output");
+
     assemblyTask = new ExternalToolRunTask(ET_SPADES, arguments, new SpadesLogParser(), settings.outDir.getURLString());
     addSubTask(assemblyTask);
 }
