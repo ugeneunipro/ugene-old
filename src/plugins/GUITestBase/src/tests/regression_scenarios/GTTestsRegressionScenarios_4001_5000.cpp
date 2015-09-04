@@ -2852,19 +2852,19 @@ GUI_TEST_CLASS_DEFINITION(test_4563) {
     // 2. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
-    // 3. Set "data/samples/CLUSTALW/ty3.aln.gz" as the input file.
+    // 3. Set "_common_data/scenarios/_regression/4563/test_ma.fa" as the input file.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/4563", "test_ma.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/4563", "test_ma_1.fa");
     GTLogTracer l;
     // 4. Run the workflow.
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
     GTGlobals::sleep(5000);
-    //GTUtilsTaskTreeView::waitTaskFinished(os,1000);
 
     // 5. check log message and WD dashboard
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(l.checkMessage("Can't allocate enough memory"), "Can't find error message");
+    CHECK_SET_ERR(l.checkMessage("Not enough memory to do this alignment."), "Can't find error message");
     CHECK_SET_ERR(GTUtilsDashboard::areThereProblems(os), "No problems appeared on dashboard");
 }
 
