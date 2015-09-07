@@ -208,15 +208,14 @@ void RichTextMsaClipboardTask::run(){
         const MAlignment& ma = obj->getMAlignment();
         int numRows = ma.getNumRows();
         for (int seq = 0; seq < numRows; seq++){
-            result.append("<p>");
                 QString res;
                 const MAlignmentRow& row = ma.getRow(seq);
                 if (!names.contains(row.getName())){
                     continue;
                 }
-                QByteArray rowData = row.getData();
+                result.append("<p>");
                 for (int pos = window.startPos; pos < window.endPos(); pos++){
-                    char c = rowData[pos];
+                    char c = row.charAt(pos);
                     QColor color = colorScheme->getColor(seq, pos, c);
                     bool drawColor = false;
                     if (isGapsScheme || highlightingScheme->getFactory()->isRefFree()){ //schemes which applied without reference
