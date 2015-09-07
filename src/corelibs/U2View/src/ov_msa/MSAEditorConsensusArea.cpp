@@ -427,7 +427,17 @@ void MSAEditorConsensusArea::drawHistogram(QPainter &p, int firstBase, int lastB
         rects << hr;
     }
 
+#if (QT_VERSION < 0x050000)
+    // A workaround for https://local.ugene.unipro.ru/tracker/browse/UGENE-4484 (see comments)
+    // drawRects() incorrectly processes rects with coordinates greater than 16384 on Qt4
+    // drawRects() should be used for perfomance reasons
+    // this branch should be removed after migrating to Qt5
+    foreach (const QRect &rect, rects) {
+        p.drawRect(rect);
+    }
+#else
     p.drawRects(rects);
+#endif
 }
 
 U2Region MSAEditorConsensusArea::getYRange(MSAEditorConsElement e) const {
