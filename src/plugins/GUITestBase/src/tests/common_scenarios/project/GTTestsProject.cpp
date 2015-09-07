@@ -629,6 +629,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0039){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTUtilsProjectTreeView::click(os, "COI.aln");
@@ -650,6 +651,7 @@ QString readFileToStr(const QString &path){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0040){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check adding document with 2 sequences in separate mode
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -665,6 +667,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0041){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check shift+insert instead Ctrl+V
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -695,6 +698,7 @@ GUI_TEST_CLASS_DEFINITION(test_0042){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0043){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check newick format because there was crash
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -709,6 +713,7 @@ GUI_TEST_CLASS_DEFINITION(test_0043){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0044){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check document which format cant be saved by UGENE
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -725,6 +730,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0045){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check document which format cant be saved by UGENE
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -741,6 +747,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0046){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check document which format can't be saved by UGENE has no locked state
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -761,6 +768,7 @@ GUI_TEST_CLASS_DEFINITION(test_0046){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0047){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check document which format can't be saved by UGENE has no locked state
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -777,6 +785,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0048){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //pasting same data 10 times
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -804,6 +813,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0049){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check no crash after closing project without saving
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -821,6 +831,7 @@ GUI_TEST_CLASS_DEFINITION(test_0049){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0050){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //'usual' scenario
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -845,6 +856,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0051){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check adding document with 2 sequences in align mode
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -861,6 +873,7 @@ GUI_TEST_CLASS_DEFINITION(test_0051){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0052){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check adding document with 2 sequences in merge mode
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
@@ -878,6 +891,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0053){
+    GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
     //check adding document with 2 sequences in separate mode, with file which cannot be written by UGENE
     GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
 
