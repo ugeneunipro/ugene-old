@@ -126,6 +126,9 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
         }
         last = any;
     }
+    if (!rawData.contains(";")) {
+        return FormatDetection_LowSimilarity;
+    }
     if (QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
         return FormatDetection_LowSimilarity;
     }
