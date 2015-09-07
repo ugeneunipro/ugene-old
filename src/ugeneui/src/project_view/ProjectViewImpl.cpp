@@ -54,6 +54,7 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/Settings.h>
 #include <U2Core/StringAdapter.h>
+#include <U2Core/LocalFileAdapter.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -456,24 +457,41 @@ void showWarningAndWriteToLog(const QString& message) {
 void ProjectViewWidget::sl_pasteFileFromClipboard() {
     QClipboard *clipboard = QApplication::clipboard();
     QString clipboardText;
-    try {
-        clipboardText = clipboard->text();
-    }
-    catch (std::bad_alloc) {
-        showWarningAndWriteToLog(tr("Unable to handle so huge data in clipboard."));
-        return;
-    }
-    if (clipboardText.isEmpty()) {
-        showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
-        return;
-    }
-    QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() 
-        + "/clipboard");
+    bool changeName = false;
+    QScopedPointer<IOAdapterFactory> iof;
 
-    QScopedPointer<IOAdapterFactory> iof(new StringAdapterFactoryWithStringData(clipboardText));
+    const QMimeData* mdata = clipboard->mimeData();
+    QString pastedFileUrl;
+    if (mdata->hasUrls()){
+        pastedFileUrl = mdata->urls().first().toLocalFile();
+        QString fileString = "file://";
+        if (pastedFileUrl.startsWith(fileString)) {
+            pastedFileUrl.remove(0, fileString.length());
+        }
+        iof.reset(new LocalFileAdapterFactory());
+    }else{
+        changeName = true;
+        try {
+            clipboardText = clipboard->text();
+        }
+        catch (std::bad_alloc) {
+            showWarningAndWriteToLog(tr("Unable to handle so huge data in clipboard."));
+            return;
+        }
+        if (clipboardText.isEmpty()) {
+            showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
+            return;
+        }
+        pastedFileUrl = (AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath()
+            + "/clipboard");
+
+        iof.reset(new StringAdapterFactoryWithStringData(clipboardText));
+    }
     QVariantMap hints;
     bool userCancelled = false;
-    DocumentFormat *df = detectFormatFromAdapter(iof->createIOAdapter(), hints, userCancelled);
+    QScopedPointer<IOAdapter> ioa (iof->createIOAdapter());
+    ioa->open(pastedFileUrl, IOAdapterMode_Read);
+    DocumentFormat *df = detectFormatFromAdapter(ioa.data(), hints, userCancelled);
     if (userCancelled) {
         return;
     }
@@ -481,9 +499,11 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
         return;
     }
-    pastedFileUrl = pastedFileUrl + "." + df->getSupportedDocumentFileExtensions().first();
-    pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl, 
-        DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    if (changeName){
+        pastedFileUrl = pastedFileUrl + "." + df->getSupportedDocumentFileExtensions().first();
+        pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl,
+            DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    }
     excludedFilenames.insert(pastedFileUrl);
     GUrl url(pastedFileUrl, GUrl_File);
     if (df->checkFlags(DocumentFormatFlag_SupportWriting)
