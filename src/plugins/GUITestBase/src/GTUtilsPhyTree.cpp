@@ -33,8 +33,8 @@
 
 namespace U2 {
 
-const int widthMin = 7;
-const int widthMax = 9;
+const int widthMin = 6;
+const int widthMax = 8;
 
 #define GT_CLASS_NAME "GTUtilsPhyTree"
 
@@ -46,6 +46,11 @@ QList<QGraphicsItem*> GTUtilsPhyTree::getNodes(U2OpStatus &os, int width){
 
     QList<QGraphicsItem*> list = treeView->scene()->items();
     foreach(QGraphicsItem* item, list){
+
+        qreal r = item->boundingRect().width();
+        if(r>2 && r<15){
+            uiLog.trace("for debug");
+        }
         if(item->boundingRect().width()==width){
             result.append(item);
         }

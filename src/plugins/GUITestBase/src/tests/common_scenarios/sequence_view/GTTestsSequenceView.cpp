@@ -1411,6 +1411,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044_2){
     Overview* over = GTUtilsSequenceView::getOverviewByNumber(os);
     GTWidget::click(os, over);
     GTMouseDriver::doubleClick(os);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0, over->geometry().height()/3));
     GTGlobals::sleep();
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(over->geometry().width()/3, 0));
@@ -1433,10 +1434,19 @@ GUI_TEST_CLASS_DEFINITION(test_0045){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     QWidget* pan = GTUtilsSequenceView::getPanViewByNumber(os);
     QImage init = GTWidget::getImage(os, pan);
-
+//show restriction sites
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
     QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
                                                           GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTWidget::click(os, qt_toolbar_ext_button);
+        GTGlobals::sleep(1000);
+    }
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//show orfs
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
     if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
         GTWidget::click(os, qt_toolbar_ext_button);
         GTGlobals::sleep(1000);
@@ -1862,7 +1872,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059_1){
 GUI_TEST_CLASS_DEFINITION(test_0060){
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     QWidget* nameLabel = GTWidget::findWidget(os, "nameLabel");
-    GTMouseDriver::moveTo(os, GTWidget::getWidgetCenter(os, nameLabel));
+    GTMouseDriver::moveTo(os, GTWidget::getWidgetCenter(os, nameLabel) + QPoint(2*nameLabel->geometry().width()/3, 0));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(2000);
 

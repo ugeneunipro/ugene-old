@@ -3610,6 +3610,7 @@ GUI_TEST_CLASS_DEFINITION( test_2482 ) {
     QPoint nodeCoords = GTUtilsPhyTree::getGlobalCoord(os, items.at(3));
     GTMouseDriver::moveTo(os, nodeCoords);
 
+    GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -3642,6 +3643,7 @@ GUI_TEST_CLASS_DEFINITION( test_2487 ) {
     QPoint rootCoords = GTUtilsPhyTree::getGlobalCoord(os, items.first());
     GTMouseDriver::moveTo(os, rootCoords);
 
+    GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
