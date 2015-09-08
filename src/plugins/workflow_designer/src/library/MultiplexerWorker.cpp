@@ -254,20 +254,33 @@ void MultiplexerWorkerFactory::init() {
         DataTypePtr emptyTypeSet(new MapDataType(Descriptor(DataType::EMPTY_TYPESET_ID), emptyTypeMap));
 
         // input ports
-        Descriptor inputDesc1(INPUT_PORT_1, MultiplexerWorker::tr("First input data flow"), MultiplexerWorker::tr("First input data flow"));
-        Descriptor inputDesc2(INPUT_PORT_2, MultiplexerWorker::tr("Second input data flow"), MultiplexerWorker::tr("Second input data flow"));
+        Descriptor inputDesc1(INPUT_PORT_1, MultiplexerWorker::tr("First input port"), MultiplexerWorker::tr(
+            "One of the two input ports of the <i>Multiplexer</i> element. When rule \"1 to many\" is set up,"
+            " each message from this port is concatenated with messages from the other port."));
+        Descriptor inputDesc2(INPUT_PORT_2, MultiplexerWorker::tr("Second input port"), MultiplexerWorker::tr(
+            "One of the two input ports of the <i>Multiplexer</i> element. When rule \"1 to many\" is set up,"
+            " each message from the other port is concatenated with messages from this port."));
         portDescs << new PortDescriptor(inputDesc1, emptyTypeSet, true);
         portDescs << new PortDescriptor(inputDesc2, emptyTypeSet, true);
 
         // output port
-        Descriptor outputDesc(OUTPUT_PORT, MultiplexerWorker::tr("Multiplexed output data flow"), MultiplexerWorker::tr("Multiplexed output data flow"));
+        Descriptor outputDesc(OUTPUT_PORT, MultiplexerWorker::tr("Multiplexed output"),
+            MultiplexerWorker::tr("The port outputs multiplexed messages."));
         portDescs << new PortDescriptor(outputDesc, emptyTypeSet, false, true);
     }
 
     QList<Attribute*> attrs;
     {
         // attributes
-        Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"), MultiplexerWorker::tr("Specifies how to multiplex the input data flows. <br><li>Values:</li> <li><b>1 to 1</b> - for every message from the first input data flow it gets only one message from the second input data flow and puts them to the output.</li> <li><b>1 to many and Many to 1</b> - for every message from the first input data flow it gets every message from the second input data flow and puts them to the output. <li><b>Streaming mode</b> - puts every message from the first and the second input data flows to the output.</li> "));
+        Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"),
+            MultiplexerWorker::tr("Specifies how to multiplex the input messages:"
+                " <li><b>1 to 1</b> - the multiplexer gets one message from the first input port"
+                " and one message from the second input port, joins them into a single message, and transfers it to the"
+                " output. This procedure is repeated while there are available messages in both input slots.</li>"
+                " <li><b>1 to many</b> - the multiplexer gets one message from the first input port, joins it with each"
+                " message from the second input port, and transfers the joined messages to the output. This procedure"
+                " is repeated for each message from the first input port.</li>"
+                " <br/>Read the documentation for details."));
 
         Descriptor actionDesc(EMPTY_ACTION_ID, MultiplexerWorker::tr("If empty input"), MultiplexerWorker::tr("How to multiplex the data if one of input ports produces no data. <br><li>Values:</li> <li><b>Fill by empty values</b> - if one of input ports produces no data, get data from another port only and put them to the output.</li> <li><b>Truncate</b> - if one of input port produces no data, then do not output anything.</li><br>"));
 
@@ -296,7 +309,9 @@ void MultiplexerWorkerFactory::init() {
 
     Descriptor protoDesc(MultiplexerWorkerFactory::ACTOR_ID,
         MultiplexerWorker::tr("Multiplexer"),
-        MultiplexerWorker::tr("Construct an output data flow using two input data flows and a multiplexing rule."));
+        MultiplexerWorker::tr("The element allows one to join two data flows into a single data flow,"
+            " i.e. to join messages from two input ports into concatenated messages and send them to the output."
+            " The concatenation approach is determined by the <i>Multiplexing rule</i> parameter."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
@@ -332,18 +347,22 @@ QString MultiplexerPrompter::composeRichDoc() {
     QString inputName1 = unsetStr;
     if (input1->getLinks().size() > 0) {
         Port *p = input1->getLinks().keys().first();
-        inputName1 = p->owner()->getLabel() + "." + p->getDisplayName();
+        inputName1 = p->owner()->getLabel();
     }
     QString inputName2 = unsetStr;
     if (input2->getLinks().size() > 0) {
         Port *p = input2->getLinks().keys().first();
-        inputName2 = p->owner()->getLabel() + "." + p->getDisplayName();
+        inputName2 = p->owner()->getLabel();
     }
 
     if (ONE_TO_ONE == rule) {
-        return tr("For every message from <u>%1</u> it gets only one message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
+        return tr("Gets one message from <u>%1</u> and one message from <u>%2</u>,"
+            " joins them into a single message, and transfers it to the output."
+            " Repeats this while there are available messages in both input slots.").arg(inputName1).arg(inputName2);
     } else {
-        return tr("For every message from <u>%1</u> it gets every message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
+        return tr("Gets one message from <u>%1</u>, joins it with each message from <u>%2</u>,"
+            " and transfers the joined messages to the output."
+            " Repeats this for each message from <u>%1</u>.").arg(inputName1).arg(inputName2);
     }
 }
 

@@ -2645,10 +2645,6 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>At least one of these parameters must be set: &quot;Annotation names&quot;, &quot;Annotation names file&quot;.</translation>
     </message>
     <message>
-        <source>File with annotation names, separated with whitespaces or list of annotation names which will be accepted or filtered. Use space as the separator.</source>
-        <translation type="obsolete">File with annotation names, separated with whitespaces or list of annotation names which will be accepted or filtered. Use space as the separator.</translation>
-    </message>
-    <message>
         <location filename="../src/library/FilterAnnotationsWorker.cpp" line="126"/>
         <source>Accept or filter</source>
         <translation>Accept or filter</translation>
@@ -3547,92 +3543,82 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::MultiplexerPrompter</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="331"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="346"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="344"/>
-        <source>For every message from &lt;u&gt;%1&lt;/u&gt; it gets only one message from &lt;u&gt;%2&lt;/u&gt; and puts them to the output.</source>
-        <translation>For every message from &lt;u&gt;%1&lt;/u&gt; it gets only one message from &lt;u&gt;%2&lt;/u&gt; and puts them to the output.</translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="359"/>
+        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input slots.</source>
+        <translation>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input slots.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="346"/>
-        <source>For every message from &lt;u&gt;%1&lt;/u&gt; it gets every message from &lt;u&gt;%2&lt;/u&gt; and puts them to the output.</source>
-        <translation>For every message from &lt;u&gt;%1&lt;/u&gt; it gets every message from &lt;u&gt;%2&lt;/u&gt; and puts them to the output.</translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="363"/>
+        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt;, joins it with each message from &lt;u&gt;%2&lt;/u&gt;, and transfers the joined messages to the output. Repeats this for each message from &lt;u&gt;%1&lt;/u&gt;.</source>
+        <translation>Gets one message from &lt;u&gt;%1&lt;/u&gt;, joins it with each message from &lt;u&gt;%2&lt;/u&gt;, and transfers the joined messages to the output. Repeats this for each message from &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::MultiplexerWorker</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
-        <source>First input data flow</source>
-        <translation>First input data flow</translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="258"/>
-        <source>Second input data flow</source>
-        <translation>Second input data flow</translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="263"/>
-        <source>Multiplexed output data flow</source>
-        <translation>Multiplexed output data flow</translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="270"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="275"/>
         <source>Multiplexing rule</source>
         <translation>Multiplexing rule</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="270"/>
-        <source>Specifies how to multiplex the input data flows. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - for every message from the first input data flow it gets only one message from the second input data flow and puts them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many and Many to 1&lt;/b&gt; - for every message from the first input data flow it gets every message from the second input data flow and puts them to the output. &lt;li&gt;&lt;b&gt;Streaming mode&lt;/b&gt; - puts every message from the first and the second input data flows to the output.&lt;/li&gt; </source>
-        <translation>Specifies how to multiplex the input data flows. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - for every message from the first input data flow it gets only one message from the second input data flow and puts them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many and Many to 1&lt;/b&gt; - for every message from the first input data flow it gets every message from the second input data flow and puts them to the output. &lt;li&gt;&lt;b&gt;Streaming mode&lt;/b&gt; - puts every message from the first and the second input data flows to the output.&lt;/li&gt; </translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
+        <source>First input port</source>
+        <translation>First input port</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="272"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
+        <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from this port is concatenated with messages from the other port.</source>
+        <translation>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from this port is concatenated with messages from the other port.</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="260"/>
+        <source>Second input port</source>
+        <translation>Second input port</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="260"/>
+        <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from the other port is concatenated with messages from this port.</source>
+        <translation>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from the other port is concatenated with messages from this port.</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="267"/>
+        <source>Multiplexed output</source>
+        <translation>Multiplexed output</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="268"/>
+        <source>The port outputs multiplexed messages.</source>
+        <translation>The port outputs multiplexed messages.</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="276"/>
+        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input slots.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
+        <translation>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input slots.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
         <source>If empty input</source>
         <translation>If empty input</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="272"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
         <source>How to multiplex the data if one of input ports produces no data. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Fill by empty values&lt;/b&gt; - if one of input ports produces no data, get data from another port only and put them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Truncate&lt;/b&gt; - if one of input port produces no data, then do not output anything.&lt;/li&gt;&lt;br&gt;</source>
         <translation>How to multiplex the data if one of input ports produces no data. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Fill by empty values&lt;/b&gt; - if one of input ports produces no data, get data from another port only and put them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Truncate&lt;/b&gt; - if one of input port produces no data, then do not output anything.&lt;/li&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
-        <source>1 to many</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="286"/>
-        <source>Many to 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="287"/>
-        <source>1 to 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="290"/>
-        <source>Fill by empty values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="291"/>
-        <source>Truncate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="298"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="311"/>
         <source>Multiplexer</source>
         <translation>Multiplexer</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="299"/>
-        <source>Construct an output data flow using two input data flows and a multiplexing rule.</source>
-        <translation>Construct an output data flow using two input data flows and a multiplexing rule.</translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="312"/>
+        <source>The element allows one to join two data flows into a single data flow, i.e. to join messages from two input ports into concatenated messages and send them to the output. The concatenation approach is determined by the &lt;i&gt;Multiplexing rule&lt;/i&gt; parameter.</source>
+        <translation>The element allows one to join two data flows into a single data flow, i.e. to join messages from two input ports into concatenated messages and send them to the output. The concatenation approach is determined by the &lt;i&gt;Multiplexing rule&lt;/i&gt; parameter.</translation>
     </message>
 </context>
 <context>
@@ -6318,14 +6304,6 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <location filename="../src/WorkflowViewController.cpp" line="1389"/>
         <source>Add element</source>
         <translation>Add element</translation>
-    </message>
-    <message>
-        <source>Configure parameter aliases...</source>
-        <translation type="obsolete">Configure parameter aliases...</translation>
-    </message>
-    <message>
-        <source>Configure port and slot aliases...</source>
-        <translation type="obsolete">Configure port and slot aliases...</translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="751"/>
