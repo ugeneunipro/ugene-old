@@ -3684,27 +3684,29 @@ GUI_TEST_CLASS_DEFINITION(test_3585) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3589) {
-    // 1. Create workflow: Read assembly --> Write assembly
-    // 2. Set input file _common_data/bam/chrM.sorted.bam
-    // 3. Run the workflow
-    // Expected state: No errors
+    // 0. Copy "data/samples/Assembly/chrM.sam" to a new directory to avoid UGENE conversion cache.
+    // 1. Create a workflow: Read assembly.
+    // 2. Set an input file: that copied chrM.sam.
+    // 3. Run the workflow.
+    // Expected state: there are warnings about header in log and dashboard.
+
+    QString dirName = "test_3589_" + QDateTime::currentDateTime().toString("yyyy.MM.dd_HH.mm.ss");
+    QString dirPath = sandBoxDir + dirName + "/";
+    QDir().mkpath(dirPath);
+    GTFile::copy(os, dataDir + "samples/Assembly/chrM.sam", dirPath + "chrM.sam");
 
     GTLogTracer l;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Assembly");
     CHECK_SET_ERR(read != NULL, "Added workflow element is NULL");
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "/_common_data/bam/", "chrM.sorted.bam");
-
-    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Assembly");
-    CHECK_SET_ERR(write != NULL, "Added workflow element is NULL");
-    GTUtilsWorkflowDesigner::connect(os, read, write);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dirPath, "chrM.sam");
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Nothing to write") == 0, "Nothing to write error is present");
-    GTUtilsLog::check(os, l);
+    CHECK_SET_ERR(l.getError().contains("A SAM file has not a header"), "No warnings about header");
+    CHECK_SET_ERR(2 == GTUtilsLog::getErrors(os, l).size(), "Too many errors"); // initial warning and dashboard problem
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3603) {
