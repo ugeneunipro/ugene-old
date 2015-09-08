@@ -459,15 +459,22 @@ U2Region MSAEditorConsensusArea::getYRange(MSAEditorConsElement e) const {
 }
 
 MSAConsensusAlgorithmFactory* MSAEditorConsensusArea::getConsensusAlgorithmFactory() {
+    MSAConsensusAlgorithmRegistry* reg = AppContext::getMSAConsensusAlgorithmRegistry();
+    SAFE_POINT(NULL != reg, "Consensus algorithm registry is NULL.", NULL);
     QString lastUsedAlgoKey = getLastUsedAlgoSettingsKey();
     QString lastUsedAlgo = AppContext::getSettings()->getValue(lastUsedAlgoKey).toString();
-    MSAConsensusAlgorithmFactory* algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(lastUsedAlgo);
+    MSAConsensusAlgorithmFactory* algo = reg->getAlgorithmFactory(lastUsedAlgo);
 
     const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
     ConsensusAlgorithmFlags alphaFlags = MSAConsensusAlgorithmFactory::getAphabetFlags(al);
     if (algo == NULL || (algo->getFlags() & alphaFlags) != alphaFlags) {
-        algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO);
-        AppContext::getSettings()->setValue(lastUsedAlgoKey, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        algo = reg->getAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        if ((algo->getFlags() & alphaFlags) != alphaFlags) {
+            QList<MSAConsensusAlgorithmFactory*> algorithms = reg->getAlgorithmFactories(MSAConsensusAlgorithmFactory::getAphabetFlags(al));
+            SAFE_POINT(algorithms.count() > 0, "There are no consensus algorithms for the current alphabet.", NULL);
+            algo = algorithms.first();
+        }
+        AppContext::getSettings()->setValue(lastUsedAlgoKey, algo->getId());
     }
     return algo;
 }
