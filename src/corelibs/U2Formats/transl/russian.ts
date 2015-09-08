@@ -1,51 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>Document</name>
     <message>
-        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="258"/>
-        <location filename="../src/FastaFormat.cpp" line="273"/>
-        <location filename="../src/FastqFormat.cpp" line="339"/>
-        <location filename="../src/PDWFormat.cpp" line="156"/>
         <source>Document is empty.</source>
-        <translation>Документ не содержит данных.</translation>
+        <translation type="vanished">Документ не содержит данных.</translation>
     </message>
 </context>
 <context>
     <name>DocumentFormat</name>
     <message>
-        <location filename="../src/DatabaseConnectionFormat.cpp" line="50"/>
         <source>DatabaseConnection</source>
-        <translation>DatabaseConnection</translation>
+        <translation type="vanished">DatabaseConnection</translation>
     </message>
     <message>
-        <location filename="../src/DatabaseConnectionFormat.cpp" line="51"/>
         <source>A fake format that was added to implement shared database connection within existing document model.</source>
-        <translation>Неверный формат, который был добавлен  в процессе реализации подключения к базе данных в рамках существующей модели документа.</translation>
+        <translation type="vanished">Неверный формат, который был добавлен  в процессе реализации подключения к базе данных в рамках существующей модели документа.</translation>
     </message>
     <message>
-        <location filename="../src/DatabaseConnectionFormat.cpp" line="90"/>
         <source>You have no permissions to modify the content of this database</source>
-        <translation>У вас недостаточно прав чтобы изменять содержимое этой базы данных</translation>
+        <translation type="vanished">У вас недостаточно прав чтобы изменять содержимое этой базы данных</translation>
     </message>
     <message>
-        <location filename="../src/DatabaseConnectionFormat.cpp" line="110"/>
         <source>Empty object name</source>
-        <translation>Имя объекта пусто</translation>
+        <translation type="vanished">Имя объекта пусто</translation>
     </message>
 </context>
 <context>
     <name>L10N</name>
     <message>
-        <location filename="../src/AbstractVariationFormat.cpp" line="96"/>
         <source>Line is too long</source>
-        <translation>Слишком длинная строка</translation>
+        <translation type="vanished">Слишком длинная строка</translation>
     </message>
     <message>
-        <location filename="../src/AbstractVariationFormat.cpp" line="121"/>
         <source>Incorrect number of columns in the file</source>
-        <translation>Неверное число столбцов в файле</translation>
+        <translation type="vanished">Неверное число столбцов в файле</translation>
     </message>
 </context>
 <context>
@@ -145,121 +135,121 @@
 <context>
     <name>U2::ACEFormat</name>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="49"/>
+        <location filename="../src/ace/AceFormat.cpp" line="50"/>
         <source>ACE</source>
         <translation>ACE</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="216"/>
+        <location filename="../src/ace/AceFormat.cpp" line="219"/>
         <source>Line is too long</source>
         <translation>Строка слишком длинная</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="381"/>
+        <location filename="../src/ace/AceFormat.cpp" line="384"/>
         <source>A name is not match with AF names</source>
         <translation>Имя не совпадает с именами AF</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="424"/>
+        <location filename="../src/ace/AceFormat.cpp" line="427"/>
         <source>First line is not an ace header</source>
         <translation>Первая строка не является заголовком ACE</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="429"/>
+        <location filename="../src/ace/AceFormat.cpp" line="432"/>
         <source>No contig count tag in the header line</source>
         <translation>Отсутствует тег числа контигов в строке заголовка</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="443"/>
+        <location filename="../src/ace/AceFormat.cpp" line="446"/>
         <source>Must be CO keyword</source>
         <translation>Ожидается ключевое слово CO</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="212"/>
+        <location filename="../src/ace/AceFormat.cpp" line="215"/>
         <source>Unexpected end of file</source>
         <translation>Неожиданный конец файла</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="457"/>
+        <location filename="../src/ace/AceFormat.cpp" line="460"/>
         <source>There is no note about reads count</source>
         <translation>Отсуствтует информация о числе считываний</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="228"/>
-        <location filename="../src/ace/AceFormat.cpp" line="281"/>
+        <location filename="../src/ace/AceFormat.cpp" line="231"/>
+        <location filename="../src/ace/AceFormat.cpp" line="284"/>
         <source>There is no AF note</source>
         <translation>Отсутствует</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="50"/>
+        <location filename="../src/ace/AceFormat.cpp" line="51"/>
         <source>ACE is a format used for storing information about genomic confgurations</source>
         <translation>ACE это формат используемый для хранения информации о геномных конфигурациях</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="232"/>
-        <location filename="../src/ace/AceFormat.cpp" line="301"/>
+        <location filename="../src/ace/AceFormat.cpp" line="235"/>
+        <location filename="../src/ace/AceFormat.cpp" line="304"/>
         <source>A name is duplicated</source>
         <translation>Повторные вхождения имени</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="240"/>
+        <location filename="../src/ace/AceFormat.cpp" line="243"/>
         <source>No consensus</source>
         <translation>Отсутствует консенсунс</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="251"/>
+        <location filename="../src/ace/AceFormat.cpp" line="254"/>
         <source>BQ keyword hasn&apos;t been found</source>
         <translation>Не найдено ключевое слово BQ</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="256"/>
+        <location filename="../src/ace/AceFormat.cpp" line="259"/>
         <source>Bad consensus data</source>
         <translation>Плохие данные в консенсусе</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="288"/>
-        <location filename="../src/ace/AceFormat.cpp" line="294"/>
+        <location filename="../src/ace/AceFormat.cpp" line="291"/>
+        <location filename="../src/ace/AceFormat.cpp" line="297"/>
         <source>Bad AF note</source>
         <translation>Плохое примечание AF</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="331"/>
+        <location filename="../src/ace/AceFormat.cpp" line="334"/>
         <source>There is no read note</source>
         <translation>Отсутствует</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="339"/>
+        <location filename="../src/ace/AceFormat.cpp" line="342"/>
         <source>No sequence</source>
         <translation>Нет последовательности</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="350"/>
+        <location filename="../src/ace/AceFormat.cpp" line="353"/>
         <source>QA keyword hasn&apos;t been found</source>
         <translation>Ключевое слово QA не было найдено</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="358"/>
-        <location filename="../src/ace/AceFormat.cpp" line="364"/>
+        <location filename="../src/ace/AceFormat.cpp" line="361"/>
+        <location filename="../src/ace/AceFormat.cpp" line="367"/>
         <source>QA error no clear range</source>
         <translation>Ошибка QA нет четкого региона</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="370"/>
+        <location filename="../src/ace/AceFormat.cpp" line="373"/>
         <source>QA error bad range</source>
         <translation>Ошибка QA: плохой регион</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="376"/>
+        <location filename="../src/ace/AceFormat.cpp" line="379"/>
         <source>Bad sequence data</source>
         <translation>Некорректные данные в последовательности</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="510"/>
+        <location filename="../src/ace/AceFormat.cpp" line="513"/>
         <source>Alphabet unknown</source>
         <translation>Неизвестный алфавит</translation>
     </message>
     <message>
-        <location filename="../src/ace/AceFormat.cpp" line="536"/>
+        <location filename="../src/ace/AceFormat.cpp" line="539"/>
         <source>File doesn&apos;t contain any msa objects</source>
         <translation>Файл не содержит msa объектов</translation>
     </message>
@@ -320,6 +310,12 @@
         <source>SNP formats are used to store single-nucleotide polymorphism data</source>
         <translation>SNP форматы используются для сохранения полиморфизма однонуклеотидных данных</translation>
     </message>
+    <message>
+        <location filename="../src/AbstractVariationFormat.cpp" line="119"/>
+        <location filename="../src/AbstractVariationFormat.cpp" line="132"/>
+        <source>Line %1: There are too few columns in this line. The line was skipped.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::AceImporter</name>
@@ -355,27 +351,32 @@
 <context>
     <name>U2::BAMUtils</name>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="335"/>
+        <location filename="../src/BAMUtils.cpp" line="178"/>
+        <source>A SAM file has not a header [%1]. The list of references will be generated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/BAMUtils.cpp" line="336"/>
         <source>Sort bam file: &quot;%1&quot; using %2 Mb of memory. Result sorted file is: &quot;%3&quot;</source>
         <translation>Сортировка bam файла: &quot;%1&quot; использует %2 Mb памяти. Сортированный файл: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="346"/>
+        <location filename="../src/BAMUtils.cpp" line="347"/>
         <source>Merging BAM files: &quot;%1&quot;. Resulting merged file is: &quot;%2&quot;</source>
         <translation>Слияние BAM файлов: &quot;%1&quot;. Соединенный файл: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="363"/>
+        <location filename="../src/BAMUtils.cpp" line="364"/>
         <source>Remove PCR duplicate in BAM file: &quot;%1&quot;. Resulting  file is: &quot;%2&quot;</source>
         <translation>Удаление PCR повторов в BAM файле: &quot;%1&quot;. Результирующий файл: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="450"/>
+        <location filename="../src/BAMUtils.cpp" line="451"/>
         <source>Build index for bam file: &quot;%1&quot;</source>
         <translation>Построение индекса для bam файла: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/BAMUtils.cpp" line="711"/>
+        <location filename="../src/BAMUtils.cpp" line="712"/>
         <source>Wrong line in a SAM file.</source>
         <translation>Wrong line in a SAM file.</translation>
     </message>
@@ -761,6 +762,40 @@
         <location filename="../src/DifferentialFormat.cpp" line="289"/>
         <source>Required column is missed: %1</source>
         <translation>Пропущен необходимый столбец: %1</translation>
+    </message>
+</context>
+<context>
+    <name>U2::Document</name>
+    <message>
+        <location filename="../src/EMBLGenbankAbstractDocument.cpp" line="258"/>
+        <location filename="../src/FastaFormat.cpp" line="273"/>
+        <location filename="../src/FastqFormat.cpp" line="339"/>
+        <location filename="../src/PDWFormat.cpp" line="156"/>
+        <source>Document is empty.</source>
+        <translation type="unfinished">Документ не содержит данных.</translation>
+    </message>
+</context>
+<context>
+    <name>U2::DocumentFormat</name>
+    <message>
+        <location filename="../src/DatabaseConnectionFormat.cpp" line="50"/>
+        <source>Database connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DatabaseConnectionFormat.cpp" line="51"/>
+        <source>A fake format that was added to implement shared database connection within existing document model.</source>
+        <translation type="unfinished">Неверный формат, который был добавлен  в процессе реализации подключения к базе данных в рамках существующей модели документа.</translation>
+    </message>
+    <message>
+        <location filename="../src/DatabaseConnectionFormat.cpp" line="90"/>
+        <source>You have no permissions to modify the content of this database</source>
+        <translation type="unfinished">У вас недостаточно прав чтобы изменять содержимое этой базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/DatabaseConnectionFormat.cpp" line="110"/>
+        <source>Empty object name</source>
+        <translation type="unfinished">Имя объекта пусто</translation>
     </message>
 </context>
 <context>
@@ -2136,6 +2171,506 @@ The following sequences are empty:</translation>
     </message>
 </context>
 <context>
+    <name>U2::U2DbiL10n</name>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlAssemblyDbi.cpp" line="84"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="80"/>
+        <source>There is no assembly object with the specified id.</source>
+        <translation type="unfinished">Не найден объект сборки с указанным идентификатором.</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlAttributeDbi.cpp" line="209"/>
+        <location filename="../src/sqlite_dbi/SQLiteAttributeDbi.cpp" line="223"/>
+        <source>Unsupported attribute type: %1</source>
+        <translation type="unfinished">Неподдерживаемый тип атрибута: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlAttributeDbi.cpp" line="341"/>
+        <source>Required attribute is not found</source>
+        <translation type="unfinished">Требуемый атрибут не найдет</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="262"/>
+        <source>Database url is incorrect</source>
+        <translation type="unfinished">Неправильный путь базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="268"/>
+        <source>User login is not specified</source>
+        <translation type="unfinished">Не указано имя пользователя</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="274"/>
+        <source>Host is not specified</source>
+        <translation type="unfinished">Не указан хост</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="280"/>
+        <source>Database name is not specified</source>
+        <translation type="unfinished">Не указано имя базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="296"/>
+        <source>Error opening MySQL database: %1</source>
+        <translation type="unfinished">Ошибка открытия базы данных MySQL: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="380"/>
+        <source>Not a %1 MySQL database: %2, %3</source>
+        <translation type="unfinished">Не %1 MySQL база данных: %2, %3</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="386"/>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="273"/>
+        <source>Warning! The database was created with a newer %1 version: %2. Not all database features may be supported! Current %1 version: %3.</source>
+        <translation type="unfinished">Предупреждение! База данных была создана с более новой %1 версией: %2. Не все возможности базы данных могут быть выполнены! Текущая %1 версия: %3.</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="521"/>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="328"/>
+        <source>Illegal database state: %1</source>
+        <translation type="unfinished">Неправильное состояние базы данных: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="552"/>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="410"/>
+        <source>Can&apos;t synchronize database state</source>
+        <translation type="unfinished">Невозможно синхронизовать состояние базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlFeatureDbi.cpp" line="148"/>
+        <source>Annotation table object is not found.</source>
+        <translation type="unfinished">Не найдена таблица аннотаций.</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlFeatureDbi.cpp" line="177"/>
+        <source>Feature is not found.</source>
+        <translation type="unfinished">Аннотация не найдена.</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="134"/>
+        <source>An object single modification step not found</source>
+        <translation type="unfinished">Объект единичной модификации не найден</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="170"/>
+        <source>Failed to find user step ID</source>
+        <translation type="unfinished">Невозможно найти идентификатор объекта единичной модификации</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="378"/>
+        <source>Not main thread</source>
+        <translation type="unfinished">Не основной поток</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="390"/>
+        <source>Can&apos;t create a common user modifications step, previous one is not complete</source>
+        <translation type="unfinished">Невозможно создать новую единичную модификацию, т.к. прошлая модификация еще не завершена</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="453"/>
+        <source>Can&apos;t create a common multiple modifications step, previous one is not complete</source>
+        <translation type="unfinished">Невозможно создать новые модификации, т.к. прошлая модификация еще не завершена</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="489"/>
+        <source>Failed to create a common user modifications step</source>
+        <translation type="unfinished">Не удалось создать новую единичную модификацию</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="510"/>
+        <source>Failed to create a common multiple modifications step</source>
+        <translation type="unfinished">Не удалось создать новые модификации</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="102"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="118"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="634"/>
+        <source>Msa object not found</source>
+        <translation type="unfinished">Объект msa не найден</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="177"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="781"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="821"/>
+        <source>Msa row not found</source>
+        <translation type="unfinished">Столбец msa не найден</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="586"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="619"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1100"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1109"/>
+        <source>Unexpected modification type &apos;%1&apos;</source>
+        <translation type="unfinished">Неожиданный тип модификации &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="656"/>
+        <source>Invalid row position: %1</source>
+        <translation type="unfinished">Неправильное расположение столбца: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1030"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1161"/>
+        <source>An error occurred during updating an alignment alphabet</source>
+        <translation type="unfinished">Возникла ошибка во время обновления алфавита выравнивания</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1048"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1176"/>
+        <source>An error occurred during reverting adding of rows</source>
+        <translation type="unfinished">Возникла ошибка во время отмены добавления столбцов</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1066"/>
+        <source>An error occurred during reverting addition of a row</source>
+        <translation type="unfinished">Возникла ошибка во время отмены добавления столбца</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1079"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1196"/>
+        <source>An error occurred during reverting removing of rows</source>
+        <translation type="unfinished">Возникла ошибка во время отмены удаления столбцов</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1092"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1211"/>
+        <source>An error occurred during reverting removing of a row</source>
+        <translation type="unfinished">Возникла ошибка во время отмены удаления столбца</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1106"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1222"/>
+        <source>An error occurred during updating an alignment gaps</source>
+        <translation type="unfinished">Возникла ошибка во время обновления промежутков выравнивания</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1119"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1232"/>
+        <source>An error occurred during updating an alignment row order</source>
+        <translation type="unfinished">Возникла ошибка во время обновления порядка столбцов</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1133"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1242"/>
+        <source>An error occurred during updating a row info</source>
+        <translation type="unfinished">Возникла ошибка во время обновления информации о столбце</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1148"/>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1257"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="1272"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="1282"/>
+        <source>An error occurred during updating an msa length</source>
+        <translation type="unfinished">An error occurred during updating an msa length</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1186"/>
+        <source>An error occurred during addition of a row</source>
+        <translation type="unfinished">Возникла ошибка во время добавления столбца</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="586"/>
+        <source>Can&apos;t undo an operation for the object</source>
+        <translation type="unfinished">Невозможно отменить операцию для объекта</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="649"/>
+        <source>Can&apos;t redo an operation for the object</source>
+        <translation type="unfinished">Невозможно передвинуться на одну операцию вперед для объекта</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="791"/>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="883"/>
+        <source>Object not found</source>
+        <translation type="unfinished">Объект не найден</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="832"/>
+        <source>Folder not found: %1 (canonical: %2)</source>
+        <translation type="unfinished">Папка не найдена: %1 (каноническое: %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1013"/>
+        <source>Not an object, id: %1, type: %2</source>
+        <translation type="unfinished">Не является объектом, id: %1, тип: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1036"/>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="289"/>
+        <source>Unknown object type! Id: %1, type: %2</source>
+        <translation type="unfinished">Unknown object type! Id: %1, type: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1078"/>
+        <source>Can&apos;t undo an unknown operation: &apos;%1&apos;</source>
+        <translation type="unfinished">Can&apos;t undo an unknown operation: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1091"/>
+        <source>Can&apos;t redo an unknown operation: &apos;%1&apos;</source>
+        <translation type="unfinished">Can&apos;t redo an unknown operation: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1122"/>
+        <source>An error occurred during updating an object name</source>
+        <translation type="unfinished">An error occurred during updating an object name</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1140"/>
+        <source>An error occurred during updating an object name!</source>
+        <translation type="unfinished">An error occurred during updating an object name!</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="73"/>
+        <source>Sequence object not found</source>
+        <translation type="unfinished">Последовательность не найдена</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="125"/>
+        <source>Internal error occurred during the sequence processing</source>
+        <translation type="unfinished">Internal error occurred during the sequence processing</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="126"/>
+        <source>An exception was thrown during reading sequence data from dbi</source>
+        <translation type="unfinished">An exception was thrown during reading sequence data from dbi</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="387"/>
+        <source>An error occurred during reverting replacing sequence data</source>
+        <translation type="unfinished">An error occurred during reverting replacing sequence data</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="402"/>
+        <source>An error occurred during replacing sequence data</source>
+        <translation type="unfinished">An error occurred during replacing sequence data</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="158"/>
+        <source>Invalid variant track type: %1</source>
+        <translation type="unfinished">Invalid variant track type: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="186"/>
+        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="219"/>
+        <source>Sequence name is not set</source>
+        <translation type="unfinished">Sequence name is not set</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="321"/>
+        <source>New variant public ID is empty</source>
+        <translation type="unfinished">New variant public ID is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="337"/>
+        <source>New variant track ID is empty</source>
+        <translation type="unfinished">New variant track ID is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="124"/>
+        <source>Packed data is empty</source>
+        <translation type="unfinished">Packed data is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="131"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="468"/>
+        <source>Packing method prefix is not supported: %1</source>
+        <translation type="unfinished">Packing method prefix is not supported: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="139"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="476"/>
+        <source>Data is corrupted, no name end marker found: %1</source>
+        <translation type="unfinished">Data is corrupted, no name end marker found: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="148"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="485"/>
+        <source>Data is corrupted, no sequence end marker found: %1</source>
+        <translation type="unfinished">Data is corrupted, no sequence end marker found: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="157"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="494"/>
+        <source>Data is corrupted, no CIGAR end marker found: %1</source>
+        <translation type="unfinished">Data is corrupted, no CIGAR end marker found: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="176"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="513"/>
+        <source>Data is corrupted, no rnext end marker found: %1</source>
+        <translation type="unfinished">Data is corrupted, no rnext end marker found: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="191"/>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="528"/>
+        <source>Can not convert pnext to a number: %1</source>
+        <translation type="unfinished">Can not convert pnext to a number: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlHelpers.cpp" line="399"/>
+        <source>Bound values: </source>
+        <translation type="unfinished">Связанные значения: </translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlHelpers.cpp" line="421"/>
+        <source>Cannot start a transaction</source>
+        <translation type="unfinished">Cannot start a transaction</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="505"/>
+        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="127"/>
+        <source>Failed to detect assembly storage format: %1</source>
+        <translation type="unfinished">Failed to detect assembly storage format: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="517"/>
+        <source>Failed to parse range: %1, full: %2</source>
+        <translation type="unfinished">Failed to parse range: %1, full: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="531"/>
+        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="536"/>
+        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="542"/>
+        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="152"/>
+        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="156"/>
+        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="161"/>
+        <source>Failed to parse packed row range info %1</source>
+        <translation type="unfinished">Failed to parse packed row range info %1</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="96"/>
+        <source>Unsupported reads storage type: %1</source>
+        <translation type="unfinished">Unsupported reads storage type: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="373"/>
+        <source>Packing method is not supported: %1</source>
+        <translation type="unfinished">Packing method is not supported: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="461"/>
+        <source>Packed data is empty!</source>
+        <translation type="unfinished">Packed data is empty!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="222"/>
+        <source>Error checking SQLite database: %1!</source>
+        <translation type="unfinished">Error checking SQLite database: %1!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="235"/>
+        <source>Error creating table: %1, error: %2</source>
+        <translation type="unfinished">Error creating table: %1, error: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="267"/>
+        <source>Not a %1 SQLite database: %2</source>
+        <translation type="unfinished">Not a %1 SQLite database: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="324"/>
+        <source>Database is already opened!</source>
+        <translation type="unfinished">База данных уже открыта!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="334"/>
+        <source>URL is not specified</source>
+        <translation type="unfinished">Не задан путь</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="348"/>
+        <source>Error opening SQLite database: %1!</source>
+        <translation type="unfinished">Error opening SQLite database: %1!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="400"/>
+        <source>Database is already closed!</source>
+        <translation type="unfinished">База данных уже закрыта!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="404"/>
+        <source>Illegal database state %1!</source>
+        <translation type="unfinished">Illegal database state %1!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="429"/>
+        <source>Failed to close database: %1, err: %2</source>
+        <translation type="unfinished">Failed to close database: %1, err: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteFeatureDbi.cpp" line="144"/>
+        <source>Annotation table object not found.</source>
+        <translation type="unfinished">Annotation table object not found.</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteModDbi.cpp" line="139"/>
+        <source>An object single modification step not found!</source>
+        <translation type="unfinished">An object single modification step not found!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="505"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="520"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="712"/>
+        <source>Msa object not found!</source>
+        <translation type="unfinished">Msa object not found!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="602"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="742"/>
+        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="780"/>
+        <source>Msa row not found!</source>
+        <translation type="unfinished">Msa row not found!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="266"/>
+        <source>Not an object! Id: %1, type: %2</source>
+        <translation type="unfinished">Not an object! Id: %1, type: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="600"/>
+        <source>Can&apos;t undo an operation for the object!</source>
+        <translation type="unfinished">Can&apos;t undo an operation for the object!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="685"/>
+        <source>Can&apos;t redo an operation for the object!</source>
+        <translation type="unfinished">Can&apos;t redo an operation for the object!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="857"/>
+        <source>Object not found!</source>
+        <translation type="unfinished">Object not found!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="918"/>
+        <source>Object not found.</source>
+        <translation type="unfinished">Object not found.</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="954"/>
+        <source>Folder not found: %1</source>
+        <translation type="unfinished">Folder not found: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteSequenceDbi.cpp" line="65"/>
+        <source>Sequence object not found.</source>
+        <translation type="unfinished">Sequence object not found.</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/SQLiteVariantDbi.cpp" line="96"/>
+        <location filename="../src/sqlite_dbi/SQLiteVariantDbi.cpp" line="130"/>
+        <source>Sequence name is not set!</source>
+        <translation type="unfinished">Sequence name is not set!</translation>
+    </message>
+    <message>
+        <location filename="../src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp" line="68"/>
+        <source>Error during RTree index creation: %1! Check if SQLite library has RTree index support!</source>
+        <translation type="unfinished">Error during RTree index creation: %1! Check if SQLite library has RTree index support!</translation>
+    </message>
+</context>
+<context>
     <name>U2::VectorNtiSequenceFormat</name>
     <message>
         <location filename="../src/VectorNtiSequenceFormat.cpp" line="46"/>
@@ -2160,505 +2695,372 @@ The following sequences are empty:</translation>
 <context>
     <name>U2DbiL10n</name>
     <message>
-        <location filename="../src/mysql_dbi/MysqlAssemblyDbi.cpp" line="84"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="80"/>
         <source>There is no assembly object with the specified id.</source>
-        <translation>Не найден объект сборки с указанным идентификатором.</translation>
+        <translation type="vanished">Не найден объект сборки с указанным идентификатором.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlAttributeDbi.cpp" line="209"/>
-        <location filename="../src/sqlite_dbi/SQLiteAttributeDbi.cpp" line="223"/>
         <source>Unsupported attribute type: %1</source>
-        <translation>Неподдерживаемый тип атрибута: %1</translation>
+        <translation type="vanished">Неподдерживаемый тип атрибута: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlAttributeDbi.cpp" line="341"/>
         <source>Required attribute is not found</source>
-        <translation>Требуемый атрибут не найдет</translation>
+        <translation type="vanished">Требуемый атрибут не найдет</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="262"/>
         <source>Database url is incorrect</source>
-        <translation>Неправильный путь базы данных</translation>
+        <translation type="vanished">Неправильный путь базы данных</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="268"/>
         <source>User login is not specified</source>
-        <translation>Не указано имя пользователя</translation>
+        <translation type="vanished">Не указано имя пользователя</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="274"/>
         <source>Host is not specified</source>
-        <translation>Не указан хост</translation>
+        <translation type="vanished">Не указан хост</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="280"/>
         <source>Database name is not specified</source>
-        <translation>Не указано имя базы данных</translation>
+        <translation type="vanished">Не указано имя базы данных</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="296"/>
         <source>Error opening MySQL database: %1</source>
-        <translation>Ошибка открытия базы данных MySQL: %1</translation>
+        <translation type="vanished">Ошибка открытия базы данных MySQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="380"/>
         <source>Not a %1 MySQL database: %2, %3</source>
-        <translation>Не %1 MySQL база данных: %2, %3</translation>
+        <translation type="vanished">Не %1 MySQL база данных: %2, %3</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="386"/>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="273"/>
         <source>Warning! The database was created with a newer %1 version: %2. Not all database features may be supported! Current %1 version: %3.</source>
-        <translation>Предупреждение! База данных была создана с более новой %1 версией: %2. Не все возможности базы данных могут быть выполнены! Текущая %1 версия: %3.</translation>
+        <translation type="vanished">Предупреждение! База данных была создана с более новой %1 версией: %2. Не все возможности базы данных могут быть выполнены! Текущая %1 версия: %3.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="521"/>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="328"/>
         <source>Illegal database state: %1</source>
-        <translation>Неправильное состояние базы данных: %1</translation>
+        <translation type="vanished">Неправильное состояние базы данных: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="552"/>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="410"/>
         <source>Can&apos;t synchronize database state</source>
-        <translation>Невозможно синхронизовать состояние базы данных</translation>
+        <translation type="vanished">Невозможно синхронизовать состояние базы данных</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlFeatureDbi.cpp" line="148"/>
         <source>Annotation table object is not found.</source>
-        <translation>Не найдена таблица аннотаций.</translation>
+        <translation type="vanished">Не найдена таблица аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlFeatureDbi.cpp" line="177"/>
         <source>Feature is not found.</source>
-        <translation>Аннотация не найдена.</translation>
+        <translation type="vanished">Аннотация не найдена.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="134"/>
         <source>An object single modification step not found</source>
-        <translation>Объект единичной модификации не найден</translation>
+        <translation type="vanished">Объект единичной модификации не найден</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="170"/>
         <source>Failed to find user step ID</source>
-        <translation>Невозможно найти идентификатор объекта единичной модификации</translation>
+        <translation type="vanished">Невозможно найти идентификатор объекта единичной модификации</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="378"/>
         <source>Not main thread</source>
-        <translation>Не основной поток</translation>
+        <translation type="vanished">Не основной поток</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="390"/>
         <source>Can&apos;t create a common user modifications step, previous one is not complete</source>
-        <translation>Невозможно создать новую единичную модификацию, т.к. прошлая модификация еще не завершена</translation>
+        <translation type="vanished">Невозможно создать новую единичную модификацию, т.к. прошлая модификация еще не завершена</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="453"/>
         <source>Can&apos;t create a common multiple modifications step, previous one is not complete</source>
-        <translation>Невозможно создать новые модификации, т.к. прошлая модификация еще не завершена</translation>
+        <translation type="vanished">Невозможно создать новые модификации, т.к. прошлая модификация еще не завершена</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="489"/>
         <source>Failed to create a common user modifications step</source>
-        <translation>Не удалось создать новую единичную модификацию</translation>
+        <translation type="vanished">Не удалось создать новую единичную модификацию</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlModDbi.cpp" line="510"/>
         <source>Failed to create a common multiple modifications step</source>
-        <translation>Не удалось создать новые модификации</translation>
+        <translation type="vanished">Не удалось создать новые модификации</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="102"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="118"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="634"/>
         <source>Msa object not found</source>
-        <translation>Объект msa не найден</translation>
+        <translation type="vanished">Объект msa не найден</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="177"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="781"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="821"/>
         <source>Msa row not found</source>
-        <translation>Столбец msa не найден</translation>
+        <translation type="vanished">Столбец msa не найден</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="586"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="619"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1100"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1109"/>
         <source>Unexpected modification type &apos;%1&apos;</source>
-        <translation>Неожиданный тип модификации &apos;%1&apos;</translation>
+        <translation type="vanished">Неожиданный тип модификации &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="656"/>
         <source>Invalid row position: %1</source>
-        <translation>Неправильное расположение столбца: %1</translation>
+        <translation type="vanished">Неправильное расположение столбца: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1030"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1161"/>
         <source>An error occurred during updating an alignment alphabet</source>
-        <translation>Возникла ошибка во время обновления алфавита выравнивания</translation>
+        <translation type="vanished">Возникла ошибка во время обновления алфавита выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1048"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1176"/>
         <source>An error occurred during reverting adding of rows</source>
-        <translation>Возникла ошибка во время отмены добавления столбцов</translation>
+        <translation type="vanished">Возникла ошибка во время отмены добавления столбцов</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1066"/>
         <source>An error occurred during reverting addition of a row</source>
-        <translation>Возникла ошибка во время отмены добавления столбца</translation>
+        <translation type="vanished">Возникла ошибка во время отмены добавления столбца</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1079"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1196"/>
         <source>An error occurred during reverting removing of rows</source>
-        <translation>Возникла ошибка во время отмены удаления столбцов</translation>
+        <translation type="vanished">Возникла ошибка во время отмены удаления столбцов</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1092"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1211"/>
         <source>An error occurred during reverting removing of a row</source>
-        <translation>Возникла ошибка во время отмены удаления столбца</translation>
+        <translation type="vanished">Возникла ошибка во время отмены удаления столбца</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1106"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1222"/>
         <source>An error occurred during updating an alignment gaps</source>
-        <translation>Возникла ошибка во время обновления промежутков выравнивания</translation>
+        <translation type="vanished">Возникла ошибка во время обновления промежутков выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1119"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1232"/>
         <source>An error occurred during updating an alignment row order</source>
-        <translation>Возникла ошибка во время обновления порядка столбцов</translation>
+        <translation type="vanished">Возникла ошибка во время обновления порядка столбцов</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1133"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1242"/>
         <source>An error occurred during updating a row info</source>
-        <translation>Возникла ошибка во время обновления информации о столбце</translation>
+        <translation type="vanished">Возникла ошибка во время обновления информации о столбце</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1148"/>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1257"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="1272"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="1282"/>
         <source>An error occurred during updating an msa length</source>
-        <translation>An error occurred during updating an msa length</translation>
+        <translation type="vanished">An error occurred during updating an msa length</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlMsaDbi.cpp" line="1186"/>
         <source>An error occurred during addition of a row</source>
-        <translation>Возникла ошибка во время добавления столбца</translation>
+        <translation type="vanished">Возникла ошибка во время добавления столбца</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="586"/>
         <source>Can&apos;t undo an operation for the object</source>
-        <translation>Невозможно отменить операцию для объекта</translation>
+        <translation type="vanished">Невозможно отменить операцию для объекта</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="649"/>
         <source>Can&apos;t redo an operation for the object</source>
-        <translation>Невозможно передвинуться на одну операцию вперед для объекта</translation>
+        <translation type="vanished">Невозможно передвинуться на одну операцию вперед для объекта</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="791"/>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="883"/>
         <source>Object not found</source>
-        <translation>Объект не найден</translation>
+        <translation type="vanished">Объект не найден</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="832"/>
         <source>Folder not found: %1 (canonical: %2)</source>
-        <translation>Папка не найдена: %1 (каноническое: %2)</translation>
+        <translation type="vanished">Папка не найдена: %1 (каноническое: %2)</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1013"/>
         <source>Not an object, id: %1, type: %2</source>
-        <translation>Не является объектом, id: %1, тип: %2</translation>
+        <translation type="vanished">Не является объектом, id: %1, тип: %2</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1036"/>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="289"/>
         <source>Unknown object type! Id: %1, type: %2</source>
-        <translation>Unknown object type! Id: %1, type: %2</translation>
+        <translation type="vanished">Unknown object type! Id: %1, type: %2</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1078"/>
         <source>Can&apos;t undo an unknown operation: &apos;%1&apos;</source>
-        <translation>Can&apos;t undo an unknown operation: &apos;%1&apos;</translation>
+        <translation type="vanished">Can&apos;t undo an unknown operation: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1091"/>
         <source>Can&apos;t redo an unknown operation: &apos;%1&apos;</source>
-        <translation>Can&apos;t redo an unknown operation: &apos;%1&apos;</translation>
+        <translation type="vanished">Can&apos;t redo an unknown operation: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1122"/>
         <source>An error occurred during updating an object name</source>
-        <translation>An error occurred during updating an object name</translation>
+        <translation type="vanished">An error occurred during updating an object name</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlObjectDbi.cpp" line="1140"/>
         <source>An error occurred during updating an object name!</source>
-        <translation>An error occurred during updating an object name!</translation>
+        <translation type="vanished">An error occurred during updating an object name!</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="73"/>
         <source>Sequence object not found</source>
-        <translation>Последовательность не найдена</translation>
+        <translation type="vanished">Последовательность не найдена</translation>
     </message>
     <message>
         <source>Exception was thrown</source>
         <translation type="obsolete">Exception was thrown</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="125"/>
         <source>Internal error occurred during the sequence processing</source>
-        <translation>Internal error occurred during the sequence processing</translation>
+        <translation type="vanished">Internal error occurred during the sequence processing</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="126"/>
         <source>An exception was thrown during reading sequence data from dbi</source>
-        <translation>An exception was thrown during reading sequence data from dbi</translation>
+        <translation type="vanished">An exception was thrown during reading sequence data from dbi</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="387"/>
         <source>An error occurred during reverting replacing sequence data</source>
-        <translation>An error occurred during reverting replacing sequence data</translation>
+        <translation type="vanished">An error occurred during reverting replacing sequence data</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlSequenceDbi.cpp" line="402"/>
         <source>An error occurred during replacing sequence data</source>
-        <translation>An error occurred during replacing sequence data</translation>
+        <translation type="vanished">An error occurred during replacing sequence data</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="158"/>
         <source>Invalid variant track type: %1</source>
-        <translation>Invalid variant track type: %1</translation>
+        <translation type="vanished">Invalid variant track type: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="186"/>
-        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="219"/>
         <source>Sequence name is not set</source>
-        <translation>Sequence name is not set</translation>
+        <translation type="vanished">Sequence name is not set</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="321"/>
         <source>New variant public ID is empty</source>
-        <translation>New variant public ID is empty</translation>
+        <translation type="vanished">New variant public ID is empty</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlVariantDbi.cpp" line="337"/>
         <source>New variant track ID is empty</source>
-        <translation>New variant track ID is empty</translation>
+        <translation type="vanished">New variant track ID is empty</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="124"/>
         <source>Packed data is empty</source>
-        <translation>Packed data is empty</translation>
+        <translation type="vanished">Packed data is empty</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="131"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="468"/>
         <source>Packing method prefix is not supported: %1</source>
-        <translation>Packing method prefix is not supported: %1</translation>
+        <translation type="vanished">Packing method prefix is not supported: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="139"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="476"/>
         <source>Data is corrupted, no name end marker found: %1</source>
-        <translation>Data is corrupted, no name end marker found: %1</translation>
+        <translation type="vanished">Data is corrupted, no name end marker found: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="148"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="485"/>
         <source>Data is corrupted, no sequence end marker found: %1</source>
-        <translation>Data is corrupted, no sequence end marker found: %1</translation>
+        <translation type="vanished">Data is corrupted, no sequence end marker found: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="157"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="494"/>
         <source>Data is corrupted, no CIGAR end marker found: %1</source>
-        <translation>Data is corrupted, no CIGAR end marker found: %1</translation>
+        <translation type="vanished">Data is corrupted, no CIGAR end marker found: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="176"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="513"/>
         <source>Data is corrupted, no rnext end marker found: %1</source>
-        <translation>Data is corrupted, no rnext end marker found: %1</translation>
+        <translation type="vanished">Data is corrupted, no rnext end marker found: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlAssemblyUtils.cpp" line="191"/>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="528"/>
         <source>Can not convert pnext to a number: %1</source>
-        <translation>Can not convert pnext to a number: %1</translation>
+        <translation type="vanished">Can not convert pnext to a number: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlHelpers.cpp" line="399"/>
         <source>Bound values: </source>
-        <translation>Связанные значения: </translation>
+        <translation type="vanished">Связанные значения: </translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlHelpers.cpp" line="421"/>
         <source>Cannot start a transaction</source>
-        <translation>Cannot start a transaction</translation>
+        <translation type="vanished">Cannot start a transaction</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="505"/>
-        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="127"/>
         <source>Failed to detect assembly storage format: %1</source>
-        <translation>Failed to detect assembly storage format: %1</translation>
+        <translation type="vanished">Failed to detect assembly storage format: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="517"/>
         <source>Failed to parse range: %1, full: %2</source>
-        <translation>Failed to parse range: %1, full: %2</translation>
+        <translation type="vanished">Failed to parse range: %1, full: %2</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="531"/>
-        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="536"/>
-        <location filename="../src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp" line="542"/>
-        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="152"/>
-        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="156"/>
-        <location filename="../src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp" line="161"/>
         <source>Failed to parse packed row range info %1</source>
-        <translation>Failed to parse packed row range info %1</translation>
+        <translation type="vanished">Failed to parse packed row range info %1</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp" line="68"/>
         <source>Error during RTree index creation: %1! Check if SQLite library has RTree index support!</source>
-        <translation>Error during RTree index creation: %1! Check if SQLite library has RTree index support!</translation>
+        <translation type="vanished">Error during RTree index creation: %1! Check if SQLite library has RTree index support!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="96"/>
         <source>Unsupported reads storage type: %1</source>
-        <translation>Unsupported reads storage type: %1</translation>
+        <translation type="vanished">Unsupported reads storage type: %1</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="373"/>
         <source>Packing method is not supported: %1</source>
-        <translation>Packing method is not supported: %1</translation>
+        <translation type="vanished">Packing method is not supported: %1</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="461"/>
         <source>Packed data is empty!</source>
-        <translation>Packed data is empty!</translation>
+        <translation type="vanished">Packed data is empty!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="222"/>
         <source>Error checking SQLite database: %1!</source>
-        <translation>Error checking SQLite database: %1!</translation>
+        <translation type="vanished">Error checking SQLite database: %1!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="235"/>
         <source>Error creating table: %1, error: %2</source>
-        <translation>Error creating table: %1, error: %2</translation>
+        <translation type="vanished">Error creating table: %1, error: %2</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="267"/>
         <source>Not a %1 SQLite database: %2</source>
-        <translation>Not a %1 SQLite database: %2</translation>
+        <translation type="vanished">Not a %1 SQLite database: %2</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="324"/>
         <source>Database is already opened!</source>
-        <translation>База данных уже открыта!</translation>
+        <translation type="vanished">База данных уже открыта!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="334"/>
         <source>URL is not specified</source>
-        <translation>Не задан путь</translation>
+        <translation type="vanished">Не задан путь</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="348"/>
         <source>Error opening SQLite database: %1!</source>
-        <translation>Error opening SQLite database: %1!</translation>
+        <translation type="vanished">Error opening SQLite database: %1!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="400"/>
         <source>Database is already closed!</source>
-        <translation>База данных уже закрыта!</translation>
+        <translation type="vanished">База данных уже закрыта!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="404"/>
         <source>Illegal database state %1!</source>
-        <translation>Illegal database state %1!</translation>
+        <translation type="vanished">Illegal database state %1!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="429"/>
         <source>Failed to close database: %1, err: %2</source>
-        <translation>Failed to close database: %1, err: %2</translation>
+        <translation type="vanished">Failed to close database: %1, err: %2</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteFeatureDbi.cpp" line="144"/>
         <source>Annotation table object not found.</source>
-        <translation>Annotation table object not found.</translation>
+        <translation type="vanished">Annotation table object not found.</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteModDbi.cpp" line="139"/>
         <source>An object single modification step not found!</source>
-        <translation>An object single modification step not found!</translation>
+        <translation type="vanished">An object single modification step not found!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="505"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="520"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="712"/>
         <source>Msa object not found!</source>
-        <translation>Msa object not found!</translation>
+        <translation type="vanished">Msa object not found!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="602"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="742"/>
-        <location filename="../src/sqlite_dbi/SQLiteMsaDbi.cpp" line="780"/>
         <source>Msa row not found!</source>
-        <translation>Msa row not found!</translation>
+        <translation type="vanished">Msa row not found!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="266"/>
         <source>Not an object! Id: %1, type: %2</source>
-        <translation>Not an object! Id: %1, type: %2</translation>
+        <translation type="vanished">Not an object! Id: %1, type: %2</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="600"/>
         <source>Can&apos;t undo an operation for the object!</source>
-        <translation>Can&apos;t undo an operation for the object!</translation>
+        <translation type="vanished">Can&apos;t undo an operation for the object!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="685"/>
         <source>Can&apos;t redo an operation for the object!</source>
-        <translation>Can&apos;t redo an operation for the object!</translation>
+        <translation type="vanished">Can&apos;t redo an operation for the object!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="857"/>
         <source>Object not found!</source>
-        <translation>Object not found!</translation>
+        <translation type="vanished">Object not found!</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="918"/>
         <source>Object not found.</source>
-        <translation>Object not found.</translation>
+        <translation type="vanished">Object not found.</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteObjectDbi.cpp" line="954"/>
         <source>Folder not found: %1</source>
-        <translation>Folder not found: %1</translation>
+        <translation type="vanished">Folder not found: %1</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteSequenceDbi.cpp" line="65"/>
         <source>Sequence object not found.</source>
-        <translation>Sequence object not found.</translation>
+        <translation type="vanished">Sequence object not found.</translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteVariantDbi.cpp" line="96"/>
-        <location filename="../src/sqlite_dbi/SQLiteVariantDbi.cpp" line="130"/>
         <source>Sequence name is not set!</source>
-        <translation>Sequence name is not set!</translation>
+        <translation type="vanished">Sequence name is not set!</translation>
     </message>
 </context>
 </TS>

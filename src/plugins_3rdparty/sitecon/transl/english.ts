@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>QObject</name>
     <message>
@@ -252,6 +252,16 @@
         <location filename="../src/SiteconBuildWorker.cpp" line="84"/>
         <source>Build SITECON Model</source>
         <translation>Build SITECON Model</translation>
+    </message>
+    <message>
+        <location filename="../src/SiteconBuildWorker.cpp" line="107"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SiteconBuildWorker.cpp" line="108"/>
+        <source>Algorithm2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="138"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en">
+<TS version="2.1" language="en">
 <context>
     <name>ConstructMoleculeDialog</name>
     <message>
@@ -129,6 +129,11 @@
         <translation>Force &quot;blunt&quot; and omit all overhangs</translation>
     </message>
     <message>
+        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="258"/>
+        <source>Make circular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="236"/>
         <source>Setting this option checked will result in ignoring overhangs while constructing new molecule.</source>
         <translation>Setting this option checked will result in ignoring overhangs while constructing new molecule.</translation>
@@ -144,9 +149,8 @@
         <translation>Circulirize result molecule</translation>
     </message>
     <message>
-        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="258"/>
         <source>Make circlurar</source>
-        <translation>Make circlurar</translation>
+        <translation type="vanished">Make circlurar</translation>
     </message>
     <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="266"/>

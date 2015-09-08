@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en">
+<TS version="2.1" language="en">
 <context>
     <name>CircularViewSettingsWidget</name>
     <message>
@@ -240,17 +240,17 @@
 <context>
     <name>U2::CircularViewRenderArea</name>
     <message>
-        <location filename="../src/CircularView.cpp" line="490"/>
+        <location filename="../src/CircularView.cpp" line="493"/>
         <source>CircularView is NULL</source>
         <translation>CircularView is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularView.cpp" line="492"/>
+        <location filename="../src/CircularView.cpp" line="495"/>
         <source>Circular view settings are NULL</source>
         <translation>Circular view settings are NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularView.cpp" line="521"/>
+        <location filename="../src/CircularView.cpp" line="524"/>
         <source>circular view size %1 %2</source>
         <translation>circular view size %1 %2</translation>
     </message>
@@ -314,52 +314,57 @@
 <context>
     <name>U2::CircularViewSplitter</name>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="55"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="56"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="58"/>
         <source>Zoom In</source>
         <translation>Zoom In</translation>
     </message>
     <message>
         <location filename="../src/CircularViewSplitter.cpp" line="61"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="63"/>
         <source>Zoom Out</source>
         <translation>Zoom Out</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="66"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="65"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="67"/>
         <source>Fit To Full View</source>
         <translation>Fit To Full View</translation>
     </message>
     <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="69"/>
         <location filename="../src/CircularViewSplitter.cpp" line="71"/>
         <source>Save circular view as image</source>
         <translation>Save circular view as image</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="76"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="73"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="75"/>
         <source>Show/hide restriction sites map</source>
         <translation>Show/hide restriction sites map</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="168"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="165"/>
         <source>Circular View is NULL</source>
         <translation>Circular View is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="170"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="167"/>
         <source>Circular View viewport is NULL</source>
         <translation>Circular View viewport is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="172"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="169"/>
         <source>Scroll area is NULL</source>
         <translation>Scroll area is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="219"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="216"/>
         <source>Sequence context is NULL</source>
         <translation>Sequence context is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="221"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="218"/>
         <source>Sequence obejct is NULL</source>
         <translation>Sequence obejct is NULL</translation>
     </message>

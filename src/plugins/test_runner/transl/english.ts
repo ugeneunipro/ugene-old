@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>ExcludeReasonDialog</name>
     <message>
@@ -17,14 +17,12 @@
 <context>
     <name>ExcludeResaonDialog</name>
     <message>
-        <location filename="../src/ui/ExcludeResaonDialog.ui" line="20"/>
         <source>exclude reason</source>
-        <translation>Exclude reason</translation>
+        <translation type="vanished">Exclude reason</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExcludeResaonDialog.ui" line="35"/>
         <source>Set exclude reason</source>
-        <translation>Set exclude reason</translation>
+        <translation type="vanished">Set exclude reason</translation>
     </message>
 </context>
 <context>

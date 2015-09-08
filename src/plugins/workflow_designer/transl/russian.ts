@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>ChooseItemDialog</name>
     <message>
@@ -740,6 +740,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/library/CfgExternalToolModel.cpp" line="220"/>
         <source>Description</source>
         <translation>Описание</translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="313"/>
+        <source>String value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="315"/>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="317"/>
+        <source>Output file url</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3593,6 +3608,31 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>Как мультиплексировать данные если один из входных портов не содержит данных. &lt;br&gt;&lt;li&gt;Значения:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Заполнить пустыми значениями&lt;/b&gt; - если один из портов не содержит данных, взять данные из другого порта и подать их на выход.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Усечение&lt;/b&gt; - если один из портов не содержит данных, ничего не подавать на выход.&lt;/li&gt;&lt;br&gt;</translation>
     </message>
     <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
+        <source>1 to many</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="286"/>
+        <source>Many to 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="287"/>
+        <source>1 to 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="290"/>
+        <source>Fill by empty values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="291"/>
+        <source>Truncate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="298"/>
         <source>Multiplexer</source>
         <translation>Мультиплексер</translation>
@@ -6044,6 +6084,14 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
 </context>
 <context>
+    <name>U2::WorkflowUtils</name>
+    <message>
+        <location filename="../src/WorkflowViewController.cpp" line="932"/>
+        <source>UGENE workflow element</source>
+        <translation type="unfinished">UGENE элемент </translation>
+    </message>
+</context>
+<context>
     <name>U2::WorkflowView</name>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="330"/>
@@ -6580,9 +6628,8 @@ Do you want to save changes?</source>
 <context>
     <name>WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation>UGENE элемент </translation>
+        <translation type="vanished">UGENE элемент </translation>
     </message>
 </context>
 <context>

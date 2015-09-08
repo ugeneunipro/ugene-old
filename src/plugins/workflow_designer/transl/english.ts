@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en">
+<TS version="2.1" language="en">
 <context>
     <name>ChooseItemDialog</name>
     <message>
@@ -731,6 +731,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/library/CfgExternalToolModel.cpp" line="220"/>
         <source>Description</source>
         <translation>Description</translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="313"/>
+        <source>String value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="315"/>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="317"/>
+        <source>Output file url</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3585,6 +3600,31 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>How to multiplex the data if one of input ports produces no data. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Fill by empty values&lt;/b&gt; - if one of input ports produces no data, get data from another port only and put them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Truncate&lt;/b&gt; - if one of input port produces no data, then do not output anything.&lt;/li&gt;&lt;br&gt;</translation>
     </message>
     <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
+        <source>1 to many</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="286"/>
+        <source>Many to 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="287"/>
+        <source>1 to 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="290"/>
+        <source>Fill by empty values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="291"/>
+        <source>Truncate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="298"/>
         <source>Multiplexer</source>
         <translation>Multiplexer</translation>
@@ -6034,6 +6074,14 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
 </context>
 <context>
+    <name>U2::WorkflowUtils</name>
+    <message>
+        <location filename="../src/WorkflowViewController.cpp" line="932"/>
+        <source>UGENE workflow element</source>
+        <translation type="unfinished">UGENE workflow element</translation>
+    </message>
+</context>
+<context>
     <name>U2::WorkflowView</name>
     <message>
         <location filename="../src/SceneSerializer.cpp" line="120"/>
@@ -6571,9 +6619,8 @@ Do you want to save changes?</translation>
 <context>
     <name>WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation>UGENE workflow element</translation>
+        <translation type="vanished">UGENE workflow element</translation>
     </message>
 </context>
 <context>

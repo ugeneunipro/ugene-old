@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>BioStruct3DSubsetEditor</name>
     <message>
@@ -174,12 +174,12 @@
 <context>
     <name>U2::AddModelToSplitterTask</name>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="807"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="819"/>
         <source>Add 3d model &apos;%1&apos; to BioStruct3DSplitter</source>
         <translation>Добавить 3D модель &apos;%1&apos; в BioStruct3DSplitter</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="835"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="847"/>
         <source>Model %1 wasn&apos;t added</source>
         <translation>Модель %1 не была добавлена</translation>
     </message>
@@ -187,77 +187,77 @@
 <context>
     <name>U2::BioStruct3DGLWidget</name>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="773"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="771"/>
         <source>Spin</source>
         <translation>Вращение</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="762"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="760"/>
         <source>Off</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="769"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="767"/>
         <source>Models..</source>
         <translation>Модели..</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="792"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="790"/>
         <source>Align With...</source>
         <translation>Выровнять с...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="813"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="811"/>
         <source>Molecular Surface Render Style</source>
         <translation>Стиль отрисовки поверхности</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="817"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="815"/>
         <source>Molecular Surface</source>
         <translation>Молекулярная поверхность</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="590"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="588"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="590"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="588"/>
         <source>Unable to open file %1 for writing</source>
         <translation>Невозможно открыть файл %1 для записи</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="777"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="775"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="780"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="778"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="783"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="781"/>
         <source>Export Image...</source>
         <translation>Экспортировать изображение...</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="796"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="794"/>
         <source>Reset</source>
         <translation>Сбросить</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="803"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="801"/>
         <source>Render Style</source>
         <translation>Стиль отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="808"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="806"/>
         <source>Coloring Scheme</source>
         <translation>Цветовая схема</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DGLWidget.cpp" line="842"/>
+        <location filename="../src/BioStruct3DGLWidget.cpp" line="840"/>
         <source>Structural Alignment</source>
         <translation>Структурное выравнивание</translation>
     </message>
@@ -357,68 +357,68 @@
 <context>
     <name>U2::SplitterHeaderWidget</name>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="398"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="408"/>
         <source>3D Structure Viewer</source>
         <translation>Визуализатор 3D структур</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="406"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="416"/>
         <source>Active view:</source>
         <translation>Активная:</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="413"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="423"/>
         <source>Restore Default View</source>
         <translation>Восстановить вид по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="419"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="428"/>
         <source>Zoom In</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="426"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="434"/>
         <source>Zoom Out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="432"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="439"/>
         <source>Synchronize 3D Structure Views</source>
         <translation>Синхронизировать изображения</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="438"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="444"/>
         <source>Display</source>
         <translation>Изображение</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="462"/>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="463"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="468"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="469"/>
         <source>Toggle view</source>
         <translation>Переключить вид</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="552"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="564"/>
         <source>Show %1</source>
         <translation>Показывать %1</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="776"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="788"/>
         <source>File not found: %1</source>
         <translation>Файл не найден: %1</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="788"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="800"/>
         <source>Illegal entry: %1</source>
         <translation>Некорректные входные данные: %1</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="444"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="450"/>
         <source>Links</source>
         <translation>Ссылки</translation>
     </message>
     <message>
-        <location filename="../src/BioStruct3DSplitter.cpp" line="450"/>
+        <location filename="../src/BioStruct3DSplitter.cpp" line="457"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>

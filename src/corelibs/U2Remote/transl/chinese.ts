@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="45"/>
+        <source>Run</source>
+        <translation type="unfinished">运行</translation>
+    </message>
+</context>
 <context>
     <name>RemoteMachineMonitorDialog</name>
     <message>
@@ -202,7 +210,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DistributedComputingUtil</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="63"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="64"/>
         <source>Remote machines monitor...</source>
         <translation>远程主机监视器...</translation>
     </message>
@@ -210,17 +218,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::PingTask</name>
     <message>
-        <location filename="../src/PingTask.cpp" line="43"/>
+        <location filename="../src/PingTask.cpp" line="39"/>
         <source>PingTask</source>
         <translation>Ping 任务</translation>
     </message>
     <message>
-        <location filename="../src/PingTask.cpp" line="50"/>
+        <location filename="../src/PingTask.cpp" line="46"/>
         <source>Starting remote service ping task, task-id: %1</source>
         <translation>启动远程服务的 ping 任务，进程号：%1</translation>
     </message>
     <message>
-        <location filename="../src/PingTask.cpp" line="52"/>
+        <location filename="../src/PingTask.cpp" line="48"/>
         <source>Remote service ping task finished, task-id: %1</source>
         <translation>已完成远程服务的 ping 任务，进程号：%1</translation>
     </message>
@@ -228,100 +236,99 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RemoteMachineMonitorDialogImpl</name>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="45"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="48"/>
         <source>Selecting machines error!</source>
         <translation>选择的主机有误！</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="46"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="49"/>
         <source>You didn&apos;t select a machine to run remote task!</source>
         <translation>您未选择任何主机用于运行远程任务！</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="46"/>
         <source>Run</source>
-        <translation>运行</translation>
+        <translation type="vanished">运行</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="82"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="80"/>
         <source>Found %1 remote machine records</source>
         <translation>找到 %1 个远程主机记录</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="124"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="127"/>
         <source>Save machine...</source>
         <translation>保持主机...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="131"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="134"/>
         <source>Can&apos;t add %1 machine. The machine is already registered</source>
         <translation>无法添加主机 %1，它已经注册了</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="202"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="205"/>
         <source>Add remote macnine</source>
         <translation>添加远程主机</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="202"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="205"/>
         <source>No protocols for distributed computing are found.
 Please check your plugin list.</source>
         <translation>未找到分布式计算的协议。
 请检查您的插件列表。</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="246"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="252"/>
         <source>Cannot delete machine that is waiting for response</source>
         <translation>无法删除主机，它正在等待响应</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="248"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="254"/>
         <source>Error!</source>
         <translation>错误！</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="319"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="325"/>
         <source>Test connection for machine %1 finished with error: &apos;%2&apos;</source>
         <translation>对主机 %1 的连接测试完成，发生的错误：‘%2’</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="349"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="355"/>
         <source>Ping task is already active for machine: %1</source>
         <translation>已激活对主机 %1 的 Ping 任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="370"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="376"/>
         <source>Public machines request is already sent</source>
         <translation>已发送查询公共主机的请求</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="389"/>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="391"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="395"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="397"/>
         <source>Info</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="389"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="395"/>
         <source>Error during remote machines request: %1</source>
         <translation>查询远程主机时发生错误：%1</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="391"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="397"/>
         <source>No public machines found</source>
         <translation>未找到任何公共主机</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="416"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="422"/>
         <source>Select a file to save</source>
         <translation>选择要保存的文件</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="471"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="477"/>
         <source>User Tasks</source>
         <translation>用户任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="472"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="478"/>
         <source>&lt;html&gt;&lt;br&gt;Unable to show user task statistics for guest account.                &lt;br&gt;Please register on &lt;a href=http://ugene-service.com &gt;ugene-service.com&lt;/a&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;br&gt;无法显示客人账户的任务统计信息。                &lt;br&gt;请在 &lt;a href=http://ugene-service.com &gt;ugene-service.com&lt;/a&gt;注册&lt;/html&gt;</translation>
     </message>
@@ -329,7 +336,7 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RemoteMachineScanDialogImpl</name>
     <message>
-        <location filename="../src/RemoteMachineScanDialogImpl.cpp" line="56"/>
+        <location filename="../src/RemoteMachineScanDialogImpl.cpp" line="61"/>
         <source>No protocols that supports scanning found!</source>
         <translation>未找到支持扫描的协议！</translation>
     </message>
@@ -337,13 +344,13 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RemoteMachineSettingsDialog</name>
     <message>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="74"/>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="101"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="79"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="106"/>
         <source>Error!</source>
         <translation>错误！</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="101"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="106"/>
         <source>Sorry! Cannot create remote machine</source>
         <translation>对不起！无法创建远程主机</translation>
     </message>
@@ -363,47 +370,47 @@ Please check your plugin list.</source>
         <translation>错误的远程主机设置</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="114"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="102"/>
         <source>Started remote workflow task</source>
         <translation>开始远程工作流程任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="118"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="106"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation>无法根据设置 %1 创建远程主机</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Task</source>
         <translation>任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Status</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Details</source>
         <translation>细节</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Failed</source>
         <translation>失败</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Canceled</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Finished</source>
         <translation>完成</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="263"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="248"/>
         <source>Output files:</source>
         <translation>输出文件：</translation>
     </message>
@@ -411,22 +418,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RetrievePublicMachinesTask</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="138"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="137"/>
         <source>Retrieving public machines...</source>
         <translation>获取公共主机...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="152"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="151"/>
         <source>Failed to retrieve public machines, error: %1</source>
         <translation>获取公共主机失败，错误：%1</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="154"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="153"/>
         <source>Found %1 public machines</source>
         <translation>找到 %1 个公共主机</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="163"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="162"/>
         <source>Illegal server response</source>
         <translation>非法的服务器响应</translation>
     </message>
@@ -434,32 +441,32 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RetrieveRemoteMachineInfoTask</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="47"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="46"/>
         <source>Retrieve remote machine info task</source>
         <translation>获取远程主机信息任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="60"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="59"/>
         <source>Retrieving remomote machine info...</source>
         <translation>获取远程主机信息...</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="65"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="64"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation>无法根据设置 %1 创建远程主机</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="88"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="87"/>
         <source>Ping task is canceled by user</source>
         <translation>用户已取消 Ping 任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="91"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="90"/>
         <source>Ping task finished with error: </source>
         <translation>Ping 任务完成，错误：</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="98"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="97"/>
         <source>Task is canceled by user</source>
         <translation>用户已取消任务</translation>
     </message>
@@ -467,22 +474,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::SaveRemoteMachineSettings</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="184"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="183"/>
         <source>Save remote machine settings task</source>
         <translation>保存远程主机设置任务</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="186"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="185"/>
         <source>Output file not set</source>
         <translation>未设置输出文件</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="190"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="189"/>
         <source>Nothing to write: empty remote machine settings</source>
         <translation>没有输出结果：远程主机设置内容为空</translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="202"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="201"/>
         <source>Cannot open %1 file</source>
         <translation>不能打开文件 %1</translation>
     </message>
@@ -490,22 +497,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::UpdateActiveTasks</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="96"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="98"/>
         <source>Updating active tasks...</source>
         <translation>更新活动任务...</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="100"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="102"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation>无法根据设置 %1 创建远程主机</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="121"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="123"/>
         <source>Found active task: %1</source>
         <translation>找到 %1 个活动任务</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="125"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="127"/>
         <source>Active tasks update finished!</source>
         <translation>更新活动任务完成！</translation>
     </message>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US" sourcelanguage="en">
+<TS version="2.1" language="en_US" sourcelanguage="en">
 <context>
     <name>AppContextImpl</name>
     <message>
-        <location filename="../src/UgeneContextWrapper.cpp" line="171"/>
         <source>UGENE script environment initialization started</source>
-        <translation>UGENE script environment initialization started</translation>
+        <translation type="vanished">UGENE script environment initialization started</translation>
     </message>
 </context>
 <context>
@@ -35,6 +34,14 @@
         <location filename="../src/UgeneContextWrapper.cpp" line="443"/>
         <source>%1-bit version of UGENE started</source>
         <translation>%1-bit version of UGENE started</translation>
+    </message>
+</context>
+<context>
+    <name>U2::AppContextImpl</name>
+    <message>
+        <location filename="../src/UgeneContextWrapper.cpp" line="171"/>
+        <source>UGENE script environment initialization started</source>
+        <translation type="unfinished">UGENE script environment initialization started</translation>
     </message>
 </context>
 </TS>

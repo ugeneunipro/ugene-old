@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>HRSchemaSerializer</name>
     <message>
-        <location filename="../src/support/serialize/HRVisualSerializer.cpp" line="180"/>
         <source>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</source>
-        <translation>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
+        <translation type="vanished">Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
     </message>
 </context>
 <context>
@@ -1089,6 +1088,11 @@
         <source>Cannot bind %1:%2 to %3:%4</source>
         <translation>Cannot bind %1:%2 to %3:%4</translation>
     </message>
+    <message>
+        <location filename="../src/support/serialize/HRVisualSerializer.cpp" line="180"/>
+        <source>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</source>
+        <translation type="unfinished">Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
+    </message>
 </context>
 <context>
     <name>U2::HRVisualParser</name>
@@ -2152,23 +2156,35 @@
         <source>Wrong samples map string</source>
         <translation>Wrong samples map string</translation>
     </message>
-</context>
-<context>
-    <name>WorkflowUtils</name>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="122"/>
         <source>Required parameter has no datasets specified: %1</source>
-        <translation>Required parameter has no datasets specified: %1</translation>
+        <translation type="unfinished">Required parameter has no datasets specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="129"/>
         <source>Required parameter has no input urls specified: %1</source>
-        <translation>Required parameter has no input urls specified: %1</translation>
+        <translation type="unfinished">Required parameter has no input urls specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="134"/>
         <source>Required parameter %1 has empty dataset: %2</source>
-        <translation>Required parameter %1 has empty dataset: %2</translation>
+        <translation type="unfinished">Required parameter %1 has empty dataset: %2</translation>
+    </message>
+</context>
+<context>
+    <name>WorkflowUtils</name>
+    <message>
+        <source>Required parameter has no datasets specified: %1</source>
+        <translation type="vanished">Required parameter has no datasets specified: %1</translation>
+    </message>
+    <message>
+        <source>Required parameter has no input urls specified: %1</source>
+        <translation type="vanished">Required parameter has no input urls specified: %1</translation>
+    </message>
+    <message>
+        <source>Required parameter %1 has empty dataset: %2</source>
+        <translation type="vanished">Required parameter %1 has empty dataset: %2</translation>
     </message>
 </context>
 </TS>

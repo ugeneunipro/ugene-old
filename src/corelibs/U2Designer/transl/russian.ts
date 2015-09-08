@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>AnnsActionDialog</name>
     <message>
@@ -135,7 +135,7 @@ this merge sequence slot:</source>
         <source>Exclude mask</source>
         <translation>Исключить маску</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/ui/DirectoryOptions.ui" line="75"/>
         <source>Inсlude mask</source>
         <translation>Включить маску</translation>
@@ -653,6 +653,19 @@ bowtie index file</source>
         <location filename="../src/wizard/BowtieWidgetController.cpp" line="84"/>
         <source>Select one of Bowtie index files</source>
         <translation>Выберите один индексный Bowtie файл</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ComboBoxWidget</name>
+    <message>
+        <location filename="../src/PropertyWidget.cpp" line="178"/>
+        <source>False</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PropertyWidget.cpp" line="179"/>
+        <source>True</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1324,14 +1337,12 @@ bowtie index file</source>
         <translation>добавить</translation>
     </message>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="597"/>
         <source>File Not Found</source>
-        <translation>Файл не найден</translation>
+        <translation type="vanished">Файл не найден</translation>
     </message>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="597"/>
         <source>File not found: &quot;%1&quot;</source>
-        <translation>Файл не найден: &quot;%1&quot;</translation>
+        <translation type="vanished">Файл не найден: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -1387,13 +1398,17 @@ bowtie index file</source>
         <source>Append</source>
         <translation>Дописать</translation>
     </message>
+    <message>
+        <location filename="../src/DesignerUtils.cpp" line="35"/>
+        <source>UGENE workflow documents</source>
+        <translation type="unfinished">Вычислительные схемы UGENE</translation>
+    </message>
 </context>
 <context>
     <name>WorkflowUtils</name>
     <message>
-        <location filename="../src/DesignerUtils.cpp" line="35"/>
         <source>UGENE workflow documents</source>
-        <translation>Вычислительные схемы UGENE</translation>
+        <translation type="vanished">Вычислительные схемы UGENE</translation>
     </message>
 </context>
 </TS>

@@ -1,144 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>GObject</name>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation>Unknown</translation>
+        <translation type="vanished">Unknown</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation>Unloaded</translation>
+        <translation type="vanished">Unloaded</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
         <source>Text</source>
-        <translation>Text</translation>
+        <translation type="vanished">Text</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation>Sequence</translation>
+        <translation type="vanished">Sequence</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation>Sequences</translation>
+        <translation type="vanished">Sequences</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation>Annotation</translation>
+        <translation type="vanished">Annotation</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotations</source>
-        <translation>Annotations</translation>
+        <translation type="vanished">Annotations</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Variation</source>
-        <translation>Variation</translation>
+        <translation type="vanished">Variation</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Variations</source>
-        <translation>Variations</translation>
+        <translation type="vanished">Variations</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Chromatogram</source>
-        <translation>Chromatogram</translation>
+        <translation type="vanished">Chromatogram</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Chromatograms</source>
-        <translation>Chromatograms</translation>
+        <translation type="vanished">Chromatograms</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Alignment</source>
-        <translation>Alignment</translation>
+        <translation type="vanished">Alignment</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Alignments</source>
-        <translation>Alignments</translation>
+        <translation type="vanished">Alignments</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>Tree</source>
-        <translation>Tree</translation>
+        <translation type="vanished">Tree</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>Trees</source>
-        <translation>Trees</translation>
+        <translation type="vanished">Trees</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>3D model</source>
-        <translation>3D model</translation>
+        <translation type="vanished">3D model</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>3D models</source>
-        <translation>3D models</translation>
+        <translation type="vanished">3D models</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
         <source>Assembly</source>
-        <translation>Assembly</translation>
+        <translation type="vanished">Assembly</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
         <source>Assemblies</source>
-        <translation>Assemblies</translation>
+        <translation type="vanished">Assemblies</translation>
     </message>
 </context>
 <context>
     <name>L10N</name>
     <message>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="94"/>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="102"/>
         <source>Failed to detect IO adapter for %1</source>
-        <translation>Failed to detect IO adapter for %1</translation>
+        <translation type="vanished">Failed to detect IO adapter for %1</translation>
     </message>
 </context>
 <context>
     <name>MAlignmentObject</name>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="77"/>
         <source>Unexpected gap start</source>
-        <translation>Unexpected gap start</translation>
+        <translation type="vanished">Unexpected gap start</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="86"/>
         <source>Unexpected gap start (too small)</source>
-        <translation>Unexpected gap start (too small)</translation>
+        <translation type="vanished">Unexpected gap start (too small)</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="87"/>
         <source>Unexpected gap start (too big)</source>
-        <translation>Unexpected gap start (too big)</translation>
+        <translation type="vanished">Unexpected gap start (too big)</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="101"/>
         <source> Incorrect gap splitting</source>
-        <translation> Incorrect gap splitting</translation>
+        <translation type="vanished"> Incorrect gap splitting</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="136"/>
         <source> Alignment walker is ended</source>
-        <translation> Alignment walker is ended</translation>
+        <translation type="vanished"> Alignment walker is ended</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentWalker.cpp" line="137"/>
         <source> Alignment changed</source>
-        <translation> Alignment changed</translation>
+        <translation type="vanished"> Alignment changed</translation>
     </message>
 </context>
 <context>
@@ -800,7 +773,7 @@
 <context>
     <name>U2::AutoAnnotationsUpdateTask</name>
     <message>
-        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="283"/>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="284"/>
         <source>Empty auto-annotation object</source>
         <translation>Empty auto-annotation object</translation>
     </message>
@@ -1427,38 +1400,55 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::DatatypeSerializers</name>
     <message>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="306"/>
+        <source>Incorrect tree parsing state</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/util/DatatypeSerializeUtils.cpp" line="309"/>
         <source>Unexpected weight: %1</source>
         <translation>Unexpected weight: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="314"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="313"/>
         <source>Error parsing weight: %1</source>
         <translation>Error parsing weight: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="335"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="320"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="341"/>
+        <source>Tree node stack is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="332"/>
         <source>Error parsing nodeValue: %1</source>
         <translation>Error parsing nodeValue: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="347"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="342"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="360"/>
+        <source>Branch node stack is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="344"/>
         <source>Unexpected new sibling %1</source>
         <translation>Unexpected new sibling %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="360"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="357"/>
         <source>Unexpected closing bracket :%1</source>
         <translation>Unexpected closing bracket :%1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="368"/>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="390"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="365"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="387"/>
         <source>Unexpected end of file</source>
         <translation>Unexpected end of file</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="402"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="399"/>
         <source>Empty file</source>
         <translation>Empty file</translation>
     </message>
@@ -1640,6 +1630,104 @@ these match a protein, A between residue 3 and 125 and B between residue
         <location filename="../src/tasks/FailTask.h" line="32"/>
         <source>Failure</source>
         <translation>Failure</translation>
+    </message>
+</context>
+<context>
+    <name>U2::GObject</name>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
+        <source>Unknown</source>
+        <translation type="unfinished">Unknown</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
+        <source>Unloaded</source>
+        <translation type="unfinished">Unloaded</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
+        <source>Text</source>
+        <translation type="unfinished">Text</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
+        <source>Sequence</source>
+        <translation type="unfinished">Sequence</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
+        <source>Sequences</source>
+        <translation type="unfinished">Sequences</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
+        <source>Annotation</source>
+        <translation type="unfinished">Annotation</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
+        <source>Annotations</source>
+        <translation type="unfinished">Annotations</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
+        <source>Variation</source>
+        <translation type="unfinished">Variation</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
+        <source>Variations</source>
+        <translation type="unfinished">Variations</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
+        <source>Chromatogram</source>
+        <translation type="unfinished">Chromatogram</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
+        <source>Chromatograms</source>
+        <translation type="unfinished">Chromatograms</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
+        <source>Alignment</source>
+        <translation type="unfinished">Alignment</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
+        <source>Alignments</source>
+        <translation type="unfinished">Alignments</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
+        <source>Tree</source>
+        <translation type="unfinished">Tree</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
+        <source>Trees</source>
+        <translation type="unfinished">Trees</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>3D model</source>
+        <translation type="unfinished">3D model</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>3D models</source>
+        <translation type="unfinished">3D models</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
+        <source>Assembly</source>
+        <translation type="unfinished">Assembly</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
+        <source>Assemblies</source>
+        <translation type="unfinished">Assemblies</translation>
     </message>
 </context>
 <context>
@@ -2085,6 +2173,12 @@ these match a protein, A between residue 3 and 125 and B between residue
         <source> bp</source>
         <translation> bp</translation>
     </message>
+    <message>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="94"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="102"/>
+        <source>Failed to detect IO adapter for %1</source>
+        <translation type="unfinished">Failed to detect IO adapter for %1</translation>
+    </message>
 </context>
 <context>
     <name>U2::LoadDasDocumentTask</name>
@@ -2259,6 +2353,39 @@ these match a protein, A between residue 3 and 125 and B between residue
         <location filename="../src/io/LocalFileAdapter.cpp" line="29"/>
         <source>Local file</source>
         <translation>Local file</translation>
+    </message>
+</context>
+<context>
+    <name>U2::MAlignmentObject</name>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="77"/>
+        <source>Unexpected gap start</source>
+        <translation type="unfinished">Unexpected gap start</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="86"/>
+        <source>Unexpected gap start (too small)</source>
+        <translation type="unfinished">Unexpected gap start (too small)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="87"/>
+        <source>Unexpected gap start (too big)</source>
+        <translation type="unfinished">Unexpected gap start (too big)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="101"/>
+        <source> Incorrect gap splitting</source>
+        <translation type="unfinished"> Incorrect gap splitting</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="136"/>
+        <source> Alignment walker is ended</source>
+        <translation type="unfinished"> Alignment walker is ended</translation>
+    </message>
+    <message>
+        <location filename="../src/util/MAlignmentWalker.cpp" line="137"/>
+        <source> Alignment changed</source>
+        <translation type="unfinished"> Alignment changed</translation>
     </message>
 </context>
 <context>

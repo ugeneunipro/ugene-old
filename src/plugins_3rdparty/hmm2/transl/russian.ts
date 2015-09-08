@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>HMMBuildDialog</name>
     <message>
@@ -29,7 +29,7 @@
         <source>Expert options</source>
         <translation>Дополнительные опции</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="70"/>
         <source>Name can be any string of non-whitespace characters (e.g. one ”word”).</source>
         <translation>Удобное для человека имя профайла, не должно содержать пропусков.</translation>
@@ -1138,6 +1138,11 @@ The default is instead to generate sequences with a variety of different lengths
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="100"/>
         <source>Random seed</source>
         <translation>Затравка</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="156"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="218"/>

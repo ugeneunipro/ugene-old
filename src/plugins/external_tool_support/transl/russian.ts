@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>BlastAllSupportDialog</name>
     <message>
@@ -65,37 +65,36 @@
         <translation>Выключить</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="191"/>
         <source>Base name for BLAST DB files:</source>
-        <translation>Базовое имя для файлов БД:</translation>
+        <translation type="vanished">Базовое имя для файлов БД:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="261"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="230"/>
         <source>Number of CPUs being used</source>
         <translation>Использовать процессоров</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="299"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="268"/>
         <source>Advanced options</source>
         <translation>Дополнительные опции</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="422"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="391"/>
         <source>Word size</source>
         <translation>Размер слова</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="559"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="528"/>
         <source>Gap costs</source>
         <translation>Вес пропуска</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="338"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="307"/>
         <source>Match scores</source>
         <translation>Веса совпадений</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="368"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="337"/>
         <source>1 -3</source>
         <translation>1 -3</translation>
     </message>
@@ -115,47 +114,47 @@
         <translation>Комплементарная</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="373"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="342"/>
         <source>1 -4</source>
         <translation>1 -4</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="378"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="347"/>
         <source>1 -2</source>
         <translation>1 -2</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="383"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="352"/>
         <source>1 -1</source>
         <translation>1 -1</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="388"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="357"/>
         <source>2 -7</source>
         <translation>2 -7</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="393"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="362"/>
         <source>2 -5</source>
         <translation>2 -5</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="398"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="367"/>
         <source>2 -3</source>
         <translation>2 -3</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="403"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="372"/>
         <source>4 -5</source>
         <translation>4 -5</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="408"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="377"/>
         <source>5 -4</source>
         <translation>5 -4</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="435"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="404"/>
         <source>Matrix</source>
         <translation>Матрица</translation>
     </message>
@@ -165,43 +164,41 @@
         <translation>gpu-blastp</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="205"/>
         <source>Database path:</source>
-        <translation>Путь к БД:</translation>
+        <translation type="vanished">Путь к БД:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="229"/>
         <source>Select
 a database file</source>
-        <translation>Выберите файл базы данных</translation>
+        <translation type="vanished">Выберите файл базы данных</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="443"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="412"/>
         <source>BLOSUM62</source>
         <translation>BLOSUM62</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="448"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="417"/>
         <source>BLOSUM45</source>
         <translation>BLOSUM45</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="453"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="422"/>
         <source>BLOSUM80</source>
         <translation>BLOSUM80</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="458"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="427"/>
         <source>PAM30</source>
         <translation>PAM30</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="463"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="432"/>
         <source>PAM70</source>
         <translation>PAM70</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="351"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="320"/>
         <source>Service</source>
         <translation>Сервис</translation>
     </message>
@@ -211,127 +208,127 @@ a database file</source>
         <translation>Макс. число совпадений:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="314"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="283"/>
         <source>plain</source>
         <translation>простой</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="319"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="288"/>
         <source>psi</source>
         <translation>psi</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="324"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="293"/>
         <source>phi</source>
         <translation>phi</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="474"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="443"/>
         <source>PHI pattern</source>
         <translation>Шаблон PHI</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="514"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="483"/>
         <source>Threshold for extending hits</source>
         <translation>Порог для расширенных совпадений</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="517"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="486"/>
         <source>Threshold</source>
         <translation>Порог</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="566"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="535"/>
         <source>Composition-based statistics</source>
         <translation>Статистика состава</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="574"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="543"/>
         <source>D or d: default (equivalent to 2 )</source>
         <translation>D или d: по умолчанию (равно 2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="579"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="548"/>
         <source>0 or F or f: No composition-based statistics</source>
         <translation>0 или F или f: Нет статистики состава</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="584"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="553"/>
         <source>1: Composition-based statistics as in NAR 29:2994-3005, 2001</source>
         <translation>1: Статистика состава как в NAR 29:2994-3005, 2001</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="589"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="558"/>
         <source>2 or T or t : Composition-based score adjustment as in Bioinformatics 21:902-911, 2005, conditioned on sequence properties</source>
         <translation>2 или T или t : Статистика как в in Bioinformatics 21:902-911, 2005, основанная на свойствах последовательности</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="594"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="563"/>
         <source>3: Composition-based score adjustment as in Bioinformatics 21:902-911, 2005, unconditionally</source>
         <translation>3: Статистика как в Bioinformatics 21:902-911, 2005, безусловная</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="606"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="575"/>
         <source>Filters</source>
         <translation>Фильтры</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="612"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="581"/>
         <source>Low complexity filter</source>
         <translation>Фильтр низкой сложности</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="619"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="588"/>
         <source>Human repeats filter</source>
         <translation>Фильтр человеческих повторов</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="629"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="598"/>
         <source>Masks</source>
         <translation>Маски</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="635"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="604"/>
         <source>Mask for lookup table only</source>
         <translation>Только маска таблицы поиска</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="645"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="614"/>
         <source>Mask lower case letters</source>
         <translation>Маска символов нижн. регистра</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="671"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="640"/>
         <source>Extension options</source>
         <translation>Возможности расширения</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="679"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="648"/>
         <source>X dropoff value (in bits)</source>
         <translation>X dropoff значение (в битах)</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="685"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="654"/>
         <source>For gapped alignment</source>
         <translation>Для выравниваний с пробелами</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="699"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="668"/>
         <source>For ungapped extensions</source>
         <translation>Для расширений без пробелов</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="706"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="675"/>
         <source>For final gapped alignment</source>
         <translation>Для финального выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="730"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="699"/>
         <source>Multiple Hits window size</source>
         <translation>Множественные пересечения окна</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastAllSupportDialog.ui" line="742"/>
+        <location filename="../src/ui/BlastAllSupportDialog.ui" line="711"/>
         <source>Perform gapped alignment</source>
         <translation>Выполнить выравнивание</translation>
     </message>
@@ -354,35 +351,55 @@ a database file</source>
         <translation>Выберите базу данных:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="70"/>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="124"/>
+        <location filename="../src/ui/BlastDBCmdDialog.ui" line="104"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="79"/>
         <source>Type of file(s)</source>
-        <translation>Тип файла(ов)</translation>
+        <translation type="vanished">Тип файла(ов)</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="85"/>
         <source>nucleotide</source>
-        <translation>нуклеотиды</translation>
+        <translation type="vanished">нуклеотиды</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="95"/>
         <source>protein</source>
-        <translation>белки</translation>
+        <translation type="vanished">белки</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="108"/>
+        <location filename="../src/ui/BlastDBCmdDialog.ui" line="88"/>
         <source>Output path:</source>
         <translation>Выходной путь:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BlastDBCmdDialog.ui" line="136"/>
+        <location filename="../src/ui/BlastDBCmdDialog.ui" line="116"/>
         <source>Add to project</source>
         <translation>Добавить в проект</translation>
+    </message>
+</context>
+<context>
+    <name>BlastDBSelectorWidget</name>
+    <message>
+        <location filename="../src/ui/BlastDBSelectorWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Форма</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BlastDBSelectorWidget.ui" line="34"/>
+        <source>Database path:</source>
+        <translation type="unfinished">Путь к БД:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BlastDBSelectorWidget.ui" line="58"/>
+        <source>Select
+a database file</source>
+        <translation type="unfinished">Выберите файл базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BlastDBSelectorWidget.ui" line="68"/>
+        <source>Base name for BLAST DB files:</source>
+        <translation type="unfinished">Базовое имя для файлов БД:</translation>
     </message>
 </context>
 <context>
@@ -1834,36 +1851,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>IntegralBusPort</name>
     <message>
-        <location filename="../src/cufflinks/CufflinksWorker.cpp" line="59"/>
         <source>One of these slots must be not empty: &apos;%1&apos;, &apos;%2&apos;</source>
-        <translation>Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
+        <translation type="vanished">Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/cufflinks/CufflinksWorker.cpp" line="64"/>
         <source>Only one of these slots must be binded: &apos;%1&apos;, &apos;%2&apos;</source>
-        <translation>Только один из этих слотов должен быть связан: &apos;%1&apos;, &apos;%2&apos;</translation>
+        <translation type="vanished">Только один из этих слотов должен быть связан: &apos;%1&apos;, &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/macs/MACSWorker.cpp" line="235"/>
-        <location filename="../src/spades/SpadesWorker.cpp" line="189"/>
-        <location filename="../src/utils/BaseShortReadsAlignerWorker.cpp" line="224"/>
         <source>The slot must be not empty: &apos;%1&apos;</source>
-        <translation>Слот не должен быть пустым: &apos;%1&apos;</translation>
+        <translation type="vanished">Слот не должен быть пустым: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tophat/TopHatWorker.cpp" line="781"/>
         <source>Error! One of these slots must be not empty: &apos;%1&apos;, &apos;%2&apos;</source>
-        <translation>Ошибка! Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
+        <translation type="vanished">Ошибка! Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tophat/TopHatWorker.cpp" line="787"/>
         <source>Error! You can not bind one of sequences slots and one of url slots simultaneously</source>
-        <translation>Ошибка! Вы не можете связать слот последовательности и слот пути одновременно</translation>
+        <translation type="vanished">Ошибка! Вы не можете связать слот последовательности и слот пути одновременно</translation>
     </message>
     <message>
-        <location filename="../src/cufflinks/CuffdiffWorker.cpp" line="56"/>
         <source>&apos;%1&apos; slot must be not binded</source>
-        <translation>&apos;%1&apos; слот не должен быть связан</translation>
+        <translation type="vanished">&apos;%1&apos; слот не должен быть связан</translation>
     </message>
 </context>
 <context>
@@ -2455,27 +2464,25 @@ Uncheck to get the maximum likelihood estimate.</source>
 <context>
     <name>U2::BlastAllSupportRunDialog</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="98"/>
         <source>Database path contains space characters.</source>
-        <translation>Путь до базы данных содержит пробелы.</translation>
+        <translation type="vanished">Путь до базы данных содержит пробелы.</translation>
+    </message>
+    <message>
+        <source>Database name contains space characters.</source>
+        <translation type="vanished">Имя базы данных содержит пробелы.</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="103"/>
-        <source>Database name contains space characters.</source>
-        <translation>Имя базы данных содержит пробелы.</translation>
-    </message>
-    <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="116"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Неверные параметры для создания аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="130"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="117"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="130"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="117"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
@@ -2596,38 +2603,36 @@ Uncheck to get the maximum likelihood estimate.</source>
 <context>
     <name>U2::BlastAllWithExtFileSpecifySupportRunDialog</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="171"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="161"/>
         <source>Select input file</source>
         <translation>Выберите входной файл</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="191"/>
         <source>Database path contains space characters.</source>
-        <translation>Путь до базы данных содержит пробелы.</translation>
+        <translation type="vanished">Путь до базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="196"/>
         <source>Database name contains space characters.</source>
-        <translation>Имя базы данных содержит пробелы.</translation>
+        <translation type="vanished">Имя базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="231"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="207"/>
         <source>This file has the incompatible format for the BLAST+ search.</source>
         <translation>Этот файл имеет несовместимый формат для поиска BLAST+.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="276"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="252"/>
         <source>This file does not contain any sequence.</source>
         <translation>Этот файл не содержит последовательностей.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="231"/>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="276"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="207"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="252"/>
         <source>Wrong input file</source>
         <translation>Неверный входной файл</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="323"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="299"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Неверные параметры для создания аннотаций</translation>
     </message>
@@ -2645,14 +2650,36 @@ Uncheck to get the maximum likelihood estimate.</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastDBCmdDialog.cpp" line="74"/>
         <source>Select a database file</source>
-        <translation>Выберите файл базы данных</translation>
+        <translation type="vanished">Выберите файл базы данных</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastDBCmdDialog.cpp" line="88"/>
+        <location filename="../src/blast_plus/BlastDBCmdDialog.cpp" line="80"/>
         <source>Set a result FASTA file name</source>
         <translation>Выберите имя результирующего FASTA файла</translation>
+    </message>
+</context>
+<context>
+    <name>U2::BlastDBSelectorWidgetController</name>
+    <message>
+        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="44"/>
+        <source>Database path contains space characters.</source>
+        <translation type="unfinished">Путь до базы данных содержит пробелы.</translation>
+    </message>
+    <message>
+        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="49"/>
+        <source>Database name contains space characters.</source>
+        <translation type="unfinished">Имя базы данных содержит пробелы.</translation>
+    </message>
+    <message>
+        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="76"/>
+        <source>Select a database file</source>
+        <translation type="unfinished">Выберите файл базы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="110"/>
+        <source>No alias or index file found for selected database.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2848,37 +2875,35 @@ Uncheck to get the maximum likelihood estimate.</source>
 <context>
     <name>U2::BlastPlusSupportRunDialog</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="104"/>
         <source>Database path contains space characters.</source>
-        <translation>Путь до базы данных содержит пробелы.</translation>
+        <translation type="vanished">Путь до базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="109"/>
         <source>Database name contains space characters.</source>
-        <translation>Имя базы данных содержит пробелы.</translation>
+        <translation type="vanished">Имя базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="124"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="111"/>
         <source>Do you want to select it now?</source>
         <translation>Выбрать сейчас?</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="159"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="146"/>
         <source>Path for &lt;i&gt;BLAST+ %1&lt;/i&gt; tool not selected.</source>
         <translation>Путь до &lt;i&gt;BLAST+ %1&lt;/i&gt; не установлен.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="193"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="180"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Неверные параметры для создания аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="207"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="194"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="207"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="194"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
@@ -2886,48 +2911,46 @@ Uncheck to get the maximum likelihood estimate.</source>
 <context>
     <name>U2::BlastPlusWithExtFileSpecifySupportRunDialog</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="245"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="235"/>
         <source>Select input file</source>
         <translation>Выберите входной файл</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="319"/>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="365"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="281"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="327"/>
         <source>Wrong input file</source>
         <translation>Неверный входной файл</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="272"/>
         <source>Database path contains space characters.</source>
-        <translation>Путь до базы данных содержит пробелы.</translation>
+        <translation type="vanished">Путь до базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="284"/>
         <source>Database name contains space characters.</source>
-        <translation>Имя базы данных содержит пробелы.</translation>
+        <translation type="vanished">Имя базы данных содержит пробелы.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="319"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="281"/>
         <source>This file has the incompatible format for the BLAST+ search.</source>
         <translation>Этот файл имеет несовместимый формат для поиска BLAST+.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="365"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="327"/>
         <source>This file does not contain sequences.</source>
         <translation>Этот файл не содержит последовательностей.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="417"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="379"/>
         <source>Do you want to select it now?</source>
         <translation>Выбрать сейчас?</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="452"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="414"/>
         <source>Path for &lt;i&gt;BLAST+ %1&lt;/i&gt; tool not selected.</source>
         <translation>Путь до &lt;i&gt;BLAST+ %1&lt;/i&gt; не установлен.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="486"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="448"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Неверные параметры для создания аннотаций</translation>
     </message>
@@ -2935,52 +2958,51 @@ Uncheck to get the maximum likelihood estimate.</source>
 <context>
     <name>U2::BlastRunCommonDialog</name>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="66"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="64"/>
         <source>Restore to default</source>
         <translation>Значения по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="67"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="65"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="68"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="66"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="297"/>
         <source>Select a database file</source>
-        <translation>Выберите файл базы данных</translation>
+        <translation type="vanished">Выберите файл базы данных</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="309"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="290"/>
         <source>Direct nucleotide alignment</source>
         <translation>Прямое нуклеотидное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="312"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="293"/>
         <source>Direct protein alignment</source>
         <translation>Прямое белковое выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="316"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="297"/>
         <source>Direct protein alignment (on GPU)</source>
         <translation>Прямое белковое выравнивание (на GPU)</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="320"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="301"/>
         <source>Protein alignment, input nucleotide is translated input protein before the search</source>
         <translation>Белковое выравнивание, входные нуклеотиды транслируются в белки до поиска</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="324"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="305"/>
         <source>Protein alignment, nucleotide database is translated input protein before the search</source>
         <translation>Белковое выравнивание, нуклеотидная база данных транслируется в белковую до поиска</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="328"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="309"/>
         <source>Protein alignment, both input query and database are translated before the search</source>
         <translation>Белковое выравнивание, оба запроса и база данных транслируются до поиска</translation>
     </message>
@@ -6749,6 +6771,16 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>Пример имени для файла сборки</translation>
     </message>
     <message>
+        <location filename="../src/cufflinks/CuffdiffWorker.cpp" line="238"/>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/cufflinks/CuffdiffWorker.cpp" line="239"/>
+        <source>Compatible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/cufflinks/CuffdiffWorker.cpp" line="299"/>
         <source>Searches for significant changes in transcript expression, splicing and promoter use.</source>
         <translation>Поиск существенных изменений в выражении транскрипции.</translation>
@@ -7374,9 +7406,8 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>Разделить</translation>
     </message>
     <message>
-        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="526"/>
         <source>Treat âsplitâ BAM or BED12 entries as distinct BED intervals when computing coverage. For BAM files, this uses the CIGAR âNâ and âDâ operations to infer the blocks for computing coverage. For BED12 files, this uses the BlockCount, BlockStarts, and BlockEnds fields (i.e., columns 10,11,12). (-split)</source>
-        <translation>Определяет BAM или BED12 записи как различные BED промежутки когда вычисляется покрытие. (-split)</translation>
+        <translation type="vanished">Определяет BAM или BED12 записи как различные BED промежутки когда вычисляется покрытие. (-split)</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="528"/>
@@ -7394,9 +7425,8 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>5 начало</translation>
     </message>
     <message>
-        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="532"/>
         <source>Calculate coverage of 5â positions (instead of entire interval). (-5)</source>
-        <translation>Вычисляет покрытие позиций 5&apos;. (-5)</translation>
+        <translation type="vanished">Вычисляет покрытие позиций 5&apos;. (-5)</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="534"/>
@@ -7404,9 +7434,8 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>3 начало</translation>
     </message>
     <message>
-        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="535"/>
         <source>Calculate coverage of 3â positions (instead of entire interval). (-3)</source>
-        <translation>Вычисляет покрытие позиций 3&apos;. (-3)</translation>
+        <translation type="vanished">Вычисляет покрытие позиций 3&apos;. (-3)</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="537"/>
@@ -7457,6 +7486,21 @@ bowtie медленнее, когда указан режим --best.</translati
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="582"/>
         <source>Input file</source>
         <translation>Входной файл</translation>
+    </message>
+    <message>
+        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="526"/>
+        <source>Treat “split” BAM or BED12 entries as distinct BED intervals when computing coverage. For BAM files, this uses the CIGAR “N” and “D” operations to infer the blocks for computing coverage. For BED12 files, this uses the BlockCount, BlockStarts, and BlockEnds fields (i.e., columns 10,11,12). (-split)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="532"/>
+        <source>Calculate coverage of 5’ positions (instead of entire interval). (-5)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="535"/>
+        <source>Calculate coverage of 3’ positions (instead of entire interval). (-3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="583"/>
@@ -7764,18 +7808,20 @@ bowtie медленнее, когда указан режим --best.</translati
     </message>
     <message>
         <location filename="../src/macs/MACSWorker.cpp" line="395"/>
+        <source>Whether turn on the auto pair model process.If set, when MACS failed to build paired model, it will use the nomodelsettings, the “Shift size” parameter to shift and extend each tags (--on-auto).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Whether turn on the auto pair model process.If set, when MACS failed to build paired model, it will use the nomodelsettings, the âShift sizeâ parameter to shift and extend each tags (--on-auto).</source>
-        <translation>Авто бимодальный (--on-Авто).</translation>
+        <translation type="vanished">Авто бимодальный (--on-Авто).</translation>
     </message>
     <message>
-        <location filename="../src/macs/MACSWorker.cpp" line="415"/>
         <source>If set, MACS will try to call broad peaks by linking nearby highly enriched regions.The linking region is controlled by another cutoff through âBroad cutoffâ.The maximum linking region length is 4 times of d from MACS.</source>
-        <translation>Если установлено, MACS будет пытаться вызвать широкие пики.</translation>
+        <translation type="vanished">Если установлено, MACS будет пытаться вызвать широкие пики.</translation>
     </message>
     <message>
-        <location filename="../src/macs/MACSWorker.cpp" line="420"/>
         <source>Cutoff for broad region. This option is not available unless âBroadâ is set.If âP-valueâ is set, this is a pvalue cutoff, otherwise, it&apos;s a qvalue cutoff.</source>
-        <translation>Срез для широких регионов.</translation>
+        <translation type="vanished">Срез для широких регионов.</translation>
     </message>
     <message>
         <location filename="../src/macs/MACSWorker.cpp" line="399"/>
@@ -7813,9 +7859,19 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>Широкий</translation>
     </message>
     <message>
+        <location filename="../src/macs/MACSWorker.cpp" line="415"/>
+        <source>If set, MACS will try to call broad peaks by linking nearby highly enriched regions.The linking region is controlled by another cutoff through “Broad cutoff”.The maximum linking region length is 4 times of d from MACS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/macs/MACSWorker.cpp" line="419"/>
         <source>Broad cutoff</source>
         <translation>Широкий срез</translation>
+    </message>
+    <message>
+        <location filename="../src/macs/MACSWorker.cpp" line="420"/>
+        <source>Cutoff for broad region. This option is not available unless “Broad” is set.If “P-value” is set, this is a pvalue cutoff, otherwise, it&apos;s a qvalue cutoff.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/macs/MACSWorker.cpp" line="548"/>
@@ -8359,9 +8415,8 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>Как доля</translation>
     </message>
     <message>
-        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="137"/>
         <source>Define -l and -r as a fraction of the featureâs length. E.g. if used on a 1000bp feature, -l 0.50, will add 500 bp âupstreamâ. (-pct)</source>
-        <translation>Определяет -l и -r как долю от длины аннотации. (-pct)</translation>
+        <translation type="vanished">Определяет -l и -r как долю от длины аннотации. (-pct)</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="139"/>
@@ -8392,6 +8447,11 @@ bowtie медленнее, когда указан режим --best.</translati
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="177"/>
         <source>Input file</source>
         <translation>Входной файл</translation>
+    </message>
+    <message>
+        <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="137"/>
+        <source>Define -l and -r as a fraction of the feature’s length. E.g. if used on a 1000bp feature, -l 0.50, will add 500 bp “upstream”. (-pct)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="178"/>
@@ -9186,6 +9246,16 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <location filename="../src/tophat/TopHatWorker.cpp" line="349"/>
         <source>The directory for temporary files.</source>
         <translation>Директория для временных файлов.</translation>
+    </message>
+    <message>
+        <location filename="../src/tophat/TopHatWorker.cpp" line="396"/>
+        <source>Use -n mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tophat/TopHatWorker.cpp" line="397"/>
+        <source>Use -v mode</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/tophat/TopHatWorker.cpp" line="512"/>
@@ -10211,6 +10281,14 @@ Set it empty if you want to run Tophat once for all input reads</source>
     </message>
 </context>
 <context>
+    <name>U2::UserAppsSettings</name>
+    <message>
+        <location filename="../src/ExternalToolSupportSettings.cpp" line="135"/>
+        <source>Temporary UGENE dir is empty</source>
+        <translation type="unfinished">Temporary UGENE dir is empty</translation>
+    </message>
+</context>
+<context>
     <name>U2::VcfConsensusSupport</name>
     <message>
         <location filename="../src/vcftools/VcfConsensusSupport.cpp" line="45"/>
@@ -10282,11 +10360,45 @@ Set it empty if you want to run Tophat once for all input reads</source>
     </message>
 </context>
 <context>
+    <name>U2::Workflow::IntegralBusPort</name>
+    <message>
+        <location filename="../src/cufflinks/CuffdiffWorker.cpp" line="56"/>
+        <source>&apos;%1&apos; slot must be not binded</source>
+        <translation type="unfinished">&apos;%1&apos; слот не должен быть связан</translation>
+    </message>
+    <message>
+        <location filename="../src/cufflinks/CufflinksWorker.cpp" line="59"/>
+        <source>One of these slots must be not empty: &apos;%1&apos;, &apos;%2&apos;</source>
+        <translation type="unfinished">Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/cufflinks/CufflinksWorker.cpp" line="64"/>
+        <source>Only one of these slots must be binded: &apos;%1&apos;, &apos;%2&apos;</source>
+        <translation type="unfinished">Только один из этих слотов должен быть связан: &apos;%1&apos;, &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/macs/MACSWorker.cpp" line="235"/>
+        <location filename="../src/spades/SpadesWorker.cpp" line="189"/>
+        <location filename="../src/utils/BaseShortReadsAlignerWorker.cpp" line="224"/>
+        <source>The slot must be not empty: &apos;%1&apos;</source>
+        <translation type="unfinished">Слот не должен быть пустым: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/tophat/TopHatWorker.cpp" line="781"/>
+        <source>Error! One of these slots must be not empty: &apos;%1&apos;, &apos;%2&apos;</source>
+        <translation type="unfinished">Ошибка! Один из этих слотов не должен быть пустым: &apos;%1&apos;, &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/tophat/TopHatWorker.cpp" line="787"/>
+        <source>Error! You can not bind one of sequences slots and one of url slots simultaneously</source>
+        <translation type="unfinished">Ошибка! Вы не можете связать слот последовательности и слот пути одновременно</translation>
+    </message>
+</context>
+<context>
     <name>UserAppsSettings</name>
     <message>
-        <location filename="../src/ExternalToolSupportSettings.cpp" line="135"/>
         <source>Temporary UGENE dir is empty</source>
-        <translation>Temporary UGENE dir is empty</translation>
+        <translation type="vanished">Temporary UGENE dir is empty</translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>CustomAutoAnnotationDialog</name>
     <message>
@@ -337,6 +337,11 @@
         <location filename="../src/CollocationWorker.cpp" line="130"/>
         <source>Collocation Search</source>
         <translation>Collocation Search</translation>
+    </message>
+    <message>
+        <location filename="../src/CollocationWorker.cpp" line="140"/>
+        <source>Copy original annotations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="74"/>

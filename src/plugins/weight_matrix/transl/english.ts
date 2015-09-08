@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>MatrixAndLogoWidget</name>
     <message>
@@ -220,8 +220,8 @@
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="85"/>
         <location filename="../src/WMQuery.cpp" line="188"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="85"/>
         <source>Minimum score to detect transcription factor binding site</source>
         <translation>Minimum score to detect transcription factor binding site</translation>
     </message>
@@ -355,6 +355,16 @@
         <source>Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation>Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites.</translation>
     </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="197"/>
+        <source>Mononucleic</source>
+        <translation type="unfinished">Mononucleic</translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="198"/>
+        <source>Dinucleic</source>
+        <translation type="unfinished">Dinucleic</translation>
+    </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::PFMatrixConvertPrompter</name>
@@ -395,6 +405,16 @@
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="286"/>
         <source>Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation>Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="301"/>
+        <source>Mononucleic</source>
+        <translation type="unfinished">Mononucleic</translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="302"/>
+        <source>Dinucleic</source>
+        <translation type="unfinished">Dinucleic</translation>
     </message>
 </context>
 <context>
@@ -493,6 +513,16 @@
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="92"/>
         <source>Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation>Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="107"/>
+        <source>Mononucleic</source>
+        <translation type="unfinished">Mononucleic</translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="108"/>
+        <source>Dinucleic</source>
+        <translation type="unfinished">Dinucleic</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="276"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>QObject</name>
     <message>
@@ -465,7 +465,7 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::MolecularSurfaceCalcTask</name>
     <message>
-        <location filename="../src/molecular_geometry/MolecularSurface.cpp" line="122"/>
+        <location filename="../src/molecular_geometry/MolecularSurface.cpp" line="126"/>
         <source>Molecular surface calculation</source>
         <translation></translation>
     </message>

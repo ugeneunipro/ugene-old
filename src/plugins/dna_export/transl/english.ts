@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>BaseContentDialog</name>
     <message>
@@ -284,70 +284,56 @@
 <context>
     <name>GTest</name>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="115"/>
         <source>Unable to create temporary file</source>
-        <translation>Unable to create temporary file</translation>
+        <translation type="vanished">Unable to create temporary file</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="134"/>
         <source>Invalid translation table num: %1</source>
-        <translation>Invalid translation table num: %1</translation>
+        <translation type="vanished">Invalid translation table num: %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="150"/>
-        <location filename="../src/DNAExportPluginTests.cpp" line="156"/>
         <source>Invalid base : %1</source>
-        <translation>Invalid base : %1</translation>
+        <translation type="vanished">Invalid base : %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="169"/>
         <source> context not found %1</source>
-        <translation> context not found %1</translation>
+        <translation type="vanished"> context not found %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="175"/>
         <source> container of object with type &quot;%1&quot; is empty</source>
-        <translation> container of object with type &quot;%1&quot; is empty</translation>
+        <translation type="vanished"> container of object with type &quot;%1&quot; is empty</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="206"/>
         <source>context  not found %1</source>
-        <translation>context  not found %1</translation>
+        <translation type="vanished">context  not found %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="212"/>
         <source>container  of object with type &quot;%1&quot; is empty</source>
-        <translation>container  of object with type &quot;%1&quot; is empty</translation>
+        <translation type="vanished">container  of object with type &quot;%1&quot; is empty</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="229"/>
         <source>context not  found %1</source>
-        <translation>context not  found %1</translation>
+        <translation type="vanished">context not  found %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="235"/>
         <source>container of  object with type &quot;%1&quot; is empty</source>
-        <translation>container of  object with type &quot;%1&quot; is empty</translation>
+        <translation type="vanished">container of  object with type &quot;%1&quot; is empty</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="242"/>
         <source>Unexpected alignment length %1, expected %2</source>
-        <translation>Unexpected alignment length %1, expected %2</translation>
+        <translation type="vanished">Unexpected alignment length %1, expected %2</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="247"/>
         <source>Unexpected alignment size %1, expected %2</source>
-        <translation>Unexpected alignment size %1, expected %2</translation>
+        <translation type="vanished">Unexpected alignment size %1, expected %2</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="256"/>
         <source>Invalid name for row %1: %2, expected %3</source>
-        <translation>Invalid name for row %1: %2, expected %3</translation>
+        <translation type="vanished">Invalid name for row %1: %2, expected %3</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPluginTests.cpp" line="261"/>
         <source>Invalid char at row %1 column %2: %3, expected %4</source>
-        <translation>Invalid char at row %1 column %2: %3, expected %4</translation>
+        <translation type="vanished">Invalid char at row %1 column %2: %3, expected %4</translation>
     </message>
 </context>
 <context>
@@ -1395,6 +1381,75 @@
         <location filename="../src/ExportSequencesDialog.cpp" line="234"/>
         <source>Organism for back translation not specified</source>
         <translation>Organism for back translation not specified</translation>
+    </message>
+</context>
+<context>
+    <name>U2::GTest</name>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="115"/>
+        <source>Unable to create temporary file</source>
+        <translation type="unfinished">Unable to create temporary file</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="134"/>
+        <source>Invalid translation table num: %1</source>
+        <translation type="unfinished">Invalid translation table num: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="150"/>
+        <location filename="../src/DNAExportPluginTests.cpp" line="156"/>
+        <source>Invalid base : %1</source>
+        <translation type="unfinished">Invalid base : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="169"/>
+        <source> context not found %1</source>
+        <translation type="unfinished"> context not found %1</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="175"/>
+        <source> container of object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished"> container of object with type &quot;%1&quot; is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="206"/>
+        <source>context  not found %1</source>
+        <translation type="unfinished">context  not found %1</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="212"/>
+        <source>container  of object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished">container  of object with type &quot;%1&quot; is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="229"/>
+        <source>context not  found %1</source>
+        <translation type="unfinished">context not  found %1</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="235"/>
+        <source>container of  object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished">container of  object with type &quot;%1&quot; is empty</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="242"/>
+        <source>Unexpected alignment length %1, expected %2</source>
+        <translation type="unfinished">Unexpected alignment length %1, expected %2</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="247"/>
+        <source>Unexpected alignment size %1, expected %2</source>
+        <translation type="unfinished">Unexpected alignment size %1, expected %2</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="256"/>
+        <source>Invalid name for row %1: %2, expected %3</source>
+        <translation type="unfinished">Invalid name for row %1: %2, expected %3</translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="261"/>
+        <source>Invalid char at row %1 column %2: %3, expected %4</source>
+        <translation type="unfinished">Invalid char at row %1 column %2: %3, expected %4</translation>
     </message>
 </context>
 <context>

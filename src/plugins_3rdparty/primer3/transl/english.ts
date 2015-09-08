@@ -1,85 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en" sourcelanguage="en">
+<TS version="2.1" language="en" sourcelanguage="en">
 <context>
     <name>GTest</name>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="360"/>
         <source>Contradiction in primer_task definition</source>
-        <translation>Contradiction in primer_task definition</translation>
+        <translation type="vanished">Contradiction in primer_task definition</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="348"/>
         <source>Unrecognized PRIMER_TASK</source>
-        <translation>Unrecognized PRIMER_TASK</translation>
+        <translation type="vanished">Unrecognized PRIMER_TASK</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="211"/>
         <source>Illegal TARGET value: %1</source>
-        <translation>Illegal TARGET value: %1</translation>
+        <translation type="vanished">Illegal TARGET value: %1</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="230"/>
-        <location filename="../src/Primer3Tests.cpp" line="299"/>
         <source>Illegal PRIMER_DEFAULT_PRODUCT value: %1</source>
-        <translation>Illegal PRIMER_DEFAULT_PRODUCT value: %1</translation>
+        <translation type="vanished">Illegal PRIMER_DEFAULT_PRODUCT value: %1</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="248"/>
         <source>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</source>
-        <translation>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</translation>
+        <translation type="vanished">Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="263"/>
         <source>Illegal INCLUDED_REGION value: %1</source>
-        <translation>Illegal INCLUDED_REGION value: %1</translation>
+        <translation type="vanished">Illegal INCLUDED_REGION value: %1</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="317"/>
         <source>Illegal EXCLUDED_REGION value: %1</source>
-        <translation>Illegal EXCLUDED_REGION value: %1</translation>
+        <translation type="vanished">Illegal EXCLUDED_REGION value: %1</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="418"/>
         <source>Missing SEQUENCE tag</source>
-        <translation>Missing SEQUENCE tag</translation>
+        <translation type="vanished">Missing SEQUENCE tag</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="425"/>
         <source>Error in sequence quality data</source>
-        <translation>Error in sequence quality data</translation>
+        <translation type="vanished">Error in sequence quality data</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="427"/>
         <source>Sequence quality data missing</source>
-        <translation>Sequence quality data missing</translation>
+        <translation type="vanished">Sequence quality data missing</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="450"/>
         <source>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</source>
-        <translation>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</translation>
+        <translation type="vanished">PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="552"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:NULL</source>
-        <translation>%1 is incorrect. Expected:%2,%3, but Actual:NULL</translation>
+        <translation type="vanished">%1 is incorrect. Expected:%2,%3, but Actual:NULL</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="561"/>
         <source>%1 is incorrect. Expected:NULL, but Actual:%2,%3</source>
-        <translation>%1 is incorrect. Expected:NULL, but Actual:%2,%3</translation>
+        <translation type="vanished">%1 is incorrect. Expected:NULL, but Actual:%2,%3</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="571"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</source>
-        <translation>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</translation>
+        <translation type="vanished">%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="610"/>
-        <location filename="../src/Primer3Tests.cpp" line="620"/>
-        <location filename="../src/Primer3Tests.cpp" line="630"/>
         <source>%1 is incorrect. Expected:%2, but Actual:%3</source>
-        <translation>%1 is incorrect. Expected:%2, but Actual:%3</translation>
+        <translation type="vanished">%1 is incorrect. Expected:%2, but Actual:%3</translation>
     </message>
 </context>
 <context>
@@ -2104,6 +2086,87 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/FindExonRegionsTask.cpp" line="100"/>
         <source>Failed to search for exon annotations. The sequence %1 doesn&apos;t have any related annotations.</source>
         <translation>Failed to search for exon annotations. The sequence %1 doesn&apos;t have any related annotations.</translation>
+    </message>
+</context>
+<context>
+    <name>U2::GTest</name>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="211"/>
+        <source>Illegal TARGET value: %1</source>
+        <translation type="unfinished">Illegal TARGET value: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="230"/>
+        <location filename="../src/Primer3Tests.cpp" line="299"/>
+        <source>Illegal PRIMER_DEFAULT_PRODUCT value: %1</source>
+        <translation type="unfinished">Illegal PRIMER_DEFAULT_PRODUCT value: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="248"/>
+        <source>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</source>
+        <translation type="unfinished">Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="263"/>
+        <source>Illegal INCLUDED_REGION value: %1</source>
+        <translation type="unfinished">Illegal INCLUDED_REGION value: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="317"/>
+        <source>Illegal EXCLUDED_REGION value: %1</source>
+        <translation type="unfinished">Illegal EXCLUDED_REGION value: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="348"/>
+        <source>Unrecognized PRIMER_TASK</source>
+        <translation type="unfinished">Unrecognized PRIMER_TASK</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="360"/>
+        <source>Contradiction in primer_task definition</source>
+        <translation type="unfinished">Contradiction in primer_task definition</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="418"/>
+        <source>Missing SEQUENCE tag</source>
+        <translation type="unfinished">Missing SEQUENCE tag</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="425"/>
+        <source>Error in sequence quality data</source>
+        <translation type="unfinished">Error in sequence quality data</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="427"/>
+        <source>Sequence quality data missing</source>
+        <translation type="unfinished">Sequence quality data missing</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="450"/>
+        <source>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</source>
+        <translation type="unfinished">PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="552"/>
+        <source>%1 is incorrect. Expected:%2,%3, but Actual:NULL</source>
+        <translation type="unfinished">%1 is incorrect. Expected:%2,%3, but Actual:NULL</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="561"/>
+        <source>%1 is incorrect. Expected:NULL, but Actual:%2,%3</source>
+        <translation type="unfinished">%1 is incorrect. Expected:NULL, but Actual:%2,%3</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="571"/>
+        <source>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</source>
+        <translation type="unfinished">%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Tests.cpp" line="610"/>
+        <location filename="../src/Primer3Tests.cpp" line="620"/>
+        <location filename="../src/Primer3Tests.cpp" line="630"/>
+        <source>%1 is incorrect. Expected:%2, but Actual:%3</source>
+        <translation type="unfinished">%1 is incorrect. Expected:%2, but Actual:%3</translation>
     </message>
 </context>
 <context>

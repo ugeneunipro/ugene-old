@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
+<context>
+    <name>GUITestWindow</name>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="14"/>
+        <source>GUI testing window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="22"/>
+        <source>get parent info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="29"/>
+        <source>switch off code generation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="36"/>
+        <source>generate filler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="87"/>
+        <source>Class name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="92"/>
+        <source>Object name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="97"/>
+        <source>Action name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="102"/>
+        <source>Action text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUITestingWindow.ui" line="107"/>
+        <source>value</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>U2::GTestFormatRegistry</name>
     <message>

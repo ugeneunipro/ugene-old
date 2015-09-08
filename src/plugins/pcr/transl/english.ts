@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>EditPrimerDialog</name>
     <message>
@@ -123,53 +123,58 @@
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="94"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="121"/>
         <source>Maximum product</source>
         <translation>Maximum product</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="78"/>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="110"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="105"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="137"/>
         <source> bp</source>
         <translation> bp</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="62"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="89"/>
         <source>3&apos; perfect match</source>
         <translation>3&apos; perfect match</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="133"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="153"/>
+        <source>Extract annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="174"/>
         <source>&lt;a href=&quot;details&quot;&gt;Show primers details&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;details&quot;&gt;Show primers details&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="194"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="235"/>
         <source>Find product(s)</source>
         <translation>Find product(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="280"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="330"/>
         <source>Region</source>
         <translation>Region</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="285"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="335"/>
         <source>Length</source>
         <translation>Length</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="290"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="340"/>
         <source>Ta</source>
         <translation>Ta</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="319"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="369"/>
         <source>Extract product(s)</source>
         <translation>Extract product(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="333"/>
+        <location filename="../src/ui/InSilicoPcrOptionPanelWidget.ui" line="383"/>
         <source>Info: choose a nucleic sequence for running In Silico PCR</source>
         <translation>Info: choose a nucleic sequence for running In Silico PCR</translation>
     </message>
@@ -285,7 +290,7 @@
 <context>
     <name>U2::ExtractProductTask</name>
     <message>
-        <location filename="../src/ExtractProductTask.cpp" line="61"/>
+        <location filename="../src/ExtractProductTask.cpp" line="67"/>
         <source>Extract PCR product</source>
         <translation>Extract PCR product</translation>
     </message>
@@ -293,7 +298,7 @@
 <context>
     <name>U2::ExtractProductWrapperTask</name>
     <message>
-        <location filename="../src/ExtractProductTask.cpp" line="166"/>
+        <location filename="../src/ExtractProductTask.cpp" line="267"/>
         <source>Extract PCR product and open document</source>
         <translation>Extract PCR product and open document</translation>
     </message>
@@ -468,27 +473,42 @@
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="77"/>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="64"/>
+        <source>Inner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="65"/>
+        <source>All intersected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="66"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="79"/>
         <source>Show primers details</source>
         <translation>Show primers details</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="124"/>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="126"/>
         <source>Find product(s)</source>
         <translation>Find product(s)</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="127"/>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="129"/>
         <source>Warning: </source>
         <translation>Warning: </translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="128"/>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="130"/>
         <source>Find product(s) anyway</source>
         <translation>Find product(s) anyway</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="199"/>
+        <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="207"/>
         <source>Extract In Silico PCR products</source>
         <translation>Extract In Silico PCR products</translation>
     </message>
@@ -519,6 +539,14 @@
         <location filename="../src/InSilicoPcrTask.cpp" line="191"/>
         <source>Primers details:</source>
         <translation>Primers details:</translation>
+    </message>
+</context>
+<context>
+    <name>U2::InSilicoPcrWorkflowTask</name>
+    <message>
+        <location filename="../src/InSilicoPcrWorkflowTask.cpp" line="27"/>
+        <source>In silico PCR workflow task</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -600,12 +628,12 @@
 <context>
     <name>U2::LocalWorkflow::InSilicoPcrPrompter</name>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="151"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="163"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="154"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="166"/>
         <source>Simulates PCR for the sequences from &lt;u&gt;%1&lt;/u&gt; and primer pairs from &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Simulates PCR for the sequences from &lt;u&gt;%1&lt;/u&gt; and primer pairs from &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
@@ -613,22 +641,22 @@
 <context>
     <name>U2::LocalWorkflow::InSilicoPcrReportTask</name>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="341"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="366"/>
         <source>Generate In Silico PCR report</source>
         <translation>Generate In Silico PCR report</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="369"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="394"/>
         <source>Sequence name</source>
         <translation>Sequence name</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="385"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="410"/>
         <source>Products count table</source>
         <translation>Products count table</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="398"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="423"/>
         <source>Primer pair details</source>
         <translation>Primer pair details</translation>
     </message>
@@ -636,117 +664,156 @@
 <context>
     <name>U2::LocalWorkflow::InSilicoPcrWorker</name>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="76"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="78"/>
         <source>Input sequence</source>
         <translation>Input sequence</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="76"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="78"/>
         <source>Input sequence.</source>
         <translation>Input sequence.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="77"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="79"/>
         <source>PCR product</source>
         <translation>PCR product</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="77"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="79"/>
         <source>PCR product sequence.</source>
         <translation>PCR product sequence.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="91"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="94"/>
         <source>Primers URL</source>
         <translation>Primers URL</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="91"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="94"/>
         <source>A URL to the input file with primer pairs.</source>
         <translation>A URL to the input file with primer pairs.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="92"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="95"/>
         <source>Report URL</source>
         <translation>Report URL</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="92"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="95"/>
         <source>A URL to the output file with the PCR report.</source>
         <translation>A URL to the output file with the PCR report.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="93"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="96"/>
         <source>Mismatches</source>
         <translation>Mismatches</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="93"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="96"/>
         <source>Number of allowed mismatches.</source>
         <translation>Number of allowed mismatches.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="94"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="97"/>
         <source>Min perfect match</source>
         <translation>Min perfect match</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="94"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="97"/>
         <source>Number of bases that match exactly on 3&apos; end of primers.</source>
         <translation>Number of bases that match exactly on 3&apos; end of primers.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="95"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="98"/>
         <source>Max product size</source>
         <translation>Max product size</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="95"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="98"/>
         <source>Maximum size of amplified region.</source>
         <translation>Maximum size of amplified region.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="127"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="99"/>
+        <source>Extract annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="99"/>
+        <source>Extract annotations within a product region.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="132"/>
+        <source>Inner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="133"/>
+        <source>All intersected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="134"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="139"/>
         <source>In Silico PCR</source>
         <translation>In Silico PCR</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="128"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="140"/>
         <source>Simulates PCR for input sequences and primer pairs. Creates the table with the PCR statistics.</source>
         <translation>Simulates PCR for input sequences and primer pairs. Creates the table with the PCR statistics.</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="172"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="184"/>
         <source>Can not read the primers file: </source>
         <translation>Can not read the primers file: </translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="182"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="194"/>
         <source>Can&apos;t read the file: </source>
         <translation>Can&apos;t read the file: </translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="185"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="197"/>
         <source>No primer sequences in the file: </source>
         <translation>No primer sequences in the file: </translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="186"/>
-        <source>There is the odd number of primers int the file: </source>
-        <translation>There is the odd number of primers int the file: </translation>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="198"/>
+        <source>There is the odd number of primers in the file: </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="216"/>
+        <source>There is the odd number of primers int the file: </source>
+        <translation type="vanished">There is the odd number of primers int the file: </translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="228"/>
         <source>Primer sequence is too long: %1. The pair is skipped</source>
         <translation>Primer sequence is too long: %1. The pair is skipped</translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="311"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="285"/>
+        <source>Wrong sequence objects count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="295"/>
+        <source>Wrong annotations objects count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="325"/>
         <source>The sequence is too long: </source>
         <translation>The sequence is too long: </translation>
     </message>
     <message>
-        <location filename="../src/InSilicoPcrWorker.cpp" line="334"/>
+        <location filename="../src/InSilicoPcrWorker.cpp" line="359"/>
         <source>Multiple In Silico PCR</source>
         <translation>Multiple In Silico PCR</translation>
     </message>

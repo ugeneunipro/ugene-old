@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>ConstructMoleculeDialog</name>
     <message>
@@ -129,6 +129,11 @@
         <translation>Не учитывать липкие концы и исключить их</translation>
     </message>
     <message>
+        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="258"/>
+        <source>Make circular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="236"/>
         <source>Setting this option checked will result in ignoring overhangs while constructing new molecule.</source>
         <translation>Включение опции позволяет не учитывать липкие концы фрагментов при создании новой молекулы.</translation>
@@ -144,9 +149,8 @@
         <translation>Сделать создаваемую молекулу круговой</translation>
     </message>
     <message>
-        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="258"/>
         <source>Make circlurar</source>
-        <translation>Круговая молекула</translation>
+        <translation type="vanished">Круговая молекула</translation>
     </message>
     <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="266"/>
