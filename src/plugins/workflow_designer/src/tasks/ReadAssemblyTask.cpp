@@ -146,7 +146,7 @@ void ConvertToIndexedBamTask::addConvertedFile(const GUrl &url) {
 /* ReadAssemblyTask */
 /************************************************************************/
 ReadAssemblyTask::ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *_ctx)
-: ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlags_FOSE_COSC),
+: ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlags_FOSE_COSC | TaskFlag_CollectChildrenWarnings),
 ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
 {
 

@@ -60,7 +60,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     }
     this->setObjectName(tr("Import BAM File"));
 
-    const QString warningMessageStyleSheet( "color: " + L10N::errorColorLabelStr( )
+    const QString warningMessageStyleSheet( "color: " + L10N::successColorLabelStr( )
         + "; font: bold;" );
     ui.indexNotAvailableLabel->setStyleSheet( warningMessageStyleSheet );
     ui.referenceWarningLabel->setStyleSheet( warningMessageStyleSheet );
