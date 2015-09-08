@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>ADVClipboard</name>
     <message>
@@ -1225,9 +1225,8 @@ Probably the data is too big.</source>
 <context>
     <name>ObjectViewTask</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="275"/>
         <source>No sequence info found!</source>
-        <translation>Информация о последовательности не найдена!</translation>
+        <translation type="vanished">Информация о последовательности не найдена!</translation>
     </message>
 </context>
 <context>
@@ -2315,52 +2314,52 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::ADVSingleSequenceHeaderWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="961"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="941"/>
         <source>Alphabet: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Алфавит: &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="962"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="942"/>
         <source> Sequence size: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Размер последовательности: &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="963"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="943"/>
         <source> File:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Файл:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1048"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1028"/>
         <source>raw</source>
         <translation>raw</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1052"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1032"/>
         <source>amino ext</source>
         <translation>amino ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1054"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1034"/>
         <source>amino</source>
         <translation>амино</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1059"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1039"/>
         <source>dna</source>
         <translation>днк</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1061"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1041"/>
         <source>dna ext</source>
         <translation>dna ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1065"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1045"/>
         <source>rna ext</source>
         <translation>rna ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1063"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1043"/>
         <source>rna</source>
         <translation>rna</translation>
     </message>
@@ -2368,12 +2367,12 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::ADVSingleSequenceWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="426"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="406"/>
         <source>Zoom</source>
         <translation>Масштаб</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="680"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="660"/>
         <source>Zoom to range</source>
         <translation>Выбор масштаба</translation>
     </message>
@@ -2383,12 +2382,12 @@ Double-click to collapse the branch</source>
         <translation>Создать новую шкалу...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="518"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="498"/>
         <source>Rulers...</source>
         <translation>Шкала обзора...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="529"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="509"/>
         <source>Remove &apos;%1&apos;</source>
         <translation>Удалить &quot;%1&quot;</translation>
     </message>
@@ -2418,63 +2417,63 @@ Double-click to collapse the branch</source>
         <translation>Выбрать масштаб...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="202"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="192"/>
         <source>Export image</source>
         <translation>Экспорт изображения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="221"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="223"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="201"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="203"/>
         <source>Toggle view</source>
         <translation>Переключить обзор</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="230"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="210"/>
         <source>Remove sequence</source>
         <translation>Удалить последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="503"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="483"/>
         <source>Select</source>
         <translation>Выделить</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="892"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="872"/>
         <source>Show all views</source>
         <translation>Показать всё</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="892"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="872"/>
         <source>Hide all views</source>
         <translation>Скрыть всё</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="894"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="874"/>
         <source>Show zoom view</source>
         <translation>Показать масштабируемое представление</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="894"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="874"/>
         <source>Hide zoom view</source>
         <translation>Скрыть масштабируемое представление</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="896"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="876"/>
         <source>Show details view</source>
         <translation>Показать детали</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="896"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="876"/>
         <source>Hide details view</source>
         <translation>Скрыть детали</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="898"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="878"/>
         <source>Show overview</source>
         <translation>Показать панораму</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="898"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="878"/>
         <source>Hide overview</source>
         <translation>Скрыть панораму</translation>
     </message>
@@ -2597,19 +2596,16 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::AddTreeWidget</name>
     <message>
-        <location filename="../src/ov_msa/TreeOptions/AddTreeWidget.cpp" line="62"/>
         <source>Trees settings</source>
-        <translation>Настройки дерева</translation>
+        <translation type="vanished">Настройки дерева</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/TreeOptions/AddTreeWidget.cpp" line="64"/>
         <source>Labels formating</source>
-        <translation>Форматирование надписей</translation>
+        <translation type="vanished">Форматирование надписей</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/TreeOptions/AddTreeWidget.cpp" line="66"/>
         <source>Branches settings</source>
-        <translation>Настройки ветвей дерева</translation>
+        <translation type="vanished">Настройки ветвей дерева</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/TreeOptions/TreeOptionsWidget.cpp" line="376"/>
@@ -4002,6 +3998,19 @@ You don&apos;t have enough rights to change file</source>
     </message>
 </context>
 <context>
+    <name>U2::CreateTreeViewerTask</name>
+    <message>
+        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="248"/>
+        <source>Open tree viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="255"/>
+        <source>Invalid tree object detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::CurrentViewPainter</name>
     <message>
         <location filename="../src/ov_sequence/image_export/SequencePainter.cpp" line="77"/>
@@ -4067,12 +4076,12 @@ You don&apos;t have enough rights to change file</source>
 <context>
     <name>U2::DetView</name>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="62"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="55"/>
         <source>Show complement strand</source>
         <translation>Показывать комплeментарную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="67"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="60"/>
         <source>Show amino translations</source>
         <translation>Показывать транслированную последовательность</translation>
     </message>
@@ -4771,6 +4780,12 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Причина: </translation>
     </message>
     <message>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
+Alternatively, load patterns from a FASTA file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
         <source> Please input valid annotation names </source>
         <translation>Введите корректные имена аннотаций </translation>
@@ -4983,7 +4998,7 @@ Alternatively, load patterns from a FASTA file.</source>
 <context>
     <name>U2::GraphLabel</name>
     <message>
-        <location filename="../src/ov_sequence/GraphLabelModel.cpp" line="151"/>
+        <location filename="../src/ov_sequence/GraphLabelModel.cpp" line="152"/>
         <source>QLabel {color : %1; }</source>
         <translation>QLabel {color : %1; }</translation>
     </message>
@@ -4991,17 +5006,17 @@ Alternatively, load patterns from a FASTA file.</source>
 <context>
     <name>U2::GraphLabelsSelectDialog</name>
     <message>
-        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="62"/>
+        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="65"/>
         <source>Window size</source>
         <translation>Размер окна</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="66"/>
+        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="69"/>
         <source>Mark labels only in selected area</source>
         <translation>Пометить названия только в выделенной области</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="78"/>
+        <location filename="../src/ov_sequence/GraphLabelsSelectDialog.cpp" line="81"/>
         <source>Graph Settings</source>
         <translation>Настройки графика</translation>
     </message>
@@ -5017,7 +5032,7 @@ Alternatively, load patterns from a FASTA file.</source>
 <context>
     <name>U2::GraphSettingsDialog</name>
     <message>
-        <location filename="../src/ov_sequence/GraphSettingsDialog.cpp" line="82"/>
+        <location filename="../src/ov_sequence/GraphSettingsDialog.cpp" line="83"/>
         <source>Graph Settings</source>
         <translation>Настройки графика</translation>
     </message>
@@ -5255,17 +5270,17 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Выбрать режим консенсуса...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="161"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="151"/>
         <source>MSA consensus algorothm is NULL</source>
         <translation>MSA consensus algorothm is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="162"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="152"/>
         <source>MSA object is NULL</source>
         <translation>MSA object is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="182"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="172"/>
         <source>Percent value is out of [0..100] interval</source>
         <translation>Percent value is out of [0..100] interval</translation>
     </message>
@@ -5609,6 +5624,12 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Обновить схлопнутые группы</translation>
     </message>
     <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
+        <source>Reference sequence for current highlighting scheme is not selected.
+Use context menu or Highlighting tab on Options panel to select it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>
         <source>Colors</source>
         <translation>Раскраска</translation>
@@ -5815,17 +5836,17 @@ Use context menu or Highlighting tab on Options panel to select it</source>
 <context>
     <name>U2::MSAGeneralTab</name>
     <message>
-        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="46"/>
+        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="47"/>
         <source>Alignment info</source>
         <translation>Информация о выравнивании</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="47"/>
+        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="48"/>
         <source>Consensus mode</source>
         <translation>Режим консенсуса</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="48"/>
+        <location filename="../src/ov_msa/General/MSAGeneralTab.cpp" line="49"/>
         <source>Copy to clipboard</source>
         <translation>Скопировать</translation>
     </message>
@@ -6202,24 +6223,32 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::MinMaxSelectorWidget</name>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="92"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="94"/>
         <source>Cutoff for minimum and maximum values</source>
         <translation>Диапазон значений</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="110"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="115"/>
         <source>Minimum:</source>
         <translation>Минимум:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="111"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="116"/>
         <source>Maximum:</source>
         <translation>Максимум:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="141"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="146"/>
         <source>Invalid cutoff values</source>
         <translation>Некорректный диапазон: мин больше макс</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ObjectViewTask</name>
+    <message>
+        <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="275"/>
+        <source>No sequence info found!</source>
+        <translation type="unfinished">Информация о последовательности не найдена!</translation>
     </message>
 </context>
 <context>
@@ -6311,9 +6340,8 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OpenSavedTreeViewerTask</name>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewerTasks.cpp" line="156"/>
         <source>DNA sequence object not found: %1</source>
-        <translation>Последовательность не найдена: &quot;%1&quot;</translation>
+        <translation type="vanished">Последовательность не найдена: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="159"/>
@@ -6348,13 +6376,11 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OpenTreeViewerTask</name>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewerTasks.cpp" line="96"/>
         <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="97"/>
         <source>Opening tree viewer for object %1</source>
         <translation>Открытие визуализатора филогенетических деревьев %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewerTasks.cpp" line="91"/>
         <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="92"/>
         <source>Phylogenetic tree object not found</source>
         <translation>Филогенетическое дерево не найдено</translation>
@@ -6363,17 +6389,17 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::Overview</name>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="62"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="59"/>
         <source>Toggle annotation density graph</source>
         <translation>Показать диаграмму плотности аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="363"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="359"/>
         <source>Position </source>
         <translation>Позиция</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="373"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="369"/>
         <source>Annotation density </source>
         <translation>Плотность аннотаций</translation>
     </message>
@@ -6381,12 +6407,12 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OverviewRenderArea</name>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="487"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="483"/>
         <source>Overview is NULL</source>
         <translation>Overview is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="489"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="485"/>
         <source>ADVSingleSequenceWidget is NULL</source>
         <translation>ADVSingleSequenceWidget is NULL</translation>
     </message>
@@ -6477,13 +6503,13 @@ Simple overview is unavailable.</source>
         <translation>Показывать дополнительные шкалы</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="435"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="439"/>
         <source>range change request: [%1, %2]</source>
         <translation>Изменён видимый диапазон: [%1, %2]</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="624"/>
-        <location filename="../src/ov_sequence/PanView.cpp" line="856"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="628"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="860"/>
         <source>empty</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
@@ -6491,7 +6517,7 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="961"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="965"/>
         <source>[%1 %2]</source>
         <translation>[%1 %2]</translation>
     </message>
@@ -6947,7 +6973,7 @@ Please, load the corresponding plugins.</source>
 <context>
     <name>U2::SubalignmentToClipboardTask</name>
     <message>
-        <location filename="../src/ov_msa/Clipboard/SubalignmentToClipboardTask.cpp" line="253"/>
+        <location filename="../src/ov_msa/Clipboard/SubalignmentToClipboardTask.cpp" line="252"/>
         <source>Copy formatted alignment to the clipboard</source>
         <translation>Copy formatted alignment to the clipboard</translation>
     </message>
@@ -7204,22 +7230,22 @@ Please, load the corresponding plugins.</source>
 <context>
     <name>U2::WindowStepSelectorDialog</name>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="156"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="161"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="157"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="162"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="166"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="171"/>
         <source>Graph Settings</source>
         <translation>Настройки графика</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="191"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="196"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
@@ -7227,22 +7253,22 @@ Please, load the corresponding plugins.</source>
 <context>
     <name>U2::WindowStepSelectorWidget</name>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="56"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="58"/>
         <source>Window:</source>
         <translation>Окно:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="82"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="84"/>
         <source>Invalid step value</source>
         <translation>Недопустимая величина шага</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="57"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="59"/>
         <source>Steps per window:</source>
         <translation>Шагов на окно:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="77"/>
+        <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="79"/>
         <source>Illegal step value</source>
         <translation>Некорректная величина шага</translation>
     </message>

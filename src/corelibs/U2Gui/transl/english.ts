@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AbstractProjectFilterTask</name>
     <message>
@@ -65,22 +65,22 @@
         <translation>Add New Document</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="33"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="39"/>
         <source>Document format</source>
         <translation>Document format</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="40"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="46"/>
         <source>Document location</source>
         <translation>Document location</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="50"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="56"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="65"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="71"/>
         <source>Compress file</source>
         <translation>Compress file</translation>
     </message>
@@ -1091,24 +1091,24 @@ Remove it from the project first.</translation>
         <translation>Error! No object DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1077"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1082"/>
         <source>Confirm Deletion</source>
         <translation>Confirm Deletion</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1078"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1083"/>
         <source>Are you sure you want to delete items in Recycle Bin?
 The items cannot be recovered once deleted.</source>
         <translation>Are you sure you want to delete items in Recycle Bin?
 The items cannot be recovered once deleted.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1091"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1096"/>
         <source>Unable to Remove</source>
         <translation>Unable to Remove</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1092"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1097"/>
         <source>Some of selected objects are being used by the other users of the database. Try to remove them later.</source>
         <translation>Some of selected objects are being used by the other users of the database. Try to remove them later.</translation>
     </message>
@@ -2546,108 +2546,108 @@ complement(5..15)</translation>
 <context>
     <name>U2::ProjectTreeController</name>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="941"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="946"/>
         <source>Load selected documents</source>
         <translation>Load selected documents</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="951"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="956"/>
         <source>Lock document for editing</source>
         <translation>Lock document for editing</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="955"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="960"/>
         <source>Unlock document for editing</source>
         <translation>Unlock document for editing</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="948"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="953"/>
         <source>Unload selected document</source>
         <translation>Unload selected document</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="309"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="314"/>
         <source>Import to the database...</source>
         <translation>Import to the database...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="310"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="315"/>
         <source>Import to the folder...</source>
         <translation>Import to the folder...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="716"/>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="750"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="721"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="755"/>
         <source>Unable to Restore</source>
         <translation>Unable to Restore</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="717"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="722"/>
         <source>UGENE is unable to restore some object from Recycle Bin because its original location does not exist. You can still restore the objects by dragging them with mouse from Recycle Bin.</source>
         <translation>UGENE is unable to restore some object from Recycle Bin because its original location does not exist. You can still restore the objects by dragging them with mouse from Recycle Bin.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="751"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="756"/>
         <source>UGENE is unable to restore some folder from Recycle Bin because its original location does not exist. You can still restore the folders by dragging them with mouse from Recycle Bin.</source>
         <translation>UGENE is unable to restore some folder from Recycle Bin because its original location does not exist. You can still restore the folders by dragging them with mouse from Recycle Bin.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="817"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="822"/>
         <source>Select a database to import anything</source>
         <translation>Select a database to import anything</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="931"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="936"/>
         <source>Add object to document...</source>
         <translation>Add object to document...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="936"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="941"/>
         <source>Import...</source>
         <translation>Import...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="959"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="964"/>
         <source>Rename...</source>
         <translation>Rename...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="963"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="968"/>
         <source>Remove selected items</source>
         <translation>Remove selected items</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="969"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="974"/>
         <source>Add folder...</source>
         <translation>Add folder...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="974"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="979"/>
         <source>Restore selected items</source>
         <translation>Restore selected items</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="978"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="983"/>
         <source>Empty recycle bin</source>
         <translation>Empty recycle bin</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="535"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="540"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="550"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="555"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="858"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="863"/>
         <source>No object to add to view</source>
         <translation>No object to add to view</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="864"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="869"/>
         <source>No object to remove from view</source>
         <translation>No object to remove from view</translation>
     </message>
@@ -2655,23 +2655,23 @@ complement(5..15)</translation>
 <context>
     <name>U2::ProjectViewModel</name>
     <message>
-        <location filename="../src/util/project/ProjectViewModel.cpp" line="1107"/>
+        <location filename="../src/util/project/ProjectViewModel.cpp" line="1108"/>
         <source>[unloaded]</source>
         <translation>[unloaded]</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectViewModel.cpp" line="1109"/>
-        <location filename="../src/util/project/ProjectViewModel.cpp" line="1214"/>
+        <location filename="../src/util/project/ProjectViewModel.cpp" line="1110"/>
+        <location filename="../src/util/project/ProjectViewModel.cpp" line="1215"/>
         <source>[loading %1%]</source>
         <translation>[loading %1%]</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectViewModel.cpp" line="1141"/>
+        <location filename="../src/util/project/ProjectViewModel.cpp" line="1142"/>
         <source>Locks:</source>
         <translation>Locks:</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectViewModel.cpp" line="1144"/>
+        <location filename="../src/util/project/ProjectViewModel.cpp" line="1145"/>
         <source>Project is locked</source>
         <translation>Project is locked</translation>
     </message>
