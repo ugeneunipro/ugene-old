@@ -106,7 +106,7 @@ void ChromaViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     action->addToBar = true;
     connect(action, SIGNAL(triggered()), SLOT(sl_showChromatogram()));
 
-    sw->addADVSequenceWidgetAction(action);
+    sw->addADVSequenceWidgetActionToViewsToolbar(action);
 
     // if chromatogram is enabled detailed sequence view is hidden
     sw->setDetViewCollapsed(true);
@@ -121,7 +121,7 @@ void ChromaViewContext::sl_showChromatogram() {
     DNAChromatogramObject* chromaObj = findChromaObj(sw);
     CHECK(sw->getSequenceContext(), );
     AnnotatedDNAView *adv = sw->getSequenceContext()->getAnnotatedDNAView();
-    CHECK(adv, );    
+    CHECK(adv, );
     if (a->isChecked()) {
         CHECK(a->view == NULL, );
         CHECK(chromaObj!=NULL, );
@@ -145,7 +145,7 @@ bool ChromaViewContext::canHandle(GObjectView* v, GObject* o) {
     return qobject_cast<DNAChromatogramObject*>(o) != NULL;
 }
 
-ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("Show chromatogram")), view(NULL) 
+ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("Show chromatogram")), view(NULL)
 {
 }
 

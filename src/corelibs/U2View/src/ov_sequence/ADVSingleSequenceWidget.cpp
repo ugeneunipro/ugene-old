@@ -57,7 +57,9 @@
 
 namespace U2 {
 
-#define ADV_HEADER_HEIGHT 24
+#define ADV_HEADER_HEIGHT 30
+#define ADV_HEADER_TOOLBAR_SPACING 6
+#define ADV_HEADER_TOP_BOTTOM_INDENT 2
 #define IMAGE_DIR   "image"
 
 ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCtx, AnnotatedDNAView* ctx)
@@ -69,15 +71,25 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     seqContexts.append(seqCtx);
 
     toggleViewAction = new QAction(this);
+    toggleViewAction->setObjectName("show_hide_all_views");
     connect(toggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleView()));
 
     togglePanViewAction = new QAction(this);
+    togglePanViewAction->setCheckable(true);
+    togglePanViewAction->setObjectName("show_hide_zoom_view");
+    togglePanViewAction->setIcon(QIcon(":/core/images/zoom_view.png"));
     connect(togglePanViewAction, SIGNAL(triggered()), SLOT(sl_togglePanView()));
 
     toggleDetViewAction = new QAction(this);
+    toggleDetViewAction->setCheckable(true);
+    toggleDetViewAction->setObjectName("show_hide_details_view");
+    toggleDetViewAction->setIcon(QIcon(":/core/images/details_view.png"));
     connect(toggleDetViewAction, SIGNAL(triggered()), SLOT(sl_toggleDetView()));
 
     toggleOverviewAction = new QAction(this);
+    toggleOverviewAction->setCheckable(true);
+    toggleOverviewAction->setObjectName("show_hide_overview");
+    toggleOverviewAction->setIcon(QIcon(":/core/images/overview.png"));
     connect(toggleOverviewAction, SIGNAL(triggered()), SLOT(sl_toggleOverview()));
 
     connect(seqCtx->getAnnotatedDNAView()->getAnnotationsSelection(),
@@ -172,11 +184,15 @@ void ADVSingleSequenceWidget::init() {
 
     buttonTabOrederedNames = new QList<QString>;
 
-    QToolBar* hBar = headerWidget->getToolBar();
+    QToolBar* hStandardBar = headerWidget->getStandardToolBar();
+    QToolBar* hViewsBar = headerWidget->getViewsToolBar();
+    hViewsBar->addSeparator();
+    addButtonWithActionToToolbar(toggleOverviewAction, hViewsBar);
+    addButtonWithActionToToolbar(togglePanViewAction, hViewsBar);
+    addButtonWithActionToToolbar(toggleDetViewAction, hViewsBar);
 
-    addButtonWithActionToToolbar(selectRangeAction1, hBar);
+    addButtonWithActionToToolbar(selectRangeAction1, hStandardBar);
     buttonTabOrederedNames->append(selectRangeAction1->objectName());
-    hBar->addSeparator();
 
     if (seqCtx->getAminoTT() != NULL) {
         QMenu* ttMenu = seqCtx->createTranslationsMenu();
@@ -193,25 +209,25 @@ void ADVSingleSequenceWidget::init() {
     shotScreenAction->setObjectName("export_image");
     connect(shotScreenAction, SIGNAL(triggered()), this, SLOT(sl_saveScreenshot()));
 
-    addButtonWithActionToToolbar(shotScreenAction, hBar);
+    addButtonWithActionToToolbar(shotScreenAction, hStandardBar);
     buttonTabOrederedNames->append(shotScreenAction->objectName());
 
     panView->addActionToLocalToolbar(zoomToRangeAction);
 
-    widgetStateMenuAction = new QAction(QIcon(":core/images/adv_widget_menu.png"), tr("Toggle view"), this);
-    widgetStateMenuAction->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
-    widgetStateMenuAction->setToolTip(tr("Toggle view"));
-    connect(widgetStateMenuAction, SIGNAL(triggered()), SLOT(sl_showStateMenu()));
-    widgetStateMenuButton = addButtonWithActionToToolbar(widgetStateMenuAction, hBar);
-    SAFE_POINT(widgetStateMenuButton, "widgetStateMenuButton is NULL", );
-    widgetStateMenuButton->setFixedWidth(20);
-    buttonTabOrederedNames->append(widgetStateMenuAction->objectName());
+    toggleDetViewAction->setChecked(true);
+    togglePanViewAction->setChecked(true);
+    toggleOverviewAction->setChecked(true);
+
+    addButtonWithActionToToolbar(toggleViewAction, hViewsBar);
+    hViewsBar->addSeparator();
 
     closeViewAction = new QAction(tr("Remove sequence"), this);
     closeViewAction->setObjectName("remove_sequence");
+    closeViewAction->setIcon(QIcon(":core/images/close_small.png"));
+    addButtonWithActionToToolbar(closeViewAction, hViewsBar);
     connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
 
-    dynamic_cast<OrderedToolbar *>(hBar)->setButtonTabOrderList(buttonTabOrederedNames);
+    dynamic_cast<OrderedToolbar *>(hStandardBar)->setButtonTabOrderList(buttonTabOrederedNames);
 
     updateSelectionActions();
 
@@ -221,6 +237,11 @@ void ADVSingleSequenceWidget::init() {
         setOverviewCollapsed(true);
         setDetViewCollapsed(true);
     }
+
+    updateViewButtonState();
+    togglePanViewAction->setText(isPanViewCollapsed() ? tr("Show zoom view") : tr("Hide zoom view"));
+    toggleDetViewAction->setText(isDetViewCollapsed() ? tr("Show details view") : tr("Hide details view"));
+    toggleOverviewAction->setText(isOverviewCollapsed() ? tr("Show overview") : tr("Hide overview"));
 }
 
 
@@ -232,16 +253,29 @@ ADVSingleSequenceWidget::~ADVSingleSequenceWidget() {
     delete buttonTabOrederedNames;
 }
 
-QToolButton* ADVSingleSequenceWidget::addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar) const {
+QToolButton* ADVSingleSequenceWidget::addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar, int position) const {
     SAFE_POINT(NULL != buttonAction, "buttonAction is NULL", NULL);
     SAFE_POINT(NULL != toolBar, "toolBar is NULL", NULL);
     SAFE_POINT(!buttonAction->objectName().isEmpty(), "Action's object name is empty", NULL);
 
-    toolBar->addAction(buttonAction);
+    if (position == -1) {
+        toolBar->addAction(buttonAction);
+    } else {
+        QAction* before = toolBar->actions().at(position);
+        if (before != NULL) {
+            toolBar->insertAction(before, buttonAction);
+        } else {
+            toolBar->addAction(buttonAction);
+        }
+    }
     QToolButton* button = qobject_cast<QToolButton*>(toolBar->widgetForAction(buttonAction));
+    button->setFixedHeight(ADV_HEADER_HEIGHT - ADV_HEADER_TOP_BOTTOM_INDENT);
 
     SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(buttonAction->objectName()), NULL);
     button->setObjectName(buttonAction->objectName());
+    if (buttonAction->menu() != NULL) {
+        button->setPopupMode(QToolButton::InstantPopup);
+    }
 
     return button;
 }
@@ -259,29 +293,31 @@ bool ADVSingleSequenceWidget::isOverviewCollapsed() const {
 }
 
 bool ADVSingleSequenceWidget::isViewCollapsed() const {
-    bool collapsed = true;
-    foreach(GSequenceLineView* seqView, lineViews) {
-        if (seqView->isVisible()) {
-            collapsed = false;
-            break;
-        }
-    }
-    return collapsed;
+    return isPanViewCollapsed() && isDetViewCollapsed() && isOverviewCollapsed();
 }
 
 void ADVSingleSequenceWidget::setViewCollapsed(bool v) {
-    if (ttButton != NULL) {
-        getSequenceContext()->setTranslationsVisible(!v);
+    if (toggleOverviewAction->isChecked() != !v) {
+        toggleOverviewAction->trigger();
     }
-    foreach(GSequenceLineView* seqView, lineViews) {
-        seqView->setHidden(v);
+    if (togglePanViewAction->isChecked() != !v) {
+        togglePanViewAction->trigger();
     }
-    detView->setDisabledDetViewActions(v);
+    if (toggleDetViewAction->isChecked() != !v) {
+        toggleDetViewAction->trigger();
+    }
+
     updateMinMaxHeight();
+}
+
+void ADVSingleSequenceWidget::updateViewButtonState() {
+    toggleViewAction->setText(isViewCollapsed() ? tr("Show all views") : tr("Hide all views"));
+    toggleViewAction->setIcon(isViewCollapsed() ? QIcon(":core/images/show_all_views.png") : QIcon(":core/images/hide_all_views.png"));
 }
 
 void ADVSingleSequenceWidget::setPanViewCollapsed(bool v) {
     panView->setHidden(v);
+    togglePanViewAction->setChecked(!v);
     updateMinMaxHeight();
 
     if (isPanViewCollapsed()) {
@@ -291,6 +327,8 @@ void ADVSingleSequenceWidget::setPanViewCollapsed(bool v) {
         zoomUseObject.useZoom();
     }
     zoomToRangeAction->setDisabled( isPanViewCollapsed() );
+
+    updateViewButtonState();
 }
 
 void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {
@@ -299,13 +337,17 @@ void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {
     }
     detView->setHidden(v);
     detView->setDisabledDetViewActions(v);
+    toggleDetViewAction->setChecked(!v);
 
     updateMinMaxHeight();
+    updateViewButtonState();
 }
 
 void ADVSingleSequenceWidget::setOverviewCollapsed(bool v) {
     overview->setHidden(v);
+    toggleOverviewAction->setChecked(!v);
     updateMinMaxHeight();
+    updateViewButtonState();
 }
 
 void ADVSingleSequenceWidget::addSequenceView(GSequenceLineView* v, QWidget* after) {
@@ -557,17 +599,17 @@ void ADVSingleSequenceWidget::sl_onLocalCenteringRequest(qint64 pos) {
 void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction* a) {
     ADVSequenceWidget::addADVSequenceWidgetAction(a);
     if (a->addToBar) {
-        QToolBar* tb = headerWidget->getToolBar();
-        tb->insertAction(tb->actions().first(), a);
-        QToolButton* tt = qobject_cast<QToolButton*>(tb->widgetForAction(a));
-        SAFE_POINT(tt, QString("ToolButton for %1 is NULL").arg(a->objectName()), );
-        tt->setObjectName(a->objectName());
-
-        if (a->menu() != NULL) {
-            tt->setPopupMode(QToolButton::InstantPopup);
-        }
-
+        QToolBar* tb = headerWidget->getStandardToolBar();
+        addButtonWithActionToToolbar(a, tb, 0);
         buttonTabOrederedNames->prepend(a->objectName());
+    }
+}
+
+void ADVSingleSequenceWidget::addADVSequenceWidgetActionToViewsToolbar(ADVSequenceWidgetAction *a) {
+    ADVSequenceWidget::addADVSequenceWidgetAction(a);
+    if (a->addToBar) {
+        QToolBar* tb = headerWidget->getViewsToolBar();
+        addButtonWithActionToToolbar(a, tb, 1);
     }
 }
 
@@ -868,45 +910,28 @@ void ADVSingleSequenceWidget::updateSelectionActions() {
     selectOutAnnotationRangeAction->setEnabled(!selRegs.isEmpty());
 }
 
-void ADVSingleSequenceWidget::addStateActions(QMenu &m) {
-    toggleViewAction->setText(isViewCollapsed() ? tr("Show all views") : tr("Hide all views"));
-    toggleViewAction->setObjectName("show_hide_all_views");
-    togglePanViewAction->setText(isPanViewCollapsed() ? tr("Show zoom view") : tr("Hide zoom view"));
-    togglePanViewAction->setObjectName("show_hide_zoom_view");
-    toggleDetViewAction->setText(isDetViewCollapsed() ? tr("Show details view") : tr("Hide details view"));
-    toggleDetViewAction->setObjectName("show_hide_details_view");
-    toggleOverviewAction->setText(isOverviewCollapsed() ? tr("Show overview") : tr("Hide overview"));
-    toggleOverviewAction->setObjectName("show_hide_overview");
-    m.addAction(toggleViewAction);
-    m.addAction(toggleDetViewAction);
-    m.addAction(togglePanViewAction);
-    m.addAction(toggleOverviewAction);
-}
-
 void ADVSingleSequenceWidget::sl_toggleView(){
     bool newStateCollapsed = !isViewCollapsed();
     setViewCollapsed(newStateCollapsed);
 }
 
-void ADVSingleSequenceWidget::sl_togglePanView(){
+void ADVSingleSequenceWidget::sl_togglePanView() {
     setPanViewCollapsed(!isPanViewCollapsed());
+    togglePanViewAction->setText(isPanViewCollapsed() ? tr("Show zoom view") : tr("Hide zoom view"));
+}
+
+void ADVSingleSequenceWidget::sl_toggleDetView() {
+    setDetViewCollapsed(!isDetViewCollapsed());
+    toggleDetViewAction->setText(isDetViewCollapsed() ? tr("Show details view") : tr("Hide details view"));
+}
+
+void ADVSingleSequenceWidget::sl_toggleOverview() {
+    setOverviewCollapsed(!isOverviewCollapsed());
+    toggleOverviewAction->setText(isOverviewCollapsed() ? tr("Show overview") : tr("Hide overview"));
 }
 
 void ADVSingleSequenceWidget::onSequenceObjectRenamed(const QString&) {
     headerWidget->updateTitle();
-}
-
-void ADVSingleSequenceWidget::sl_showStateMenu() {
-    QPointer<QToolButton> widgetStateMenuButtonPtr(widgetStateMenuButton);
-
-    QMenu m;
-    addStateActions(m);
-    m.addAction(closeViewAction);
-    m.exec(QCursor::pos());
-
-    if (!widgetStateMenuButtonPtr.isNull()) { //if not self closed
-        widgetStateMenuButtonPtr->setDown(false);
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -956,21 +981,29 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     nameLabel->setObjectName("nameLabel");
 
-    toolBar = new OrderedToolbar(this);
-    toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
-    toolBar->layout()->setSpacing(0);
-    toolBar->layout()->setMargin(0);
-    toolBar->setFixedHeight(ADV_HEADER_HEIGHT);
+    standardToolBar = new OrderedToolbar(this);
+    standardToolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
+    standardToolBar->setMovable(true);
+    standardToolBar->setStyleSheet(QString("QToolBar {spacing: %1px; margin: 0px; }").arg(ADV_HEADER_TOOLBAR_SPACING));
+    standardToolBar->setFixedHeight(ADV_HEADER_HEIGHT);
+
+    viewsToolBar = new OrderedToolbar(this);
+    viewsToolBar->setObjectName("views_tool_bar" + ctx->getSequenceObject()->getGObjectName());
+    // visual separator between standard toolbar and visibility toolbar
+    viewsToolBar->addSeparator();
+    viewsToolBar->setStyleSheet(QString("QToolBar {spacing: %1px; margin: 0px; }").arg(ADV_HEADER_TOOLBAR_SPACING));
+    viewsToolBar->setFixedHeight(ADV_HEADER_HEIGHT);
 
     setLayout(l);
 
     l->addWidget(pixLabel);
     l->addWidget(nameLabel);
     l->addStretch();
-    l->addWidget(toolBar);
+    l->addWidget(standardToolBar);
+    l->addWidget(viewsToolBar);
 
-
-    connect(toolBar, SIGNAL(actionTriggered(QAction*)), SLOT(sl_actionTriggered(QAction*)));
+    connect(standardToolBar, SIGNAL(actionTriggered(QAction*)), SLOT(sl_actionTriggered(QAction*)));
+    connect(viewsToolBar,    SIGNAL(actionTriggered(QAction*)), SLOT(sl_actionTriggered(QAction*)));
 
     updateActiveState();
 
@@ -980,14 +1013,6 @@ void ADVSingleSequenceHeaderWidget::updateTitle() {
     U2SequenceObject* seqObj = ctx->getSequenceObject();
     QString newTitle = seqObj->getGObjectName() + " [" + getShortAlphabetName(seqObj->getAlphabet()) +"]";
     setTitle(newTitle);
-}
-
-bool ADVSingleSequenceHeaderWidget::eventFilter(QObject *o, QEvent *e) {
-    if (o == pixLabel && e->type() == QEvent::MouseButtonPress) {
-        ctx->sl_showStateMenu();
-        return true;
-    }
-    return false;
 }
 
 void ADVSingleSequenceHeaderWidget::sl_actionTriggered(QAction* a){

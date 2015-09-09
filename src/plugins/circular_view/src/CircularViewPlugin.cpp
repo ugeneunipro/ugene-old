@@ -148,7 +148,7 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     action->addToBar = true;
     connect(action, SIGNAL(triggered()), SLOT(sl_showCircular()));
 
-    sw->addADVSequenceWidgetAction(action);
+    sw->addADVSequenceWidgetActionToViewsToolbar(action);
 
     qint64 len = sw->getSequenceContext()->getSequenceLength();
     if (len < MIN_LENGTH_TO_AUTO_SHOW) {

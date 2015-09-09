@@ -169,5 +169,10 @@
         <file>images/expand_tree.png</file>
         <file>images/add_to_alignment.png</file>
         <file>images/circular_seq.png</file>
+        <file>images/details_view.png</file>
+        <file>images/overview.png</file>
+        <file>images/zoom_view.png</file>
+        <file>images/hide_all_views.png</file>
+        <file>images/show_all_views.png</file>
     </qresource>
 </RCC>

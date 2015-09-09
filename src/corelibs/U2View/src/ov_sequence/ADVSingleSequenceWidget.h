@@ -97,8 +97,11 @@ public:
 
     virtual void addADVSequenceWidgetAction(ADVSequenceWidgetAction* action);
 
+    void addADVSequenceWidgetActionToViewsToolbar(ADVSequenceWidgetAction* action);
+
     void setViewCollapsed(bool v);
     bool isViewCollapsed() const;
+    void updateViewButtonState();
 
     void setPanViewCollapsed(bool v);
     bool isPanViewCollapsed() const;
@@ -137,8 +140,8 @@ protected slots:
 
     void sl_toggleView();
     void sl_togglePanView();
-    void sl_toggleDetView() {setDetViewCollapsed(!isDetViewCollapsed());}
-    void sl_toggleOverview() {setOverviewCollapsed(!isOverviewCollapsed());}
+    void sl_toggleDetView();
+    void sl_toggleOverview();
     void sl_onSelectRange();
     void sl_onSelectInRange();
     void sl_onSelectOutRange();
@@ -152,7 +155,7 @@ protected slots:
 // QT 4.5.0 bug workaround
 public slots:
     void sl_closeView();
-    void sl_showStateMenu();
+
 signals:
     void si_updateGraphView(const QStringList &, const QVariantMap&);
 private slots:
@@ -166,8 +169,7 @@ protected:
 private:
     virtual void updateMinMaxHeight();
 
-    void addStateActions(QMenu& m);
-    QToolButton* addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar) const;
+    QToolButton* addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar, int position = -1) const;
     void addRulersMenu(QMenu& m);
     void addSelectMenu(QMenu& m);
 
@@ -198,11 +200,9 @@ private:
     QAction*        createNewRulerAction;
     QAction*        shotScreenAction;
     QAction*        closeViewAction;
-    QAction*        widgetStateMenuAction;
 
     QList<QMenu*>   tbMenues;
     QToolButton*    ttButton;
-    QToolButton*    widgetStateMenuButton;
     GAutoDeleteList<QAction> rulerActions;
     QList<QString> * buttonTabOrederedNames;
 
@@ -216,15 +216,15 @@ class U2VIEW_EXPORT ADVSingleSequenceHeaderWidget : public QWidget {
 public:
     ADVSingleSequenceHeaderWidget(ADVSingleSequenceWidget* p);
 
-    QToolBar* getToolBar() const { return toolBar;}
+    QToolBar* getStandardToolBar() const { return standardToolBar;}
+    QToolBar* getViewsToolBar() const { return viewsToolBar; }
+
     void setTitle(const QString & title) {nameLabel->setText(title);}
     void updateTitle();
 
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void paintEvent(QPaintEvent *e);
-
-    virtual bool eventFilter (QObject *o, QEvent *e);
 
 protected slots:
     void sl_advFocusChanged(ADVSequenceWidget* prevFocus, ADVSequenceWidget* newFocus);
@@ -235,7 +235,8 @@ private:
     QString getShortAlphabetName(const DNAAlphabet* al);
 
     ADVSingleSequenceWidget*        ctx;
-    QToolBar*                       toolBar;
+    QToolBar*                       standardToolBar;
+    QToolBar*                       viewsToolBar;
     QLabel*                         pixLabel;
     QLabel*                         nameLabel;
 };
