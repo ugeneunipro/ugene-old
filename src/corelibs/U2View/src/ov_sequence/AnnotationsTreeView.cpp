@@ -876,16 +876,6 @@ void AnnotationsTreeView::adjustMenu(QMenu* m) const {
     SAFE_POINT(removeMenu != NULL, "removeMenu",);
     removeMenu->addAction(removeObjectsFromViewAction);
     removeMenu->addAction(removeAnnsAndQsAction);
-
-    bool enabled = false;
-    foreach (QAction* action, removeMenu->actions()) {
-        if (action->isEnabled()) {
-            enabled = true;
-            break;
-        }
-    }
-    removeMenu->setEnabled(enabled);
-
 }
 
 void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {

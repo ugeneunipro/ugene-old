@@ -372,12 +372,7 @@ bool AnnotatedDNAView::eventFilter(QObject* o, QEvent* e) {
             updateScrollAreaHeight();
         }
     } else if(e->type() == QEvent::KeyPress){
-        ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-        if (!seqCtx->getSequenceSelection()->isEmpty()) {
-            replaceSequencePart->setEnabled(true);
-        }else{
-            replaceSequencePart->setEnabled(false);
-        }
+        sl_selectionChanged();
     }
 
     return false;
@@ -584,11 +579,7 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
 
     rm->addAction(addSequencePart);
     rm->addAction(replaceSequencePart);
-    if (!seqCtx->getSequenceSelection()->isEmpty()) {
-        replaceSequencePart->setEnabled(true);
-    }else{
-        replaceSequencePart->setEnabled(false);
-    }
+    sl_selectionChanged();
     rm->addAction(removeSequencePart);
     if (seqCtx->getComplementTT() != NULL) {
         reverseComplementSequenceAction->setEnabled(true);
@@ -674,6 +665,7 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
         c->addSequenceWidget(v);
         addAutoAnnotations(c);
         addGraphs(c);
+        connect(c->getSequenceSelection(), SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)), SLOT(sl_selectionChanged()));
     }
     scrolledWidgetLayout->addWidget(v);
     v->setVisible(true);
@@ -706,6 +698,7 @@ void AnnotatedDNAView::removeSequenceWidget(ADVSequenceWidget* v) {
     QList<ADVSequenceObjectContext*> contexts = v->getSequenceContexts();
     foreach(ADVSequenceObjectContext* c, contexts) {
         c->removeSequenceWidget(v);
+        disconnect(c->getSequenceSelection(), SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
     }
     updateMultiViewActions();
     emit si_sequenceWidgetRemoved(v);
@@ -1337,6 +1330,19 @@ void AnnotatedDNAView::sl_reverseSequence() {
 
 void AnnotatedDNAView::sl_complementSequence() {
     reverseComplementSequence(false, true);
+}
+
+void AnnotatedDNAView::sl_selectionChanged() {
+    ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
+    DNASequenceSelection* selection = qobject_cast<DNASequenceSelection*>(sender());
+    if (selection != NULL) {
+        assert(seqCtx->getSequenceGObject() == selection->getSequenceObject());
+    }
+    if (!seqCtx->getSequenceSelection()->isEmpty()) {
+        replaceSequencePart->setEnabled(true);
+    } else {
+        replaceSequencePart->setEnabled(false);
+    }
 }
 
 void AnnotatedDNAView::reverseComplementSequence(bool reverse, bool complement) {

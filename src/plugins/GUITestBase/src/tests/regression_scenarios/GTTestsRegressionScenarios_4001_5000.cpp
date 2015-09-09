@@ -29,6 +29,7 @@
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/DetView.h>
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/MSAGraphOverview.h>
 
@@ -2094,6 +2095,28 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 
     GTUtilsLog::check(os, logTracer);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4302_1) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0)->getDetView());
+    
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..4"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4302_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4306_1) {
