@@ -276,7 +276,7 @@ void MultiplexerWorkerFactory::init() {
             MultiplexerWorker::tr("Specifies how to multiplex the input messages:"
                 " <li><b>1 to 1</b> - the multiplexer gets one message from the first input port"
                 " and one message from the second input port, joins them into a single message, and transfers it to the"
-                " output. This procedure is repeated while there are available messages in both input slots.</li>"
+                " output. This procedure is repeated while there are available messages in both input ports.</li>"
                 " <li><b>1 to many</b> - the multiplexer gets one message from the first input port, joins it with each"
                 " message from the second input port, and transfers the joined messages to the output. This procedure"
                 " is repeated for each message from the first input port.</li>"
@@ -358,7 +358,7 @@ QString MultiplexerPrompter::composeRichDoc() {
     if (ONE_TO_ONE == rule) {
         return tr("Gets one message from <u>%1</u> and one message from <u>%2</u>,"
             " joins them into a single message, and transfers it to the output."
-            " Repeats this while there are available messages in both input slots.").arg(inputName1).arg(inputName2);
+            " Repeats this while there are available messages in both input ports.").arg(inputName1).arg(inputName2);
     } else {
         return tr("Gets one message from <u>%1</u>, joins it with each message from <u>%2</u>,"
             " and transfers the joined messages to the output."

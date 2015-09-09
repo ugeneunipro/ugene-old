@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="en">
+<TS version="2.0" language="en">
 <context>
     <name>ChooseItemDialog</name>
     <message>
@@ -731,21 +731,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/library/CfgExternalToolModel.cpp" line="220"/>
         <source>Description</source>
         <translation>Description</translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="313"/>
-        <source>String value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="315"/>
-        <source>Text file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="317"/>
-        <source>Output file url</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3549,8 +3534,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="359"/>
-        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input slots.</source>
-        <translation>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input slots.</translation>
+        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</source>
+        <translation>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="363"/>
@@ -3597,8 +3582,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="276"/>
-        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input slots.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
-        <translation>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input slots.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</translation>
+        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
+        <translation>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
@@ -6062,9 +6047,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation type="unfinished">UGENE workflow element</translation>
+        <translation type="obsolete">UGENE workflow element</translation>
     </message>
 </context>
 <context>
@@ -6597,8 +6581,9 @@ Do you want to save changes?</translation>
 <context>
     <name>WorkflowUtils</name>
     <message>
+        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation type="vanished">UGENE workflow element</translation>
+        <translation>UGENE workflow element</translation>
     </message>
 </context>
 <context>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru">
+<TS version="2.0" language="ru">
 <context>
     <name>ChooseItemDialog</name>
     <message>
@@ -510,6 +510,16 @@ p, li { white-space: pre-wrap; }
         <translation>%</translation>
     </message>
     <message>
+        <location filename="../src/WorkflowViewController.cpp" line="141"/>
+        <source>You opened obsolete workflow in XML format. It is strongly recommended to clear working space and create workflow from scratch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/WorkflowViewController.cpp" line="144"/>
+        <source>Sorry! This workflow is obsolete and cannot be opened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/WorkflowViewController.cpp" line="215"/>
         <source>Scripting mode</source>
         <translation>Скриптинг</translation>
@@ -730,21 +740,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/library/CfgExternalToolModel.cpp" line="220"/>
         <source>Description</source>
         <translation>Описание</translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="313"/>
-        <source>String value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="315"/>
-        <source>Text file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/CfgExternalToolModel.cpp" line="317"/>
-        <source>Output file url</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3547,7 +3542,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="359"/>
-        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input slots.</source>
+        <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</source>
         <translation>Принимает по одному сообщению от каждого из элементов &lt;u&gt;%1&lt;/u&gt; и &lt;u&gt;%2&lt;/u&gt;, объединяет эти сообщения в одно и передает его дальше. Процедура повторяется до тех пор, пока в обоих входных портах имеются сообщения.</translation>
     </message>
     <message>
@@ -3595,7 +3590,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="276"/>
-        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input slots.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
+        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
         <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;Подробнее см. документацию.</translation>
     </message>
     <message>
@@ -6062,9 +6057,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation type="unfinished">UGENE элемент </translation>
+        <translation type="obsolete">UGENE элемент </translation>
     </message>
 </context>
 <context>
@@ -6596,8 +6590,9 @@ Do you want to save changes?</source>
 <context>
     <name>WorkflowUtils</name>
     <message>
+        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation type="vanished">UGENE элемент </translation>
+        <translation>UGENE элемент </translation>
     </message>
 </context>
 <context>
