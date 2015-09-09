@@ -107,7 +107,7 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
                 }
                 break;
             default:
-                if(data[i] < 0) { // for ex. if file contains utf-8 symbols
+                if (data[i] < 0) { // for ex. if file contains utf-8 symbols
                     return FormatDetection_NotMatched;
                 }
                 if (TextUtils::ALPHA_NUMS[data[i]] || data[i] == '-' || data[i] == '_') {
@@ -126,7 +126,7 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
         }
         last = any;
     }
-    if (!rawData.contains(";")) {
+    if (!rawData.contains(';') || (!rawData.contains('(') && rawData.contains(','))) {
         return FormatDetection_LowSimilarity;
     }
     if (QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
