@@ -1094,9 +1094,9 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -1137,9 +1137,9 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -1179,10 +1179,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     QAbstractButton* translation = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
-
     GTGlobals::sleep();
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
+
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();

@@ -1514,9 +1514,10 @@ GUI_TEST_CLASS_DEFINITION(test_4151) {
     //1. Open samples / Genbank / murine.gb.
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
 
-    //2. Green arrow->Hide all views.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Hide all views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363"));
+    //2. Hide all views.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_NC_001363");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_NC_001363");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
 
     //Expected state: Vertical scroll bar isn't shown.
     QScrollArea *advScrollArea = dynamic_cast<QScrollArea *>(GTWidget::findWidget(os, "annotated_DNA_scrollarea"));

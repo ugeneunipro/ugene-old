@@ -67,9 +67,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-// 2. Click on toolbar button Toggle view for sequence se2. Click menu item Remove sequence.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+// 2. Click on toolbar button Remove sequence.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
 // Expected state: views for se2 sequence has been closed
@@ -91,9 +92,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-// 2. Click on toolbar button Toggle view for sequence se1. Click menu item Remove sequence.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+// 2. Click on toolbar button Remove sequence.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
 // Expected state: views for se1 sequence has been closed
@@ -115,16 +117,18 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
     QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
     CHECK_SET_ERR(sequenceWidget1 == NULL, "sequenceWidget is present");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -141,16 +145,18 @@ GUI_TEST_CLASS_DEFINITION(test_0001_3) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
     QWidget *sequenceWidget2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1", NULL, false);
     CHECK_SET_ERR(sequenceWidget2 == NULL, "sequenceWidget is present");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -167,16 +173,18 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
     QWidget *sequenceWidget2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1", NULL, false);
     CHECK_SET_ERR(sequenceWidget2 == NULL, "sequenceWidget is present");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -190,8 +198,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -208,9 +217,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide all.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide all for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been closed, but toolbar still present.
@@ -228,9 +238,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show all.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show all for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been appeared
@@ -255,9 +264,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide all.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide all for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been closed, but toolbar still present.
@@ -275,17 +285,14 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show all. (CHANGES: instead click 'Show all', click for show each view)
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. On toolbar for sequence se2: click the button for show each view.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been appeared
@@ -310,17 +317,17 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide all. (CHANGES: instead click 'Hide all', click for hide each view)
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. On toolbar for sequence se2: click the button for each view.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been closed, but toolbar still present.
@@ -338,9 +345,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show all.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show all for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been appeared
@@ -365,13 +371,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide all. (CHANGES: hiding zoom view before pressing 'Hide all')
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Hide zoom view. Click on toolbar button Hide all for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been closed, but toolbar still present.
@@ -389,9 +395,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show all.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show all for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been appeared
@@ -464,18 +469,18 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide details for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been closed.
     QWidget* DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     CHECK_SET_ERR(DetailsViewSe2->isVisible() == false, "details view isn't hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show details for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been appeared
@@ -500,8 +505,9 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     CHECK_SET_ERR(DetailsViewSe2->isVisible() == false, "details view isn't hidden");
 
     //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been appeared
@@ -515,9 +521,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide details for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been closed.
@@ -554,18 +561,18 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide details. CHANGES: hiding all views, instead hidding only deatails
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide all for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been closed.
     QWidget* DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     CHECK_SET_ERR(DetailsViewSe2->isVisible() == false, "details view isn't hidden");
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show details for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been appeared
@@ -590,8 +597,9 @@ GUI_TEST_CLASS_DEFINITION(test_0003_4) {
     CHECK_SET_ERR(DetailsViewSe2->isVisible() == false, "details view isn't hidden");
 
     //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show details.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //Expected state: detailed view for se2 sequence has been appeared
@@ -605,9 +613,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide overview for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
@@ -615,9 +624,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible")
 
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show overview for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been appeared
@@ -641,9 +649,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible");
 
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show overview for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been appeared
@@ -656,9 +665,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide overview for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
@@ -686,9 +696,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004_3) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview. CHANGES: using sequence se1 instead se2
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    //2. Click on toolbar button Hide overview for sequence se1.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
@@ -696,9 +707,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004_3) {
     CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible");
 
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    //3. Click on toolbar button Show overview for sequence se1.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been appeared
@@ -711,18 +721,18 @@ GUI_TEST_CLASS_DEFINITION(test_0004_4) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview. CHANGES: using 'hide all' instead hide overview
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //2. Click on toolbar button Hide all for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
     QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
     CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible")
 
-    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //3. Click on toolbar button Show overview for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep();
 
     //Expected state: over view for se2 sequence has been appeared
@@ -888,9 +898,10 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR(zoomInButton->isEnabled(), "Zoom In button is not enabled");
     CHECK_SET_ERR(zoomOutButton->isEnabled(), "Zoom Out button is not enabled");
 
-// 3. Click on toolbar button Toggle view for sequence se2. Click menu item Hide zoom view.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+// 3. Click on toolbar button Hide zoom view for sequence se2.
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
 // Expected state: panoramical view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
@@ -901,9 +912,8 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR(!zoomInButton->isEnabled(), "Zoom In button is enabled");
     CHECK_SET_ERR(!zoomOutButton->isEnabled(), "Zoom Out button is enabled");
 
-// 4. Click on toolbar button Toggle view for sequence se2. Click menu item Show zoom view.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+// 4. Click on toolbar button Show zoom view for sequence se2.
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
 // Expected state: panoramical view for se2 sequence has been appeared, all zoom buttons at this toolbar becomes enabled
@@ -924,10 +934,10 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
     QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
 
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
-    QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, toggleViewButtonSe2);
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(overViewSe2->isHidden(), "panoramical view for se2 sequence has been not closed");
@@ -939,8 +949,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
     CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
                   "panoramical views for both sequences has been not closed");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_overview"));
-    GTWidget::click(os, toggleViewButtonSe2);
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(!overViewSe2->isHidden(), "panoramical view for se2 sequence has been not shown");
@@ -983,8 +992,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011)
     CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
 
 // 3. Close zoom view for seq1
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
 // Expected state: Zoom area (grey rectangle) has disappered from overview for seq1
@@ -1039,12 +1049,14 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1)
     CHECK_SET_ERR(!zoomViewSe2->isHidden(), "panoramical view for se1 sequence has been not appeared");
 
 // 3. Close zoom view for both. CHANGES: for both instead of seq1
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_zoom_view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
     GTGlobals::sleep();
 
 // Expected state: Zoom area (grey rectangle) has disappered from overview for both. CHANGES: for both instead of seq1
@@ -1152,15 +1164,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1)
     GTGlobals::sleep();
 
     // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
-
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser2);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
@@ -1252,15 +1263,14 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     GTGlobals::sleep();
 
     // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
-
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser2);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
@@ -1336,9 +1346,9 @@ GUI_TEST_CLASS_DEFINITION(test_0014)
     GTGlobals::sleep();
 
 //  3. Close detailed view
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view
 
@@ -1371,14 +1381,14 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1)
     GTGlobals::sleep();
 
     //  3. Close detailed view. Changes: for both sequences
-    Runnable *chooser3 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser3);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
-    Runnable *chooser4 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser4);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
     //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view for both sequences
 
@@ -1402,9 +1412,9 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2)
     GTGlobals::sleep();
 
     //  3. Close detailed view. Changes: for 1 sequences
-    Runnable *chooser3 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser3);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_se1");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se1");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
 
     //  2. Open graph view {Graphs->CG% content}. Changes: for 2 sequences
@@ -1418,9 +1428,9 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2)
     GTGlobals::sleep();
 
     //  3. Close detailed view. Changes: for 2 sequences
-    Runnable *chooser4 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser4);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    toolbar = GTWidget::findWidget(os, "views_tool_bar_se2");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_se2");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
     GTGlobals::sleep();
     //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view for both sequences
     }

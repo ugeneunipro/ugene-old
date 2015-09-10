@@ -1589,9 +1589,19 @@ GUI_TEST_CLASS_DEFINITION(test_3253_1) {
     GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
     GTGlobals::sleep();
     QWidget *annotationTreeWidget = GTWidget::findWidget( os, "annotations_tree_widget");
-    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_A1#berezikov"));
+
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_A1#berezikov");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_A1#berezikov");
+    QToolButton* showDetView = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "show_hide_details_view", toolbar));
+    CHECK_SET_ERR(showDetView != NULL, "Cannot find show_hide_details_view widget or cast it to QToolButton");
+    if (!showDetView->isChecked()) {
+        GTWidget::click(os, showDetView);
+    }
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTWidget::findWidget(os, "CHROMA_ACTION", toolbar));
     GTGlobals::sleep();
 
     QSplitterHandle *splitterHandle = qobject_cast<QSplitterHandle*>(GTWidget::findWidget(os, "qt_splithandle_det_view_A1#berezikov"));

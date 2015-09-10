@@ -3490,18 +3490,18 @@ GUI_TEST_CLASS_DEFINITION(test_2470) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath) 
+        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
             : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath){};
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
-            
+
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dbPath));
             GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton", w));
             GTGlobals::sleep();
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, outputPath, GTGlobals::UseMouse, GTFileDialogUtils::Save));
             GTWidget::click(os, GTWidget::findWidget(os, "browseOutputButton", w));
-            
+
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
             CHECK(NULL != buttonBox, );
             QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
@@ -3513,7 +3513,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470) {
         const QString outputPath;
     };
 
-    GTUtilsDialog::waitForDialog(os, new OkClicker(os, testDir + "_common_data/scenarios/_regression/2470/nice_base.nhr", 
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os, testDir + "_common_data/scenarios/_regression/2470/nice_base.nhr",
         testDir + "_common_data/scenarios/sandbox/2470_fetched.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "fetchMenu" << "fetchSequenceById"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -3532,7 +3532,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470_1) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath) 
+        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
             : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath){};
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
@@ -3555,7 +3555,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470_1) {
         const QString outputPath;
     };
 
-    GTUtilsDialog::waitForDialog(os, new OkClicker(os, testDir + "_common_data/scenarios/_regression/2470/nice_base.nhr", 
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os, testDir + "_common_data/scenarios/_regression/2470/nice_base.nhr",
         testDir + "_common_data/scenarios/sandbox/2470_1_fetched.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "fetchMenu" << "fetchSequenceById"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -4076,7 +4076,7 @@ GUI_TEST_CLASS_DEFINITION(test_2566) {
 
 //4. Choose the algorithm: Substitute.
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
-    
+
 //5. Enter the "Should match" value: 97%
     GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 97);
 
@@ -5661,18 +5661,16 @@ GUI_TEST_CLASS_DEFINITION(test_2829) {
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, geneItems.at(1)));
     GTMouseDriver::click(os);
 
-    //5) In second sequence view choose { Toggle view -> Remove sequence } on the toolbar
+    //5) In second sequence view click Remove sequence on the toolbar
     //Expected state: DotPlot closed and UGENE didn't crash
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
 
-    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsMdi::activeWindow(os));
-    const QPoint clickPos = toggleViewButton->mapToGlobal(toggleViewButton->rect().center());
-    GTMouseDriver::moveTo(os, clickPos);
-    GTMouseDriver::click(os);
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_NC_001363");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_NC_001363");
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
