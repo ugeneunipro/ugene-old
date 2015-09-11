@@ -71,16 +71,13 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(ui.deleteOutputButton, SIGNAL(clicked()), SLOT(sl_deleteOutput()));
     connect(ui.addAttributeButton, SIGNAL(clicked()), SLOT(sl_addAttribute()));
     connect(ui.deleteAttributeButton, SIGNAL(clicked()), SLOT(sl_deleteAttribute()));
-    //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(validateNextPage()));
     connect(this, SIGNAL(currentIdChanged(int)), SLOT(sl_validatePage(int)));
-    //connect(button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(sl_OK()));
-    //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
 
     QFontMetrics info(ui.descr1TextEdit->font());
-    ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr1TextEdit->setFixedHeight(info.height() * 8);
+    ui.descr2TextEdit->setFixedHeight(info.height() * 10);
+    ui.descr3TextEdit->setFixedHeight(info.height() * 7);
+    ui.descr4TextEdit->setFixedHeight(info.height() * 12);
 
     ui.inputTableView->setModel(new CfgExternalToolModel(true));
     ui.outputTableView->setModel(new CfgExternalToolModel(false));
@@ -253,10 +250,11 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
 
     QFontMetrics info(ui.descr1TextEdit->font());
-    ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
-    ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr1TextEdit->setFixedHeight(info.height() * 8);
+    ui.descr2TextEdit->setFixedHeight(info.height() * 10);
+    ui.descr3TextEdit->setFixedHeight(info.height() * 7);
+    ui.descr4TextEdit->setFixedHeight(info.height() * 12);
+
     descr1 = ui.descr1TextEdit->toHtml();
     editing = false;
 
@@ -629,6 +627,5 @@ void CreateExternalProcessDialog::sl_validatePage(int id) {
             sl_validateCmdLine(ui.templateLineEdit->text());
     }
 }
-
 
 }
