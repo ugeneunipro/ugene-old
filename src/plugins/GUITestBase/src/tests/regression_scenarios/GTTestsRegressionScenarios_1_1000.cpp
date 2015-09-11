@@ -2630,7 +2630,7 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
 
             ExternalTool *samtools = AppContext::getExternalToolRegistry()->getByName("SAMtools");
             QLineEdit *ed = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit", w));
-            GTLineEdit::setText(os, ed, samtools->getPath() + " view -b -S -o " + QDir(sandBoxDir).absolutePath() + "/test_0896out.bam $sam");
+            GTLineEdit::setText(os, ed, "'" + samtools->getPath() + "' view -b -S -o '" + QDir(sandBoxDir).absolutePath() + "/test_0896out.bam' $sam", false, true);
 
             QAbstractButton *button = GTWidget::findButtonByText(os, "Finish");
             CHECK(NULL != button, );
