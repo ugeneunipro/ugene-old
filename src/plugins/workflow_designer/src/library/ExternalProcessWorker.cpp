@@ -541,7 +541,7 @@ QStringList LaunchExternalToolTask::parseCombinedArgString(const QString &progra
     // "hello world". three consecutive double quotes represent
     // the quote character itself.
     for (int i = 0; i < program.size(); ++i) {
-        if (program.at(i) == QLatin1Char('"')) {
+        if (program.at(i) == QLatin1Char('"') || program.at(i) == QLatin1Char('\'')) {
             ++quoteCount;
             if (quoteCount == 3) {
                 // third consecutive quote

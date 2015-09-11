@@ -51,7 +51,7 @@ class ExecStringValidator : public QValidator {
 public:
     ExecStringValidator(QObject *parent = 0)
         : QValidator(parent) {}
-    State validate(QString &input, int &/*pos*/) const {
+    State validate(QString &input, int &) const {
         if (input.contains("\"")) {
             return Invalid;
         }
@@ -96,8 +96,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     QFontMetrics fm(ui.inputTableView->font());
     ui.inputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
     ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
-    ui.templateLineEdit->setValidator(new ExecStringValidator(this));
-    ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
+    ui.templateLineEdit->setValidator(new ExecStringValidator(this));    ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
 
     initialCfg = new ExternalProcessConfig(*cfg);
     init(cfg);
