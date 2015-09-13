@@ -35,16 +35,19 @@ public:
         M1
     };
 
-    BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree = "default", int _model = 0, double _alpha = 0, bool _displayWithMsa = false);
-    BuildTreeDialogFiller(U2OpStatus &os, int _replicates=0, QString _saveTree = "default", int _seed = 5, ConsensusType _type = MAJORITYEXT, double _fraction = 0.5);
-    BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs);
+    BuildTreeDialogFiller(U2OpStatus &os, const QString &saveTree = "default", int model = 0, double alpha = 0, bool displayWithMsa = false);
+    BuildTreeDialogFiller(U2OpStatus &os, int replicates = 0, const QString &saveTree = "default", int seed = 5, ConsensusType type = MAJORITYEXT, double fraction = 0.5);
+    BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 
 private:
     QString saveTree;
-    int model,replicates,seed;
-    double alpha,fraction;
+    int model;
+    int replicates;
+    int seed;
+    double alpha;
+    double fraction;
     ConsensusType type;
     bool displayWithMsa;
 };
@@ -52,13 +55,13 @@ private:
 class BuildTreeDialogFillerPhyML : public Filler {
  public:
     BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed, int bootstrap = -1);
-    void run();
+    void commonScenario();
 
 private:
     bool freqOptimRadioPressed;
     int bootstrap;
 };
 
-}
+}   // namespace U2
 
-#endif //_U2_GT_RUNNABLES_BUILD_TREE_DIALOG_FILLER_H_
+#endif // _U2_GT_RUNNABLES_BUILD_TREE_DIALOG_FILLER_H_

@@ -19,58 +19,62 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QPushButton>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
+#include <QRadioButton>
+#include <QDialogButtonBox>
+
 #include "BuildTreeDialogFiller.h"
-#include "api/GTComboBox.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
-#include "api/GTLineEdit.h"
 #include "api/GTCheckBox.h"
+#include "api/GTComboBox.h"
 #include "api/GTDoubleSpinBox.h"
+#include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
-
+#include "api/GTSpinBox.h"
+#include "api/GTTabWidget.h"
+#include "api/GTWidget.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
-
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QDialogButtonBox>
-#endif
 
 namespace U2 {
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree, int _model, double _alpha, bool _displayWithMsa)
-    : Filler(os, "CreatePhyTree"), saveTree(_saveTree), model(_model), replicates(0), alpha(_alpha), displayWithMsa(_displayWithMsa)
+#define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
+
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, const QString &saveTree, int model, double alpha, bool displayWithMsa) :
+    Filler(os, "CreatePhyTree"),
+    saveTree(saveTree),
+    model(model),
+    replicates(0),
+    alpha(alpha),
+    displayWithMsa(displayWithMsa)
 {
 
 }
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, int _replicates, QString _saveTree, int _seed,
-    BuildTreeDialogFiller::ConsensusType _type, double _fraction)
-    : Filler(os, "CreatePhyTree"), saveTree(_saveTree), model(0), replicates(_replicates), seed(_seed), alpha(0),
-    fraction(_fraction), type(_type)
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os,
+                                             int replicates,
+                                             const QString &saveTree,
+                                             int seed,
+                                             BuildTreeDialogFiller::ConsensusType type,
+                                             double fraction) :
+    Filler(os, "CreatePhyTree"),
+    saveTree(saveTree),
+    model(0),
+    replicates(replicates),
+    seed(seed),
+    alpha(0),
+    fraction(fraction),
+    type(type)
 {
 
 }
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs)
-    : Filler(os, "CreatePhyTree", cs),
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+    : Filler(os, "CreatePhyTree", scenario),
     model(0),
     replicates(0),
     seed(0),
@@ -82,7 +86,6 @@ BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs)
 
 }
 
-#define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
 #define GT_METHOD_NAME "commonScenario"
 void BuildTreeDialogFiller::commonScenario() {
 
@@ -95,54 +98,40 @@ void BuildTreeDialogFiller::commonScenario() {
         GTLineEdit::setText(os,saveLineEdit, saveTree);
     }
 
-    QRadioButton* displayInNewWindow = qobject_cast<QRadioButton*>(GTWidget::findWidget(os,"createNewView"));
-    if(!displayWithMsa) {
-        GTRadioButton::click(os, displayInNewWindow);
+    if (0 != model) {
+        GTComboBox::setCurrentIndex(os, GTWidget::findExactWidget<QComboBox *>(os, "cbModel", dialog), model);
     }
 
-    if(model){
-        QComboBox* modelBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"modelBox"));
-        GTComboBox::setCurrentIndex(os,modelBox,model);
+    if (0 != alpha) {
+        GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbGamma", dialog), true);
+        GTDoubleSpinbox::setValue(os, alphaSpinBox, GTWidget::findExactWidget<QDoubleSpinBox *>(os, "sbAlpha", dialog), GTGlobals::UseKeyBoard);
+    } else {
+        GTCheckBox::setChecked(os, GTWidget::findExactWidget(os, "chbGamma", dialog), false);
     }
 
-    QCheckBox* gammaBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os,"gammaCheckBox"));
-    if(alpha){
-        GTCheckBox::setChecked(os,gammaBox,true);
-
-        QDoubleSpinBox* alphaSpinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os,"alphaSpinBox"));
-        GTDoubleSpinbox::setValue(os, alphaSpinBox,alpha,GTGlobals::UseKeyBoard);
-    }
-    else{
-        GTCheckBox::setChecked(os,gammaBox,false);
-    }
-
-    if (replicates){
-        QGroupBox *BootstrapGroupBox = dialog->findChild<QGroupBox*>("BootstrapGroupBox");
-        BootstrapGroupBox->setChecked(true);
-
-        QSpinBox* repsSpinBox = dialog->findChild<QSpinBox*>("repsSpinBox");
-        GTSpinBox::setValue(os,repsSpinBox,replicates, GTGlobals::UseKeyBoard);
-
-        QSpinBox* seedSpinBox = dialog->findChild<QSpinBox*>("seedSpinBox");
-        GTSpinBox::setValue(os,seedSpinBox,seed, GTGlobals::UseKeyBoard);
-
-        QComboBox* ConsModeComboBox = dialog->findChild<QComboBox*>("ConsModeComboBox");
-        GTComboBox::setCurrentIndex(os,ConsModeComboBox,type);
-
-        if(type == M1){
-            QDoubleSpinBox* FractionSpinBox = dialog->findChild<QDoubleSpinBox*>("FractionSpinBox");
-            GTDoubleSpinbox::setValue(os,FractionSpinBox,fraction,GTGlobals::UseKeyBoard);
+    if (0 != replicates) {
+        GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
+        GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbEnableBootstrapping"), true);
+        GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "sbReplicatesNumber"), replicates, GTGlobals::UseKeyBoard);
+        GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "sbSeed"), seed, GTGlobals::UseKeyBoard);
+        GTComboBox::setCurrentIndex(os, GTWidget::findExactWidget<QComboBox *>(os, "cbConsensusType"), type);
+        if (type == M1) {
+            GTDoubleSpinbox::setValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, "sbFraction"), fraction, GTGlobals::UseKeyBoard);
         }
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "Ok button is NULL");
-    GTWidget::click(os, button);
+    if (!displayWithMsa) {
+        GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 2);
+        GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "createNewView"));
+    }
+
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
 
 BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed, int bootstrap)
     : Filler(os, "CreatePhyTree"), freqOptimRadioPressed(_freqOptimRadioPressed), bootstrap(bootstrap)
@@ -150,39 +139,29 @@ BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _fre
 
 }
 
-#define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
-#define GT_METHOD_NAME "run"
-void BuildTreeDialogFillerPhyML::run(){
-    QWidget* dialog = QApplication::activeModalWidget();
+#define GT_METHOD_NAME "commonScenario"
+void BuildTreeDialogFillerPhyML::commonScenario() {
+    QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
 
-    QComboBox* algorithmBox = GTWidget::findExactWidget<QComboBox*>(os, "algorithmBox", dialog);
-    GTComboBox::setIndexWithText(os, algorithmBox, "PhyML Maximum Likelihood");
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox*>(os, "algorithmBox", dialog), "PhyML Maximum Likelihood");
 
-    QRadioButton* freqOptimRadio = GTWidget::findExactWidget<QRadioButton*>(os, "freqOptimRadio");
-    if(freqOptimRadioPressed){
-        GTRadioButton::click(os, freqOptimRadio);
+    if (freqOptimRadioPressed) {
+        GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton*>(os, "freqOptimRadio", dialog));
     }
 
-    if(bootstrap >= 0) {
-        QCheckBox* bootstrapCheck = GTWidget::findExactWidget<QCheckBox*>(os, "bootstrapCheckBox");
-        GT_CHECK(bootstrapCheck != NULL, "bootstrapCheck is NULL");
-        GTCheckBox::setChecked(os, bootstrapCheck, true);
-
-        QSpinBox* bootstrapSpin = GTWidget::findExactWidget<QSpinBox*>(os, "bootstrapSpinBox");
-        GT_CHECK(bootstrapSpin != NULL, "bootstrapSpin is NULL");
-        GTSpinBox::setValue(os, bootstrapSpin, bootstrap);
+    if (bootstrap >= 0) {
+        GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
+        GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "bootstrapCheckBox"), true);
+        GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "bootstrapSpinBox"), bootstrap);
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
-}
+}   // namespace U2
