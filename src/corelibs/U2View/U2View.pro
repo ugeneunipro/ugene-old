@@ -165,6 +165,7 @@ HEADERS += src/LicenseDialog.h \
            src/phyltree/BranchSettingsDialog.h \
            src/phyltree/CreatePhyTreeDialogController.h \
            src/phyltree/CreatePhyTreeWidget.h \
+           src/phyltree/PhyTreeDisplayOptionsWidget.h \
            src/phyltree/TextSettingsDialog.h \
            src/phyltree/TreeSettingsDialog.h \
            src/util_dna_assembly/BuildIndexDialog.h \
@@ -208,6 +209,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_sequence/ui/SearchQualifierDialog.ui \
          src/phyltree/ui/BranchSettingsDialog.ui \
          src/phyltree/ui/CreatePhyTreeDialog.ui \
+         src/phyltree/ui/PhyTreeDisplayOptionsWidget.ui \
          src/phyltree/ui/TextSettingsDialog.ui \
          src/phyltree/ui/TreeSettingsDialog.ui \
          src/ui/LicenseDialog.ui \
@@ -378,6 +380,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/phyltree/BranchSettingsDialog.cpp \
            src/phyltree/CreatePhyTreeDialogController.cpp \
            src/phyltree/CreatePhyTreeWidget.cpp \
+           src/phyltree/PhyTreeDisplayOptionsWidget.cpp \
            src/phyltree/TextSettingsDialog.cpp \
            src/phyltree/TreeSettingsDialog.cpp \
            src/util_dna_assembly/BuildIndexDialog.cpp \

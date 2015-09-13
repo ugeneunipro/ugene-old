@@ -42,8 +42,8 @@ public:
 
 class MrBayesAdapter : public PhyTreeGenerator{
 public:
-    virtual Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) ;
-    virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma);
+    Task * createCalculatePhyTreeTask(const MAlignment &ma, const CreatePhyTreeSettings &s) ;
+    CreatePhyTreeWidget *createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent = NULL);
 };
 
 class MrBayesModelTypes{

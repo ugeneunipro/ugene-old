@@ -62,16 +62,15 @@ public:
     static const QString UserTreePath;
 };
 
-class PhyMlWidget : public CreatePhyTreeWidget, Ui_PhyMLDialog{
+class PhyMlWidget : public CreatePhyTreeWidget, public Ui_PhyMLDialog{
    Q_OBJECT
-
 public:
-    PhyMlWidget(QWidget* parent, const MAlignment& ma);
+    PhyMlWidget(const MAlignment &ma, QWidget *parent);
 
     void fillSettings(CreatePhyTreeSettings& settings);
     void storeSettings();
     void restoreDefault();
-    bool checkSettings(QString& msg, const CreatePhyTreeSettings& settings);
+    bool checkSettings(QString &msg, const CreatePhyTreeSettings &settings);
 
 private:
     void createWidgetsControllers();

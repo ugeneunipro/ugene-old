@@ -49,168 +49,54 @@
 #include "CreatePhyTreeWidget.h"
 #include "ui/ui_CreatePhyTreeDialog.h"
 
-namespace U2{
+namespace U2 {
 
-CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, const MAlignmentObject* mobj, CreatePhyTreeSettings& _settings)
-: QDialog(parent), msa(mobj->getMAlignment()), settings(_settings){
-    ui = new Ui_CreatePhyTree;
+CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, const MAlignmentObject* mobj, CreatePhyTreeSettings& _settings) :
+    QDialog(parent),
+    msa(mobj->getMAlignment()),
+    settings(_settings),
+    settingsWidget(NULL),
+    ui(new Ui_CreatePhyTree)
+{
     ui->setupUi(this);
-    QMap<QString,QString> helpPagesMap;
+
+    QMap<QString, QString> helpPagesMap;
     helpPagesMap.insert("PHYLIP Neighbor Joining","16122263");
     helpPagesMap.insert("MrBayes","16122264");
     helpPagesMap.insert("PhyML Maximum Likelihood","16122262");
     new ComboboxDependentHelpButton(this, ui->buttonBox, ui->algorithmBox, helpPagesMap);
-    //new HelpButton(this, ui->buttonBox, "16122262");
+
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    ui->verticalLayout->getContentsMargins ( NULL, NULL, &rightMargin, NULL );
-    PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
-    QStringList nameList = registry->getNameList();
-    for(int i=0; i<nameList.length(); i++){
-        QString item = nameList[i];
-        ui->algorithmBox->addItem(item);
-    }
+    PhyTreeGeneratorRegistry *registry = AppContext::getPhyTreeGeneratorRegistry();
+    ui->algorithmBox->addItems(registry->getNameList());
 
-    QString url = GUrlUtils::getNewLocalUrlByExtention(mobj->getDocument()->getURLString(), mobj->getGObjectName(), ".nwk", "");
-
-    QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
-
-    connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseClicked()));
-    connect(ui->algorithmBox, SIGNAL(currentIndexChanged ( int )), SLOT(sl_comboIndexChaged(int)));
+    connect(ui->algorithmBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_comboIndexChaged(int)));
     connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
     connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
-    connect(ui->displayWithAlignmentEditor, SIGNAL(toggled(bool)), SLOT(sl_onDispayWithMSAClicked(bool)));
 
+    QString url = GUrlUtils::getNewLocalUrlByExtention(mobj->getDocument()->getURLString(), mobj->getGObjectName(), ".nwk", "");
     ui->fileNameEdit->setText(url);
 
-    int itemIndex = nameList.indexOf("PHYLIP Neighbor Joining");
-    if(itemIndex < 0) {
-        itemIndex = ui->algorithmBox->count()-1;
-    }
-    assert(itemIndex >= 0);
-    //QString algName = AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->itemText(itemIndex)).toString();
-    QString algName = ui->algorithmBox->itemText(itemIndex);
-
-    for(int i = 0; i<ui->algorithmBox->count(); i++){
-        if(ui->algorithmBox->itemText(i) == algName){
-            if(i==0){ //cause the signal currentIndexChanged isn't sent in this case
-                PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->itemText(0));
-                generator->setupCreatePhyTreeUI(this, msa);
-                ui->verticalLayout->activate();
-            }
-            ui->algorithmBox->setCurrentIndex(i);
-            break;
-        }
-    }
-    ui->displayWithAlignmentEditor->setChecked(true);
-    ui->syncCheckBox->setCheckState(Qt::Checked);
-
+    const QString defaultAlgorithm = "PHYLIP Neighbor Joining";
+    ui->algorithmBox->setCurrentIndex(ui->algorithmBox->findText(defaultAlgorithm));
 }
 
-void CreatePhyTreeDialogController::sl_okClicked() {
+void CreatePhyTreeDialogController::accept() {
     settings.algorithmId = ui->algorithmBox->currentText();
 
-    //Check license
-    if (settings.algorithmId == "PHYLIP Neighbor Joining") { // This bad hack :(
-        QList<Plugin*> plugins = AppContext::getPluginSupport()->getPlugins();
-        foreach (Plugin* plugin, plugins) {
-            if (plugin->getName() == "PHYLIP"){
-                if (!plugin->isLicenseAccepted()) {
-                    QObjectScopedPointer<LicenseDialog> licenseDialog = new LicenseDialog(plugin);
-                    const int ret = licenseDialog->exec();
-                    CHECK(!licenseDialog.isNull(), );
-                    if (ret != QDialog::Accepted){
-                        return;
-                    }
-                }
-                break;
-            }
-        }
-    }
+    CHECK(checkLicense(), );
+    CHECK(checkFileName(), );
+    settingsWidget->fillSettings(settings);
+    CHECK(checkSettings(), );
+    CHECK(checkMemory(), );
 
-    QString fileName = ui->fileNameEdit->text();
-    if (fileName.isEmpty()) {
-        QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
-        ui->fileNameEdit->setFocus();
-        return;
-    }
-    settings.fileUrl = fileName;
-
-    U2OpStatus2Log os;
-    GUrlUtils::validateLocalFileUrl(GUrl(fileName), os);
-    if (os.hasError()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please, change the output file.") + "\n" + os.getError());
-        ui->fileNameEdit->setFocus(Qt::MouseFocusReason);
-        return;
-    }
-
-    settings.displayWithAlignmentEditor = ui->displayWithAlignmentEditor->isChecked();
-
-    foreach (CreatePhyTreeWidget* widget, childWidgets) {
-        widget->fillSettings(settings);
-    }
-
-    //checking
-    QString msg;
-    foreach (CreatePhyTreeWidget* widget, childWidgets) {
-        if(!widget->checkSettings(msg, settings)){
-            if(!msg.isEmpty()){
-                QMessageBox::warning(this, tr("Warning"), msg);
-            }
-            return;
-        }
-    }
-    bool memCheckOk = true;
-    msg.clear();
-
-    foreach (CreatePhyTreeWidget* widget, childWidgets) {
-        if(!widget->checkMemoryEstimation(msg, msa, settings)){
-            memCheckOk = false;
-            break;
-        }
-    }
-
-    if(!memCheckOk){
-        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Warning, tr("Warning"), msg, QMessageBox::Ok|QMessageBox::Cancel, this);
-        mb->exec();
-        CHECK(!mb.isNull(), );
-
-        if(mb->result() == QMessageBox::Ok){
-            QDialog::accept();
-        }
-    }else{
-        QDialog::accept();
-    }
+    QDialog::accept();
 }
 
-void CreatePhyTreeDialogController::insertContrWidget( int pos, CreatePhyTreeWidget* widget )
-{
-    ui->verticalLayout->insertWidget(pos, widget);
-    childWidgets.append(widget);
-
-    // adjust sizes
-    setMinimumHeight(widget->minimumHeight() + minimumHeight());
-    if (minimumWidth() < widget->minimumWidth()) {
-        setMinimumWidth(widget->minimumWidth() + rightMargin*2);
-    };
-    widget->show();
-}
-
-void CreatePhyTreeDialogController::clearContrWidgets(){
-    foreach(QWidget* w, childWidgets){
-        // adjust sizes
-        setMinimumHeight(minimumHeight() - w->minimumHeight());
-        w->hide();
-        delete w;
-    }
-    childWidgets.clear();
-    adjustSize();
-}
-
-void CreatePhyTreeDialogController::sl_browseClicked()
-{
+void CreatePhyTreeDialogController::sl_browseClicked() {
     GUrl oldUrl = ui->fileNameEdit->text();
     QString path;
     LastUsedDirHelper lod;
@@ -219,7 +105,7 @@ void CreatePhyTreeDialogController::sl_browseClicked()
     } else {
         path = oldUrl.getURLString();
     }
-    GUrl newUrl = U2FileDialog::getSaveFileName(this, "Choose file name", path,"Newick format (*.nwk)");
+    GUrl newUrl = U2FileDialog::getSaveFileName(this, tr("Choose file name"), path, "Newick format (*.nwk)");
 
     if (newUrl.isEmpty()) {
         return;
@@ -228,39 +114,93 @@ void CreatePhyTreeDialogController::sl_browseClicked()
     lod.url = newUrl.getURLString();
 }
 
-void CreatePhyTreeDialogController::sl_comboIndexChaged(int ){
-    clearContrWidgets();
-    PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
-    PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->currentText());
-    generator->setupCreatePhyTreeUI(this, msa);
-    ui->verticalLayout->activate();
+void CreatePhyTreeDialogController::sl_comboIndexChaged(int) {
+    delete settingsWidget;
+    settingsWidget = NULL;
+    PhyTreeGeneratorRegistry *registry = AppContext::getPhyTreeGeneratorRegistry();
+    PhyTreeGenerator *generator = registry->getGenerator(ui->algorithmBox->currentText());
+    SAFE_POINT(NULL != generator, "PhyTree Generator is NULL", );
+    settingsWidget = generator->createPhyTreeSettingsWidget(msa, this);
+    SAFE_POINT(NULL != settingsWidget, "Settings widget is NULL", );
+    ui->settingsContainerLayout->addWidget(settingsWidget);
+    resize(0, 0);
 }
 
-void CreatePhyTreeDialogController::sl_onDispayWithMSAClicked(bool checked) {
-     ui->syncCheckBox->setEnabled(checked);
-}
-
-CreatePhyTreeDialogController::~CreatePhyTreeDialogController()
-{
+CreatePhyTreeDialogController::~CreatePhyTreeDialogController() {
     delete ui;
 }
 
-void CreatePhyTreeDialogController::sl_onStoreSettings(){
-    //AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->currentText());
-
-    foreach (CreatePhyTreeWidget* widget, childWidgets) {
-        widget->storeSettings();
-    }
+void CreatePhyTreeDialogController::sl_onStoreSettings() {
+    settingsWidget->storeSettings();
 }
 void CreatePhyTreeDialogController::sl_onRestoreDefault(){
-    //AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + "/algorithm");
-//     int itemIndex = ui->algorithmBox->count()-1;
-//     assert(itemIndex >= 0);
-//     ui->algorithmBox->setCurrentIndex(itemIndex);
+    settingsWidget->restoreDefault();
+}
 
-    foreach (CreatePhyTreeWidget* widget, childWidgets) {
-        widget->restoreDefault();
+bool CreatePhyTreeDialogController::checkLicense() {
+    if (settings.algorithmId == "PHYLIP Neighbor Joining") { // This is a bad hack :(
+        QList<Plugin *> plugins = AppContext::getPluginSupport()->getPlugins();
+        foreach (Plugin *plugin, plugins) {
+            if (plugin->getName() == "PHYLIP") {
+                if (!plugin->isLicenseAccepted()) {
+                    QObjectScopedPointer<LicenseDialog> licenseDialog = new LicenseDialog(plugin);
+                    const int ret = licenseDialog->exec();
+                    CHECK(!licenseDialog.isNull(), false);
+                    return (ret == QDialog::Accepted);
+                }
+            }
+        }
     }
+
+    return true;
 }
 
+bool CreatePhyTreeDialogController::checkFileName() {
+    const QString fileName = ui->fileNameEdit->text();
+    if (fileName.isEmpty()) {
+        QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
+        ui->fileNameEdit->setFocus();
+        return false;
+    }
+    settings.fileUrl = fileName;
+
+    U2OpStatus2Log os;
+    GUrlUtils::validateLocalFileUrl(GUrl(fileName), os);
+    if (os.hasError()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please, change the output file.") + "\n" + os.getError());
+        ui->fileNameEdit->setFocus(Qt::MouseFocusReason);
+        return false;
+    }
+
+    return true;
 }
+
+bool CreatePhyTreeDialogController::checkSettings() {
+    QString msg;
+    if (!settingsWidget->checkSettings(msg, settings)) {
+        if (!msg.isEmpty()) {
+            QMessageBox::warning(this, tr("Warning"), msg);
+        }
+        return false;
+    }
+    return true;
+}
+
+bool CreatePhyTreeDialogController::checkMemory() {
+    SAFE_POINT(NULL != settingsWidget, "Settings widget is NULL", false);
+
+    QString msg;
+    const bool memCheckOk = settingsWidget->checkMemoryEstimation(msg, msa, settings);
+
+    if (!memCheckOk) {
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Warning, tr("Warning"), msg, QMessageBox::Ok|QMessageBox::Cancel, this);
+        mb->exec();
+        CHECK(!mb.isNull(), false);
+
+        return (mb->result() == QMessageBox::Ok);
+    }
+
+    return true;
+}
+
+}   // namespace U2

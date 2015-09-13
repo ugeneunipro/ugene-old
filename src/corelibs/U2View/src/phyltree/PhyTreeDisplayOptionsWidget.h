@@ -19,34 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _DIST_MATRIX_MODEL_WIDGET_H_
-#define _DIST_MATRIX_MODEL_WIDGET_H_
+#ifndef _U2_PHY_TREE_DISPLAY_OPTIONS_WIDGET_H_
+#define _U2_PHY_TREE_DISPLAY_OPTIONS_WIDGET_H_
 
-#include <U2View/CreatePhyTreeWidget.h>
-#include "ui/ui_DistMatrixModel.h"
+#include "CreatePhyTreeWidget.h"
 
-#include <U2Core/MAlignment.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
+class Ui_PhyTreeDisplayOptionsWidget;
 
+namespace U2 {
 
-namespace U2{
-
-class DistMatrixModelWidget : public CreatePhyTreeWidget, Ui_DistMatrixModel {
-    Q_OBJECT
-
+class U2VIEW_EXPORT PhyTreeDisplayOptionsWidget : public CreatePhyTreeWidget {
 public:
-    DistMatrixModelWidget(QWidget* parent, const MAlignment& ma);
-    virtual void fillSettings(CreatePhyTreeSettings& settings);
-    virtual void storeSettings();
-    virtual void restoreDefault();
-    virtual bool checkMemoryEstimation(QString& msg, const MAlignment& msa, const CreatePhyTreeSettings& settings);
-private slots:
-    void sl_onModelChanged(const QString& modelName);
+    PhyTreeDisplayOptionsWidget(QWidget *parent = NULL);
+    ~PhyTreeDisplayOptionsWidget();
 
+    void fillSettings(CreatePhyTreeSettings &settings);
+    void storeSettings();
+    void restoreDefault();
 
+private:
+    Ui_PhyTreeDisplayOptionsWidget *ui;
+
+    static const QString displayWithMsaEditor;
+    static const QString synchronizeWithMsa;
 };
 
-}
+}   // namespace U2
 
-#endif
+#endif // _U2_PHY_TREE_DISPLAY_OPTIONS_WIDGET_H_

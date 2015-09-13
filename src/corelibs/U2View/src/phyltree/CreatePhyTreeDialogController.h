@@ -22,22 +22,16 @@
 #ifndef _U2_CREATE_PHY_TREE_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_PHY_TREE_DIALOG_CONTROLLER_H_
 
+#include <QDialog>
+
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 
 #include <U2Core/global.h>
 #include <U2Core/MAlignment.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-
-
 class Ui_CreatePhyTree;
-class QWidget;
 
-namespace U2{
+namespace U2 {
 
 class MAlignmentObject;
 class CreatePhyTreeWidget;
@@ -48,25 +42,26 @@ public:
     CreatePhyTreeDialogController(QWidget* parent, const MAlignmentObject* mobj, CreatePhyTreeSettings& settings);
     ~CreatePhyTreeDialogController();
 
-    void insertContrWidget(int pos, CreatePhyTreeWidget* widget);
-    void clearContrWidgets();
-
 private slots:
-    void sl_okClicked();
+    void accept();
     void sl_browseClicked();
     void sl_comboIndexChaged(int index);
     void sl_onStoreSettings();
     void sl_onRestoreDefault();
-    void sl_onDispayWithMSAClicked(bool checked);
 
 private:
-    int rightMargin;
+    bool checkLicense();
+    bool checkFileName();
+    bool checkSettings();
+    bool checkMemory();
+
     MAlignment msa;
     CreatePhyTreeSettings& settings;
     QList<CreatePhyTreeWidget*> childWidgets;
+    CreatePhyTreeWidget *settingsWidget;
     Ui_CreatePhyTree* ui;
 };
 
-}
+}   // namespace U2
 
-#endif
+#endif // _U2_CREATE_PHY_TREE_DIALOG_CONTROLLER_H_

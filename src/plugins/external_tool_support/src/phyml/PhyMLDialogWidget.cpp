@@ -64,8 +64,8 @@ const QString PhyMlSettingsPreffixes::TreeImprovementType(CreatePhyTreeWidget::s
 const QString PhyMlSettingsPreffixes::TreeSearchingType(CreatePhyTreeWidget::settingsPath + "/phyml_search");
 const QString PhyMlSettingsPreffixes::UserTreePath(CreatePhyTreeWidget::settingsPath + "/user_tree");
 
-PhyMlWidget::PhyMlWidget(QWidget* parent, const MAlignment& ma)
-    : CreatePhyTreeWidget(parent)
+PhyMlWidget::PhyMlWidget(const MAlignment &ma, QWidget *parent) :
+    CreatePhyTreeWidget(parent)
 {
     setupUi(this);
     fillComboBoxes(ma);
@@ -197,18 +197,21 @@ void PhyMlWidget::sl_checkSubModelType(const QString& newModel){
 void PhyMlWidget::fillSettings(CreatePhyTreeSettings& settings){
     settings.extToolArguments = generatePhyMlSettingsScript();
     settings.bootstrap = bootstrapCheckBox->isChecked();
+    displayOptions->fillSettings(settings);
 }
 
-void PhyMlWidget::storeSettings(){
+void PhyMlWidget::storeSettings() {
     widgetControllers.storeSettings();
+    displayOptions->storeSettings();
 }
 
 void PhyMlWidget::restoreDefault(){
     widgetControllers.restoreDefault();
+    displayOptions->restoreDefault();
     sl_checkSubModelType(subModelCombo->currentText());
 }
 
-bool PhyMlWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
+bool PhyMlWidget::checkSettings(QString &message, const CreatePhyTreeSettings &settings) {
     //Check that PhyMl and tempory directory path defined
     ExternalToolRegistry* reg = AppContext::getExternalToolRegistry();
     ExternalTool* phyml= reg->getByName(PhyMLSupport::PhyMlRegistryId);
@@ -244,7 +247,7 @@ bool PhyMlWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, false);
 
-    return true;
+    return displayOptions->checkSettings(message, settings);
 }
 
 QStringList PhyMlWidget::generatePhyMlSettingsScript(){

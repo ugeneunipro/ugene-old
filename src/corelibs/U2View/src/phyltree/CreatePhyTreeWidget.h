@@ -19,35 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _CREATEPHYTREEWIDGET_H_
-#define _CREATEPHYTREEWIDGET_H_
+#ifndef _U2_CREATE_PHY_TREE_WIDGET_H_
+#define _U2_CREATE_PHY_TREE_WIDGET_H_
+
+#include <QWidget>
+
+#include <U2Algorithm/CreatePhyTreeSettings.h>
 
 #include <U2Core/global.h>
-#include <U2Algorithm/CreatePhyTreeSettings.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#else
-#include <QtWidgets/QWidget>
-#endif
 
 namespace U2 {
 
-class MAlignment;
 class CreatePhyTreeSettings;
+class MAlignment;
+class PhyTreeDisplayOptionsWidget;
 
 class U2VIEW_EXPORT CreatePhyTreeWidget : public QWidget {
 public:
-    static const QString settingsPath;
-    CreatePhyTreeWidget(QWidget* parent) : QWidget(parent) { }
+    CreatePhyTreeWidget(QWidget* parent);
 
     virtual void fillSettings(CreatePhyTreeSettings& settings) = 0;
     virtual void storeSettings() = 0;
     virtual void restoreDefault() = 0;
-    virtual bool checkSettings(QString& , const CreatePhyTreeSettings& ) {return true;}
+    virtual bool checkSettings(QString &message, const CreatePhyTreeSettings &settings);
+    virtual bool checkMemoryEstimation(QString &message, const MAlignment &ma, const CreatePhyTreeSettings &settings);
+    virtual bool insertOutputOptionWidget(PhyTreeDisplayOptionsWidget *outputOptionsWidget);
 
-    virtual bool checkMemoryEstimation(QString& , const MAlignment& , const CreatePhyTreeSettings& ) {return true;}
+    static const QString settingsPath;
 };
 
-} //namespace
+}   // namespace U2
 
-#endif
+#endif // _U2_CREATE_PHY_TREE_WIDGET_H_

@@ -18,25 +18,23 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 * MA 02110-1301, USA.
 */
-#include "NeighborJoinAdapter.h"
-#include "DistanceMatrix.h"
-#include "DistMatrixModelWidget.h"
-#include "SeqBootModelWidget.h"
-#include "SeqBootAdapter.h"
 
-
-#include "neighbor.h"
-#include "dnadist.h"
-#include "protdist.h"
+#include <QString>
+#include <QTemporaryFile>
+#include <QVector>
 
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Task.h>
 
-#include <QtCore/QVector>
-#include <QtCore/QString>
-#include <QTemporaryFile>
+#include "DistanceMatrix.h"
+#include "NeighborJoinAdapter.h"
+#include "NeighborJoinWidget.h"
+#include "SeqBootAdapter.h"
 
+#include "dnadist.h"
+#include "neighbor.h"
+#include "protdist.h"
 
 namespace U2 {
 
@@ -102,14 +100,8 @@ Task* NeighborJoinAdapter::createCalculatePhyTreeTask(const MAlignment& ma, cons
     return new NeighborJoinCalculateTreeTask(ma, s);
 }
 
-void NeighborJoinAdapter::setupCreatePhyTreeUI( CreatePhyTreeDialogController* c, const MAlignment& ma )
-{
-     CreatePhyTreeWidget* w = new DistMatrixModelWidget(c, ma);
-     c->insertContrWidget(1,w);
-
-      CreatePhyTreeWidget* b = new SeqBootModelWidget(c, ma);
-      c->insertContrWidget(2, b);
-     c->adjustSize();
+CreatePhyTreeWidget * NeighborJoinAdapter::createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent) {
+    return new NeighborJoinWidget(ma, parent);
 }
 
 NeighborJoinCalculateTreeTask::NeighborJoinCalculateTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s)

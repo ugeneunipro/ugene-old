@@ -19,17 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_NEIGHBORJOIN_ADAPTER_H_
-#define _U2_NEIGHBORJOIN_ADAPTER_H_
+#ifndef _U2_NEIGHBOR_JOIN_ADAPTER_H_
+#define _U2_NEIGHBOR_JOIN_ADAPTER_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
-#include <U2Core/AppResources.h>
-#include <U2Core/PhyTree.h>
-#include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGenerator.h>
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
+//#include <U2Algorithm/SubstMatrixRegistry.h>
+
+#include <U2Core/AppResources.h>
+//#include <U2Core/PhyTree.h>
+
+//#include <U2View/CreatePhyTreeDialogController.h>
 
 namespace U2 { 
 
@@ -39,19 +41,20 @@ class PhyTreeGeneratorTask;
 
 class NeighborJoinAdapter : public PhyTreeGenerator {
 public:
-    Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
-    virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma);
+    Task * createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
+    CreatePhyTreeWidget *createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent = NULL);
 };
 
-class NeighborJoinCalculateTreeTask: public PhyTreeGeneratorTask{
+class NeighborJoinCalculateTreeTask: public PhyTreeGeneratorTask {
 public:
-    NeighborJoinCalculateTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
+    NeighborJoinCalculateTreeTask(const MAlignment &ma, const CreatePhyTreeSettings &s);
     void run();
+
 private:
     static QMutex runLock;
     MemoryLocker memLocker;
 };
 
-}//namespace
+}   // namespace U2
 
-#endif
+#endif // _U2_NEIGHBOR_JOIN_ADAPTER_H_

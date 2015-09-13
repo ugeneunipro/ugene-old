@@ -1,36 +1,33 @@
 include (phylip.pri)
 
 # Input
-HEADERS += src/dist.h \
+HEADERS += src/SeqBootAdapter.h \
+           src/cons.h \
+           src/seqboot.h \
            src/DistanceMatrix.h \
-           src/DistMatrixModelWidget.h \
-           src/dnadist.h \
-           src/neighbor.h \
            src/NeighborJoinAdapter.h \
-           src/phylip.h \
+           src/NeighborJoinWidget.h \
            src/PhylipPlugin.h \
            src/PhylipPluginTests.h \
+           src/dist.h \
+           src/dnadist.h \
+           src/neighbor.h \
+           src/phylip.h \
            src/protdist.h \
-           src/seq.h \
-	   src/seqboot.h \
-	   src/SeqBootAdapter.h \
-	   src/SeqBootModelWidget.h \
-	   src/cons.h
-FORMS += src/ui/DistMatrixModel.ui \
-         src/ui/SeqBootModel.ui
-SOURCES += src/dist.cpp \
+           src/seq.h
+FORMS += src/ui/NeighborJoinWidget.ui
+SOURCES += src/SeqBootAdapter.cpp \
+           src/cons.cpp \
+           src/seqboot.cpp \
            src/DistanceMatrix.cpp \
-           src/DistMatrixModelWidget.cpp \
-           src/dnadist.cpp \
-           src/neighbor.cpp \
            src/NeighborJoinAdapter.cpp \
-           src/phylip.cpp \
+           src/NeighborJoinWidget.cpp \
            src/PhylipPlugin.cpp \
            src/PhylipPluginTests.cpp \
+           src/dist.cpp \
+           src/dnadist.cpp \
+           src/neighbor.cpp \
+           src/phylip.cpp \
            src/protdist.cpp \
-           src/seq.cpp \
-	   src/seqboot.cpp \
-	   src/SeqBootAdapter.cpp \
-	   src/SeqBootModelWidget.cpp \
-	   src/cons.cpp 
+           src/seq.cpp
 TRANSLATIONS += transl/english.ts transl/russian.ts

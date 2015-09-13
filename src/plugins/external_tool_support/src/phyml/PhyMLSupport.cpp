@@ -62,9 +62,8 @@ Task* PhyMLAdapter::createCalculatePhyTreeTask(const MAlignment& ma, const Creat
     return new PhyMLSupportTask(ma, s);
 }
 
-void PhyMLAdapter::setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) {
-    CreatePhyTreeWidget* w = new PhyMlWidget(c, ma);
-    c->insertContrWidget(1, w);
+CreatePhyTreeWidget * PhyMLAdapter::createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent) {
+    return new PhyMlWidget(ma, parent);
 }
 
 ////////////////////////////////////////

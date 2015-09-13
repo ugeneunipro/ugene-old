@@ -72,13 +72,12 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 ////////////////////////////////////////
 //MrBayesAdapter
 
-Task* MrBayesAdapter::createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) {
+Task * MrBayesAdapter::createCalculatePhyTreeTask(const MAlignment &ma, const CreatePhyTreeSettings &s) {
     return new MrBayesSupportTask(ma, s);
 }
 
-void MrBayesAdapter::setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) {
-    CreatePhyTreeWidget* w = new MrBayesWidget(c, ma);
-    c->insertContrWidget(1, w);
+CreatePhyTreeWidget * MrBayesAdapter::createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent) {
+    return new MrBayesWidget(ma, parent);
 }
 
 ////////////////////////////////////////

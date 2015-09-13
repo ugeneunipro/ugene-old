@@ -25,4 +25,22 @@ namespace U2 {
 
 const QString CreatePhyTreeWidget::settingsPath = "phytree_dialog_settings";
 
+CreatePhyTreeWidget::CreatePhyTreeWidget(QWidget *parent) :
+    QWidget(parent)
+{
+
+}
+
+bool CreatePhyTreeWidget::checkSettings(QString &, const CreatePhyTreeSettings &) {
+    return true;
+}
+
+bool CreatePhyTreeWidget::checkMemoryEstimation(QString &, const MAlignment &, const CreatePhyTreeSettings &) {
+    return true;
+}
+
+bool CreatePhyTreeWidget::insertOutputOptionWidget(PhyTreeDisplayOptionsWidget *outputOptionsWidget) {
+    return false;
+}
+
 }

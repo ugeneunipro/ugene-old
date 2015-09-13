@@ -19,37 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MRBAYES_DIALOGWIDGET_H
-#define _U2_MRBAYES_DIALOGWIDGET_H
+#ifndef _U2_MR_BAYES_DIALOG_WIDGET_
+#define _U2_MR_BAYES_DIALOG_WIDGET_
+
+#include <U2Core/AppContext.h>
+#include <U2Core/MAlignment.h>
+
+#include <U2View/CreatePhyTreeWidget.h>
 
 #include "ui/ui_MrBayesDialog.h"
 
-#include <U2Core/MAlignment.h>
-#include <U2Core/AppContext.h>
-#include <U2View/CreatePhyTreeWidget.h>
-
 namespace U2 {
 
-class MrBayesWidget : public CreatePhyTreeWidget, Ui_MrBayesDialog{
+class MrBayesWidget : public CreatePhyTreeWidget, private Ui_MrBayesDialog {
    Q_OBJECT
-
 public:
-    MrBayesWidget(QWidget* parent, const MAlignment& ma);
-    virtual void fillSettings(CreatePhyTreeSettings& settings);
-    virtual void storeSettings();
-    virtual void restoreDefault();
+    MrBayesWidget(const MAlignment &ma, QWidget *parent);
+
+    void fillSettings(CreatePhyTreeSettings& settings);
+    void storeSettings();
+    void restoreDefault();
     int getRandomSeed();
-    virtual bool checkSettings(QString& msg, const CreatePhyTreeSettings& settings);
+    bool checkSettings(QString &msg, const CreatePhyTreeSettings &settings);
 
 private:
     void setComboText(QComboBox* combo, const QString& text);
     QString generateMrBayesSettingsScript();
-    bool isAA; //is the msa has the amino acid alphabet
+    bool isAminoAcidAlphabet;
 
 private slots:
      void sl_onRateChanged(const QString& modelName);
 };
 
-}//namespace
+}   // namespace U2
 
-#endif // _U2_MRBAYES_DIALOGWIDGET_H
+#endif // _U2_MR_BAYES_DIALOG_WIDGET_

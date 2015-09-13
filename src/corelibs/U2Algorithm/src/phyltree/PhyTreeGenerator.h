@@ -19,25 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _PHYTREEGENERATOR
-#define _PHYTREEGENERATOR
+#ifndef _U2_PHY_TREE_GENERATOR_
+#define _U2_PHY_TREE_GENERATOR_
 
 #include <U2Core/Task.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/MAlignment.h>
+
 #include "CreatePhyTreeSettings.h"
 
-namespace U2{
+namespace U2 {
 
+class CreatePhyTreeWidget;
 class CreatePhyTreeDialogController;
 
-class U2ALGORITHM_EXPORT PhyTreeGenerator{
+class U2ALGORITHM_EXPORT PhyTreeGenerator {
 public:
     virtual ~PhyTreeGenerator() {}
-    //virtual PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti) = 0;
-    virtual Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) = 0;
-    virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) = 0;
+
+    virtual Task * createCalculatePhyTreeTask(const MAlignment &ma, const CreatePhyTreeSettings &s) = 0;
+    virtual CreatePhyTreeWidget * createPhyTreeSettingsWidget(const MAlignment &ma, QWidget *parent = NULL) = 0;
 };
 
-}
-#endif
+}   // namespace U2
+
+#endif // _U2_PHY_TREE_GENERATOR_
