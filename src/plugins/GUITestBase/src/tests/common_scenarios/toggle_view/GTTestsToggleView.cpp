@@ -1459,5 +1459,31 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task was not cancelled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0016) {
+    // 1. Open PBR322.gb
+    // 2. Close all views one by one: Overview, Zoom view and Details view
+    // 3. Click "Show all" button
+    // 4. Click "Remove sequence" button
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/PBR322.gb");
+
+    QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_SYNPBR322");
+    CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_SYNPBR322");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_overview", toolbar));
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_zoom_view", toolbar));
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "show_hide_all_views", toolbar));
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "remove_sequence", toolbar));
+    GTGlobals::sleep();
+}
+
 } // namespace
 } // namespace U2
