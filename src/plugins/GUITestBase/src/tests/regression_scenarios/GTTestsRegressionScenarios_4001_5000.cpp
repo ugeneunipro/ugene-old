@@ -2099,23 +2099,28 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4302_1) {
+	//1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+	//2. Select any region
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0)->getDetView());
-    
+	GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
+    //3. Open main menu "Actions"
+	//Expected state: "Remove subsequence" menu item enabled
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..4"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4302_2) {
+	//1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+	//2. Select any annotation
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTMouseDriver::click(os);
-
+	//3. Open main menu "Actions"
+	//Expected state: menu item {Remove->Selected annotation and qualifiers} are enabled
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
