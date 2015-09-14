@@ -97,6 +97,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -2106,9 +2107,9 @@ GUI_TEST_CLASS_DEFINITION(test_4302_1) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 	GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
     //3. Open main menu "Actions"
-	//Expected state: "Remove subsequence" menu item enabled
-    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..4"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
+	//Expected state: "Replace subsequence" menu item enabled
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "ACCCT"));
+	GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
