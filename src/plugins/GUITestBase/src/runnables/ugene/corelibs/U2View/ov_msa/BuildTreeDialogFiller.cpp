@@ -104,9 +104,9 @@ void BuildTreeDialogFiller::commonScenario() {
 
     if (0 != alpha) {
         GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbGamma", dialog), true);
-        GTDoubleSpinbox::setValue(os, alphaSpinBox, GTWidget::findExactWidget<QDoubleSpinBox *>(os, "sbAlpha", dialog), GTGlobals::UseKeyBoard);
+        GTDoubleSpinbox::setValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, "sbAlpha", dialog), alpha, GTGlobals::UseKeyBoard);
     } else {
-        GTCheckBox::setChecked(os, GTWidget::findExactWidget(os, "chbGamma", dialog), false);
+        GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbGamma", dialog), false);
     }
 
     if (0 != replicates) {
