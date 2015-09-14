@@ -792,7 +792,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
     for(int i = 0; i < 10; i++){
         GTUtilsProjectTreeView::click(os, "COI.aln");
         GTClipboard::setText(os, QString(">human_T%1\r\nACGT\r\nACG").arg(QString::number(i)));
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["insert"], GTKeyboardDriver::key["shift"]);
+		GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep();
         uiLog.trace(QString("item number %1 inserted").arg(i));
     }
