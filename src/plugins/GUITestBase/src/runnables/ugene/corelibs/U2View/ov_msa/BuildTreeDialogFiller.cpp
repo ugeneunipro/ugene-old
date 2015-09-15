@@ -153,7 +153,7 @@ void BuildTreeDialogFillerPhyML::commonScenario() {
     }
 
     if (bootstrap >= 0) {
-        GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
+        GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "twSettings", dialog), 1);
         GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "bootstrapCheckBox"), true);
         GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "bootstrapSpinBox"), bootstrap);
     }
