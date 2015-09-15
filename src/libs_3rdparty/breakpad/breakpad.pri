@@ -8,8 +8,10 @@ TARGET = breakpad
 DESTDIR = ../../_release
 QT -= gui
 
-QMAKE_CC = g++
-QMAKE_CXX = g++
+!win32 {
+    QMAKE_CC = g++
+    QMAKE_CXX = g++
+}
 
 !debug_and_release|build_pass {
     CONFIG(debug, debug|release) {
@@ -33,4 +35,5 @@ unix {
 
 macx {
     LIBS += -framework CoreServices
+    DEFINES += __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__=1050
 }
