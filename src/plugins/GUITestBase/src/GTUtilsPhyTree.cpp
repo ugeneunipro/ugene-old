@@ -33,8 +33,13 @@
 
 namespace U2 {
 
+#ifdef Q_OS_WIN
+const int widthMin = 7;
+const int widthMax = 9;
+#else
 const int widthMin = 6;
 const int widthMax = 8;
+#endif
 
 #define GT_CLASS_NAME "GTUtilsPhyTree"
 
