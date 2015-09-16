@@ -322,6 +322,21 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 33, "Incorrect sequences count");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+    //1. Open "_common_data/fasta/empty.fa" as msa.
+    //2. Ensure that MAFFT tool is set.
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Click "Align sequence to this alignment" button on the toolbar.
+    //4. Select "data/samples/FASTQ/eas.fastq".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
+    GTWidget::click(os, GTAction::button(os, "Align sequence to this alignment"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: three sequences are added to the msa.
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 3, "Incorrect sequences count");
+}
 
 } // namespace
 } // namespace U2
