@@ -69,7 +69,7 @@ void GenericDocReader::init() {
     Attribute *urlAttr = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
     QList<Dataset> sets = urlAttr->getAttributeValue< QList<Dataset> >(context);
     files = new DatasetFilesIterator(sets);
-    connect(files, SIGNAL(si_datasetEnded()), SLOT(sl_datasetEnded()));
+    connect(files, SIGNAL(si_datasetEnded()), SLOT(sl_datasetEnded()), Qt::DirectConnection);
 }
 
 GenericDocReader::~GenericDocReader() {
