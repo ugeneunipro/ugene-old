@@ -866,6 +866,7 @@ GUI_TEST_CLASS_DEFINITION(test_3139) {
 
 GUI_TEST_CLASS_DEFINITION(test_3140) {
 //    1. Open "_common_data/clustal/big.aln".
+    GTUtilsTaskTreeView::openView(os);
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "big.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -878,9 +879,10 @@ GUI_TEST_CLASS_DEFINITION(test_3140) {
 //    Expected: the overview rendereing task is finished. The overview is shown.
     for (int i = 0; i < 100; i++) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(50);
     }
 
-    //GTGlobals::sleep(1000);
+    GTGlobals::sleep(500);
     int renderTasksCount = GTUtilsTaskTreeView::getTopLevelTasksCount(os);
     CHECK_SET_ERR(1 == renderTasksCount, QString("An unexpected overview render tasks count: expect %1, got %2").arg(1).arg(renderTasksCount));
 

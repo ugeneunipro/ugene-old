@@ -59,7 +59,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_tree_viewer {
-const int nodeWidth = 6;
+const int nodeWidth = 7;
 GUI_TEST_CLASS_DEFINITION(test_0001){
 //Screenshoting MSA editor (regression test)
 
