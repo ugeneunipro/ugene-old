@@ -2100,28 +2100,28 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4302_1) {
-	//1. Open samples/Genbank/sars.gb
+    //1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
-	//2. Select any region
+    //2. Select any region
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
     GTUtilsTaskTreeView::waitTaskFinished(os);
-	GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
+    GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
     //3. Open main menu "Actions"
-	//Expected state: "Replace subsequence" menu item enabled
+    //Expected state: "Replace subsequence" menu item enabled
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "ACCCT"));
-	GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4302_2) {
-	//1. Open samples/Genbank/sars.gb
+    //1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
-	//2. Select any annotation
+    //2. Select any annotation
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTMouseDriver::click(os);
-	//3. Open main menu "Actions"
-	//Expected state: menu item {Remove->Selected annotation and qualifiers} are enabled
+    //3. Open main menu "Actions"
+    //Expected state: menu item {Remove->Selected annotation and qualifiers} are enabled
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
@@ -2181,6 +2181,44 @@ GUI_TEST_CLASS_DEFINITION(test_4308) {
     const bool itemExists = GTUtilsProjectTreeView::checkItem(os, "10000_sequences.aln");
     CHECK_SET_ERR(!itemExists, "The document is not removed from the project");
     GTUtilsTask::checkNoTask(os, "Loading documents");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4309) {
+    // 1. Open sars.gb
+    // 2. Context menu on annotations object in project view: {Export/Import --> Export annotations}
+    // Expected state: export annotataions dialog appeared
+    // 3. Check format combobox
+    // Expected state: Vector NTI format is abcent
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTGlobals::sleep();
+
+    class VectorNTIFormatChecker : public Filler {
+    public:
+        VectorNTIFormatChecker(U2OpStatus &os)
+            : Filler(os, "U2__ExportAnnotationsDialog") {}
+        virtual void run() {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QComboBox *comboBox = dialog->findChild<QComboBox*>();
+            CHECK_SET_ERR(comboBox != NULL, "ComboBox not found");
+
+            QStringList formats = GTComboBox::getValues(os, comboBox);
+            CHECK_SET_ERR(! formats.contains("Vector NTI sequence"), "VectorNTI format is present in annotations export dialog");
+
+            QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+            CHECK_SET_ERR(buttonBox != NULL, "buttonBox is NULL");
+
+            QPushButton *cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(cancelButton != NULL, "cancelButton is NULL");
+            GTWidget::click(os, cancelButton);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new VectorNTIFormatChecker(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "ep_exportAnnotations2CSV"));
+    GTUtilsProjectTreeView::click(os, "NC_004718 features", Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4323_1) {

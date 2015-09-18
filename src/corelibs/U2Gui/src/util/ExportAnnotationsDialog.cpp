@@ -22,6 +22,7 @@
 #include <QtCore/QList>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -56,6 +57,7 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     SAFE_POINT( NULL != formatRegistry, "Invalid document format registry!", );
     supportedFormats = formatRegistry->selectFormats( constr );
     supportedFormats.append( CSV_FORMAT_ID );
+    supportedFormats.removeOne(BaseDocumentFormats::VECTOR_NTI_SEQUENCE);
     supportedFormatsExts.append( CSV_FORMAT_ID );
 
     foreach ( const DocumentFormatId &fid, supportedFormats ) {
