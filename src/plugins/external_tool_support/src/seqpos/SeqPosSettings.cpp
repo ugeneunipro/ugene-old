@@ -51,9 +51,9 @@ void SeqPosSettings::initDefault(){
 QStringList SeqPosSettings::getArguments( const QString& treatFilePath){
     QStringList result;
 
-    result << GUrlUtils::getQuotedString(treatFilePath);
+    result << treatFilePath;
 
-    result << GUrlUtils::getQuotedString(genomeAssembly);
+    result << genomeAssembly;
 
     if (findDeNovo){
         result << "-d";

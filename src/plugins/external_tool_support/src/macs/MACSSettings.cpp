@@ -64,10 +64,10 @@ void MACSSettings::initDefault(){
 QStringList MACSSettings::getArguments( const QString& treatFilePath, const QString& conFilePath ){
     QStringList result;
 
-    result << "--treatment=" + GUrlUtils::getQuotedString(treatFilePath);
+    result << "--treatment=" + treatFilePath;
 
     if (!conFilePath.isEmpty()){
-        result << "--control=" + GUrlUtils::getQuotedString(conFilePath);
+        result << "--control=" + conFilePath;
     }
 
     result << "--name=" + fileNames;

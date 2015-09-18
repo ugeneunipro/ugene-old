@@ -289,7 +289,7 @@ QStringList CutAdaptFastqTask::getParameters(U2OpStatus &/*os*/) {
         res << "fastq";
     }
 
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
+    res << settings.inputUrl;
 
     return res;
 }

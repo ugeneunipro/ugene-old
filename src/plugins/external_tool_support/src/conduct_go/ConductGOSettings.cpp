@@ -53,15 +53,15 @@ QStringList ConductGOSettings::getArguments( const QString& treatFilePath){
 
 //    go_analysis.py  '$title' '$diff_expr_file' '$logmeta' '$diff_expr_file.dbkey', '$annotation'
 
-    result << GUrlUtils::getQuotedString(title);
+    result << title;
 
-    result << GUrlUtils::getQuotedString(treatFilePath);
+    result << treatFilePath;
 
     result << "logmeta.txt";
 
-    result << GUrlUtils::getQuotedString(geneUniverse) + ".dbkey";
+    result << geneUniverse + ".dbkey";
 
-    result << GUrlUtils::getQuotedString(geneUniverse);
+    result << geneUniverse;
 
     return result;
 }

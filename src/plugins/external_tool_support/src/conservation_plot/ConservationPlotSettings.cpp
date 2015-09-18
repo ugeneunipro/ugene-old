@@ -43,7 +43,7 @@ void ConservationPlotSettings::initDefault(){
 QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFiles){
     QStringList result;
 
-    result << "--phasdb=" + GUrlUtils::getQuotedString(assemblyVersion);
+    result << "--phasdb=" + assemblyVersion;
 
     if(height > 0){
         result << "--height=" + QByteArray::number(height);
@@ -57,14 +57,14 @@ QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFile
         result << "-w " + QByteArray::number(windowSize);
     }
 
-    result << "--title=" + GUrlUtils::getQuotedString(title);
+    result << "--title=" + title;
 
     //labels
-    result << "--bed-label=" + GUrlUtils::getQuotedString(label);
+    result << "--bed-label=" + label;
 
     foreach(QString bedFile, bedFiles){
         bedFile = bedFile.replace(' ', '_');
-        result << GUrlUtils::getQuotedString(bedFile);
+        result << bedFile;
     }
 
     return result;
