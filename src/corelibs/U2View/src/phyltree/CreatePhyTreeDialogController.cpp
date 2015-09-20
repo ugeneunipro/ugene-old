@@ -123,7 +123,6 @@ void CreatePhyTreeDialogController::sl_comboIndexChaged(int) {
     settingsWidget = generator->createPhyTreeSettingsWidget(msa, this);
     SAFE_POINT(NULL != settingsWidget, "Settings widget is NULL", );
     ui->settingsContainerLayout->addWidget(settingsWidget);
-    resize(0, 0);
 }
 
 CreatePhyTreeDialogController::~CreatePhyTreeDialogController() {
