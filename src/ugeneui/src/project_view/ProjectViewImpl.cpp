@@ -519,12 +519,22 @@ namespace {
         return QStringList();
     }
 
-    QString generateClipboardUrl(const QStringList &extensions) {
+    QString generateClipboardUrl(const QStringList &extensions, const QSet<QString> &excludedFilenames) {
         QString result = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard";
         if (!extensions.isEmpty()) {
             result += "." + extensions.first();
         }
-        return result;
+        return GUrlUtils::rollFileName(result, DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    }
+
+    bool canLoadFromString(DocumentFormat *df, const QVariantMap &hints) {
+        return (NULL != df && df->checkFlags(DocumentFormatFlag_SupportWriting)
+            && !(
+              df->checkFlags(DocumentFormatFlag_LockedIfNotCreatedByUGENE)
+              || df->checkFlags(DocumentFormatFlag_CannotBeCreated)
+              || hints.contains(DocumentReadingMode_SequenceMergeGapSize)
+              || hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)
+            ));
     }
 
     AD2P_DocumentInfo prepareDocumentInfo(const GUrl &url, IOAdapterFactory *iof, const DocumentFormatId &formatId, const QVariantMap &hints) {
@@ -539,7 +549,7 @@ namespace {
         return info;
     }
 
-    void openStoredData(const QString &clipboardText, const GUrl &url, const QVariantMap &hints) {
+    void loadStoredData(const QString &clipboardText, const GUrl &url, const QVariantMap &hints) {
         QVariantMap additionalHints;
         if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
             additionalHints[DocumentReadingMode_SequenceMergeGapSize] = hints.value(DocumentReadingMode_SequenceMergeGapSize);
@@ -569,12 +579,21 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mdata = clipboard->mimeData();
     if (mdata->hasUrls()) {
-        U2OpStatusImpl os;
-        openUrls(mdata->urls(), os);
-        CHECK_OP_EXT(os, showWarningAndWriteToLog(os.getError()), );
-        return;
+        processUrlsClipboardData(mdata->urls());
+    } else {
+        processPlainTextClipboardData(clipboard);
     }
+}
 
+void ProjectViewWidget::processUrlsClipboardData(const QList<QUrl> &urls) {
+    U2OpStatusImpl os;
+    openUrls(urls, os);
+    if (os.hasError()) {
+        showWarningAndWriteToLog(os.getError());
+    }
+}
+
+void ProjectViewWidget::processPlainTextClipboardData(const QClipboard *clipboard) {
     U2OpStatusImpl os;
     QString clipboardText = fetchClipboardText(clipboard, os);
     CHECK_OP_EXT(os, showWarningAndWriteToLog(os.getError()), );
@@ -593,33 +612,26 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         return;
     }
 
-    QString clipboardUrl = generateClipboardUrl(getExtensions(dr));
-    clipboardUrl = GUrlUtils::rollFileName(clipboardUrl, DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    QString clipboardUrl = generateClipboardUrl(getExtensions(dr), excludedFilenames);
     excludedFilenames.insert(clipboardUrl);
     GUrl url(clipboardUrl, GUrl_File);
 
-    DocumentFormat *df = dr.format;
-    if (NULL != df && df->checkFlags(DocumentFormatFlag_SupportWriting)
-        && !(df->checkFlags(DocumentFormatFlag_LockedIfNotCreatedByUGENE)
-        || df->checkFlags(DocumentFormatFlag_CannotBeCreated) 
-        || hints.contains(DocumentReadingMode_SequenceMergeGapSize)
-        || hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)))
-    {
+    if (canLoadFromString(dr.format, hints)) {
         hints[ProjectLoaderHint_DontCheckForExistence] = true;
         hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
         QList<AD2P_DocumentInfo> docInfoList;
-        docInfoList << prepareDocumentInfo(url, iof.take(), df->getFormatId(), hints);
+        docInfoList << prepareDocumentInfo(url, iof.take(), dr.format->getFormatId(), hints);
         QList<AD2P_ProviderInfo> empty;
         AddDocumentsToProjectTask *addToProjTask = new AddDocumentsToProjectTask(docInfoList, empty);
-        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjTask);
-        connect(loadTaskSignalMapper, SIGNAL(si_taskFinished(Task *)), SLOT(sl_setLocaFilelAdapter()));
+        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper(addToProjTask);
+        connect(loadTaskSignalMapper, SIGNAL(si_taskFinished(Task *)), SLOT(sl_setLocalFileAdapter()));
         AppContext::getTaskScheduler()->registerTopLevelTask(addToProjTask);
     } else {
-        openStoredData(clipboardText, url, hints);
+        loadStoredData(clipboardText, url, hints);
     }
 }
 
-void ProjectViewWidget::sl_setLocaFilelAdapter() {
+void ProjectViewWidget::sl_setLocalFileAdapter() {
     TaskSignalMapper* mapper = qobject_cast<TaskSignalMapper*>(sender());
     SAFE_POINT(mapper != NULL, "Incorrect sender", );
 
