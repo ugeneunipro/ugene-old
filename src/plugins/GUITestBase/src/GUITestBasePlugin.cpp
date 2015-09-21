@@ -1138,6 +1138,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4505);
     REGISTER_TEST(GUITest_regression_scenarios::test_4508);
     REGISTER_TEST(GUITest_regression_scenarios::test_4524);
+    REGISTER_TEST(GUITest_regression_scenarios::test_4537);
     REGISTER_TEST(GUITest_regression_scenarios::test_4557);
     if(QSysInfo::WordSize == 32){
         REGISTER_TEST(GUITest_regression_scenarios::test_4563);
@@ -1204,6 +1205,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0055);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0056);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0057);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0058);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/

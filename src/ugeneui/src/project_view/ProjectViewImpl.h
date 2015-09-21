@@ -23,6 +23,7 @@
 #define _U2_PROJECT_VIEW_WIDGET_
 
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/Task.h>
 
@@ -71,7 +72,7 @@ private slots:
     void sl_pasteFileFromClipboard();
     void sl_setLocaFilelAdapter();
 private:
-    static DocumentFormat* detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled);
+    static bool detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled, FormatDetectionResult &result);
     static QSet<QString> excludedFilenames;
 
     DocumentUpdater* updater;

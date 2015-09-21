@@ -59,6 +59,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
@@ -884,6 +885,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::findIndex(os, "Sequence");
     GTUtilsProjectTreeView::findIndex(os, "Contigs");
@@ -986,6 +988,22 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Align));
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0058) {
+    //1. Open a project.
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Paste the content of the file "samples/Assembly/chrM.sam".
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    QString fileContent = readFileToStr(dataDir + "samples/Assembly/chrM.sam");
+    GTClipboard::setText(os, fileContent);
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "project_test_0058/project_test_0058.ugenedb", "", "", true));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected: there are no dialog of file format choosing.
 }
 
 }

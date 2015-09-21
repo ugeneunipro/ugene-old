@@ -135,7 +135,9 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         d->userSelectedFormat->setObjectName("userSelectedFormat");
         const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
         SAFE_POINT(formatRegistry != NULL, "FormatRegistry is NULL!", -1);
-        foreach ( const DocumentFormatId &id, formatRegistry->getRegisteredFormats()) {
+        DocumentFormatConstraints constraints;
+        constraints.addFlagToExclude(DocumentFormatFlag_Hidden);
+        foreach (const DocumentFormatId &id, formatRegistry->selectFormats(constraints)) {
             if (!detectedIds.contains(id)) {
                 const QString formatName = formatRegistry->getFormatById(id)->getFormatName();
                 d->userSelectedFormat->insertItem(0, formatName, id);

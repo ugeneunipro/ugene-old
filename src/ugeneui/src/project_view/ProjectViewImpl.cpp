@@ -34,6 +34,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectTypes.h>
@@ -454,59 +455,151 @@ void showWarningAndWriteToLog(const QString& message) {
     QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
 }
 
-void ProjectViewWidget::sl_pasteFileFromClipboard() {
-    QClipboard *clipboard = QApplication::clipboard();
-    QString clipboardText;
-    bool changeName = false;
-    QScopedPointer<IOAdapterFactory> iof;
-
-    const QMimeData* mdata = clipboard->mimeData();
-    QString pastedFileUrl;
-    if (mdata->hasUrls()){
-        pastedFileUrl = mdata->urls().first().toLocalFile();
-        QString fileString = "file://";
-        if (pastedFileUrl.startsWith(fileString)) {
-            pastedFileUrl.remove(0, fileString.length());
+namespace {
+    QString parseUrl(const QString &url) {
+        const QString fileString = "file://";
+        if (url.startsWith(fileString)) {
+            return url.mid(fileString.length());
         }
-        iof.reset(new LocalFileAdapterFactory());
-    }else{
-        changeName = true;
-        try {
-            clipboardText = clipboard->text();
-        }
-        catch (std::bad_alloc) {
-            showWarningAndWriteToLog(tr("Unable to handle so huge data in clipboard."));
-            return;
-        }
-        if (clipboardText.isEmpty()) {
-            showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
-            return;
-        }
-        pastedFileUrl = (AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath()
-            + "/clipboard");
-
-        iof.reset(new StringAdapterFactoryWithStringData(clipboardText));
+        return url;
     }
-    QVariantMap hints;
-    bool userCancelled = false;
-    QScopedPointer<IOAdapter> ioa (iof->createIOAdapter());
-    ioa->open(pastedFileUrl, IOAdapterMode_Read);
-    DocumentFormat *df = detectFormatFromAdapter(ioa.data(), hints, userCancelled);
-    if (userCancelled) {
+
+    QString joinDirs(const QStringList &dirs, const QString &separator) {
+        static const int maxDirsNumber = 4;
+        QStringList result = dirs.mid(0, maxDirsNumber);
+        if (dirs.size() > maxDirsNumber) {
+            result << "...";
+        }
+        return result.join(separator);
+    }
+
+    void openUrls(const QList<QUrl> &urls, U2OpStatus &os) {
+        QList<GUrl> urlList;
+        QStringList dirs;
+        foreach (const QUrl &url, urls) {
+            QString parsedUrl = parseUrl(url.toLocalFile());
+            if (QFileInfo(parsedUrl).isDir()) {
+                dirs << parsedUrl;
+                continue;
+            }
+            urlList << GUrl(parsedUrl, GUrl_File);
+        }
+
+        if (!dirs.isEmpty()) {
+            os.setError(ProjectViewWidget::tr("Pasting of directories is not supported:") + "\n" + joinDirs(dirs, "\n"));
+        }
+        CHECK(!urlList.isEmpty(), );
+
+        Task *task = AppContext::getProjectLoader()->openWithProjectTask(urlList);
+        CHECK(NULL != task, );
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+
+    QString fetchClipboardText(const QClipboard *clipboard, U2OpStatus &os) {
+        QString result;
+        try {
+            result = clipboard->text();
+        } catch (std::bad_alloc) {
+            os.setError(ProjectViewWidget::tr("Unable to handle so huge data in clipboard."));
+            return result;
+        }
+        if (result.isEmpty()) {
+            os.setError(ProjectViewWidget::tr("UGENE can not recognize current clipboard content as one of supported formats."));
+        }
+        return result;
+    }
+
+    QStringList getExtensions(const FormatDetectionResult &dr) {
+        if (NULL != dr.format) {
+            return dr.format->getSupportedDocumentFileExtensions();
+        }
+        else if (NULL != dr.importer) {
+            return dr.importer->getSupportedFileExtensions();
+        }
+        return QStringList();
+    }
+
+    QString generateClipboardUrl(const QStringList &extensions) {
+        QString result = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard";
+        if (!extensions.isEmpty()) {
+            result += "." + extensions.first();
+        }
+        return result;
+    }
+
+    AD2P_DocumentInfo prepareDocumentInfo(const GUrl &url, IOAdapterFactory *iof, const DocumentFormatId &formatId, const QVariantMap &hints) {
+        AD2P_DocumentInfo info;
+        info.url = url;
+        info.formatId = formatId;
+        info.iof = iof;
+        info.hints = hints;
+        info.openView = true;
+        info.loadDocuments = true;
+        info.markLoadedAsModified = true;
+        return info;
+    }
+
+    void openStoredData(const QString &clipboardText, const GUrl &url, const QVariantMap &hints) {
+        QVariantMap additionalHints;
+        if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
+            additionalHints[DocumentReadingMode_SequenceMergeGapSize] = hints.value(DocumentReadingMode_SequenceMergeGapSize);
+        } else if (hints.contains(DocumentReadingMode_SequenceAsAlignmentHint)) {
+            additionalHints[DocumentReadingMode_SequenceAsAlignmentHint] = hints.value(DocumentReadingMode_SequenceAsAlignmentHint);
+        } else if (hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)) {
+            additionalHints[DocumentReadingMode_SequenceAsShortReadsHint] = hints.value(DocumentReadingMode_SequenceAsShortReadsHint);
+        } else if (hints.contains(DocumentReadingMode_SequenceAsSeparateHint)) {
+            additionalHints[DocumentReadingMode_SequenceAsSeparateHint] = hints.value(DocumentReadingMode_SequenceAsSeparateHint);
+        }
+
+        // FIXME: data are written to hard disk memory in the main thread
+        QFile outputFile(url.getURLString());
+        outputFile.open(QIODevice::WriteOnly);
+        outputFile.write(clipboardText.toLatin1());
+        outputFile.close();
+
+        QList<GUrl> urlList;
+        urlList << url;
+        Task *task = AppContext::getProjectLoader()->openWithProjectTask(urlList, additionalHints);
+        CHECK(NULL != task, );
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+}
+
+void ProjectViewWidget::sl_pasteFileFromClipboard() {
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *mdata = clipboard->mimeData();
+    if (mdata->hasUrls()) {
+        U2OpStatusImpl os;
+        openUrls(mdata->urls(), os);
+        CHECK_OP_EXT(os, showWarningAndWriteToLog(os.getError()), );
         return;
     }
-    if (df == NULL) {
+
+    U2OpStatusImpl os;
+    QString clipboardText = fetchClipboardText(clipboard, os);
+    CHECK_OP_EXT(os, showWarningAndWriteToLog(os.getError()), );
+
+    QScopedPointer<IOAdapterFactory> iof(new StringAdapterFactoryWithStringData(clipboardText));
+    QScopedPointer<IOAdapter> ioa(iof->createIOAdapter());
+    SAFE_POINT(ioa->isOpen(), L10N::internalError("IOAdapter is not opened"), );
+
+    QVariantMap hints;
+    bool userCancelled = false;
+    FormatDetectionResult dr;
+    bool detected = detectFormatFromAdapter(ioa.data(), hints, userCancelled, dr);
+    CHECK(!userCancelled, );
+    if (!detected) {
         showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
         return;
     }
-    if (changeName){
-        pastedFileUrl = pastedFileUrl + "." + df->getSupportedDocumentFileExtensions().first();
-        pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl,
-            DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
-    }
-    excludedFilenames.insert(pastedFileUrl);
-    GUrl url(pastedFileUrl, GUrl_File);
-    if (df->checkFlags(DocumentFormatFlag_SupportWriting)
+
+    QString clipboardUrl = generateClipboardUrl(getExtensions(dr));
+    clipboardUrl = GUrlUtils::rollFileName(clipboardUrl, DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    excludedFilenames.insert(clipboardUrl);
+    GUrl url(clipboardUrl, GUrl_File);
+
+    DocumentFormat *df = dr.format;
+    if (NULL != df && df->checkFlags(DocumentFormatFlag_SupportWriting)
         && !(df->checkFlags(DocumentFormatFlag_LockedIfNotCreatedByUGENE)
         || df->checkFlags(DocumentFormatFlag_CannotBeCreated) 
         || hints.contains(DocumentReadingMode_SequenceMergeGapSize)
@@ -514,43 +607,15 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
     {
         hints[ProjectLoaderHint_DontCheckForExistence] = true;
         hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
-        IOAdapterFactory *factory = iof.take();
         QList<AD2P_DocumentInfo> docInfoList;
+        docInfoList << prepareDocumentInfo(url, iof.take(), df->getFormatId(), hints);
         QList<AD2P_ProviderInfo> empty;
-        AD2P_DocumentInfo info;
-        info.url = url;
-        info.formatId = df->getFormatId();
-        info.iof = factory;
-        info.hints = hints;
-        info.openView = true;
-        info.loadDocuments = true;
-        info.markLoadedAsModified = true;
-        docInfoList << info;
         AddDocumentsToProjectTask *addToProjTask = new AddDocumentsToProjectTask(docInfoList, empty);
         TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjTask);
         connect(loadTaskSignalMapper, SIGNAL(si_taskFinished(Task *)), SLOT(sl_setLocaFilelAdapter()));
         AppContext::getTaskScheduler()->registerTopLevelTask(addToProjTask);
     } else {
-        QVariantMap additionalHints;
-        if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
-            additionalHints[DocumentReadingMode_SequenceMergeGapSize] = hints.value(DocumentReadingMode_SequenceMergeGapSize);
-        }else if (hints.contains(DocumentReadingMode_SequenceAsAlignmentHint)) {
-            additionalHints[DocumentReadingMode_SequenceAsAlignmentHint] = hints.value(DocumentReadingMode_SequenceAsAlignmentHint);
-        }else if (hints.contains(DocumentReadingMode_SequenceAsShortReadsHint)){
-            additionalHints[DocumentReadingMode_SequenceAsShortReadsHint] = hints.value(DocumentReadingMode_SequenceAsShortReadsHint);
-        }else if (hints.contains(DocumentReadingMode_SequenceAsSeparateHint)){
-            additionalHints[DocumentReadingMode_SequenceAsSeparateHint] = hints.value(DocumentReadingMode_SequenceAsSeparateHint);
-        }
-        QFile outputFile(pastedFileUrl);
-        outputFile.open(QIODevice::WriteOnly);
-        outputFile.write(clipboardText.toLatin1());
-        outputFile.close();
-        QList<GUrl> urlList;
-        urlList << url;
-        Task *t = AppContext::getProjectLoader()->openWithProjectTask(urlList, additionalHints);
-        if (t != NULL) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(t);
-        }
+        openStoredData(clipboardText, url, hints);
     }
 }
 
@@ -576,19 +641,19 @@ void ProjectViewWidget::sl_setLocaFilelAdapter() {
     connect(doc, SIGNAL(si_modifiedStateChanged()), AppContext::getProjectLoader(), SLOT(sl_documentStateChanged()));
 }
 
-DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled) {
+bool ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled, FormatDetectionResult &dr) {
     canceled = false;
     GUrl url;
     QList<FormatDetectionResult> formats;
     FormatDetectionConfig conf;
-    FormatDetectionResult dr;
+    conf.useImporters = hints.value(ProjectLoaderHint_UseImporters, true).toBool();
     conf.bestMatchesOnly = false;
     formats = DocumentUtils::detectFormat(io, conf);
     bool detectFormat = ProjectLoaderImpl::detectFormat(url, formats, hints, dr);
     bool shouldBeSelected = ProjectLoaderImpl::shouldFormatBeSelected(formats, hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool());
     canceled = !detectFormat && shouldBeSelected;
     if ((!detectFormat && formats.isEmpty()) || canceled) {
-        return NULL;
+        return false;
     }
     dr.rawDataCheckResult.properties.unite(hints);
     if (dr.format != NULL ) {
@@ -596,21 +661,14 @@ DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVaria
         bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
         canceled = !DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
         if (canceled) {
-            return NULL;
+            return false;
         }
         hints = dr.rawDataCheckResult.properties;
         if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
             hints[DocumentReadingMode_MaxObjectsInDoc] = ProjectLoaderImpl::maxObjectsInSingleDocument;
         }   
     }
-    if (dr.format != NULL) {
-        return dr.format;
-    }
-    if (formats.isEmpty()) {
-        return NULL;
-    } else {
-        return formats[0].format;
-    }
+    return (NULL != dr.format) || (NULL != dr.importer);
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {

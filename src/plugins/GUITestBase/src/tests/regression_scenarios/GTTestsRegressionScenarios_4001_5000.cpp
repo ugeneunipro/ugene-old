@@ -2886,6 +2886,27 @@ GUI_TEST_CLASS_DEFINITION(test_4524) {
     CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is disabled unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4537) {
+    //1. Open it in UGENE with Ctrl + Shift + O.
+    class Scenario : public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QComboBox *userSelectedFormat = GTWidget::findExactWidget<QComboBox*>(os, "userSelectedFormat", dialog);
+            QStringList values = GTComboBox::getValues(os, userSelectedFormat);
+
+            //Expected: there is no format SAM in the formats combobox.
+            CHECK_SET_ERR(!values.contains("SAM"), "SAM format is in the combo box");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    //Expected: format selector dialog appears.
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Assembly/chrM.sam"));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << "Open as");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4557){
 //    1. Open "samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
