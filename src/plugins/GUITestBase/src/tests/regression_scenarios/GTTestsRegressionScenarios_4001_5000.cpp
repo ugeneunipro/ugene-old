@@ -21,8 +21,10 @@
 
 #include <QListWidget>
 #include <QPlainTextEdit>
+#include <QTableView>
 #include <QWebElement>
 
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 
 #include <U2Gui/ToolsMenu.h>
@@ -76,6 +78,7 @@
 #include "api/GTSlider.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
+#include "api/GTTableView.h"
 #include "api/GTTextEdit.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
@@ -2219,6 +2222,40 @@ GUI_TEST_CLASS_DEFINITION(test_4309) {
     GTUtilsDialog::waitForDialog(os, new VectorNTIFormatChecker(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "ep_exportAnnotations2CSV"));
     GTUtilsProjectTreeView::click(os, "NC_004718 features", Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4309_1) {
+    // 1. Open WD
+    // 2. Add Write Annotations element
+    // Expected state: Vector NTI format is not available in Format parameter combobox
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write annotations");
+
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+
+    QAbstractItemModel* model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+        if (s.compare("Document format", Qt::CaseInsensitive) == 0){
+            row = i;
+            break;
+        }
+    }
+    CHECK_SET_ERR(row != -1, QString("Document format parameter not found"));
+    table->scrollTo(model->index(row,1));
+
+    GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os,table,1,row));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+    QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+    CHECK_SET_ERR(box, "QComboBox not found. Widget in this cell might be not QComboBox");
+    CHECK_SET_ERR(GTComboBox::getValues(os, box).contains(BaseDocumentFormats::VECTOR_NTI_SEQUENCE) == false, "Vector NTI format is present in WriteAnnotations worker");
+    CHECK_SET_ERR(GTComboBox::getValues(os, box).contains(BaseDocumentFormats::PLAIN_GENBANK), "Vector NTI format is present in WriteAnnotations worker");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4323_1) {
