@@ -3130,6 +3130,7 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "TEST", GTUtilsWorkflowDesigner::textValue);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
     GTGlobals::sleep(500);

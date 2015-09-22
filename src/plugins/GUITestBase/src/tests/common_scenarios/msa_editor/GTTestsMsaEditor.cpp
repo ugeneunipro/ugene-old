@@ -2644,9 +2644,9 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
     MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
 
     QFont f = ui->getEditor()->getFont();
-    QString expectedFont = "Verdana,10,-1,5,50,0,0,0,0,0";
+    QString expectedFont = "Sans,10,-1,5,50,0,0,0,0,0";
 
-    CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
+    CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + " found: " + f.toString())
     ;
 //    Expected state: change font dialog appeared
 
@@ -2735,7 +2735,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
     qint64 bigSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/bigImage.jpeg");
     qint64 smallSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/smallImage.jpeg");
 
-    CHECK_SET_ERR(bigSize==3398167 && smallSize==671036, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==4800933 && smallSize==917068, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2808,7 +2808,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 
 //    3. Fill dialog: svg format, output file
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
-    CHECK_SET_ERR(fileSize > 7600000 && fileSize < 8000000, "Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize > 7500000 && fileSize < 8000000, "Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 }
 
@@ -3627,7 +3627,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
 
             GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "SelectSubalignmentDialog", QDialogButtonBox::Cancel));
             QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
-            GTComboBox::setIndexWithText(os, exportType, "Custom region", false);
+            GTComboBox::setIndexWithText(os, exportType, "Custom region", false, GTGlobals::UseMouse);
 
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
