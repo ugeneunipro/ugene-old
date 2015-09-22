@@ -366,6 +366,7 @@ void WriteAnnotationsWorkerFactory::init() {
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
+    supportedFormats.removeOne(BaseDocumentFormats::VECTOR_NTI_SEQUENCE);
     supportedFormats.append(CSV_FORMAT_ID);
     DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first();
     // attributes description
