@@ -40,7 +40,7 @@ extern "C" {
 #endif
 #endif
 
-#ifdef LAME_MSC
+#if defined (LAME_MSC) || defined (Q_OS_MAC)
 inline void xmm_store8(__m64* m, __m128i x) {
     *(int*)m = _mm_cvtsi128_si32(x);
     *((int*)m + 1) = _mm_cvtsi128_si32(_mm_srli_epi64(x, 32));
