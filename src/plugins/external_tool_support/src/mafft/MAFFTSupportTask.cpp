@@ -493,9 +493,9 @@ int MAFFTLogParser::getProgress() {
                 rx.indexIn(lastMessage);
                 CHECK(rx.captureCount() > 0, progress);
                 if (!(secondProAlign && secondUPGMATree && secondDistanceMatrix)) {
-                    progress = rx.cap(1).toInt() * 25 / countSequencesInMSA + 15;
+                    progress = (rx.cap(1).toInt() * 25) / (countSequencesInMSA + 15);
                 } else {
-                    progress = rx.cap(1).toInt() * 25 / countSequencesInMSA + 55;
+                    progress = (rx.cap(1).toInt() * 25) / (countSequencesInMSA + 55);
                 }
             } else if (lastMessage.contains(QRegExp("STEP +\\d+-"))) {
                 QRegExp rx("STEP +(\\d+)-");

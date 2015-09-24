@@ -163,7 +163,6 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
         QString outputUrl = resultFilePath + ".out.fa";
 
         logParser = new MAFFTLogParser(inputMsa.getNumRows(), 1, outputUrl);
-        connect(logParser, SIGNAL(si_progressUndefined()), SLOT(sl_progressUndefined()));
         mafftTask = new ExternalToolRunTask(ET_MAFFT, arguments, logParser);
         mafftTask->setStandartOutputFile(resultFilePath);
         mafftTask->setSubtaskProgressWeight(65);
