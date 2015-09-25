@@ -860,6 +860,24 @@ void GTUtilsWorkflowDesigner::setTableValue(U2OpStatus &os,  QString parameter, 
 void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVariant value, valueType type, GTGlobals::UseMethod method){
     bool ok = true;
     switch(type){
+    case(comboWithFileSelector) : {
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, value.toString()));
+        GTWidget::click(os, GTWidget::findButtonByText(os, "...", parent));
+#ifdef Q_OS_WIN
+        //added to fix UGENE-3597
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+#endif
+        break;
+    }
+    case(lineEditWithFileSelector) : {
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, value.toString()));
+        GTWidget::click(os, GTWidget::findButtonByText(os, "...", parent));
+#ifdef Q_OS_WIN
+        //added to fix UGENE-3597
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+#endif
+        break;
+    }
     case(spinValue):{
         int spinVal = value.toInt(&ok);
         GT_CHECK(ok,"Wrong input. Int required for GTUtilsWorkflowDesigner::spinValue")

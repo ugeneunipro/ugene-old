@@ -43,7 +43,7 @@ class WorkflowBusItem;
 class GTUtilsWorkflowDesigner {
 public:
     enum tab {algoriths,samples};
-    enum valueType{spinValue, doubleSpinValue, comboValue, textValue, ComboChecks};
+    enum valueType { spinValue, doubleSpinValue, comboValue, textValue, ComboChecks, comboWithFileSelector, lineEditWithFileSelector };
 
     //returns algoriths or samples
     static tab currentTab(U2OpStatus &os);
