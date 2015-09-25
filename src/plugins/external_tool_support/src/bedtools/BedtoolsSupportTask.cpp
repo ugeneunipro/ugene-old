@@ -57,9 +57,7 @@ void BamBedConversionTask::prepare(){
     QStringList args;
     args << "bamtobed";
     args << "-i";
-    args << GUrlUtils::getQuotedString(sourceURL.getURLString());
-    //args << ">";
-    //args << GUrlUtils::getQuotedString(targetUrl);
+    args << sourceURL.getURLString();
 
     ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BEDTOOLS, args, new ExternalToolLogParser(), workingDir);
     etTask->setStandartOutputFile(targetUrl);

@@ -97,9 +97,9 @@ void BedGraphToBigWigTask::run(){
 QStringList BedGraphToBigWigTask::getParameters(U2OpStatus &/*os*/){
     QStringList res;
 
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
-    res << GUrlUtils::getQuotedString(settings.genomePath);
-    res << GUrlUtils::getQuotedString(settings.outDir + settings.outName);
+    res << settings.inputUrl;
+    res << settings.genomePath;
+    res << settings.outDir + settings.outName;
     res << QString("-blockSize=%1").arg(settings.blockSize);
     res << QString("-itemsPerSlot=%1").arg(settings.itemsPerSlot);
     if(settings.uncompressed){

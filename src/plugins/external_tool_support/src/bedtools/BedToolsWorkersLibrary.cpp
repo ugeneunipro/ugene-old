@@ -219,7 +219,7 @@ QVariantMap SlopbedWorker::getCustomParameters() const{
     QVariantMap res;
     const QString genomePath = getValue<QString>(GENOME_ID);
     if(!genomePath.isEmpty()){
-        res["-g"] = GUrlUtils::getQuotedString(genomePath);
+        res["-g"] = genomePath;
     }
     const int b = getValue<int>(B_ID);
     if(b!=0){
@@ -307,7 +307,7 @@ QStringList SlopbedTask::getParameters(U2OpStatus &os) {
     QStringList res;
     res << "slop";
     res << "-i";
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
+    res << settings.inputUrl;
 
 
 
@@ -633,7 +633,7 @@ QVariantMap GenomecovWorker::getCustomParameters() const{
     QVariantMap res;
     const QString genomePath = getValue<QString>(GENOME_ID);
     if(!genomePath.isEmpty()){
-        res["-g"] = GUrlUtils::getQuotedString(genomePath);
+        res["-g"] = genomePath;
     }
     const QString mode = getParameterByMode( GenomecovMode(getValue<int>(MODE_ID)));
     if(!mode.isEmpty()){
@@ -705,10 +705,10 @@ QStringList GenomecovTask::getParameters(U2OpStatus &os){
 
     if(detectedFormat == BaseDocumentFormats::BAM){
         res << "-ibam";
-        res << GUrlUtils::getQuotedString(settings.inputUrl);
+        res << settings.inputUrl;
     }else{
         res << "-i";
-        res << GUrlUtils::getQuotedString(settings.inputUrl);
+        res << settings.inputUrl;
 
         if(!settings.customParameters.contains("-g")){
             os.setError("No genome file");
