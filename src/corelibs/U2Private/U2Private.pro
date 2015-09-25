@@ -37,9 +37,7 @@ SOURCES += src/AppContextImpl.cpp \
            src/crash_handler/CrashLogCache.cpp \
            src/crash_handler/StackWalker.cpp
 
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts
 
 win32 {

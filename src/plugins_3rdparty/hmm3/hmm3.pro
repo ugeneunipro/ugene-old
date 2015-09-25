@@ -147,4 +147,4 @@ SOURCES += src/uHMM3Plugin.cpp \
            src/workers/HMM3BuildWorker.cpp \
            src/workers/HMM3SearchWorker.cpp 
 RESOURCES += hmm3.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts transl/russian.ts

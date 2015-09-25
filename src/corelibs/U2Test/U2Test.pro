@@ -26,9 +26,7 @@ SOURCES += src/GTest.cpp \
            src/gui_tests/GUITestTeamcityLogger.cpp \
            src/gui_tests/GUITestWindow.cpp
 
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts
 
 FORMS += \

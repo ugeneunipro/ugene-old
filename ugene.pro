@@ -109,9 +109,9 @@ win32 {
 
 
 #prepare translations
-UGENE_TRANSL_IDX   = 0          1          2        3
-UGENE_TRANSL_FILES = russian.ts english.ts czech.ts chinese.ts
-UGENE_TRANSL_TAG   = ru         en         cs       zh       
+UGENE_TRANSL_IDX   = 0          1
+UGENE_TRANSL_FILES = russian.ts english.ts
+UGENE_TRANSL_TAG   = ru         en
 
 UGENE_TRANSL_DIR   = transl
 UGENE_TRANSL_QM_TARGET_DIR = src/_debug src/_release
@@ -171,8 +171,6 @@ unix {
 
     transl.files = ./src/_release/transl_en.qm
     transl.files += ./src/_release/transl_ru.qm
-    transl.files += ./src/_release/transl_cs.qm
-    transl.files += ./src/_release/transl_zh.qm
     transl.path = $$UGENE_INSTALL_DIR
     
     plugins.files = ./src/_release/plugins/*

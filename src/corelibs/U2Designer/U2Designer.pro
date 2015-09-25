@@ -116,7 +116,5 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/wizard/WizardController.cpp \
            src/wizard/WizardPageController.cpp
 RESOURCES += U2Designer.qrc
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts

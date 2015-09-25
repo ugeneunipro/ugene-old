@@ -431,7 +431,5 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
     src/dbi/DbiConnection.cpp
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts

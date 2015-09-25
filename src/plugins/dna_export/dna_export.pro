@@ -65,4 +65,4 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ImportAnnotationsFromCSVTask.cpp \
            src/ImportQualityScoresTask.cpp \
            src/ImportQualityScoresWorker.cpp
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts transl/russian.ts

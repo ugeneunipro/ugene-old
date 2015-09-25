@@ -394,7 +394,5 @@ SOURCES += src/LicenseDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \
            src/util_smith_waterman/SubstMatrixDialog.cpp
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts

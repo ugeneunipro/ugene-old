@@ -61,12 +61,3 @@ SOURCES += src/KalignAdapter.cpp \
 
 RESOURCES += kalign.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
-
-
-
-
-
-
-
-
-

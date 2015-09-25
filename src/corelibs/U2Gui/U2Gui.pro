@@ -252,7 +252,5 @@ SOURCES += src/MainWindow.cpp \
            src/util/shared_db/ItemToImportEditDialog.cpp \
            src/util/shared_db/SharedConnectionsDialog.cpp
 RESOURCES += U2Gui.qrc
-TRANSLATIONS += transl/chinese.ts \
-                transl/czech.ts \
-                transl/english.ts \
+TRANSLATIONS += transl/english.ts \
                 transl/russian.ts

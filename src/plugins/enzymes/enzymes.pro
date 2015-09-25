@@ -34,4 +34,4 @@ SOURCES += src/CloningUtilTasks.cpp \
            src/FindEnzymesDialog.cpp \
            src/FindEnzymesTask.cpp
 RESOURCES += enzymes.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts transl/russian.ts
