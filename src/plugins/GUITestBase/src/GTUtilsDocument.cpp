@@ -180,6 +180,13 @@ void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "lockDocument"
+void GTUtilsDocument::lockDocument(U2OpStatus &os, const QString &documentName) {
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Lock document for editing"));
+    GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
 QList<GObjectView*> GTUtilsDocument::getAllGObjectViews() {
 
     QList<GObjectView*> gObjectViews;

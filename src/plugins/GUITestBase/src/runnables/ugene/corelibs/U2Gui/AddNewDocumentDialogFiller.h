@@ -28,7 +28,14 @@ namespace U2 {
 
 class AddNewDocumentDialogFiller : public Filler {
 public:
+    AddNewDocumentDialogFiller(U2OpStatus &os, const QString &format, const QString &path);
     AddNewDocumentDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    void commonScenario();
+
+private:
+    const QString format;
+    const QString path;
 };
 
 }   // namespace U2

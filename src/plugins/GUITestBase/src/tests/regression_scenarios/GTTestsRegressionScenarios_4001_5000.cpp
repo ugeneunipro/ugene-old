@@ -3267,6 +3267,81 @@ GUI_TEST_CLASS_DEFINITION(test_4689_2) {
     //Expected: UGENE does not crash
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4714_1) {
+//    1. Open "data/samples/ABIF/A01.abi".
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+
+//    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new sequence"));
+    GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, "FASTA", sandBoxDir + "test_4714_1.fa"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new sequence is added to the project and to the current sequence view.
+//    3. Lock the added document.
+    GTUtilsDocument::lockDocument(os, "test_4714_1.fa");
+
+//    4. Call a context menu on the chromatogram, select {Remove edited sequence} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove edited sequence"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+//    Expected state: the sequence is removed from the view,
+//                    context menu contains "Edit new sequence" and "Edit existing sequence" items
+//                    and doesn't contain "Remove edited sequence" and "Undo changes" actions.
+    int sequencesCount = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    CHECK_SET_ERR(1 == sequencesCount, QString("An incorrect vount of sequences in the view: expect %1, got %2")
+                  .arg(1).arg(sequencesCount));
+
+    const QList<QStringList> visibleItems = QList<QStringList>() << (QStringList() << "Edit new sequence")
+                                                                 << (QStringList() << "Edit existing sequence");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, visibleItems));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    const QList<QStringList> invisibleItems = QList<QStringList>() << (QStringList() << "Remove edited sequence")
+                                                                   << (QStringList() << "Undo changes");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, invisibleItems, PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4714_2) {
+//    1. Open "data/samples/ABIF/A01.abi".
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+
+//    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new sequence"));
+    GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, "FASTA", sandBoxDir + "test_4714_2.fa"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new sequence is added to the project and to the current sequence view.
+//    3. Lock the added document.
+    GTUtilsDocument::lockDocument(os, "test_4714_2.fa");
+
+//    4. Remove the added document from the project.
+    GTUtilsDialog::waitForDialog(os, MessageBoxDialogFiller(os, QMessageBox::No, "Save document:"));
+    GTUtilsDocument::removeDocument(os, "test_4714_2.fa", GTGlobals::UseMouse);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: the sequence is removed from the view,
+//                    context menu contains "Edit new sequence" and "Edit existing sequence" items
+//                    and doesn't contain "Remove edited sequence" and "Undo changes" actions.
+    int sequencesCount = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    CHECK_SET_ERR(1 == sequencesCount, QString("An incorrect vount of sequences in the view: expect %1, got %2")
+                  .arg(1).arg(sequencesCount));
+
+    const QList<QStringList> visibleItems = QList<QStringList>() << (QStringList() << "Edit new sequence")
+                                                                 << (QStringList() << "Edit existing sequence");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, visibleItems));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    const QList<QStringList> invisibleItems = QList<QStringList>() << (QStringList() << "Remove edited sequence")
+                                                                   << (QStringList() << "Undo changes");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, invisibleItems, PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
 
 } // namespace GUITest_regression_scenarios
 

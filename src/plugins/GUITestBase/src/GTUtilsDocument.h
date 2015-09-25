@@ -46,6 +46,8 @@ public:
     static void unloadDocument(U2OpStatus &os, const QString& documentName, bool waitForMessageBox = true);
     static void loadDocument(U2OpStatus &os, const QString& documentName);
 
+    static void lockDocument(U2OpStatus &os, const QString& documentName);
+
 protected:
     static GObjectView* getDocumentGObjectView(U2OpStatus &os, Document* d);
 
