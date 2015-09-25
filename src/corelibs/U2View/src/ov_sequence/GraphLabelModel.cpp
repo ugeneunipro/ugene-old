@@ -98,8 +98,12 @@ GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius)
     image->installEventFilter(this);
 }
 GraphLabel::~GraphLabel() {
-    delete text;
-    delete image;
+    if (!text.isNull()) {
+        delete text;
+    }
+    if (!image.isNull()) {
+        delete image;
+    }
 }
 
 bool GraphLabel::eventFilter(QObject *target, QEvent* e)
@@ -186,16 +190,15 @@ MultiLabel::MultiLabel() : movingLabel(new GraphLabel()){
     movingLabel->setColor(Qt::black, Qt::red);
 }
 MultiLabel::~MultiLabel() {
-    foreach(GraphLabel* currentLabel, labels) {
-        removeLabel(currentLabel);
-    }
-    if (movingLabel->parent() == NULL) {
+    deleteAllLabels();
+    if (!movingLabel.isNull()) {
         delete movingLabel;
     }
 }
 void MultiLabel::deleteAllLabels() {
-    foreach(GraphLabel* currentLabel, labels)
+    foreach(GraphLabel* currentLabel, labels) {
         removeLabel(currentLabel);
+    }
 }
 void MultiLabel::getLabelPositions(QList<QVariant> &labelPositions) {
     foreach(GraphLabel* currentLabel, labels)

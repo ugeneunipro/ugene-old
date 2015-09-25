@@ -27,6 +27,7 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPointer>
 #include <QLabel>
 #include <QVariant>
 
@@ -120,8 +121,8 @@ signals:
     void si_onHintDeleted(GraphLabel *label);
 private:
     bool eventFilter(QObject *target, QEvent* e);
-    TextLabel *text;
-    RoundHint *image;
+    QPointer<TextLabel> text;
+    QPointer<RoundHint> image;
     float position;
     float value;
     QPoint coord;
@@ -152,12 +153,12 @@ public:
 
     Labels& getLabels() {return labels;}
 
-    GraphLabel& getMovingLabel(); 
+    GraphLabel& getMovingLabel();
 
 private:
-    Q_DISABLE_COPY(MultiLabel);
+    Q_DISABLE_COPY(MultiLabel)
     Labels labels;
-    GraphLabel *movingLabel;
+    QPointer<GraphLabel> movingLabel;
 private slots:
     void sl_deleteLabel(GraphLabel *label);
 };
