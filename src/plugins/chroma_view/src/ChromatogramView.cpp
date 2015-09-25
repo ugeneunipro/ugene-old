@@ -366,25 +366,10 @@ void ChromatogramView::sl_removeChanges()   {
     indexOfChangedChars.clear();
 }
 
-bool ChromatogramView::checkObject(GObject* obj) {
-    //TODO: check state lock on modifications too!!!
-    if (obj->getGObjectType()!=GObjectTypes::SEQUENCE || obj->isStateLocked()) {
-        return false;
-    }
-    U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
-    bool ok = (dnaObj->getAlphabet() == ctx->getSequenceObject()->getAlphabet()
-        && dnaObj->getSequenceLength() == ctx->getSequenceObject()->getSequenceLength());
-
-    return ok;
-}
-
-
 void ChromatogramView::sl_onObjectRemoved(GObjectView* view, GObject* obj)  {
     Q_UNUSED(view);
 
-    if (editDNASeq==NULL || !checkObject(obj)) {
-        return;
-    }
+    CHECK(obj == editDNASeq, );
     indexOfChangedChars.clear();
     editDNASeq = NULL;
     update();
@@ -399,7 +384,6 @@ QAction* ChromatogramView::createToggleTraceAction(const QString& actionName)
     connect(showTraceAction, SIGNAL(triggered(bool)), SLOT(sl_showHideTrace()));
 
     return showTraceAction;
-
 }
 
 void ChromatogramView::sl_showHideTrace()

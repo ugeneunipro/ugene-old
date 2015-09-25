@@ -76,15 +76,11 @@ private slots:
     void sl_onSequenceObjectLoaded(Task*);
     void sl_clearEditableSequence();
     void sl_removeChanges();
-
-
     void sl_onObjectRemoved(GObjectView*, GObject*);
     void sl_showHideTrace();
     void sl_showAllTraces();
 
-
 private:
-    bool checkObject(GObject* obj);
     int getEditSeqIndex(int bcIndex);
     QAction* createToggleTraceAction(const QString& actionName);
 
