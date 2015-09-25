@@ -3320,7 +3320,7 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
     GTUtilsDocument::lockDocument(os, "test_4714_2.fa");
 
 //    4. Remove the added document from the project.
-    GTUtilsDialog::waitForDialog(os, MessageBoxDialogFiller(os, QMessageBox::No, "Save document:"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "Save document:"));
     GTUtilsDocument::removeDocument(os, "test_4714_2.fa", GTGlobals::UseMouse);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
