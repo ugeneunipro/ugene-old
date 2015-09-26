@@ -733,6 +733,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     QList<QGraphicsItem *> nodeList;
 
     foreach (QGraphicsItem *item, list) {
+        uiLog.trace(QString("element width = %1").arg(item->boundingRect().width()));
         if (item->boundingRect().width() == nodeWidth) {
             nodeList.append(item);
         }

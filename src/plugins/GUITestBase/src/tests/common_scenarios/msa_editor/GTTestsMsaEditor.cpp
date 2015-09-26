@@ -2644,7 +2644,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
     MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
 
     QFont f = ui->getEditor()->getFont();
-    QString expectedFont = "Sans,10,-1,5,50,0,0,0,0,0";
+    QString expectedFont = "Sans Serif,10,-1,5,50,0,0,0,0,0";
 
     CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + " found: " + f.toString())
     ;

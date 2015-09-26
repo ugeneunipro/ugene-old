@@ -174,6 +174,7 @@
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
+#include <U2View/DetView.h>
 
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -5236,7 +5237,7 @@ GUI_TEST_CLASS_DEFINITION(test_3821) {
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(1000);
 
     Primer3DialogFiller::Primer3Settings settings;

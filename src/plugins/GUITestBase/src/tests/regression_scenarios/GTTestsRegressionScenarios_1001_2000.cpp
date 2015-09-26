@@ -2227,6 +2227,8 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     GTUtilsLog::check(os, l);
 
     //}

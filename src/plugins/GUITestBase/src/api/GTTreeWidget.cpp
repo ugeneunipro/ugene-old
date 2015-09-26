@@ -72,7 +72,7 @@ void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column, 
 
     const QRect itemRect = getItemRect(os, item);
     const QPoint indentationOffset(tree->indentation(), 0);
-    const QPoint itemStartPos = itemRect.topLeft() - indentationOffset;
+    const QPoint itemStartPos = QPoint(itemRect.left(), itemRect.center().y()) - indentationOffset;
     const QPoint columnOffset(tree->columnViewportPosition(column), 0);
     const QPoint itemLevelOffset(getItemLevel(os, item) * tree->indentation(), 0);
 
@@ -85,8 +85,8 @@ void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column, 
         break;
     }
     case GTGlobals::UseMouse: {
-        const QPoint magicCheckBoxOffset = QPoint(15, 35);
-        GTMouseDriver::moveTo(os, tree->mapToGlobal(itemStartPos + itemLevelOffset + columnOffset + magicCheckBoxOffset));
+        const QPoint magicCheckBoxOffset = QPoint(15, 0);
+        GTMouseDriver::moveTo(os, tree->viewport()->mapToGlobal(itemStartPos + itemLevelOffset + columnOffset + magicCheckBoxOffset));
         GTMouseDriver::click(os);
         break;
     }
