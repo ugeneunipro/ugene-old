@@ -372,7 +372,8 @@ void GUITestService::runGUITest(GUITest* t) {
     QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
     writeTestResult(testResult);
 
-    exit(0);
+    //exit(0);
+    AppContext::getMainWindow()->getQMainWindow()->close();
 }
 
 void GUITestService::registerServiceTask() {

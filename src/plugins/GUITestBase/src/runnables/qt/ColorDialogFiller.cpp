@@ -37,8 +37,19 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
 #define GT_METHOD_NAME "run"
 void ColorDialogFiller::run(){
+#ifdef Q_OS_LINUX
+    setWithQt = true;
+#endif
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog!=NULL, "dialog is NULL");
+
+    if(setWithQt){
+        QColorDialog* d = qobject_cast<QColorDialog*>(dialog);
+        d->setCurrentColor(QColor(r, g, b));
+        GTGlobals::sleep();
+        d->accept();
+        return;
+    }
 
     QList<QSpinBox*> spinList = dialog->findChildren<QSpinBox*>();
     GTSpinBox::setValue(os,spinList.at(3),r,GTGlobals::UseKeyBoard);
