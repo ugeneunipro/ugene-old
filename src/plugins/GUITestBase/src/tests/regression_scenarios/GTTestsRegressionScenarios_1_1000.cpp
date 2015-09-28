@@ -178,6 +178,7 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AnnotationsTreeView.h>
 #include <U2View/AssemblyNavigationWidget.h>
+#include <U2View/DetView.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
@@ -994,14 +995,13 @@ GUI_TEST_CLASS_DEFINITION(test_0680) {
 
 GUI_TEST_CLASS_DEFINITION(test_0681) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/681", "seq.fa");
-    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 9));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(1000);
     QString text = GTClipboard::text(os);
 
@@ -3217,7 +3217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0981_2) {
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(1000);
 
     GTGlobals::sleep();
@@ -3226,7 +3226,7 @@ GUI_TEST_CLASS_DEFINITION(test_0981_2) {
         );
     GTUtilsDialog::waitForDialog(os, filler1);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE,GTGlobals::UseMouse));
-    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep();
 }
 

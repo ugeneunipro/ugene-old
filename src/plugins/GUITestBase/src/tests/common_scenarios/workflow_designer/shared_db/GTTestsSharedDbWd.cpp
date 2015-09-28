@@ -36,6 +36,7 @@
 #include "GTDatabaseConfig.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 
@@ -688,6 +689,9 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
     GTGlobals::sleep();
 
     GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Close without Saving"));
+    GTUtilsMdi::click(os, GTGlobals::Close);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3726) {

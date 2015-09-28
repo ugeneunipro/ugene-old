@@ -2362,7 +2362,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     CHECK_SET_ERR(lineWeightSpinBox->value() == 2, QString("unexpected line width: %1").arg(lineWeightSpinBox->value()));
 #ifndef Q_OS_MAC
     QString color = GTWidget::getColor(os, branchesColorButton, QPoint(10,10)).name();
-    CHECK_SET_ERR(color == initialColor, QString("unexpected color: %1").arg(color));
+    CHECK_SET_ERR(color == initialColor, QString("unexpected color: %1. Expected: %2").arg(color).arg(initialColor));
 #endif
 }
 

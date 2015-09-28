@@ -574,8 +574,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
 
-    GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
     GTGlobals::sleep();
     QList<U2Region> pair2 = GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(os, "pair 2  (0, 2)");
