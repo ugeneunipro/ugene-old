@@ -1878,7 +1878,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_1);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_annotations::test_0002_2, "UGENE-4434");
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_2);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
@@ -1987,7 +1987,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_1);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_annotations_qualifiers::test_0004_2, "UGENE-4434");
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_2);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_1);

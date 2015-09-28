@@ -678,7 +678,7 @@ bool ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hint
         hints = dr.rawDataCheckResult.properties;
         if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
             hints[DocumentReadingMode_MaxObjectsInDoc] = ProjectLoaderImpl::maxObjectsInSingleDocument;
-        }   
+        }
     }
     return (NULL != dr.format) || (NULL != dr.importer);
 }
@@ -988,15 +988,17 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
 
     CHECK(!projectTreeController->isObjectInRecycleBin(o), );
 
-    GObjectSelection os; os.addToSelection(o);
-    MultiGSelection ms; ms.addSelection(&os);
+    GObjectSelection os;
+    os.addToSelection(o);
+    MultiGSelection ms;
+    ms.addSelection(&os);
 
     QMenu activeViewsMenu(tr("Active views"), NULL);
     QList<QAction*> openActions;
     QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
     foreach(GObjectViewFactory* f, fs) {
         QList<QAction*> tmp = selectOpenViewActions(f, ms, &activeViewsMenu, true);
-        openActions<<tmp;
+        openActions << tmp;
     }
     if (openActions.size() == 1 ) {
         QAction* a = openActions.first();
@@ -1062,7 +1064,6 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
     QList<QAction*> res;
 
     //check if object is already displayed in some view.
-    QList<GObjectViewWindow*> views;
     QList<MWMDIWindow*> windows = AppContext::getMainWindow()->getMDIManager()->getWindows();
     const GObjectSelection *objectsSelection = static_cast<const GObjectSelection *>(ms.findSelectionByType(GSelectionTypes::GOBJECTS));
     const DocumentSelection *docSelection = static_cast<const DocumentSelection *>(ms.findSelectionByType(GSelectionTypes::DOCUMENTS));
@@ -1228,7 +1229,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
 
     const DocumentSelection* docsSelection = getDocumentSelection();
     const GObjectSelection* objsSelection = getGObjectSelection();
-    
+
     SAFE_POINT(docsSelection != NULL, "Document selection is NULL", );
     SAFE_POINT(objsSelection != NULL, "Object selection is NULL", );
 
@@ -1301,14 +1302,14 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
         }
     }
 
-    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ? 
+    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ?
         projectTreeController->getDocsInSelection(true).toList().first() : NULL;
     if (docToOpen != NULL && !docToOpen->isDatabaseConnection()) {
         GUrl docUrl = docToOpen->getURL();
         if (docUrl.isLocalFile() || docUrl.isNetworkSource()) {
             m.addAction(openContainingFolder);
         }
-    }    
+    }
 }
 
 void ProjectViewImpl::sl_activateView() {
@@ -1424,7 +1425,7 @@ void ProjectViewImpl::sl_onToggleCircular() {
 }
 
 void ProjectViewImpl::sl_onOpenContainingFolder() {
-    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ? 
+    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ?
         projectTreeController->getDocsInSelection(true).toList().first() : NULL;
     if (docToOpen != NULL && !docToOpen->isDatabaseConnection()) {
         GUrl docUrl = docToOpen->getURL();

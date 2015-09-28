@@ -495,8 +495,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                     dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
                         bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
-                        bool optionsAlreadyChosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool() 
-                            || hints.value((DocumentReadingMode_SequenceMergeGapSize), false).toBool() 
+                        bool optionsAlreadyChosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool()
+                            || hints.value((DocumentReadingMode_SequenceMergeGapSize), false).toBool()
                             || hints.value((DocumentReadingMode_SequenceAsAlignmentHint), false).toBool()
                             || hints.value((DocumentReadingMode_SequenceAsShortReadsHint), false).toBool()
                             || hints.value((DocumentReadingMode_SequenceAsSeparateHint), false).toBool();
