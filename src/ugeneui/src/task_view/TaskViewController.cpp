@@ -19,21 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-#include <QtCore/QUrl>
+#include <typeinfo>
 
-#include <QtCore/QDebug>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMenu>
-#endif
-#include <QtGui/QDesktopServices>
+#include <QDesktopServices>
+#include <QDir>
+#include <QHeaderView>
+#include <QMenu>
+#include <QUrl>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
@@ -43,8 +36,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "TaskViewController.h"
-
-/* TRANSLATOR U2::TaskViewDockWidget */
 
 //TODO: do not create subtask items until not expanded
 
@@ -205,13 +196,14 @@ void TaskViewDockWidget::sl_cancelTaskByButton() {
 }
 
 TVTreeItem* TaskViewDockWidget::findItem(Task* t, bool topLevelOnly) const {
-    if (!t) {
-        return NULL;
-    }
-
-    for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
+    SAFE_POINT(NULL != t, "An attempt to fild item for a NULL task", NULL);
+    for (int i = 0, n = tree->topLevelItemCount(); i < n; i++) {
         QTreeWidgetItem* item = tree->topLevelItem(i);
-        TVTreeItem* ti = static_cast<TVTreeItem*>(item);
+        SAFE_POINT(NULL != item, QString("%1 top level item is NULL").arg(i), NULL);
+
+        TVTreeItem* ti = dynamic_cast<TVTreeItem*>(item);
+        SAFE_POINT(NULL != ti, QString("%1 QTreeWidgetItem can't be converted to TVTreeItem, real class: %2").arg(i).arg(typeid(item).name()), NULL);
+
         if (ti->task == t) {
             return ti;
         }
@@ -229,9 +221,14 @@ TVTreeItem* TaskViewDockWidget::findItem(Task* t, bool topLevelOnly) const {
 }
 
 TVTreeItem* TaskViewDockWidget::findChildItem(TVTreeItem* ti, Task* t) const {
-    for (int i=0, n = ti->childCount(); i<n; i++) {
+    SAFE_POINT(NULL != ti, "TVTreeItem is NULL", NULL);
+    for (int i = 0, n = ti->childCount(); i < n; i++) {
         QTreeWidgetItem* item = ti->child(i);
-        TVTreeItem* cti = static_cast<TVTreeItem*>(item);
+        SAFE_POINT(NULL != item, QString("%1 child item is NULL").arg(i), NULL);
+
+        TVTreeItem* cti = dynamic_cast<TVTreeItem*>(item);
+        SAFE_POINT(NULL != ti, QString("%1 child QTreeWidgetItem can't be converted to TVTreeItem, real class: %2").arg(i).arg(typeid(item).name()), NULL);
+
         if (cti->task == t) {
             return cti;
         }
@@ -360,6 +357,7 @@ void TaskViewDockWidget::sl_onTaskDescription()  {
 }
 
 void TaskViewDockWidget::sl_onStateChanged(Task* t) {
+    SAFE_POINT(NULL != t, "Task is NULL", );
     TVTreeItem* ti = findItem(t, false);
     if (ti == NULL) {
         assert(!t->isTopLevelTask());
