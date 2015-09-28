@@ -31,7 +31,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
 
 AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(U2OpStatus &os, const QString &format, const QString &path) :
-    Filler(os, "AddNewDocumentDialog", scenario),
+    Filler(os, "AddNewDocumentDialog", NULL),
     format(format),
     path(path)
 {
