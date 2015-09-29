@@ -6,23 +6,6 @@
 // Functions that provide visible feedback to the user
 // that progress is being made.
 
-//double GetCheckMemUseMB()
-//	{
-//    unsigned &g_uMaxMB = getMuscleContext()->params.g_uMaxMB;
-//
-//	unsigned MB = (unsigned) GetMemUseMB();
-//	if (0 == g_uMaxMB || MB <= g_uMaxMB)
-//		return MB;
-//	fprintf(stderr, "\n\n*** MAX MEMORY %u MB EXCEEDED***\n", g_uMaxMB);
-//	fprintf(stderr, "Memory allocated so far %u MB, physical RAM %u MB\n",
-//	  MB, (unsigned) GetRAMSizeMB());
-//	fprintf(stderr, "Use -maxmb <n> option to increase limit, where <n> is in MB.\n");
-//	SaveCurrentAlignment();
-//    //return MB;
-//
-//    throw MuscleException("Canceled");
-//	}
-
 //const char *ElapsedTimeAsStr()
 //	{
 //    time_t &g_tLocalStart = getMuscleContext()->progress.g_tLocalStart;
@@ -58,7 +41,7 @@ void SetInputFileName(const char *pstrFileName)
 	NameFromPath(pstrFileName, g_strFileName, sizeof(g_strFileName));
 	}
 
-void SetSeqStats(unsigned uSeqCount, unsigned uMaxL, unsigned uAvgL)
+void SetSeqStats(unsigned uSeqCount, unsigned uMinL, unsigned uMaxL, unsigned uAvgL)
 	{
     MuscleContext *ctx = getMuscleContext();
     FILE* &g_fProgress = ctx->progress.g_fProgress;
@@ -68,8 +51,8 @@ void SetSeqStats(unsigned uSeqCount, unsigned uMaxL, unsigned uAvgL)
 	if (g_bQuiet)
 		return;
 
-	ctx->progress.pr_printf(g_fProgress, "%s %u seqs, max length %u, avg  length %u\n",
-	  g_strFileName, uSeqCount, uMaxL, uAvgL);
+    ctx->progress.pr_printf(g_fProgress, "%s %u seqs, lengths min %u, max %u, avg  length %u\n",
+      g_strFileName, uSeqCount, uMinL, uMaxL, uAvgL);
 	if (g_bVerbose)
 		Log("%u seqs, max length %u, avg  length %u\n",
 		  uSeqCount, uMaxL, uAvgL);
@@ -126,7 +109,7 @@ void Progress(const char *szFormat, ...)
 	if (g_bQuiet)
 		return;
 
-	//double MB = GetCheckMemUseMB();
+    //double MB = GetMemUseMB();
 
 	char szStr[4096];
 	va_list ArgList;
@@ -159,7 +142,7 @@ void Progress(unsigned uStep, unsigned uTotalSteps)
 		return;
 
 	double dPct = ((uStep + 1)*100.0)/uTotalSteps;
-	//double MB = GetCheckMemUseMB();
+    //double MB = GetMemUseMB();
 	ctx->progress.pr_printf(g_fProgress, /*"%8.8s  %12s  */"Iter %3u  %6.2f%%  %s",
 	  //ElapsedTimeAsStr(),
 	  //MemToStr(MB),
@@ -194,7 +177,7 @@ void ProgressStepsDone()
 
 	if (g_bVerbose)
 		{
-		//double MB = GetCheckMemUseMB();
+        //double MB = GetMemUseMB();
 		//Log("Elapsed time %8.8s  Peak memory use %12s  Iteration %3u %s\n",
 		// ElapsedTimeAsStr(),
 		// MemToStr(MB),

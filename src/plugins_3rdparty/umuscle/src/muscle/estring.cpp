@@ -3,6 +3,7 @@
 #include "estring.h"
 #include "seq.h"
 #include "msa.h"
+#include <limits.h>
 
 /***
 An "estring" is an edit string that operates on a sequence.
@@ -12,7 +13,7 @@ A positive value n means copy n letters.
 A negative value -n means insert n indels.
 Zero marks the end of the vector.
 Consecutive entries must have opposite sign, i.e. the
-shortest possible representation must be used.
+intest possible representation must be used.
 
 A "tpair" is a traceback path for a pairwise alignment
 represented as two estrings, one for each sequence.
@@ -20,7 +21,7 @@ represented as two estrings, one for each sequence.
 
 #define c2(c,d)	(((unsigned char) c) << 8 | (unsigned char) d)
 
-unsigned LengthEstring(const short es[])
+unsigned LengthEstring(const int es[])
 	{
 	unsigned i = 0;
 	while (*es++ != 0)
@@ -28,15 +29,15 @@ unsigned LengthEstring(const short es[])
 	return i;
 	}
 
-short *EstringNewCopy(const short es[])
+int *EstringNewCopy(const int es[])
 	{
 	unsigned n = LengthEstring(es) + 1;
-	short *esNew = new short[n];
-	memcpy(esNew, es, n*sizeof(short));
+    int *esNew = new int[n];
+    memcpy(esNew, es, n*sizeof(int));
 	return esNew;
 	}
 
-void LogEstring(const short es[])
+void LogEstring(const int es[])
 	{
 	Log("<");
 	for (unsigned i = 0; es[i] != 0; ++i)
@@ -48,7 +49,7 @@ void LogEstring(const short es[])
 	Log(">");
 	}
 
-static bool EstringsEq(const short es1[], const short es2[])
+static bool EstringsEq(const int es1[], const int es2[])
 	{
 	for (;;)
 		{
@@ -62,14 +63,14 @@ static bool EstringsEq(const short es1[], const short es2[])
 	return true;
 	}
 
-static void EstringCounts(const short es[], unsigned *ptruSymbols,
+static void EstringCounts(const int es[], unsigned *ptruSymbols,
   unsigned *ptruIndels)
 	{
 	unsigned uSymbols = 0;
 	unsigned uIndels = 0;
 	for (unsigned i = 0; es[i] != 0; ++i)
 		{
-		short n = es[i];
+        int n = es[i];
 		if (n > 0)
 			uSymbols += n;
 		else if (n < 0)
@@ -79,7 +80,7 @@ static void EstringCounts(const short es[], unsigned *ptruSymbols,
 	*ptruIndels = uIndels;
 	}
 
-static char *EstringOp(const short es[], const char s[])
+static char *EstringOp(const int es[], const char s[])
 	{
 	unsigned uSymbols;
 	unsigned uIndels;
@@ -104,7 +105,7 @@ static char *EstringOp(const short es[], const char s[])
 	return sout;
 	}
 
-void EstringOp(const short es[], const Seq &sIn, Seq &sOut)
+void EstringOp(const int es[], const Seq &sIn, Seq &sOut)
 	{
 #if	DEBUG
 	unsigned uSymbols;
@@ -132,7 +133,7 @@ void EstringOp(const short es[], const Seq &sIn, Seq &sOut)
 		}
 	}
 
-unsigned EstringOp(const short es[], const Seq &sIn, MSA &a)
+unsigned EstringOp(const int es[], const Seq &sIn, MSA &a)
 	{
 	unsigned uSymbols;
 	unsigned uIndels;
@@ -168,14 +169,14 @@ unsigned EstringOp(const short es[], const Seq &sIn, MSA &a)
 	return uColCount;
 	}
 
-void PathToEstrings(const PWPath &Path, short **ptresA, short **ptresB)
+void PathToEstrings(const PWPath &Path, int **ptresA, int **ptresB)
 	{
 // First pass to determine size of estrings esA and esB
 	const unsigned uEdgeCount = Path.GetEdgeCount();
 	if (0 == uEdgeCount)
 		{
-		short *esA = new short[1];
-		short *esB = new short[1];
+        int *esA = new int[1];
+        int *esB = new int[1];
 		esA[0] = 0;
 		esB[0] = 0;
 		*ptresA = esA;
@@ -223,7 +224,7 @@ void PathToEstrings(const PWPath &Path, short **ptresA, short **ptresB)
 
 // Pass2 for seq A
 	{
-	short *esA = new short[iLengthA+1];
+    int *esA = new int[iLengthA+1];
 	unsigned iA = 0;
 	switch (Path.GetEdge(0).cType)
 		{
@@ -284,7 +285,7 @@ void PathToEstrings(const PWPath &Path, short **ptresA, short **ptresB)
 
 	{
 // Pass2 for seq B
-	short *esB = new short[iLengthB+1];
+    int *esB = new int[iLengthB+1];
 	unsigned iB = 0;
 	switch (Path.GetEdge(0).cType)
 		{
@@ -363,7 +364,7 @@ void PathToEstrings(const PWPath &Path, short **ptresA, short **ptresB)
 #endif
 	}
 
-void EstringsToPath(const short esA[], const short esB[], PWPath &Path)
+void EstringsToPath(const int esA[], const int esB[], PWPath &Path)
 	{
 	Path.Clear();
 	unsigned iA = 0;
@@ -461,7 +462,7 @@ Therefore,
 	<-1,3>*<2,-1,2> = <-1,1,-1,2>
 ***/
 
-static bool CanMultiplyEstrings(const short es1[], const short es2[])
+static bool CanMultiplyEstrings(const int es1[], const int es2[])
 	{
 	unsigned uSymbols1;
 	unsigned uSymbols2;
@@ -472,8 +473,9 @@ static bool CanMultiplyEstrings(const short es1[], const short es2[])
 	return uSymbols1 + uIndels1 == uSymbols2;
 	}
 
-static inline void AppendGaps(short esp[], int &ip, int n)
+static inline void AppendGaps(int esp[], int &ip, int n)
 	{
+//    assert(n < INT_MAX);
 	if (-1 == ip)
 		esp[++ip] = n;
 	else if (esp[ip] < 0)
@@ -482,8 +484,9 @@ static inline void AppendGaps(short esp[], int &ip, int n)
 		esp[++ip] = n;
 	}
 
-static inline void AppendSymbols(short esp[], int &ip, int n)
+static inline void AppendSymbols(int esp[], int &ip, int n)
 	{
+//    assert(n < INT_MAX);
 	if (-1 == ip)
 		esp[++ip] = n;
 	else if (esp[ip] > 0)
@@ -492,9 +495,8 @@ static inline void AppendSymbols(short esp[], int &ip, int n)
 		esp[++ip] = n;
 	}
 
-void MulEstrings(const short es1[], const short es2[], short esp[])
+void MulEstrings(const int es1[], const int es2[], int esp[])
 	{
-	assert(CanMultiplyEstrings(es1, es2));
 
 	unsigned i1 = 0;
 	int ip = -1;
@@ -597,7 +599,7 @@ void MulEstrings(const short es1[], const short es2[], short esp[])
 #endif
 	}
 
-static void test(const short es1[], const short es2[], const short esa[])
+static void test(const int es1[], const int es2[], const int esa[])
 	{
 	unsigned uSymbols1;
 	unsigned uSymbols2;
@@ -626,7 +628,7 @@ static void test(const short es1[], const short es2[], const short esa[])
 	LogEstring(esa);
 	Log("\n");
 
-	short esp[4096];
+    int esp[4096];
 	MulEstrings(es1, es2, esp);
 	LogEstring(esp);
 	if (!EstringsEq(esp, esa))
@@ -644,45 +646,45 @@ void TestEstrings()
 	{
 	SetListFileName("c:\\tmp\\muscle.log", false);
 	//{
-	//short es1[] = { -1, 1, -1, 0 };
-	//short es2[] = { 1, -1, 2, 0 };
-	//short esa[] = { -2, 1, -1, 0 };
+    //int es1[] = { -1, 1, -1, 0 };
+    //int es2[] = { 1, -1, 2, 0 };
+    //int esa[] = { -2, 1, -1, 0 };
 	//test(es1, es2, esa);
 	//}
 	//{
-	//short es1[] = { 2, -1, 2, 0 };
-	//short es2[] = { 1, -1, 3, -1, 1, 0 };
-	//short esa[] = { 1, -1, 1, -1, 1, -1, 1, 0 };
+    //int es1[] = { 2, -1, 2, 0 };
+    //int es2[] = { 1, -1, 3, -1, 1, 0 };
+    //int esa[] = { 1, -1, 1, -1, 1, -1, 1, 0 };
 	//test(es1, es2, esa);
 	//}
 	//{
-	//short es1[] = { -1, 3, 0 };
-	//short es2[] = { 2, -1, 2, 0 };
-	//short esa[] = { -1, 1, -1, 2, 0 };
+    //int es1[] = { -1, 3, 0 };
+    //int es2[] = { 2, -1, 2, 0 };
+    //int esa[] = { -1, 1, -1, 2, 0 };
 	//test(es1, es2, esa);
 	//}
 	//{
-	//short es1[] = { -1, 1, -1, 1, 0};
-	//short es2[] = { 4, 0 };
-	//short esa[] = { -1, 1, -1, 1, 0};
+    //int es1[] = { -1, 1, -1, 1, 0};
+    //int es2[] = { 4, 0 };
+    //int esa[] = { -1, 1, -1, 1, 0};
 	//test(es1, es2, esa);
 	//}
 	//{
-	//short es1[] = { 1, -1, 1, -1, 0};
-	//short es2[] = { 4, 0 };
-	//short esa[] = { 1, -1, 1, -1, 0};
+    //int es1[] = { 1, -1, 1, -1, 0};
+    //int es2[] = { 4, 0 };
+    //int esa[] = { 1, -1, 1, -1, 0};
 	//test(es1, es2, esa);
 	//}
 	//{
-	//short es1[] = { 1, -1, 1, -1, 0};
-	//short es2[] = { -1, 4, -1, 0 };
-	//short esa[] = { -1, 1, -1, 1, -2, 0};
+    //int es1[] = { 1, -1, 1, -1, 0};
+    //int es2[] = { -1, 4, -1, 0 };
+    //int esa[] = { -1, 1, -1, 1, -2, 0};
 	//test(es1, es2, esa);
 	//}
 	{
-	short es1[] = { 106, -77, 56, -2, 155, -3, 123, -2, 0};
-	short es2[] = { 50, -36, 34, -3, 12, -6, 1, -6, 18, -17, 60, -5, 349, -56, 0 };
-	short esa[] = { 0 };
+    int es1[] = { 106, -77, 56, -2, 155, -3, 123, -2, 0};
+    int es2[] = { 50, -36, 34, -3, 12, -6, 1, -6, 18, -17, 60, -5, 349, -56, 0 };
+    int esa[] = { 0 };
 	test(es1, es2, esa);
 	}
 	exit(0);

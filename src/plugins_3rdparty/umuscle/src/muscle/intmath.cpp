@@ -10,32 +10,32 @@ PROB ScoreToProb(SCORE Score)
 	}
 
 #if (!defined(_MSC_VER) || _MSC_VER < 1800)
-double log2(double x)
-	{
-	if (0 == x)
-		return MINUS_INFINITY;
+//double log2(double x)
+//	{
+//	if (0 == x)
+//		return MINUS_INFINITY;
 
-	static const double dInvLn2 = 1.0/log(2.0);
-// Multiply by inverse of log(2) just in case multiplication
-// is faster than division.
-	return log(x)*dInvLn2;
-	}
+//	static const double dInvLn2 = 1.0/log(2.0);
+//// Multiply by inverse of log(2) just in case multiplication
+//// is faster than division.
+//	return log(x)*dInvLn2;
+//	}
 #endif
 
-static const double log2e = log2(exp(1.0));
+//static const double log2e = log2(exp(1.0));
 
-double lnTolog2(double ln)
-	{
-	return ln*log2e;
-	}
+//double lnTolog2(double ln)
+//	{
+//	return ln*log2e;
+//	}
 
-SCORE ProbToScore(PROB Prob)
-	{
-	if (0.0 == Prob)
-		return MINUS_INFINITY;
-//	return (SCORE) floor(INTSCALE*log2(Prob));
-	return (SCORE) log2(Prob);
-	}
+//SCORE ProbToScore(PROB Prob)
+//	{
+//	if (0.0 == Prob)
+//		return MINUS_INFINITY;
+////	return (SCORE) floor(INTSCALE*log2(Prob));
+//	return (SCORE) log2(Prob);
+//	}
 
 WEIGHT DoubleToWeight(double d)
 	{
@@ -72,97 +72,97 @@ bool BTEq(double b1, double b2)
 	return BTEq2((BASETYPE) b1, (BASETYPE) b2);
 	}
 
-const double dLn2 = log(2.0);
+//const double dLn2 = log(2.0);
 
 // pow2(x)=2^x
-double pow2(double x)
-	{
-	if (MINUS_INFINITY == x)
-		return 0;
-	return exp(x*dLn2);
-	}
+//double pow2(double x)
+//	{
+//	if (MINUS_INFINITY == x)
+//		return 0;
+//	return exp(x*dLn2);
+//	}
 
-// lp2(x) = log2(1 + 2^-x), x >= 0
-double lp2(double x)
-	{
-	return log2(1 + pow2(-x));
-	}
-
-// SumLog(x, y) = log2(2^x + 2^y)
-SCORE SumLog(SCORE x, SCORE y)
-	{
-	return (SCORE) log2(pow2(x) + pow2(y));
-	}
-
-// SumLog(x, y, z) = log2(2^x + 2^y + 2^z)
-SCORE SumLog(SCORE x, SCORE y, SCORE z)
-	{
-	return (SCORE) log2(pow2(x) + pow2(y) + pow2(z));
-	}
-
-// SumLog(w, x, y, z) = log2(2^w + 2^x + 2^y + 2^z)
-SCORE SumLog(SCORE w, SCORE x, SCORE y, SCORE z)
-	{
-	return (SCORE) log2(pow2(w) + pow2(x) + pow2(y) + pow2(z));
-	}
-
-SCORE lp2Fast(SCORE x)
-	{
-	assert(x >= 0);
-	const int iTableSize = 1000;
-	const double dRange = 20.0;
-	const double dScale = dRange/iTableSize;
-	static SCORE dValue[iTableSize];
-	bool &bInit = getMuscleContext()->intmath.bInit;
-	if (!bInit)
-		{
-		for (int i = 0; i < iTableSize; ++i)
-			dValue[i] = (SCORE) lp2(i*dScale);
-		bInit = true;
-		}
-	if (x >= dRange)
-		return 0.0;
-	int i = (int) (x/dScale);
-	assert(i >= 0 && i < iTableSize);
-	SCORE dResult = dValue[i];
-	assert(BTEq(dResult, lp2(x)));
-	return dResult;
-	}
+//// lp2(x) = log2(1 + 2^-x), x >= 0
+//double lp2(double x)
+//	{
+//	return log2(1 + pow2(-x));
+//	}
 
 // SumLog(x, y) = log2(2^x + 2^y)
-SCORE SumLogFast(SCORE x, SCORE y)
-	{
-	if (MINUS_INFINITY == x)
-		{
-		if (MINUS_INFINITY == y)
-			return MINUS_INFINITY;
-		return y;
-		}
-	else if (MINUS_INFINITY == y)
-		return x;
+//SCORE SumLog(SCORE x, SCORE y)
+//	{
+//	return (SCORE) log2(pow2(x) + pow2(y));
+//	}
 
-	SCORE dResult;
-	if (x > y)
-		dResult = x + lp2Fast(x-y);
-	else
-		dResult = y + lp2Fast(y-x);
-	assert(SumLog(x, y) == dResult);
-	return dResult;
-	}
+//// SumLog(x, y, z) = log2(2^x + 2^y + 2^z)
+//SCORE SumLog(SCORE x, SCORE y, SCORE z)
+//	{
+//	return (SCORE) log2(pow2(x) + pow2(y) + pow2(z));
+//	}
 
-SCORE SumLogFast(SCORE x, SCORE y, SCORE z)
-	{
-	SCORE dResult = SumLogFast(x, SumLogFast(y, z));
-	assert(SumLog(x, y, z) == dResult);
-	return dResult;
-	}
+//// SumLog(w, x, y, z) = log2(2^w + 2^x + 2^y + 2^z)
+//SCORE SumLog(SCORE w, SCORE x, SCORE y, SCORE z)
+//	{
+//	return (SCORE) log2(pow2(w) + pow2(x) + pow2(y) + pow2(z));
+//	}
 
-SCORE SumLogFast(SCORE w, SCORE x, SCORE y, SCORE z)
-	{
-	SCORE dResult = SumLogFast(SumLogFast(w, x), SumLogFast(y, z));
-	assert(SumLog(w, x, y, z) == dResult);
-	return dResult;
-	}
+//SCORE lp2Fast(SCORE x)
+//	{
+//	assert(x >= 0);
+//	const int iTableSize = 1000;
+//	const double dRange = 20.0;
+//	const double dScale = dRange/iTableSize;
+//	static SCORE dValue[iTableSize];
+//	bool &bInit = getMuscleContext()->intmath.bInit;
+//	if (!bInit)
+//		{
+//		for (int i = 0; i < iTableSize; ++i)
+//			dValue[i] = (SCORE) lp2(i*dScale);
+//		bInit = true;
+//		}
+//	if (x >= dRange)
+//		return 0.0;
+//	int i = (int) (x/dScale);
+//	assert(i >= 0 && i < iTableSize);
+//	SCORE dResult = dValue[i];
+//	assert(BTEq(dResult, lp2(x)));
+//	return dResult;
+//	}
+
+// SumLog(x, y) = log2(2^x + 2^y)
+//SCORE SumLogFast(SCORE x, SCORE y)
+//	{
+//	if (MINUS_INFINITY == x)
+//		{
+//		if (MINUS_INFINITY == y)
+//			return MINUS_INFINITY;
+//		return y;
+//		}
+//	else if (MINUS_INFINITY == y)
+//		return x;
+
+//	SCORE dResult;
+//	if (x > y)
+//		dResult = x + lp2Fast(x-y);
+//	else
+//		dResult = y + lp2Fast(y-x);
+//	assert(SumLog(x, y) == dResult);
+//	return dResult;
+//	}
+
+//SCORE SumLogFast(SCORE x, SCORE y, SCORE z)
+//	{
+//	SCORE dResult = SumLogFast(x, SumLogFast(y, z));
+//	assert(SumLog(x, y, z) == dResult);
+//	return dResult;
+//	}
+
+//SCORE SumLogFast(SCORE w, SCORE x, SCORE y, SCORE z)
+//	{
+//	SCORE dResult = SumLogFast(SumLogFast(w, x), SumLogFast(y, z));
+//	assert(SumLog(w, x, y, z) == dResult);
+//	return dResult;
+//	}
 
 double VecSum(const double v[], unsigned n)
 	{

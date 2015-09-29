@@ -50,7 +50,7 @@ const char *GetTimeAsStr() {
                 return;
 
         static FILE *f = NULL;
-    const char *mode;
+    char *mode;
         if (g_bListFileAppend)
                 mode = "a";
         else

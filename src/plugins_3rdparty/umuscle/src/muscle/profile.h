@@ -49,8 +49,8 @@ struct ProgNode
 	MSA m_MSA;
 	ProfPos *m_Prof;
 	PWPath m_Path;
-	short *m_EstringL;
-	short *m_EstringR;
+    int *m_EstringL;
+    int *m_EstringR;
 	unsigned m_uLength;
 	WEIGHT m_Weight;
 	};

@@ -1,13 +1,13 @@
 #ifndef pathsum_h
 #define pathsum_h
 
-void PathToEstrings(const PWPath &Path, short **ptresA, short **ptresB);
-void EstringsToPath(const short esA[], const short esB[], PWPath &Path);
-void MulEstrings(const short es1[], const short es2[], short esp[]);
-void EstringOp(const short es[], const Seq &sIn, Seq &sOut);
-unsigned EstringOp(const short es[], const Seq &sIn, MSA &a);
-void LogEstring(const short es[]);
-unsigned LengthEstring(const short es[]);
-short *EstringNewCopy(const short es[]);
+void PathToEstrings(const PWPath &Path, int **ptresA, int **ptresB);
+void EstringsToPath(const int esA[], const int esB[], PWPath &Path);
+void MulEstrings(const int es1[], const int es2[], int esp[]);
+void EstringOp(const int es[], const Seq &sIn, Seq &sOut);
+unsigned EstringOp(const int es[], const Seq &sIn, MSA &a);
+void LogEstring(const int es[]);
+unsigned LengthEstring(const int es[]);
+int *EstringNewCopy(const int es[]);
 
 #endif	// pathsum_h

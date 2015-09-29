@@ -27,9 +27,9 @@
 #pragma warning(disable : 4996)	// deprecated names like strdup, isatty.
 #endif
 
-#define MUSCLE_LONG_VERSION		"MUSCLE v3.7 by Robert C. Edgar"
+#define MUSCLE_LONG_VERSION		"MUSCLE v3.8 by Robert C. Edgar"
 #define MUSCLE_MAJOR_VERSION	"3"
-#define MUSCLE_MINOR_VERSION	"7"
+#define MUSCLE_MINOR_VERSION	"8.1551"
 
 #include <stdlib.h>
 #include <string.h>
@@ -238,7 +238,7 @@ void Progress(const char *szFormat, ...);
 void SetStartTime();
 void ProgressStepsDone();
 void SetProgressDesc(const char szDesc[]);
-void SetSeqStats(unsigned uSeqCount, unsigned uMaxL, unsigned uAvgL);
+void SetSeqStats(unsigned uSeqCount, unsigned uMinL,unsigned uMaxL, unsigned uAvgL);
 
 void SetNewHandler();
 void SaveCurrentAlignment();

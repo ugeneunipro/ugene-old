@@ -460,6 +460,11 @@ void SetParams()
 	FlagParam("PAS", &ctx->params.g_bPAS, true);
 	FlagParam("MakeTree", &ctx->params.g_bMakeTree, true);
 
+// Problem with the order of sequences in the alignment
+// See more info there: http://drive5.com/muscle/stable.html
+//    if (&ctx->params.g_bStable)
+//        Quit("-stable not supported in this version of muscle");
+
 	bool b = false;
 	FlagParam("clwstrict", &b, true);
 	if (b)

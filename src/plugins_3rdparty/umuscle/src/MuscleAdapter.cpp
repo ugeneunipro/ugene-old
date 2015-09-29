@@ -80,17 +80,19 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         return;
     }
 
+    unsigned uMinL = 0;
     unsigned uMaxL = 0;
     unsigned uTotL = 0;
     for (unsigned uSeqIndex = 0; uSeqIndex < uSeqCount; ++uSeqIndex) {
         unsigned L = v.GetSeq(uSeqIndex).Length();
         uTotL += L;
+        uMinL = qMin(uMinL, L);
         uMaxL = qMax(uMaxL, L);
     }
 
     SetIter(1);
     ctx->params.g_bDiags = ctx->params.g_bDiags1;
-    SetSeqStats(uSeqCount, uMaxL, uTotL/uSeqCount);
+    SetSeqStats(uSeqCount, uMinL, uMaxL, uTotL/uSeqCount);
 
     SetMuscleSeqVect(v);
 

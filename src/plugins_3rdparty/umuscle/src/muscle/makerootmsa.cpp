@@ -14,8 +14,8 @@
 
 static void PathSeq(const Seq &s, const PWPath &Path, bool bRight, Seq &sOut)
 	{
-	short *esA;
-	short *esB;
+    int *esA;
+    int *esB;
 	PathToEstrings(Path, &esA, &esB);
 
 	const unsigned uEdgeCount = Path.GetEdgeCount();
@@ -67,17 +67,18 @@ static void MakeRootSeq(const Seq &s, const Tree &GuideTree, unsigned uLeafNodeI
 		const PWPath &Path = Nodes[uNodeIndex].m_Path;
 		Seq sTmp;
 		PathSeq(sRoot, Path, bRight, sTmp);
+        sTmp.SetId(0);
 		sRoot.Copy(sTmp);
 		}
 	}
 
 #endif	// VALIDATE
 
-static short *MakeRootSeqE(const Seq &s, const Tree &GuideTree, unsigned uLeafNodeIndex,
-  const ProgNode Nodes[], Seq &sRoot, short *Estring1, short *Estring2)
+static int *MakeRootSeqE(const Seq &s, const Tree &GuideTree, unsigned uLeafNodeIndex,
+  const ProgNode Nodes[], Seq &sRoot, int *Estring1, int *Estring2)
 	{
-	short *EstringCurr = Estring1;
-	short *EstringNext = Estring2;
+    int *EstringCurr = Estring1;
+    int *EstringNext = Estring2;
 
 	const unsigned uSeqLength = s.Length();
 	EstringCurr[0] = uSeqLength;
@@ -91,7 +92,7 @@ static short *MakeRootSeqE(const Seq &s, const Tree &GuideTree, unsigned uLeafNo
 			break;
 		bool bRight = (GuideTree.GetLeft(uParent) == uNodeIndex);
 		uNodeIndex = uParent;
-		const short *EstringNode = bRight ?
+        const int *EstringNode = bRight ?
 		  Nodes[uNodeIndex].m_EstringL : Nodes[uNodeIndex].m_EstringR;
 
 		MulEstrings(EstringCurr, EstringNode, EstringNext);
@@ -107,7 +108,7 @@ static short *MakeRootSeqE(const Seq &s, const Tree &GuideTree, unsigned uLeafNo
 		LogEstring(EstringNext);
 		Log("\n");
 #endif
-		short *EstringTmp = EstringNext;
+        int *EstringTmp = EstringNext;
 		EstringNext = EstringCurr;
 		EstringCurr = EstringTmp;
 		}
@@ -168,8 +169,8 @@ void MakeRootMSA(const SeqVect &v, const Tree &GuideTree, ProgNode Nodes[],
 	const PWPath &RootPath = Nodes[uRootNodeIndex].m_Path;
 	const unsigned uRootColCount = RootPath.GetEdgeCount();
 	const unsigned uEstringSize = uRootColCount + 1;
-	short *Estring1 = new short[uEstringSize];
-	short *Estring2 = new short[uEstringSize];
+    int *Estring1 = new int[uEstringSize];
+    int *Estring2 = new int[uEstringSize];
 	SetProgressDesc("Root alignment");
 
 	unsigned uTreeNodeIndex = GetFirstNodeIndex(GuideTree);
@@ -181,7 +182,7 @@ void MakeRootMSA(const SeqVect &v, const Tree &GuideTree, ProgNode Nodes[],
 		const Seq &s = *(v[uId]);
 
 		Seq sRootE;
-		short *es = MakeRootSeqE(s, GuideTree, uTreeNodeIndex, Nodes, sRootE,
+        int *es = MakeRootSeqE(s, GuideTree, uTreeNodeIndex, Nodes, sRootE,
 		  Estring1, Estring2);
         if(Nodes[uTreeNodeIndex].m_EstringL!=NULL)
             delete[] Nodes[uTreeNodeIndex].m_EstringL;

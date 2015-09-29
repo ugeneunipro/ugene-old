@@ -1,6 +1,6 @@
 #include "muscle.h"
 
-#if		!defined(__linux__) && !defined(_MSC_VER)
+#if		!defined(__linux__) && !defined(_MSC_VER) && !defined(__MACH__)
 
 double GetNAN()
 	{

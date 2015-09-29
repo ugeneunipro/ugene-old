@@ -442,7 +442,7 @@ void Tree::LogMe() const
 			{
 			Log("%5u  ", n1);
 			if (m_bHasEdgeLength1[uNodeIndex])
-				Log("%7.3g  ", m_dEdgeLength1[uNodeIndex]);
+                Log("%7.4f  ", m_dEdgeLength1[uNodeIndex]);
 			else
 				Log("      *  ");
 			}
@@ -453,7 +453,7 @@ void Tree::LogMe() const
 			{
 			Log("%5u  ", n2);
 			if (m_bHasEdgeLength2[uNodeIndex])
-				Log("%7.3g  ", m_dEdgeLength2[uNodeIndex]);
+                Log("%7.4f  ", m_dEdgeLength2[uNodeIndex]);
 			else
 				Log("      *  ");
 			}
@@ -464,7 +464,7 @@ void Tree::LogMe() const
 			{
 			Log("%5u  ", n3);
 			if (m_bHasEdgeLength3[uNodeIndex])
-				Log("%7.3g  ", m_dEdgeLength3[uNodeIndex]);
+                Log("%7.4f  ", m_dEdgeLength3[uNodeIndex]);
 			else
 				Log("      *  ");
 			}

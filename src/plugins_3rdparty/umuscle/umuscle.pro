@@ -32,6 +32,8 @@ HEADERS += src/MuscleAdapter.h \
            src/muscle/intmath.h \
            src/muscle/msa.h \
            src/muscle/msadist.h \
+           src/muscle/msadistkimura.h \
+           src/muscle/msadistmafft.h \
            src/muscle/muscle.h \
            src/muscle/muscle_context.h \
            src/muscle/objscore.h \
@@ -114,10 +116,10 @@ SOURCES += src/MuscleAdapter.cpp \
            src/muscle/glbalndimer.cpp \
            src/muscle/globals.cpp \
            src/muscle/globalslinux.cpp \
+           src/muscle/globalsosx.cpp \
            src/muscle/globalsother.cpp \
            src/muscle/globalswin32.cpp \
            src/muscle/gonnet.cpp \
-           src/muscle/gotowt.cpp \
            src/muscle/henikoffweight.cpp \
            src/muscle/henikoffweightpb.cpp \
            src/muscle/html.cpp \

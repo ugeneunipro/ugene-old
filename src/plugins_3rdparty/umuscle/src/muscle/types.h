@@ -2,7 +2,7 @@
 #define types_h
 
 typedef unsigned char byte;
-typedef unsigned short ushort;
+//typedef unsigned short ushort;
 
 typedef float SCOREMATRIX[32][32];
 typedef SCOREMATRIX *PTR_SCOREMATRIX;

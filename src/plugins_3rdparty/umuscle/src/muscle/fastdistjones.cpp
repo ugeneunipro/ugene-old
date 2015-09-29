@@ -9,7 +9,7 @@ const unsigned TRIPLE_COUNT = 20*20*20;
 struct TripleCount
 	{
 	unsigned m_uSeqCount;			// How many sequences have this triple?
-	unsigned short *m_Counts;		// m_Counts[s] = nr of times triple found in seq s
+    unsigned int *m_Counts;		// m_Counts[s] = nr of times triple found in seq s
 	};
 static TripleCount *TripleCounts;
 
@@ -40,8 +40,8 @@ void DistKmer20_3(const SeqVect &v, DistFunc &DF)
 	for (unsigned uWord = 0; uWord < TRIPLE_COUNT; ++uWord)
 		{
 		TripleCount &tc = *(TripleCounts + uWord);
-		const unsigned uBytes = uSeqCount*sizeof(short);
-		tc.m_Counts = (unsigned short *) malloc(uBytes);
+        const unsigned uBytes = uSeqCount*sizeof(int);
+        tc.m_Counts = (unsigned int *) malloc(uBytes);
 		memset(tc.m_Counts, 0, uBytes);
 		}
 
@@ -122,7 +122,7 @@ void DistKmer20_3(const SeqVect &v, DistFunc &DF)
 #endif
 
 	const unsigned uSeqListBytes = uSeqCount*sizeof(unsigned);
-	unsigned short *SeqList = new unsigned short[uSeqCount];//(unsigned short *) malloc(uSeqListBytes);
+    unsigned int *SeqList = new unsigned int[uSeqCount];//(unsigned int *) malloc(uSeqListBytes);
 
 	for (unsigned uWord = 0; uWord < TRIPLE_COUNT; ++uWord)
 		{

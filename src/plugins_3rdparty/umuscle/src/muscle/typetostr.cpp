@@ -10,7 +10,7 @@
 //	mm = (Secs/60)%60;
 //	ss = Secs%60;
 //
-//	sprintf(Str, "%02d:%02d:%02d", hh, mm, ss);
+//	sprintf(Str, "%02ld:%02ld:%02ld", hh, mm, ss);
 //	return Str;
 //	}
 

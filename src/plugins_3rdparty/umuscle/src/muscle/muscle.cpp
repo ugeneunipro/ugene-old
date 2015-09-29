@@ -45,19 +45,22 @@ void MUSCLE(SeqVect &v, MSA &msaOut)
 		ctx->params.g_Distance1 = DISTANCE_Kmer4_6;
 		}
 
+    unsigned uMinL = 0;
 	unsigned uMaxL = 0;
 	unsigned uTotL = 0;
 	for (unsigned uSeqIndex = 0; uSeqIndex < uSeqCount; ++uSeqIndex)
 		{
 		unsigned L = v.GetSeq(uSeqIndex).Length();
 		uTotL += L;
+        if (uMinL == 0 || L < uMinL)
+            uMinL = L;
 		if (L > uMaxL)
 			uMaxL = L;
 		}
 
 	SetIter(1);
 	ctx->params.g_bDiags = ctx->params.g_bDiags1;
-	SetSeqStats(uSeqCount, uMaxL, uTotL/uSeqCount);
+    SetSeqStats(uSeqCount, uMinL, uMaxL, uTotL/uSeqCount);
 
 	MSA::SetIdCount(uSeqCount);
 
