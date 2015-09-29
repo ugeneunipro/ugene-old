@@ -2745,6 +2745,9 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     //8) Run schema
     //Expected state : UGENE not crashed
     GTUtilsWorkflowDesigner::runWorkflow(os);
+    uiLog.trace("workflow has been ran");
+    GTGlobals::sleep(5000);
+    uiLog.trace("test is coming to an end");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0910) {
