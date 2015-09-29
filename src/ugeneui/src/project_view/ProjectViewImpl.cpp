@@ -125,6 +125,9 @@ static bool hasActiveDialogs(QObject* o) {
 }
 
 void DocumentUpdater::update() {
+    // This check is necessary, because if a document is removed from the project
+    // while a modal dialog is active, it can lead to invalid pointers to GObjects.
+    CHECK(NULL == QApplication::activeModalWidget(), );
     Project* prj = AppContext::getProject();
     assert(prj);
 
