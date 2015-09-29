@@ -3194,6 +3194,37 @@ GUI_TEST_CLASS_DEFINITION(test_4621) {
     //Expected state: UGENE does not crash.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4687) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    //2. Open OP and select pairwice alignment tab, select sequences to align
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTGlobals::sleep(500);
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+
+    //3. Press "Align sequence to this alignment" and add next sequence _common_data/fasta/amino_ext.fa 
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/fasta/", "amino_ext.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
+    CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
+    GTWidget::click(os, align);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Check warning message visibility
+    QWidget *label = GTWidget::findWidget(os, "lblMessage");
+    CHECK_SET_ERR(label->isVisible(), "Label should be visible");
+
+    //4. Undo changes
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Check warning message invisibility
+    CHECK_SET_ERR(!label->isVisible(), "Label should be invisible");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4689_1) {
     //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");

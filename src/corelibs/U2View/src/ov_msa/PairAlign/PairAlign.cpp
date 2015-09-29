@@ -184,6 +184,7 @@ void PairAlign::sl_alignmentChanged() {
         if(NULL != settingsWidget) {
             settingsWidget->updateWidget();
         }
+        checkState();
     }
 }
 
