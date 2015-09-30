@@ -39,7 +39,6 @@ static const QString INPUT_PORT_2("input-data-2");
 static const QString OUTPUT_PORT("output-data");
 
 static const QString RULE_ID("multiplexing-rule");
-static const QString EMPTY_ACTION_ID("empty-input-action");
 
 /*******************************
  * MultiplexerWorker
@@ -52,16 +51,8 @@ hasMultiData(false), multiMetadataId(-1), messagesInited(false)
 
 void MultiplexerWorker::init() {
     rule = actor->getParameter(RULE_ID)->getAttributeValue<uint>(context);
-    onEmptyAction = actor->getParameter(EMPTY_ACTION_ID)->getAttributeValue<uint>(context);
-
-    if (MANY_TO_ONE == rule) {
-        inChannel1 = ports.value(INPUT_PORT_2);
-        inChannel2 = ports.value(INPUT_PORT_1);
-    } else {
-        inChannel1 = ports.value(INPUT_PORT_1);
-        inChannel2 = ports.value(INPUT_PORT_2);
-    }
-
+    inChannel1 = ports.value(INPUT_PORT_1);
+    inChannel2 = ports.value(INPUT_PORT_2);
     outChannel = ports.value(OUTPUT_PORT);
     hasMultiData = false;
     messagesInited = false;
@@ -77,7 +68,7 @@ bool MultiplexerWorker::isReady() const {
     bool ended1 = inChannel1->isEnded();
     bool ended2 = inChannel2->isEnded();
 
-    if (ONE_TO_MANY == rule || MANY_TO_ONE == rule) {
+    if (ONE_TO_MANY == rule) {
         if (hasMsg1 && hasMsg2) {
             return true;
         } else if (hasMsg1) {
@@ -121,7 +112,7 @@ inline void MultiplexerWorker::sendUnitedMessage(const QVariantMap &m1, QVariant
 }
 
 Task *MultiplexerWorker::tick() {
-    if (ONE_TO_MANY == rule || MANY_TO_ONE == rule) {
+    if (ONE_TO_MANY == rule) {
         multiplexManyMode();
     } else if (ONE_TO_ONE == rule) {
         if (checkIfEnded()) {
@@ -129,7 +120,7 @@ Task *MultiplexerWorker::tick() {
         }
 
         bool bothData = inChannel1->hasMessage() && inChannel2->hasMessage();
-        if (!bothData && TRUNCATE == onEmptyAction) {
+        if (!bothData) {
             shutDown();
             return NULL;
         }
@@ -188,7 +179,7 @@ void MultiplexerWorker::multiplexManyMode() {
             m1 = m.getData().toMap();
             metadataId = m.getMetadataId();
             inChannel1->get(); // pop last message
-        } else if (TRUNCATE == onEmptyAction) {
+        } else {
             shutDown();
         }
         hasMultiData = true;
@@ -198,12 +189,7 @@ void MultiplexerWorker::multiplexManyMode() {
 
     if (messagesInited) {
         if (messages.isEmpty()) {
-            if (TRUNCATE == onEmptyAction) {
-                shutDown();
-            } else {
-                QVariantMap m2;
-                sendUnitedMessage(m1, m2, metadataId);
-            }
+            shutDown();
         } else {
             foreach (QVariantMap m2, messages) {
                 sendUnitedMessage(m1, m2, metadataId);
@@ -222,12 +208,7 @@ void MultiplexerWorker::multiplexManyMode() {
         }
         if (inChannel2->isEnded()) {
             if (messages.isEmpty()) {
-                if (TRUNCATE == onEmptyAction) {
-                    shutDown();
-                } else {
-                    QVariantMap m2;
-                    sendUnitedMessage(m1, m2, metadataId);
-                }
+                shutDown();
             }
             messagesInited = true;
             hasMultiData = false;
@@ -282,13 +263,7 @@ void MultiplexerWorkerFactory::init() {
                 " is repeated for each message from the first input port.</li>"
                 " <br/>Read the documentation for details."));
 
-        Descriptor actionDesc(EMPTY_ACTION_ID, MultiplexerWorker::tr("If empty input"), MultiplexerWorker::tr("How to multiplex the data if one of input ports produces no data. <br><li>Values:</li> <li><b>Fill by empty values</b> - if one of input ports produces no data, get data from another port only and put them to the output.</li> <li><b>Truncate</b> - if one of input port produces no data, then do not output anything.</li><br>"));
-
-        Attribute *ruleAttr = new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
-        Attribute *actionAttr = new Attribute(actionDesc, BaseTypes::STRING_TYPE(), true, FILL_EMPTY);
-
-        attrs << ruleAttr;
-        attrs << actionAttr;
+        attrs << new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
     }
 
     QMap<QString, PropertyDelegate*> delegateMap;
@@ -296,15 +271,9 @@ void MultiplexerWorkerFactory::init() {
         // delegates
         QVariantMap rules;
         rules[MultiplexerWorker::tr("1 to many")] = ONE_TO_MANY;
-        rules[MultiplexerWorker::tr("Many to 1")] = MANY_TO_ONE;
         rules[MultiplexerWorker::tr("1 to 1")] = ONE_TO_ONE;
 
-        QVariantMap actions;
-        actions[MultiplexerWorker::tr("Fill by empty values")] = FILL_EMPTY;
-        actions[MultiplexerWorker::tr("Truncate")] = TRUNCATE;
-
         delegateMap[RULE_ID] = new ComboBoxDelegate(rules);
-        delegateMap[EMPTY_ACTION_ID] = new ComboBoxDelegate(actions);
     }
 
     Descriptor protoDesc(MultiplexerWorkerFactory::ACTOR_ID,
@@ -333,15 +302,8 @@ Worker *MultiplexerWorkerFactory::createWorker(Actor* a) {
 QString MultiplexerPrompter::composeRichDoc() {
     uint rule = getParameter(RULE_ID).toUInt();
 
-    IntegralBusPort* input1 = NULL;
-    IntegralBusPort* input2 = NULL;
-    if (MANY_TO_ONE == rule) {
-        input1 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_2));
-        input2 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_1));
-    } else {
-        input1 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_1));
-        input2 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_2));
-    }
+    IntegralBusPort* input1 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_1));
+    IntegralBusPort* input2 = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT_2));
 
     QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
     QString inputName1 = unsetStr;

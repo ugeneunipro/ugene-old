@@ -30,13 +30,7 @@ namespace LocalWorkflow {
 
 enum MultiplexingRules {
     ONE_TO_MANY,
-    MANY_TO_ONE,
     ONE_TO_ONE,
-};
-
-enum EmptyDataAction {
-    TRUNCATE,
-    FILL_EMPTY
 };
 
 class MultiplexerPrompter : public PrompterBase<MultiplexerPrompter> {
@@ -65,7 +59,6 @@ private:
     IntegralBus *outChannel;
 
     uint rule;
-    uint onEmptyAction;
     bool hasMultiData;
     QVariantMap multiData;
     int multiMetadataId;
