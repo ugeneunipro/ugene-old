@@ -125,12 +125,16 @@
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="97"/>
         <source>Find annotated regions...</source>
-        <translation>Найти сгруппированные аннотации...</translation>
+        <translation>Поиск участков, соответствующих аннотации...</translation>
+    </message>
+    <message>
+        <source>Annotate plasmid...</source>
+        <translation>Автоматический поиск плазмид...</translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="101"/>
         <source>Annotate plasmid and custom features...</source>
-        <translation>Поиск плазмид и пользовательских аннотаций...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="121"/>

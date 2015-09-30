@@ -953,15 +953,19 @@
     <message>
         <location filename="../src/RepeatFinderPlugin.cpp" line="104"/>
         <source>Find tandems...</source>
-        <translation>Поиск тандемов...</translation>
+        <translation>Поиск тандемных повторов...</translation>
     </message>
 </context>
 <context>
     <name>U2::RevComplSequenceTask</name>
     <message>
+        <source>Reverse-complement sequence</source>
+        <translation type="vanished">Перевод последовательности к комплементарной</translation>
+    </message>
+    <message>
         <location filename="../src/FindRepeatsTask.cpp" line="42"/>
         <source>Reverse complement sequence</source>
-        <translation>Перевод последовательности к комплементарной</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/FindRepeatsTask.cpp" line="49"/>

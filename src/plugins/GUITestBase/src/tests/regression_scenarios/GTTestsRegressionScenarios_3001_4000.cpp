@@ -3846,28 +3846,27 @@ GUI_TEST_CLASS_DEFINITION(test_3610) {
     // Expected state: UGENE doesn't crash.
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 197350));
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 199950));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
-    //GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+//            GTPlainTextEdit::setText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), "=");
 
-    Runnable *filler = new ReplaceSubsequenceDialogFiller(os,
-        "atcgtac"
-        );
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+        }
+    };
+    Runnable *filler = new ReplaceSubsequenceDialogFiller(os, new Scenario);
     GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTGlobals::sleep(1000);
-
-//    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
-  //GTGlobals::sleep();
-//    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os));
-//    GTWidget::click(os, seqWidget, Qt::RightButton);
-
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3612) {

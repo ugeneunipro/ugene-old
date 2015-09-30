@@ -29,7 +29,8 @@ namespace U2 {
 class ReplaceSubsequenceDialogFiller : public Filler {
 public:
     ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool recalculateQuals = false);
-    void run();
+    ReplaceSubsequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    void commonScenario();
 
 private:
     QString pasteDataHere;

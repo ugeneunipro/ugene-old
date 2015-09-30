@@ -879,8 +879,8 @@ Choose another region.</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="106"/>
-        <source>Create Fragment...</source>
-        <translation>Create Fragment...</translation>
+        <source>Create fragment...</source>
+        <translation>Create fragment...</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="102"/>

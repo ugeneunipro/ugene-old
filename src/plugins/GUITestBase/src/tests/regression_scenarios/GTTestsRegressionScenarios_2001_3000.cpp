@@ -6160,7 +6160,7 @@ GUI_TEST_CLASS_DEFINITION(test_2924) {
 
 GUI_TEST_CLASS_DEFINITION(test_2929){
 //    1.    Open "human_T1.fa".
-//    2.    Click the "Search TFBS with SITECON" button on the main toolbar
+//    2.    Click the "Find TFBS with SITECON" button on the main toolbar
 //        Expected state: a dialog appeared, model is not selected, threshold is not set.
 //    3.    Click the "Search" button.
 //        Expected state: an error message box appeared.

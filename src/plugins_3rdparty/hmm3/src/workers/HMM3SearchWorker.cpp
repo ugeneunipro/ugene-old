@@ -224,7 +224,7 @@ Task* HMM3SearchWorker::tick() {
             foreach(const P7_HMM* hmm, hmms) {
                 subtasks << new UHMM3SWSearchTask (hmm, dnaSequence, settings);
             }
-            Task* searchTask = new MultiTask(tr("Search HMM3 signals in %1").arg(dnaSequence.getName()), subtasks);
+            Task* searchTask = new MultiTask(tr("Find HMM3 signals in %1").arg(dnaSequence.getName()), subtasks);
             connect(new TaskSignalMapper(searchTask), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
             return searchTask;
         }

@@ -66,7 +66,7 @@
         <translation>Обрезанный файл: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="473"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="475"/>
         <source>Invalid database user permissions set, so UGENE unable to use this database. Connect to your system administrator to fix the issue.</source>
         <translation>Установлены неверные права пользователя базы данных, таким образом UGENE не может использовать эту базу данных. Свяжитесь с вашим администратором для устранения проблемы.</translation>
     </message>
@@ -2190,49 +2190,49 @@ The following sequences are empty:</translation>
         <translation type="unfinished">Требуемый атрибут не найдет</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="262"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="264"/>
         <source>Database url is incorrect</source>
         <translation type="unfinished">Неправильный путь базы данных</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="268"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="270"/>
         <source>User login is not specified</source>
         <translation type="unfinished">Не указано имя пользователя</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="274"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="276"/>
         <source>Host is not specified</source>
         <translation type="unfinished">Не указан хост</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="280"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="282"/>
         <source>Database name is not specified</source>
         <translation type="unfinished">Не указано имя базы данных</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="296"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="298"/>
         <source>Error opening MySQL database: %1</source>
         <translation type="unfinished">Ошибка открытия базы данных MySQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="380"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="382"/>
         <source>Not a %1 MySQL database: %2, %3</source>
         <translation type="unfinished">Не %1 MySQL база данных: %2, %3</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="386"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="388"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="273"/>
         <source>Warning! The database was created with a newer %1 version: %2. Not all database features may be supported! Current %1 version: %3.</source>
         <translation type="unfinished">Предупреждение! База данных была создана с более новой %1 версией: %2. Не все возможности базы данных могут быть выполнены! Текущая %1 версия: %3.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="521"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="523"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="328"/>
         <source>Illegal database state: %1</source>
         <translation type="unfinished">Неправильное состояние базы данных: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="552"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="554"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="410"/>
         <source>Can&apos;t synchronize database state</source>
         <translation type="unfinished">Невозможно синхронизовать состояние базы данных</translation>

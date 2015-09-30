@@ -155,7 +155,7 @@
     <message>
         <location filename="../src/DNAFlexPlugin.cpp" line="113"/>
         <source>Find high DNA flexibility regions...</source>
-        <translation>Найти районы высокой флексибильности...</translation>
+        <translation>Поиск участков ДНК с повышенной гибкостью...</translation>
     </message>
 </context>
 <context>

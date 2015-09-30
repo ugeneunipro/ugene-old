@@ -152,7 +152,7 @@
         <translation>Can&apos;t connect external tool manager signal</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="407"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="408"/>
         <source>GUI testing</source>
         <translation>GUI testing</translation>
     </message>

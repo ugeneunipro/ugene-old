@@ -410,7 +410,7 @@ Ignore boundary ORFs which last beyond the search region
     <name>U2::ORFViewContext</name>
     <message>
         <source>Find ORFs...</source>
-        <translation>ORF: Искать рамки считывания...</translation>
+        <translation>Поиск открытых рамок считывания (ORF)...</translation>
     </message>
 </context>
 <context>

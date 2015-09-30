@@ -471,7 +471,7 @@
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="119"/>
         <source>Export selected sequence region...</source>
-        <translation>Экспорт выбранных регионов последовательности...</translation>
+        <translation>Экспорт выбранных участков последовательности...</translation>
     </message>
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="123"/>
@@ -481,7 +481,7 @@
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="127"/>
         <source>Export annotations...</source>
-        <translation>Экспортировать аннотации...</translation>
+        <translation>Экспорт аннотации...</translation>
     </message>
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="131"/>
@@ -491,7 +491,7 @@
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="135"/>
         <source>Align selected annotations (amino acids)...</source>
-        <translation>Вырвнять выбранные аннотации (аминокислоты)...</translation>
+        <translation>Выровнять выбранные аннотации (аминокислоты)...</translation>
     </message>
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="139"/>
@@ -703,8 +703,8 @@
     </message>
     <message>
         <location filename="../src/DNAExportPlugin.cpp" line="51"/>
-        <source>Generate sequence...</source>
-        <translation>Генерация последовательностей...</translation>
+        <source>Random sequence generator...</source>
+        <translation>Генерация случайных последовательностей...</translation>
     </message>
 </context>
 <context>

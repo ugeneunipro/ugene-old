@@ -703,8 +703,8 @@
     </message>
     <message>
         <location filename="../src/DNAExportPlugin.cpp" line="51"/>
-        <source>Generate sequence...</source>
-        <translation>Generate sequence...</translation>
+        <source>Random sequence generator...</source>
+        <translation>Random sequence generator...</translation>
     </message>
 </context>
 <context>

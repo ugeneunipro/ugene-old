@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/ui/BlastAllSupportDialog.ui" line="20"/>
         <source>Request to Local BLAST Database</source>
-        <translation>Запрос к локальной БД BLAST</translation>
+        <translation>Запрос к локальной базе данных BLAST</translation>
     </message>
     <message>
         <location filename="../src/ui/BlastAllSupportDialog.ui" line="42"/>
@@ -1351,7 +1351,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="20"/>
         <source>Contig Assembly with CAP3</source>
-        <translation>Выравнивание CAP3</translation>
+        <translation>Сборка контигов с помощью CAP3</translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="30"/>
@@ -1514,7 +1514,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/ClustalOSupportRunDialog.ui" line="26"/>
         <source>Align with Clustal Omega</source>
-        <translation>Выравнивание ClustalO</translation>
+        <translation>Выравнивание с помощью ClustalO</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalOSupportRunDialog.ui" line="42"/>
@@ -1573,7 +1573,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="26"/>
         <source>Align with ClustalW</source>
-        <translation>Выравнивание ClustalW</translation>
+        <translation>Выравнивание с помощью ClustalW</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="42"/>
@@ -1880,7 +1880,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="20"/>
         <source>Align with MAFFT</source>
-        <translation>Выравнивание MAFFT</translation>
+        <translation>Выравнивание с помощью MAFFT</translation>
     </message>
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="36"/>
@@ -1922,175 +1922,188 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MrBayesDialog</name>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="59"/>
         <source>MrBayes Settings</source>
-        <translation>Настройки метода MrBayes</translation>
+        <translation type="vanished">Настройки метода MrBayes</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="86"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="60"/>
         <source>Model</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="78"/>
         <source>ModelType</source>
         <translation>ModelType</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="95"/>
         <source>Rate</source>
         <translation>Показатель</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="95"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="118"/>
         <source>Gamma</source>
         <translation>Гамма</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="173"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="151"/>
         <source>MCMC</source>
         <translation>MCMC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="191"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="163"/>
         <source>Chain length</source>
         <translation>Длина цепи</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="227"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="189"/>
         <source>Subsampling frequence</source>
         <translation>Размер выборки</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="250"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="221"/>
         <source>Burn-in length</source>
         <translation>Длина прожига</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="342"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="250"/>
         <source>Heated chains</source>
         <translation>Подогретые цепи</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="335"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="279"/>
         <source>Heated chain temp</source>
         <translation>Температура подогрева цепей</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="220"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="321"/>
         <source>Random seed</source>
         <translation>Затравка</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="329"/>
+        <source>Display Options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PhyMLDialog</name>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="41"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="56"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="77"/>
         <source>Substitution model</source>
         <translation>Модель замен</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="73"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="98"/>
         <source>Equilibrium frequencies</source>
         <translation>Равновесные частоты</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="104"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="112"/>
         <source>optimized</source>
         <translation>оптимизированные</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="111"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="119"/>
         <source>empirical</source>
         <translation>эмпирические</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="124"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="293"/>
         <source>Transition / transversion ratio </source>
         <translation>Коэффициент перехода/трансверсии</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="158"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="222"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="354"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="139"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="171"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="289"/>
         <source>Check to set user value. 
 Uncheck to get the maximum likelihood estimate.</source>
         <translation>Установите галочку, чтобы задать значение пользователя.
 Снимите галочку, чтобы получить максимальную оценку правдоподобия.</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="169"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="233"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="301"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="365"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="190"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="212"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="243"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="265"/>
         <source>estimated </source>
         <translation>оценка</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="188"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="143"/>
         <source>Proportion of invariable sites</source>
         <translation>Доля неизменяемых сайтов</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="255"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="63"/>
+        <source>Substitution Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/PhyMLDialog.ui" line="154"/>
         <source>Number of substitution rate categories</source>
         <translation>Число категорий коэффициента замещения</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="320"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="175"/>
         <source>Gamma shape parameter</source>
         <translation>Параметр формы Гамма</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="387"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="303"/>
         <source>Branch Support</source>
         <translation>Поддержка ветви</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="408"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="321"/>
         <source>Use fast likelihood-based method</source>
         <translation>Использовать быстрый метод максимального правдоподобия</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="427"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="353"/>
         <source>Perform bootstrap</source>
         <translation>Выполнить начальную загрузку</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="443"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="369"/>
         <source>It is the number of bootstrap replicates.</source>
         <translation>Это число начальных загрузок.</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="456"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="380"/>
         <source>Tree Searching</source>
         <translation>Поиск дерева</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="536"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="470"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="546"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="482"/>
         <source>Type of tree improvement</source>
         <translation>Тип улучшения дерева</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="589"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="499"/>
         <source>Set number of random starting tree</source>
         <translation>Установить число случайных начал дерева</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="566"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="515"/>
         <source>Optimise topology</source>
         <translation>Оптимизировать топологию</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="576"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="525"/>
         <source>Optimise branch lengths</source>
         <translation>Оптимизировать длину ветвей</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/PhyMLDialog.ui" line="546"/>
+        <source>Display Options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2163,7 +2176,7 @@ Uncheck to get the maximum likelihood estimate.</source>
     <message>
         <location filename="../src/cufflinks/GffreadWorker.cpp" line="218"/>
         <source>Extract Transcript Sequences with gffread</source>
-        <translation>Извлечь транскрипционные последовательности при помощи gffread</translation>
+        <translation>Извлечь последовательности транскриптов с помощью gffread</translation>
     </message>
     <message>
         <location filename="../src/cufflinks/GffreadWorker.cpp" line="219"/>
@@ -2300,7 +2313,7 @@ Uncheck to get the maximum likelihood estimate.</source>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="20"/>
         <source>Align with T-Coffee</source>
-        <translation>Выравнивание T-Coffee</translation>
+        <translation>Выравнивание с помощью T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="36"/>
@@ -2424,8 +2437,8 @@ Uncheck to get the maximum likelihood estimate.</source>
     <name>U2::BlastAllSupportContext</name>
     <message>
         <location filename="../src/blast/BlastAllSupport.cpp" line="135"/>
-        <source>Query with BLAST...</source>
-        <translation>Запрос BLAST...</translation>
+        <source>Query with local BLAST...</source>
+        <translation>Поиск с помощью локальной базы данных BLAST...</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllSupport.cpp" line="155"/>
@@ -2819,8 +2832,8 @@ Uncheck to get the maximum likelihood estimate.</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="245"/>
-        <source>Query with BLAST+...</source>
-        <translation>Запрос BLAST+...</translation>
+        <source>Query with local BLAST+...</source>
+        <translation>Поиск с помощью локальной базы данных BLAST+...</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="289"/>
@@ -3314,7 +3327,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/clustalo/ClustalOSupport.cpp" line="133"/>
         <source>Align with ClustalO...</source>
-        <translation>Выравнивание ClustalO...</translation>
+        <translation>Выравнивание с помощью ClustalO...</translation>
     </message>
     <message>
         <location filename="../src/clustalo/ClustalOSupport.cpp" line="157"/>
@@ -3419,7 +3432,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
         <location filename="../src/clustalo/ClustalOSupportRunDialog.cpp" line="143"/>
         <location filename="../src/clustalo/ClustalOSupportRunDialog.cpp" line="146"/>
         <source>Kalign with Align</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/clustalo/ClustalOSupportRunDialog.cpp" line="144"/>
@@ -3463,7 +3476,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/clustalw/ClustalWSupport.cpp" line="133"/>
         <source>Align with ClustalW...</source>
-        <translation>Выравнивание ClustalW...</translation>
+        <translation>Выравнивание с помощью ClustalW...</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupport.cpp" line="158"/>
@@ -3563,7 +3576,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
         <location filename="../src/clustalw/ClustalWSupportRunDialog.cpp" line="215"/>
         <location filename="../src/clustalw/ClustalWSupportRunDialog.cpp" line="218"/>
         <source>Kalign with Align</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupportRunDialog.cpp" line="216"/>
@@ -3907,47 +3920,52 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="287"/>
         <source>Align with ClustalW...</source>
-        <translation>Выравнивание ClustalW...</translation>
+        <translation>Выравнивание с помощью ClustalW...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="295"/>
         <source>Align with ClustalO...</source>
-        <translation>Выравнивание ClustalO...</translation>
+        <translation>Выравнивание с помощью ClustalO...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="303"/>
         <source>Align with MAFFT...</source>
-        <translation>Выравнивание MAFFT...</translation>
+        <translation>Выравнивание с помощью MAFFT...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="311"/>
         <source>Align with T-Coffee...</source>
-        <translation>Выравнивание T-Coffee...</translation>
+        <translation>Выравнивание с помощью T-Coffee...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="464"/>
-        <source>Blast format database...</source>
-        <translation>Создать базу данных BLAST...</translation>
+        <source>BLAST make database...</source>
+        <translation>Создание базы данных BLAST...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="468"/>
         <source>BLAST+ make database...</source>
-        <translation>Создать базу данных BLAST+...</translation>
+        <translation>Создание базы данных BLAST+...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="486"/>
         <source>BLAST+ search...</source>
-        <translation>Искать с помощью BLAST+...</translation>
+        <translation>Поиск с помощью BLAST+...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="490"/>
         <source>BLAST+ query database...</source>
-        <translation>Запрос BLAST+...</translation>
+        <translation>Запрос с помощью BLAST+...</translation>
+    </message>
+    <message>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="501"/>
+        <source>Contig assembly with %1...</source>
+        <translation>Сборка контигов с помощью %1...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="476"/>
-        <source>BLAST Search...</source>
-        <translation>Искать с помощью BLAST...</translation>
+        <source>BLAST search...</source>
+        <translation>Поиск с помощью BLAST...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportL10N.h" line="38"/>
@@ -4751,7 +4769,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="180"/>
-        <source>Local BLAST Search</source>
+        <source>Local BLAST search</source>
         <translation>Локальный BLAST поиск</translation>
     </message>
     <message>
@@ -6377,7 +6395,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="129"/>
         <source>Align with ClustalW</source>
-        <translation>Выравнивание ClustalW</translation>
+        <translation>Выравнивание с помощью ClustalW</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="289"/>
@@ -7977,7 +7995,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="88"/>
         <source>Align with MAFFT</source>
-        <translation>Выравнивание MAFFT</translation>
+        <translation>Выравнивание с помощью MAFFT</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="202"/>
@@ -8855,7 +8873,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="87"/>
         <source>Align with T-Coffee</source>
-        <translation>Выравнивание T-Coffee</translation>
+        <translation>Выравнивание с помощью T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="88"/>
@@ -9381,7 +9399,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
     <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="131"/>
         <source>Align with MAFFT...</source>
-        <translation>Выравнивание MAFFT...</translation>
+        <translation>Выравнивание с помощью MAFFT...</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="156"/>
@@ -9497,7 +9515,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <location filename="../src/mafft/MAFFTSupportRunDialog.cpp" line="134"/>
         <location filename="../src/mafft/MAFFTSupportRunDialog.cpp" line="137"/>
         <source>Kalign with Align</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTSupportRunDialog.cpp" line="135"/>
@@ -9531,22 +9549,22 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <translation>Align sequences to an existing alignment by MAFFT started</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="176"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="175"/>
         <source>Output file &apos;%1&apos; not found</source>
         <translation>Output file &apos;%1&apos; not found</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="178"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="177"/>
         <source>Output file &apos;%3&apos; not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation>Output file &apos;%3&apos; not found. May be %1 tool path &apos;%2&apos; not valid?</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="185"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="184"/>
         <source>Loading output file &apos;%1&apos;</source>
         <translation>Loading output file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="233"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="232"/>
         <source>MAFFT alignment successfully finished</source>
         <translation>MAFFT alignment successfully finished</translation>
     </message>
@@ -9596,22 +9614,22 @@ Set it empty if you want to run Tophat once for all input reads</source>
 <context>
     <name>U2::MrBayesWidget</name>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="64"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="65"/>
         <source>Substitution model</source>
         <translation>Модель замен</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="68"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="69"/>
         <source>Rate Matrix (fixed)</source>
         <translation>Матрица оценок</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="174"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="180"/>
         <source>Path for %1 tool not selected.</source>
         <translation>Путь для %1 не установлен.</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="175"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="181"/>
         <source>Do you want to select it now?</source>
         <translation>Выбрать сейчас?</translation>
     </message>
@@ -9726,12 +9744,12 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <translation>Открыть выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="221"/>
+        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="224"/>
         <source>Path for %1 tool not selected.</source>
         <translation>Путь для %1 не установлен.</translation>
     </message>
     <message>
-        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="222"/>
+        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="225"/>
         <source>Do you want to select it now?</source>
         <translation>Выбрать сейчас?</translation>
     </message>
@@ -10043,7 +10061,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
     <message>
         <location filename="../src/spidey/SpideySupport.cpp" line="115"/>
         <source>Align sequence to mRNA</source>
-        <translation>Выровнять последовательность на mRNA</translation>
+        <translation>Выровнять последовательность на мРНК</translation>
     </message>
     <message>
         <location filename="../src/spidey/SpideySupport.cpp" line="142"/>
@@ -10095,7 +10113,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="134"/>
         <source>Align with T-Coffee...</source>
-        <translation>Выравнивание T-Coffee...</translation>
+        <translation>Выравнивание с помощью T-Coffee...</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="159"/>
@@ -10205,7 +10223,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <location filename="../src/tcoffee/TCoffeeSupportRunDialog.cpp" line="132"/>
         <location filename="../src/tcoffee/TCoffeeSupportRunDialog.cpp" line="135"/>
         <source>Kalign with Align</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupportRunDialog.cpp" line="133"/>

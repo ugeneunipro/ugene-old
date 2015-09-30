@@ -248,7 +248,7 @@
     <name>U2::LocalWorkflow::SiteconBuildWorker</name>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="84"/>
-        <source>Build SITECON Model</source>
+        <source>Build SITECON model</source>
         <translation>Построить SITECON</translation>
     </message>
     <message>
@@ -470,7 +470,7 @@
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="254"/>
-        <source>Search TFBS in %1</source>
+        <source>Find TFBS in %1</source>
         <translation>Поиск ССТФ в %1</translation>
     </message>
     <message>
@@ -671,7 +671,7 @@
     <message>
         <location filename="../src/SiteconPlugin.cpp" line="118"/>
         <source>Search TFBS with SITECON...</source>
-        <translation>SITECON: Искать сайты связывания ТФ...</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью SITECON...</translation>
     </message>
 </context>
 <context>
@@ -753,7 +753,7 @@
     <name>U2::SiteconBuildTask</name>
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="184"/>
-        <source>Build SITECON Model</source>
+        <source>Build SITECON model</source>
         <translation>Построить SITECON</translation>
     </message>
     <message>

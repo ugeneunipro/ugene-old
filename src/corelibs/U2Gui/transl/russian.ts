@@ -1967,7 +1967,7 @@ complement(5..15)</translation>
         <translation>Сохранить имена последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="138"/>
+        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="140"/>
         <source>Select file to save annotations</source>
         <translation>Выберите файл для сохранения аннотаций</translation>
     </message>
@@ -3006,7 +3006,7 @@ check connection settings</translation>
     <message>
         <location filename="../src/ToolsMenu.cpp" line="106"/>
         <source>Sanger data analysis</source>
-        <translation>Анализ данных Sanger</translation>
+        <translation>Анализ данных секвенирования по Сэнгеру</translation>
     </message>
     <message>
         <location filename="../src/ToolsMenu.cpp" line="116"/>
@@ -3031,12 +3031,12 @@ check connection settings</translation>
     <message>
         <location filename="../src/ToolsMenu.cpp" line="177"/>
         <source>Primer</source>
-        <translation>Праймер</translation>
+        <translation>Подбор праймеров</translation>
     </message>
     <message>
         <location filename="../src/ToolsMenu.cpp" line="183"/>
         <source>Search for TFBS</source>
-        <translation>Поиск TFBS</translation>
+        <translation>Поиск сайтов связывания транскрипционных факторов (TFBS)</translation>
     </message>
     <message>
         <location filename="../src/ToolsMenu.cpp" line="192"/>

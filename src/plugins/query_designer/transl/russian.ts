@@ -845,7 +845,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryDesignerPlugin.cpp" line="105"/>
         <source>Analyze with query schema...</source>
-        <translation>Использовать схему дизайнера запросов...</translation>
+        <translation>Поиск сигналов с помощью дизайнера запросов...</translation>
     </message>
 </context>
 <context>

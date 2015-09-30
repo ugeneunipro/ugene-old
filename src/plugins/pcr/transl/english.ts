@@ -188,8 +188,8 @@
     </message>
     <message>
         <location filename="../src/ui/PrimerGroupBox.ui" line="69"/>
-        <source>Reverse complement sequence</source>
-        <translation>Reverse complement sequence</translation>
+        <source>Reverse-complement sequence</source>
+        <translation>Reverse-complement sequence</translation>
     </message>
     <message>
         <location filename="../src/ui/PrimerGroupBox.ui" line="98"/>

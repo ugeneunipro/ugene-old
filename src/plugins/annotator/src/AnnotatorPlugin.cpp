@@ -98,7 +98,7 @@ void AnnotatorViewContext::initViewContext(GObjectView* v) {
     connect(a, SIGNAL(triggered()), SLOT(sl_showCollocationDialog()));
 
     if (customFeaturesAvailable) {
-        ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/plasmid_features.png"), tr("Annotate plasmid and custom features..."), 31);
+        ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/plasmid_features.png"), tr("Annotate plasmid..."), 31);
         a->addAlphabetFilter(DNAAlphabet_NUCL);
         connect(a, SIGNAL(triggered()), SLOT(sl_showCustomAutoAnnotationDialog()));
     }

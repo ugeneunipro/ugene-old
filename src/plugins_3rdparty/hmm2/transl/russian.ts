@@ -431,8 +431,8 @@ The default is instead to generate sequences with a variety of different lengths
     <name>U2::HMMADVContext</name>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="257"/>
-        <source>Search with HMM model...</source>
-        <translation>HMMER2: поиск сигналов HMM модели...</translation>
+        <source>Find HMM signals with HMMER2...</source>
+        <translation>Поиск с помощью скрытой марковской модели (HMMER2)...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="274"/>
@@ -1353,7 +1353,7 @@ The default is instead to generate sequences with a variety of different lengths
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="211"/>
-        <source>Search HMM signals in %1</source>
+        <source>Find HMM signals in %1</source>
         <translation>Поиск HMM сигналов в последовательности &apos;%1&apos;</translation>
     </message>
     <message>
@@ -1438,17 +1438,17 @@ The default is instead to generate sequences with a variety of different lengths
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="83"/>
         <source>Build HMM2 profile...</source>
-        <translation>Построить профайл с помощью HMM2...</translation>
+        <translation>Построение профиля с помощью HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="88"/>
-        <source>Calibrate profile with HMM2...</source>
-        <translation>Калибровать профайл с помощью HMM2...</translation>
+        <source>Calibrate profile with HMMER2...</source>
+        <translation>Калибровка профиля с помощью HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="93"/>
-        <source>Search with HMM2...</source>
-        <translation>Искать сигналы HMM2...</translation>
+        <source>Search with HMMER2...</source>
+        <translation>Поиск с помощью HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="190"/>

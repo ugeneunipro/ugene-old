@@ -77,12 +77,12 @@
 <context>
     <name>U2::ChromatogramViewRenderArea</name>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="526"/>
+        <location filename="../src/ChromatogramView.cpp" line="510"/>
         <source>Chromatogram view (zoom in to see base calls)</source>
         <translation>Хроматограмма (приближайте масштаб)</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="749"/>
+        <location filename="../src/ChromatogramView.cpp" line="733"/>
         <source>original sequence</source>
         <translation>Исходная последовательность</translation>
     </message>

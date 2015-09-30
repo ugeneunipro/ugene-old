@@ -226,7 +226,7 @@ Task* WorkflowDesignerService::createServiceDisablingTask(){
 }
 
 WorkflowDesignerService::WorkflowDesignerService()
-: Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
+: Service(Service_WorkflowDesigner, tr("Workflow Designer..."), ""),
 designerAction(NULL), managerAction(NULL), newWorkflowAction(NULL)
 {
 
@@ -276,7 +276,7 @@ void WorkflowDesignerService::initDesignerAction() {
 }
 
 void WorkflowDesignerService::initNewWorkflowAction() {
-    newWorkflowAction = new QAction(QIcon(":/workflow_designer/images/wd.png"), tr("New workflow"), this);
+    newWorkflowAction = new QAction(QIcon(":/workflow_designer/images/wd.png"), tr("New workflow..."), this);
     newWorkflowAction->setObjectName("New workflow");
     connect(newWorkflowAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
 
@@ -346,7 +346,7 @@ void WorkflowDesignerService::initSampleActions() {
     ngsControl.requiredPlugins << externalToolsPlugin;
     SampleAction ngsRawDna(ToolsMenu::NGS_RAW_DNA, ToolsMenu::NGS_MENU, "NGS/raw_dna.uwl", SampleAction::Select, tr("Raw DNA-Seq data processing"));
     ngsRawDna.requiredPlugins << externalToolsPlugin;
-    SampleAction ngsVariants(ToolsMenu::NGS_CALL_VARIANTS, ToolsMenu::NGS_MENU, "NGS/call_variants.uwl", SampleAction::Select, tr("Call variants"));
+    SampleAction ngsVariants(ToolsMenu::NGS_CALL_VARIANTS, ToolsMenu::NGS_MENU, "NGS/call_variants.uwl", SampleAction::Select, tr("Variant calling"));
     ngsVariants.requiredPlugins << externalToolsPlugin;
     SampleAction ngsEffect(ToolsMenu::NGS_VARIANT_EFFECT, ToolsMenu::NGS_MENU, "NGS/variation_annotation.uwl", SampleAction::Select, tr("Annotate variants and predict effects"));
     ngsEffect.requiredPlugins << externalToolsPlugin;

@@ -461,7 +461,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     etRegistry->registerEntry(fastqc);
 
     if (AppContext::getMainWindow()) {
-        ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("Blast format database..."), this, QStringList(ET_FORMATDB));
+        ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("BLAST make database..."), this, QStringList(ET_FORMATDB));
         formatDBAction->setObjectName(ToolsMenu::BLAST_DB);
         connect(formatDBAction, SIGNAL(triggered()), formatDBTool, SLOT(sl_runWithExtFileSpecify()));
 
@@ -473,7 +473,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         blastAllViewContext->setParent(this);
         blastAllViewContext->init();
 
-        ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(ET_BLASTALL));
+        ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST search..."), this, QStringList(ET_BLASTALL));
         blastallAction->setObjectName(ToolsMenu::BLAST_SEARCH);
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
 
@@ -498,7 +498,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         ToolsMenu::addAction(ToolsMenu::BLAST_MENU, blastPlusAction);
         ToolsMenu::addAction(ToolsMenu::BLAST_MENU, blastPlusCmdAction);
 
-        ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1...").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
+        ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString(tr("Contig assembly with %1...")).arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
         cap3Action->setObjectName(ToolsMenu::SANGER_DENOVO);
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
         ToolsMenu::addAction(ToolsMenu::SANGER_MENU, cap3Action);

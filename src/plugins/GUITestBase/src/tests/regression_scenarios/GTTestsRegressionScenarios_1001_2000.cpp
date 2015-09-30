@@ -7271,10 +7271,10 @@ GUI_TEST_CLASS_DEFINITION( test_1703 )
 GUI_TEST_CLASS_DEFINITION( test_1704 ){
 //    1. Open _common_data\_regession\1704\lrr_test_new.gb
     GTFileDialog::openFile( os, testDir + "_common_data/regression/1704", "lrr_test_new.gb" );
-//    2. Search HMM3 signals with _common_data\_regession\1704\LRR_4.hmm model
+//    2. Find HMM3 signals with _common_data\_regession\1704\LRR_4.hmm model
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()
                                                       << "ADV_MENU_ANALYSE"
-                                                      << "Search HMM signals with HMMER3"));
+                                                      << "Find HMM signals with HMMER3"));
     GTUtilsDialog::waitForDialog(os, new UHMM3SearchDialogFiller(os, testDir + "_common_data/regression/1704/LRR_4.hmm",
                                                                  sandBoxDir + "1704.gb"));
 

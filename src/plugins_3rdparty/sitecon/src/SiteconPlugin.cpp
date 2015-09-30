@@ -115,7 +115,7 @@ SiteconADVContext::SiteconADVContext(QObject* p) : GObjectViewWindowContext(p, A
 
 void SiteconADVContext::initViewContext(GObjectView* view) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
-    ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":sitecon/images/sitecon.png"), tr("Search TFBS with SITECON..."), 80);
+    ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":sitecon/images/sitecon.png"), tr("Find TFBS with SITECON..."), 80);
     a->setObjectName("SITECON");
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));

@@ -128,9 +128,13 @@
         <translation>Find annotated regions...</translation>
     </message>
     <message>
+        <source>Annotate plasmid...</source>
+        <translation>Annotate plasmid...</translation>
+    </message>
+    <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="101"/>
         <source>Annotate plasmid and custom features...</source>
-        <translation>Annotate plasmid and custom features...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="121"/>

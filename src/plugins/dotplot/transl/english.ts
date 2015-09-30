@@ -304,18 +304,6 @@ Select valid file to build dotplot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to detect file format %1.
-Select valid file to build dotplot</source>
-        <translation type="vanished">Unable to detect file format %1.
-Select valid file to build dotplot</translation>
-    </message>
-    <message>
-        <source>Unable to detect format of given file %1.
-Select valid file to build dotplot</source>
-        <translation type="vanished">Unable to detect format of given file %1.
-Select valid file to build dotplot</translation>
-    </message>
-    <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="169"/>
         <source>Select files first to build dotplot</source>
         <translation>Select files first to build dotplot</translation>

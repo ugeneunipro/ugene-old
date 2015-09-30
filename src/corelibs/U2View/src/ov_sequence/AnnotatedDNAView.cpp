@@ -155,7 +155,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     removeSequenceObjectAction->setObjectName(ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
     connect(removeSequenceObjectAction, SIGNAL(triggered()), SLOT(sl_removeSelectedSequenceObject()));
 
-    reverseComplementSequenceAction = new QAction(tr("Reverse complement sequence"), this);
+    reverseComplementSequenceAction = new QAction(tr("Reverse-complement sequence"), this);
     reverseComplementSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
     connect(reverseComplementSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseComplementSequence()));
 
@@ -568,7 +568,7 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
     SAFE_POINT(NULL != seqObj, "Sequence object in focus is NULL",);
     Document *curDoc = seqObj->getDocument();
     SAFE_POINT(NULL != curDoc, "Current document is NULL",);
-    QMenu* rm = m->addMenu(tr("Edit sequence"));
+    QMenu* rm = m->addMenu(tr("Edit"));
 
     if(curDoc->findGObjectByType(GObjectTypes::SEQUENCE).isEmpty() || seqObj->isStateLocked()) {
         rm->setDisabled(true);

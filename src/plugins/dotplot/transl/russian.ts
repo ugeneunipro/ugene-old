@@ -304,18 +304,6 @@ Select valid file to build dotplot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to detect file format %1.
-Select valid file to build dotplot</source>
-        <translation type="vanished">Невозможно определить формат файла %1.
-Выберите корректный файл</translation>
-    </message>
-    <message>
-        <source>Unable to detect format of given file %1.
-Select valid file to build dotplot</source>
-        <translation type="vanished">Невозможно определить формат файла %1.
-Выберите корректный файл</translation>
-    </message>
-    <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="169"/>
         <source>Select files first to build dotplot</source>
         <translation>Выберите файлы, чтобы посмотрить dotplot</translation>
@@ -474,7 +462,7 @@ Select valid file to build dotplot</source>
         <location filename="../src/DotPlotPlugin.cpp" line="71"/>
         <location filename="../src/DotPlotPlugin.cpp" line="220"/>
         <source>Build dotplot...</source>
-        <translation>Построить dotplot...</translation>
+        <translation>Построение точечной диаграммы (dotplot)...</translation>
     </message>
     <message>
         <location filename="../src/DotPlotPlugin.cpp" line="90"/>

@@ -667,7 +667,7 @@ void WorkflowView::createActions() {
     connect(tickReadyAction, SIGNAL(triggered()), bottomTabs, SLOT(update()));
     debugActions.append(tickReadyAction);
 
-    newAction = new QAction(tr("&New workflow"), this);
+    newAction = new QAction(tr("&New workflow..."), this);
     newAction->setIcon(QIcon(":workflow_designer/images/filenew.png"));
     newAction->setShortcuts(QKeySequence::New);
     newAction->setObjectName("New workflow action");

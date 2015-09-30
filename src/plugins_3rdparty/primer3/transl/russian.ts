@@ -2096,7 +2096,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Primer3Plugin.cpp" line="92"/>
         <source>Primer3...</source>
-        <translation>Подбор праймеров...</translation>
+        <translation>Primer3: Подбор праймеров...</translation>
     </message>
     <message>
         <location filename="../src/Primer3Plugin.cpp" line="146"/>

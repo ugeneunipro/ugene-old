@@ -1925,175 +1925,188 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MrBayesDialog</name>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="59"/>
         <source>MrBayes Settings</source>
-        <translation>MrBayes Settings</translation>
+        <translation type="vanished">MrBayes Settings</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="86"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="60"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="78"/>
         <source>ModelType</source>
         <translation>ModelType</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="95"/>
         <source>Rate</source>
         <translation>Rate</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="95"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="118"/>
         <source>Gamma</source>
         <translation>Gamma</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="173"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="151"/>
         <source>MCMC</source>
         <translation>MCMC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="191"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="163"/>
         <source>Chain length</source>
         <translation>Chain length</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="227"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="189"/>
         <source>Subsampling frequence</source>
         <translation>Subsampling frequence</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="250"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="221"/>
         <source>Burn-in length</source>
         <translation>Burn-in length</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="342"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="250"/>
         <source>Heated chains</source>
         <translation>Heated chains</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="335"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="279"/>
         <source>Heated chain temp</source>
         <translation>Heated chain temp</translation>
     </message>
     <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="220"/>
+        <location filename="../src/ui/MrBayesDialog.ui" line="321"/>
         <source>Random seed</source>
         <translation>Random seed</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="329"/>
+        <source>Display Options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PhyMLDialog</name>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="41"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="56"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="77"/>
         <source>Substitution model</source>
         <translation>Substitution model</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="73"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="98"/>
         <source>Equilibrium frequencies</source>
         <translation>Equilibrium frequencies</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="104"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="112"/>
         <source>optimized</source>
         <translation>optimized</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="111"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="119"/>
         <source>empirical</source>
         <translation>empirical</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="124"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="293"/>
         <source>Transition / transversion ratio </source>
         <translation>Transition / transversion ratio </translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="158"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="222"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="354"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="139"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="171"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="289"/>
         <source>Check to set user value. 
 Uncheck to get the maximum likelihood estimate.</source>
         <translation>Check to set user value. 
 Uncheck to get the maximum likelihood estimate.</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="169"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="233"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="301"/>
-        <location filename="../src/ui/PhyMLDialog.ui" line="365"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="190"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="212"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="243"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="265"/>
         <source>estimated </source>
         <translation>estimated </translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="188"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="143"/>
         <source>Proportion of invariable sites</source>
         <translation>Proportion of invariable sites</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="255"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="63"/>
+        <source>Substitution Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/PhyMLDialog.ui" line="154"/>
         <source>Number of substitution rate categories</source>
         <translation>Number of substitution rate categories</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="320"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="175"/>
         <source>Gamma shape parameter</source>
         <translation>Gamma shape parameter</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="387"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="303"/>
         <source>Branch Support</source>
         <translation>Branch Support</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="408"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="321"/>
         <source>Use fast likelihood-based method</source>
         <translation>Use fast likelihood-based method</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="427"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="353"/>
         <source>Perform bootstrap</source>
         <translation>Perform bootstrap</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="443"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="369"/>
         <source>It is the number of bootstrap replicates.</source>
         <translation>It is the number of bootstrap replicates.</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="456"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="380"/>
         <source>Tree Searching</source>
         <translation>Tree Searching</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="536"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="470"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="546"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="482"/>
         <source>Type of tree improvement</source>
         <translation>Type of tree improvement</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="589"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="499"/>
         <source>Set number of random starting tree</source>
         <translation>Set number of random starting tree</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="566"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="515"/>
         <source>Optimise topology</source>
         <translation>Optimise topology</translation>
     </message>
     <message>
-        <location filename="../src/ui/PhyMLDialog.ui" line="576"/>
+        <location filename="../src/ui/PhyMLDialog.ui" line="525"/>
         <source>Optimise branch lengths</source>
         <translation>Optimise branch lengths</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/PhyMLDialog.ui" line="546"/>
+        <source>Display Options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2427,8 +2440,8 @@ Uncheck to get the maximum likelihood estimate.</translation>
     <name>U2::BlastAllSupportContext</name>
     <message>
         <location filename="../src/blast/BlastAllSupport.cpp" line="135"/>
-        <source>Query with BLAST...</source>
-        <translation>Query with BLAST...</translation>
+        <source>Query with local BLAST...</source>
+        <translation>Query with local BLAST...</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllSupport.cpp" line="155"/>
@@ -2822,8 +2835,8 @@ Uncheck to get the maximum likelihood estimate.</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="245"/>
-        <source>Query with BLAST+...</source>
-        <translation>Query with BLAST+...</translation>
+        <source>Query with local BLAST+...</source>
+        <translation>Query with local BLAST+...</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="289"/>
@@ -3929,8 +3942,8 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="464"/>
-        <source>Blast format database...</source>
-        <translation>BLAST format database...</translation>
+        <source>BLAST make database...</source>
+        <translation>BLAST make database...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="468"/>
@@ -3948,9 +3961,14 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
         <translation>BLAST+ query database...</translation>
     </message>
     <message>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="501"/>
+        <source>Contig assembly with %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ExternalToolSupportPlugin.cpp" line="476"/>
-        <source>BLAST Search...</source>
-        <translation>BLAST Search...</translation>
+        <source>BLAST search...</source>
+        <translation>BLAST search...</translation>
     </message>
     <message>
         <location filename="../src/ExternalToolSupportL10N.h" line="38"/>
@@ -4754,8 +4772,8 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="180"/>
-        <source>Local BLAST Search</source>
-        <translation>Local BLAST Search</translation>
+        <source>Local BLAST search</source>
+        <translation>Local BLAST search</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="181"/>
@@ -9530,22 +9548,22 @@ Set it empty if you want to run Tophat once for all input reads</translation>
         <translation>Align sequences to an existing alignment by MAFFT started</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="176"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="175"/>
         <source>Output file &apos;%1&apos; not found</source>
         <translation>Output file &apos;%1&apos; not found</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="178"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="177"/>
         <source>Output file &apos;%3&apos; not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation>Output file &apos;%3&apos; not found. May be %1 tool path &apos;%2&apos; not valid?</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="185"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="184"/>
         <source>Loading output file &apos;%1&apos;</source>
         <translation>Loading output file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="233"/>
+        <location filename="../src/mafft/MafftAddToAlignmentTask.cpp" line="232"/>
         <source>MAFFT alignment successfully finished</source>
         <translation>MAFFT alignment successfully finished</translation>
     </message>
@@ -9595,22 +9613,22 @@ Set it empty if you want to run Tophat once for all input reads</translation>
 <context>
     <name>U2::MrBayesWidget</name>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="64"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="65"/>
         <source>Substitution model</source>
         <translation>Substitution model</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="68"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="69"/>
         <source>Rate Matrix (fixed)</source>
         <translation>Rate Matrix (fixed)</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="174"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="180"/>
         <source>Path for %1 tool not selected.</source>
         <translation>Path for %1 tool not selected.</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="175"/>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="181"/>
         <source>Do you want to select it now?</source>
         <translation>Do you want to select it now?</translation>
     </message>
@@ -9725,12 +9743,12 @@ Set it empty if you want to run Tophat once for all input reads</translation>
         <translation>Open an alignment file</translation>
     </message>
     <message>
-        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="221"/>
+        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="224"/>
         <source>Path for %1 tool not selected.</source>
         <translation>Path for %1 tool not selected.</translation>
     </message>
     <message>
-        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="222"/>
+        <location filename="../src/phyml/PhyMLDialogWidget.cpp" line="225"/>
         <source>Do you want to select it now?</source>
         <translation>Do you want to select it now?</translation>
     </message>

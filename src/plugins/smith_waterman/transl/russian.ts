@@ -571,7 +571,7 @@
     <message>
         <location filename="../src/SWAlgorithmPlugin.cpp" line="165"/>
         <source>Find pattern [Smith-Waterman]...</source>
-        <translation>Смит-Ватерман: Поиск по шаблону...</translation>
+        <translation>Поиск подстроки (алгоритм Смита-Ватермана)...</translation>
     </message>
 </context>
 <context>

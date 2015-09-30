@@ -102,12 +102,12 @@ UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "HMM3" ), tr( "HMM profile tools. Plugi
         connect( buildAction, SIGNAL( triggered() ), SLOT( sl_buildProfile() ) );
         ToolsMenu::addAction(ToolsMenu::HMMER_MENU, buildAction);
         
-        QAction * searchAction = new QAction( tr( "Search with HMM3..." ), this );
+        QAction * searchAction = new QAction( tr( "Search with HMMER3..." ), this );
         searchAction->setObjectName(ToolsMenu::HMMER_SEARCH3);
         connect( searchAction, SIGNAL( triggered() ), SLOT( sl_searchHMMSignals() ) );
         ToolsMenu::addAction(ToolsMenu::HMMER_MENU, searchAction);
         
-        QAction * phmmerAction = new QAction( tr( "Search with HMM3 phmmer..." ), this );
+        QAction * phmmerAction = new QAction( tr( "Search with HMMER3 phmmer..." ), this );
         phmmerAction->setObjectName(ToolsMenu::HMMER_SEARCH3P);
         connect( phmmerAction, SIGNAL( triggered() ), SLOT( sl_phmmerSearch() ) );
         ToolsMenu::addAction(ToolsMenu::HMMER_MENU, phmmerAction);
@@ -244,8 +244,8 @@ void UHMM3ADVContext::initViewContext( GObjectView * view ) {
     AnnotatedDNAView * av = qobject_cast< AnnotatedDNAView* >( view );
     
     ADVGlobalAction * searchAction = new ADVGlobalAction( av, QIcon( ":/hmm3/images/hmmer_16.png" ), 
-                                                          tr( "Search HMM signals with HMMER3..." ), 70 );
-    searchAction->setObjectName("Search HMM signals with HMMER3");
+                                                          tr( "Find HMM signals with HMMER3..." ), 70 );
+    searchAction->setObjectName("Find HMM signals with HMMER3");
     connect( searchAction, SIGNAL( triggered() ), SLOT( sl_search() ) );
 }
 

@@ -959,9 +959,13 @@
 <context>
     <name>U2::RevComplSequenceTask</name>
     <message>
+        <source>Reverse-complement sequence</source>
+        <translation type="vanished">Reverse-complement sequence</translation>
+    </message>
+    <message>
         <location filename="../src/FindRepeatsTask.cpp" line="42"/>
         <source>Reverse complement sequence</source>
-        <translation>Reverse complement sequence</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/FindRepeatsTask.cpp" line="49"/>

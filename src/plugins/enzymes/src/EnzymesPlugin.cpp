@@ -103,7 +103,7 @@ void EnzymesPlugin::createToolsMenu() {
     openDigestSequenceDialog->setObjectName(ToolsMenu::CLONING_FRAGMENTS);
     openConstructMoleculeDialog = new QAction(tr("Construct molecule..."), this);
     openConstructMoleculeDialog->setObjectName(ToolsMenu::CLONING_CONSTRUCT);
-    openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
+    openCreateFragmentDialog = new QAction(tr("Create fragment..."), this);
     openCreateFragmentDialog->setObjectName("Create Fragment");
 
     connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));

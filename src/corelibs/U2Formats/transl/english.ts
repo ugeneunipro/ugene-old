@@ -66,7 +66,7 @@
         <translation>Truncated file: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="473"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="475"/>
         <source>Invalid database user permissions set, so UGENE unable to use this database. Connect to your system administrator to fix the issue.</source>
         <translation>Invalid database user permissions set, so UGENE unable to use this database. Connect to your system administrator to fix the issue.</translation>
     </message>
@@ -2190,49 +2190,49 @@ The following sequences are empty:</translation>
         <translation type="unfinished">Required attribute is not found</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="262"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="264"/>
         <source>Database url is incorrect</source>
         <translation type="unfinished">Database url is incorrect</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="268"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="270"/>
         <source>User login is not specified</source>
         <translation type="unfinished">User login is not specified</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="274"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="276"/>
         <source>Host is not specified</source>
         <translation type="unfinished">Host is not specified</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="280"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="282"/>
         <source>Database name is not specified</source>
         <translation type="unfinished">Database name is not specified</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="296"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="298"/>
         <source>Error opening MySQL database: %1</source>
         <translation type="unfinished">Error opening MySQL database: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="380"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="382"/>
         <source>Not a %1 MySQL database: %2, %3</source>
         <translation type="unfinished">Not a %1 MySQL database: %2, %3</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="386"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="388"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="273"/>
         <source>Warning! The database was created with a newer %1 version: %2. Not all database features may be supported! Current %1 version: %3.</source>
         <translation type="unfinished">Warning! The database was created with a newer %1 version: %2. Not all database features may be supported! Current %1 version: %3.</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="521"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="523"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="328"/>
         <source>Illegal database state: %1</source>
         <translation type="unfinished">Illegal database state: %1</translation>
     </message>
     <message>
-        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="552"/>
+        <location filename="../src/mysql_dbi/MysqlDbi.cpp" line="554"/>
         <location filename="../src/sqlite_dbi/SQLiteDbi.cpp" line="410"/>
         <source>Can&apos;t synchronize database state</source>
         <translation type="unfinished">Can&apos;t synchronize database state</translation>

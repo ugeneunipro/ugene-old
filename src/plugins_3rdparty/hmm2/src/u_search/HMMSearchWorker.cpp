@@ -208,7 +208,7 @@ Task* HMMSearchWorker::tick() {
             foreach(plan7_s* hmm, hmms) {
                 subtasks << new HMMSearchTask(hmm, dnaSequence, cfg);
             }
-            Task* searchTask = new MultiTask(tr("Search HMM signals in %1").arg(dnaSequence.getName()), subtasks);
+            Task* searchTask = new MultiTask(tr("Find HMM signals in %1").arg(dnaSequence.getName()), subtasks);
             connect(new TaskSignalMapper(searchTask), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
             return searchTask;
         }

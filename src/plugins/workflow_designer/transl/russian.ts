@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>ChooseItemDialog</name>
     <message>
@@ -22,6 +22,17 @@
         <translation>Создать элемент при помощи инструмента командной строки</translation>
     </message>
     <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="36"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name and description for new workflow element.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Status:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="49"/>
         <source>Element description</source>
         <translation>Описание элемента</translation>
@@ -37,7 +48,34 @@
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="36"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="84"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="349"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="105"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Input and output data for external tool. Name is a command line parameter for input/output data in external tool. Set data type and format in which external tool reads/writes input/output data. You also can set description for workflow designer. Each input data will be represented as port in workflow designer. Each output data will be represented as slot of single slot.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="228"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Another parameters for external tool. You must set name for parameter and its type. You also can set description for workflow designer. Each parameter will be represented as parameter of workflow element.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -45,7 +83,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt;&quot;&gt;Name and description for new workflow element.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt; font-weight:600;&quot;&gt;Status:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt; font-weight:600;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>
+        <translation type="vanished">
           &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
           &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
           p, li { white-space: pre-wrap; }
@@ -55,13 +93,12 @@ p, li { white-space: pre-wrap; }
           &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="97"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt;&quot;&gt;Input and output data for external tool. Name is  a command line parameter for input/output data in external tool. Set data type and format in which external tool reads/writes input/output data. You also can set description for workflow designer. Each input data will be represented as port in workflow designer. Each output data will be represented as slot of single slot.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>
+        <translation type="vanished">
           &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
           &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
           p, li { white-space: pre-wrap; }
@@ -69,40 +106,39 @@ p, li { white-space: pre-wrap; }
           &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Входные и выходные данные для внешнего инструмента. Имя это параметр командной строки для входных/выходных данных во внешнем инструменте. Установите тип и формат данных в которых внешний инструмент будет читать/писать входные/выходные данные. Вы также можете задать описание для дизайнера вычислительных схем. Каждые входные данные будут представлены как порт в дизайнере вычислительных схем. Каждые выходные данныебудут представлены как слот простого слота.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="108"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="116"/>
         <source>Input data</source>
         <translation>Входные данные</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="143"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="151"/>
         <source>Add input</source>
         <translation>Добавить входные данные</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="150"/>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="201"/>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="273"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="158"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="209"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="281"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="159"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="167"/>
         <source>Output data</source>
         <translation>Выходные данные</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="194"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="202"/>
         <source>Add output</source>
         <translation>Добавить выходные данные</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="220"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt;&quot;&gt;Another parameters for external tool. You must set name for parameter and its type. You also can set description for workflow designer. Each parameter will be represented as  parameter of workflow element.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>
+        <translation type="vanished">
           &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
           &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
           p, li { white-space: pre-wrap; }
@@ -111,13 +147,12 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="305"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:12pt;&quot;&gt;Execution string and element&apos;s description. To substitute input, output data or parameter, use it&apos;s name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters  substitution with prefix $.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>
+        <translation type="vanished">
           &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
           &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
           p, li { white-space: pre-wrap; }
@@ -125,27 +160,36 @@ p, li { white-space: pre-wrap; }
           &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Строка выполнения и описание элемента. Чтобы заменить входные, выходные данные или параметр используйте его имя с префиксом $ в строке выполнения. Вы можете установить параметризованное описание для нового элемента (описание которое появляется на элементе). В параметризованном описании вы также можете использовать замену с префиксом $.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="231"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="239"/>
         <source>Parameters</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="266"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="274"/>
         <source>Add attribute</source>
         <translation>Добавить атрибут</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="316"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="300"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Execution string and element&apos;s description. To substitute input, output data or parameter, use it&apos;s name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters substitution with prefix $. If file paths in the execution string contain spaces, they must be enclosed with quotes.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="311"/>
         <source>Command line template</source>
         <translation>Заготовка для командной строки</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="335"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="330"/>
         <source>Execution string</source>
         <translation>Строка выполнения</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="347"/>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="342"/>
         <source>Parameterized description</source>
         <translation>Описание</translation>
     </message>
@@ -741,6 +785,21 @@ p, li { white-space: pre-wrap; }
         <source>Description</source>
         <translation>Описание</translation>
     </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="313"/>
+        <source>String value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="315"/>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CfgExternalToolModel.cpp" line="317"/>
+        <source>Output file url</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::CfgExternalToolModelAttributes</name>
@@ -763,90 +822,90 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CreateExternalProcessDialog</name>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="316"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="313"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="317"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="314"/>
         <source>You have changed the structure of the element (name, slots, attributes&apos; names and types). All elements on the scene would be removed. Do you really want to change it?
 You could also reset the dialog to the initial state.</source>
         <translation>Вы изменили структуру элемента (имя, слоты, имена или типы аттрибутов&apos;). Все элементы на сцене будут удалены. Вы действительно хотите сделать это? Также вы можете вернуть диалог к изначальному состоянию.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="346"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="343"/>
         <source>Create Element</source>
         <translation>Создание элемента</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="348"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="345"/>
         <source>Please set the input/output data.</source>
         <translation>Установите входные и выходные данные.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="353"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="350"/>
         <source>Please set the command line to run external tool.</source>
         <translation>Установите параметры командной строки чтобы запустить внутренний инструмент.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="358"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="457"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="355"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="454"/>
         <source>Please set the name for the new element.</source>
         <translation>Установите имя для нового элемента.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="364"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="469"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="361"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="466"/>
         <source>Invalid symbols in the element name.</source>
         <translation>Некорректные символы в имени элемента.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="369"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="474"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="366"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="471"/>
         <source>Element with this name already exists.</source>
         <translation>Элемент с таким именем уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="377"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="388"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="399"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="374"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="385"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="396"/>
         <source>For one or more parameter name was not set.</source>
         <translation>Для одного или более парваметров не задано имя.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="381"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="392"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="403"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="378"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="389"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="400"/>
         <source>Invalid symbols in a name.</source>
         <translation>Некорректные символы в имени.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="410"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="407"/>
         <source>The same name of element parameters was found</source>
         <translation>Параметр с таким именем уже существует</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="418"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="415"/>
         <source>You don&apos;t use parameter %1 in template string. Continue?</source>
         <translation>Вы не можете использовать параметр %1 в шаблонной строке. Продолжить?</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="419"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="416"/>
         <source>Continue</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="420"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="417"/>
         <source>Abort</source>
         <translation>Вернуться</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="463"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="460"/>
         <source>Spaces in the element name.</source>
         <translation>Пробелы в имени элемента.</translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="489"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="486"/>
         <source>It is the correct name</source>
         <translation>Это корректное имя</translation>
     </message>
@@ -2187,7 +2246,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ExtractAssemblyCoverageWorker.cpp" line="165"/>
         <source>Extract Coverage from Assembly</source>
-        <translation>Извлечь покрытие из сборки</translation>
+        <translation>Расчет покрытия по сборке</translation>
     </message>
     <message>
         <location filename="../src/library/ExtractAssemblyCoverageWorker.cpp" line="166"/>
@@ -3594,14 +3653,14 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;Подробнее см. документацию.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
-        <source>If empty input</source>
-        <translation>Если нет входных данных</translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="298"/>
+        <source>1 to many</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="285"/>
-        <source>How to multiplex the data if one of input ports produces no data. &lt;br&gt;&lt;li&gt;Values:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Fill by empty values&lt;/b&gt; - if one of input ports produces no data, get data from another port only and put them to the output.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Truncate&lt;/b&gt; - if one of input port produces no data, then do not output anything.&lt;/li&gt;&lt;br&gt;</source>
-        <translation>Как мультиплексировать данные если один из входных портов не содержит данных. &lt;br&gt;&lt;li&gt;Значения:&lt;/li&gt; &lt;li&gt;&lt;b&gt;Заполнить пустыми значениями&lt;/b&gt; - если один из портов не содержит данных, взять данные из другого порта и подать их на выход.&lt;/li&gt; &lt;li&gt;&lt;b&gt;Усечение&lt;/b&gt; - если один из портов не содержит данных, ничего не подавать на выход.&lt;/li&gt;&lt;br&gt;</translation>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="300"/>
+        <source>1 to 1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="311"/>
@@ -4992,32 +5051,32 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::WriteAnnotationsPrompter</name>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="464"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="465"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="477"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="478"/>
         <source>default file</source>
         <translation>файл по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="497"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="498"/>
         <source>Save all annotations from &lt;u&gt;%1&lt;/u&gt; to %2</source>
         <translation>Сохранить все аннотации из &lt;u&gt;%1&lt;/u&gt; в %2</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="500"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="501"/>
         <source> in %1 format.</source>
         <translation> в формат %1.</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="501"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="502"/>
         <source> in the </source>
         <translation>в</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="501"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="502"/>
         <source> database.</source>
         <translation> базе данных.</translation>
     </message>
@@ -5075,52 +5134,52 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>Входные аннотации, которые будут записаны в выходной файл</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="394"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="395"/>
         <source>Annotations name</source>
         <translation>Имя аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="395"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="396"/>
         <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
         <translation>Имя аннотаций: имя для сохранения аннотаций. Этот параметр доступен только для форматов, которые поддерживают сохранение имен аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="400"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="401"/>
         <source>Annotation object name</source>
         <translation>Имя объекта аннотации</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="401"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="402"/>
         <source>Annotations name: Name of the saved annotation object.</source>
         <translation>Имя аннотаций: имя для сохранения объекта аннотации.</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="405"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="406"/>
         <source>CSV separator</source>
         <translation>Разделитель CSV</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="406"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="407"/>
         <source>String which separates values in CSV files.</source>
         <translation>Строка, которая разделяет значения в CSV файлах.</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="411"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="412"/>
         <source>Write sequence names</source>
         <translation>Записать имена последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="412"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="413"/>
         <source>Add names of sequences into CSV file.</source>
         <translation>Добавить имена последовательностей в CSV файл.</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="428"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="429"/>
         <source>Write Annotations</source>
         <translation>Записать аннотации</translation>
     </message>
     <message>
-        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="429"/>
+        <location filename="../src/library/WriteAnnotationsWorker.cpp" line="430"/>
         <source>Writes all supplied annotations to file(s) in selected format.</source>
         <translation>Записывает все аннотации в файл в выбранном формате.</translation>
     </message>
@@ -5732,42 +5791,42 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="343"/>
         <source>Reads quality control and alignment</source>
-        <translation>Контроль качества ридов и выравнивание</translation>
+        <translation>Контроль качества коротких прочтений и выравнивание</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="345"/>
         <source>Reads quality control...</source>
-        <translation>Контроль качества ридов...</translation>
+        <translation>Контроль качества коротких прочтений...</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="347"/>
         <source>Raw DNA-Seq data processing</source>
-        <translation>Обработка сырых данных DNA-Seq</translation>
+        <translation>Обработка сырых данных секвенирования ДНК</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="349"/>
-        <source>Call variants</source>
+        <source>Variant calling</source>
         <translation>Поиск вариаций</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="351"/>
         <source>Annotate variants and predict effects</source>
-        <translation>Аннотировать вариации и прогноз результатов</translation>
+        <translation>Аннотация вариаций и предсказание эффекта</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="353"/>
         <source>Raw RNA-Seq data processing</source>
-        <translation>Обработка сырых данных RNA-Seq</translation>
+        <translation>Обработка сырых данных секвенирования РНК</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="355"/>
         <source>RNA-Seq data analysis</source>
-        <translation>Анализ данных RNA-Seq</translation>
+        <translation>Анализ данных секвенирования РНК</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="357"/>
         <source>Extract transcript sequences</source>
-        <translation>Извлечь транскрипционные последовательности</translation>
+        <translation>Извлечение последовательности транскриптов</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="359"/>
@@ -5787,17 +5846,17 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="365"/>
         <source>Extract coverage from assemblies</source>
-        <translation>Извлечь покрытие из сборки</translation>
+        <translation>Расчет покрытия по сборке</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="367"/>
         <source>Extract consensus from assemblies</source>
-        <translation>Извлечь консенсус из сборки</translation>
+        <translation>Извлечение консенсуса из сборки</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="370"/>
         <source>Remote NCBI BLAST</source>
-        <translation>Удаленный поиск NCBI BLAST</translation>
+        <translation>Удаленный поиск с помощью NCBI BLAST</translation>
     </message>
 </context>
 <context>
@@ -6057,8 +6116,9 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::WorkflowUtils</name>
     <message>
+        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation type="obsolete">UGENE элемент </translation>
+        <translation type="unfinished">UGENE элемент </translation>
     </message>
 </context>
 <context>
@@ -6217,8 +6277,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="670"/>
-        <source>&amp;New workflow</source>
-        <translation>&amp;Новая схема</translation>
+        <source>&amp;New workflow...</source>
+        <translation>&amp;Новая схема...</translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="676"/>
@@ -6590,9 +6650,8 @@ Do you want to save changes?</source>
 <context>
     <name>WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="932"/>
         <source>UGENE workflow element</source>
-        <translation>UGENE элемент </translation>
+        <translation type="vanished">UGENE элемент </translation>
     </message>
 </context>
 <context>

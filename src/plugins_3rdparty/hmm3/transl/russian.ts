@@ -369,7 +369,7 @@
     </message>
     <message>
         <location filename="../src/workers/HMM3SearchWorker.cpp" line="227"/>
-        <source>Search HMM3 signals in %1</source>
+        <source>Find HMM3 signals in %1</source>
         <translation>Искать сигналы HMM3 в %1</translation>
     </message>
     <message>
@@ -418,8 +418,8 @@
     <name>U2::UHMM3ADVContext</name>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="247"/>
-        <source>Search HMM signals with HMMER3...</source>
-        <translation>HMMER3: поиск сигналов HMM модели...</translation>
+        <source>Find HMM signals with HMMER3...</source>
+        <translation>Поиск с помощью скрытой марковской модели (HMMER3)...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="257"/>
@@ -933,17 +933,17 @@
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="100"/>
         <source>Build HMM3 profile...</source>
-        <translation>Построить профайл с помощью HMM3...</translation>
+        <translation>Построение профиля с помощью HMM3...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="105"/>
-        <source>Search with HMM3...</source>
-        <translation>Искать сигналы HMM3...</translation>
+        <source>Search with HMMER3...</source>
+        <translation>Поиск с помощью HMM3...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="110"/>
-        <source>Search with HMM3 phmmer...</source>
-        <translation>Искать сигналы HMM3 phmmer...</translation>
+        <source>Search with HMMER3 phmmer...</source>
+        <translation>Поиск с помощью HMM3 phmmer...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="167"/>

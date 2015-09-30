@@ -55,8 +55,14 @@ ReplaceSubsequenceDialogFiller::ReplaceSubsequenceDialogFiller(U2OpStatus &_os, 
 
 }
 
-#define GT_METHOD_NAME "run"
-void ReplaceSubsequenceDialogFiller::run()
+ReplaceSubsequenceDialogFiller::ReplaceSubsequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+    : Filler(os, "EditSequenceDialog", scenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void ReplaceSubsequenceDialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

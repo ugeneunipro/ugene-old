@@ -643,7 +643,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="225"/>
-        <source>Search TFBS in %1</source>
+        <source>Find TFBS in %1</source>
         <translation>Поиск ССТФ в %1</translation>
     </message>
     <message>
@@ -1171,8 +1171,8 @@ Maybe model data are not enough for selected algorithm</translation>
     <name>U2::WeightMatrixADVContext</name>
     <message>
         <location filename="../src/WeightMatrixPlugin.cpp" line="107"/>
-        <source>Search TFBS with matrices...</source>
-        <translation>Весовые матрицы: Искать сайты связывания ТФ...</translation>
+        <source>Find TFBS with matrices...</source>
+        <translation>Поиск сайтов связывания ТФ с помощью весовых матриц...</translation>
     </message>
 </context>
 <context>
@@ -1315,7 +1315,7 @@ Maybe model data are not enough for selected algorithm</translation>
     <message>
         <location filename="../src/WeightMatrixPlugin.cpp" line="61"/>
         <source>Build weight matrix...</source>
-        <translation>Построить весовую матрицу...</translation>
+        <translation>Построение весовой матрицы...</translation>
     </message>
 </context>
 <context>

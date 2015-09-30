@@ -242,7 +242,7 @@ void BlastPlusSupportContext::initViewContext(GObjectView* view) {
     assert(av!=NULL);
     Q_UNUSED(av);
 
-    ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with BLAST+..."), 2000, toolList);
+    ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with local BLAST+..."), 2000, toolList);
     queryAction->setObjectName("query_with_blast+");
 
     addViewAction(queryAction);

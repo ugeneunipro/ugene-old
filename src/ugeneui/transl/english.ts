@@ -814,7 +814,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DisableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1388"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1462"/>
         <source>Disable project viewer</source>
         <translation>Disable project viewer</translation>
     </message>
@@ -842,42 +842,42 @@ p, li { white-space: pre-wrap; }
         <translation>Choose format manually</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="173"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="175"/>
         <source>Not matched</source>
         <translation>Not matched</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="176"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="178"/>
         <source>Very low similarity</source>
         <translation>Very low similarity</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="179"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="181"/>
         <source>Low similarity</source>
         <translation>Low similarity</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="182"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="184"/>
         <source>Average similarity</source>
         <translation>Average similarity</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="185"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="187"/>
         <source>High similarity</source>
         <translation>High similarity</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="188"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="190"/>
         <source>Very high similarity</source>
         <translation>Very high similarity</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="190"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="192"/>
         <source>Perfect match</source>
         <translation>Perfect match</translation>
     </message>
     <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="198"/>
+        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="200"/>
         <source>Format details for &apos;%1&apos; format</source>
         <translation>Format details for &apos;%1&apos; format</translation>
     </message>
@@ -898,7 +898,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DocumentUpdater</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="138"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="142"/>
         <source>Project contains NULL document</source>
         <translation>Project contains NULL document</translation>
     </message>
@@ -907,49 +907,49 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">The document &apos;%1&apos; was removed from its original directory. It will be removed from the current project.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="210"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="214"/>
         <source>The document &apos;%1&apos; was removed from its original directory. Do you wish to save it? Otherwise, it will be removed from the current project.</source>
         <translation>The document &apos;%1&apos; was removed from its original directory. Do you wish to save it? Otherwise, it will be removed from the current project.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="220"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="224"/>
         <source>Save as</source>
         <translation>Save as</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="275"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="279"/>
         <source>Several documents were removed from their original directories. Therefore, they will be deleted from the current project. Find the full list below.</source>
         <translation>Several documents were removed from their original directories. Therefore, they will be deleted from the current project. Find the full list below.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="277"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="281"/>
         <source>The document &apos;%1&apos; was removed from its original directory. Therefore, it will be deleted from the current project.</source>
         <translation>The document &apos;%1&apos; was removed from its original directory. Therefore, it will be deleted from the current project.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="318"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="322"/>
         <source>Document &apos;%1&apos; was modified. Do you want to reload it?
 Note that reloading may cause closing of some views associated with objects from the document.</source>
         <translation>Document &apos;%1&apos; was modified. Do you want to reload it?
 Note that reloading may cause closing of some views associated with objects from the document.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="384"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="388"/>
         <source>Reload documents task</source>
         <translation>Reload documents task</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="408"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="412"/>
         <source>Unable to unload &apos;%1&apos;. Unload error: &apos;%2&apos;</source>
         <translation>Unable to unload &apos;%1&apos;. Unload error: &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="415"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="419"/>
         <source>Restore state task</source>
         <translation>Restore state task</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="429"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="433"/>
         <source>Reload documents and restore view state task</source>
         <translation>Reload documents and restore view state task</translation>
     </message>
@@ -965,7 +965,7 @@ Note that reloading may cause closing of some views associated with objects from
 <context>
     <name>U2::EnableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1376"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1450"/>
         <source>Enable ProjectView</source>
         <translation>Enable ProjectView</translation>
     </message>
@@ -1571,8 +1571,8 @@ Do you want view online documentation?</translation>
     <name>U2::ProjectLoaderImpl</name>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="111"/>
-        <source>Connect to shared database</source>
-        <translation>Connect to shared database</translation>
+        <source>Connect to shared database...</source>
+        <translation>Connect to shared database...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="204"/>
@@ -1648,8 +1648,8 @@ Do you want view online documentation?</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="881"/>
-        <source>New Project</source>
-        <translation>New Project</translation>
+        <source>New Project...</source>
+        <translation>New Project...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="883"/>
@@ -1673,38 +1673,38 @@ Do you want view online documentation?</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="133"/>
-        <source>Recent Projects</source>
-        <translation>Recent Projects</translation>
+        <source>Recent projects</source>
+        <translation>Recent projects</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="83"/>
-        <source>&amp;New project</source>
-        <translation>&amp;New project</translation>
+        <source>&amp;New project...</source>
+        <translation>&amp;New project...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="89"/>
-        <source>Open as</source>
-        <translation>Open as</translation>
+        <source>Open as...</source>
+        <translation>Open as...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="95"/>
-        <source>New document from text</source>
-        <translation>New document from text</translation>
+        <source>New document from text...</source>
+        <translation>New document from text...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="106"/>
-        <source>Access remote database</source>
-        <translation>Access remote database</translation>
+        <source>Access remote database...</source>
+        <translation>Access remote database...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="117"/>
-        <source>Search NCBI Genbank</source>
-        <translation>Search NCBI Genbank</translation>
+        <source>Search NCBI GenBank...</source>
+        <translation>Search NCBI GenBank...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="137"/>
-        <source>Recent Files</source>
-        <translation>Recent Files</translation>
+        <source>Recent files</source>
+        <translation>Recent files</translation>
     </message>
 </context>
 <context>
@@ -1759,88 +1759,88 @@ Do you want view online documentation?</translation>
 <context>
     <name>U2::ProjectViewImpl</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="677"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="750"/>
         <source>Mark as circular</source>
         <translation>Mark as circular</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="681"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="754"/>
         <source>Relocate...</source>
         <translation>Relocate...</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="685"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="758"/>
         <source>Export document...</source>
         <translation>Export document...</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="690"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="763"/>
         <source>Open containing folder</source>
         <translation>Open containing folder</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="630"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="703"/>
         <source>ProjectView</source>
         <translation>ProjectView</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="630"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="703"/>
         <source>ProjectView service provides basic project visualization and manipulation functionality</source>
         <translation>ProjectView service provides basic project visualization and manipulation functionality</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="673"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="746"/>
         <source>Save selected documents</source>
         <translation>Save selected documents</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="845"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="918"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="924"/>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="966"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="999"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1041"/>
         <source>Active views</source>
         <translation>Active views</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1033"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1107"/>
         <source>Activate view: %1</source>
         <translation>Activate view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1047"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1121"/>
         <source>Open new view: %1</source>
         <translation>Open new view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1062"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1136"/>
         <source>Open saved view &apos;%1&apos; with a state &apos;%2&apos;</source>
         <translation>Open saved view &apos;%1&apos; with a state &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1110"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1184"/>
         <source>Add to view: %1</source>
         <translation>Add to view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1156"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1230"/>
         <source>Open view</source>
         <translation>Open view</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1157"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1231"/>
         <source>Add to view</source>
         <translation>Add to view</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1277"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1351"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1319"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="1393"/>
         <source>Select new file location</source>
         <translation>Select new file location</translation>
     </message>
@@ -1856,28 +1856,33 @@ Do you want view online documentation?</translation>
 <context>
     <name>U2::ProjectViewWidget</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="440"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="444"/>
         <source>Project</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="445"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="449"/>
         <source>Paste file from clipboard</source>
         <translation>Paste file from clipboard</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="478"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="492"/>
+        <source>Pasting of directories is not supported:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="506"/>
         <source>Unable to handle so huge data in clipboard.</source>
         <translation>Unable to handle so huge data in clipboard.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="482"/>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="499"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="510"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="614"/>
         <source>UGENE can not recognize current clipboard content as one of supported formats.</source>
         <translation>UGENE can not recognize current clipboard content as one of supported formats.</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="568"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="648"/>
         <source>No active project found!</source>
         <translation>No active project found!</translation>
     </message>
@@ -2022,47 +2027,47 @@ Do you want view online documentation?</translation>
 <context>
     <name>U2::TVReportWindow</name>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="455"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="453"/>
         <source>Task report [%1]</source>
         <translation>Task report [%1]</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="466"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="464"/>
         <source>Failed</source>
         <translation>Failed</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="466"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="464"/>
         <source>Canceled</source>
         <translation>Canceled</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="466"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="464"/>
         <source>Finished</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="467"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="465"/>
         <source>status</source>
         <translation>status</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="469"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="467"/>
         <source>error:</source>
         <translation>error:</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="474"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="472"/>
         <source>time</source>
         <translation>time</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="534"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="532"/>
         <source>Open containing directory</source>
         <translation>Open containing directory</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="541"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="539"/>
         <source>Open by operating system</source>
         <translation>Open by operating system</translation>
     </message>
@@ -2140,62 +2145,62 @@ Do you want view online documentation?</translation>
 <context>
     <name>U2::TaskViewDockWidget</name>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="62"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="53"/>
         <source>Tasks</source>
         <translation>Tasks</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="314"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="311"/>
         <source>Activating task report: %1</source>
         <translation>Activating task report: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="616"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="614"/>
         <source>finished</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="598"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="596"/>
         <source>Canceling...</source>
         <translation>Canceling...</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="96"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="87"/>
         <source>Cancel task</source>
         <translation>Cancel task</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="101"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="92"/>
         <source>View report</source>
         <translation>View report</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="105"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="96"/>
         <source>Remove report</source>
         <translation>Remove report</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="135"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="126"/>
         <source>Task name</source>
         <translation>Task name</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="136"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="127"/>
         <source>Task state description</source>
         <translation>Task state description</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="137"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="128"/>
         <source>Task progress</source>
         <translation>Task progress</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="138"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="129"/>
         <source>Actions</source>
         <translation>Actions</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="596"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="594"/>
         <source>Canceled</source>
         <translation>Canceled</translation>
     </message>

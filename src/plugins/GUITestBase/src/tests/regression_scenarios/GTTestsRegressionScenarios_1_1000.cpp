@@ -1131,7 +1131,7 @@ GUI_TEST_CLASS_DEFINITION(test_0688) {
     };
 
     GTUtilsDialog::waitForDialog(os, new PwmSearchDialogFiller(os, new Scenario));
-    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Search TFBS with matrices");
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find TFBS with matrices");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0700) {

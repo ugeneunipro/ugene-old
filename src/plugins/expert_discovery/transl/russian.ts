@@ -844,7 +844,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <name>U2::ExpertDiscoveryPlugin</name>
     <message>
         <source>Expert Discovery</source>
-        <translation>ExpertDiscovery</translation>
+        <translation>Expert Discovery</translation>
     </message>
     <message>
         <source>Expert Discovery plugin</source>

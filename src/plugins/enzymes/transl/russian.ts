@@ -807,7 +807,7 @@ Choose another region.</translation>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="198"/>
         <source>Find restriction sites...</source>
-        <translation>Сайты рестрикции...</translation>
+        <translation>Поиск сайтов рестрикции...</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="203"/>
@@ -876,18 +876,18 @@ Choose another region.</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="106"/>
-        <source>Create Fragment...</source>
-        <translation>Создать фрагмент...</translation>
+        <source>Create fragment...</source>
+        <translation>Создание фрагмента...</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="102"/>
         <source>Digest into fragments...</source>
-        <translation>Разбить на фрагменты...</translation>
+        <translation>Рестрикция...</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="104"/>
         <source>Construct molecule...</source>
-        <translation>Сшивка фрагментов...</translation>
+        <translation>Лигирование фрагментов...</translation>
     </message>
     <message>
         <location filename="../src/EnzymesPlugin.cpp" line="122"/>

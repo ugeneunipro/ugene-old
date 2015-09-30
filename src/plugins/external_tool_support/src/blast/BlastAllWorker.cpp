@@ -177,7 +177,7 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("7"));
 
-    Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST Search"),
+    Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST search"),
         BlastAllWorker::tr("Finds annotations for DNA sequence in local database."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;

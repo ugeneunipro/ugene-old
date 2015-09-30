@@ -1967,7 +1967,7 @@ complement(5..15)</translation>
         <translation>Save sequence names</translation>
     </message>
     <message>
-        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="138"/>
+        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="140"/>
         <source>Select file to save annotations</source>
         <translation>Select file to save annotations</translation>
     </message>

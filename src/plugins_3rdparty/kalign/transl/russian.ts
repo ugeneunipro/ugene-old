@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="32"/>
         <source>Align with Kalign</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="54"/>
@@ -118,7 +118,7 @@
         <location filename="../src/KalignDialogController.cpp" line="200"/>
         <location filename="../src/KalignDialogController.cpp" line="203"/>
         <source>Kalign with Align</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="201"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="../src/KalignTask.cpp" line="265"/>
         <source>KAlign align &apos;%1&apos;</source>
-        <translation>Выравнивание Kalign &apos;%1&apos;</translation>
+        <translation>Выравнивание с помощью Kalign &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -162,7 +162,7 @@
     <message>
         <location filename="../src/KalignTask.cpp" line="146"/>
         <source>KALIGN align &apos;%1&apos;</source>
-        <translation>Выравнивание Kalign &apos;%1&apos;</translation>
+        <translation>Выравнивание с помощью Kalign &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -170,7 +170,7 @@
     <message>
         <location filename="../src/KalignPlugin.cpp" line="154"/>
         <source>Align with Kalign...</source>
-        <translation>Выравнивание Kalign...</translation>
+        <translation>Выравнивание с помощью Kalign...</translation>
     </message>
 </context>
 <context>
@@ -188,7 +188,7 @@
     <message>
         <location filename="../src/KalignPlugin.cpp" line="81"/>
         <source>Align with Kalign...</source>
-        <translation>Выравнивание Kalign...</translation>
+        <translation>Выравнивание с помощью Kalign...</translation>
     </message>
 </context>
 <context>
@@ -196,7 +196,7 @@
     <message>
         <location filename="../src/KalignTask.cpp" line="73"/>
         <source>KALIGN alignment</source>
-        <translation>Выравнивание KALIGN</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/KalignTask.cpp" line="91"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="../src/KalignWorker.cpp" line="83"/>
         <source>Align with Kalign</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание с помощью Kalign</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="84"/>

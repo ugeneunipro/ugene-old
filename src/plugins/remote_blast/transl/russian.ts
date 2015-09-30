@@ -849,7 +849,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="100"/>
         <source>Query NCBI BLAST database...</source>
-        <translation>Запрос к базе данных NCBI BLAST ...</translation>
+        <translation>Поиск в базе данных NCBI с помощью BLAST...</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="137"/>

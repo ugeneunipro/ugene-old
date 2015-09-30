@@ -250,8 +250,8 @@
     <name>U2::LocalWorkflow::SiteconBuildWorker</name>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="84"/>
-        <source>Build SITECON Model</source>
-        <translation>Build SITECON Model</translation>
+        <source>Build SITECON model</source>
+        <translation>Build SITECON model</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="107"/>
@@ -477,8 +477,8 @@
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="254"/>
-        <source>Search TFBS in %1</source>
-        <translation>Search TFBS in %1</translation>
+        <source>Find TFBS in %1</source>
+        <translation>Find TFBS in %1</translation>
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="258"/>
@@ -672,8 +672,8 @@
     <name>U2::SiteconADVContext</name>
     <message>
         <location filename="../src/SiteconPlugin.cpp" line="118"/>
-        <source>Search TFBS with SITECON...</source>
-        <translation>Search TFBS with SITECON...</translation>
+        <source>Find TFBS with SITECON...</source>
+        <translation>Find TFBS with SITECON...</translation>
     </message>
 </context>
 <context>
@@ -755,8 +755,8 @@
     <name>U2::SiteconBuildTask</name>
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="184"/>
-        <source>Build SITECON Model</source>
-        <translation>Build SITECON Model</translation>
+        <source>Build SITECON model</source>
+        <translation>Build SITECON model</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="194"/>
@@ -998,7 +998,7 @@
     <message>
         <location filename="../src/SiteconPlugin.cpp" line="66"/>
         <source>Build SITECON model...</source>
-        <translation>Build SITECON Model...</translation>
+        <translation>Build SITECON model...</translation>
     </message>
 </context>
 <context>
