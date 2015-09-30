@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "MysqlUpgraderFrom_1_16_To_1_17.h"
@@ -42,8 +43,8 @@ void MysqlUpgraderFrom_1_16_To_1_17::upgrade(U2OpStatus &os) const {
 }
 
 void MysqlUpgraderFrom_1_16_To_1_17::upgradeFeatureDbi(U2OpStatus &os, MysqlDbRef *dbRef) const {
-    U2SqlQuery("DROP INDEX FeatureRootIndex ON Feature", dbRef, os).execute();
-    CHECK_OP(os, );
+    U2OpStatus2Log nonCriticalOs;
+    U2SqlQuery("DROP INDEX FeatureRootIndex ON Feature", dbRef, nonCriticalOs).execute();
 
     U2SqlQuery("CREATE INDEX FeatureRootIndex ON Feature(root, class)", dbRef, os).execute();
     CHECK_OP(os, );
