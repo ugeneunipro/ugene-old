@@ -210,7 +210,7 @@ void removeDocFromProject(Project *proj, Document *doc) {
 }
 
 bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter) {
-    QMessageBox::StandardButton btn = QMessageBox::question(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+    QMessageBox::StandardButton btn = QMessageBox::question(AppContext::getMainWindow()->getQMainWindow(),
         tr(NOTIFICATION_TITLE), tr("The document '%1' was removed from its original directory. Do you wish to save it? "
         "Otherwise, it will be removed from the current project.").arg(doc->getName()),
         QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);

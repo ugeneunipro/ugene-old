@@ -33,6 +33,8 @@ namespace U2 {
         ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario);
 
         void commonScenario();
+        void setPath(const QString &value);
+        void setName(const QString &value);
 
         static QString defaultExportPath;
     private:

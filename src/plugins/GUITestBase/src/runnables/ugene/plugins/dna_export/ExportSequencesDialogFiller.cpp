@@ -58,7 +58,7 @@ ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QS
 
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario)
     : Filler(os, "U2__ExportSequencesDialog", customScenario),
-      translate(false)
+      translate(false), saveAllAminoFrames(true)
 {
 
 }
@@ -99,6 +99,15 @@ void ExportSelectedRegionFiller::commonScenario()
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
+
+void ExportSelectedRegionFiller::setPath(const QString &value) {
+    path = value;
+}
+
+void ExportSelectedRegionFiller::setName(const QString &value) {
+    name = value;
+}
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"

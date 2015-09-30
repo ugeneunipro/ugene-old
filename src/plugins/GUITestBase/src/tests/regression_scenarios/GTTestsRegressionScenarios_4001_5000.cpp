@@ -106,6 +106,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
@@ -3372,6 +3373,47 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
                                                                    << (QStringList() << "Undo changes");
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, invisibleItems, PopupChecker::CheckOptions(PopupChecker::NotExists)));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4732) {
+    QFile::copy(dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "test_4732.fa");
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, sandBoxDir + "test_4732.fa");
+
+    //2. Document context menu -> Export / Import -> Export sequences.
+    //Expected: "Export selected sequences" dialog appears.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    class Scenario : public CustomScenario {
+    public:
+        Scenario() : filler(NULL) {}
+        void setFiller(ExportSelectedRegionFiller *value) { filler = value; }
+        void run(U2OpStatus &os) {
+            //3. Delete "human_T1.fa" document from the file system.
+            bool removed = QFile::remove(sandBoxDir + "test_4732.fa");
+            CHECK_SET_ERR(removed, "Can't remove the file");
+
+            //Expected: the dialog about external modification of documents does not appear.
+            GTGlobals::sleep(5000);
+            CHECK_SET_ERR(NULL != filler, "NULL filler");
+            filler->setPath(sandBoxDir);
+            filler->setName("test_4732_out.fa");
+
+            //4. Click "Export".
+            filler->commonScenario();
+        }
+    private:
+        ExportSelectedRegionFiller *filler;
+    };
+    //Expected: the dialog about external modification of documents appears.
+    //5. Click "No".
+    //Expected: UGENE does not crash.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    Scenario *scenario = new Scenario();
+    ExportSelectedRegionFiller *filler = new ExportSelectedRegionFiller(os, scenario);
+    scenario->setFiller(filler);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsProjectTreeView::click(os, "test_4732.fa", Qt::RightButton);
+    GTGlobals::sleep(5000);
 }
 
 } // namespace GUITest_regression_scenarios
