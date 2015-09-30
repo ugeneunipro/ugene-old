@@ -175,7 +175,7 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
         SAMTOOL_CHECK(NULL != in, openFileError(sourceName), );
         SAMTOOL_CHECK(NULL != in->header, headerError(sourceName), );
         if (options.samToBam && (0 == in->header->n_targets)) {
-            os.addWarning(tr("A SAM file has not a header [%1]. The list of references will be generated.").arg(sourceName.constData()));
+            os.addWarning(tr("There is no header in the SAM file \"%1\". The header information will be generated automatically.").arg(sourceName.constData()));
             samclose(in);
             in = openSamWithFai(sourceName, os);
             CHECK_OP(os, );

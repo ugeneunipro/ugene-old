@@ -3722,7 +3722,7 @@ GUI_TEST_CLASS_DEFINITION(test_3589) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    CHECK_SET_ERR(l.getError().contains("A SAM file has not a header"), "No warnings about header");
+    CHECK_SET_ERR(l.getError().contains("There is no header in the SAM file"), "No warnings about header");
     CHECK_SET_ERR(2 == GTUtilsLog::getErrors(os, l).size(), "Too many errors"); // initial warning and dashboard problem
 }
 
