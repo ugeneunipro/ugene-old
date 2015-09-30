@@ -203,7 +203,7 @@ void DetView::mouseReleaseEvent(QMouseEvent* me) {
 
 void DetView::sl_sequenceChanged(){
     seqLen = ctx->getSequenceLength();
-    int w = width();
+    int w = contentWidget->width();
     int charWidth = renderArea->getCharWidth();
     int visibleSymbolsCount = w / charWidth;
     if(seqLen > visibleSymbolsCount){
@@ -850,7 +850,7 @@ float DetViewRenderArea::posToCoordF(qint64 x, bool useVirtualSpace) const {
         return -1;
     }
     float res = (float)(x - visible.startPos) * charWidth;
-    assert(useVirtualSpace || (res >=0 && res <= width()));
+    SAFE_POINT(useVirtualSpace || (res >= 0 && res <= width()), "Position is outside the visible rect", res);
     return res;
 }
 
