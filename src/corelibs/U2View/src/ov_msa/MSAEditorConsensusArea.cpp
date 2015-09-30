@@ -151,8 +151,8 @@ void MSAEditorConsensusArea::paintConsenusPart(QPainter &p, const U2Region &regi
     SAFE_POINT(alg != NULL, tr("MSA consensus algorothm is NULL"), );
     SAFE_POINT(editor->getMSAObject() != NULL, tr("MSA object is NULL"), );
     const MAlignment &msa = editor->getMSAObject()->getMAlignment();
-    for (int pos = region.startPos; pos < region.endPos(); pos++) {
-        char c = alg->getConsensusChar(msa, pos, seqIdx.toVector());
+    for (int pos = 0; pos < region.length; pos++) {
+        char c = alg->getConsensusChar(msa, pos + region.startPos, seqIdx.toVector());
         drawConsensusChar(p, pos, 0, c, false, true);
     }
 
