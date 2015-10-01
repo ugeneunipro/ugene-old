@@ -741,6 +741,8 @@ void MAlignmentObject::sortRowsByList(const QStringList& order) {
 
     MAlignmentModInfo mi;
     mi.alignmentLengthChanged = false;
+    mi.sequenceContentChanged = false;
+    mi.sequenceListChanged = false;
     updateCachedMAlignment(mi);
 }
 

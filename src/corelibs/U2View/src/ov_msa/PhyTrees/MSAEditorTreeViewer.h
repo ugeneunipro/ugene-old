@@ -32,6 +32,7 @@
 #include <QtCore/QMap>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 
+
 namespace U2 {
 
 typedef QMap<QString, QColor> GroupColorSchema;
@@ -57,7 +58,6 @@ private:
 
 enum SynchronizationMode {
     FullSynchronization,
-    OnlySeqsSelection,
     WithoutSynchronization
 };
 
@@ -74,8 +74,10 @@ public:
     void setParentAignmentName(const QString& _alignmentName) {alignmentName = _alignmentName;}
 
     QAction* getSortSeqsAction() const {return sortSeqAction;}
-    void setSynchronizationMode(SynchronizationMode newSyncMode);
-    SynchronizationMode getSynchronizationMode() const{return syncMode;}
+
+    bool sync();
+    void desync();
+    bool isSynchronized() const;
 
     void setMSAEditor(MSAEditor *_msa);
     MSAEditor * getMsaEditor() const;
@@ -85,12 +87,15 @@ protected:
 
 private slots:
     void sl_refreshTree();
-    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
+    void sl_alignmentUpdated();
 
 signals:
     void si_refreshTree(MSAEditorTreeViewer* treeViewer);
 
 private:
+    void connectSignals();
+    void disconnectSignals();
+
     QAction*              refreshTreeAction;
     QAction*              sortSeqAction;
     QString               alignmentName;
@@ -117,6 +122,9 @@ public:
     bool canSynchronizeWithMSA(MSAEditor* msa);
 
     void setSynchronizeMode(SynchronizationMode syncMode);
+    bool isCurTreeViewerSynchronized() const;
+
+    void highlightBranches();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *e);
@@ -156,7 +164,6 @@ private slots:
     virtual void sl_onBranchCollapsed(GraphicsRectangularBranchItem* branch);
 
 private:
-    void highlightBranches();
     QList<GraphicsBranchItem*> getListNodesOfTree();
 
     QGraphicsLineItem* subgroupSelector;
@@ -164,7 +171,7 @@ private:
     bool               subgroupSelectionMode;
     ColorGenerator        groupColors;
 
-    bool isSinchronized;
+    bool isSynchronized;
     bool curLayoutIsRectangular;
 
     MSAEditorTreeViewer* curMSATreeViewer;

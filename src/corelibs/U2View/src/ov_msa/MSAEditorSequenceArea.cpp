@@ -1743,6 +1743,7 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
         // we don't emit "selection changed" signal to avoid redrawing
         setSelection(newSelection);
     }
+    emit si_alignmentUpdated();
 
     updateHScrollBar();
     updateVScrollBar();

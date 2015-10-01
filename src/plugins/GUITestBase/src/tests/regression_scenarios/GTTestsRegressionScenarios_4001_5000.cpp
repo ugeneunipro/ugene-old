@@ -2975,7 +2975,6 @@ GUI_TEST_CLASS_DEFINITION(test_4557){
 
 GUI_TEST_CLASS_DEFINITION(test_4563) {
     // 1. Open Workflow Designer.
-    int i = QSysInfo::WordSize;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     // 2. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
@@ -3195,6 +3194,44 @@ GUI_TEST_CLASS_DEFINITION(test_4621) {
     //Expected state: UGENE does not crash.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4674) {
+    // 1. Open COI.aln
+    // 2. Build the tree and synchronize it with the alignment
+    // 3. Delete one sequence
+    // Expected state: message box appears
+    // 4. Cancel message box
+    // Expected state: the edit is undone and the tree is still connected with the alignment
+    // 5. Delete one sequence one more time
+    // Expected state: message box appears
+    // 6. Confirm the modification
+    // Expected state: the connection with the tree is broken, the sequence is removed
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4674", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int seqNumber = GTUtilsMsaEditor::getSequencesCount(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsMsaEditor::clickSequenceName(os, "Zychia_baranovi");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+
+    MSAEditorTreeViewerUI* ui = qobject_cast<MSAEditorTreeViewerUI*>( GTUtilsPhyTree::getTreeViewerUi(os) );
+    CHECK_SET_ERR(ui != NULL, "Cannot find the tree");
+    CHECK_SET_ERR(ui->isCurTreeViewerSynchronized(), "The connection with the tree is lost");
+    CHECK_SET_ERR(seqNumber == GTUtilsMsaEditor::getSequencesCount(os), "The sequence removal was not undone");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsMsaEditor::clickSequenceName(os, "Zychia_baranovi");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!ui->isCurTreeViewerSynchronized(), "The connection with the tree is still there");
+    CHECK_SET_ERR(seqNumber != GTUtilsMsaEditor::getSequencesCount(os), "The sequence was not removed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4687) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -3204,7 +3241,7 @@ GUI_TEST_CLASS_DEFINITION(test_4687) {
     GTGlobals::sleep(500);
     GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
 
-    //3. Press "Align sequence to this alignment" and add next sequence _common_data/fasta/amino_ext.fa 
+    //3. Press "Align sequence to this alignment" and add next sequence _common_data/fasta/amino_ext.fa
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/fasta/", "amino_ext.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 

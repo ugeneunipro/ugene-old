@@ -323,6 +323,7 @@ signals:
     void si_startMSAChanging();
     void si_stopMSAChanging(bool msaUpdated);
     void si_copyFormattedChanging(bool enabled);
+    void si_alignmentUpdated();
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);

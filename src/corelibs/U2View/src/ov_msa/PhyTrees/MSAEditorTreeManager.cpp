@@ -293,7 +293,9 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             }
 
             treeView->setMSAEditor(editor);
-            treeView->setSynchronizationMode(settings.syncAlignmentWithTree ? FullSynchronization : OnlySeqsSelection);
+            if (settings.syncAlignmentWithTree) {
+                treeView->sync();
+            }
 
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer*)), SLOT(sl_refreshTree(MSAEditorTreeViewer*)));
         }
