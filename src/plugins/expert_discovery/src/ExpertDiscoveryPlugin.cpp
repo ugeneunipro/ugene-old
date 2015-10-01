@@ -58,7 +58,7 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
           Q_ASSERT(viewCtx);
           viewCtx->init();
 
-          QAction* action = new QAction(  tr("Expert Discovery"), this );
+          QAction* action = new QAction(  tr("Expert Discovery..."), this );
           action->setObjectName(ToolsMenu::EXPERT_DISCOVERY);
           connect( action, SIGNAL( triggered() ), SLOT( sl_expertDiscoveryView() ) );
           ToolsMenu::addAction(ToolsMenu::TOOLS, action);

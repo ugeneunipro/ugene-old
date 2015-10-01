@@ -933,17 +933,17 @@
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="100"/>
         <source>Build HMM3 profile...</source>
-        <translation>Построение профиля с помощью HMM3...</translation>
+        <translation>Построение профиля с помощью HMMER3...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="105"/>
         <source>Search with HMMER3...</source>
-        <translation>Поиск с помощью HMM3...</translation>
+        <translation>Поиск с помощью HMMER3...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="110"/>
         <source>Search with HMMER3 phmmer...</source>
-        <translation>Поиск с помощью HMM3 phmmer...</translation>
+        <translation>Поиск с помощью HMMER3 phmmer...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="167"/>
@@ -1632,9 +1632,13 @@
         <translation>Быстрая</translation>
     </message>
     <message>
-        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
         <source>Hmm3 Build</source>
-        <translation>Построить профайл с помощью HMM3</translation>
+        <translation type="vanished">Построить профайл с помощью HMM3</translation>
+    </message>
+    <message>
+        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
+        <source>HMM3 Build</source>
+        <translation type="unfinished">Построить профайл с помощью HMM3</translation>
     </message>
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="39"/>

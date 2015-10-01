@@ -1438,17 +1438,17 @@ The default is instead to generate sequences with a variety of different lengths
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="83"/>
         <source>Build HMM2 profile...</source>
-        <translation>Построение профиля с помощью HMM2...</translation>
+        <translation>Построение профиля с помощью HMMER2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="88"/>
         <source>Calibrate profile with HMMER2...</source>
-        <translation>Калибровка профиля с помощью HMM2...</translation>
+        <translation>Калибровка профиля с помощью HMMER2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="93"/>
         <source>Search with HMMER2...</source>
-        <translation>Поиск с помощью HMM2...</translation>
+        <translation>Поиск с помощью HMMER2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="190"/>

@@ -352,7 +352,7 @@
     <name>U2::BAMUtils</name>
     <message>
         <location filename="../src/BAMUtils.cpp" line="178"/>
-        <source>A SAM file has not a header [%1]. The list of references will be generated.</source>
+        <source>There is no header in the SAM file &quot;%1&quot;. The header information will be generated automatically.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

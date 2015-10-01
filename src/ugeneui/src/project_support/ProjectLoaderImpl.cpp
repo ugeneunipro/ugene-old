@@ -86,7 +86,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     newProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(newProjectAction, SIGNAL(triggered()), SLOT(sl_newProject()));
 
-    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as"), this);
+    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as..."), this);
     addExistingDocumentAction->setObjectName(ACTION_PROJECTSUPPORT__OPEN_AS);
     addExistingDocumentAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
     addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -97,7 +97,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     newDocumentFromtext->setShortcutContext(Qt::WindowShortcut);
     connect(newDocumentFromtext, SIGNAL(triggered()), SLOT(sl_newDocumentFromText()));
 
-    openProjectAction = new QAction(QIcon(":ugene/images/project_open.png"), tr("Open"), this);
+    openProjectAction = new QAction(QIcon(":ugene/images/project_open.png"), tr("Open..."), this);
     openProjectAction->setObjectName(ACTION_PROJECTSUPPORT__OPEN_PROJECT);
     openProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_O));
     openProjectAction->setShortcutContext(Qt::WindowShortcut);

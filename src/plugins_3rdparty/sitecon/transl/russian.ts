@@ -669,8 +669,12 @@
 <context>
     <name>U2::SiteconADVContext</name>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="118"/>
         <source>Search TFBS with SITECON...</source>
+        <translation type="vanished">Поиск сайтов связывания ТФ с помощью SITECON...</translation>
+    </message>
+    <message>
+        <location filename="../src/SiteconPlugin.cpp" line="118"/>
+        <source>Find TFBS with SITECON...</source>
         <translation>Поиск сайтов связывания ТФ с помощью SITECON...</translation>
     </message>
 </context>

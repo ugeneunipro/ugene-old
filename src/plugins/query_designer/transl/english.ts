@@ -834,10 +834,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QueryDesignerService</name>
     <message>
-        <location filename="../src/QueryDesignerPlugin.cpp" line="149"/>
         <location filename="../src/QueryDesignerPlugin.h" line="59"/>
         <source>Query Designer</source>
         <translation>Query Designer</translation>
+    </message>
+    <message>
+        <location filename="../src/QueryDesignerPlugin.cpp" line="149"/>
+        <source>Query Designer...</source>
+        <translation>Query Designer...</translation>
     </message>
 </context>
 <context>

@@ -501,7 +501,7 @@
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="143"/>
         <source>Align selected sequence regions (amino acids)...</source>
-        <translation>Выравнять выбранные регионы (аминокислоты)...</translation>
+        <translation>Выровнять выбранные регионы (аминокислоты)...</translation>
     </message>
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="147"/>

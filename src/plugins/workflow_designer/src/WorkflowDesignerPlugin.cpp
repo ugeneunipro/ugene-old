@@ -226,7 +226,7 @@ Task* WorkflowDesignerService::createServiceDisablingTask(){
 }
 
 WorkflowDesignerService::WorkflowDesignerService()
-: Service(Service_WorkflowDesigner, tr("Workflow Designer..."), ""),
+: Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
 designerAction(NULL), managerAction(NULL), newWorkflowAction(NULL)
 {
 
@@ -266,7 +266,7 @@ void WorkflowDesignerService::sl_startWorkflowPlugin() {
 }
 
 void WorkflowDesignerService::initDesignerAction() {
-    designerAction = new QAction( QIcon(":/workflow_designer/images/wd.png"), tr("Workflow Designer"), this);
+    designerAction = new QAction( QIcon(":/workflow_designer/images/wd.png"), tr("Workflow Designer..."), this);
     designerAction->setObjectName(ToolsMenu::WORKFLOW_DESIGNER);
 #ifdef _DEBUG
     designerAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));

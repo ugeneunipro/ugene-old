@@ -1648,8 +1648,12 @@ Do you want view online documentation?</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="881"/>
+        <source>New Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>New Project...</source>
-        <translation>New Project...</translation>
+        <translation type="vanished">New Project...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="883"/>
@@ -1658,8 +1662,13 @@ Do you want view online documentation?</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="100"/>
-        <source>Open</source>
-        <translation>Open</translation>
+        <source>Open...</source>
+        <translation>Open...</translation>
+    </message>
+    <message>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="89"/>
+        <source>Open as...</source>
+        <translation>Open as...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="809"/>
@@ -1680,11 +1689,6 @@ Do you want view online documentation?</translation>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="83"/>
         <source>&amp;New project...</source>
         <translation>&amp;New project...</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="89"/>
-        <source>Open as...</source>
-        <translation>Open as...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="95"/>

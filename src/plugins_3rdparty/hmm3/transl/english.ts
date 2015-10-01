@@ -1631,9 +1631,13 @@
         <translation>Fast</translation>
     </message>
     <message>
-        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
         <source>Hmm3 Build</source>
-        <translation>Hmm3 Build</translation>
+        <translation type="vanished">Hmm3 Build</translation>
+    </message>
+    <message>
+        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
+        <source>HMM3 Build</source>
+        <translation type="unfinished">HMM3 Build</translation>
     </message>
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="39"/>

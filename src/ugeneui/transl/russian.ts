@@ -1571,7 +1571,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="111"/>
         <source>Connect to shared database...</source>
-        <translation>Подключение к общей базе данных</translation>
+        <translation>Подключение к общей базе данных...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="204"/>
@@ -1657,8 +1657,13 @@ Do you want view online documentation?</source>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="100"/>
-        <source>Open</source>
-        <translation>Открыть</translation>
+        <source>Open...</source>
+        <translation>Открыть...</translation>
+    </message>
+    <message>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="89"/>
+        <source>Open as...</source>
+        <translation>Открыть как...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="809"/>
@@ -1679,11 +1684,6 @@ Do you want view online documentation?</source>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="83"/>
         <source>&amp;New project...</source>
         <translation>&amp;Новый проект...</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="89"/>
-        <source>Open as...</source>
-        <translation>Открыть как...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="95"/>

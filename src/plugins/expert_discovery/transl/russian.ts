@@ -850,6 +850,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
         <source>Expert Discovery plugin</source>
         <translation>ExpertDiscovery это система для анализа и распознавания регуляторных областей, использующая иерархический подход.Она реализует мощный метода машинного обучения &quot;Discovery&quot; (http://math.nsc.ru/AP/ScientificDiscovery/)</translation>
     </message>
+    <message>
+        <source>Expert Discovery...</source>
+        <translation>Expert Discovery...</translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryPosNegDialog</name>
@@ -1078,7 +1082,11 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Search for regions with ExpertDiscovery</source>
-        <translation>Поиск областей с ExpertDiscovery</translation>
+        <translation type="vanished">Поиск областей с ExpertDiscovery</translation>
+    </message>
+    <message>
+        <source>Search for regions with Expert Discovery</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

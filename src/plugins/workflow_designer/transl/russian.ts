@@ -3595,17 +3595,17 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::MultiplexerPrompter</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="346"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="308"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="359"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="321"/>
         <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</source>
         <translation>Принимает по одному сообщению от каждого из элементов &lt;u&gt;%1&lt;/u&gt; и &lt;u&gt;%2&lt;/u&gt;, объединяет эти сообщения в одно и передает его дальше. Процедура повторяется до тех пор, пока в обоих входных портах имеются сообщения.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="363"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="325"/>
         <source>Gets one message from &lt;u&gt;%1&lt;/u&gt;, joins it with each message from &lt;u&gt;%2&lt;/u&gt;, and transfers the joined messages to the output. Repeats this for each message from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Принимает сообщение от элемента &lt;u&gt;%1&lt;/u&gt;, объединяет его по очереди с каждым сообщением от элемента &lt;u&gt;%2&lt;/u&gt; и отправляет полученные сообщения дальше. Процедура повторяется до тех пор, пока имеются сообщения от &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
@@ -3613,62 +3613,62 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::MultiplexerWorker</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="275"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="256"/>
         <source>Multiplexing rule</source>
         <translation>Правило мультиплексирования</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="238"/>
         <source>First input port</source>
         <translation>Первый входной порт</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="238"/>
         <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from this port is concatenated with messages from the other port.</source>
         <translation>Один из входных портов &lt;i&gt;Мультиплексера&lt;/i&gt;. В случае, если задано правило мультиплексирования &quot;1 to many&quot;, сообщения из этого порта объединяются с каждым сообщением из другого порта.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="260"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="241"/>
         <source>Second input port</source>
         <translation>Второй входной порт</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="260"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="241"/>
         <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from the other port is concatenated with messages from this port.</source>
         <translation>Один из входных портов &lt;i&gt;Мультиплексера&lt;/i&gt;. В случае, если задано правило мультиплексирования &quot;1 to many&quot;, сообщения из другого порта объединяются с каждым сообщением из этого порта.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="267"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="248"/>
         <source>Multiplexed output</source>
         <translation>Мультиплексированные сообщения</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="268"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="249"/>
         <source>The port outputs multiplexed messages.</source>
         <translation>Сообщения, полученные в результате объединения двух потоков сообщений.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="276"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
         <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
         <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;Подробнее см. документацию.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="298"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="273"/>
         <source>1 to many</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="300"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="274"/>
         <source>1 to 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="311"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="280"/>
         <source>Multiplexer</source>
         <translation>Мультиплексер</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="312"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="281"/>
         <source>The element allows one to join two data flows into a single data flow, i.e. to join messages from two input ports into concatenated messages and send them to the output. The concatenation approach is determined by the &lt;i&gt;Multiplexing rule&lt;/i&gt; parameter.</source>
         <translation>Данный элемент позволяет объединять данные из двух различных источников, а именно объединять сообщения, пришедшие во входные порты, в комплексные мультиплексированные сообщения. Способ объединения сообщений задается с помощью параметра &lt;i&gt;Правило мультиплексирования&lt;/i&gt;.</translation>
     </message>
@@ -5774,14 +5774,18 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <name>U2::WorkflowDesignerService</name>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="229"/>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="269"/>
         <source>Workflow Designer</source>
         <translation>Дизайнер вычислительных схем</translation>
     </message>
     <message>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="269"/>
+        <source>Workflow Designer...</source>
+        <translation>Дизайнер вычислительных схем...</translation>
+    </message>
+    <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="279"/>
-        <source>New workflow</source>
-        <translation>Новая схема</translation>
+        <source>New workflow...</source>
+        <translation>Новая схема...</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="310"/>

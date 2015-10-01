@@ -849,6 +849,10 @@ Load markup for your sequences in specified XML format or genbank format.</trans
         <source>Expert Discovery plugin</source>
         <translation>ExpertDiscovery is a system for analysis and recognition of gene regulatory regions using hierarchical approach. It implements a powerful machine learning method &quot;Discovery&quot; (http://math.nsc.ru/AP/ScientificDiscovery/)</translation>
     </message>
+    <message>
+        <source>Expert Discovery...</source>
+        <translation>Expert Discovery...</translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryPosNegDialog</name>
@@ -1073,11 +1077,15 @@ Load markup for your sequences in specified XML format or genbank format.</trans
     </message>
     <message>
         <source>Search for regions with ExpertDiscovery</source>
-        <translation>Search for regions with ExpertDiscovery</translation>
+        <translation type="vanished">Search for regions with ExpertDiscovery</translation>
     </message>
     <message>
         <source>Load control sequences markup</source>
         <translation>Load control sequences markup</translation>
+    </message>
+    <message>
+        <source>Search for regions with Expert Discovery</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

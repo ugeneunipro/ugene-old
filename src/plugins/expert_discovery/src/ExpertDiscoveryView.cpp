@@ -471,7 +471,7 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         connect(aaobj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
     }
 
-    ADVGlobalAction* a = new ADVGlobalAction(adv, QIcon(), tr("Search for regions with ExpertDiscovery"), 80);
+    ADVGlobalAction* a = new ADVGlobalAction(adv, QIcon(), tr("Search for regions with Expert Discovery"), 80);
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
 
