@@ -249,7 +249,7 @@
     <message>
         <location filename="../src/SWWorker.cpp" line="195"/>
         <source>Smith-Waterman Search</source>
-        <translation>Поиск Смита-Ватермана</translation>
+        <translation>Поиск подстроки (алгоритм Смита-Ватермана)</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="196"/>

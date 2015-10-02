@@ -669,7 +669,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="141"/>
         <source>Remote BLAST</source>
-        <translation>Удаленный BLAST поиск</translation>
+        <translation>Удаленный поиск с помощью BLAST</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="241"/>
@@ -814,7 +814,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="62"/>
         <source>Remote BLAST</source>
-        <translation>Удаленный BLAST поиск</translation>
+        <translation>Удаленный поиск с помощью BLAST</translation>
     </message>
 </context>
 <context>

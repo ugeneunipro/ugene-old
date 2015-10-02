@@ -1027,7 +1027,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="41"/>
         <source>Gap length:</source>
-        <translation>Длина пропуска:</translation>
+        <translation>Длина пробела:</translation>
     </message>
 </context>
 <context>

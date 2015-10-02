@@ -583,17 +583,17 @@ Probably the data is too big.</source>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="14"/>
         <source>Remove Columns of Gaps</source>
-        <translation>Удаление пропусков</translation>
+        <translation>Удаление пробелов</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="22"/>
         <source>Remove columns with number of gaps</source>
-        <translation>Удалить столбцы с числом пропусков</translation>
+        <translation>Удалить столбцы с числом пробелов</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="32"/>
         <source>Remove columns with percentage of gaps</source>
-        <translation>Удалить столбцы с числом пропусков в процентах</translation>
+        <translation>Удалить столбцы с числом пробелов в процентах</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="39"/>
@@ -656,7 +656,7 @@ Probably the data is too big.</source>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="81"/>
         <source>Keep gaps</source>
-        <translation>Наличие пропусков</translation>
+        <translation>Наличие пробелов</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="52"/>
@@ -704,7 +704,7 @@ Probably the data is too big.</source>
     <message>
         <location filename="../src/ov_msa/ui/ExportConsensusWidget.ui" line="75"/>
         <source>Keep gaps</source>
-        <translation>Наличие пропусков</translation>
+        <translation>Наличие пробелов</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ExportConsensusWidget.ui" line="82"/>
@@ -810,7 +810,7 @@ Probably the data is too big.</source>
     <message>
         <location filename="../src/ov_msa/ui/ExportHighlightedDialog.ui" line="141"/>
         <source>Keep gaps</source>
-        <translation>Наличие пропусков</translation>
+        <translation>Наличие пробелов</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ExportHighlightedDialog.ui" line="151"/>
@@ -1161,7 +1161,7 @@ Probably the data is too big.</source>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="137"/>
         <source>Exclude gaps</source>
-        <translation>Исключить пропуски</translation>
+        <translation>Исключить пробелы</translation>
     </message>
 </context>
 <context>
@@ -1559,7 +1559,7 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp" line="34"/>
         <source>Highlighting</source>
-        <translation>Подсветка</translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorDataList.cpp" line="55"/>
@@ -1612,7 +1612,7 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.cpp" line="36"/>
         <source>Annotations Highlighting</source>
-        <translation>Подсветка аннотаций</translation>
+        <translation>Выделение аннотаций</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/Das/DasWidgetFactory.cpp" line="36"/>
@@ -1928,7 +1928,7 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="352"/>
         <source>Gap scores</source>
-        <translation>Веса пропусков</translation>
+        <translation>Веса пробелов</translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="358"/>
@@ -3346,7 +3346,7 @@ You don&apos;t have enough rights to change file</source>
     <message>
         <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="130"/>
         <source>Reads highlighting</source>
-        <translation>Подсветка ридов</translation>
+        <translation>Выделение ридов</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="155"/>
@@ -3437,7 +3437,7 @@ You don&apos;t have enough rights to change file</source>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="90"/>
         <source>Reads highlighting:</source>
-        <translation>Подсветка ридов:</translation>
+        <translation>Выделение ридов:</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="101"/>
@@ -3821,7 +3821,7 @@ You don&apos;t have enough rights to change file</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorDataList.cpp" line="175"/>
         <source>Generate distance matrix</source>
-        <translation>Генерация матрицы расстояний</translation>
+        <translation>Рассчитать матрицу расстояний</translation>
     </message>
 </context>
 <context>
@@ -5111,12 +5111,12 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="503"/>
         <source>Export as image</source>
-        <translation>Экспорт изображения</translation>
+        <translation>Экспортировать выравнивание в изображение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="428"/>
         <source>Copy</source>
-        <translation>Копировать</translation>
+        <translation>Копирование</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="123"/>
@@ -5132,12 +5132,12 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="179"/>
         <source>Export highlighted</source>
-        <translation>Экспорт подсвеченного</translation>
+        <translation>Экспортировать выравнивание с выделенными нуклеотидами</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="433"/>
         <source>Edit</source>
-        <translation>Редактировать</translation>
+        <translation>Редактирование</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="438"/>
@@ -5148,7 +5148,7 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="459"/>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="507"/>
         <source>Align</source>
-        <translation>Выровнять</translation>
+        <translation>Выравнивание</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="465"/>
@@ -5163,7 +5163,7 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="483"/>
         <source>Add</source>
-        <translation>Добавить</translation>
+        <translation>Добавление</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="511"/>
@@ -5222,12 +5222,12 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="82"/>
         <source>Copy consensus with gaps</source>
-        <translation>Копировать консенсунс с пропусками</translation>
+        <translation>Копировать консенсус с пробелами</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="86"/>
         <source>Consensus mode...</source>
-        <translation>Выбрать режим консенсуса...</translation>
+        <translation>Алгоритм построения консенсуса...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="151"/>
@@ -5316,7 +5316,7 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorOffsetsView.cpp" line="68"/>
         <source>Show offsets</source>
-        <translation>Показывать смещение</translation>
+        <translation>Показывать положение</translation>
     </message>
 </context>
 <context>
@@ -5329,32 +5329,32 @@ Alternatively, load patterns from a FASTA file.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="120"/>
         <source>Remove columns of gaps...</source>
-        <translation>Удалить столбцы пропусков...</translation>
+        <translation>Удалить столбцы пробелов...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="143"/>
         <source>Go to position...</source>
-        <translation>Перейти к позиции...</translation>
+        <translation>Перейти...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="150"/>
         <source>Remove all gaps</source>
-        <translation>Удалить все пропуски</translation>
+        <translation>Удалить все пробелы</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="154"/>
         <source>Sequence from file...</source>
-        <translation>Последовательность из файла...</translation>
+        <translation>Добавить последовательность из файла...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="158"/>
         <source>Sequence from current project...</source>
-        <translation>Последовательность из проекта...</translation>
+        <translation>Добавить последовательность из проекта...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="162"/>
         <source>Sort sequences by name</source>
-        <translation>Сортировать последовательности по имени</translation>
+        <translation>Отсортировать последовательности по имени</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="176"/>
@@ -5370,6 +5370,11 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="184"/>
         <source>Replace selected rows with complement</source>
         <translation>Заменить выделенные строки комплементарными</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="289"/>
+        <source>Use dots</source>
+        <translation type="unfinished">Использовать точки</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="342"/>
@@ -5487,7 +5492,7 @@ Use context menu or Highlighting tab on Options panel to select it</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1886"/>
         <source>Highlighting</source>
-        <translation>Подсветка</translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1911"/>
@@ -5561,12 +5566,12 @@ Use context menu or Highlighting tab on Options panel to select it</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="126"/>
         <source>Fill selection with gaps</source>
-        <translation>Заполнить пропусками</translation>
+        <translation>Заполнить пробелами</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="133"/>
         <source>Save subalignment</source>
-        <translation>Сохранить подмножество</translation>
+        <translation>Сохранить область выравнивания</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="138"/>
@@ -5584,8 +5589,15 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Обновить схлопнутые группы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
-        <source>Colors</source>
+<<<<<<< .mine        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
+        <source>Reference sequence for current highlighting scheme is not selected.
+Use context menu or Highlighting tab on Options panel to select it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>
+=======        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
+>>>>>>> .theirs        <source>Colors</source>
         <translation>Раскраска</translation>
     </message>
 </context>
@@ -5742,12 +5754,12 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="908"/>
         <source>Copy selection</source>
-        <translation>Скопировать выделение</translation>
+        <translation>Копировать выделенное</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="917"/>
         <source>Copy formatted</source>
-        <translation>Скопировать отформатированное</translation>
+        <translation>Копировать выделенное с учетом формата</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="1051"/>
@@ -5903,7 +5915,7 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
     <message>
         <location filename="../src/ov_msa/Highlighting/MSAHighlightingTab.cpp" line="140"/>
         <source>Highlighting</source>
-        <translation>Подсветка</translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/Highlighting/MSAHighlightingTab.cpp" line="233"/>
@@ -6020,7 +6032,7 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
     <message>
         <location filename="../src/ov_msa/Overview/MSAOverviewContextMenu.cpp" line="141"/>
         <source>Export as image</source>
-        <translation>Экспорт изображения</translation>
+        <translation>Экспортировать выравнивание в изображение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/Overview/MSAOverviewContextMenu.cpp" line="147"/>
@@ -6050,7 +6062,7 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
     <message>
         <location filename="../src/ov_msa/Overview/MSAOverviewContextMenu.cpp" line="160"/>
         <source>Highlighting</source>
-        <translation>Подсветка</translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/Overview/MSAOverviewContextMenu.cpp" line="188"/>
@@ -6497,7 +6509,7 @@ Simple overview is unavailable.</source>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="64"/>
         <source>Gap characters (&apos;-&apos;)</source>
-        <translation>Символы пропуска (&apos;-&apos;)</translation>
+        <translation>Символы пробела (&apos;-&apos;)</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="70"/>

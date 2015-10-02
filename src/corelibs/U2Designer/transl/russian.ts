@@ -596,7 +596,7 @@ Set up the directory:</source>
     <message>
         <location filename="../src/ui/SequenceActionDialog.ui" line="72"/>
         <source>Gap size</source>
-        <translation>Размер пропуска</translation>
+        <translation>Размер пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/SequenceActionDialog.ui" line="99"/>

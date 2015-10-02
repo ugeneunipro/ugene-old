@@ -1057,7 +1057,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryViewController.cpp" line="1068"/>
         <source>Query Designer - %1</source>
-        <translation>Дизайнер заросов - %1</translation>
+        <translation>Дизайнер запросов - %1</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="1122"/>

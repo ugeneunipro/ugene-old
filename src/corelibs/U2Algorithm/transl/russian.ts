@@ -358,7 +358,7 @@ For every column selects the most rare symbol in the whole alignment with percen
     <message>
         <location filename="../src/util_msa_consensus/MSAConsensusAlgorithmStrict.cpp" line="39"/>
         <source>The algorithm returns gap character (&apos;-&apos;) if symbol frequency in a column is lower than threshold specified.</source>
-        <translation>Алгоритм возвращает символ пропуска (&apos;-&apos;), если частота появления символа в столбце меньше, чем величина, заданная в пороге.</translation>
+        <translation>Алгоритм возвращает символ пробела (&apos;-&apos;), если частота появления символа в столбце меньше, чем величина, заданная в пороге.</translation>
     </message>
     <message>
         <location filename="../src/util_msa_consensus/MSAConsensusAlgorithmStrict.cpp" line="43"/>
@@ -427,19 +427,19 @@ For every column selects the most rare symbol in the whole alignment with percen
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1062"/>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1063"/>
         <source>No highlighting</source>
-        <translation>Без подсветки</translation>
+        <translation>Без выделения</translation>
     </message>
     <message>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1065"/>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1066"/>
         <source>Agreements</source>
-        <translation>Соответствия</translation>
+        <translation>Совпадающие нуклеотиды</translation>
     </message>
     <message>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1068"/>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1069"/>
         <source>Disagreements</source>
-        <translation>Различия</translation>
+        <translation>Различающиеся нуклеотиды</translation>
     </message>
     <message>
         <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1071"/>

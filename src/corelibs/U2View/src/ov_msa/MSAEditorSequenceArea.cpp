@@ -286,7 +286,7 @@ void MSAEditorSequenceArea::prepareHighlightingMenuActions() {
         connect(action, SIGNAL(triggered()), SLOT(sl_changeHighlightScheme()));
         highlightingSchemeMenuActions.append(action);
     }
-    useDotsAction = new QAction(QString("Use dots"), this);
+    useDotsAction = new QAction(QString(tr("Use dots")), this);
     useDotsAction->setCheckable(true);
     useDotsAction->setChecked(false);
     connect(useDotsAction, SIGNAL(triggered()), SLOT(sl_useDots()));

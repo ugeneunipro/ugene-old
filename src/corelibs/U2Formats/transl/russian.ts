@@ -194,7 +194,7 @@
     <message>
         <location filename="../src/ace/AceFormat.cpp" line="243"/>
         <source>No consensus</source>
-        <translation>Отсутствует консенсунс</translation>
+        <translation>Отсутствует консенсус</translation>
     </message>
     <message>
         <location filename="../src/ace/AceFormat.cpp" line="254"/>
@@ -859,7 +859,7 @@
     <message>
         <location filename="../src/ace/AceImportUtils.cpp" line="270"/>
         <source>No consensus</source>
-        <translation>Отсутствует консенсунс</translation>
+        <translation>Отсутствует консенсус</translation>
     </message>
     <message>
         <location filename="../src/ace/AceImportUtils.cpp" line="280"/>

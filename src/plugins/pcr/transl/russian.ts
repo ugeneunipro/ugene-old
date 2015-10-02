@@ -582,7 +582,7 @@
     <message>
         <location filename="../src/FindPrimerPairsWorker.cpp" line="130"/>
         <source>Find correct primer pairs</source>
-        <translation>Найти корректные пары праймеров</translation>
+        <translation>Поиск корректных пар праймеров</translation>
     </message>
     <message>
         <location filename="../src/FindPrimerPairsWorker.cpp" line="131"/>

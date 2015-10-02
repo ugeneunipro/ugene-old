@@ -763,7 +763,7 @@
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="194"/>
         <source>Alignment contains gaps</source>
-        <translation>Выравнивание содержит пропуски</translation>
+        <translation>Выравнивание содержит пробелы</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="198"/>

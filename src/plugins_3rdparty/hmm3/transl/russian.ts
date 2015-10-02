@@ -164,7 +164,7 @@
     <message>
         <location filename="../src/workers/HMM3BuildWorker.cpp" line="77"/>
         <source>HMM3 Build</source>
-        <translation>Построить профайл с помощью HMM3</translation>
+        <translation>Построить профиль с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3BuildWorker.cpp" line="77"/>
@@ -174,7 +174,7 @@
     <message>
         <location filename="../src/workers/HMM3BuildWorker.cpp" line="182"/>
         <source>Built HMM3 profile</source>
-        <translation>Построить профайл с помощью HMM3</translation>
+        <translation>Построить профиль с помощью HMMER3</translation>
     </message>
 </context>
 <context>
@@ -665,7 +665,7 @@
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="202"/>
         <source>Build HMMER3 profile</source>
-        <translation>Построить профайл с помощью HMM3</translation>
+        <translation>Построить профиль с помощью HMMER3</translation>
     </message>
 </context>
 <context>
@@ -1632,18 +1632,14 @@
         <translation>Быстрая</translation>
     </message>
     <message>
-        <source>Hmm3 Build</source>
-        <translation type="vanished">Построить профайл с помощью HMM3</translation>
+        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="39"/>
+        <source>Input and output</source>
+        <translation>Ввод и вывод</translation>
     </message>
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
         <source>HMM3 Build</source>
-        <translation type="unfinished">Построить профайл с помощью HMM3</translation>
-    </message>
-    <message>
-        <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="39"/>
-        <source>Input and output</source>
-        <translation>Ввод и вывод</translation>
+        <translation type="unfinished">Построить профиль с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="49"/>

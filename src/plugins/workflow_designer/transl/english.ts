@@ -1682,8 +1682,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="91"/>
-        <source>CD-Search</source>
-        <translation>CD-Search</translation>
+        <source>CD Search</source>
+        <translation>CD Search</translation>
     </message>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="92"/>

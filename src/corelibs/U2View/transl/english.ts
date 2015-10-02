@@ -4756,12 +4756,6 @@ Please, check external tools in the settings.</translation>
         <translation>Reason: </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
         <source> Please input valid annotation names </source>
         <translation> Please input valid annotation names </translation>
@@ -4808,6 +4802,12 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1511"/>
         <source>Results: %1/%2</source>
         <translation>Results: %1/%2</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
+Alternatively, load patterns from a FASTA file.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="747"/>
@@ -5407,6 +5407,11 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="184"/>
         <source>Replace selected rows with complement</source>
         <translation>Replace selected rows with complement</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="289"/>
+        <source>Use dots</source>
+        <translation type="unfinished">Use dots</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="342"/>

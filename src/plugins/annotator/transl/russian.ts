@@ -384,7 +384,7 @@
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="240"/>
         <source>For annotated genes from &lt;u&gt;%1&lt;/u&gt; build gene-by-gene approach report.</source>
-        <translation>Для аннотированных генов из &lt;u&gt;%1&lt;/u&gt; построить приближенный отчет gene-by-gene.</translation>
+        <translation>Для аннотированных генов из &lt;u&gt;%1&lt;/u&gt; построить приближенный отчет по каждому гену.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="241"/>
@@ -482,7 +482,7 @@
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="213"/>
         <source>Gene-by-gene Approach Report</source>
-        <translation>Gene-by-gene отчет</translation>
+        <translation>Отчёт по каждому гену</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="214"/>

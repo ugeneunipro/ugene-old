@@ -4770,7 +4770,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="180"/>
         <source>Local BLAST search</source>
-        <translation>Локальный BLAST поиск</translation>
+        <translation>Локальный поиск c помощью BLAST</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="181"/>
@@ -4981,7 +4981,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="154"/>
         <source>Local BLAST+ Search</source>
-        <translation>Локальный BLAST+ поиск</translation>
+        <translation>Локальный поиск c помощью BLAST+</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="155"/>

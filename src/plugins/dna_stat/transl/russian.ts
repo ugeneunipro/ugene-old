@@ -74,7 +74,7 @@
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="14"/>
         <source>Generate Distance Matrix</source>
-        <translation>Генерация матрицы расстояний</translation>
+        <translation>Рассчитать матрицу расстояний</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="22"/>
@@ -137,7 +137,7 @@
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="75"/>
         <source>Generate grid profile</source>
-        <translation>Показать сеточный отчет</translation>
+        <translation>Представить выравнивание в виде таблицы частот</translation>
     </message>
 </context>
 <context>
@@ -338,7 +338,7 @@
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="112"/>
         <source>Generate distance matrix</source>
-        <translation>Генерация матрицы расстояний</translation>
+        <translation>Рассчитать матрицу расстояний</translation>
     </message>
 </context>
 <context>
@@ -384,7 +384,7 @@
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="142"/>
         <source>Generate distance matrix</source>
-        <translation>Генерация матрицы расстояний</translation>
+        <translation>Рассчитать матрицу расстояний</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="170"/>

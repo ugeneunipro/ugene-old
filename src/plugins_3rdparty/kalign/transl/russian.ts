@@ -33,17 +33,17 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="114"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открывающий пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="160"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="206"/>
         <source>Terminal gap penalty</source>
-        <translation>Штраф за закрывающий пропуск</translation>
+        <translation>Штраф за закрывающий пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="252"/>
@@ -66,17 +66,17 @@
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="37"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открывающий пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="57"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="77"/>
         <source>Terminate gap penalty</source>
-        <translation>Штраф за закрывающий пропуск</translation>
+        <translation>Штраф за закрывающий пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="97"/>
@@ -252,7 +252,7 @@
     <message>
         <location filename="../src/KalignWorker.cpp" line="69"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открывающий пробел</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="70"/>

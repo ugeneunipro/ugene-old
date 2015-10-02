@@ -1935,7 +1935,7 @@ var %2; //parsed line number</translation>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="79"/>
         <source>Import PHRED Qualities</source>
-        <translation>Импорт показателй качества PHRED</translation>
+        <translation>Импорт показателей качества PHRED</translation>
     </message>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="80"/>
@@ -1955,7 +1955,7 @@ You can use this worker to convert .fasta and .qual pair to fastq format.</sourc
     <message>
         <location filename="../src/ExportAlignmentViewItems.cpp" line="81"/>
         <source>Amino translation...</source>
-        <translation>Таблица трансляции...</translation>
+        <translation>Сохранить транслированное выравнивание...</translation>
     </message>
     <message>
         <location filename="../src/ExportAlignmentViewItems.cpp" line="110"/>

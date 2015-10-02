@@ -853,7 +853,7 @@ The default is instead to generate sequences with a variety of different lengths
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="215"/>
         <source>Build HMMER2 profile</source>
-        <translation>Построить профайл с помощью HMM2</translation>
+        <translation>Построить профиль с помощью HMMER2</translation>
     </message>
 </context>
 <context>

@@ -1703,7 +1703,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="137"/>
         <source>Recent files</source>
-        <translation>История файлов</translation>
+        <translation>Недавние файлы</translation>
     </message>
 </context>
 <context>
