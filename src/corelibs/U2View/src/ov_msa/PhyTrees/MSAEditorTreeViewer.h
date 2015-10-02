@@ -171,7 +171,6 @@ private:
     bool               subgroupSelectionMode;
     ColorGenerator        groupColors;
 
-    bool isSynchronized;
     bool curLayoutIsRectangular;
 
     MSAEditorTreeViewer* curMSATreeViewer;

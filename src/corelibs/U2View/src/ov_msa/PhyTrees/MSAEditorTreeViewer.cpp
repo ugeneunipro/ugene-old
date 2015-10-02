@@ -112,10 +112,17 @@ bool MSAEditorTreeViewer::sync() {
     MSAEditorTreeViewerUI* treeViewerUI = qobject_cast<MSAEditorTreeViewerUI*>(ui);
     CHECK(treeViewerUI != NULL, false);
     if (treeViewerUI->canSynchronizeWithMSA(msa)) {
-        connectSignals();
-        treeViewerUI->highlightBranches();
+        if (isSynchronized()) {
+            // already synchronized
+            return true;
+        }
         syncMode = FullSynchronization;
+        treeViewerUI->setSynchronizeMode(syncMode);
+
+        connectSignals();
         sortSeqAction->setEnabled(true);
+        treeViewerUI->sl_sortAlignment();
+        treeViewerUI->highlightBranches();
         return true;
     }
     return false;
@@ -131,6 +138,8 @@ void MSAEditorTreeViewer::desync() {
     msaUI->getEditorNameList()->update();
 
     syncMode = WithoutSynchronization;
+    MSAEditorTreeViewerUI* treeViewerUI = qobject_cast<MSAEditorTreeViewerUI*>(ui);
+    treeViewerUI->setSynchronizeMode(syncMode);
     sortSeqAction->setEnabled(false);
 }
 
@@ -160,6 +169,7 @@ void MSAEditorTreeViewer::connectSignals() {
             treeViewerUI,               SLOT(sl_onReferenceSeqChanged(qint64)));
     connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)),
             treeViewerUI,               SLOT(sl_onVisibleRangeChanged(QStringList, int)));
+
     connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)),
             treeViewerUI,               SLOT(sl_selectionChanged(const QStringList&)));
     connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)),
@@ -202,11 +212,11 @@ void MSAEditorTreeViewer::sl_alignmentUpdated() {
     if (sync() == false) {
         QObjectScopedPointer<QMessageBox> desyncQuestion = new QMessageBox( QMessageBox::Question,
                                                                             tr("The alignment has been modified"),
-                                                                            QString("The list of sequences in the multiple alignment has been modified.\n"
-                                                                                    "If you confirm the modification, all phylogenetic tree(s), opened in the same view, will be no more synchronized with the alignment"));
+                                                                            tr("The list of sequences in the alignment has been modified.\n"
+                                                                               "If you confirm the modification, all phylogenetic tree(s), opened in the same view, will be no more synchronized with the alignment."));
         desyncQuestion->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         desyncQuestion->button(QMessageBox::No)->setText(tr("Cancel"));
-        desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm"));
+        desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm the modification"));
 
         int res = desyncQuestion->exec();
         if (res == QMessageBox::No) {
@@ -220,7 +230,7 @@ void MSAEditorTreeViewer::sl_alignmentUpdated() {
 }
 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
-    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), isSynchronized(true), curLayoutIsRectangular(true),
+    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), curLayoutIsRectangular(true),
     curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization), hasMinSize(false), hasMaxSize(false)
 {
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
@@ -617,7 +627,7 @@ void MSAEditorTreeViewerUI::highlightBranches() {
 }
 
 void MSAEditorTreeViewerUI::resizeEvent(QResizeEvent *e) {
-    CHECK(curLayoutIsRectangular && isSynchronized, );
+    CHECK(!(curLayoutIsRectangular && curMSATreeViewer->isSynchronized()), );
 
     rectangularTransform = transform();
     QGraphicsView::resizeEvent(e);
