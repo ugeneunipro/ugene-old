@@ -4723,12 +4723,6 @@ Please, check external tools in the settings.</source>
         <translation>Предупреждение: файл содержит паттерны, которые длиннее чем регион поиска! Эти паттерны были проигнорированы. Введите более короткое значение или выберите другой регион! </translation>
     </message>
     <message>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</source>
-        <translation type="vanished">Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок.
-Также вы можете загрузить подстроки из FASTA файла.</translation>
-    </message>
-    <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="788"/>
         <source>Warning: current sequence is too long to search in.</source>
         <translation>Предупреждение: текущая последовательность слишком длинная для поиска.</translation>
@@ -4750,10 +4744,10 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Причина: </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n
 Alternatively, load patterns from a FASTA file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок.\r\n
+Также вы можете загрузить подстроки из FASTA файла.</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
@@ -4802,6 +4796,12 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1511"/>
         <source>Results: %1/%2</source>
         <translation>Результаты: %1/%2</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
+Alternatively, load patterns from a FASTA file.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="747"/>
@@ -5393,10 +5393,16 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Не выбрана референсная последовательность</translation>
     </message>
     <message>
+        <source>Reference sequence for current highlighting scheme is not selected.\r\n
+Use context menu or Highlighting tab on Options panel to select it</source>
+        <translation type="vanished">Референсная последовательность для текущей схемы подсветки не задана.\r\n
+Используйте контекстное меню или вкладку Подсветка на панели опций чтобы задать ее</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
         <source>Reference sequence for current highlighting scheme is not selected.
 Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="vanished">Референсная последовательность для текущей схемы подсветки не задана.
-Используйте контекстное меню или панель опций, чтобы задать референсную последовательность</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="589"/>
@@ -5588,12 +5594,6 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="171"/>
         <source>Update collapsed groups</source>
         <translation>Обновить схлопнутые группы</translation>
-    </message>
-    <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
-        <source>Reference sequence for current highlighting scheme is not selected.
-Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>

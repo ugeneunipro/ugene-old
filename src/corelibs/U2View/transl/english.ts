@@ -4727,10 +4727,12 @@ Please, check external tools in the settings.</translation>
         <translation>Warning: file contains patterns that longer than the search region! Those patterns were ignored. Please input a shorter value or select another region! </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</source>
-        <translation type="unfinished"></translation>
+        <source>
+          Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n
+          Alternatively, load patterns from a FASTA file.</source>
+        <translation type="vanished">
+          Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n
+          Alternatively, load patterns from a FASTA file.</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="788"/>
@@ -4754,10 +4756,10 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Reason: </translation>
     </message>
     <message>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
         <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
 Alternatively, load patterns from a FASTA file.</source>
-        <translation type="vanished">Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
@@ -5422,10 +5424,12 @@ Alternatively, load patterns from a FASTA file.</translation>
         <translation>No reference sequence selected</translation>
     </message>
     <message>
-        <source>Reference sequence for current highlighting scheme is not selected.
-Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="vanished">Reference sequence for current highlighting scheme is not selected.
-Use context menu or Highlighting tab on Options panel to select it</translation>
+        <source>
+          Reference sequence for current highlighting scheme is not selected.\r\n
+          Use context menu or Highlighting tab on Options panel to select it</source>
+        <translation type="vanished">
+          Reference sequence for current highlighting scheme is not selected.\r\n
+          Use context menu or Highlighting tab on Options panel to select it</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
