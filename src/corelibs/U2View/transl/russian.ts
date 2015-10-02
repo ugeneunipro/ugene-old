@@ -4540,17 +4540,17 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::ExportHighligtningTask</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2815"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2816"/>
         <source>Export highlighting</source>
         <translation>Экспорт подсвеченного</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2843"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2844"/>
         <source>Export highligtning finished successfully</source>
         <translation>Export highligtning finished successfully</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2843"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2844"/>
         <source>Result file:</source>
         <translation>Выходной файл:</translation>
     </message>
@@ -4723,6 +4723,12 @@ Please, check external tools in the settings.</source>
         <translation>Предупреждение: файл содержит паттерны, которые длиннее чем регион поиска! Эти паттерны были проигнорированы. Введите более короткое значение или выберите другой регион! </translation>
     </message>
     <message>
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
+Alternatively, load patterns from a FASTA file.</source>
+        <translation>Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок.
+Также вы можете загрузить подстроки из FASTA файла.</translation>
+    </message>
+    <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="788"/>
         <source>Warning: current sequence is too long to search in.</source>
         <translation>Предупреждение: текущая последовательность слишком длинная для поиска.</translation>
@@ -4742,12 +4748,6 @@ Please, check external tools in the settings.</source>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="760"/>
         <source>Reason: </source>
         <translation>Причина: </translation>
-    </message>
-    <message>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n
-Alternatively, load patterns from a FASTA file.</source>
-        <translation type="vanished">Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок.\r\n
-Также вы можете загрузить подстроки из FASTA файла.</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
@@ -4796,12 +4796,6 @@ Alternatively, load patterns from a FASTA file.</source>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1511"/>
         <source>Results: %1/%2</source>
         <translation>Результаты: %1/%2</translation>
-    </message>
-    <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="747"/>
@@ -5393,16 +5387,10 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Не выбрана референсная последовательность</translation>
     </message>
     <message>
-        <source>Reference sequence for current highlighting scheme is not selected.\r\n
-Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="vanished">Референсная последовательность для текущей схемы подсветки не задана.\r\n
-Используйте контекстное меню или вкладку Подсветка на панели опций чтобы задать ее</translation>
-    </message>
-    <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
         <source>Reference sequence for current highlighting scheme is not selected.
 Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="unfinished"></translation>
+        <translation>Референсная последовательность для текущей схемы подсветки не задана.
+Используйте контекстное меню или панель опций, чтобы задать референсную последовательность</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="589"/>
@@ -5487,86 +5475,86 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Cursor position is out of range</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1866"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1867"/>
         <source>Custom schemes</source>
         <translation>Пользовательские схемы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1877"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1878"/>
         <source>Create new color scheme</source>
         <translation>Создать новую цветовую схему</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1885"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1886"/>
         <source>Highlighting</source>
         <translation>Подсветка</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1910"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2009"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2070"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2469"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1911"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2010"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2071"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2470"/>
         <source>NULL collapsible model!</source>
         <translation>NULL collapsible model!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2005"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2006"/>
         <source>NULL msa object!</source>
         <translation>NULL msa object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2118"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2119"/>
         <source>Warning!</source>
         <translation>Внимание!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2118"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2119"/>
         <source>You must select only one sequence for export.</source>
         <translation>Необходимо выбрать только одну последовательность для экспорта.</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2160"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2161"/>
         <source>warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2160"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2161"/>
         <source>The document already in the project</source>
         <translation>Документ уже содержится в проекте</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2387"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2390"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2388"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2391"/>
         <source>Open file with sequences</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2486"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2487"/>
         <source>NULL Msa Object!</source>
         <translation>NULL Msa Object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2491"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2492"/>
         <source>NULL document!</source>
         <translation>NULL document!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2514"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2515"/>
         <source>Top left corner of the selection has incorrect coords</source>
         <translation>Top left corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2516"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2517"/>
         <source>Bottom right corner of the selection has incorrect coords</source>
         <translation>Bottom right corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2675"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2676"/>
         <source>Incorrect pointer to MSACollapsibleItemModel</source>
         <translation>Incorrect pointer to MSACollapsibleItemModel</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1964"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1965"/>
         <source>Go To</source>
         <translation>Выбор позиции</translation>
     </message>
@@ -5596,7 +5584,7 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Обновить схлопнутые группы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
         <source>Colors</source>
         <translation>Раскраска</translation>
     </message>
@@ -5697,14 +5685,14 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Can not convert TreeViewer* to MSAEditorTreeViewer* in function MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t)</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="315"/>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="318"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="317"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="320"/>
         <source>Select files to open...</source>
         <translation>Выберите файлы...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="377"/>
         <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="379"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="381"/>
         <source>Incorrect reference to the MSAEditor</source>
         <translation>Incorrect reference to the MSAEditor</translation>
     </message>
@@ -5712,19 +5700,41 @@ Use context menu or Highlighting tab on Options panel to select it</source>
 <context>
     <name>U2::MSAEditorTreeViewer</name>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="51"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="63"/>
         <source>MSAEditor tree toolbar</source>
         <translation>Панель опций редактора деревьев</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="54"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="66"/>
         <source>Sort alignment by tree</source>
         <translation>Сортировать выравнивание по дереву</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="58"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="70"/>
         <source>Refresh tree</source>
         <translation>Обновить дерево</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="214"/>
+        <source>The alignment has been modified</source>
+        <translation>Список последовательностей был изменен</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="215"/>
+        <source>The list of sequences in the alignment has been modified.
+If you confirm the modification, all phylogenetic tree(s), opened in the same view, will be no more synchronized with the alignment.</source>
+        <translation>Список последовательностей в множественном выравнивании был изменен.
+Если вы подтвердите изменения, синхронизация между данным выравниванием и соответствующими филогенетическими деревьями будет потеряна.</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="218"/>
+        <source>Cancel</source>
+        <translation>Отменить</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="219"/>
+        <source>Confirm the modification</source>
+        <translation>Применить изменения</translation>
     </message>
 </context>
 <context>

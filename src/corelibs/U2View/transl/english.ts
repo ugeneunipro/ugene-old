@@ -4544,17 +4544,17 @@ Please, check external tools in the settings.</translation>
 <context>
     <name>U2::ExportHighligtningTask</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2815"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2816"/>
         <source>Export highlighting</source>
         <translation>Export highlighting</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2843"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2844"/>
         <source>Export highligtning finished successfully</source>
         <translation>Export highligtning finished successfully</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2843"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2844"/>
         <source>Result file:</source>
         <translation>Result file:</translation>
     </message>
@@ -5520,91 +5520,91 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Cursor position is out of range</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
         <source>Colors</source>
         <translation>Colors</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1866"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1867"/>
         <source>Custom schemes</source>
         <translation>Custom schemes</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1877"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1878"/>
         <source>Create new color scheme</source>
         <translation>Create new color scheme</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1885"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1886"/>
         <source>Highlighting</source>
         <translation>Highlighting</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1910"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2009"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2070"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2469"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1911"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2010"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2071"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2470"/>
         <source>NULL collapsible model!</source>
         <translation>NULL collapsible model!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1964"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1965"/>
         <source>Go To</source>
         <translation>Go To</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2005"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2006"/>
         <source>NULL msa object!</source>
         <translation>NULL msa object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2118"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2119"/>
         <source>Warning!</source>
         <translation>Warning!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2118"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2119"/>
         <source>You must select only one sequence for export.</source>
         <translation>You must select only one sequence for export.</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2160"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2161"/>
         <source>warning</source>
         <translation>warning</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2160"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2161"/>
         <source>The document already in the project</source>
         <translation>The document already in the project</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2387"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2390"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2388"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2391"/>
         <source>Open file with sequences</source>
         <translation>Open file with sequences</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2486"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2487"/>
         <source>NULL Msa Object!</source>
         <translation>NULL Msa Object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2491"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2492"/>
         <source>NULL document!</source>
         <translation>NULL document!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2514"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2515"/>
         <source>Top left corner of the selection has incorrect coords</source>
         <translation>Top left corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2516"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2517"/>
         <source>Bottom right corner of the selection has incorrect coords</source>
         <translation>Bottom right corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2675"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2676"/>
         <source>Incorrect pointer to MSACollapsibleItemModel</source>
         <translation>Incorrect pointer to MSACollapsibleItemModel</translation>
     </message>
@@ -5705,14 +5705,14 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Can not convert TreeViewer* to MSAEditorTreeViewer* in function MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t)</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="315"/>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="318"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="317"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="320"/>
         <source>Select files to open...</source>
         <translation>Select files to open...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="377"/>
         <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="379"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp" line="381"/>
         <source>Incorrect reference to the MSAEditor</source>
         <translation>Incorrect reference to the MSAEditor</translation>
     </message>
@@ -5720,19 +5720,40 @@ Use context menu or Highlighting tab on Options panel to select it</source>
 <context>
     <name>U2::MSAEditorTreeViewer</name>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="51"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="63"/>
         <source>MSAEditor tree toolbar</source>
         <translation>MSAEditor tree toolbar</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="54"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="66"/>
         <source>Sort alignment by tree</source>
         <translation>Sort alignment by tree</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="58"/>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="70"/>
         <source>Refresh tree</source>
         <translation>Refresh tree</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="214"/>
+        <source>The alignment has been modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="215"/>
+        <source>The list of sequences in the alignment has been modified.
+If you confirm the modification, all phylogenetic tree(s), opened in the same view, will be no more synchronized with the alignment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="218"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp" line="219"/>
+        <source>Confirm the modification</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
