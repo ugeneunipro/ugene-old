@@ -54,6 +54,8 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#include <QMdiSubWindow>
+
 namespace U2 {
 
 namespace GUITest_initial_checks {
@@ -207,6 +209,13 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
 
         GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
         GTGlobals::sleep();
+    }
+    //close WD
+    QMdiSubWindow* WD = GTWidget::findExactWidget<QMdiSubWindow*>(os, "Workflow Designer_SubWindow", NULL, GTGlobals::FindOptions(false));
+    if(WD != NULL){
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, "Close without Saving"));
+        WD->close();
+        GTGlobals::sleep(500);
     }
 }
 
