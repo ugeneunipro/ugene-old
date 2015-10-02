@@ -142,7 +142,9 @@ QList<Task*> PairwiseAlignmentHirschbergTask::onSubTaskFinished(Task *subTask) {
 
             QList<U2MsaRow> rows = con.dbi->getMsaDbi()->getRows(settings->msaRef.entityId, os);
             CHECK_OP(os, res);
-
+            U2UseCommonUserModStep userModStep(settings->msaRef, os);
+            Q_UNUSED(userModStep);
+            SAFE_POINT_OP(os, res);
             for (int rowNumber = 0; rowNumber < rows.length(); ++rowNumber) {
                 if (rows[rowNumber].sequenceId == settings->firstSequenceRef.entityId) {
                     con.dbi->getMsaDbi()->updateGapModel(settings->msaRef.entityId, rows[rowNumber].rowId, kalignSubTask->resultMA.getRow(0).getGapModel(), os);
