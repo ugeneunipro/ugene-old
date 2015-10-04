@@ -159,6 +159,9 @@ void HangChecker::startChecking(){
 #define GT_METHOD_NAME "sl_check"
 void HangChecker::sl_check(){
     QWidget* dialog = QApplication::activeModalWidget();
+    if(dialog == NULL){
+        dialog = QApplication::activePopupWidget();
+    }
     try{
         if(dialog != NULL){
             bool found = false;

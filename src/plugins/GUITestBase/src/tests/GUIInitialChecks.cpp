@@ -213,7 +213,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     //close WD
     QMdiSubWindow* WD = GTWidget::findExactWidget<QMdiSubWindow*>(os, "Workflow Designer_SubWindow", NULL, GTGlobals::FindOptions(false));
     if(WD != NULL){
-        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, "Close without Saving"));
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os,QMessageBox::Discard));
         WD->close();
         GTGlobals::sleep(500);
     }

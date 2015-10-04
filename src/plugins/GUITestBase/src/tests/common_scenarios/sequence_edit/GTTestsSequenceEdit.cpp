@@ -581,7 +581,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 10);
 
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", false));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Replace subsequence...", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -590,7 +590,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 10);
 
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", true));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Replace subsequence...", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -606,7 +606,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1_neg) {
     GTUtilsSequenceView::selectSequenceRegion(os, 1000, 1010);
 
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", true));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Replace subsequence...", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -621,7 +621,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTUtilsSequenceView::selectSequenceRegion(os, 1050, 1050);
 
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAA", true));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Replace subsequence...", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -641,7 +641,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2_neg) {
     GTUtilsSequenceView::selectSequenceRegion(os, 996, 1000);
 
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AA", true));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Replace subsequence...", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
