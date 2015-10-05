@@ -3442,6 +3442,34 @@ GUI_TEST_CLASS_DEFINITION(test_4716) {
     CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4728) {
+    //1. Open 'fa1.fa'
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");
+    GTGlobals::sleep(500);
+
+    //2. Select all sequence by mouse
+    ADVSingleSequenceWidget* seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(NULL != seqWidget, "Can not find ADVSingleSequenceWidget");
+
+    QPoint startPos, endPos;
+    int indent = 50;
+    startPos, endPos = seqWidget->pos();
+    qreal widgetCenterHeight = seqWidget->rect().height() / 2;
+    startPos = seqWidget->mapToGlobal(QPoint(indent, widgetCenterHeight));
+    endPos = seqWidget->mapToGlobal(QPoint(seqWidget->rect().width() - indent, widgetCenterHeight));
+
+    GTMouseDriver::moveTo(os, startPos);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, endPos);
+    GTMouseDriver::release(os);
+
+    //Expected state: all 4 symbols are selected 
+    QVector<U2Region> selection = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(selection.size() == 1, "Incorrect number of regions in selection is detected");
+    CHECK_SET_ERR(selection.at(0).length == 4, "Incorrect selection length is detected");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_4732) {
     QFile::copy(dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "test_4732.fa");
     //1. Open "data/samples/FASTA/human_T1.fa".
