@@ -175,7 +175,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsWizard.h \
             src/GTUtilsWorkflowDesigner.h \
-            src/GTutilsStartPage.h \
+            src/GTUtilsStartPage.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
@@ -454,7 +454,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsWizard.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
-            src/GTutilsStartPage.cpp \
+            src/GTUtilsStartPage.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios

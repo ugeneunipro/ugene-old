@@ -40,7 +40,7 @@
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
-#include "GTutilsStartPage.h"
+#include "GTUtilsStartPage.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
 #include "api/GTClipboard.h"
@@ -762,8 +762,8 @@ GUI_TEST_CLASS_DEFINITION(test_0046){
     GTUtilsProjectTreeView::findIndex(os, "1CF7");
 
     GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.pdb"), false);
-    GTutilsStartPage::openStartPage(os);
-    QWebElement recentDocElement = GTWebView::findElement(os, GTutilsStartPage::getStartPage(os), "- clipboard.pdb", "A");
+    GTUtilsStartPage::openStartPage(os);
+    QWebElement recentDocElement = GTWebView::findElement(os, GTUtilsStartPage::getStartPage(os), "- clipboard.pdb", "A");
     QString elem = recentDocElement.toPlainText();
     CHECK_SET_ERR(elem == "- clipboard.pdb", "Recent doc not found");
 }

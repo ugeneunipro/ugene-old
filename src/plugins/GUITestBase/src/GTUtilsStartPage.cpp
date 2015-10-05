@@ -27,21 +27,21 @@
 
 #include "GTUtilsMdi.h"
 
-#include "GTutilsStartPage.h"
+#include "GTUtilsStartPage.h"
 
 namespace U2 {
 
-void GTutilsStartPage::openStartPage(U2OpStatus &os){
+void GTUtilsStartPage::openStartPage(U2OpStatus &os){
     GTUtilsMdi::activateWindow(os, "Start Page");
 }
 
-QWebView* GTutilsStartPage::getStartPage(U2OpStatus &os){
+QWebView* GTUtilsStartPage::getStartPage(U2OpStatus &os){
     QWidget* startPageWidget = GTWidget::findWidget(os, "Start Page");
     QWebView* result = GTWidget::findExactWidget<QWebView*>(os, "webView", startPageWidget);
     return result;
 }
 
-QWebElement GTutilsStartPage::getButton(U2OpStatus &os, Buttons button){
+QWebElement GTUtilsStartPage::getButton(U2OpStatus &os, Buttons button){
     QWebElement result;
     switch (button) {
     case OpenFile:
@@ -62,18 +62,18 @@ QWebElement GTutilsStartPage::getButton(U2OpStatus &os, Buttons button){
     return result;
 }
 
-void GTutilsStartPage::clickButton(U2OpStatus &os, Buttons b){
+void GTUtilsStartPage::clickButton(U2OpStatus &os, Buttons b){
     QWebElement but = getButton(os, b);
     QWebView* start = getStartPage(os);
     GTWebView::click(os, start, but);
 }
 
-void GTutilsStartPage::clickResentDocument(U2OpStatus &os, QString text){
+void GTUtilsStartPage::clickResentDocument(U2OpStatus &os, QString text){
     QWebElement el = GTWebView::findElement(os, getStartPage(os), "- " + text, "A");
     GTWebView::click(os, getStartPage(os), el);
 }
 
-void GTutilsStartPage::clickResentProject(U2OpStatus &os, QString text){
+void GTUtilsStartPage::clickResentProject(U2OpStatus &os, QString text){
     clickResentDocument(os, text);
 }
 

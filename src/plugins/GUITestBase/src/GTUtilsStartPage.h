@@ -20,8 +20,8 @@
  */
 
 
-#ifndef GTUTILSSTARTPAGE_H
-#define GTUTILSSTARTPAGE_H
+#ifndef _U2_GT_UTILS_START_PAGE_
+#define _U2_GT_UTILS_START_PAGE_
 
 #include "api/GTGlobals.h"
 
@@ -30,7 +30,7 @@ class QWebElement;
 
 namespace U2 {
 
-class GTutilsStartPage
+class GTUtilsStartPage
 {
 public:
     enum Buttons{OpenFile, CreateSequence, CreateWorkflow, QuickStartGuide};
@@ -44,4 +44,4 @@ public:
 
 }
 
-#endif // GTUTILSSTARTPAGE_H
+#endif // _U2_GT_UTILS_START_PAGE_
