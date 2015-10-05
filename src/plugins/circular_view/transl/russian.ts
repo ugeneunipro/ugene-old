@@ -144,7 +144,7 @@
 <context>
     <name>U2::CircularViewAction</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="360"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="361"/>
         <source>Show circular view</source>
         <translation>Показать круговой вид</translation>
     </message>
@@ -167,12 +167,12 @@
         <translation>Переключить круговые виды</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="283"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="284"/>
         <source>Remove circular view</source>
         <translation>Удалить круговой вид</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="294"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="295"/>
         <source>Show circular view</source>
         <translation>Показать круговой вид</translation>
     </message>
