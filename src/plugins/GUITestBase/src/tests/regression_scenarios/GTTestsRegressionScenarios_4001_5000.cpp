@@ -3483,6 +3483,30 @@ GUI_TEST_CLASS_DEFINITION(test_4732) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4734) {
+    //    1. Open file {data/samples/FASTA/human_T1.fa}
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //    2. Open {Context menu -> Analyze menu} and check menu item "Show circular view" is not present there
+
+    class AllPopupChecker : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+            CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL");
+            GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Analyze");
+            activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+            QAction* showCircular = GTMenu::getMenuItem(os, activePopupMenu, "globalToggleViewAction", false);
+            CHECK_SET_ERR(showCircular == NULL, "'Toggle circular view' menu item should be NULL");
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTGlobals::sleep(200);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new AllPopupChecker));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

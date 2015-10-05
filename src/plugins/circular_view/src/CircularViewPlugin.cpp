@@ -125,7 +125,8 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     connect(av, SIGNAL(si_onClose(AnnotatedDNAView*)), SLOT(sl_onDNAViewClosed(AnnotatedDNAView*)));
 
     ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av, QIcon(":circular_view/images/circular.png"),
-        tr("Toggle circular views"), std::numeric_limits<int>::max()); // big enough to be the last one?
+        tr("Toggle circular views"), std::numeric_limits<int>::max(), ADVGlobalActionFlags(ADVGlobalActionFlag_AddToToolbar)
+        | ADVGlobalActionFlag_SingleSequenceOnly); // big enough to be the last one?
 
     globalToggleViewAction->addAlphabetFilter(DNAAlphabet_NUCL);
     globalToggleViewAction->setObjectName("globalToggleViewAction");
