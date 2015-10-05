@@ -158,6 +158,8 @@ public:
     static const QString IDENTPERC_AMINO_GRAY;
     static const QString CLUSTALX_AMINO;
     static const QString CUSTOM_AMINO;
+
+    static const QString EMPTY_RAW;
 protected:
     MSAColorSchemeFactory*  factory;
     MAlignmentObject*       maObj;
@@ -382,6 +384,7 @@ public:
 
     static const QString EMPTY_NUCL;
     static const QString EMPTY_AMINO;
+    static const QString EMPTY_RAW;
     static const QString AGREEMENTS_NUCL;
     static const QString AGREEMENTS_AMINO;
     static const QString DISAGREEMENTS_NUCL;
@@ -390,6 +393,7 @@ public:
     static const QString TRANSVERSIONS_NUCL;
     static const QString GAPS_NUCL;
     static const QString GAPS_AMINO;
+    static const QString GAPS_RAW;
     static const QString CONSERVATION_NUCL;
     static const QString CONSERVATION_AMINO;
 

@@ -144,14 +144,11 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
 
     initColorCB();
     sl_sync();
-    connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
-        SLOT(sl_changeColorSchemeOutside(const QString &)));
-    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
-        SLOT(sl_changeColorSchemeOutside(const QString &)));
-    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_updateHint()));
     connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_doUseDots()));
 
     connect(seqArea, SIGNAL(si_highlightingChanged()), SLOT(sl_sync()));
+
+    connect(seqArea, SIGNAL(si_highlightingAndColorActionsChanged()), SLOT(sl_actionsChanged()));
 
     connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
 
@@ -168,20 +165,22 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
 }
 
 void MSAHighlightingTab::initColorCB(){
+    disconnect(colorScheme, 0, 0, 0);
+    disconnect(highlightingScheme, 0, 0, 0);
     colorScheme->clear();
     colorScheme->addItems(seqArea->getAvailableColorSchemes());
 
     highlightingScheme->clear();
     highlightingScheme->addItems(seqArea->getAvailableHighlightingSchemes());
+    connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
+        SLOT(sl_changeColorSchemeOutside(const QString &)));
+    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
+        SLOT(sl_changeColorSchemeOutside(const QString &)));
+    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_updateHint()));
 }
 
 void MSAHighlightingTab::sl_sync(){
-    //check custom schemes changed
-    if(seqArea->getAvailableColorSchemes().size() != colorScheme->count()){
-        disconnect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
-        initColorCB();
-        connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
-    }
+    customColorSchemesChangeCheck();
 
     MSAColorScheme *s = seqArea->getCurrentColorScheme();
     SAFE_POINT(s != NULL, "Current scheme is NULL", );
@@ -258,6 +257,19 @@ void MSAHighlightingTab::sl_highlightingParametersChanged() {
     highlightingSettings.insert(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, thresholdLessRb->isChecked());
     s->applySettings(highlightingSettings);
     seqArea->sl_changeColorSchemeOutside(colorScheme->currentText());
+}
+
+void MSAHighlightingTab::sl_actionsChanged() {
+    initColorCB();
+    sl_sync();
+}
+
+void MSAHighlightingTab::customColorSchemesChangeCheck() {
+    if (seqArea->getAvailableColorSchemes().size() != colorScheme->count()) {
+        disconnect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
+        initColorCB();
+        connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
+    }
 }
 
 }//ns

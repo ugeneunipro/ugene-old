@@ -662,6 +662,12 @@ static bool compareNames(const MSAColorSchemeFactory* a1, const MSAColorSchemeFa
     if (a2->getId() == MSAColorScheme::EMPTY_AMINO) {
         return false;
     }
+    if (a1->getId() == MSAColorScheme::EMPTY_RAW) {
+        return true;
+    }
+    if (a2->getId() == MSAColorScheme::EMPTY_RAW) {
+        return false;
+    }
     return a1->getName() < a2->getName();
 }
 
@@ -957,6 +963,8 @@ const QString MSAColorScheme::IDENTPERC_AMINO_GRAY  = "COLOR_SCHEME_IDENTPERC_AM
 const QString MSAColorScheme::CLUSTALX_AMINO    = "COLOR_SCHEME_CLUSTALX_AMINO";
 const QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
 
+const QString MSAColorScheme::EMPTY_RAW         = "COLOR_SCHEME_EMPTY_RAW";
+
 
 void MSAColorSchemeRegistry::initCustomSchema(){
     foreach(const CustomColorSchema& schema, ColorSchemaSettingsUtils::getSchemas()){
@@ -1054,6 +1062,10 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 
     addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));
 
+    //raw
+    fillEmptyCS(colorsPerChar);
+    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::EMPTY_RAW, tr("No colors"), DNAAlphabet_RAW, colorsPerChar));
+
 }
 ////////////
 //SNP
@@ -1061,6 +1073,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 MSAHighlightingSchemeRegistry::MSAHighlightingSchemeRegistry(){
     schemes.append(new MSAHighlightingSchemeNoColorsFactory(this, MSAHighlightingScheme::EMPTY_NUCL, tr("No highlighting"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeNoColorsFactory(this, MSAHighlightingScheme::EMPTY_AMINO, tr("No highlighting"), DNAAlphabet_AMINO));
+    schemes.append(new MSAHighlightingSchemeNoColorsFactory(this, MSAHighlightingScheme::EMPTY_RAW, tr("No highlighting"), DNAAlphabet_RAW));
 
     schemes.append(new MSAHighlightingSchemeAgreementsFactory(this, MSAHighlightingScheme::AGREEMENTS_NUCL, tr("Agreements"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeAgreementsFactory(this, MSAHighlightingScheme::AGREEMENTS_AMINO, tr("Agreements"), DNAAlphabet_AMINO));
@@ -1070,6 +1083,7 @@ MSAHighlightingSchemeRegistry::MSAHighlightingSchemeRegistry(){
 
     schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_NUCL, tr("Gaps"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_AMINO, tr("Gaps"), DNAAlphabet_AMINO));
+    schemes.append(new MSAHighlightingSchemeGapsFactory(this, MSAHighlightingScheme::GAPS_RAW, tr("Gaps"), DNAAlphabet_RAW));
 
     schemes.append(new MSAHighlightingSchemeConservationFactory (this, MSAHighlightingScheme::CONSERVATION_NUCL, tr("Conservation level"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeConservationFactory (this, MSAHighlightingScheme::CONSERVATION_AMINO, tr("Conservation level"), DNAAlphabet_AMINO));
@@ -1150,6 +1164,7 @@ QVariantMap MSAHighlightingScheme::getSettings() const {
 
 const QString MSAHighlightingScheme::EMPTY_NUCL     = "HIGHLIGHT_SCHEME_EMPTY_NUCL";
 const QString MSAHighlightingScheme::EMPTY_AMINO    = "HIGHLIGHT_SCHEME_EMPTY_AMINO";
+const QString MSAHighlightingScheme::EMPTY_RAW      = "HIGHLIGHT_SCHEME_EMPTY_RAW";
 const QString MSAHighlightingScheme::AGREEMENTS_NUCL    = "HIGHLIGHT_SCHEME_AGREEMENTS_NUCL";
 const QString MSAHighlightingScheme::AGREEMENTS_AMINO   = "HIGHLIGHT_SCHEME_AGREEMENTS_AMINO";
 const QString MSAHighlightingScheme::DISAGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_DISAGREEMENTS_NUCL";
@@ -1158,6 +1173,7 @@ const QString MSAHighlightingScheme::TRANSITIONS_NUCL   = "HIGHLIGHT_SCHEME_TRAN
 const QString MSAHighlightingScheme::TRANSVERSIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSVERSIONS_AMINO";
 const QString MSAHighlightingScheme::GAPS_AMINO     = "HIGHLIGHT_SCHEME_GAPS_AMINO";
 const QString MSAHighlightingScheme::GAPS_NUCL  = "HIGHLIGHT_SCHEME_GAPS_NUCL";
+const QString MSAHighlightingScheme::GAPS_RAW   = "HIGHLIGHT_SCHEME_GAPS_RAW";
 const QString MSAHighlightingScheme::CONSERVATION_AMINO = "CONSERVATION_SCHEME_GAPS_AMINO";
 const QString MSAHighlightingScheme::CONSERVATION_NUCL  = "CONSERVATION_SCHEME_GAPS_NUCL";
 

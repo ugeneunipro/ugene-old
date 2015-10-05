@@ -3442,6 +3442,58 @@ GUI_TEST_CLASS_DEFINITION(test_4716) {
     CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4719_1) {
+    //    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+    //    3. Click "Align sequence to this alignment" and select "_common_data/fasta/amino_ext.fa".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/amino_ext.fa"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: "No colors" color scheme is selected
+    QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "No colors");
+
+    //    4. Undo changes
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: "UGENE" color scheme is selected
+    colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4719_2) {
+    //    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+    //    3. Click "Align sequence to this alignment" and select "_common_data/fasta/amino_ext.fa".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/fa1.fa"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: "No colors" color scheme is selected
+    QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "No colors");
+
+    //    4. Undo changes
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: "UGENE" color scheme is selected
+    colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4728) {
     //1. Open 'fa1.fa'
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");

@@ -57,6 +57,11 @@ class MSAHighlightingScheme;
 class MAlignment;
 class MAlignmentModInfo;
 class MAlignmentObject;
+class MSAColorSchemeFactory;
+class MSAHighlightingSchemeFactory;
+class MSAColorSchemeRegistry;
+class MSAHighlightingSchemeRegistry;
+class Settings;
 
 class ModificationType {
 public:
@@ -324,6 +329,7 @@ signals:
     void si_stopMSAChanging(bool msaUpdated);
     void si_copyFormattedChanging(bool enabled);
     void si_alignmentUpdated();
+    void si_highlightingAndColorActionsChanged();
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
@@ -394,10 +400,13 @@ protected:
 
 private:
     void buildMenu(QMenu* m);
-    void prepareColorSchemeMenuActions();
-    void prepareHighlightingMenuActions();
+    void updateColorAndHighlightSchemes();
 
-    void initCustomSchemeActions(const QString& id, DNAAlphabetType type);
+    void initColorSchemes(MSAColorSchemeFactory* csf, DNAAlphabetType atype);
+    void initHighlightSchemes(MSAHighlightingSchemeFactory* hsf, DNAAlphabetType atype);
+    void initCustomSchemeActions(MSAColorSchemeFactory* csf, DNAAlphabetType type);
+
+    void getColorAndHighlightingIds(QString &csid, QString &hsid, DNAAlphabetType atype, bool isFirstInitialization);
 
     void updateActions();
 
