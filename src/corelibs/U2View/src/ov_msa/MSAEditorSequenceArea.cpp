@@ -488,7 +488,7 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
 
     if(!f->isRefFree() && refSeq == -1 && ui->getEditor()->getOptionsPanel()->getActiveGroupId() != msaHighlightingId) {
         QMessageBox::warning(ui, tr("No reference sequence selected"),
-            tr("Reference sequence for current highlighting scheme is not selected.\r\nUse context menu or Highlighting tab on Options panel to select it"));
+            tr("Reference sequence for current highlighting scheme is not selected. Use context menu or Highlighting tab on Options panel to select it"));
     }
 
     foreach(QAction* action, highlightingSchemeMenuActions) {

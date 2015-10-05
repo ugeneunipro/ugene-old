@@ -736,8 +736,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n"
-                        "Alternatively, load patterns from a FASTA file.").arg(lineBreakShortcut));
+                    text += QString(tr("Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns. Alternatively, load patterns from a FASTA file.").arg(lineBreakShortcut));
                     changeColorOfMessageText(L10N::infoHintColor().name());
                     break;
                 case AnnotationNotValidName:

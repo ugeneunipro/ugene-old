@@ -4723,87 +4723,87 @@ Please, check external tools in the settings.</source>
         <translation>Предупреждение: файл содержит паттерны, которые длиннее чем регион поиска! Эти паттерны были проигнорированы. Введите более короткое значение или выберите другой регион! </translation>
     </message>
     <message>
-        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.
-Alternatively, load patterns from a FASTA file.</source>
-        <translation>Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок.
-Также вы можете загрузить подстроки из FASTA файла.</translation>
-    </message>
-    <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="788"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="787"/>
         <source>Warning: current sequence is too long to search in.</source>
         <translation>Предупреждение: текущая последовательность слишком длинная для поиска.</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1459"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1458"/>
         <source>Warning: can not get valid pattern name, annotation will be named &apos;misc_feature&apos;</source>
         <translation>Warning: can not get valid pattern name, annotation will be named &apos;misc_feature&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1597"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1596"/>
         <source>Results:</source>
         <translation>Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="749"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="760"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="748"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="759"/>
         <source>Reason: </source>
         <translation>Причина: </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="752"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
+        <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns. Alternatively, load patterns from a FASTA file.</source>
+        <translation>Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок. Также вы можете загрузить подстроки из FASTA файла.
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="751"/>
         <source> Please input valid annotation names </source>
         <translation>Введите корректные имена аннотаций </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="758"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="757"/>
         <source>Warning: annotation names are invalid. </source>
         <translation>Внимание: имена аннотаций некорректны. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="763"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="762"/>
         <source> It will be automatically changed to acceptable name if &apos;Get annotations&apos; button is pressed. </source>
         <translation> Они будут автоматически изменены на доступные имена после того как кнопка &apos;Получить аннотации&apos; будет нажата. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="769"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="776"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="768"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="775"/>
         <source>Warning: there is no pattern to search. </source>
         <translation>Предупреждение: нет паттернов для поиска. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="770"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="777"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="769"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="776"/>
         <source> Please input a valid pattern or choose a file with patterns </source>
         <translation>Введите паттерн или выберите файл с паттернами </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="783"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="782"/>
         <source>Warning: invalid regexp. </source>
         <translation>Предупреждение: некорректное регулярное выражение. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1114"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1113"/>
         <source>Select file to open...</source>
         <translation>Выберите файл...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1166"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1165"/>
         <source>Unable to search on the reverse-complement strand, searching on the direct strand only!</source>
         <translation>Невозможно выполнить поиск в обратно-комплементарной цепи, поиск только в прямой цепи!</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="295"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1511"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1510"/>
         <source>Results: %1/%2</source>
         <translation>Результаты: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="747"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="746"/>
         <source>Warning: annotation name or annotation group name are invalid. </source>
         <translation>Внимание: имя аннотации или имя группы аннотаций некорректно. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1314"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1313"/>
         <source>Sequence in focus is NULL</source>
         <translation>Sequence in focus is NULL</translation>
     </message>
@@ -5392,12 +5392,6 @@ Alternatively, load patterns from a FASTA file.</source>
         <translation>Не выбрана референсная последовательность</translation>
     </message>
     <message>
-        <source>Reference sequence for current highlighting scheme is not selected.
-Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation>Референсная последовательность для текущей схемы подсветки не задана.
-Используйте контекстное меню или панель опций, чтобы задать референсную последовательность</translation>
-    </message>
-    <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="589"/>
         <source>Alignment object is NULL</source>
         <translation>Alignment object is NULL</translation>
@@ -5589,15 +5583,13 @@ Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Обновить схлопнутые группы</translation>
     </message>
     <message>
-<<<<<<< .mine        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
-        <source>Reference sequence for current highlighting scheme is not selected.
-Use context menu or Highlighting tab on Options panel to select it</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="491"/>
+        <source>Reference sequence for current highlighting scheme is not selected. Use context menu or Highlighting tab on Options panel to select it</source>
+        <translation>Референсная последовательность для текущей схемы подсветки не задана. Используйте контекстное меню или панель опций, чтобы задать референсную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1859"/>
-=======        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
->>>>>>> .theirs        <source>Colors</source>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1860"/>
+        <source>Colors</source>
         <translation>Раскраска</translation>
     </message>
 </context>
