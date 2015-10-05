@@ -2410,7 +2410,7 @@ GUI_TEST_CLASS_DEFINITION(test_4352) {
     GTTreeWidget::click(os, item);
 
     //5. Remove a part of the sequence that contains the selected site.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "89300..89400"));
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
@@ -2722,7 +2722,7 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTWidget::click(os, GTUtilsAnnotationsTreeView::getTreeWidget(os));
     GTMouseDriver::click(os, Qt::RightButton);
 
