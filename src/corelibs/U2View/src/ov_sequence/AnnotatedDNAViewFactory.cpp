@@ -78,6 +78,9 @@ bool AnnotatedDNAViewFactory::canCreateView(const MultiGSelection& multiSelectio
         docs << o->getDocument();
     }
     foreach(Document* doc, docs) {
+        if (doc->isDatabaseConnection()) {
+            continue;
+        }
         if (!doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
             return true;
         }
