@@ -194,7 +194,8 @@ void SecStructDialog::showResults() {
         U2Region annRegion = data->getRegions().first();
         QTableWidgetItem *locItem = new QTableWidgetItem(QString("[%1..%2]").arg(annRegion.startPos).arg(annRegion.endPos()));
         resultsTable->setItem(rowIndex, 0, locItem);
-        QTableWidgetItem *nameItem = new QTableWidgetItem(QString(data->name));
+        SAFE_POINT( data->qualifiers.size() == 1, "Only one qualifier expected!", );
+        QTableWidgetItem *nameItem = new QTableWidgetItem(QString(data->qualifiers.first().value));
         resultsTable->setItem(rowIndex, 1, nameItem);
         ++rowIndex;
     }
