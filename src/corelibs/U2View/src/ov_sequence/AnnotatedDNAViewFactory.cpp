@@ -119,6 +119,9 @@ Task* AnnotatedDNAViewFactory::createViewTask(const MultiGSelection& multiSelect
         docs << o->getDocument();
     }
     foreach(Document* doc, docs) {
+        if (doc->isDatabaseConnection()) {
+            continue;
+        }
         foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded)) {
             if(!objectsToOpen.contains(obj)) {
                 objectsToOpen.append(obj);
