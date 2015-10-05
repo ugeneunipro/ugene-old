@@ -747,7 +747,7 @@ GUI_TEST_CLASS_DEFINITION(test_4093) {
     ImportAnnotationsToCsvFiller *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/_regression/4093/test.xls",
         sandBoxDir + "test_4093.gb", ImportAnnotationsToCsvFiller::Genbank, true, true, "	", 0, "", true, false, "misc_feature", r);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export/Import" << "Import annotations from CSV file..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export/Import" << "Import annotations from CSV file..."));
     GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsProjectTreeView::click(os, "human_T1.fa", Qt::RightButton);
 
@@ -887,7 +887,7 @@ GUI_TEST_CLASS_DEFINITION(test_4100) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
 
     GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Add" << "Import to the database"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Add" << "Import to the database"));
     GTUtilsProjectTreeView::click(os, "ugene_gui_test", Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(5000);
@@ -1839,7 +1839,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
     CHECK_SET_ERR(itemFont.bold(), "Variations object item isn't highlighted in Project view");
 
     // 5. Remove the variations from the assembly view
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove track from the view"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Remove track from the view"));
     GTWidget::click(os, GTWidget::findWidget(os, "AssemblyVariantRow_II"), Qt::RightButton);
 
     // Expected state: the variations object isn't highlighted in the Project view
@@ -1847,7 +1847,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
     CHECK_SET_ERR(!itemFont.bold(), "Variations object item is unexpectedly highlighted in Project view");
 
     // 6. Remove the sequence from the assembly view
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Unassociate"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Unassociate"));
     GTWidget::click(os, GTWidget::findWidget(os, "Assembly reference sequence area"), Qt::RightButton);
 
     // Expected state: the sequence object and document aren't highlighted in the Project view
@@ -2410,7 +2410,7 @@ GUI_TEST_CLASS_DEFINITION(test_4352) {
     GTTreeWidget::click(os, item);
 
     //5. Remove a part of the sequence that contains the selected site.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "89300..89400"));
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
@@ -2578,7 +2578,7 @@ GUI_TEST_CLASS_DEFINITION(test_4386_1) {
     GTKeyboardDriver::keyClick(os, ' ');
 
     //    3. Align with Muscle (or other algorithm).
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MUSCLE..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with MUSCLE..."));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 
@@ -2678,7 +2678,7 @@ GUI_TEST_CLASS_DEFINITION(test_4439) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Find qualifier..."));
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, new Scenario));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, "NC_004718 features [sars.gb]");
 
@@ -2700,7 +2700,7 @@ GUI_TEST_CLASS_DEFINITION(test_4440) {
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os,"COI.aln");
     GTUtilsProjectTreeView::checkItem(os, GTUtilsProjectTreeView::getTreeView(os), "COI", idx);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MUSCLE..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with MUSCLE..."));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -2722,13 +2722,13 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTWidget::click(os, GTUtilsAnnotationsTreeView::getTreeWidget(os));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsMdi::closeWindow(os, "test_4463.gb.gz");
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList("Unload selected document")));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList("Unload selected document")));
     GTUtilsProjectTreeView::click(os, "test_4463.gb.gz", Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
@@ -2754,7 +2754,7 @@ GUI_TEST_CLASS_DEFINITION(test_4486) {
 //    Expected state: UGENE doesn't crash.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Visible reads"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Visible reads"));
     GTUtilsDialog::waitForDialog(os, new ExportReadsDialogFiller(os, sandBoxDir + "test_4486/reads.fa"));
     GTUtilsAssemblyBrowser::callContextMenu(os, GTUtilsAssemblyBrowser::Reads);
 
@@ -2910,7 +2910,7 @@ GUI_TEST_CLASS_DEFINITION(test_4524) {
 
     // Export the msa to SVG.
     GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, sandBoxDir + "test_4524.svg", "svg", 0));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export as image"));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 10));
     GTMouseDriver::click(os, Qt::RightButton);
 
@@ -3158,7 +3158,7 @@ GUI_TEST_CLASS_DEFINITION(test_4620) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new s"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new s"));
     GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, new Scenario));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
@@ -3341,7 +3341,7 @@ GUI_TEST_CLASS_DEFINITION(test_4714_1) {
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
 
 //    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new sequence"));
     GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, "FASTA", sandBoxDir + "test_4714_1.fa"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
@@ -3352,7 +3352,7 @@ GUI_TEST_CLASS_DEFINITION(test_4714_1) {
     GTUtilsDocument::lockDocument(os, "test_4714_1.fa");
 
 //    4. Call a context menu on the chromatogram, select {Remove edited sequence} menu item.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove edited sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Remove edited sequence"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
 //    Expected state: the sequence is removed from the view,
@@ -3378,7 +3378,7 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
 
 //    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit new sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new sequence"));
     GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, "FASTA", sandBoxDir + "test_4714_2.fa"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 

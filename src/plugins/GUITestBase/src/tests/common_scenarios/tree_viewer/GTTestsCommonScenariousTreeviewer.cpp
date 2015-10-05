@@ -1144,7 +1144,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
     CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
 
 //    3. Do the context menu command "Reroot tree".
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os,  QStringList() << "Reroot tree"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os,  QStringList() << "Reroot tree"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1175,7 +1175,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
     CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
 
 //    3. Do the context menu command "Swap siblings".
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os,  QStringList() << "Swap Siblings"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os,  QStringList() << "Swap Siblings"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1208,7 +1208,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
     CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
 
     //    3. Do the context menu command "Swap siblings".
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Swap Siblings"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Swap Siblings"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1238,7 +1238,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
     CHECK_SET_ERR(!GTUtilsPhyTree::getSelectedNodes(os).isEmpty(), "A clicked node wasn't selected");
 
     //    3. Do the context menu command "Reroot tree".
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Reroot tree"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Reroot tree"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);

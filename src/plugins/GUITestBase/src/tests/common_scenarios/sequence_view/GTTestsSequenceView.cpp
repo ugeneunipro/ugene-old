@@ -636,7 +636,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
     CHECK_SET_ERR( pair4.contains(U2Region(606, 20)), "No 607..626 region");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Primers_DNA"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Mark as circular"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Mark as circular"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTWidget::click(os, GTWidget::findWidget(os, "render_area_Primers_DNA"));
@@ -904,7 +904,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA", "human_T1.fa");
 
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "YkrI"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Analyze" << "Find restriction sites"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
@@ -1082,7 +1082,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 //    Click "Amino translations" button on mdi toolbar
     QWidget* aminoToolbarButton = GTWidget::findWidget(os, "AminoToolbarButton");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show direct only"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show direct only"));
     GTWidget::click(os, aminoToolbarButton);
 //    Check "Show direct only"
     class DirectPopupChecker : public CustomScenario {
@@ -1106,7 +1106,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTWidget::click(os, aminoToolbarButton);
 
     //    Check "Show complementary only"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show complementary only"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show complementary only"));
     GTWidget::click(os, aminoToolbarButton);
 
     class ComplPopupChecker : public CustomScenario {
@@ -1130,7 +1130,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTWidget::click(os, aminoToolbarButton);
 
     //    Check "Show all"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show all"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show all"));
     GTWidget::click(os, aminoToolbarButton);
 
     class AllPopupChecker : public CustomScenario {
@@ -1174,7 +1174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034){
     second = GTWidget::getImage(os, panView);
     CHECK_SET_ERR(init == second, "ruler not hidden");
 //    Remove ruler
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Rulers..." << "Remove 'name'"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Rulers..." << "Remove 'name'"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Rulers" << "Show Custom Rulers", PopupChecker::IsDisabled));
@@ -1515,7 +1515,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
 //    Use context menu on annotation in tree view
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363 features"));
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Add"<<"Objects with annotations..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Add"<<"Objects with annotations..."));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 //    Check {add-> Objects with annotations} action
     GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb]");
@@ -1577,7 +1577,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050_1){
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
-            GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Genes" << "promoter"));
+            GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Genes" << "promoter"));
             GTWidget::click(os, GTWidget::findWidget(os, "showNameGroupsButton", dialog));
             QLineEdit* nameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "nameEdit", dialog);
             CHECK_SET_ERR(nameEdit->text() == "promoter", "unexpected name: " + nameEdit->text());
@@ -1834,10 +1834,10 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     QAction* traces = GTAction::findActionByText(os, "Show/hide trace");
     CHECK_SET_ERR(traces != NULL, "Cannot find 'Show/hide trace' action");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "A"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "A"));
     GTWidget::click(os, GTAction::button(os, traces));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "C"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "C"));
     GTWidget::click(os, GTAction::button(os, traces));
 
     CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Traces hiding");
@@ -1846,7 +1846,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
 GUI_TEST_CLASS_DEFINITION(test_0059){
     //"Invert annotation selection" action test
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Invert annotation selection"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Invert annotation selection"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
     QList<QTreeWidgetItem*> selected = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
     CHECK_SET_ERR(selected.size() == 7, QString("Unexpected number of selected items: %1").arg(selected.size()));
@@ -1859,7 +1859,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059_1){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "CreateAnnotationDialog"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Make auto-annotations persistent"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Make auto-annotations persistent"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 27)"));
     GTGlobals::sleep();
 

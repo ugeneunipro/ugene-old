@@ -3920,7 +3920,7 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
     GTUtilsAssemblyBrowser::zoomToMax(os);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Current Read"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Current Read"));
     GTUtilsDialog::waitForDialog(os, new ExportReadsDialogFiller(os, sandBoxDir + "test_3613.fa"));
     QWidget* readsArea = GTWidget::findWidget(os, "assembly_reads_area");
     CHECK_SET_ERR(readsArea != NULL, "Assembly reads area not found");
@@ -4524,7 +4524,7 @@ GUI_TEST_CLASS_DEFINITION(test_3724) {
 
 //    3. Click "Generate".
 //    Expected state: the "Multiple Sequence Alignment Distance Matrix" view has appeared.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Statistics" << "Generate distance matrix"));
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 
@@ -4807,7 +4807,7 @@ GUI_TEST_CLASS_DEFINITION(test_3768) {
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..199950"));
     //GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -4905,7 +4905,7 @@ GUI_TEST_CLASS_DEFINITION(test_3773_1) {
     GTLogTracer logTracer;
     //QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     //GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build HMMER3 profile");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Advanced" << "Build HMMER3 profile"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Advanced" << "Build HMMER3 profile"));
     GTUtilsDialog::waitForDialog(os, new OkClicker(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
     GTUtilsLog::check(os, logTracer);
@@ -5057,7 +5057,7 @@ GUI_TEST_CLASS_DEFINITION(test_3788) {
 //    3. Call context menu, select {Edit sequence -> Remove subsequence...} menu item.
 //    4. Remove region 2..199950, corresponding annotations should be cropped.
 //    Expected result: sequence has length 1, there are no annotations.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..199950"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
@@ -5586,7 +5586,7 @@ GUI_TEST_CLASS_DEFINITION(test_3903) {
     GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
     GTGlobals::sleep(500);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "100..199950"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
@@ -5710,7 +5710,7 @@ GUI_TEST_CLASS_DEFINITION(test_3928) {
     // Expected state: new reference sequence is shown in the "Reference sequence" section
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
     QString currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
     CHECK_SET_ERR("Metrioptera_japonica_EF540831" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Metrioptera_japonica_EF540831").arg(currentReference));
@@ -5720,7 +5720,7 @@ GUI_TEST_CLASS_DEFINITION(test_3928) {
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "set_seq_as_reference"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
     currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
     CHECK_SET_ERR("Gampsocleis_sedakovii_EF540828" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Gampsocleis_sedakovii_EF540828").arg(currentReference));

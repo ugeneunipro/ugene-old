@@ -607,7 +607,7 @@ void GTUtilsProjectTreeView::expandProjectView(U2OpStatus &os){
 
 #define GT_METHOD_NAME "markSequenceAsCircular"
 void GTUtilsProjectTreeView::markSequenceAsCircular(U2OpStatus &os, const QString &sequenceObjectName) {
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Mark as circular"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Mark as circular"));
     click(os, sequenceObjectName, Qt::RightButton);
 }
 #undef GT_METHOD_NAME

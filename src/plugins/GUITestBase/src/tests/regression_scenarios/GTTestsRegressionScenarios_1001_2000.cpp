@@ -724,7 +724,7 @@ GUI_TEST_CLASS_DEFINITION(test_1029) {
     GTUtilsMdi::closeWindow(os, "Start Page");
 
     foreach (const QString &window, windowsNames) {
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Add to view" << "Add to view: NC_014267.1 [s] NC_014267"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Add to view" << "Add to view: NC_014267.1 [s] NC_014267"));
         QString seqName = window.right( window.size() - window.indexOf("[s] ") - 4);
         GTUtilsProjectTreeView::click(os, seqName, Qt::RightButton);
         GTGlobals::sleep();
@@ -1153,7 +1153,7 @@ GUI_TEST_CLASS_DEFINITION(test_1063) {
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
 
     //4) Right - click on Read sequence element, click "Toggle breakpoint"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Break at element..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Break at element..."));
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
 
@@ -1594,7 +1594,7 @@ GUI_TEST_CLASS_DEFINITION(test_1115) {
 //    6. Click "Export"
     QDir().mkpath(sandBoxDir + "test_1115");
     GTUtilsDialog::waitForDialog(os, new ExportBlastResultDialogFiller(os, sandBoxDir + "test_1115/test_1115.aln"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export BLAST result to alignment"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export BLAST result to alignment"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, blastResultItems.first());
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -1876,7 +1876,7 @@ GUI_TEST_CLASS_DEFINITION(test_1156) {
     // 5. Choose "Circular molecule" mode
     // 6. Press "Ok"
     GTUtilsDialog::waitForDialog(os, new DigestSequenceDialogFiller(os, new DigestCircularSequenceScenario));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Digest into fragments..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Cloning" << "Digest into fragments..."));
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -2326,7 +2326,7 @@ GUI_TEST_CLASS_DEFINITION(test_1203_2) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Query NCBI BLAST database..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Analyze" << "Query NCBI BLAST database..."));
     GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os, new Scenario));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 }
@@ -3319,7 +3319,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 
 //    4. Right click to the COI document in the project view, select {Open view->Open new view: alignment editor} from the context menu.
 //    Expected state: there are two MSA Editors (the second one is active) and no sequence views.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Open view" << "Open new view: Alignment Editor"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Open view" << "Open new view: Alignment Editor"));
     GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
 
     msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
@@ -3373,7 +3373,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 
 //    6. Double click to the COI in the project view.
 //    Expected state: a popup menu is shown to select a MSA Editor to show. Select the first. There are two MSA Editors (the first one is active) and one sequence view.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Activate view: COI [m] COI"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Activate view: COI [m] COI"));
     GTUtilsProjectTreeView::doubleClickItem(os, "COI");
 
     sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
@@ -3459,7 +3459,7 @@ GUI_TEST_CLASS_DEFINITION(test_1319){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 //    Expected state: the element's doc has the blue link to this file.
 //    6) Right click on the link.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Open document(s)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Open document(s)"));
     GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
 //    Expected state: a context menu with one action "Open document(s)" must appear.
 //    7) Click on "Open document(s)" menu item.
@@ -3498,7 +3498,7 @@ GUI_TEST_CLASS_DEFINITION(test_1319_2){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "murine.gb");
 //    Expected state: the element's doc has the blue link to this files.
 //    6) Right click on the link.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Open document(s)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Open document(s)"));
     GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
     GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
 //    Expected state: a context menu with one action "Open document(s)" must appear.
@@ -3775,7 +3775,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     CHECK_SET_ERR(treeItem != NULL, "Element not found");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Remove"));
     GTTreeWidget::click(os, treeItem);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -3834,7 +3834,7 @@ GUI_TEST_CLASS_DEFINITION(test_1362) {
     //    Profile mode: Percents.
     //    Exclude gaps: unchecked.
     //4) Run the task.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Statistics" << "Generate distance matrix"));
     DistanceMatrixDialogFiller *filler = new DistanceMatrixDialogFiller(os, false, false, false);
     filler->saveToFile = true;
     filler->format = DistanceMatrixDialogFiller::CSV;
@@ -6256,7 +6256,7 @@ GUI_TEST_CLASS_DEFINITION(test_1627) {
 
 //    1. Select {Tools->Build dotplot...} in the main menu.
 //    Expected state: the Build dotplot from the sequences" dialog appeared.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Build dotplot...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Build dotplot...", GTGlobals::UseMouse));
 
 //    2. Fill next fields of the dialog and click the "Next" button:
 //        {File with first sequence:} _common_data/scenarios/dp_view/dpm1.fa
@@ -6367,7 +6367,7 @@ GUI_TEST_CLASS_DEFINITION(test_1643) {
 
 //    3. Select the "Set this sequence as reference" item in the context manu.
 //    Expected state: the clicked in the 2 step sequence was set as reference.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
     QString currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
     CHECK_SET_ERR("Metrioptera_japonica_EF540831" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Metrioptera_japonica_EF540831").arg(currentReference));
@@ -6381,7 +6381,7 @@ GUI_TEST_CLASS_DEFINITION(test_1643) {
 
 //    5. Select the "Set this sequence as reference" item in the context manu.
 //    Expected state: the clicked in the 4 step sequence was set as reference (not the selected).
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
     currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
     CHECK_SET_ERR("Gampsocleis_sedakovii_EF540828" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Gampsocleis_sedakovii_EF540828").arg(currentReference));
@@ -6395,7 +6395,7 @@ GUI_TEST_CLASS_DEFINITION(test_1643) {
 
 //    7. Select the "unset" menu item.
 //    Expected state: There is no reference sequences, context menu does contains the "set" item, but does not contain the "unset" item.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Unset reference sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Unset reference sequence"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
 
 //    8. Call context menu below all sequences, on the white space.
@@ -7435,7 +7435,7 @@ GUI_TEST_CLASS_DEFINITION(test_1747){
     //2. Enable the distances column in options panel or create distances matrix by using menu {statistics->Generate distance matrix}
     //Expected state: progress for "Generete distance matrix" correctly displays current state of calculation
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Statistics" << "Generate distance matrix"));
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 
@@ -7739,7 +7739,7 @@ GUI_TEST_CLASS_DEFINITION(test_1763_1){
         }
     };
 //    Expected state: Showed popup menu with action "Rename"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Rename"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Rename"));
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "", QDialogButtonBox::Ok, new custom()));
     GTTabWidget::clickTab(os, tabView, tabView->currentIndex(), Qt::RightButton);
 //    Expected state: Workflow dasboard tab renamed.

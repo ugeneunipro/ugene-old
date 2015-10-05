@@ -348,7 +348,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     //5. Right click on the sequence object in the project view -> Mark as circular.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "pIB2-SEC13"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Mark as circular"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Mark as circular"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     //6. Click the find button.

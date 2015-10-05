@@ -3831,13 +3831,13 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
     //    Expected state: result file contain rowa of sequences
 
         GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
         GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton, QPoint(10, 10));
 
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Highlighting" << "Agreements"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Highlighting" << "Agreements"));
         GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export highlighted"));
         GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "common_msa_test_0050_1.txt"));
         GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
         GTGlobals::sleep();
@@ -3846,7 +3846,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
                                       testDir + "_common_data/clustal/COI_highlighted_1"),
                        "Transposed export is incorrect");
 
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export highlighted"));
         GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "common_msa_test_0050_2.txt", false));
         GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
         GTGlobals::sleep();

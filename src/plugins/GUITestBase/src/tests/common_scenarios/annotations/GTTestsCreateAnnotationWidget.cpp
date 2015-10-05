@@ -1030,7 +1030,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 //    3. Click the "Predefined group names" button.
 //    Expected state: a popup menu with possible group names is shown.
 //    4. Select "CDS" group. Accept the dialog.
-            GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "CDS"));
+            GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "CDS"));
             clickSelectGroupButton(os, dialog);
             setGenbankLocation(os, "100..200", dialog);
 
@@ -1073,7 +1073,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 //    3. Click the "Predefined group names" button.
 //    Expected state: a popup menu with possible group names is shown.
 //    4. Select "CDS" group. Accept the dialog.
-            GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "CDS"));
+            GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "CDS"));
             clickSelectGroupButton(os, dialog);
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
@@ -1109,7 +1109,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022) {
 //    3. Click the "Predefined group names" button.
 //    Expected state: a popup menu with possible group names is shown.
 //    4. Select "CDS" group. Create annotations.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "CDS"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "CDS"));
     clickSelectGroupButton(os);
 
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);

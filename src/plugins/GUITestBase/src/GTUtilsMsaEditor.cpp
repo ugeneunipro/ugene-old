@@ -237,7 +237,7 @@ void GTUtilsMsaEditor::redo(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "setReference"
 void GTUtilsMsaEditor::setReference(U2OpStatus &os, const QString &sequenceName) {
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference", GTGlobals::UseMouse));
     clickSequenceName(os, sequenceName, Qt::RightButton);
     GTGlobals::sleep(100);
 }

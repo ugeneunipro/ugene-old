@@ -655,7 +655,7 @@ void GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(U2OpStatus &os, con
         }
     }
     if (foundItem != NULL) {
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Remove"));
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
         GTUtilsWorkflowDesigner::clickOnPalette(os, workerName, Qt::RightButton);
     }

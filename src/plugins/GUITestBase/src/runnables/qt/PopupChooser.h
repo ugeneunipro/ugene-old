@@ -41,9 +41,9 @@ namespace U2 {
         static void clickEsc();
     };
 
-    class PopupChooserbyText : public Filler {
+    class PopupChooserByText : public Filler {
     public:
-        PopupChooserbyText(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
+        PopupChooserByText(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
             :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
         virtual void run();
     protected:

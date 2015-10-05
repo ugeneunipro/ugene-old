@@ -887,7 +887,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
         // the button is hidden, the action is in toolbar extension menu
         QWidget* extMenuButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "pan_view_se2"));
         CHECK_SET_ERR(extMenuButton != NULL, "Cannot find qt_toolbar_ext_button in pan_view_se2");
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Zoom to range..."));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Zoom to range..."));
         GTWidget::click(os, extMenuButton);
     }
     GTGlobals::sleep();

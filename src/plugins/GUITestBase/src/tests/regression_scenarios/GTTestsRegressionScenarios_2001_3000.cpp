@@ -3438,11 +3438,11 @@ GUI_TEST_CLASS_DEFINITION(test_2459) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 
 //    2. Set any reference sequence.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Set this sequence as reference"));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton, QPoint(10, 10));
 
 //    3. Open context menu, open the "Highlighting" submenu, set the "Agreements" type.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Highlighting" << "Agreements"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Highlighting" << "Agreements"));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
 //    4. Open context menu again, open the "Export" submenu, choose the "Export highlighted" menu item.
@@ -3451,7 +3451,7 @@ GUI_TEST_CLASS_DEFINITION(test_2459) {
 //    5. Set any valid filename, other settings should be default. Click "Export".
 //    Expected state: exporting successfully completes, UGENE doesn't crash.
 //    Current state: UGENE crashes.
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export highlighted"));
     GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "test_2459.txt"));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 }
@@ -4348,7 +4348,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_2) {
 
 //    3. Press the "Align" button
 //    Expected state: after a few seconds alignment has finished, UGENE does not crash
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with ClustalO..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with ClustalO..."));
     GTUtilsDialog::waitForDialog(os, new ClustalOSupportRunDialogFiller(os));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
@@ -4366,7 +4366,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_3) {
 //    3. Press the "Align" button
 //    Expected state: after a few seconds alignment has finished, UGENE does not crash
     MAFFTSupportRunDialogFiller::Parameters parameters;
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MAFFT..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with MAFFT..."));
     GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, &parameters));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
@@ -5465,7 +5465,7 @@ GUI_TEST_CLASS_DEFINITION(test_2796) {
     SmithWatermanDialogFiller *filler = new SmithWatermanDialogFiller(os);
     filler->button = SmithWatermanDialogFiller::Cancel;
     GTUtilsDialog::waitForDialog(os, filler);
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find pattern [Smith-Waterman]", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Analyze" << "Find pattern [Smith-Waterman]", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 

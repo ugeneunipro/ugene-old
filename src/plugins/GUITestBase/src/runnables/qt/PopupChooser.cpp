@@ -67,7 +67,7 @@ void PopupChooser::clickEsc() {
 
 #undef GT_CLASS_NAME
 
-void PopupChooserbyText::run()
+void PopupChooserByText::run()
 {
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);

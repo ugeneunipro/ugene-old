@@ -48,7 +48,7 @@ void GTMenuPrivate::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPat
 #else
     QStringList cuttedItemPath = itemPath;
     const QString menuName = cuttedItemPath.takeFirst();
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, cuttedItemPath, method));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, cuttedItemPath, method));
     showMainMenu(os, menuName, method);
 #endif
 }
