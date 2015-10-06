@@ -6,16 +6,16 @@ typedef int ScoreType;
 
 //global function
 __kernel void calculateMatrix(global const char * seqLib,
-				global ScoreType* queryProfile,
-				global ScoreType* g_HdataUp,
-				global ScoreType* g_HdataRec, 
-				global ScoreType* g_HdataMax,
-				global ScoreType* g_FdataUp,
-				global ScoreType* g_directionsUp, 
-				global ScoreType* g_directionsRec, 
-				global ScoreType* g_directionsMax,
-				global int* g_directionsMatrix,
-				global int* g_backtraceBegins,
+                global ScoreType* queryProfile,
+                global ScoreType* g_HdataUp,
+                global ScoreType* g_HdataRec, 
+                global ScoreType* g_HdataMax,
+                global ScoreType* g_FdataUp,
+                global ScoreType* g_directionsUp, 
+                global ScoreType* g_directionsRec, 
+                global ScoreType* g_directionsMax,
+                global int* g_directionsMatrix,
+                global int* g_backtraceBegins,
                                 __const int queryStartPos,
                                 __const int partSeqSize,
                                 __const int partsNumber,
@@ -25,10 +25,10 @@ __kernel void calculateMatrix(global const char * seqLib,
                                 __const int gapOpen,
                                 __const int gapExtension,
                                 __const int queryPartLength,
-								__const char leftSymbolDirectMatrix,
-								__const char diagSymbolDirectMatrix,
-								__const char upSymbolDirectMatrix,
-								__const char stopSymbolDirectMatrix,
+                                __const char leftSymbolDirectMatrix,
+                                __const char diagSymbolDirectMatrix,
+                                __const char upSymbolDirectMatrix,
+                                __const char stopSymbolDirectMatrix,
                                 __local ScoreType* shared_H,
                                 __local ScoreType* shared_E,
                                 __local ScoreType* shared_direction)
@@ -40,7 +40,7 @@ __kernel void calculateMatrix(global const char * seqLib,
         //int seqStartPos = blockIdx.x * (partSeqSize - overlapLength);
         int seqStartPos = get_group_id(0) * (partSeqSize - overlapLength);
 
-//	int globalStartPos = blockIdx.x * (partSeqSize + 1);
+//    int globalStartPos = blockIdx.x * (partSeqSize + 1);
         int globalStartPos = get_group_id(0) * (partSeqSize + 1);
 
         int seqPos = 0, globalPos = 0, diagNum = 0;
@@ -99,24 +99,34 @@ __kernel void calculateMatrix(global const char * seqLib,
                         H = max(H, F);
                         H = max(H, H_upleft + substScore);
 
+                        //Collect best result
+                        if (g_HdataMax[globalPos] <= H_upleft + substScore) {
+                            g_HdataMax[globalPos] = H_upleft + substScore;
+                            g_directionsMax[globalPos] = directionUpLeft;
+
+                            if (NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
+                                g_backtraceBegins[globalPos * 2] = globalPatternPos;
+                                g_backtraceBegins[globalPos * 2 + 1] = seqPos;
+                            }
+                        }
+
                         //chose direction
-						char directionForMatrix = stopSymbolDirectMatrix;
+                        char directionForMatrix = stopSymbolDirectMatrix;
 
                         if (H == 0) {
                                 direction = seqPos + 1;
                         }
-                        else if (H == E) {
-                                direction = directionLeft;
-								directionForMatrix = upSymbolDirectMatrix;
+                        else if (H == H_upleft + substScore) {
+                            direction = directionUpLeft;
+                            directionForMatrix = diagSymbolDirectMatrix;
                         }
                         else if (H == F) {
-                                direction = directionUp;
-								directionForMatrix = leftSymbolDirectMatrix;
+                            direction = directionUp;
+                            directionForMatrix = leftSymbolDirectMatrix;
                         }
-                        //(H == H_upleft + substScore)
                         else {
-                                direction = directionUpLeft;
-								directionForMatrix = diagSymbolDirectMatrix;
+                            direction = directionLeft;
+                            directionForMatrix = upSymbolDirectMatrix;
                         }
 
                         shared_E[patternPos + 1] = E;
@@ -130,20 +140,8 @@ __kernel void calculateMatrix(global const char * seqLib,
                         directionUp = direction;
                         directionUpLeft = directionLeft;
 
-						if(NULL != g_directionsMatrix) {
-							g_directionsMatrix[seqLibLength * globalPatternPos + seqPos] = (int)directionForMatrix;
-						}
-
-                        //collect best result
-                        maxScore = max(H, g_HdataMax[globalPos]);
-                        if (maxScore == H) {
-                                g_HdataMax[globalPos] = maxScore;
-                                g_directionsMax[globalPos] = direction;
-								
-								if(NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
-									g_backtraceBegins[globalPos * 2] = globalPatternPos;
-									g_backtraceBegins[globalPos * 2 + 1] = seqPos;
-								}
+                        if(NULL != g_directionsMatrix) {
+                            g_directionsMatrix[seqLibLength * globalPatternPos + seqPos] = (int)directionForMatrix;
                         }
 
                         //if this last iteration then start prepare next

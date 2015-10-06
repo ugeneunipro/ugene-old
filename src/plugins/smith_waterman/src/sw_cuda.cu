@@ -67,7 +67,6 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
     ScoreType directionUp = 0;
     ScoreType directionUpLeft = 0;
     ScoreType direction = 0;
-    ScoreType maxScore = 0;
 
     //dynamic allocation shared memory
     extern __shared__ ScoreType shared_H[];
@@ -125,25 +124,35 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
             H = max(H, F);
             H = max(H, H_upleft + substScore);
 
+            //Collect best results
+            if (g_HdataMax[globalPos] <= H_upleft + substScore) {
+                g_HdataMax[globalPos] = H_upleft + substScore;
+                g_directionsMax[globalPos] = directionUpLeft;
+
+                if (NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
+                    g_backtraceBegins[globalPos * 2] = globalPatternPos;
+                    g_backtraceBegins[globalPos * 2 + 1] = seqPos;
+                }
+            }
+
             //chose direction
             char directionForMatrix = g_stopSymbolDirectMatrix;
 
             if (H == 0) {
                 direction = seqPos + 1;
             }
-            else if (H == E) {
-                direction = directionLeft;
-                directionForMatrix = g_upSymbolDirectMatrix;
-            }    
+            else if (H == H_upleft + substScore) {
+                direction = directionUpLeft;
+                directionForMatrix = g_diagSymbolDirectMatrix;
+            }
             else if (H == F) {
                 direction = directionUp;
                 directionForMatrix = g_leftSymbolDirectMatrix;
-            }    
-            //(H == H_upleft + substScore)
+            }
             else {
-                direction = directionUpLeft;
-                directionForMatrix = g_diagSymbolDirectMatrix;
-            }        
+                direction = directionLeft;
+                directionForMatrix = g_upSymbolDirectMatrix;
+            }                    
                 
             shared_E[patternPos + 1] = E;
             shared_H[patternPos + 1] = H;
@@ -160,17 +169,6 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
                 g_directionsMatrix[g_seqLibLength * globalPatternPos + seqPos] = (int)directionForMatrix;
             }
 
-            //collect best result
-            maxScore = max(H, g_HdataMax[globalPos]);
-            if (maxScore == H) {
-                g_HdataMax[globalPos] = maxScore;
-                g_directionsMax[globalPos] = direction;
-
-                if(NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
-                    g_backtraceBegins[globalPos * 2] = globalPatternPos;
-                    g_backtraceBegins[globalPos * 2 + 1] = seqPos;
-                }
-            }
 
             //if this last iteration then start prepare next
             if (patternPos == (g_queryPartLength - 1)) {
