@@ -3454,23 +3454,27 @@ GUI_TEST_CLASS_DEFINITION(test_4719_1) {
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    Expected state: "No colors" color scheme is selected
+    //    Expected state: "No colors" color scheme is selected, "No highlighting" highlight scheme is selected
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::checkCurrentValue(os, colorScheme, "No colors");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 
     //    4. Undo changes
     GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    Expected state: "UGENE" color scheme is selected
+    //    Expected state: "UGENE" color scheme is selected, "No highlighting" highlight scheme is selected
     colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4719_2) {
-    //    1. Open "data/samples/CLUSTALW/COI.aln".
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    //    1. Open "_common_data/clustal/amino_ext.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/amino_ext.aln");
 
     //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
@@ -3480,18 +3484,22 @@ GUI_TEST_CLASS_DEFINITION(test_4719_2) {
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    Expected state: "No colors" color scheme is selected
+    //    Expected state: "No colors" color scheme is selected, "No highlighting" highlight scheme is selected
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::checkCurrentValue(os, colorScheme, "No colors");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 
     //    4. Undo changes
     GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    Expected state: "UGENE" color scheme is selected
+    //    Expected state: "UGENE" color scheme is selected, "No highlighting" highlight scheme is selected
     colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4728) {
