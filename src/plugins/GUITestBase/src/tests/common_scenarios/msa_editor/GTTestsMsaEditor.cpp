@@ -22,6 +22,7 @@
 #include "GTTestsMsaEditor.h"
 #include "api/GTAction.h"
 #include "api/GTComboBox.h"
+#include "api/GTCheckBox.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
@@ -31,11 +32,14 @@
 #include "api/GTToolbar.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
+#include "api/GTRadioButton.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsNotifications.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
@@ -45,7 +49,10 @@
 #include "runnables/qt/FontDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
@@ -57,6 +64,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
@@ -4085,6 +4093,246 @@ GUI_TEST_CLASS_DEFINITION(test_0053_5){
     GTGlobals::sleep(3000);
 }
 
+/** These tests are created according to test plan: https://ugene.unipro.ru/wiki/display/PD/MSA**/
+
+GUI_TEST_CLASS_DEFINITION(test_0054){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Use context menu:
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle"));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default, true, true));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QString actual = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(actual.startsWith("TAAGACTTCTAATTCGAGCCGAATTAGGTCAACCAGGATACC---TAATTGGAGATGATCAAATTTATAATGTAATTGT"), "unexpected sequence: " + actual);
+
+//    {Align->Align with MUSCLE}
+//    Check "Translate to amino when aligning" checkbox
+//    Align
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0054_1){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Use context menu:
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os, 0, true));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QString actual = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(actual.startsWith("TAAGACTTCTAATTCGAGCCGAATTAGGTCAAC---CAGGATACCTAATTGGAGATGATCAAATTTATAATG"), "unexpected sequence: " + actual);
+
+//    {Align->Align with MUSCLE}
+//    Check "Translate to amino when aligning" checkbox
+//    Align
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0055){
+//    Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Select some area
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 2), QPoint(8, 8));
+//    Use context menu:
+//    {Export->Export subalignment}
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QLineEdit* filepathEdit = GTWidget::findExactWidget<QLineEdit*>(os, "filepathEdit", dialog);
+            GTLineEdit::setText(os, filepathEdit, dataDir + "samples/CLUSTALW/COI.aln");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os, new custom()));
+    GTUtilsNotifications::waitForNotification(os, true, "Document is locked:");
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+//    In export dialog set output file to
+//    "data/samples/CLUSTALW/COI.aln"
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0056){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+//    Export sequence as alignment. In export dialog check
+
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QLineEdit* fileNameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "fileNameEdit", dialog);
+            GTLineEdit::setText(os, fileNameEdit, sandBoxDir + "murine.aln");
+
+            QCheckBox* genbankBox = GTWidget::findExactWidget<QCheckBox*>(os, "genbankBox", dialog);
+            GTCheckBox::setChecked(os, genbankBox, true);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, new custom()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
+                                                  << "export sequences as alignment"));
+    GTUtilsProjectTreeView::click(os, "murine.gb", Qt::RightButton);
+    GTGlobals::sleep();
+//    "Use Genbank "SOURCE" tags..." checkbox
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() == 1, QString("unexpected number of names: %1").arg(nameList.size()));
+    CHECK_SET_ERR(nameList.first() == "Murine_sarcoma_virus.", "unexpected sequence name: " + nameList.first());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057){
+
+
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep();
+
+            QRadioButton* join2alignmentMode = GTWidget::findExactWidget<QRadioButton*>(os, "join2alignmentMode", dialog);
+            GTRadioButton::click(os, join2alignmentMode);
+            GTGlobals::sleep();
+
+            QLineEdit* newDocUrl = GTWidget::findExactWidget<QLineEdit*>(os, "newDocUrl", dialog);
+            GTLineEdit::setText(os, newDocUrl, sandBoxDir + "test_0057.aln");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os, new custom()));
+    GTFileDialog::openFileList(os, dataDir + "samples/Genbank", QStringList() << "murine.gb" << "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10, 1), "AAATGAAAGAC\nAATATTAGGTT");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0058){
+
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            QWidget* logoWidget = GTWidget::findWidget(os, "logoWidget", dialog);
+            int initHeight = logoWidget->geometry().height();
+            CHECK_SET_ERR(initHeight==0, QString("logoWidget has too big height: %1").arg(initHeight));
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/clustal/test_1393.aln"));
+            GTWidget::click(os, GTWidget::findWidget(os, "inputButton", dialog));
+            GTGlobals::sleep(500);
+
+            int finalHeight = logoWidget->geometry().height();
+            CHECK_SET_ERR(finalHeight==150, QString("logoWidget has wrong height after choosing file: %1").arg(finalHeight));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PwmBuildDialogFiller(os, new custom()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "TFBS_MENU" << "TFBS_WEIGHT"));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+//    Use main menu {Tools->Search for TFBS->Build weigth mantix}
+//    In "Weight matrix" dialog set input amino alignment
+//    shorter then 50.
+//    Expected state: weight matrix logo appeared in dialog
+//    Change input file
+//    Expected state: logo updated
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0059){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Create new color scheme. Set some new color for some
+
+//    character.
+//    Press "Clear" button. check state
+
+    class customColorSelector: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            GTGlobals::sleep(500);
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QWidget* alphabetColorsFrame = GTWidget::findWidget(os, "alphabetColorsFrame", dialog);
+
+            int cellWidth = alphabetColorsFrame->geometry().width()/6;
+            QStringList initialColors;
+            initialColors << "#ffffff" << "#fcff92" << "#70f970" << "#4eade1" << "#fcfcfc" << "#ff99b1";
+            QString finalColor =  "#ffffff";
+
+            GTWidget::click(os, GTWidget::findWidget(os, "clearButton", dialog));
+            GTGlobals::sleep(200);
+            for(double i=0; i<6; i++){
+                QPoint p = QPoint((i+0.5)*cellWidth, 10);
+                QColor c = GTWidget::getColor(os, dialog, alphabetColorsFrame->mapTo(dialog, p));
+                CHECK_SET_ERR(c.name() == finalColor, QString("unexpected color at cell %1 after clearing: %2").arg(i).arg(c.name()));
+                uiLog.trace(c.name());
+            }
+
+            GTWidget::click(os, GTWidget::findWidget(os, "restoreButton", dialog));
+            GTGlobals::sleep(200);
+            for(double i=0; i<6; i++){
+                QPoint p = QPoint((i+0.5)*cellWidth, 10);
+                QColor c = GTWidget::getColor(os, dialog, alphabetColorsFrame->mapTo(dialog, p));
+                CHECK_SET_ERR(c.name() == initialColors[i], QString("unexpected color at cell %1 after clearing: %2, expected: %3").
+                              arg(i).arg(c.name()).arg(initialColors[i]));
+                uiLog.trace(c.name());
+            }
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class customColorSchemeCreator: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            GTGlobals::sleep(500);
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QLineEdit* schemeName = GTWidget::findExactWidget<QLineEdit*>(os, "schemeName",dialog);
+            GTLineEdit::setText(os, schemeName, "GUITest_common_scenarios_msa_editor_test_0059_scheme");
+
+            QComboBox *alphabetComboBox = (GTWidget::findExactWidget<QComboBox*>(os,"alphabetComboBox",dialog));
+            GTComboBox::setIndexWithText(os, alphabetComboBox, "Nucleotide");
+
+            GTUtilsDialog::waitForDialog(os, new ColorSchemeDialogFiller(os, new customColorSelector()));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class customAppSettingsFiller: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, new customColorSchemeCreator()));
+
+            GTWidget::click(os, GTWidget::findWidget(os, "addSchemaButton", dialog));
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new customAppSettingsFiller()));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTGlobals::sleep();
+}
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
     Q_UNUSED(os);

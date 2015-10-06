@@ -52,7 +52,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExtractSelectedAsMSADialogFiller"
 #define GT_METHOD_NAME "run"
-void ExtractSelectedAsMSADialogFiller::run() {
+void ExtractSelectedAsMSADialogFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

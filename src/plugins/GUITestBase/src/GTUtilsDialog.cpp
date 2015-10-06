@@ -159,9 +159,6 @@ void HangChecker::startChecking(){
 #define GT_METHOD_NAME "sl_check"
 void HangChecker::sl_check(){
     QWidget* dialog = QApplication::activeModalWidget();
-    if(dialog == NULL){
-        dialog = QApplication::activePopupWidget();
-    }
     try{
         if(dialog != NULL){
             bool found = false;
@@ -185,6 +182,8 @@ void HangChecker::sl_check(){
                 }
             }
 
+        }else{
+            mightHung = false;
         }
     } catch(U2OpStatus *) {
         GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");

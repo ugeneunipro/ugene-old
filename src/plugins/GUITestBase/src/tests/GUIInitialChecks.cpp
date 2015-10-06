@@ -217,6 +217,9 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
         WD->close();
         GTGlobals::sleep(500);
     }
+    //cancel all tasks
+    AppContext::getTaskScheduler()->cancelAllTasks();
+    GTGlobals::sleep(1000);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0003) {

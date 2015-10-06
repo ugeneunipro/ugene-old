@@ -1656,6 +1656,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_4);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_5);
 
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0054);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0054_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0055);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0056);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0057);
+    //REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0058); not completed yet
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0059);
+
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
 /////////////////////////////////////////////////////////////////////////
 // Common align sequences to an alignment

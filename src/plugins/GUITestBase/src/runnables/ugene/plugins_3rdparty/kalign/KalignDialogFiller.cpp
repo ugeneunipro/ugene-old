@@ -38,8 +38,8 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
 
-KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal) : Filler(_os, "KalignDialog"),
-    gapOpenVal(_gapOpenVal) {}
+KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal, bool _toAmino) : Filler(_os, "KalignDialog"),
+    gapOpenVal(_gapOpenVal), toAmino(_toAmino) {}
 
 #define GT_METHOD_NAME "run"
 void KalignDialogFiller::run()
@@ -54,6 +54,9 @@ void KalignDialogFiller::run()
         QDoubleSpinBox* gapOpenSpinBox = dialog->findChild<QDoubleSpinBox*>("gapOpenSpinBox");
         GTDoubleSpinbox::setValue(os,gapOpenSpinBox,gapOpenVal,GTGlobals::UseKeyBoard);
     }
+
+    QCheckBox* translateCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "translateCheckBox", dialog);
+    GTCheckBox::setChecked(os, translateCheckBox, toAmino);
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

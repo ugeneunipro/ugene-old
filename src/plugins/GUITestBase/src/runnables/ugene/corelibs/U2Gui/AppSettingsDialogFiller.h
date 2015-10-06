@@ -55,7 +55,8 @@ public:
     enum alphabet{amino,nucl};
     enum Action{Create, Delete};
     NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create, bool cancel = false);
-    virtual void run();
+    NewColorSchemeCreator(U2OpStatus &os, CustomScenario* c);
+    virtual void commonScenario();
 
 private:
     QString schemeName;
@@ -69,7 +70,8 @@ public:
 
     CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, QString _schemeName, NewColorSchemeCreator::alphabet _al):
         Filler(os, "CreateMSAScheme"), schemeName(_schemeName), al(_al){}
-    virtual void run();
+    CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "CreateMSAScheme", c){}
+    virtual void commonScenario();
 private:
     QString schemeName;
     NewColorSchemeCreator::alphabet al;
@@ -78,7 +80,8 @@ private:
 class ColorSchemeDialogFiller: public Filler{
 public:
     ColorSchemeDialogFiller(U2OpStatus &os): Filler(os, "ColorSchemaDialog"){}
-    virtual void run();
+    ColorSchemeDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "ColorSchemaDialog", c){}
+    virtual void commonScenario();
 };
 }
 #endif // APPSETTINGSDIALOGFILLER_H

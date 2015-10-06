@@ -39,8 +39,11 @@ PwmBuildDialogFiller::PwmBuildDialogFiller(U2OpStatus &os, const QList<Action> &
 {
 }
 
+PwmBuildDialogFiller::PwmBuildDialogFiller(U2OpStatus &os, CustomScenario *c):
+    Filler(os, "PWMBuildDialog", c){}
+
 #define GT_METHOD_NAME "run"
-void PwmBuildDialogFiller::run() {
+void PwmBuildDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

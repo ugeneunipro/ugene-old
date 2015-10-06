@@ -228,9 +228,11 @@ NewColorSchemeCreator::NewColorSchemeCreator(U2OpStatus &_os, QString _schemeNam
 
 }
 
+NewColorSchemeCreator::NewColorSchemeCreator(U2OpStatus &os, CustomScenario *c): Filler(os, "AppSettingsDialog", c){}
+
 #define GT_CLASS_NAME "NewColorSchemeCreator"
-#define GT_METHOD_NAME "run"
-void NewColorSchemeCreator::run() {
+#define GT_METHOD_NAME "commonScenario"
+void NewColorSchemeCreator::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -277,8 +279,8 @@ void NewColorSchemeCreator::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "CreateAlignmentColorSchemeDialogFiller"
-#define GT_METHOD_NAME "run"
-void CreateAlignmentColorSchemeDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void CreateAlignmentColorSchemeDialogFiller::commonScenario(){
     GTGlobals::sleep( 500 );
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -307,8 +309,8 @@ void CreateAlignmentColorSchemeDialogFiller::run(){
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "ColorSchemeDialogFiller"
-#define GT_METHOD_NAME "run"
-void ColorSchemeDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void ColorSchemeDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

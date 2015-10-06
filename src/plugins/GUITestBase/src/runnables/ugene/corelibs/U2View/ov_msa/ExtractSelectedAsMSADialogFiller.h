@@ -41,7 +41,8 @@ public:
         allButtonPress(_allButtonPress),
         noneButtonPress(_noneButtonPress),
         dontCheckFilepath(_dontCheckFilepath) {}
-    virtual void run();
+    ExtractSelectedAsMSADialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "CreateSubalignmentDialog", c){}
+    virtual void commonScenario();
 private:
     QString filepath;
     QString format;

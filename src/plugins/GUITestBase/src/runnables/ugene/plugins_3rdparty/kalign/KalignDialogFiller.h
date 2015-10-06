@@ -28,10 +28,11 @@ namespace U2 {
 
 class KalignDialogFiller : public Filler {
 public:
-    KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal=0);
+    KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal=0, bool _toAmino = false);
     virtual void run();
 private:
     int gapOpenVal;
+    bool toAmino;
 };
 
 }
