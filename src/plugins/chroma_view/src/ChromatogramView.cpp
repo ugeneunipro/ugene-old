@@ -582,8 +582,10 @@ qint64 ChromatogramViewRenderArea::coordToPos(int c) const {
         return chroma.seqLength;
     }
     int nearestPos = visibleRange.startPos;
-    while (nearestPos < chroma.seqLength - 1
-    && ((kLinearTransformTrace * chroma.baseCalls[nearestPos] + kLinearTransformTrace * chroma.baseCalls[nearestPos+1])/2 + bLinearTransformTrace < c)) {
+    while (nearestPos < chroma.seqLength - 1) {
+        qreal leftBaseCallPos = kLinearTransformTrace * chroma.baseCalls[nearestPos] + bLinearTransformTrace;
+        qreal rightBaseCallPos = kLinearTransformTrace * chroma.baseCalls[nearestPos + 1] + bLinearTransformTrace;
+        CHECK_BREAK((leftBaseCallPos + rightBaseCallPos) / 2 < c + (rightBaseCallPos - leftBaseCallPos) / 2);
         nearestPos++;
     }
     return nearestPos;
