@@ -3336,6 +3336,34 @@ GUI_TEST_CLASS_DEFINITION(test_4689_2) {
     //Expected: UGENE does not crash
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4694) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    //2. Open OP and select pairwice alignment tab, select sequences to align, set "in new window" parameter to "false"
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTGlobals::sleep(500);
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+
+    QWidget* widget = GTWidget::findWidget(os, "outputContainerWidget");
+    CHECK_SET_ERR(widget != NULL, QString("%1 not found").arg("outputContainerWidget"));
+    if (widget->isHidden()) {
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+    }
+    QCheckBox* inNewWindowCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
+    CHECK_SET_ERR(inNewWindowCheckBox != NULL, "inNewWindowCheckBox not found");
+    GTCheckBox::setChecked(os, inNewWindowCheckBox, false);
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+
+    //4. Undo changes
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected state "Undo" button is disabled
+    QAbstractButton *undo = GTAction::button(os, "msa_action_undo");
+    CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
@@ -3410,36 +3438,6 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
                                                                    << (QStringList() << "Undo changes");
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, invisibleItems, PopupChecker::CheckOptions(PopupChecker::NotExists)));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
-}
-
-GUI_TEST_CLASS_DEFINITION(test_4716) {
-    //1. Open COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
-    //2. Open OP and select pairwice alignment tab, select sequences to align
-    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
-    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
-    GTGlobals::sleep(500);
-    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
-
-    //3. Press "Align sequence to this alignment" and add next sequence _common_data/fasta/amino_ext.fa
-    //"outputContainerWidget" "ArrowHeader_Output settings"
-    QWidget* widget = GTWidget::findWidget(os, "outputContainerWidget");
-    CHECK_SET_ERR(widget != NULL, QString("%1 not found").arg("outputContainerWidget"));
-    if (widget->isHidden()) {
-        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
-    }
-    QCheckBox* inNewWindowCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
-    CHECK_SET_ERR(inNewWindowCheckBox != NULL, "inNewWindowCheckBox not found");
-    GTCheckBox::setChecked(os, inNewWindowCheckBox, false);
-    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
-
-    //4. Undo changes
-    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    //Expected state "Undo" button is disabled
-    QAbstractButton *undo = GTAction::button(os, "msa_action_undo");
-    CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4719_1) {
