@@ -54,6 +54,7 @@ public:
     static void doubleClickItem(U2OpStatus &os, const QModelIndex& itemIndex);
     static void doubleClickItem(U2OpStatus &os, const QString& itemName);
     static void click(U2OpStatus &os, const QString& itemName, Qt::MouseButton button = Qt::LeftButton);
+    static void click(U2OpStatus &os, const QString& itemName, const QString &parentName, Qt::MouseButton button = Qt::LeftButton);
 
     static QTreeView* getTreeView(U2OpStatus &os);
     static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());

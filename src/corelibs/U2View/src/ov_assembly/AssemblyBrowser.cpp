@@ -36,7 +36,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
@@ -54,10 +58,11 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/Notification.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
-#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/ProjectView.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
 
@@ -90,7 +95,7 @@ GObjectView(AssemblyBrowserFactory::ID, viewName), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
-exportToSamAction(0)
+exportToSamAction(0), setReferenceAction(0), loadReferenceTask(0)
 {
     GCOUNTER( cvar, tvar, "AssemblyBrowser" );
     initFont();
@@ -125,6 +130,7 @@ void AssemblyBrowser::sl_referenceChanged() {
     if (so != NULL) {
         addObjectToView(so);
     }
+    setReferenceAction->setEnabled(!model->isLoadingReference());
 }
 
 bool AssemblyBrowser::checkValid(U2OpStatus &os) {
@@ -218,10 +224,10 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         QStringList errs;
         qint64 modelLen = model->getModelLength(os);
         if (seqLen != modelLen) {
-            errs << tr("- Reference sequence is %1 than assembly").arg(seqLen < modelLen ? tr("lesser") : tr("bigger"));
+            errs << tr("The lengths of the sequence and assembly are different.");
         }
         if (seqObj->getGObjectName() != gobject->getGObjectName()) {
-            errs << tr("- Reference and assembly names not match");
+            errs << tr("The sequence and assembly names are different.");
         }
 
         // commented: waiting for fix
@@ -238,10 +244,10 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         bool setRef = !isAssemblyObjectLocked(true);
         setRef &= model->checkPermissions(QFile::WriteUser, setRef);
         if(!errs.isEmpty() && setRef) {
-            errs << tr("\n  Continue?");
-            QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
-            QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Errors"), errs.join("\n"), fl, QMessageBox::Ok);
-            setRef = btn == QMessageBox::Ok;
+            const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
+            const QString message = tr("It seems that sequence \"%1\", set as reference to assembly \"%2\", does not match it.").arg(seqObj->getGObjectName()).arg(gobject->getGObjectName())
+                + "\n- " + errs.join("\n- ");
+            notificationStack->addNotification(message, Warning_Not);
         }
         if(setRef) {
             model->setReference(seqObj);
@@ -329,7 +335,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addAction(showCoverageOnRulerAction);
         tb->addAction(readHintEnabledAction);
         tb->addSeparator();
-
+        tb->addAction(setReferenceAction);
         tb->addAction(saveScreenShotAction);
     }
     GObjectView::buildStaticToolbar(tb);
@@ -347,6 +353,7 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
         m->addAction(zoomOutAction);
         m->addAction(saveScreenShotAction);
         m->addAction(exportToSamAction);
+        m->addAction(setReferenceAction);
     }
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
@@ -663,6 +670,10 @@ void AssemblyBrowser::setupActions() {
 
     exportToSamAction = new QAction(QIcon(":/core/images/sam.png"), tr("Export assembly to SAM format"), this);
     connect(exportToSamAction, SIGNAL(triggered()), SLOT(sl_exportToSam()));
+
+    setReferenceAction = new QAction(QIcon(":core/images/todo.png"), tr("Set reference"), this);
+    setReferenceAction->setObjectName("setReferenceAction");
+    connect(setReferenceAction, SIGNAL(triggered()), SLOT(sl_setReference()));
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
@@ -894,6 +905,13 @@ void AssemblyBrowser::onObjectRenamed(GObject*, const QString&) {
     OpenAssemblyBrowserTask::updateTitle(this);
 }
 
+bool AssemblyBrowser::onCloseEvent() {
+    if (NULL != loadReferenceTask) {
+        loadReferenceTask->cancel();
+    }
+    return true;
+}
+
 void AssemblyBrowser::sl_coveredRegionClicked(const QString link) {
     if(link == AssemblyReadsArea::ZOOM_LINK) {
         sl_zoomToReads();
@@ -937,6 +955,116 @@ void AssemblyBrowser::removeObjectFromView(GObject *o) {
 
 void AssemblyBrowser::sl_trackRemoved(VariantTrackObject *obj) {
     removeObjectFromView(obj);
+}
+
+namespace {
+    QList<GObject*> extractSequenceObjects(const QList<GObject*> &objects) {
+        QList<GObject*> result;
+        foreach (GObject *object, objects) {
+            if (object->getGObjectType() == GObjectTypes::SEQUENCE) {
+                result << object;
+            }
+        }
+        return result;
+    }
+
+    const char *REFERENCE_URL_PROPERTY = "reference-url";
+
+    QString getReferenceUrl(Task *loadReferenceTask) {
+        return loadReferenceTask->property(REFERENCE_URL_PROPERTY).toString();
+    }
+
+    Task * createLoadReferenceTask(const QString &url) {
+        QVariantMap hints;
+        hints[ProjectLoaderHint_LoadWithoutView] = true;
+        Task *task = AppContext::getProjectLoader()->openWithProjectTask(QList<GUrl>() << url, hints);
+        CHECK(NULL != task, NULL);
+        task->setProperty(REFERENCE_URL_PROPERTY, url);
+        return task;
+    }
+}
+
+QString AssemblyBrowser::chooseReferenceUrl() const {
+    const QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+    LastUsedDirHelper lod;
+    const QString url = U2FileDialog::getOpenFileName(ui, tr("Open file with a sequence"), lod.dir, filter);
+    CHECK(!url.isEmpty(), "");
+    lod.url = url;
+    return url;
+}
+
+void AssemblyBrowser::showReferenceLoadingError(const QList<GObject*> &sequenceObjects, const QString &url) const {
+    const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
+    QString message;
+
+    if (sequenceObjects.isEmpty()) {
+        message = tr("An error occurred while setting reference to \"%1\" assembly. The selected file \"%2\" does not contain sequences.").arg(gobject->getGObjectName()).arg(url);
+    } else {
+        message = tr("There are several sequences in file \"%1\". Select the required sequence object in the Project View and click the \"Set reference\" button.").arg(url);
+    }
+    notificationStack->addNotification(message, Error_Not);
+}
+
+void AssemblyBrowser::loadReferenceFromFile() {
+    QString url = chooseReferenceUrl();
+    CHECK(!url.isEmpty(), );
+
+    loadReferenceTask = createLoadReferenceTask(url);
+    CHECK(NULL != loadReferenceTask, );
+
+    connect(loadReferenceTask, SIGNAL(si_stateChanged()), SLOT(sl_onReferenceLoaded()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(loadReferenceTask);
+
+    setReferenceAction->setDisabled(true);
+    model->setLoadingReference(true);
+}
+
+void AssemblyBrowser::sl_setReference() {
+    const ProjectView *projectView = AppContext::getProjectView();
+    SAFE_POINT(NULL != projectView, L10N::nullPointerError("ProjectView"), );
+
+    const GObjectSelection *selection = projectView->getGObjectSelection();
+    const QList<GObject*> objects = extractSequenceObjects(selection->getSelectedObjects());
+
+    if (objects.isEmpty()) {
+        loadReferenceFromFile();
+    } else if (1 == objects.size()) {
+        tryAddObject(objects.first());
+    } else {
+        QMessageBox::information(ui, tr("Choose Reference Sequence"),
+            tr("You have more than one sequence object selected in the Project View. "
+               "To set a sequence from the current project as reference, please select "
+               "only one sequence object in the Project View and click the \"Set reference\" item again.\n\n"
+               "Alternatively, to set a sequence from a file as reference, "
+               "deselect the objects in the Project View, click the \"Set reference\" item and browse for the file."),
+            QMessageBox::Ok);
+    }
+}
+
+void AssemblyBrowser::sl_onReferenceLoaded() {
+    Task *task = loadReferenceTask;
+    CHECK(NULL != task, );
+    CHECK(task->isFinished(), );
+
+    loadReferenceTask = NULL;
+    setReferenceAction->setEnabled(true);
+    model->setLoadingReference(false);
+    CHECK_OP(task->getStateInfo(), );
+
+    const QString url = getReferenceUrl(task);
+    CHECK(!url.isEmpty(), );
+
+    const Project *project = AppContext::getProject();
+    CHECK(NULL != project, );
+    const Document *doc = project->findDocumentByURL(url);
+    CHECK(NULL != doc, );
+    const QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+
+    if (1 == objects.size()) {
+        tryAddObject(objects.first());
+    } else {
+        showReferenceLoadingError(objects, url);
+    }
 }
 
 //==============================================================================

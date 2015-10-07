@@ -124,10 +124,13 @@ public:
     QAction * getReadHintEnabledAction() { return readHintEnabledAction; }
     QAction * getCoordsOnRulerAction() { return showCoordsOnRulerAction; }
     QAction * getCoverageOnRulerAction() { return showCoverageOnRulerAction; }
+    QAction * getSetReferenceAction() { return setReferenceAction; }
 
     //public utility functions for zooming
     bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
     bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
+
+    bool onCloseEvent();
 
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
@@ -157,6 +160,8 @@ private slots:
     void sl_unassociateReference();
     void sl_referenceChanged();
     void sl_trackRemoved(VariantTrackObject *obj);
+    void sl_setReference();
+    void sl_onReferenceLoaded();
 
 private:
     void initFont();
@@ -177,6 +182,10 @@ private:
 
     void addObjectToView(GObject *o);
     void removeObjectFromView(GObject *o);
+
+    QString chooseReferenceUrl() const;
+    void loadReferenceFromFile();
+    void showReferenceLoadingError(const QList<GObject*> &sequenceObjects, const QString &url) const;
 
 private:
     AssemblyBrowserUi * ui;
@@ -208,6 +217,9 @@ private:
     QAction * readHintEnabledAction;
     QAction * saveScreenShotAction;
     QAction * exportToSamAction;
+    QAction * setReferenceAction;
+
+    Task * loadReferenceTask;
 
     const static int MAX_CELL_WIDTH = 300;
     const static double INITIAL_ZOOM_FACTOR;

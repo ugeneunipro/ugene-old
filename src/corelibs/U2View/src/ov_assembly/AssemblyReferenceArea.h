@@ -107,8 +107,12 @@ protected:
 signals:
     void si_unassociateReference();
 
+private slots:
+    void sl_onReferenceChanged();
+
 private:
     QMenu * referenceAreaMenu;
+    QAction * unassociateReferenceAction;
 };
 
 } //ns

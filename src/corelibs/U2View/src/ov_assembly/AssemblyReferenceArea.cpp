@@ -168,12 +168,16 @@ void AssemblySequenceArea::sl_zoomPerformed() {
 // AssemblyReferenceArea
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) :
-    AssemblySequenceArea(ui_), referenceAreaMenu(new QMenu(this))
+    AssemblySequenceArea(ui_), referenceAreaMenu(new QMenu(this)), unassociateReferenceAction(NULL)
 {
     setToolTip(tr("Reference sequence"));
     // setup menu
-    QAction * unassociateReferenceAction = referenceAreaMenu->addAction(tr("Unassociate"));
+    referenceAreaMenu->addAction(ui_->getWindow()->getSetReferenceAction());
+    unassociateReferenceAction = referenceAreaMenu->addAction(tr("Unassociate"));
+    unassociateReferenceAction->setObjectName("unassociateReferenceAction");
     connect(unassociateReferenceAction, SIGNAL(triggered()), SIGNAL(si_unassociateReference()));
+    connect(getModel().data(), SIGNAL(si_referenceChanged()), SLOT(sl_onReferenceChanged()));
+    sl_onReferenceChanged();
 }
 
 bool AssemblyReferenceArea::canDrawSequence() {
@@ -185,7 +189,7 @@ QByteArray AssemblyReferenceArea::getSequenceRegion(U2OpStatus &os) {
 }
 
 void AssemblyReferenceArea::mousePressEvent(QMouseEvent* e) {
-    if(e->button() == Qt::RightButton && getModel()->referenceAssociated()) {
+    if(e->button() == Qt::RightButton) {
         referenceAreaMenu->exec(QCursor::pos());
     }
 }
@@ -196,6 +200,10 @@ void AssemblyReferenceArea::drawSequence(QPainter &p) {
     } else {
         AssemblySequenceArea::drawSequence(p);
     }
+}
+
+void AssemblyReferenceArea::sl_onReferenceChanged() {
+    unassociateReferenceAction->setEnabled(getModel()->referenceAssociated() && !getModel()->isLoadingReference());
 }
 
 } //ns

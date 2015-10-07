@@ -182,6 +182,19 @@ void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString &itemName, Qt::
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "click"
+void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString& itemName, const QString &parentName, Qt::MouseButton button) {
+    QModelIndex parentIndex = findIndex(os, parentName);
+    GT_CHECK(parentIndex.isValid(), "Parent item index is invalid");
+    QModelIndex itemIndex = findIndex(os, itemName, parentIndex);
+    GT_CHECK(itemIndex.isValid(), "Item index is invalid");
+    getTreeView(os)->scrollTo(itemIndex);
+
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));
+    GTMouseDriver::click(os, button);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getTreeWidget"
 QTreeView* GTUtilsProjectTreeView::getTreeView(U2OpStatus &os) {
 

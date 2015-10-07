@@ -518,6 +518,12 @@ void AssemblyModel::associateWithReference(const U2DataId& refId) {
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
     LOG_OP(status);
+    emit si_referenceChanged();
+}
+
+void AssemblyModel::setLoadingReference(bool value) {
+    loadingReference = value;
+    emit si_referenceChanged();
 }
 
 qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {

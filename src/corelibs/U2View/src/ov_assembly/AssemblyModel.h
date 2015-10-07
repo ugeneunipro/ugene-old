@@ -85,6 +85,7 @@ public:
     void associateWithReference(const U2DataId &refId);
 
     bool isLoadingReference()const { return loadingReference; }
+    void setLoadingReference(bool value);
 
     qint64 getReadsNumber(U2OpStatus & os);
     bool hasReads(U2OpStatus & os);
