@@ -257,15 +257,15 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION( test_0006 ) {
     //Workflow worker directory parameter validation
-    //1. Create the following workflow { Read Sequence -> CD-Search -> Write Sequence }
+    //1. Create the following workflow { Read Sequence -> CD Search -> Write Sequence }
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "CD-Search" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "CD Search" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
-    WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "CD-Search" );
+    WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "CD Search" );
     WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
 
     GTUtilsWorkflowDesigner::connect( os, seqReader, patternFinder );
@@ -293,8 +293,8 @@ GUI_TEST_CLASS_DEFINITION( test_0006 ) {
     QDir newDir(testDir);
     newDir.mkdir("_empty_tmp");
 
-    //5. Set the path to this directory as the "Database directory" parameter of the "CD-Search" worker
-    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "CD-Search" ) );
+    //5. Set the path to this directory as the "Database directory" parameter of the "CD Search" worker
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "CD Search" ) );
     GTMouseDriver::click( os );
     GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 2 ) );
     GTMouseDriver::click( os );

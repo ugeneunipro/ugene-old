@@ -682,8 +682,8 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     QFontComboBox* fontComboBox = qobject_cast<QFontComboBox*>(GTWidget::findWidget(os, "fontComboBox"));
     CHECK_SET_ERR( fontComboBox != NULL, "Font comboBox is NULL");
 
-    GTComboBox::setIndexWithText(os, fontComboBox, "Times New Roman");
-    GTComboBox::setIndexWithText(os, fontComboBox, "Arial");
+    GTComboBox::setIndexWithText(os, fontComboBox, "Serif", false);
+    GTComboBox::setIndexWithText(os, fontComboBox, "Sans Serif");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0019) {

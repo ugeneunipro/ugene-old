@@ -3522,6 +3522,7 @@ GUI_TEST_CLASS_DEFINITION(test_1321_1) {
     QDir().mkpath(sandBoxDir + "test_1321_1");
     GTUtilsDialog::waitForDialog(os, new FindRepeatsDialogFiller(os, sandBoxDir + "test_1321_1", false, 20, 80));
     GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find repeats"));
+    GTGlobals::sleep();
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
 

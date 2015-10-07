@@ -44,6 +44,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "runnables/qt/DefaultDialogFiller.h"
+#include "runnables/qt/ColorDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/FontDialogFiller.h"
@@ -4288,6 +4289,14 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
                 uiLog.trace(c.name());
             }
 
+            GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os, 255, 0, 0));
+            QPoint cell2 = QPoint(1.5*cellWidth, 10);
+            GTMouseDriver::moveTo(os, alphabetColorsFrame->mapToGlobal(cell2));
+            GTMouseDriver::click(os);
+            GTGlobals::sleep(500);
+            QColor cell2Color = GTWidget::getColor(os, dialog, alphabetColorsFrame->mapTo(dialog, cell2));
+            CHECK_SET_ERR(cell2Color.name() == "#ff0000", "color was chanded wrong: " + cell2Color.name());
+
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
@@ -4331,7 +4340,63 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
     GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0060){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open "Color schemes" dialog.
+    class customAppSettingsFiller: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir, "", GTFileDialogUtils::Choose));
+            GTWidget::click(os, GTWidget::findWidget(os, "colorsDirButton", dialog));
+
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new customAppSettingsFiller()));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+//    Select some color scheme directory. Check state
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTUtilsDialog::waitForDialog(os, new NewColorSchemeCreator(os, "GUITest_common_scenarios_msa_editor_test_0060", NewColorSchemeCreator::nucl));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTGlobals::sleep(500);
+
+    GTFile::check(os, sandBoxDir + "GUITest_common_scenarios_msa_editor_test_0060.csmsa");
+
+
+
+    class customAppSettingsFiller1: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            QLineEdit* colorsDirEdit = GTWidget::findExactWidget<QLineEdit*>(os, "colorsDirEdit", dialog);
+            QString path = colorsDirEdit->text();
+            CHECK_SET_ERR(path.contains("_common_data/scenarios/sandbox"), "unexpected color directory: " + path);
+
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new customAppSettingsFiller1()));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+//    Select some color scheme directory. Check state
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {

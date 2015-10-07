@@ -600,7 +600,7 @@ GUI_TEST_CLASS_DEFINITION(test_2024){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
 //    2. Add element "Local BLAST Search"
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST Search" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST search" );
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Local BLAST Search"));
     GTMouseDriver::click(os);
 

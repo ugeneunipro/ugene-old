@@ -1099,6 +1099,7 @@ GUI_TEST_CLASS_DEFINITION(test_0685) {
     blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCHP);
+    GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 }
@@ -1331,7 +1332,7 @@ GUI_TEST_CLASS_DEFINITION(test_0762) {
 
     GTUtilsDialog::waitForDialog(os, new FindTandemsDialogFiller(os, sandBoxDir + "test_0762.gb"));
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find tandems");
-    GTGlobals::sleep(200);
+    GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
@@ -2224,7 +2225,7 @@ GUI_TEST_CLASS_DEFINITION(test_0844) {
 
     GTUtilsDialog::waitForDialog(os, new FindTandemsDialogFiller(os, new Scenario));
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find tandems");
-    GTGlobals::sleep(200);
+    GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
@@ -2869,7 +2870,7 @@ GUI_TEST_CLASS_DEFINITION(test_0935){
 //    2. Add to the scene three elements: any Data Reader (e.g. Read Alignment), any Data Writer(e.g. Write Alignment), any element with input and output (e.g. Find Repeats).
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Alignment");
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "CD-Search");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "CD Search");
 //    Expected state: three elements are presented on the scene.
 
 //    3. For each element: select element, see to its properties.
@@ -2881,7 +2882,7 @@ GUI_TEST_CLASS_DEFINITION(test_0935){
     QGroupBox* in = GTWidget::findExactWidget<QGroupBox*>(os, "inputPortBox");
     CHECK_SET_ERR(in->title() == "Input data", "unexpected in box title: " + in->title());
 
-    GTUtilsWorkflowDesigner::click(os, "CD-Search");
+    GTUtilsWorkflowDesigner::click(os, "CD Search");
     in = GTWidget::findExactWidget<QGroupBox*>(os, "inputPortBox");
     CHECK_SET_ERR(in->title() == "Input data", "unexpected in box title: " + in->title());
     out = GTWidget::findExactWidget<QGroupBox*>(os, "outputPortBox");
