@@ -3601,6 +3601,25 @@ GUI_TEST_CLASS_DEFINITION(test_4734) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4795) {
+    //    1. Open "_common_data/clustal/amino_ext.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/amino_ext.fa");
+    //    2. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QModelIndex aminoExtIdx = GTUtilsProjectTreeView::findIndex(os, "amino_ext");
+    GTUtilsProjectTreeView::dragAndDrop(os, aminoExtIdx, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+   
+    //    3. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+    //    Expected state: "No colors" color scheme is selected, "No highlighting" highlight scheme is selected
+    QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "No colors");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

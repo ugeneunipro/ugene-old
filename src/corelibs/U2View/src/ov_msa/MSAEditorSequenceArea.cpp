@@ -2495,7 +2495,7 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     if (!urls.isEmpty()) {
         lod.url = urls.first();
         cancelSelection();
-        AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, urls);
+        AddSequencesFromFilesToAlignmentTask *task = new AddSequencesFromFilesToAlignmentTask(msaObject, urls);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 

@@ -33,34 +33,41 @@ class StateLock;
 class LoadDocumentTask;
 class U2SequenceObject;
 
-class U2CORE_EXPORT AddSequencesToAlignmentTask : public Task {
+class U2CORE_EXPORT AddSequenceObjectsToAlignmentTask : public Task {
     Q_OBJECT
 public:
-    AddSequencesToAlignmentTask(MAlignmentObject* obj, const QStringList& filesWithSequences);
-    void prepare();
-    QList<Task*> onSubTaskFinished(Task* subTask);
+    AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<U2SequenceObject*>& seqList);
+    virtual void prepare();
 
     ReportResult report();
+protected:
+    void processObjectsAndSetResultingAlphabet();
 
-    QPointer<MAlignmentObject>  maObj;
-    QStringList                 urls;
-    StateLock*                  stateLock;
-private slots:
-    void sl_onCancel();
-private:
-    const DNAAlphabet *msaAlphabet;
     QList<U2SequenceObject*>    seqList;
+    QPointer<MAlignmentObject>  maObj;
+private:
+    StateLock*                  stateLock;
+    const DNAAlphabet*          msaAlphabet;
     QStringList                 errorList;
-    LoadDocumentTask* loadTask;
 
     static const int maxErrorListSize;
-
-private:
     /** Returns the max length of the rows including trailing gaps */
     qint64 createRows(QList<U2MsaRow>& rows);
     void addRows(QList<U2MsaRow> &rows, qint64 len);
     void setupError();
     void releaseLock();
+};
+
+class U2CORE_EXPORT AddSequencesFromFilesToAlignmentTask : public AddSequenceObjectsToAlignmentTask {
+    Q_OBJECT
+public:
+    AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls);
+
+    virtual void prepare();
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    QStringList         urlList;
+    LoadDocumentTask*   loadTask;
 };
 
 }// namespace

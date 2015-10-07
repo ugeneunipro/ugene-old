@@ -36,6 +36,7 @@
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
+#include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
@@ -702,8 +703,8 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
                 } else {
-                    U2OpStatus2Log os;
-                    copyRowFromSequence(dnaObj, os);
+                    AppContext::getTaskScheduler()->registerTopLevelTask(
+                        new AddSequenceObjectsToAlignmentTask(msaObject, QList<U2SequenceObject*>() << dnaObj));
                 }
             }
         }

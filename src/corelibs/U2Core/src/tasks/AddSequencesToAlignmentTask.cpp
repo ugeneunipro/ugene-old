@@ -35,19 +35,12 @@
 
 namespace U2 {
 
-const int AddSequencesToAlignmentTask::maxErrorListSize = 5;
+const int AddSequenceObjectsToAlignmentTask::maxErrorListSize = 5;
 
-AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj, const QStringList& fileWithSequencesUrls )
-: Task("Add sequences to alignment task", TaskFlags_NR_FOSE_COSC), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL), loadTask(NULL)
-{
-    assert(!fileWithSequencesUrls.isEmpty());
-    msaAlphabet = maObj->getAlphabet();
-    connect(maObj, SIGNAL(si_invalidateAlignmentObject()), SLOT(sl_onCancel()));
-}
+AddSequenceObjectsToAlignmentTask::AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<U2SequenceObject*>& seqList)
+    : Task("Add sequences to alignment task", TaskFlags(TaskFlags_NR_FOSE_COSC)), seqList(seqList), maObj(obj), stateLock(NULL), msaAlphabet(maObj->getAlphabet()) {}
 
-void AddSequencesToAlignmentTask::prepare()
-{
-
+void AddSequenceObjectsToAlignmentTask::prepare() {
     if (maObj.isNull()) {
         stateInfo.setError(tr("Object is empty."));
         return;
@@ -60,49 +53,22 @@ void AddSequencesToAlignmentTask::prepare()
 
     stateLock = new StateLock("Adding_files_to_alignment", StateLockFlag_LiveLock);
     maObj->lockState(stateLock);
-
-    foreach( const QString& fileWithSequencesUrl, urls) {
-        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);
-        if (!detectedFormats.isEmpty()) {
-            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            DocumentFormat* format = detectedFormats.first().format;
-            loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
-            addSubTask(loadTask);
-        } else {
-            setError("Unknown format");
-        }
-    }
+    processObjectsAndSetResultingAlphabet();
 }
 
-QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished(Task* subTask) {
-    QList<Task*> subTasks;
-
-    propagateSubtaskError();
-    if ( isCanceled() || hasError() ) {
-        return subTasks;
-    }
-
-    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(subTask);
-    assert(loadTask != NULL);
-    Document* doc = loadTask->getDocument();
-    QList<GObject*> seqObjects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-
-    foreach(GObject* obj, seqObjects) {
-        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
-        assert(dnaObj != NULL);
+void AddSequenceObjectsToAlignmentTask::processObjectsAndSetResultingAlphabet() {
+    foreach(U2SequenceObject* dnaObj, seqList) {
         const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), msaAlphabet);
         if (newAlphabet != NULL) {
-            seqList << dnaObj;
             msaAlphabet = newAlphabet;
         } else {
             errorList << dnaObj->getGObjectName();
+            seqList.removeAll(dnaObj);
         }
     }
-
-    return subTasks;
 }
 
-Task::ReportResult AddSequencesToAlignmentTask::report() {
+Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
     releaseLock();
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
@@ -120,7 +86,7 @@ Task::ReportResult AddSequencesToAlignmentTask::report() {
     return ReportResult_Finished;
 }
 
-qint64 AddSequencesToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
+qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     qint64 maxLen = 0;
     foreach (U2SequenceObject *seqObj, seqList) {
@@ -134,7 +100,7 @@ qint64 AddSequencesToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
     return maxLen;
 }
 
-void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
+void AddSequenceObjectsToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     // Create user mod step
     U2UseCommonUserModStep modStep(entityRef, stateInfo);
@@ -161,7 +127,7 @@ void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
     maObj->updateCachedMAlignment();
 }
 
-void AddSequencesToAlignmentTask::setupError() {
+void AddSequenceObjectsToAlignmentTask::setupError() {
     CHECK(!errorList.isEmpty(), );
 
     QStringList smallList = errorList.mid(0, maxErrorListSize);
@@ -173,14 +139,7 @@ void AddSequencesToAlignmentTask::setupError() {
     setError(error);
 }
 
-void AddSequencesToAlignmentTask::sl_onCancel() {
-    if (loadTask != NULL && !loadTask->isFinished() && !loadTask->isCanceled()) {
-        loadTask->cancel();
-    }
-    releaseLock();
-}
-
-void AddSequencesToAlignmentTask::releaseLock(){
+void AddSequenceObjectsToAlignmentTask::releaseLock(){
     if (stateLock != NULL) {
         if(maObj != NULL) {
             maObj->unlockState(stateLock);
@@ -188,6 +147,44 @@ void AddSequencesToAlignmentTask::releaseLock(){
         delete stateLock;
         stateLock = NULL;
     }
+}
+
+AddSequencesFromFilesToAlignmentTask::AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls) 
+    : AddSequenceObjectsToAlignmentTask(obj, QList<U2SequenceObject*>()), urlList(urls), loadTask(NULL) {}
+
+void AddSequencesFromFilesToAlignmentTask::prepare() {
+    AddSequenceObjectsToAlignmentTask::prepare();
+    foreach(const QString& fileWithSequencesUrl, urlList) {
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);
+        if (!detectedFormats.isEmpty()) {
+            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            DocumentFormat* format = detectedFormats.first().format;
+            loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
+            addSubTask(loadTask);
+        } else {
+            setError("Unknown format");
+        }
+    }
+}
+
+QList<Task*> AddSequencesFromFilesToAlignmentTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> subTasks;
+
+    propagateSubtaskError();
+    if (isCanceled() || hasError()) {
+        return subTasks;
+    }
+
+    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(subTask);
+    SAFE_POINT(loadTask != NULL, "loadTask is NULL", subTasks);
+    Document* doc = loadTask->getDocument();
+    foreach(GObject *seqObj, doc->findGObjectByType(GObjectTypes::SEQUENCE)) {
+        U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(seqObj);
+        SAFE_POINT(casted != NULL, "Cast to U2SequenceObject failed", subTasks);
+        seqList.append(casted);
+    }
+    processObjectsAndSetResultingAlphabet();
+    return subTasks;
 }
 
 }
