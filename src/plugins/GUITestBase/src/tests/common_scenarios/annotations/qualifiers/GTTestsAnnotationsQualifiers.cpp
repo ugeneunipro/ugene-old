@@ -331,22 +331,19 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     GTUtilsAnnotationsTreeView::getItemCenter(os, "C");
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "qual1"));
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-
-    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1");
+    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1", GTGlobals::FindOptions(false));
     CHECK_SET_ERR(qual1 == NULL, "There is annotation qual1, expected state there is no annotation qual1");
-
     GTUtilsAnnotationsTreeView::getItemCenter(os, "B");
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "qual"));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-
-    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual");
+    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual", GTGlobals::FindOptions(false));
     CHECK_SET_ERR(qual == NULL, "There is annotation qual1, expected state there is no annotation qual");
 }
 
