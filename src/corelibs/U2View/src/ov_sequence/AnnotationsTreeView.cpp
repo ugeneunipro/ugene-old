@@ -179,6 +179,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     connect (searchQualifierAction, SIGNAL(triggered()), SLOT(sl_searchQualifier()));
 
     invertAnnotationSelectionAction = new QAction(tr("Invert annotation selection"), this);
+    invertAnnotationSelectionAction->setObjectName("invert_selection_action");
     connect (invertAnnotationSelectionAction, SIGNAL(triggered()), SLOT(sl_invertSelection()));
 
     copyColumnTextAction = new QAction(tr("Copy column text"), this);
@@ -1579,7 +1580,10 @@ void AnnotationsTreeView::sl_searchQualifier() {
 }
 
 void AnnotationsTreeView::sl_invertSelection(){
-    updateAllAnnotations(ATVAnnUpdateFlag_ReverseAnnotationSelection);
+    QItemSelectionModel * selectionModel = tree->selectionModel();
+    QItemSelection originalSelection = selectionModel->selection();
+    tree->selectAll();
+    selectionModel->select(originalSelection, QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
 }
 
 void AnnotationsTreeView::updateAllAnnotations(ATVAnnUpdateFlags flags) {
@@ -2104,10 +2108,6 @@ void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
                 }
             }
         }
-    }
-
-    if (f.testFlag(ATVAnnUpdateFlag_ReverseAnnotationSelection)) {
-        setSelected(!isSelected());
     }
 
     GUIUtils::setMutedLnF(this, !as->visible, true);

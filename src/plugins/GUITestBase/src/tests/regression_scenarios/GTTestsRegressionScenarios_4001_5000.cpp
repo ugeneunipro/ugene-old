@@ -3364,6 +3364,15 @@ GUI_TEST_CLASS_DEFINITION(test_4694) {
     CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4702) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTGlobals::sleep();
+    QList<QTreeWidgetItem *> commentItem = GTUtilsAnnotationsTreeView::findItems(os, "comment");
+    GTUtilsAnnotationsTreeView::selectItems(os, commentItem);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "invert_selection_action"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
@@ -3511,7 +3520,6 @@ GUI_TEST_CLASS_DEFINITION(test_4728) {
 
     QPoint startPos, endPos;
     int indent = 50;
-    startPos, endPos = seqWidget->pos();
     qreal widgetCenterHeight = seqWidget->rect().height() / 2;
     startPos = seqWidget->mapToGlobal(QPoint(indent, widgetCenterHeight));
     endPos = seqWidget->mapToGlobal(QPoint(seqWidget->rect().width() - indent, widgetCenterHeight));
