@@ -671,7 +671,7 @@ void AssemblyBrowser::setupActions() {
     exportToSamAction = new QAction(QIcon(":/core/images/sam.png"), tr("Export assembly to SAM format"), this);
     connect(exportToSamAction, SIGNAL(triggered()), SLOT(sl_exportToSam()));
 
-    setReferenceAction = new QAction(QIcon(":core/images/todo.png"), tr("Set reference"), this);
+    setReferenceAction = new QAction(QIcon(":core/images/set_reference.png"), tr("Set reference"), this);
     setReferenceAction->setObjectName("setReferenceAction");
     connect(setReferenceAction, SIGNAL(triggered()), SLOT(sl_setReference()));
 }
