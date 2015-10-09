@@ -61,7 +61,7 @@ private:
 class CalculateCoveragePerBaseTask : public Task {
     Q_OBJECT
 public:
-    CalculateCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, qint64 maxRegionLength = DEFAULT_MAX_REGION_LENGTH);
+    CalculateCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId);
     ~CalculateCoveragePerBaseTask();
 
     void prepare();
@@ -79,10 +79,9 @@ private slots:
 private:
     const U2DbiRef dbiRef;
     const U2DataId assemblyId;
-    qint64 maxRegionLength;
     QHash<qint64, QVector<CoveragePerBaseInfo> *> results;
 
-    static const qint64 DEFAULT_MAX_REGION_LENGTH = 100000;
+    static const qint64 MAX_REGION_LENGTH = 100000;
 };
 
 }   // namespace U2

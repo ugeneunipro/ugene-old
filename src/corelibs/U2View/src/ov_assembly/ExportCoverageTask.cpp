@@ -45,6 +45,7 @@ const QString ExportCoverageSettings::BEDGRAPH_EXTENSION = ".bedgraph";
 const QString ExportCoverageSettings::COMPRESSED_EXTENSION = ".gz";
 
 const QByteArray ExportCoverageTask::SEPARATOR = "\t";
+const QList<char> ExportCoverageTask::EXTENDED_CHARACTERS = QList<char>() << 'W' << 'R' << 'M' << 'K' << 'Y' << 'S' << 'B' << 'V' << 'H' << 'D';
 
 ExportCoverageTask::ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings, TaskFlags flags) :
     Task(tr("Export coverage per base for %1"), flags),
@@ -67,6 +68,7 @@ ExportCoverageTask::ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &a
     CHECK_OP(stateInfo, );
     assemblyName = assembly.visualName;
     setTaskName(getTaskName().arg(assemblyName));
+    alphabetChars << 'A' << 'C' << 'G' << 'T';
 }
 
 void ExportCoverageTask::prepare() {
@@ -104,13 +106,35 @@ const QString &ExportCoverageTask::getUrl() const {
 
 void ExportCoverageTask::sl_regionIsProcessed(qint64 startPos) {
     if (alreadyProcessed == startPos) {
-        processRegion(startPos);
+        QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+        if (startPos == 0) {
+            identifyAlphabet(regionCoverage);
+            writeHeader();
+        }
+        processRegion(regionCoverage);
+        delete regionCoverage;
         CHECK_OP(stateInfo, );
 
         if (calculateTask->isResultReady(alreadyProcessed)) {
             sl_regionIsProcessed(alreadyProcessed);
         }
     }
+}
+
+void ExportCoverageTask::identifyAlphabet(QVector<CoveragePerBaseInfo>* regionCoverage) {
+    CHECK(alphabetChars.size() == 4, );
+    foreach(const CoveragePerBaseInfo &info, *regionCoverage) {
+        QList<char> chars = info.basesCount.keys();
+        foreach(char curChar, chars) {
+            if (EXTENDED_CHARACTERS.contains(curChar)) {
+                alphabetChars.append(EXTENDED_CHARACTERS);
+                return;
+            }
+        }
+    }
+}
+
+void ExportCoverageTask::writeHeader() {
 }
 
 void ExportCoverageTask::write(const QByteArray &dataToWrite) {
@@ -145,13 +169,11 @@ void ExportCoverageHistogramTask::run() {
     }
 }
 
-void ExportCoverageHistogramTask::processRegion(qint64 startPos) {
-    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+void ExportCoverageHistogramTask::processRegion(const QVector<CoveragePerBaseInfo> *regionCoverage) {
     foreach (const CoveragePerBaseInfo &info, *regionCoverage) {
         histogramData[info.coverage] = histogramData.value(info.coverage, 0) + 1;
         alreadyProcessed++;
     }
-    delete regionCoverage;
 }
 
 QByteArray ExportCoverageHistogramTask::toByteArray(int coverage, qint64 assemblyLength) const {
@@ -168,15 +190,9 @@ ExportCoveragePerBaseTask::ExportCoveragePerBaseTask(const U2DbiRef &dbiRef, con
     GCOUNTER(c, t, "ExportCoveragePerBaseTask");
 }
 
-void ExportCoveragePerBaseTask::prepare() {
-    ExportCoverageTask::prepare();
-    writeHeader();
-}
 
-void ExportCoveragePerBaseTask::processRegion(qint64 startPos) {
-    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+void ExportCoveragePerBaseTask::processRegion(const QVector<CoveragePerBaseInfo> *regionCoverage) {
     writeResult(regionCoverage);
-    delete regionCoverage;
 }
 
 void ExportCoveragePerBaseTask::writeHeader() {
@@ -187,10 +203,9 @@ void ExportCoveragePerBaseTask::writeHeader() {
     }
 
     if (settings.exportBasesCount) {
-        comments += SEPARATOR + "A";
-        comments += SEPARATOR + "C";
-        comments += SEPARATOR + "G";
-        comments += SEPARATOR + "T";
+        foreach(char curChar, alphabetChars) {
+            comments += SEPARATOR + curChar;
+        }
     }
 
     write(comments + "\n");
@@ -204,10 +219,9 @@ QByteArray ExportCoveragePerBaseTask::toByteArray(const CoveragePerBaseInfo &inf
     }
 
     if (settings.exportBasesCount) {
-        result += SEPARATOR + QByteArray::number(info.basesCount.value('A', 0)) +
-                SEPARATOR + QByteArray::number(info.basesCount.value('C', 0)) +
-                SEPARATOR + QByteArray::number(info.basesCount.value('G', 0)) +
-                SEPARATOR + QByteArray::number(info.basesCount.value('T', 0));
+        foreach(char curChar, alphabetChars) {
+            result += SEPARATOR + QByteArray::number(info.basesCount.value(curChar, 0));
+        }
     }
 
     return result + "\n";
@@ -220,10 +234,11 @@ void ExportCoveragePerBaseTask::writeResult(const QVector<CoveragePerBaseInfo> *
         alreadyProcessed++;
 
         const bool coverageSatisfy = settings.exportCoverage && (settings.threshold <= info.coverage);
-        const bool basesCountSatisfy = settings.exportBasesCount && (settings.threshold <= info.basesCount.value('A', 0) +
-                                                                     info.basesCount.value('C', 0) +
-                                                                     info.basesCount.value('G', 0) +
-                                                                     info.basesCount.value('T', 0));
+        int baseCountsScore = 0;
+        foreach(char curChar, alphabetChars) {
+            baseCountsScore += info.basesCount.value(curChar, 0);
+        }
+        const bool basesCountSatisfy = settings.exportBasesCount && (settings.threshold <= baseCountsScore);
         if (!coverageSatisfy && !basesCountSatisfy) {
             continue;
         }
@@ -240,19 +255,13 @@ ExportCoverageBedgraphTask::ExportCoverageBedgraphTask(const U2DbiRef &dbiRef, c
     GCOUNTER(c, t, "ExportCoverageBedgraphTask");
 }
 
-void ExportCoverageBedgraphTask::prepare() {
-    ExportCoverageTask::prepare();
-    writeHeader();
-}
-
 QList<Task *> ExportCoverageBedgraphTask::onSubTaskFinished(Task *) {
     CHECK_OP(stateInfo, QList<Task *>());
     writeRegion();
     return QList<Task *>();
 }
 
-void ExportCoverageBedgraphTask::processRegion(qint64 startPos) {
-    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+void ExportCoverageBedgraphTask::processRegion(const QVector<CoveragePerBaseInfo> *regionCoverage) {
     foreach (const CoveragePerBaseInfo &info, *regionCoverage) {
         if (currentCoverage.second == info.coverage) {
             currentCoverage.first.length++;
@@ -264,8 +273,6 @@ void ExportCoverageBedgraphTask::processRegion(qint64 startPos) {
         }
         alreadyProcessed++;
     }
-
-    delete regionCoverage;
 }
 
 void ExportCoverageBedgraphTask::writeHeader() {

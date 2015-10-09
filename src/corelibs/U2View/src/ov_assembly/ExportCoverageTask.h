@@ -78,8 +78,10 @@ private slots:
     void sl_regionIsProcessed(qint64 startPos);
 
 protected:
-    virtual void processRegion(qint64 startPos) = 0;
+    virtual void processRegion(const QVector<CoveragePerBaseInfo> *data) = 0;
+    virtual void writeHeader();
     void write(const QByteArray &dataToWrite);
+    void identifyAlphabet(QVector<CoveragePerBaseInfo>* regionCoverage);
 
     const U2DbiRef dbiRef;
     const U2DataId assemblyId;
@@ -89,8 +91,10 @@ protected:
     CalculateCoveragePerBaseTask *calculateTask;
     QScopedPointer<IOAdapter> ioAdapter;
     qint64 alreadyProcessed;
+    QList<char> alphabetChars;
 
-    static const QByteArray SEPARATOR;
+    static const QByteArray  SEPARATOR;
+    static const QList<char> EXTENDED_CHARACTERS;
 };
 
 class U2VIEW_EXPORT ExportCoverageHistogramTask : public ExportCoverageTask {
@@ -101,7 +105,7 @@ public:
     void run();
 
 protected:
-    void processRegion(qint64 startPos);
+    void processRegion(const QVector<CoveragePerBaseInfo> *data);
 
 private:
     QByteArray toByteArray(int coverage, qint64 assemblyLength) const;
@@ -113,13 +117,13 @@ class U2VIEW_EXPORT ExportCoveragePerBaseTask : public ExportCoverageTask {
 public:
     ExportCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
 
-    void prepare();
+    //void prepare();
 
 protected:
-    void processRegion(qint64 startPos);
+    void processRegion(const QVector<CoveragePerBaseInfo> *data);
+    void writeHeader();
 
 private:
-    void writeHeader();
     QByteArray toByteArray(const CoveragePerBaseInfo &info, int pos) const;         // pos - 1-based position
     void writeResult(const QVector<CoveragePerBaseInfo> *data);
 };
@@ -128,16 +132,17 @@ class U2VIEW_EXPORT ExportCoverageBedgraphTask : public ExportCoverageTask {
 public:
     ExportCoverageBedgraphTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
 
-    void prepare();
+    //void prepare();
     QList<Task *> onSubTaskFinished(Task *subTask);
 
 protected:
-    void processRegion(qint64 startPos);
+    void processRegion(const QVector<CoveragePerBaseInfo> *data);
+    void writeHeader();
 
 private:
-    void writeHeader();
     QByteArray toByteArray() const;         // startpos - 0-based position, endpos - next after real end
     void writeRegion();
+    QList<char> alphabet;
 
     QPair<U2Region, int> currentCoverage;
 };

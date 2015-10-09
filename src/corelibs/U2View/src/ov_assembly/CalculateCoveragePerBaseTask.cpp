@@ -146,11 +146,10 @@ U2CigarOp CalculateCoveragePerBaseOnRegionTask::nextCigarOp(const QByteArray &ci
     return cigarOp;
 }
 
-CalculateCoveragePerBaseTask::CalculateCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, qint64 maxRegionLength) :
+CalculateCoveragePerBaseTask::CalculateCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId) :
     Task(tr("Calculate coverage per base for assembly %1"), TaskFlags_NR_FOSE_COSC),
     dbiRef(dbiRef),
-    assemblyId(assemblyId),
-    maxRegionLength(maxRegionLength)
+    assemblyId(assemblyId)
 {
     SAFE_POINT_EXT(dbiRef.isValid(), setError(tr("Invalid database reference")), );
     SAFE_POINT_EXT(!assemblyId.isEmpty(), setError(tr("Invalid assembly ID")), );
@@ -163,10 +162,6 @@ CalculateCoveragePerBaseTask::CalculateCoveragePerBaseTask(const U2DbiRef &dbiRe
     const U2Assembly assembly = assemblyDbi->getAssemblyObject(assemblyId, stateInfo);
     CHECK_OP(stateInfo, );
     setTaskName(getTaskName().arg(assembly.visualName));
-
-    if (maxRegionLength <= 0) {
-        maxRegionLength = DEFAULT_MAX_REGION_LENGTH;
-    }
 }
 
 CalculateCoveragePerBaseTask::~CalculateCoveragePerBaseTask() {
@@ -186,9 +181,9 @@ void CalculateCoveragePerBaseTask::prepare() {
     const qint64 length = lengthAttribute.value;
     SAFE_POINT_EXT(0 < length, setError(tr("Assembly has zero length")), );
 
-    qint64 tasksCount = length / maxRegionLength + (length % maxRegionLength > 0 ? 1 : 0);
+    qint64 tasksCount = length / MAX_REGION_LENGTH + (length % MAX_REGION_LENGTH > 0 ? 1 : 0);
     for (qint64 i = 0; i < tasksCount; i++) {
-        const U2Region region(i * maxRegionLength, (i == tasksCount - 1 ? length % maxRegionLength : maxRegionLength));
+        const U2Region region(i * MAX_REGION_LENGTH, (i == tasksCount - 1 ? length % MAX_REGION_LENGTH : MAX_REGION_LENGTH));
         addSubTask(new CalculateCoveragePerBaseOnRegionTask(dbiRef, assemblyId, region));
     }
 }
