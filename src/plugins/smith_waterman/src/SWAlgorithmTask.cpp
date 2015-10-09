@@ -220,7 +220,7 @@ void SWAlgorithmTask::prepare() {
                 arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)) );
         }
 
-        coreLog.details(QString("GPU model: %1").arg(cudaGpu->getId()));
+        coreLog.details(QString("GPU model: %1").arg(cudaGpu->getName()));
 
         cudaSetDevice( cudaGpu->getId() );
 #else
@@ -245,7 +245,7 @@ void SWAlgorithmTask::prepare() {
                 arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)));
         }
 
-        coreLog.details(QString("GPU model: %1").arg(openClGpu->getId()));
+        coreLog.details(QString("GPU model: %1").arg(openClGpu->getName()));
 #else
         assert(0);
 #endif
@@ -804,7 +804,7 @@ void PairwiseAlignmentSmithWatermanTask::prepare() {
                 arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)) );
         }
 
-        coreLog.details(QString("GPU model: %1").arg(cudaGpu->getId()));
+        coreLog.details(QString("GPU model: %1").arg(cudaGpu->getName()));
 
         cudaSetDevice( cudaGpu->getId() );
 #else
@@ -829,7 +829,7 @@ void PairwiseAlignmentSmithWatermanTask::prepare() {
                 arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)));
         }
 
-        coreLog.details(QString("GPU model: %1").arg(openClGpu->getId()));
+        coreLog.details(QString("GPU model: %1").arg(openClGpu->getName()));
 #else
         assert(0);
 #endif
