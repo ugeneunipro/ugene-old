@@ -71,13 +71,14 @@ const QString Dashboard::INPUT_TAB_ID = "#input_tab";
 //const QString Dashboard::OUTPUT_TAB_ID = "#output_tab";
 
 Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidget *parent)
-: QWebView(parent), loaded(false), name(_name), opened(true), _monitor(monitor), initialized(false)
+    : QWebView(parent), loaded(false), name(_name), opened(true), _monitor(monitor), initialized(false), workflowInProgress(true)
 {
     etWidgetController = new ExternalToolsWidgetController;
 
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
     connect(_monitor, SIGNAL(si_dirSet(const QString &)), SLOT(sl_setDirectory(const QString &)));
+    connect(_monitor, SIGNAL(si_taskStateChanged(Monitor::TaskState)), SLOT(sl_workflowStateChanged(Monitor::TaskState)));
     connect(_monitor, SIGNAL(si_logChanged(U2::Workflow::Monitor::LogEntry)),
             etWidgetController, SLOT(sl_onLogChanged(U2::Workflow::Monitor::LogEntry)));
 
@@ -88,7 +89,7 @@ Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidg
 }
 
 Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
-: QWebView(parent), loaded(false), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
+    : QWebView(parent), loaded(false), dir(dirPath), opened(true), _monitor(NULL), initialized(false), workflowInProgress(false)
 {
     etWidgetController = new ExternalToolsWidgetController;
 
@@ -112,6 +113,13 @@ void Dashboard::sl_setDirectory(const QString &value) {
     dir = value;
     U2OpStatus2Log os;
     saveSettings();
+}
+
+void Dashboard::sl_workflowStateChanged(Monitor::TaskState state) {
+    workflowInProgress = (state == TaskState::RUNNING) || (state == TaskState::RUNNING_WITH_PROBLEMS);
+    if (!workflowInProgress) {
+        emit si_workflowStateChanged(workflowInProgress);
+    }
 }
 
 void Dashboard::setClosed() {
@@ -344,6 +352,10 @@ void Dashboard::loadSchema() {
 void Dashboard::initiateHideLoadButtonHint() {
     WorkflowSettings::setShowLoadButtonHint(false);
     emit si_hideLoadBtnHint();
+}
+
+bool Dashboard::isWorkflowInProgress() {
+    return workflowInProgress;
 }
 
 void Dashboard::sl_hideLoadBtnHint() {

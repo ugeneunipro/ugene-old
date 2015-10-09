@@ -62,9 +62,12 @@ public:
     /** Modifies the application settings and emits signal for all dashboards */
     void initiateHideLoadButtonHint();
 
+    bool isWorkflowInProgress();
+
 signals:
     void si_loadSchema(const QString &url);
     void si_hideLoadBtnHint();
+    void si_workflowStateChanged(bool isRunning);
 
 public slots:
     /** Hides the hint on the current dashboard instance */
@@ -76,6 +79,7 @@ private slots:
     void sl_addProblemsWidget();
     void sl_serialize();
     void sl_setDirectory(const QString &dir);
+    void sl_workflowStateChanged(Monitor::TaskState state);
 
 private:
     bool loaded;
@@ -86,6 +90,7 @@ private:
     const WorkflowMonitor *_monitor;
     QWebElement doc;
     bool initialized;
+    bool workflowInProgress;
     ExternalToolsWidgetController* etWidgetController;
 
     enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab, ExternalToolsTab};

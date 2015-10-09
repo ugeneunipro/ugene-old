@@ -58,6 +58,7 @@ private slots:
     void sl_dashboardsLoaded();
     void sl_renameTab();
     void sl_showDashboard(int idx);
+    void sl_workflowStateChanged(bool isRunning);
 
 private:
     int addDashboard(Dashboard *db);

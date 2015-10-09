@@ -84,6 +84,16 @@ void WorkflowTabView::sl_showDashboard(int idx) {
     db->onShow();
 }
 
+void WorkflowTabView::sl_workflowStateChanged(bool isRunning) {
+    QWidget *db = dynamic_cast<QWidget*>(sender());
+    SAFE_POINT(NULL != db, "NULL dashboard", );
+    int idx = indexOf(db);
+    CHECK(-1 != idx, );
+    CloseButton* closeButton = dynamic_cast<CloseButton*>(tabBar()->tabButton(idx, QTabBar::RightSide));
+    SAFE_POINT(NULL != db, "NULL close button", );
+    closeButton->setEnabled(!isRunning);
+}
+
 int WorkflowTabView::addDashboard(Dashboard *db) {
     if (db->getName().isEmpty()) {
         db->setName(generateName());
@@ -92,6 +102,10 @@ int WorkflowTabView::addDashboard(Dashboard *db) {
 
     CloseButton *closeButton = new CloseButton(db);
     tabBar()->setTabButton(idx, QTabBar::RightSide, closeButton);
+    if (db->isWorkflowInProgress()) {
+        closeButton->setEnabled(false);
+        connect(db, SIGNAL(si_workflowStateChanged(bool)), SLOT(sl_workflowStateChanged(bool)));
+    }
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_closeTab()));
     connect(db, SIGNAL(si_loadSchema(const QString &)), parent, SLOT(sl_loadScene(const QString &)));
     connect(db, SIGNAL(si_hideLoadBtnHint()), this, SIGNAL(si_hideLoadBtnHint()));
@@ -115,6 +129,10 @@ void WorkflowTabView::updateDashboards(const QList<DashboardInfo> &dashboards) {
     int i = 0;
     while (i < count()) {
         Dashboard *db = dynamic_cast<Dashboard*>(widget(i));
+        if (db->isWorkflowInProgress()) {
+            i++;
+            continue;
+        }
         DashboardInfo info(db->directory());
         if (dbs.contains(info)) {
             dbs.removeOne(info);
