@@ -116,7 +116,7 @@ void Dashboard::sl_setDirectory(const QString &value) {
 }
 
 void Dashboard::sl_workflowStateChanged(Monitor::TaskState state) {
-    workflowInProgress = (state == TaskState::RUNNING) || (state == TaskState::RUNNING_WITH_PROBLEMS);
+    workflowInProgress = (state == Monitor::RUNNING) || (state == Monitor::RUNNING_WITH_PROBLEMS);
     if (!workflowInProgress) {
         emit si_workflowStateChanged(workflowInProgress);
     }
