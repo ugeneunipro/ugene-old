@@ -101,6 +101,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -3192,6 +3193,30 @@ GUI_TEST_CLASS_DEFINITION(test_4621) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //Expected state: UGENE does not crash.
+}
+GUI_TEST_CLASS_DEFINITION(test_4624) {
+    //1. Open assembly with DNA extended alphabet
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "extended_dna.ace.ugenedb");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Open view" << "Open new view: Assembly" ));
+    GTUtilsProjectTreeView::click(os, "extended_dna.ace.ugenedb", Qt::RightButton);
+
+    QList<ExportCoverageDialogFiller::Action> actions;
+
+    //2. Export coverage with bases quantity info
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetFormat, QVariant("Per base"));
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SelectFile, sandBoxDir + "test_4624.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetExportBasesQuantity, QVariant(true));
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, QVariant());
+
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os, GTUtilsAssemblyBrowser::Overview);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Check the coverage
+    QString templateCoverage = getFileContent(testDir + "_common_data/scenarios/_regression/4624/4624.txt");
+    QString resCoverage = getFileContent(sandBoxDir + "test_4624.txt");
+    CHECK_SET_ERR(templateCoverage == resCoverage, "Incorrect coverage has been exported");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4674) {
