@@ -106,7 +106,7 @@ bool BlastDBSelectorWidgetController::validateDatabaseDir() {
             }
         }
     }
-    
+
     QMessageBox::warning(this, L10N::warningTitle(), tr("No alias or index file found for selected database."));
     return false;
 }

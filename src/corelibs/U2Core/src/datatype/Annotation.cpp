@@ -189,7 +189,7 @@ void Annotation::addLocationRegion(const U2Region &reg) {
     SAFE_POINT_OP(os, );
 
     data->location = newLocation;
-        
+
     parentObject->setModified(true);
     AnnotationModification md(AnnotationModification_LocationChanged, this);
     parentObject->emit_onAnnotationModified(md);

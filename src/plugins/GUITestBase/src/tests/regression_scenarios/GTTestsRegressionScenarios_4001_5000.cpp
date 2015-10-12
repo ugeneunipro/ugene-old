@@ -3554,7 +3554,7 @@ GUI_TEST_CLASS_DEFINITION(test_4728) {
     GTMouseDriver::moveTo(os, endPos);
     GTMouseDriver::release(os);
 
-    //Expected state: all 4 symbols are selected 
+    //Expected state: all 4 symbols are selected
     QVector<U2Region> selection = GTUtilsSequenceView::getSelection(os);
     CHECK_SET_ERR(selection.size() == 1, "Incorrect number of regions in selection is detected");
     CHECK_SET_ERR(selection.at(0).length == 4, "Incorrect selection length is detected");
@@ -3634,7 +3634,7 @@ GUI_TEST_CLASS_DEFINITION(test_4795) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QModelIndex aminoExtIdx = GTUtilsProjectTreeView::findIndex(os, "amino_ext");
     GTUtilsProjectTreeView::dragAndDrop(os, aminoExtIdx, GTWidget::findWidget(os, "msa_editor_sequence_area"));
-   
+
     //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 

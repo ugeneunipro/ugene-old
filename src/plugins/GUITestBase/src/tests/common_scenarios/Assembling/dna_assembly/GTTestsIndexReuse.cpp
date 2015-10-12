@@ -190,7 +190,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-//    2. Delete one of the indes files        
+//    2. Delete one of the indes files
     QFile f(sandBoxDir + refName + ".3.ebwt");
     CHECK_SET_ERR(f.exists(), "index not built");
     f.remove();

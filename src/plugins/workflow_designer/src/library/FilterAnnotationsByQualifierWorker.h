@@ -68,7 +68,7 @@ public:
     FilterAnnotationsByQualifierTask(QList<SharedAnnotationData> &annotations, const QString &qName, const QString& qVal, bool acceptAnns)
         : Task(tr("Filter annotations by qualifier task"), TaskFlag_None), anns(annotations), qualName(qName), qualFilterVal(qVal), accept(acceptAnns)
     {
-    
+
     }
 
     void run();

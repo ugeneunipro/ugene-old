@@ -21,7 +21,7 @@
 
 #ifndef _TREE_SETTIHS_DIALOG_
 #define _TREE_SETTIHS_DIALOG_
-    
+
 #include "BaseSettingsDialog.h"
 #include <ui/ui_TreeSettingsDialog.h>
 #include "ov_phyltree/TreeSettings.h"

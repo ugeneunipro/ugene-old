@@ -586,7 +586,7 @@ GUI_TEST_CLASS_DEFINITION(test_3101){
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Newick Standard"));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/3101", "enzymes");
     //2. Select "Newick" format
-    //Expected state : Task finished with error, but without assert call    
+    //Expected state : Task finished with error, but without assert call
     GTGlobals::sleep();
 }
 

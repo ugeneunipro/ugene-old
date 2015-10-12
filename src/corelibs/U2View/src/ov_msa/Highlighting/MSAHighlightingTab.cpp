@@ -96,7 +96,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     thresholdLessRb = new QRadioButton(QString::fromWCharArray(L"\x2264") + tr(" threshold"));
     thresholdMoreRb->setObjectName("thresholdMoreRb");
     thresholdLessRb->setObjectName("thresholdLessRb");
-    
+
     QSpacerItem *verticalSpacer = new QSpacerItem(1,15);
 
     thresholdSlider = new QSlider(Qt::Horizontal, this);
@@ -216,7 +216,7 @@ void MSAHighlightingTab::sl_updateHint() {
         thresholdSlider->setValue(thresholdValue);
         bool lessThenThreshold = s->getSettings().value(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, thresholdLessRb->isChecked()).toBool();
         thresholdLessRb->setChecked(lessThenThreshold);
-        thresholdMoreRb->setChecked(!lessThenThreshold);        
+        thresholdMoreRb->setChecked(!lessThenThreshold);
         highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, thresholdValue);
         highlightingSettings.insert(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, lessThenThreshold);
     }else{

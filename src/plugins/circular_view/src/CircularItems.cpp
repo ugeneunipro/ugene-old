@@ -20,7 +20,7 @@
  */
 
 #include <math.h>
-#include <limits> 
+#include <limits>
 
 #include <QGraphicsLineItem>
 

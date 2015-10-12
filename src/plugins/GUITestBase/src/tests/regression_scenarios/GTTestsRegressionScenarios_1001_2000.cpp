@@ -1399,7 +1399,7 @@ GUI_TEST_CLASS_DEFINITION(test_1080) {
             CHECK_SET_ERR( editButton != NULL, "editButton not found!");
             GTWidget::click(os, editButton);
 
-            
+
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
             CHECK(NULL != buttonBox, );
 
@@ -1680,7 +1680,7 @@ GUI_TEST_CLASS_DEFINITION(test_1123){
     GTMenu::showMainMenu(os, "mwmenu_tools");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-   
+
 }
 GUI_TEST_CLASS_DEFINITION(test_1123_1){
     // 1. Select {Tools->DNA assembly->Contig assembly with CAP3} in the main menu.
@@ -1948,13 +1948,13 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1166) {
-    //1. Open file "data/samples/CLUSTALW/COI.aln" in alignment editor 
+    //1. Open file "data/samples/CLUSTALW/COI.aln" in alignment editor
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(44,6), QPoint(49,9));
 
-    //2. Select any region in msa with left button, move it left 
+    //2. Select any region in msa with left button, move it left
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(46,7));
     GTMouseDriver::press(os);
 

@@ -116,7 +116,7 @@ double PhyNode::getBranchesDistance(int branchNumber) const {
     return branches.at(branchNumber)->distance;
 }
 
-double PhyNode::getBranchesNodeValue(int branchNumber) const { 
+double PhyNode::getBranchesNodeValue(int branchNumber) const {
     SAFE_POINT(branchNumber < branches.size() && branchNumber >= 0, "Invalid branch number", -1.0);
     return branches.at(branchNumber)->nodeValue;
 }

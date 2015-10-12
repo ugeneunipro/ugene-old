@@ -101,7 +101,7 @@ void MafftAddToAlignmentTask::prepare()
     algoLog.info(tr("Align sequences to an existing alignment by MAFFT started"));
 
     tmpDirUrl = ExternalToolSupportUtils::createTmpDir("add_to_alignment", stateInfo);
-    
+
     QString tmpAddedUrl = generateTmpFileUrl(tmpDirUrl + QDir::separator() + "XXXXXXXXXXXXXXXX_add.fa");;
 
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
@@ -124,7 +124,7 @@ void MafftAddToAlignmentTask::prepare()
     addSubTask(saveSequencesDocumentTask);
 
     QString tmpExistingAlignmentUrl = generateTmpFileUrl(tmpDirUrl + QDir::separator() + "XXXXXXXXXXXXXXXX.fa");
-    
+
     saveAlignmentDocumentTask = new SaveMSA2SequencesTask(inputMsa, tmpExistingAlignmentUrl, false, BaseDocumentFormats::FASTA);
     addSubTask(saveAlignmentDocumentTask);
 }
@@ -137,7 +137,7 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
         return subTasks;
     }
 
-    if((subTask == saveAlignmentDocumentTask || subTask == saveSequencesDocumentTask) && saveAlignmentDocumentTask->isFinished() 
+    if((subTask == saveAlignmentDocumentTask || subTask == saveSequencesDocumentTask) && saveAlignmentDocumentTask->isFinished()
         && saveSequencesDocumentTask->isFinished()) {
 
         resultFilePath = settings.resultFileName.isEmpty() ? tmpDirUrl + QDir::separator() + "result_aln.fa" : settings.resultFileName.getURLString();

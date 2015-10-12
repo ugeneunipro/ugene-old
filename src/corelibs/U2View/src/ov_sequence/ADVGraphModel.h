@@ -125,7 +125,7 @@ signals:
     void si_graphRenderError();
 
 protected:
-    void drawGraph(QPainter& p, const QSharedPointer<GSequenceGraphData>& graph, const QRect& rect);    
+    void drawGraph(QPainter& p, const QSharedPointer<GSequenceGraphData>& graph, const QRect& rect);
 
     void calculatePoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, float& min, float& max, int numPoints);
 

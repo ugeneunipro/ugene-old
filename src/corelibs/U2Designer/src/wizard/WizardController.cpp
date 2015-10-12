@@ -101,9 +101,9 @@ QWizard * WizardController::createGui() {
     }
     result->setButtonText(QWizard::FinishButton, finishLabel);
     result->setOption(QWizard::NoBackButtonOnStartPage);
- 
+
     result->installEventFilter(this);
-    
+
     connect(result, SIGNAL(currentIdChanged(int)), SLOT(sl_pageChanged(int)));
     return result;
 }

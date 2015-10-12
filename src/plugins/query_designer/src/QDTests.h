@@ -66,7 +66,7 @@ public:
     CompareAnnotationGroupsTask(const QList<AnnotationGroup *> &_grp1, const QList<AnnotationGroup *> &_grp2)
         : Task(tr("Compare annotation tables task"), TaskFlag_None), grps1(_grp1), grps2(_grp2), equal(false)
     {
-    
+
     }
 
     virtual void run();

@@ -90,7 +90,7 @@ QString TreeSettingsDialog::treeDefaultText() {
     return tr("Default");
 }
 QString TreeSettingsDialog::treePhylogramText() {
-    return tr("Phylogram"); 
+    return tr("Phylogram");
 }
 QString TreeSettingsDialog::treeCladogramText() {
     return tr("Cladogram");

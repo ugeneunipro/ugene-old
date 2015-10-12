@@ -72,7 +72,7 @@ Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
     releaseLock();
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
-    }    
+    }
     QList<U2MsaRow> rows;
     qint64 len = createRows(rows);
     CHECK_OP(stateInfo, ReportResult_Finished);
@@ -149,7 +149,7 @@ void AddSequenceObjectsToAlignmentTask::releaseLock(){
     }
 }
 
-AddSequencesFromFilesToAlignmentTask::AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls) 
+AddSequencesFromFilesToAlignmentTask::AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls)
     : AddSequenceObjectsToAlignmentTask(obj, QList<U2SequenceObject*>()), urlList(urls), loadTask(NULL) {}
 
 void AddSequencesFromFilesToAlignmentTask::prepare() {

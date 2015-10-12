@@ -251,7 +251,7 @@ void MSAEditorSequenceArea::updateColorAndHighlightSchemes() {
         currentAlphabet = f->getAlphabetType();
         if (currentAlphabet == atype) {
             return;
-        } 
+        }
     }
 
     QString csid;
@@ -340,7 +340,7 @@ void MSAEditorSequenceArea::getColorAndHighlightingIds(QString &csid, QString &h
         } else {
             csid = MSAColorScheme::EMPTY_RAW;
             hsid = MSAHighlightingScheme::EMPTY_RAW;
-        }        
+        }
         break;
     case DNAAlphabet_NUCL:
         if (isFirstInitialization) {

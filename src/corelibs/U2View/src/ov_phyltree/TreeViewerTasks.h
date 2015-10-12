@@ -115,7 +115,7 @@ public:
     CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();
     virtual ReportResult report();
-private: 
+private:
     QString viewName;
     QPointer<PhyTreeObject> phyObj;
     CreateRectangularBranchesTask* subTask;

@@ -47,7 +47,7 @@ public:
     SequenceSplitWorker(Actor *p)
         : BaseWorker(p), seqPort(NULL), outPort(NULL), useAcceptedOrFiltered(false)
     {
-    
+
     }
 
     virtual void init();

@@ -716,7 +716,7 @@ public:
     SettingsUpdater(const QStringList& cs)
         : changedSettings(cs)
     {
-    
+
     }
 
     bool isChildVisitRequired(QTreeWidgetItem* ti) {

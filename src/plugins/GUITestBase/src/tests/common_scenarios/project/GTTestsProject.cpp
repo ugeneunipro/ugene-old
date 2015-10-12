@@ -793,7 +793,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
     for(int i = 0; i < 10; i++){
         GTUtilsProjectTreeView::click(os, "COI.aln");
         GTClipboard::setText(os, QString(">human_T%1\r\nACGT\r\nACG").arg(QString::number(i)));
-		GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep();
         uiLog.trace(QString("item number %1 inserted").arg(i));
     }
@@ -849,7 +849,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
     GTGlobals::sleep(500);
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
     GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
-    
+
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QFile savedFile(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard.fa");
     CHECK_SET_ERR(savedFile.exists(), "Saved file didn't exists");
@@ -968,7 +968,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
         virtual void run(U2::U2OpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-            
+
             QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "shortReadsTable", dialog));
             CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
             QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());

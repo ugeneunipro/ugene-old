@@ -84,7 +84,7 @@ U2Feature U2FeatureUtils::exportAnnotationDataToFeatures(const SharedAnnotationD
     //store to db to get ID
     dbi->createFeature(feature, fKeys, os);
     CHECK_OP(os, feature);
- 
+
     //add subfeatures
     if (isMultyRegion) {
         U2FeatureUtils::addSubFeatures(a->location->regions, a->location->strand, feature.id, rootFeatureId, dbiRef, os);

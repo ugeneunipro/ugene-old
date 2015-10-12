@@ -236,7 +236,7 @@ ExternalToolRunTask *BaseNGSTask::getExternalToolTask(const QString &toolName, E
     } else {
         etTask = new ExternalToolRunTask(toolName, args, customParser, settings.outDir);
     }
-    
+
     etTask->setStandartOutputFile(settings.outDir + settings.outName);
     if(!settings.listeners.isEmpty()){
         etTask->addOutputListener(settings.listeners.at(0));

@@ -946,7 +946,7 @@ void FindPatternWidget::sl_onSequenceModified()
 void FindPatternWidget::showTooLongSequenceError()
 {
     showHideMessage(true, SequenceIsTooBig);
-    
+
     showHideMessage(false, AnnotationNotValidFastaParsedName);
     showHideMessage(false, AnnotationNotValidName);
     showHideMessage(false, PatternAlphabetDoNotMatch);

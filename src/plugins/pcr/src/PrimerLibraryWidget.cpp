@@ -45,7 +45,7 @@
     QMessageBox::warning(this, QCoreApplication::translate("Global", "Error"), os.getError()); \
     } \
     CHECK_OP(os, result);
-                             
+
 namespace U2 {
 
 PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)

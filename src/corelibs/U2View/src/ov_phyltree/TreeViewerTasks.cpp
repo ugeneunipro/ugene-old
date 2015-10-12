@@ -214,7 +214,7 @@ CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name
     phyObj(obj),
     subTask(NULL),
     stateData(sData),
-    view(NULL), 
+    view(NULL),
     tempTree(NULL == phyObj ? PhyTree() : phyObj->getTree())
 {
     SAFE_POINT(phyObj != NULL, "Invalid tree object detected",);

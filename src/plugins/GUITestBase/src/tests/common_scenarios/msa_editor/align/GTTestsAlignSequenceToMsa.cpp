@@ -161,7 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 
 
 GUI_TEST_CLASS_DEFINITION(test_0004){
-    //Remove MAFFT from external tools, then align short sequences 
+    //Remove MAFFT from external tools, then align short sequences
     //Expected state: UGENE alignment started and finished succesfully
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
