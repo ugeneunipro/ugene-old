@@ -247,7 +247,7 @@ QList<U2FeatureTypes::U2FeatureTypeInfo> U2FeatureTypes::initFeatureTypes() {
     typeInfoIndexByType[MiscResidueModification] = infoCounter++;
     featureTypeInfos << U2FeatureTypeInfo(MiscRna, "Misc. RNA", Alphabet_Nucleic);
     typeInfoIndexByType[MiscRna] = infoCounter++;
-    featureTypeInfos << U2FeatureTypeInfo(MiscSignal, "Misc. Signal", Alphabet_Nucleic);
+    featureTypeInfos << U2FeatureTypeInfo(MiscSignal, "Misc. Signal", Alphabet_Nucleic | Alphabet_Amino);
     typeInfoIndexByType[MiscSignal] = infoCounter++;
     featureTypeInfos << U2FeatureTypeInfo(MiscSite, "Site: Misc", Alphabet_Amino);
     typeInfoIndexByType[MiscSite] = infoCounter++;
