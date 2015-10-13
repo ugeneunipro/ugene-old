@@ -87,7 +87,6 @@ struct BedLineData
     QMap<QString, QString> additionalFields;
 };
 
-
 class IOAdapter;
 
 /**
@@ -115,32 +114,46 @@ public:
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
-    BedLineData parseAndValidateLine(const QString& line, int numOfFields, BEDLineValidateFlags& status) const;
-
     /**
     * A common method for parsing and validating an input file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QHash<QString, QList<SharedAnnotationData> > parseDocument(IOAdapter* io, const QString& defaultAnnotName, U2OpStatus& os);
 
 private:
     void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap& fs = QVariantMap());
-    inline void addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName );
 
     static const QString FORMAT_NAME;
+};
 
-    static const QString TRACK_NAME_QUALIFIER_NAME;
-    static const QString TRACK_DESCR_QUALIFIER_NAME;
-    static const QString CHROM_QUALIFIER_NAME;
-    static const QString ANNOT_QUALIFIER_NAME;
-    static const QString SCORE_QUALIFIER_NAME;
-    static const QString STRAND_QUALIFIER_NAME;
-    static const QString THICK_START_QUALIFIER_NAME;
-    static const QString THICK_END_QUALIFIER_NAME;
-    static const QString ITEM_RGB_QUALIFIER_NAME;
-    static const QString BLOCK_COUNT_QUALIFIER_NAME;
-    static const QString BLOCK_SIZES_QULAIFIER_NAME;
-    static const QString BLOCK_STARTS_QUALIFIER_NAME;
+class BedFormatParser {
+public:
+    BedFormatParser(IOAdapter *io, const QString &defaultAnnotName, U2OpStatus &os);
+
+    QHash<QString, QList<SharedAnnotationData> > parseDocument();
+
+    static BedLineData parseAndValidateLine(const QString& line, int numOfFields, BEDLineValidateFlags& status);
+
+private:
+    void parseHeader(QString& trackName, QString& trackDescr);
+    void createAnnotation(const BedLineData& bedLineData, QList<SharedAnnotationData>& result, QString& trackName, QString& trackDescr);
+    void addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName);
+    bool checkAnnotationParsingErrors(const BEDLineValidateFlags& validateFlags, const BedLineData& lineData);
+    int readLine();
+    void moveToNextLine();
+
+private:
+    U2OpStatus &os;
+    IOAdapter *io;
+    const QString &defaultAnnotName;
+    static const int BufferSize;
+    static const int MinimumColumnsNumber;
+
+    QScopedArrayPointer<char> buff;
+    QString curLine;
+    int lineNumber;
+
+    bool fileIsValid;
+    bool noHeader;
 };
 
 }//namespace

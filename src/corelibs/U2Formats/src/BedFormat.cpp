@@ -83,19 +83,21 @@ FormatDetectionScore BEDLineValidateFlags::getFormatDetectionScore()
 //-------------------------------------------------------------------
 const QString BedFormat::FORMAT_NAME = QObject::tr("BED");
 
-const QString BedFormat::TRACK_NAME_QUALIFIER_NAME = "track_name";
-const QString BedFormat::TRACK_DESCR_QUALIFIER_NAME = "track_description";
-const QString BedFormat::CHROM_QUALIFIER_NAME = "chrom";
-const QString BedFormat::ANNOT_QUALIFIER_NAME = "name";
-const QString BedFormat::SCORE_QUALIFIER_NAME = "score";
-const QString BedFormat::STRAND_QUALIFIER_NAME = "strand";
-const QString BedFormat::THICK_START_QUALIFIER_NAME = "thick_start";
-const QString BedFormat::THICK_END_QUALIFIER_NAME = "thick_end";
-const QString BedFormat::ITEM_RGB_QUALIFIER_NAME = "item_rgb";
-const QString BedFormat::BLOCK_COUNT_QUALIFIER_NAME = "block_count";
-const QString BedFormat::BLOCK_SIZES_QULAIFIER_NAME = "block_sizes";
-const QString BedFormat::BLOCK_STARTS_QUALIFIER_NAME = "block_starts";
-
+//Names of supported qualifier names
+namespace {
+    const QString TRACK_NAME_QUALIFIER_NAME = "track_name";
+    const QString TRACK_DESCR_QUALIFIER_NAME = "track_description";
+    const QString CHROM_QUALIFIER_NAME = "chrom";
+    const QString ANNOT_QUALIFIER_NAME = "name";
+    const QString SCORE_QUALIFIER_NAME = "score";
+    const QString STRAND_QUALIFIER_NAME = "strand";
+    const QString THICK_START_QUALIFIER_NAME = "thick_start";
+    const QString THICK_END_QUALIFIER_NAME = "thick_end";
+    const QString ITEM_RGB_QUALIFIER_NAME = "item_rgb";
+    const QString BLOCK_COUNT_QUALIFIER_NAME = "block_count";
+    const QString BLOCK_SIZES_QULAIFIER_NAME = "block_sizes";
+    const QString BLOCK_STARTS_QUALIFIER_NAME = "block_starts";
+}
 
 BedFormat::BedFormat(QObject* p)
     : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("bed"))
@@ -123,7 +125,9 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
     Q_UNUSED(opBlock);
 
     QString defaultAnnotName = "misc_feature";
-    const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parseDocument(io, defaultAnnotName, os);
+    BedFormatParser parser(io, defaultAnnotName, os);
+    const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parser.parseDocument();
+    CHECK_OP(os, );
     const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
 
     foreach (const QString &sequenceName, annotationsHash.keys()) {
@@ -158,7 +162,7 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
 }
 
 /** Validate the values: they must be integer and within the bound of the region */
-bool validateThickCoordinates(const QString& thickStartStr, const QString& thickEndStr, const U2Region& region)
+bool validateThickCoordinates(const QString& thickStartStr, const QString& thickEndStr)
 {
     if (thickStartStr.isEmpty() || thickEndStr.isEmpty()) {
         return false;
@@ -169,10 +173,7 @@ bool validateThickCoordinates(const QString& thickStartStr, const QString& thick
     int thickStart = thickStartStr.toInt(&thickStartIsInt);
     int thickEnd = thickEndStr.toInt(&thickEndIsInt);
 
-    if (!thickStartIsInt || !thickEndIsInt ||
-        (thickStart < region.startPos) ||
-        (thickEnd > region.endPos()) ||
-        (thickStart >= thickEnd)) {
+    if (!thickStartIsInt || !thickEndIsInt) {
             return false;
     }
 
@@ -273,155 +274,6 @@ bool validateBlocks(const QString& blockCountStr, const QString& blockSizesStr, 
 }
 
 
-#define CHECK_FIELD(INDEX) \
-    if (fields.size()<INDEX || INDEX<0) { \
-        status.incorrectNumberOfFields = true; \
-        return parsedData; \
-    }
-
-BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields, BEDLineValidateFlags& status) const
-{
-    BedLineData parsedData;
-
-    // All fields are separated by a single tab
-    QStringList fields = line.split("\t");
-
-    // Verify that the line has the expected number of fields and they are not empty
-    // Do not continue to validate the line if it is incorrect
-    if (numOfFields != fields.count()) {
-        status.incorrectNumberOfFields = true;
-        return parsedData;
-    }
-
-    foreach (QString field, fields) {
-        if (field.trimmed().isEmpty()) {
-            status.emptyFields = true;
-            return parsedData;
-        }
-    }
-
-    // Coordinates
-    // "start" can be zero, "end" is not included into the region
-    bool startIsInt;
-    bool endIsInt;
-    CHECK_FIELD(BED_CHROM_START_INDEX);
-    CHECK_FIELD(BED_CHROM_END_INDEX);
-    qint64 start = fields[BED_CHROM_START_INDEX].toLongLong(&startIsInt);
-    qint64 end = fields[BED_CHROM_END_INDEX].toLongLong(&endIsInt);
-    if (!startIsInt || !endIsInt || (start < 0) || (start >= end)) {
-        status.incorrectCoordinates = true;
-        return parsedData;
-    }
-
-    // Fill in the data and continue validation even if a value is incorrect
-    CHECK_FIELD(BED_CHROM_NAME_INDEX);
-    parsedData.seqName = fields[BED_CHROM_NAME_INDEX];
-    parsedData.region = U2Region(start, end - start);
-
-    // Annotation name
-    if (numOfFields > BED_ANNOT_NAME_INDEX) {
-        CHECK_FIELD(BED_ANNOT_NAME_INDEX);
-        parsedData.additionalFields[ANNOT_QUALIFIER_NAME] = fields[BED_ANNOT_NAME_INDEX];
-    }
-
-    // Score
-    if (numOfFields > BED_SCORE_INDEX) {
-        CHECK_FIELD(BED_SCORE_INDEX);
-        QString scoreStr = fields[BED_SCORE_INDEX];
-        parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
-
-        // Validate the value: it should be an integer value between 0 and 1000
-        // UPDATE: for MACS peaks its wrong, so validation is removed
-        bool scoreIsOk;
-        scoreStr.toInt(&scoreIsOk);
-        if (!scoreIsOk) {
-            scoreStr.toDouble(&scoreIsOk);
-        }
-        if (!scoreIsOk) {
-            status.incorrectScore = true;
-        }
-    }
-
-    // Strand (either '+' or '-')
-    if (numOfFields > BED_STRAND_INDEX) {
-        CHECK_FIELD(BED_STRAND_INDEX);
-        QString strandStr = fields[BED_STRAND_INDEX];
-        parsedData.additionalFields[STRAND_QUALIFIER_NAME] = strandStr;
-
-        if ("+" != strandStr &&
-            "-" != strandStr) {
-                status.incorrectStrand = true;
-        }
-    }
-
-    // Thick coordinates
-    if (numOfFields > BED_THICK_START_INDEX) {
-        CHECK_FIELD(BED_THICK_START_INDEX);
-        QString thickStartStr = fields[BED_THICK_START_INDEX];
-        QString thickEndStr;
-
-        // If thick start is set, thick end must also be set
-        if (numOfFields <= BED_THICK_END_INDEX) {
-            status.incorrectThickCoordinates = true;
-        }
-        else {
-            CHECK_FIELD(BED_THICK_END_INDEX);
-            thickEndStr = fields[BED_THICK_END_INDEX];
-        }
-
-        parsedData.additionalFields[THICK_START_QUALIFIER_NAME] = thickStartStr;
-        parsedData.additionalFields[THICK_END_QUALIFIER_NAME] = thickEndStr;
-    }
-
-    // Annotation color
-    if (numOfFields > BED_ITEM_RGB_INDEX) {
-        CHECK_FIELD(BED_ITEM_RGB_INDEX);
-        QString itemRgbStr = fields[BED_ITEM_RGB_INDEX];
-        parsedData.additionalFields[ITEM_RGB_QUALIFIER_NAME] = itemRgbStr;
-
-        if (false == validateAnnotationColor(itemRgbStr, parsedData.annotColor)) {
-            status.incorrectItemRgb = true;
-        }
-    }
-
-    // Blocks (i.e. exons) parameters
-    if (numOfFields > BED_BLOCK_COUNT_INDEX) {
-        CHECK_FIELD(BED_BLOCK_COUNT_INDEX);
-        QString blockCountStr = fields[BED_BLOCK_COUNT_INDEX];
-        QString blockSizesStr;
-        QString blockStartsStr;
-
-        // If they are present, then all three value must be present in a line
-        if (numOfFields <= BED_BLOCK_SIZES_INDEX) {
-            status.incorrectBlocks = true;
-        }
-        else {
-            CHECK_FIELD(BED_BLOCK_SIZES_INDEX);
-            blockSizesStr = fields[BED_BLOCK_SIZES_INDEX];
-
-            if (numOfFields <= BED_BLOCK_STARTS_INDEX) {
-                status.incorrectBlocks = true;
-            }
-            else {
-                CHECK_FIELD(BED_BLOCK_STARTS_INDEX);
-                blockStartsStr = fields[BED_BLOCK_STARTS_INDEX];
-            }
-        }
-
-        parsedData.additionalFields[BLOCK_COUNT_QUALIFIER_NAME] = blockCountStr;
-        parsedData.additionalFields[BLOCK_SIZES_QULAIFIER_NAME] = blockSizesStr;
-        parsedData.additionalFields[BLOCK_STARTS_QUALIFIER_NAME] = blockStartsStr;
-
-        // Validate the values
-        if (false == validateBlocks(blockCountStr, blockSizesStr, blockStartsStr, parsedData.region)) {
-            status.incorrectBlocks = true;
-        }
-    }
-
-    return parsedData;
-}
-
-
 FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl& /* = GUrl */) const
 {
     const char* data = rawData.constData();
@@ -476,7 +328,7 @@ FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl&
                 }
 
                 // Parse a line
-                parseAndValidateLine(line, numberOfFieldsPerLine, validationStatus);
+                BedFormatParser::parseAndValidateLine(line, numberOfFieldsPerLine, validationStatus);
             }
         }
     }
@@ -485,25 +337,14 @@ FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return validationStatus.getFormatDetectionScore();
 }
 
-#define READ_BUFF_SIZE 4096
-int readBedLine(QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff) {
-    int len;
-    buffer.clear();
-    do {
-        len = io->readLine(charbuff.data(), READ_BUFF_SIZE -1);
-        charbuff.data()[len] = '\0';
-        buffer.append(QString(charbuff.data()));
-    } while (len == READ_BUFF_SIZE - 1);
-    return buffer.length();
-}
-
-
 QList<SharedAnnotationData> BedFormat::getAnnotData(IOAdapter *io, U2OpStatus &os) {
     BedFormat bedFormat(NULL);
     QString annotName = "misc_feature";
     QList<SharedAnnotationData> res;
+    BedFormatParser parser(io, annotName, os);
     const QHash<QString, QList<SharedAnnotationData> > &resHash
-        = bedFormat.parseDocument(io, annotName, os);
+        = parser.parseDocument();
+    CHECK_OP(os, res);
     foreach (const QString &seqName, resHash.keys()){
         res.append(resHash.value(seqName));
     }
@@ -580,189 +421,6 @@ bool parseTrackLine(const QString& trackLine, QString& trackName, QString& track
     return attrFormatStatus;
 }
 
-
-
-QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(IOAdapter *io, const QString &defaultAnnotName, U2OpStatus &os)
-{
-    QString seqName;
-    QHash<QString, QList<SharedAnnotationData> > resultHash;
-    QList<SharedAnnotationData> result;
-
-    int length;
-    QScopedArrayPointer<char> buff(new char[READ_BUFF_SIZE]);
-    QString qstrbuf;
-
-    bool fileIsValid = true;
-    bool noHeader = false;
-
-    // Parse and validate the header: ignore lines with "browser"
-    // Search the 'track' line and get parameters from it
-    QString trackName;
-    QString trackDescr;
-
-    bool headerLine = true;
-    while (headerLine && (length = readBedLine(qstrbuf, io, buff)) > 0) {
-        if (qstrbuf.startsWith("#")){ //skip comments
-            continue;
-        }
-        if (qstrbuf.startsWith("browser")) {
-            continue;
-        }
-        else if (qstrbuf.startsWith("track")) {
-            if (false == parseTrackLine(qstrbuf, trackName, trackDescr)) {
-                fileIsValid = false;
-                ioLog.trace(tr("BED parsing error: incorrect format of the 'track' header line!"));
-            }
-            break; // Stop parsing the header when 'track' line has been detected
-        }
-        else {
-            noHeader = true;
-            break;
-        }
-    }
-
-    // Read other lines
-    int lineNumber = 1;
-    int numOfFieldsPerLine = 0;
-
-    //we have already red the line if there is no header
-    if (!noHeader){
-        length = readBedLine(qstrbuf, io, buff);
-    }
-
-    while (length > 0) {
-
-        // Parse and validate the line
-        BEDLineValidateFlags validationStatus;
-
-        if (qstrbuf.startsWith("#")){//skip comments
-            os.setProgress(io->getProgress());
-            length = readBedLine(qstrbuf, io, buff);
-            continue;
-        }
-        if (1 == lineNumber) {
-            numOfFieldsPerLine = qstrbuf.split("\t").count();
-            // "3" as there must be at least "chrom", "chromStart" and "chromEnd" fields
-            if (numOfFieldsPerLine < 3) {
-                os.setError(tr("BED parsing error: unexpected number of fields in the first annotations line!"));
-                return resultHash;
-            }
-        }
-        BedLineData bedLineData = parseAndValidateLine(qstrbuf, numOfFieldsPerLine, validationStatus);
-
-        // Check that an annotation can be created
-        if (true == validationStatus.incorrectNumberOfFields) {
-            os.setError(tr("BED parsing error: incorrect number of fields at line %1!").arg(lineNumber));
-            addToResults(resultHash, result, seqName);
-            return resultHash;
-        }
-
-        if (true == validationStatus.emptyFields) {
-            os.setError(tr("BED parsing error: a field at line %1 is empty!").arg(lineNumber));
-            addToResults(resultHash, result, seqName);
-            return resultHash;
-        }
-
-        if (true == validationStatus.incorrectCoordinates) {
-            os.setError(tr("BED parsing error: incorrect coordinates at line %1!").arg(lineNumber));
-            addToResults(resultHash, result, seqName);
-            return resultHash;
-        }
-
-        // If file is invalid, but can be parsed an error is written to the log,
-        // all details are written to the trace log.
-        if (validationStatus.isFileInvalid() && !noHeader) {
-            fileIsValid = false;
-        }
-
-        if (!seqName.isEmpty()) {
-            if (bedLineData.seqName != seqName) {
-                addToResults(resultHash, result, seqName);
-                seqName = bedLineData.seqName;
-            }
-        }
-        else {
-           seqName = bedLineData.seqName;
-       }
-
-        // Create the annotation
-        SharedAnnotationData annotData(new AnnotationData());
-        annotData->name = bedLineData.additionalFields[ANNOT_QUALIFIER_NAME].isEmpty()
-                ? defaultAnnotName
-                : bedLineData.additionalFields[ANNOT_QUALIFIER_NAME];
-        annotData->location->regions << bedLineData.region;
-
-        // Add qualifiers
-        foreach (QString qualifierName, bedLineData.additionalFields.keys()) {
-            if (!bedLineData.additionalFields.value(qualifierName).isEmpty()) {
-                annotData->qualifiers.push_back(
-                            U2Qualifier(qualifierName, bedLineData.additionalFields.value(qualifierName)));
-            }
-        }
-
-        // Add a qualifier with the sequence name
-        annotData->qualifiers.push_back(U2Qualifier(CHROM_QUALIFIER_NAME, bedLineData.seqName));
-
-        // Additionally, verify the strand information
-        if (bedLineData.additionalFields.keys().contains(STRAND_QUALIFIER_NAME)) {
-            if ("-" == bedLineData.additionalFields.value(STRAND_QUALIFIER_NAME)) {
-                annotData->setStrand(U2Strand::Complementary);
-            }
-        }
-
-        // Add track information to the qualifiers
-        if (!trackName.isEmpty()) {
-            annotData->qualifiers.push_back(U2Qualifier(TRACK_NAME_QUALIFIER_NAME, trackName));
-        }
-
-        if (!trackDescr.isEmpty()) {
-            annotData->qualifiers.push_back(U2Qualifier(TRACK_DESCR_QUALIFIER_NAME, trackDescr));
-        }
-
-        // If there were some errors during parsing the output, write it to the log
-        if (true == validationStatus.incorrectScore) {
-            ioLog.trace(tr("BED parsing error: incorrect score value '%1'"
-                " at line %2!").arg(bedLineData.additionalFields[SCORE_QUALIFIER_NAME]).arg(lineNumber));
-        }
-
-        if (true == validationStatus.incorrectStrand) {
-            ioLog.trace(tr("BED parsing error: incorrect strand value '%1'"
-                " at line %2!").arg(bedLineData.additionalFields[STRAND_QUALIFIER_NAME]).arg(lineNumber));
-        }
-
-        if (true == validationStatus.incorrectThickCoordinates) {
-            ioLog.trace(tr("BED parsing error: incorrect thick coordinates at line %1!").arg(lineNumber));
-        }
-
-        if (true == validationStatus.incorrectItemRgb) {
-            ioLog.trace(tr("BED parsing error: incorrect itemRgb value '%1'"
-                " at line %2!").arg(bedLineData.additionalFields[ITEM_RGB_QUALIFIER_NAME]).arg(lineNumber));
-        }
-
-        if (true == validationStatus.incorrectBlocks) {
-            ioLog.trace(tr("BED parsing error: incorrect value of the block parameters"
-                " at line %1!").arg(lineNumber));
-        }
-
-        // Append the result
-        result.append(annotData);
-
-        // Move to the next line
-        lineNumber++;
-
-        os.setProgress(io->getProgress());
-
-        length = readBedLine(qstrbuf, io, buff);
-    }
-
-    if (false == fileIsValid) {
-        ioLog.info("BED parsing warning: one or more errors occurred while parsing the input file,"
-            " see TRACE log for details!");
-    }
-
-    addToResults(resultHash, result, seqName);
-    return resultHash;
-}
 
 void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
 {
@@ -990,15 +648,379 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
 
     ioLog.trace(tr("Finished BED saving: '%1'").arg(doc->getURLString()));
 }
+//-------------------------------------------------------------------
+//  BedFormatParser
+//-------------------------------------------------------------------
+const int BedFormatParser::BufferSize = 1024 * 4; // 4 Kb
+const int BedFormatParser::MinimumColumnsNumber = 3; // "3" as there must be at least "chrom", "chromStart" and "chromEnd" fields
 
-void BedFormat::addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName){
+BedFormatParser::BedFormatParser(IOAdapter *io, const QString &defaultAnnotName, U2OpStatus &os)
+    : io(io), defaultAnnotName(defaultAnnotName), os(os), lineNumber(1), buff(new char[BufferSize]), fileIsValid(true), noHeader(false){
+}
+
+QHash<QString, QList<SharedAnnotationData> > BedFormatParser::parseDocument() {
+    QString seqName;
+    QHash<QString, QList<SharedAnnotationData> > resultHash;
+    QList<SharedAnnotationData> result;
+    QString trackName;
+    QString trackDescr;
+
+    parseHeader(trackName, trackDescr);
+
+    // Read other lines
+    int numOfFieldsPerLine = 0;
+
+    //we have already red the line if there is no header
+    if (!noHeader){
+        readLine();
+    }
+
+    while (curLine.length() > 0) {
+        // Parse and validate the line
+        BEDLineValidateFlags validationStatus;
+
+        if (curLine.startsWith("#")){//skip comments
+            os.setProgress(io->getProgress());
+            readLine();
+            continue;
+        }
+        if (1 == lineNumber) {
+            numOfFieldsPerLine = curLine.split("\t").count();
+            if (numOfFieldsPerLine < MinimumColumnsNumber) {
+                os.setError(BedFormat::tr("BED parsing error: unexpected number of fields in the first annotations line!"));
+                return resultHash;
+            }
+        }
+        BedLineData bedLineData = parseAndValidateLine(curLine, numOfFieldsPerLine, validationStatus);
+        bool isValidLine = checkAnnotationParsingErrors(validationStatus, bedLineData);
+
+        // Check that an annotation can be created
+        if (!isValidLine) {
+            moveToNextLine();
+            continue;
+        }
+
+        // If file is invalid, but can be parsed an error is written to the log,
+        // all details are written to the trace log.
+        if (validationStatus.isFileInvalid() && !noHeader) {
+            fileIsValid = false;
+        }
+
+        if (!seqName.isEmpty()) {
+            if (bedLineData.seqName != seqName) {
+                addToResults(resultHash, result, seqName);
+                seqName = bedLineData.seqName;
+            }
+        }
+        else {
+            seqName = bedLineData.seqName;
+        }
+
+        createAnnotation(bedLineData, result, trackName, trackDescr);
+
+        moveToNextLine();
+    }
+
+    if (false == fileIsValid) {
+        ioLog.info("BED parsing warning: one or more errors occurred while parsing the input file,"
+            " see TRACE log for details!");
+    }
+    if (result.isEmpty()) {
+        foreach(const QString& warning, os.getWarnings()) {
+            ioLog.error(warning);
+        }
+        os.setError(BedFormat::tr("The file does not contain valid annotations!"));
+    }
+    else {
+        addToResults(resultHash, result, seqName);
+    }
+    return resultHash;
+}
+
+#define CHECK_FIELD(INDEX) \
+    if (fields.size()<INDEX || INDEX<0) { \
+        status.incorrectNumberOfFields = true; \
+        return parsedData; \
+            }
+
+BedLineData BedFormatParser::parseAndValidateLine(const QString& line, int numOfFields, BEDLineValidateFlags& status)
+{
+    BedLineData parsedData;
+
+    // All fields are separated by a single tab
+    QStringList fields = line.split("\t");
+
+    // Verify that the line has the expected number of fields and they are not empty
+    // Do not continue to validate the line if it is incorrect
+    if (numOfFields != fields.count()) {
+        status.incorrectNumberOfFields = true;
+        return parsedData;
+    }
+
+    foreach(QString field, fields) {
+        if (field.trimmed().isEmpty()) {
+            status.emptyFields = true;
+            return parsedData;
+        }
+    }
+
+    // Coordinates
+    // "start" can be zero, "end" is not included into the region
+    bool startIsInt;
+    bool endIsInt;
+    CHECK_FIELD(BED_CHROM_START_INDEX);
+    CHECK_FIELD(BED_CHROM_END_INDEX);
+    qint64 start = fields[BED_CHROM_START_INDEX].toLongLong(&startIsInt);
+    qint64 end = fields[BED_CHROM_END_INDEX].toLongLong(&endIsInt);
+    if (!startIsInt || !endIsInt || (start < 0) || (start >= end)) {
+        status.incorrectCoordinates = true;
+        return parsedData;
+    }
+
+    // Fill in the data and continue validation even if a value is incorrect
+    CHECK_FIELD(BED_CHROM_NAME_INDEX);
+    parsedData.seqName = fields[BED_CHROM_NAME_INDEX];
+    parsedData.region = U2Region(start, end - start);
+
+    // Annotation name
+    if (numOfFields > BED_ANNOT_NAME_INDEX) {
+        CHECK_FIELD(BED_ANNOT_NAME_INDEX);
+        parsedData.additionalFields[ANNOT_QUALIFIER_NAME] = fields[BED_ANNOT_NAME_INDEX];
+    }
+
+    // Score
+    if (numOfFields > BED_SCORE_INDEX) {
+        CHECK_FIELD(BED_SCORE_INDEX);
+        QString scoreStr = fields[BED_SCORE_INDEX];
+        parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
+
+        // Validate the value: it should be an integer value between 0 and 1000
+        // UPDATE: for MACS peaks its wrong, so validation is removed
+        bool scoreIsOk;
+        scoreStr.toInt(&scoreIsOk);
+        if (!scoreIsOk) {
+            scoreStr.toDouble(&scoreIsOk);
+        }
+        if (!scoreIsOk) {
+            status.incorrectScore = true;
+        }
+    }
+
+    // Strand (either '+' or '-')
+    if (numOfFields > BED_STRAND_INDEX) {
+        CHECK_FIELD(BED_STRAND_INDEX);
+        QString strandStr = fields[BED_STRAND_INDEX];
+        parsedData.additionalFields[STRAND_QUALIFIER_NAME] = strandStr;
+
+        if ("+" != strandStr &&
+            "-" != strandStr) {
+            status.incorrectStrand = true;
+        }
+    }
+
+    // Thick coordinates
+    if (numOfFields > BED_THICK_START_INDEX) {
+        CHECK_FIELD(BED_THICK_START_INDEX);
+        QString thickStartStr = fields[BED_THICK_START_INDEX];
+        QString thickEndStr;
+
+        // If thick start is set, thick end must also be set
+        if (numOfFields <= BED_THICK_END_INDEX) {
+            status.incorrectThickCoordinates = true;
+        }
+        else {
+            CHECK_FIELD(BED_THICK_END_INDEX);
+            thickEndStr = fields[BED_THICK_END_INDEX];
+        }
+        if (false == validateThickCoordinates(thickStartStr, thickEndStr)) {
+            status.incorrectThickCoordinates = true;
+        }
+
+        parsedData.additionalFields[THICK_START_QUALIFIER_NAME] = thickStartStr;
+        parsedData.additionalFields[THICK_END_QUALIFIER_NAME] = thickEndStr;
+    }
+
+    // Annotation color
+    if (numOfFields > BED_ITEM_RGB_INDEX) {
+        CHECK_FIELD(BED_ITEM_RGB_INDEX);
+        QString itemRgbStr = fields[BED_ITEM_RGB_INDEX];
+        parsedData.additionalFields[ITEM_RGB_QUALIFIER_NAME] = itemRgbStr;
+
+        if (false == validateAnnotationColor(itemRgbStr, parsedData.annotColor)) {
+            status.incorrectItemRgb = true;
+        }
+    }
+
+    // Blocks (i.e. exons) parameters
+    if (numOfFields > BED_BLOCK_COUNT_INDEX) {
+        CHECK_FIELD(BED_BLOCK_COUNT_INDEX);
+        QString blockCountStr = fields[BED_BLOCK_COUNT_INDEX];
+        QString blockSizesStr;
+        QString blockStartsStr;
+
+        // If they are present, then all three value must be present in a line
+        if (numOfFields <= BED_BLOCK_SIZES_INDEX) {
+            status.incorrectBlocks = true;
+        }
+        else {
+            CHECK_FIELD(BED_BLOCK_SIZES_INDEX);
+            blockSizesStr = fields[BED_BLOCK_SIZES_INDEX];
+
+            if (numOfFields <= BED_BLOCK_STARTS_INDEX) {
+                status.incorrectBlocks = true;
+            }
+            else {
+                CHECK_FIELD(BED_BLOCK_STARTS_INDEX);
+                blockStartsStr = fields[BED_BLOCK_STARTS_INDEX];
+            }
+        }
+
+        parsedData.additionalFields[BLOCK_COUNT_QUALIFIER_NAME] = blockCountStr;
+        parsedData.additionalFields[BLOCK_SIZES_QULAIFIER_NAME] = blockSizesStr;
+        parsedData.additionalFields[BLOCK_STARTS_QUALIFIER_NAME] = blockStartsStr;
+
+        // Validate the values
+        if (false == validateBlocks(blockCountStr, blockSizesStr, blockStartsStr, parsedData.region)) {
+            status.incorrectBlocks = true;
+        }
+    }
+
+    return parsedData;
+}
+
+void BedFormatParser::parseHeader(QString& trackName, QString& trackDescr) {
+    // Parse and validate the header: ignore lines with "browser"
+    // Search the 'track' line and get parameters from it
+    bool headerLine = true;
+    while (headerLine && readLine() > 0) {
+        if (curLine.startsWith("#")){ //skip comments
+            continue;
+        }
+        if (curLine.startsWith("browser")) {
+            continue;
+        }
+        else if (curLine.startsWith("track")) {
+            if (false == parseTrackLine(curLine, trackName, trackDescr)) {
+                fileIsValid = false;
+                ioLog.trace(BedFormat::tr("BED parsing error: incorrect format of the 'track' header line!"));
+            }
+            break; // Stop parsing the header when 'track' line has been detected
+        }
+        else {
+            noHeader = true;
+            break;
+        }
+    }
+}
+
+
+void BedFormatParser::createAnnotation(const BedLineData& bedLineData, QList<SharedAnnotationData>& result, QString& trackName, QString& trackDescr) {
+    // Create the annotation
+    SharedAnnotationData annotData(new AnnotationData());
+    annotData->name = bedLineData.additionalFields[ANNOT_QUALIFIER_NAME].isEmpty()
+        ? defaultAnnotName
+        : bedLineData.additionalFields[ANNOT_QUALIFIER_NAME];
+    annotData->location->regions << bedLineData.region;
+
+    // Add qualifiers
+    foreach(QString qualifierName, bedLineData.additionalFields.keys()) {
+        if (!bedLineData.additionalFields.value(qualifierName).isEmpty()) {
+            annotData->qualifiers.push_back(
+                U2Qualifier(qualifierName, bedLineData.additionalFields.value(qualifierName)));
+        }
+    }
+
+    // Add a qualifier with the sequence name
+    annotData->qualifiers.push_back(U2Qualifier(CHROM_QUALIFIER_NAME, bedLineData.seqName));
+
+    // Additionally, verify the strand information
+    if (bedLineData.additionalFields.keys().contains(STRAND_QUALIFIER_NAME)) {
+        if ("-" == bedLineData.additionalFields.value(STRAND_QUALIFIER_NAME)) {
+            annotData->setStrand(U2Strand::Complementary);
+        }
+    }
+
+    // Add track information to the qualifiers
+    if (!trackName.isEmpty()) {
+        annotData->qualifiers.push_back(U2Qualifier(TRACK_NAME_QUALIFIER_NAME, trackName));
+    }
+
+    if (!trackDescr.isEmpty()) {
+        annotData->qualifiers.push_back(U2Qualifier(TRACK_DESCR_QUALIFIER_NAME, trackDescr));
+    }
+
+    // Append the result
+    result.append(annotData);
+}
+
+void BedFormatParser::addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName){
     QHash<QString, QList<SharedAnnotationData> >::iterator i = resHash.find(seqName);
     if (i != resHash.end()) {
         i.value().append(result);
-    }else{
+    }
+    else{
         resHash.insert(seqName, result);
     }
     result.clear();
 }
+
+bool BedFormatParser::checkAnnotationParsingErrors(const BEDLineValidateFlags& validationStatus, const BedLineData& bedLineData) {
+    // If there were some errors during parsing the output, write it to the log
+    if (validationStatus.incorrectNumberOfFields) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect number of fields at line %1!").arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.emptyFields) {
+        os.addWarning(BedFormat::tr("BED parsing error: a field at line %1 is empty!").arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectCoordinates) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect coordinates at line %1!").arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectScore) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect score value '%1'"
+            " at line %2!").arg(bedLineData.additionalFields[SCORE_QUALIFIER_NAME]).arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectStrand) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect strand value '%1'"
+            " at line %2!").arg(bedLineData.additionalFields[STRAND_QUALIFIER_NAME]).arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectThickCoordinates) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect thick coordinates at line %1!").arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectItemRgb) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect itemRgb value '%1'"
+            " at line %2!").arg(bedLineData.additionalFields[ITEM_RGB_QUALIFIER_NAME]).arg(lineNumber));
+        return false;
+    }
+    if (validationStatus.incorrectBlocks) {
+        os.addWarning(BedFormat::tr("BED parsing error: incorrect value of the block parameters"
+            " at line %1!").arg(lineNumber));
+        return false;
+    }
+    return true;
+}
+
+int BedFormatParser::readLine() {
+    int len = 0;
+    curLine.clear();
+    do {
+        len = io->readLine(buff.data(), BufferSize - 1);
+        buff.data()[len] = '\0';
+        curLine.append(QString(buff.data()));
+    } while (len == BufferSize - 1);
+    return curLine.length();
+}
+
+void BedFormatParser::moveToNextLine() {
+    lineNumber++;
+    os.setProgress(io->getProgress());
+    readLine();
+}
+
 
 } // namespace U2
