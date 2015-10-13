@@ -9,6 +9,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/ObjectViewModel.h \
            src/ObjectViewTasks.h \
            src/OpenViewTask.h \
+           src/PasteController.h \
            src/PluginViewer.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
@@ -206,6 +207,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/LocalToolbar.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/OrderedToolbar.cpp \
+           src/PasteController.cpp \
            src/util/PositionSelector.cpp \
            src/util/ProjectDocumentComboBoxController.cpp \
            src/util/ProjectTreeItemSelectorDialog.cpp \

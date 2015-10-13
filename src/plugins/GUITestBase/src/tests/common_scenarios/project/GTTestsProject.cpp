@@ -1006,6 +1006,54 @@ GUI_TEST_CLASS_DEFINITION(test_0058) {
     //Expected: there are no dialog of file format choosing.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0059) {
+    GTGlobals::sleep();
+    GTClipboard::setUrls(os, QList<QUrl>() << dataDir + "samples/FASTA/human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0060) {
+    GTGlobals::sleep();
+    GTClipboard::setText(os, "ACGT");
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "sequence");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0061) {
+    GTClipboard::setUrls(os, QList<QUrl>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0062) {
+    GTClipboard::setUrls(os, QList<QUrl>() << dataDir + "samples/FASTA/human_T1.fa" << dataDir + "samples/HMM/aligment15900.hmm");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTUtilsProjectTreeView::findIndex(os, "aligment15900");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0063) {
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+
+    GTClipboard::setUrls(os, QList<QUrl>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+}
+
 }
 
 }

@@ -19,23 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_CLIPBOARD_H_
-#define _U2_GT_CLIPBOARD_H_
+#ifndef _U2_CLIPBOARD_CONTROLLER_H_
+#define _U2_CLIPBOARD_CONTROLLER_H_
 
-#include "api/GTGlobals.h"
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/Task.h>
+
+#include <QClipboard>
 
 namespace U2 {
 
-class GTClipboard {
+class U2CORE_EXPORT PasteTask : public Task{
+    Q_OBJECT
 public:
-    // fails if can't get clipboard or clipboard doesn't contain text data
-    static QString text(U2OpStatus &os);
+    PasteTask();
 
-    static void setText(U2OpStatus &os, QString text);
-
-    static void setUrls(U2OpStatus &os, const QList<QUrl>& urls);
+    virtual QList<GUrl> getUrls() = 0;
+    virtual QList<Document*> getDocuments() = 0;
+protected:
+   virtual void processDocument(Document* doc){}
 };
 
-} //namespace
+class U2CORE_EXPORT PasteFactory : public QObject {
+    Q_OBJECT
+public:
+    PasteFactory(QObject *parent=0);
 
-#endif
+    virtual PasteTask* pasteTask(bool addToProject) = 0;
+};
+
+} // U2
+
+#endif // _U2_CLIPBOARD_CONTROLLER_H_

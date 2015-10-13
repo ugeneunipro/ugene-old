@@ -86,6 +86,7 @@
 #include <U2Gui/FeatureKeyFilterTask.h>
 #include <U2Gui/ImportDialogsFactories.h>
 #include <U2Gui/LogView.h>
+#include <U2Gui/PasteController.h>
 #include <U2Gui/MsaContentFilterTask.h>
 #include <U2Gui/MsaSeqNameFilterTask.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
@@ -628,6 +629,9 @@ int main(int argc, char **argv)
     appContext->setProjectFilterTaskRegistry(projectFilterTaskRegistry);
     initProjectFilterTaskRegistry();
 
+    PasteFactory *pasteFactory = new PasteFactoryImpl;
+    appContext->setPasteFactory(pasteFactory);
+
     Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
     Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
 
@@ -736,6 +740,9 @@ int main(int argc, char **argv)
     delete wpc;
 
     delete dcu;
+
+    appContext->setPasteFactory(NULL);
+    delete pasteFactory;
 
     appContext->setProjectFilterTaskRegistry(NULL);
     delete projectFilterTaskRegistry;

@@ -87,6 +87,7 @@ private slots:
     void sl_openRecentProject();
     void sl_serviceStateChanged(Service* s, ServiceState prevState);
     void sl_documentAdded(Document* doc);
+    void sl_paste();
     void sl_documentStateChanged();
     void sl_projectURLChanged(const QString& oldURL);
     void sl_onAddExistingDocument();
@@ -103,6 +104,7 @@ private:
     QAction* addExistingDocumentAction;
     QAction* newProjectAction;
     QAction* openProjectAction;
+    QAction* pasteAction;
     QAction* downloadRemoteFileAction;
     QAction* accessSharedDatabaseAction;
     QAction* searchGenbankEntryAction;

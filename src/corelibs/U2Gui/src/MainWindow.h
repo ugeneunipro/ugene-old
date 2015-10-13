@@ -67,6 +67,7 @@ class QMainWindow;
 
 #define ACTION_PROJECTSUPPORT__NEW_PROJECT              "action_projectsupport__new_project"
 #define ACTION_PROJECTSUPPORT__OPEN_PROJECT             "action_projectsupport__open_project"
+#define ACTION_PROJECTSUPPORT__PASTE                    "action_projectsupport__paste"
 #define ACTION_PROJECTSUPPORT__OPEN_AS                  "action_projectsupport__open_as"
 #define ACTION_PROJECTSUPPORT__SAVE_PROJECT             "action_projectsupport__save_project"
 #define ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT          "action_projectsupport__save_as_project"

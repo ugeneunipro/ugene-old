@@ -95,6 +95,7 @@ class PasswordStorage;
 class ConvertFactoryRegistry;
 class WelcomePageAction;
 class ProjectFilterTaskRegistry;
+class PasteFactory;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -257,6 +258,8 @@ public:
 
     static ProjectFilterTaskRegistry * getProjectFilterTaskRegistry() { return getInstance()->_getProjectFilterTaskRegistry(); }
 
+    static PasteFactory*        getPasteFactory() {return getInstance()->_getPasteFactory();}
+
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
 
@@ -328,6 +331,7 @@ protected:
     virtual ConvertFactoryRegistry* _getConvertFactoryRegistry() const = 0;
     virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const = 0;
     virtual ProjectFilterTaskRegistry * _getProjectFilterTaskRegistry() const = 0;
+    virtual PasteFactory * _getPasteFactory() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

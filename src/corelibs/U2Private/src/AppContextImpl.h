@@ -99,6 +99,7 @@ public:
         cfr = NULL;
         welcomePageActionRegistry = NULL;
         projectFilterTaskRegistry = NULL;
+        pf = NULL;
     }
 
     ~AppContextImpl();
@@ -174,6 +175,8 @@ public:
     void setDASSourceRegistry( DASSourceRegistry* _dsr) { assert( dsr == NULL || _dsr == NULL ); dsr = _dsr;}
 
     void setScriptingToolRegistry( ScriptingToolRegistry* _str) { assert( str == NULL || _str == NULL ); str = _str;}
+
+    void setPasteFactory( PasteFactory* _pf) { assert( pf == NULL || _pf == NULL ); pf = _pf;}
 
     void setProtocolInfoRegistry( ProtocolInfoRegistry * pr ) { assert( NULL == protocolInfoRegistry || NULL == pr );
         protocolInfoRegistry = pr; }
@@ -410,6 +413,7 @@ protected:
     virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
     virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const { return welcomePageActionRegistry; }
     virtual ProjectFilterTaskRegistry *    _getProjectFilterTaskRegistry() const { return projectFilterTaskRegistry; }
+    virtual PasteFactory *                 _getPasteFactory() const { return pf; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -466,6 +470,7 @@ private:
     DataBaseRegistry* dataBaseRegistry;
     ExternalToolRegistry * externalToolRegistry;
     RepeatFinderTaskFactoryRegistry* rfr;
+    PasteFactory* pf;
     QDActorPrototypeRegistry* qdafr;
     CDSearchFactoryRegistry* cdsfr;
     StructuralAlignmentAlgorithmRegistry* saar;

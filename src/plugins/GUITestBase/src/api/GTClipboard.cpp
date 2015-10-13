@@ -62,6 +62,20 @@ void GTClipboard::setText( U2OpStatus &os, QString text ){
 
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setUrls"
+void GTClipboard::setUrls( U2OpStatus &os, const QList<QUrl>& urls ){
+    Q_UNUSED(os);
+    QMimeData *urlMime = new QMimeData();
+    urlMime->setUrls(urls);
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->clear();
+    clipboard->setMimeData(urlMime);
+}
+
+#undef GT_METHOD_NAME
+
+
 #undef GT_CLASS_NAME
 
 } //namespace

@@ -1223,6 +1223,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0057);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0058);
 
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0059);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0060);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0061);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0062);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0063);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/
 //////////////////////////////////////////////////////////////////////////

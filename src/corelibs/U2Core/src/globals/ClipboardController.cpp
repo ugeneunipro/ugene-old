@@ -19,23 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_CLIPBOARD_H_
-#define _U2_GT_CLIPBOARD_H_
+#include "ClipboardController.h"
 
-#include "api/GTGlobals.h"
 
 namespace U2 {
 
-class GTClipboard {
-public:
-    // fails if can't get clipboard or clipboard doesn't contain text data
-    static QString text(U2OpStatus &os);
+///////////////////
+///PasteFactory
+PasteFactory::PasteFactory(QObject *parent)
+    :QObject(parent){
+}
 
-    static void setText(U2OpStatus &os, QString text);
+///////////////////
+///PasteTask
+PasteTask::PasteTask()
+    :Task(tr("Paste data"), TaskFlag_None){
+}
 
-    static void setUrls(U2OpStatus &os, const QList<QUrl>& urls);
-};
-
-} //namespace
-
-#endif
+} // U2

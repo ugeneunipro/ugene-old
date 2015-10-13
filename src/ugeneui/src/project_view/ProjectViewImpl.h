@@ -22,6 +22,7 @@
 #ifndef _U2_PROJECT_VIEW_WIDGET_
 #define _U2_PROJECT_VIEW_WIDGET_
 
+#include <U2Core/ClipboardController.h>
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectSelection.h>
@@ -68,18 +69,8 @@ class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
     Q_OBJECT
 public:
     ProjectViewWidget();
-private slots:
-    void sl_pasteFileFromClipboard();
-    void sl_setLocalFileAdapter();
 private:
-    static bool detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled, FormatDetectionResult &result);
-    static QSet<QString> excludedFilenames;
-
-    void processUrlsClipboardData(const QList<QUrl> &urls);
-    void processPlainTextClipboardData(const QClipboard *clipboard);
-
     DocumentUpdater* updater;
-    QAction*         pasteFileFromClipboard;
 };
 
 class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {

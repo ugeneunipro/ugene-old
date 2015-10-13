@@ -35,6 +35,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/ServiceTypes.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -47,6 +48,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/PasteController.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/SharedConnectionsDialog.h>
@@ -71,7 +73,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 
 ProjectLoaderImpl::ProjectLoaderImpl() {
-    openProjectAction = newProjectAction = separatorAction1 = separatorAction2 = NULL;
+    pasteAction = openProjectAction = newProjectAction = separatorAction1 = separatorAction2 = NULL;
     recentProjectsMenu = NULL;
 
     assert(AppContext::getProject() == NULL);
@@ -96,6 +98,12 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     newDocumentFromtext->setObjectName("NewDocumentFromText");
     newDocumentFromtext->setShortcutContext(Qt::WindowShortcut);
     connect(newDocumentFromtext, SIGNAL(triggered()), SLOT(sl_newDocumentFromText()));
+
+    pasteAction = new QAction(QIcon(":ugene/images/paste.png"), tr("Paste"), this);
+    pasteAction->setObjectName(ACTION_PROJECTSUPPORT__PASTE);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    pasteAction->setShortcutContext(Qt::ApplicationShortcut);
+    connect(pasteAction, SIGNAL(triggered()), SLOT(sl_paste()));
 
     openProjectAction = new QAction(QIcon(":ugene/images/project_open.png"), tr("Open..."), this);
     openProjectAction->setObjectName(ACTION_PROJECTSUPPORT__OPEN_PROJECT);
@@ -146,6 +154,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
             << searchGenbankEntryAction
             << openProjectAction
             << addExistingDocumentAction
+            << pasteAction
             << separatorAction1
             <<  recentItemsMenu->menuAction()
             << recentProjectsMenu->menuAction()
@@ -696,6 +705,15 @@ void ProjectLoaderImpl::updateRecentItemsMenu()
         }
     }
 
+}
+
+void ProjectLoaderImpl::sl_paste( ){
+    PasteFactory* pasteFactory = AppContext::getPasteFactory();
+    SAFE_POINT(pasteFactory != NULL, "PasteFactory is null", );
+
+    PasteTask* task = pasteFactory->pasteTask(true);
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
 void ProjectLoaderImpl::sl_documentAdded( Document* doc )
