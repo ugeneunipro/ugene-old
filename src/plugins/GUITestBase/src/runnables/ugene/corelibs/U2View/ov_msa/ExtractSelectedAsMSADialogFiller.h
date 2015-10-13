@@ -43,6 +43,7 @@ public:
         dontCheckFilepath(_dontCheckFilepath) {}
     ExtractSelectedAsMSADialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "CreateSubalignmentDialog", c){}
     virtual void commonScenario();
+    static QStringList getSequences(U2OpStatus &os, bool selected = true);
 private:
     QString filepath;
     QString format;

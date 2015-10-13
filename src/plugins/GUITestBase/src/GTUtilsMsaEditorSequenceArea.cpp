@@ -212,7 +212,9 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
     QRect msaEditRegion = msaEditArea->getSelection().getRect();
-    CHECK_SET_ERR(expectedRect == msaEditRegion, "Unexpected selection region");
+    CHECK_SET_ERR(expectedRect == msaEditRegion, QString("Unexpected selection region. Expected: [(%1,%2) (%3,%4)]. Actual: [(%5,%6) (%7,%8)]")
+                  .arg(expectedRect.topLeft().x()).arg(expectedRect.topLeft().y()).arg(expectedRect.bottomRight().x()).arg(expectedRect.bottomRight().y())
+                  .arg(msaEditRegion.topLeft().x()).arg(msaEditRegion.topLeft().y()).arg(msaEditRegion.bottomRight().x()).arg(msaEditRegion.bottomRight().y()));
 }
 #undef GT_METHOD_NAME
 #define GT_METHOD_NAME "checkSorted"

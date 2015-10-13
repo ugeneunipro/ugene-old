@@ -115,13 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
 //2. open file samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-
-    _os = &os;
-    QTimer::singleShot(10000, this, SLOT(sl_fail()));
-}
-
-void test_0004::sl_fail() {
-    _os->setError("Too long");
+    GTUtilsTaskTreeView::waitTaskFinished(os, 5000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
@@ -547,7 +541,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     //6. Click "Set reference sequence".
     //7. Choose the file "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq".
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/chr6.fa "));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/chr6.fa"));
     GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
 
     //8. Right click on the reference area while the file is loading.

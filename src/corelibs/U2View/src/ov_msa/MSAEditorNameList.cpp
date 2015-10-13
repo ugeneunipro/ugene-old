@@ -68,6 +68,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     connect(editSequenceNameAction, SIGNAL(triggered()), SLOT(sl_editSequenceName()));
 
     copyCurrentSequenceAction = new QAction(tr("Copy current sequence"), this);
+    copyCurrentSequenceAction->setObjectName("Copy current sequence");
     connect(copyCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_copyCurrentSequence()));
 
     removeCurrentSequenceAction = new QAction("Remove current sequence", this);

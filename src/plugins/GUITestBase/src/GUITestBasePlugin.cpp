@@ -1668,6 +1668,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     //REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0058); not completed yet
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0059);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0060);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0061);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0062);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0063);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0064);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0065);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0066);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0068);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0069);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0070);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0071);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0072);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0073);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0074);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0075);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0076);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0077);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
 /////////////////////////////////////////////////////////////////////////

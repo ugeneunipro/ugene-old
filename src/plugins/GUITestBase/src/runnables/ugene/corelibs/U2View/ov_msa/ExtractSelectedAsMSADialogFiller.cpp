@@ -144,6 +144,26 @@ void ExtractSelectedAsMSADialogFiller::commonScenario() {
 
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSelectedSequences"
+QStringList ExtractSelectedAsMSADialogFiller::getSequences(U2OpStatus &os, bool selected){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", QStringList());
+    QStringList result;
+
+    QTableWidget* sequencesTableWidget = GTWidget::findExactWidget<QTableWidget*>(os, "sequencesTableWidget", dialog);
+    for(int i = 0; i<sequencesTableWidget->rowCount(); i++){
+        QCheckBox* box = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
+        GT_CHECK_RESULT(box != NULL, "cell widget is not checkbox", QStringList());
+        if(box->isChecked() == selected){
+            result << box->text();
+        }
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

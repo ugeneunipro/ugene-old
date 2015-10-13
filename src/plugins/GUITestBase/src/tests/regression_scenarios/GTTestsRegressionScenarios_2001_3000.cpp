@@ -601,7 +601,7 @@ GUI_TEST_CLASS_DEFINITION(test_2024){
 
 //    2. Add element "Local BLAST Search"
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST search" );
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Local BLAST Search"));
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Local BLAST search"));
     GTMouseDriver::click(os);
 
 //    Expected state: element has parameters "gap cost" and "match score"

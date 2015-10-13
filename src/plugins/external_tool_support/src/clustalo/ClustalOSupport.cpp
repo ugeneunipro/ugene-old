@@ -131,6 +131,7 @@ void ClustalOSupportContext::initViewContext(GObjectView* view) {
     bool isMsaEmpty = msaed->isAlignmentEmpty();
 
     AlignMsaAction* alignAction = new AlignMsaAction(this, ET_CLUSTALO, view, tr("Align with ClustalO..."), 2000);
+    alignAction->setObjectName("Align with ClustalO");
 
     addViewAction(alignAction);
     alignAction->setEnabled(!objLocked && !isMsaEmpty);

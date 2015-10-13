@@ -4212,7 +4212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
-    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10, 1), "AAATGAAAGAC\nAATATTAGGTT");
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10, 1), "AAATGAAAGAC\nATATTAGGTTT");
 
 }
 
@@ -4397,6 +4397,530 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
 //    Select some color scheme directory. Check state
     GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0061){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open "Color schemes" dialog.
+//    Open "Create color scheme" dialog.
+//    Set wrong scheme names: space only, empty, with forbidden
+//    characters, duplicating existing scnemes.
+//    Check error hint in dialog
+
+    GTUtilsDialog::waitForDialog(os, new NewColorSchemeCreator(os, "GUITest_common_scenarios_msa_editor_test_0061", NewColorSchemeCreator::nucl));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+
+    class customColorSchemeCreator: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            GTGlobals::sleep(500);
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QLabel* validLabel = GTWidget::findExactWidget<QLabel*>(os, "validLabel", dialog);
+            QLineEdit* schemeName = GTWidget::findExactWidget<QLineEdit*>(os, "schemeName",dialog);
+
+            GTLineEdit::setText(os, schemeName, "   ");
+            CHECK_SET_ERR(validLabel->text() == "Warning: Name can't contain only spaces.", "unexpected hint: " + validLabel->text());
+            GTLineEdit::setText(os, schemeName, "");
+            CHECK_SET_ERR(validLabel->text() == "Warning: Name of scheme is empty.", "unexpected hint: " + validLabel->text());
+            GTLineEdit::setText(os, schemeName, "name*");
+            CHECK_SET_ERR(validLabel->text() == "Warning: Name has to consist of letters, digits, spaces", "unexpected hint: " + validLabel->text());
+            GTLineEdit::setText(os, schemeName, "GUITest_common_scenarios_msa_editor_test_0061");
+            CHECK_SET_ERR(validLabel->text() == "Warning: Color scheme with the same name already exists.", "unexpected hint: " + validLabel->text());
+
+            QComboBox *alphabetComboBox = (GTWidget::findExactWidget<QComboBox*>(os,"alphabetComboBox",dialog));
+            GTComboBox::setIndexWithText(os, alphabetComboBox, "Nucleotide");
+
+            GTGlobals::sleep(500);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class customAppSettingsFiller: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, new customColorSchemeCreator()));
+
+            GTWidget::click(os, GTWidget::findWidget(os, "addSchemaButton", dialog));
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new customAppSettingsFiller()));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0062){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    QDir().mkpath(sandBoxDir + "read_only_dir");
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "read_only_dir");
+//    Open "Export subalignment" dialog
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+            QLineEdit* filepathEdit = GTWidget::findExactWidget<QLineEdit*>(os, "filepathEdit", dialog);
+//    Check wrong parameters:
+//    Dir to save does not exists
+            GTLineEdit::setText(os, filepathEdit, sandBoxDir + "some_dir/subalignment.aln");
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Directory to save does not exist"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+//    No permission  to write to directory
+            GTLineEdit::setText(os, filepathEdit, sandBoxDir + "read_only_dir/subalignment.aln");
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "No write permission to "));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+//    Empty file path
+            GTLineEdit::setText(os, filepathEdit, "");
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "No path specified"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+//    Filename is empty
+            GTLineEdit::setText(os, filepathEdit, sandBoxDir);
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Filename to save is empty"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+//    Select 0 sequences
+            GTLineEdit::setText(os, filepathEdit, sandBoxDir + "subalignment.aln");
+
+            GTWidget::click(os, GTWidget::findWidget(os, "noneButton", dialog));
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "You must select at least one sequence"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+//    Start pos > end pos
+            QSpinBox* startPosBox = GTWidget::findExactWidget<QSpinBox*>(os, "startPosBox", dialog);
+            GTSpinBox::setValue(os, startPosBox, 50, GTGlobals::UseKeyBoard);
+            QSpinBox* endPosBox = GTWidget::findExactWidget<QSpinBox*>(os, "endPosBox", dialog);
+            GTSpinBox::setValue(os, endPosBox, 40, GTGlobals::UseKeyBoard);
+
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Start position must be less than end position!"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep(500);
+
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os, new custom()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTGlobals::sleep(500);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0063){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Press "align" button on toolbar. Check state
+
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QStringList expectedActions = QStringList() << "Align with muscle"
+                                                   << "Align sequences to profile with MUSCLE"
+                                                   << "Align profile to profile with MUSCLE"
+                                                   << "Align with ClustalW"
+                                                   << "Align with ClustalO"
+                                                   << "Align with MAFFT"
+                                                   << "Align with T-Coffee"
+                                                   << "align_with_kalign";
+            QMenu* m = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+            CHECK_SET_ERR(m != NULL, "menu not found");
+            QList<QAction*> menuActions = m->actions();
+            CHECK_SET_ERR(menuActions.size() == 8, QString("unexpected number of actions: %1").arg(menuActions.size()));
+            foreach (QAction* act, menuActions) {
+                CHECK_SET_ERR(expectedActions.contains(act->objectName()), act->objectName() + " unexpectidly found in menu");
+            }
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new custom()));
+    GTWidget::click(os, GTAction::button(os, "Align"));
+
+    GTGlobals::sleep(500);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0064){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open "Statistics" OP tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+//    Set some reference sequence
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+
+//    Click "Show distance column". Check state
+    QCheckBox* showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    QString val1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    QString val2 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 2);
+    CHECK_SET_ERR(val1 == "0%", "1: unexpected valeu1: " + val1);
+    CHECK_SET_ERR(val2 == "19%", "1: unexpected valeu2: " + val2);
+//    Click "Show distance column". Check state
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, false);
+    QWidget* column = GTWidget::findWidget(os, "msa_editor_similarity_column");
+    CHECK_SET_ERR(!column->isVisible(), "similarity column unexpectidly found");
+//    Click "Show distance column". Check state
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    val1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    val2 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 2);
+    CHECK_SET_ERR(val1 == "0%", "2: unexpected valeu1: " + val1);
+    CHECK_SET_ERR(val2 == "19%", "2: unexpected valeu2: " + val2);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0065){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Use context menu: {Copy->Copy consensus with gaps}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "Copy consensus with gaps"));
+
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+//    Check clipboard
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText.startsWith("TaAGttTatTaATtCGagCtGAAtTagG+CAaCCaGGtTat---+TaATT"), "unexpected consensus was exported: " + clipboardText);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0066){
+//    Open COI.aln consArea
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Select some area on consensus with mouse
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1, -3), QPoint(10, -3));
+//    Check selection on consensus and alignment
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(1, 0), QPoint(10, 17)));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0067){
+//TODO: write this test when UGENE-4803 is fixed
+//    Open COI.aln
+//    Build tree displayed with msa
+//    Use context menu on tree tab(in tabWidget)
+//    Check all actions in popup menu
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0068){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Press on some sequence in nameList with right button
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 2));
+//    Use context menu: {Copy->Copy current sequence}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "Copy current sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    Check the clipboard
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText.startsWith("TTAGTTTATTAATTCGAGCTGAACTAGGTCAACCAGGCTAT---TTAATTGGTGACGATCAAATTTACAAT"), "unexpected clipboard text: " + clipboardText);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0069){
+//    Open COI.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "Chikungunya_E1.fasta");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Press on some sequence in nameList
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 2));
+    QScrollBar* hscroll = GTWidget::findExactWidget<QScrollBar*>(os, "horizontal_names_scroll");
+    QScrollBar* vscroll = GTWidget::findExactWidget<QScrollBar*>(os, "vertical_sequence_scroll");
+//    Check keys:
+//    right,
+    for(int i = 0; i<3; i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(hscroll->value() == 3, QString("right key works wrong. Scrollbar has value: %1").arg(hscroll->value()));
+//    left
+    for(int i = 0; i<2; i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"]);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(hscroll->value() == 1, QString("left key works wrong. Scrollbar has value: %1").arg(hscroll->value()));\
+//    page down
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"]);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(vscroll->value() > 20, QString("page down key works wrong: %1").arg(vscroll->value()));
+//    page up
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"]);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(vscroll->value() == 0, QString("page up key works wrong: %1").arg(vscroll->value()));
+//    end
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(vscroll->value() == 1695, QString("end key works wrong: %1").arg(vscroll->value()));
+//    home
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(vscroll->value() == 0, QString("end key works wrong: %1").arg(vscroll->value()));
+//    mouse wheel
+    for(int i = 0; i<3; i++){
+        GTMouseDriver::scroll(os, -1);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(vscroll->value() == 3, QString("scroll down works wrong. Scrollbar has value: %1").arg(vscroll->value()));
+    GTGlobals::sleep(500);
+
+    for(int i = 0; i<2; i++){
+        GTMouseDriver::scroll(os, 1);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(vscroll->value() == 1, QString("scroll up works wrong. Scrollbar has value: %1").arg(vscroll->value()));
+}
+GUI_TEST_CLASS_DEFINITION(test_0070){
+//    Open empty alignment
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
+//    Press on nameList area
+    GTWidget::click(os, GTWidget::findWidget(os, "msa_editor_name_list"));
+//    Check state
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0071){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Click on some character on sequence area
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 2));
+//    Press on other character with shift modifier
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(8, 8));
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+//    Expected state: selection is created on these characters
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(2, 2), QPoint(8, 8)));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0072){
+//    Open COI.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "Chikungunya_E1.fasta");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(5, 5));
+//    Check keys: arrows
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(5,4), QPoint(5,4)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,4), QPoint(4,4)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,5), QPoint(4,5)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(5,5), QPoint(5,5)));
+
+//    shift + arrows
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(5,4), QPoint(5,5)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,4), QPoint(5,5)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,5), QPoint(5,5)));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(300);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(5,5), QPoint(5,5)));
+//    end
+    QScrollBar* hbar = GTWidget::findExactWidget<QScrollBar*>(os, "horizontal_sequence_scroll");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(hbar->value() == 1831, QString("end key scrollbar value: %1").arg(hbar->value()))
+//    home
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(hbar->value() == 0, QString("home key works wrong. Scrollbar value: %1").arg(hbar->value()))
+//    page down
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(hbar->value() > 20, QString("page down key works wrong. Scrollbar value: %1").arg(hbar->value()))
+//    page up
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(hbar->value() == 0, QString("page down key works wrong. Scrollbar value: %1").arg(hbar->value()))
+//  end+shift
+    QScrollBar* vbar = GTWidget::findExactWidget<QScrollBar*>(os, "vertical_sequence_scroll");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(vbar->value() == 1695, QString("shift + end key works wrong. Scrollbar value: %1").arg(vbar->value()))
+//  home+shift
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(vbar->value() == 0, QString("shift + home key works wrong. Scrollbar value: %1").arg(vbar->value()))
+//  page down+shift
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(vbar->value() > 20, QString("shift + page down key works wrong. Scrollbar value: %1").arg(vbar->value()))
+//  page up + shift
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(vbar->value() == 0, QString("shift + page down key works wrong. Scrollbar value: %1").arg(vbar->value()))
+//  wheel event
+    for(int i = 0; i<3; i++){
+        GTMouseDriver::scroll(os, -1);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(hbar->value() == 3, QString("scroll down works wrong. Scrollbar has value: %1").arg(hbar->value()));
+    GTGlobals::sleep(500);
+
+    for(int i = 0; i<2; i++){
+        GTMouseDriver::scroll(os, 1);
+        GTGlobals::sleep(100);
+    }
+    CHECK_SET_ERR(hbar->value() == 1, QString("scroll up works wrong. Scrollbar has value: %1").arg(hbar->value()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0073){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Unload document
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__unload_selected_action"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
+//    Use context menu on object: {Open view -> Open new view: Alignment editor}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
+    GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
+//    Expected: view is opened, document is loaded
+    GTUtilsMdi::findWindow(os, "COI [m] COI");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0074){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(0, 5));
+//    Open "Export subalignment" dialog
+    class custom: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTGlobals::sleep(500);
+
+            QStringList list = ExtractSelectedAsMSADialogFiller::getSequences(os, true);
+            CHECK_SET_ERR(list.first() == "Phaneroptera_falcata", "unexpected first sequence: " + list.first());
+            CHECK_SET_ERR(list.last() == "Metrioptera_japonica_EF540831", "unexpected last sequence: " + list.last());
+            CHECK_SET_ERR(list.size() == 6, QString("Unexpected initial list size: %1").arg(list.size()));
+//    Press "Invert selection" button. Expected: selection is inverted
+            GTWidget::click(os, GTWidget::findWidget(os, "invertButton", dialog));
+            list = ExtractSelectedAsMSADialogFiller::getSequences(os, true);
+            CHECK_SET_ERR(list.first() == "Gampsocleis_sedakovii_EF540828", "unexpected first sequence(inverted): " + list.first());
+            CHECK_SET_ERR(list.last() == "Hetrodes_pupus_EF540832", "unexpected last sequence(inverted): " + list.last());
+            CHECK_SET_ERR(list.size() == 12, QString("Unexpected initial list size: %1").arg(list.size()));
+//    Press "Select all" button. Expected: all sequences selected
+            GTWidget::click(os, GTWidget::findWidget(os, "allButton", dialog));
+            list = ExtractSelectedAsMSADialogFiller::getSequences(os, true);
+            CHECK_SET_ERR(list.first() == "Phaneroptera_falcata", "unexpected first sequence(all): " + list.first());
+            CHECK_SET_ERR(list.last() == "Hetrodes_pupus_EF540832", "unexpected last sequence(all): " + list.last());
+            CHECK_SET_ERR(list.size() == 18, QString("Unexpected initial list size: %1").arg(list.size()));
+
+            GTWidget::click(os, GTWidget::findWidget(os, "noneButton", dialog));
+            list = ExtractSelectedAsMSADialogFiller::getSequences(os, true);
+            CHECK_SET_ERR(list.size() == 0, QString("list is not cleared: %1").arg(list.size()));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os, new custom()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0075){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    QWidget* overview = GTWidget::findWidget(os, "msa_overview_area_graph");
+    QImage init = GTWidget::getImage(os, overview);
+//    Use context menu on overview: {Calculation method->Clustal}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Calculation method" << "Clustal"));
+    GTMenu::showContextMenu(os, overview);
+//    Check state
+    QImage clustal = GTWidget::getImage(os, overview);
+    CHECK_SET_ERR(init != clustal, "overview was not changed(clustal)");
+//    Use context menu on overview: {Display settings...->Graph type->Histogram}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Display settings" << "Graph type" << "Histogram"));
+    GTMenu::showContextMenu(os, overview);
+//    Check state
+    QImage histogram = GTWidget::getImage(os, overview);
+    CHECK_SET_ERR(histogram != clustal, "overview was not changed(histogram)");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0076){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    QWidget* overview = GTWidget::findWidget(os, "msa_overview_area_graph");
+//    Show simple overview
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, overview);
+    GTGlobals::sleep(200);
+    QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
+    QColor initColor = GTWidget::getColor(os, simple, simple->geometry().center());
+    QString initColorS = initColor.name();
+//    Press on overview with mouse left button
+
+    GTWidget::click(os, overview);
+    QColor finalColor = GTWidget::getColor(os, simple, simple->geometry().center());
+    QString finalColorS = finalColor.name();
+    CHECK_SET_ERR(initColorS != finalColorS, "color was not changed(1)");
+//    Expected state: visible range moved
+//    Drag visible range with mouse
+    QColor initColor1 = GTWidget::getColor(os, simple, simple->geometry().topLeft() + QPoint(5, 5));
+    QString initColorS1 = initColor1.name();
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, QPoint(10, GTMouseDriver::getMousePosition().y()));
+    GTMouseDriver::release(os);
+//    Expected state: visible range dragged
+    QColor finalColor1 = GTWidget::getColor(os, simple, simple->geometry().topLeft() + QPoint(5, 5));
+    QString finalColorS1 = finalColor1.name();
+    CHECK_SET_ERR(initColorS1 != finalColorS1, "color was not changed(2)")
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0077){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open tree with msa
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk", 0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//    Press "refresh tree" button on tree view toolbar
+    QWidget* button = GTAction::button(os, "Refresh tree");
+    bool vis = button->isVisible();
+    if(vis){
+        GTWidget::click(os, button);
+    }else{
+        QWidget* extButton = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "msa_editor_tree_view_container_widget"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Refresh tree"));
+        GTWidget::click(os, extButton);
+    }
+    GTGlobals::sleep(1000);
+//    Expected state: tree refreshed
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
