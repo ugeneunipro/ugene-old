@@ -72,6 +72,8 @@ int DotPlotImageExportController::getImageHeight() const {
 
 void DotPlotImageExportController::initSettingsWidget() {
     QVBoxLayout* layout = new QVBoxLayout();
+    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     includeAreaSelection = new QCheckBox(tr("Include area selection"));
     includeRepeatSelection = new QCheckBox(tr("Include repeat selection"));

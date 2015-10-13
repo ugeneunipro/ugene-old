@@ -242,8 +242,8 @@ void ExportImageDialog::init() {
         break;
     }
 
-
     ui->dpiWidget->setVisible(source == DotPlot);
+
     // set tip color
     QString style = "QLabel { color: " + L10N::errorColorLabelStr() + "; font: bold;}";
     ui->hintLabel->setStyleSheet(style);
@@ -251,11 +251,8 @@ void ExportImageDialog::init() {
 
     setFormats();
 
-    if (scalingPolicy == NoScaling){
-        ui->widthLabel->hide();
-        ui->widthSpinBox->hide();
-        ui->heightLabel->hide();
-        ui->heightSpinBox->hide();
+    if (scalingPolicy == NoScaling) {
+        ui->imageSizeSettingsContainer->hide();
     }
 
     ui->widthSpinBox->setValue(exportController->getImageWidth());
@@ -290,8 +287,6 @@ void ExportImageDialog::init() {
     }
 
     connect(ui->formatsBox, SIGNAL(currentIndexChanged(const QString&)), exportController, SLOT(sl_onFormatChanged(const QString&)));
-
-    resize(width(), ui->dialogLayout->minimumSize().height());
 }
 
 void ExportImageDialog::setSizeControlsEnabled(bool enabled)

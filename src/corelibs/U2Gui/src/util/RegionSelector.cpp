@@ -303,14 +303,18 @@ void RegionSelector::initLayout() {
     if (isVertical) {
         QGroupBox* gb = new QGroupBox(this);
         gb->setTitle(tr("Region"));
+
         QGridLayout* l = new QGridLayout(gb);
+        l->setSizeConstraint(QLayout::SetMinAndMaxSize);
         gb->setLayout(l);
+
         l->addWidget(comboBox, 0, 0, 1, 3);
         l->addWidget(startEdit, 1, 0);
         l->addWidget(new QLabel(tr("-"), gb), 1, 1);
         l->addWidget(endEdit, 1, 2);
-        l->setRowStretch(2, 1);
+
         QVBoxLayout* rootLayout = new QVBoxLayout(this);
+        rootLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
         rootLayout->setMargin(0);
         setLayout(rootLayout);
         rootLayout->addWidget(gb);

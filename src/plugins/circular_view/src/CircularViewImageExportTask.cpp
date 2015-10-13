@@ -148,6 +148,8 @@ int CircularViewImageExportController::getImageHeight() const {
 
 void CircularViewImageExportController::initSettingsWidget() {
     QVBoxLayout* layout = new QVBoxLayout();
+    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     if (cvList.size() > 1) {
         QLabel* label = new QLabel(tr("Sequence"));
@@ -161,7 +163,6 @@ void CircularViewImageExportController::initSettingsWidget() {
                 sequenceComboBox->setCurrentIndex( sequenceComboBox->count() - 1 );
             }
         }
-        sequenceComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sequenceComboBox->setObjectName("Exported_sequence_combo");
 
         QHBoxLayout* seqLayout = new QHBoxLayout();
