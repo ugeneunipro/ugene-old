@@ -141,25 +141,26 @@ void MSAGraphOverview::resizeEvent(QResizeEvent *e) {
 }
 
 void MSAGraphOverview::drawVisibleRange(QPainter &p) {
-    if (editor->getAlignmentLen() == 0) {
-        return;
-    }
-    stepX = width() / (double)editor->getAlignmentLen();
+    if (editor->isAlignmentEmpty()) {
+        setVisibleRangeForEmptyAlignment();
+    } else {
+        stepX = width() / (double)editor->getAlignmentLen();
 
-    cachedVisibleRange.setY(0);
-    cachedVisibleRange.setHeight(FIXED_HEIGHT);
+        cachedVisibleRange.setY(0);
+        cachedVisibleRange.setHeight(FIXED_HEIGHT);
 
-    double consStep = editor->getAlignmentLen() / (double)(width());
+        double consStep = editor->getAlignmentLen() / (double)(width());
 
-    cachedVisibleRange.setX( qRound (sequenceArea->getFirstVisibleBase() / consStep ) );
-    cachedVisibleRange.setWidth( qRound ( (sequenceArea->getLastVisibleBase(true) - sequenceArea->getFirstVisibleBase() + 1) / consStep ) );
+        cachedVisibleRange.setX(qRound(sequenceArea->getFirstVisibleBase() / consStep));
+        cachedVisibleRange.setWidth(qRound((sequenceArea->getLastVisibleBase(true) - sequenceArea->getFirstVisibleBase() + 1) / consStep));
 
-    if (cachedVisibleRange.width() == 0) {
-        cachedVisibleRange.setWidth(1);
-    }
+        if (cachedVisibleRange.width() == 0) {
+            cachedVisibleRange.setWidth(1);
+        }
 
-    if(cachedVisibleRange.width() < VISIBLE_RANGE_CRITICAL_SIZE || cachedVisibleRange.height() < VISIBLE_RANGE_CRITICAL_SIZE) {
-        p.setPen(Qt::red);
+        if (cachedVisibleRange.width() < VISIBLE_RANGE_CRITICAL_SIZE || cachedVisibleRange.height() < VISIBLE_RANGE_CRITICAL_SIZE) {
+            p.setPen(Qt::red);
+        }
     }
 
     p.fillRect(cachedVisibleRange, VISIBLE_RANGE_COLOR);
@@ -167,7 +168,7 @@ void MSAGraphOverview::drawVisibleRange(QPainter &p) {
 }
 
 void MSAGraphOverview::sl_drawGraph() {
-    if (!isVisible() || isBlocked || editor->isAlignmentEmpty()) {
+    if (!isVisible() || isBlocked) {
         return;
     }
     graphCalculationTaskRunner.cancel();
@@ -175,17 +176,14 @@ void MSAGraphOverview::sl_drawGraph() {
     switch (method) {
     case Strict:
         graphCalculationTask = new MSAConsensusOverviewCalculationTask(editor->getMSAObject(),
-                                                                       editor->getAlignmentLen(),
                                                                        width(), FIXED_HEIGHT);
         break;
     case Gaps:
         graphCalculationTask = new MSAGapOverviewCalculationTask(editor->getMSAObject(),
-                                                                 editor->getAlignmentLen(),
                                                                  width(), FIXED_HEIGHT);
         break;
     case Clustal:
         graphCalculationTask = new MSAClustalOverviewCalculationTask(editor->getMSAObject(),
-                                                                     editor->getAlignmentLen(),
                                                                      width(), FIXED_HEIGHT);
         break;
     case Highlighting:
@@ -198,7 +196,6 @@ void MSAGraphOverview::sl_drawGraph() {
         graphCalculationTask = new MSAHighlightingOverviewCalculationTask(editor,
                                                                           cSchemeId,
                                                                           hSchemeId,
-                                                                          editor->getAlignmentLen(),
                                                                           width(), FIXED_HEIGHT);
         break;
     }
@@ -303,13 +300,13 @@ void MSAGraphOverview::drawOverview(QPainter &p) {
     p.setPen(displaySettings->color);
     p.setBrush(displaySettings->color);
 
-    if (graphCalculationTaskRunner.getResult().isEmpty() && !isBlocked) {
+    if (graphCalculationTaskRunner.getResult().isEmpty() && !editor->isAlignmentEmpty() && !isBlocked) {
         sl_drawGraph();
         return;
     }
 
     QPolygonF resultPolygon = graphCalculationTaskRunner.getResult();
-    if (resultPolygon.last().x() != width()) {
+    if (!editor->isAlignmentEmpty() && resultPolygon.last().x() != width()) {
         sl_drawGraph();
         return;
     }

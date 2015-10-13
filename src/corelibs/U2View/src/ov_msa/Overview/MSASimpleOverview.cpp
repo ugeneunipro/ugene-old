@@ -41,9 +41,6 @@ MSASimpleOverview::MSASimpleOverview(MSAEditorUI *_ui)
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     setFixedHeight(FIXED_HEIGTH);
 
-    colorScheme = sequenceArea->getCurrentColorScheme();
-    highlightingScheme = sequenceArea->getCurrentHighlightingScheme();
-
     setVisible(false);
 }
 
@@ -98,8 +95,6 @@ void MSASimpleOverview::sl_highlightingChanged() {
     if (!isValid()) {
         return;
     }
-    colorScheme = sequenceArea->getCurrentColorScheme();
-    highlightingScheme = sequenceArea->getCurrentHighlightingScheme();
     redrawMSAOverview = true;
     update();
 }
@@ -168,7 +163,7 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             next = qRound( stepX * (double)(pos + 1) );
             rect.setWidth( next - prev );
 
-            QColor color = colorScheme->getColor(seq, pos, mAlignmentObj->charAt(seq, pos));
+            QColor color = sequenceArea->getCurrentColorScheme()->getColor(seq, pos, mAlignmentObj->charAt(seq, pos));
             if (MSAHighlightingOverviewCalculationTask::isGapScheme(highlightingSchemeId)) {
                 color = Qt::gray;
             }
@@ -182,8 +177,8 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             }
             drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
                         mAlignment,
-                        highlightingScheme,
-                        colorScheme,
+                        sequenceArea->getCurrentHighlightingScheme(),
+                        sequenceArea->getCurrentColorScheme(),
                         seq, pos,
                         refPos);
 
@@ -197,19 +192,19 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
 }
 
 void MSASimpleOverview::drawVisibleRange(QPainter &p) {
-    if (editor->getAlignmentLen() == 0) {
-        return;
-    }
+    if (editor->isAlignmentEmpty()) {
+        setVisibleRangeForEmptyAlignment();
+    } else {
+        stepX = width() / (double)editor->getAlignmentLen();
 
-    stepX = width() / (double)editor->getAlignmentLen();
+        cachedVisibleRange.setX(qRound(stepX * sequenceArea->getFirstVisibleBase()));
+        cachedVisibleRange.setWidth(qRound(stepX * (sequenceArea->getLastVisibleBase(true) - sequenceArea->getFirstVisibleBase() + 1)));
+        cachedVisibleRange.setY(qRound(stepY * sequenceArea->getFirstVisibleSequence()));
+        cachedVisibleRange.setHeight(qRound(stepY * (sequenceArea->getLastVisibleSequence(true) - sequenceArea->getFirstVisibleSequence() + 1)));
 
-    cachedVisibleRange.setX( qRound( stepX * sequenceArea->getFirstVisibleBase() ) );
-    cachedVisibleRange.setWidth( qRound( stepX * ( sequenceArea->getLastVisibleBase(true) - sequenceArea->getFirstVisibleBase() + 1) ) );
-    cachedVisibleRange.setY( qRound( stepY * sequenceArea->getFirstVisibleSequence() ) );
-    cachedVisibleRange.setHeight( qRound( stepY * ( sequenceArea->getLastVisibleSequence(true) - sequenceArea->getFirstVisibleSequence() + 1) ) );
-
-    if(cachedVisibleRange.width() < VISIBLE_RANGE_CRITICAL_SIZE || cachedVisibleRange.height() < VISIBLE_RANGE_CRITICAL_SIZE) {
-        p.setPen(Qt::red);
+        if (cachedVisibleRange.width() < VISIBLE_RANGE_CRITICAL_SIZE || cachedVisibleRange.height() < VISIBLE_RANGE_CRITICAL_SIZE) {
+            p.setPen(Qt::red);
+        }
     }
 
     p.fillRect(cachedVisibleRange, VISIBLE_RANGE_COLOR);
@@ -217,7 +212,7 @@ void MSASimpleOverview::drawVisibleRange(QPainter &p) {
 }
 
 void MSASimpleOverview::drawSelection(QPainter &p) {
-    p.fillRect(cachedSelection, SELECTION_COLOR);
+        p.fillRect(cachedSelection, SELECTION_COLOR);
 }
 
 void MSASimpleOverview::moveVisibleRange(QPoint _pos) {

@@ -3626,6 +3626,51 @@ GUI_TEST_CLASS_DEFINITION(test_4734) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4735) {
+    //1. Open "_common_data/fasta/empty.fa" as msa.
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Open "Simple overview"
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+    QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
+    CHECK_SET_ERR(simple->isVisible(), "simple overveiw is not visiable");
+
+    //Check empty simple overview gray color
+    QPixmap pixmap = QPixmap::grabWidget(simple, simple->rect());
+    QImage img = pixmap.toImage();
+    QRgb rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
+    QColor c(rgb);
+    CHECK_SET_ERR(c.name() == "#ededed", "simple overview has wrong color. Expected: #ededed, Found: " + c.name());
+
+    //3. Add sequence eas.fastq to alignment
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/fastq/", "eas.fastq");
+    GTUtilsDialog::waitForDialog(os, ob);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    
+    //check not empty overview color
+    pixmap = QPixmap::grabWidget(simple, simple->rect());
+    img = pixmap.toImage();
+    rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
+    c = QColor(rgb);
+    CHECK_SET_ERR(c.name() == "#c3ebc3", "simple overview has wrong color. Expected: #c3ebc3, Found: " + c.name());
+
+    //4. Undo changes
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Check empty simple overview gray color again
+    pixmap = QPixmap::grabWidget(simple, simple->rect());
+    img = pixmap.toImage();
+    rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
+    c = QColor(rgb);
+    CHECK_SET_ERR(c.name() == "#ededed", "simple overview has wrong color. Expected: #ededed, Found: " + c.name());
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4795) {
     //    1. Open "_common_data/clustal/amino_ext.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/amino_ext.fa");

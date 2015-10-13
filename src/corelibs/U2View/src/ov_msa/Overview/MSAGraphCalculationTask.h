@@ -42,7 +42,7 @@ class MSAHighlightingScheme;
 class MSAGraphCalculationTask : public BackgroundTask<QPolygonF> {
     Q_OBJECT
 public:
-    MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height);
+    MSAGraphCalculationTask(MAlignmentObject* msa, int width, int height);
 
     void run();
 signals:
@@ -55,6 +55,7 @@ protected:
     QScopedPointer<MAlignment> ma;
     MemoryLocker memLocker;
     int msaLength;
+    int seqNumber;
     int width;
     int height;
 };
@@ -63,32 +64,26 @@ class MSAConsensusOverviewCalculationTask : public MSAGraphCalculationTask {
     Q_OBJECT
 public:
     MSAConsensusOverviewCalculationTask(MAlignmentObject* msa,
-                                        int msaLen,
                                         int width, int height);
 private:
     int getGraphValue(int pos) const;
 
     MSAConsensusAlgorithm*  algorithm;
-    int seqNumber;
 };
 
 class MSAGapOverviewCalculationTask : public MSAGraphCalculationTask {
     Q_OBJECT
 public:
     MSAGapOverviewCalculationTask(MAlignmentObject* msa,
-                                  int msaLen,
                                   int width, int height);
 private:
     int getGraphValue(int pos) const;
-
-    int seqNumber;
 };
 
 class MSAClustalOverviewCalculationTask : public MSAGraphCalculationTask {
     Q_OBJECT
 public:
     MSAClustalOverviewCalculationTask(MAlignmentObject* msa,
-                                      int msaLen,
                                       int width, int height);
 private:
     int getGraphValue(int pos) const;
@@ -102,7 +97,6 @@ public:
     MSAHighlightingOverviewCalculationTask(MSAEditor* _editor,
                                            const QString &colorSchemeId,
                                            const QString &highlightingSchemeId,
-                                           int msaLen,
                                            int width, int height);
 
     static bool isCellHighlighted(const MAlignment &msa,
@@ -119,7 +113,6 @@ private:
 
     bool isCellHighlighted(int seq, int pos) const;
 
-    int msaRowNumber;
     int refSequenceId;
 
     MSAColorScheme*         colorScheme;

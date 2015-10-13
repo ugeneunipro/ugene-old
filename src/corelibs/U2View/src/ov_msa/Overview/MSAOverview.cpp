@@ -77,7 +77,11 @@ void MSAOverview::mouseReleaseEvent(QMouseEvent *me) {
     QWidget::mouseReleaseEvent(me);
 }
 
-void MSAOverview::showWarning(QPainter& painter,QPaintEvent *e, const QString& warningMessage) {
+void MSAOverview::setVisibleRangeForEmptyAlignment() {
+    cachedVisibleRange = rect();
+}
+
+void MSAOverview::showWarning(QPainter& painter, QPaintEvent *e, const QString& warningMessage) {
     painter.fillRect(rect(), Qt::gray);
 
     QFontMetrics metrics(painter.font(), this);

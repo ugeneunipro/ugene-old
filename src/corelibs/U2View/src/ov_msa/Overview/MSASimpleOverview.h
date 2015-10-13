@@ -63,9 +63,6 @@ private:
     void moveVisibleRange(QPoint pos);
 
 private:
-    MSAColorScheme*         colorScheme;
-    MSAHighlightingScheme*  highlightingScheme;
-
     mutable QPixmap cachedMSAOverview;
 
     mutable bool    redrawMSAOverview;

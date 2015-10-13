@@ -37,13 +37,17 @@
 
 namespace U2 {
 
-MSAGraphCalculationTask::MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height)
+MSAGraphCalculationTask::MSAGraphCalculationTask(MAlignmentObject* msa, int width, int height)
     : BackgroundTask<QPolygonF>(tr("Render overview"), TaskFlag_None),
       memLocker(stateInfo),
-      msaLength( msaLength ),
-      width( width ),
-      height( height )
+      msaLength(0),
+      seqNumber(0),
+      width(width),
+      height(height)
 {
+    SAFE_POINT_EXT(msa != NULL, setError(tr("MSA is NULL")), );
+    msaLength = msa->getLength();
+    seqNumber = msa->getNumRows();
     if(!memLocker.tryAcquire(msa->getMAlignment().getLength() * msa->getMAlignment().getNumRows())) {
         setError(memLocker.getError());
         return;
@@ -66,7 +70,7 @@ void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
     stateInfo.setProgress(0);
     emit si_progressChanged();
 
-    if (msaLength == 0) {
+    if (msaLength == 0 || seqNumber == 0) {
         polygon = QPolygonF();
         return;
     }
@@ -122,19 +126,15 @@ void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
 }
 
 MSAConsensusOverviewCalculationTask::MSAConsensusOverviewCalculationTask(MAlignmentObject* msa,
-                                    int msaLen,
                                     int width, int height)
-    : MSAGraphCalculationTask(msa, msaLen, width, height)
+    : MSAGraphCalculationTask(msa, width, height)
 {
-    SAFE_POINT_EXT(msa != NULL, setError(tr("MAlignmentObject is NULL")), );
     SAFE_POINT_EXT(AppContext::getMSAConsensusAlgorithmRegistry() != NULL, setError(tr("MSAConsensusAlgorithmRegistry is NULL!")), );
 
     MSAConsensusAlgorithmFactory* factory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::STRICT_ALGO);
     SAFE_POINT_EXT(factory != NULL, setError(tr("Strict consensus algorithm factory is NULL")), );
 
-    seqNumber = msa->getNumRows();
-    SAFE_POINT_EXT(seqNumber != 0, setError(tr("No sequences in MSA")), );
-
+    SAFE_POINT_EXT(msa != NULL, setError(tr("MSA is NULL")), );
     const MAlignment& ma = msa->getMAlignment();
     algorithm = factory->createAlgorithm(ma);
     algorithm->setParent(this);
@@ -146,15 +146,8 @@ int MSAConsensusOverviewCalculationTask::getGraphValue(int pos) const {
     return qRound(score * 100. / seqNumber);
 }
 
-MSAGapOverviewCalculationTask::MSAGapOverviewCalculationTask(MAlignmentObject* msa,
-                              int msaLen,
-                              int width, int height)
-    : MSAGraphCalculationTask(msa, msaLen, width, height)
-{
-    SAFE_POINT_EXT(msa != NULL, setError(tr("MSA is NULL")), );
-    seqNumber = msa->getNumRows();
-    SAFE_POINT_EXT(seqNumber != 0, setError(tr("No sequences in MSA")), );
-}
+MSAGapOverviewCalculationTask::MSAGapOverviewCalculationTask(MAlignmentObject* msa, int width, int height)
+    : MSAGraphCalculationTask(msa, width, height) {}
 
 int MSAGapOverviewCalculationTask::getGraphValue(int pos) const {
     int gapCounter = 0;
@@ -171,18 +164,14 @@ int MSAGapOverviewCalculationTask::getGraphValue(int pos) const {
     return qRound(gapCounter * 100. / seqNumber);
 }
 
-MSAClustalOverviewCalculationTask::MSAClustalOverviewCalculationTask(MAlignmentObject *msa,
-                                                                     int msaLen,
-                                                                     int width, int height)
-    : MSAGraphCalculationTask(msa, msaLen, width, height)
-{
-
-    SAFE_POINT_EXT(msa != NULL, setError(tr("MAlignmentObject is NULL")), );
+MSAClustalOverviewCalculationTask::MSAClustalOverviewCalculationTask(MAlignmentObject *msa, int width, int height)
+    : MSAGraphCalculationTask(msa, width, height) {
     SAFE_POINT_EXT(AppContext::getMSAConsensusAlgorithmRegistry() != NULL, setError(tr("MSAConsensusAlgorithmRegistry is NULL!")), );
 
     MSAConsensusAlgorithmFactory* factory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::CLUSTAL_ALGO);
     SAFE_POINT_EXT(factory != NULL, setError(tr("Clustal algorithm factory is NULL")), );
 
+    SAFE_POINT_EXT(msa != NULL, setError(tr("MSA is NULL")), );
     algorithm = factory->createAlgorithm(*ma);
     algorithm->setParent(this);
 }
@@ -205,11 +194,8 @@ int MSAClustalOverviewCalculationTask::getGraphValue(int pos) const {
 MSAHighlightingOverviewCalculationTask::MSAHighlightingOverviewCalculationTask(MSAEditor *editor,
                                                                                const QString &colorSchemeId,
                                                                                const QString &highlightingSchemeId,
-                                                                               int msaLen,
                                                                                int width, int height)
-    : MSAGraphCalculationTask(editor->getMSAObject(), msaLen, width, height)
-{
-    msaRowNumber = ma->getNumRows();
+    : MSAGraphCalculationTask(editor->getMSAObject(), width, height) {
 
     SAFE_POINT_EXT(AppContext::getMSAHighlightingSchemeRegistry() != NULL,
                    setError(tr("MSA highlighting scheme registry is NULL")), );
@@ -264,16 +250,16 @@ bool MSAHighlightingOverviewCalculationTask::isCellHighlighted(const MAlignment 
 }
 
 int MSAHighlightingOverviewCalculationTask::getGraphValue(int pos) const {
-    CHECK(msaRowNumber != 0, 0);
+    CHECK(seqNumber != 0, 0);
 
     int counter = 0;
-    for (int i = 0; i < msaRowNumber; i++) {
+    for (int i = 0; i < seqNumber; i++) {
         if ( isCellHighlighted(i, pos) ) {
             counter++;
         }
     }
 
-    return 100 * counter / msaRowNumber;
+    return 100 * counter / seqNumber;
 }
 
 bool MSAHighlightingOverviewCalculationTask::isGapScheme(const QString &schemeId) {

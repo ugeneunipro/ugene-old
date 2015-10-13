@@ -64,6 +64,8 @@ protected:
     virtual void drawVisibleRange(QPainter&){}
     virtual void drawSelection(QPainter&){}
 
+    void setVisibleRangeForEmptyAlignment();
+
     virtual void moveVisibleRange(QPoint){}
     void showWarning(QPainter& painter, QPaintEvent *e, const QString& warningMessage);
 
