@@ -28,6 +28,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2FeatureType.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
