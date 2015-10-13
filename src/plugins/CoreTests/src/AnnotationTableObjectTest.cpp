@@ -548,9 +548,18 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
 //////////////////////////////////////////////////////////
             const QList<Annotation *> annList = myAnnotation->getAnnotations();
             const QList<Annotation *> annList2 = myAnnotation2->getAnnotations();
+            int annotationsCount1 = 0;
+            foreach(Annotation* annotation, annList) {
+                annotationsCount1 += (annotation->getType() != U2FeatureType::Comment) ? 1 : 0;
+            }
 
-            if (annList2.size() != annList.size()) {
-                stateInfo.setError(QString("annotations count not matched: %1, expected %2 ").arg(annList2.size()).arg(annList.size()));
+            int annotationsCount2 = 0;
+            foreach(Annotation* annotation, annList2) {
+                annotationsCount2 += (annotation->getType() != U2FeatureType::Comment) ? 1 : 0;
+            }
+
+            if (annotationsCount1 != annotationsCount2) {
+                stateInfo.setError(QString("annotations count not matched: %1, expected %2 ").arg(annotationsCount1).arg(annotationsCount2));
                 return ReportResult_Finished;
             }
 
@@ -679,6 +688,12 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
             qSort(annList2.begin(), annList2.end(), AnnotationsLess());
 
             for (int n = 0; (n != annList1.size()) && (n != annList2.size()); n++) {
+                if (annList1.at(n)->getType() == U2FeatureType::Comment) {
+                    annList1.removeAt(n);
+                }
+                if (annList2.at(n)->getType() == U2FeatureType::Comment) {
+                    annList2.removeAt(n);
+                }
                 U2Location l1 = annList1.at(n)->getLocation();
                 U2Location l2 = annList2.at(n)->getLocation();
                 qSort(l1->regions);
@@ -760,8 +775,18 @@ Task::ReportResult GTest_CheckAnnotationsLocationsAndNumReorderdered::report() {
         AnnotationTableObject * ato1 = qobject_cast<AnnotationTableObject*>(objs1.at(i));
         AnnotationTableObject * ato2 = qobject_cast<AnnotationTableObject*>(objs2.at(i));
         assert(ato1 != NULL && ato2 != NULL);
-        const QList<Annotation *> anns1 = ato1->getAnnotations();
-        const QList<Annotation *> anns2 = ato2->getAnnotations();
+        QList<Annotation *> anns1 = ato1->getAnnotations();
+        QList<Annotation *> anns2 = ato2->getAnnotations();
+        for (int n = 0; n < anns1.size(); n++) {
+            if (anns1.at(n)->getType() == U2FeatureType::Comment) {
+                anns1.removeAt(n);
+            }
+        }
+        for (int n = 0; n < anns2.size(); n++) {
+            if (anns2.at(n)->getType() == U2FeatureType::Comment) {
+                anns2.removeAt(n);
+            }
+        }
         if (anns1.size() != anns2.size()) {
             setError(QString("annotations count not matched for %3 and %4: %1 and %2").arg(anns1.size()).
                 arg(anns2.size()).arg(ato1->getGObjectName()).arg(ato2->getGObjectName()));
