@@ -168,11 +168,8 @@ bool validateThickCoordinates(const QString& thickStartStr, const QString& thick
         return false;
     }
 
-    bool thickStartIsInt;
-    bool thickEndIsInt;
-    int thickStart = thickStartStr.toInt(&thickStartIsInt);
-    int thickEnd = thickEndStr.toInt(&thickEndIsInt);
-
+    bool thickStartIsInt = thickStartStr.toInt(&thickStartIsInt);
+    bool thickEndIsInt = thickEndStr.toInt(&thickEndIsInt);
     if (!thickStartIsInt || !thickEndIsInt) {
             return false;
     }
@@ -655,7 +652,7 @@ const int BedFormatParser::BufferSize = 1024 * 4; // 4 Kb
 const int BedFormatParser::MinimumColumnsNumber = 3; // "3" as there must be at least "chrom", "chromStart" and "chromEnd" fields
 
 BedFormatParser::BedFormatParser(IOAdapter *io, const QString &defaultAnnotName, U2OpStatus &os)
-    : io(io), defaultAnnotName(defaultAnnotName), os(os), lineNumber(1), buff(new char[BufferSize]), fileIsValid(true), noHeader(false){
+    : io(io), os(os), defaultAnnotName(defaultAnnotName), buff(new char[BufferSize]), lineNumber(1), fileIsValid(true), noHeader(false){
 }
 
 QHash<QString, QList<SharedAnnotationData> > BedFormatParser::parseDocument() {

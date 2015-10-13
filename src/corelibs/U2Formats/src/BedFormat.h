@@ -142,8 +142,8 @@ private:
     void moveToNextLine();
 
 private:
-    U2OpStatus &os;
     IOAdapter *io;
+    U2OpStatus &os;
     const QString &defaultAnnotName;
     static const int BufferSize;
     static const int MinimumColumnsNumber;
