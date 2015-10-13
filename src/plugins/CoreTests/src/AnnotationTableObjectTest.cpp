@@ -551,12 +551,12 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
             const QList<Annotation *> annList2 = myAnnotation2->getAnnotations();
             int annotationsCount1 = 0;
             foreach(Annotation* annotation, annList) {
-                annotationsCount1 += (annotation->getType() != U2FeatureType::Comment) ? 1 : 0;
+                annotationsCount1 += (annotation->getType() != U2FeatureTypes::Comment) ? 1 : 0;
             }
 
             int annotationsCount2 = 0;
             foreach(Annotation* annotation, annList2) {
-                annotationsCount2 += (annotation->getType() != U2FeatureType::Comment) ? 1 : 0;
+                annotationsCount2 += (annotation->getType() != U2FeatureTypes::Comment) ? 1 : 0;
             }
 
             if (annotationsCount1 != annotationsCount2) {
@@ -689,10 +689,10 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
             qSort(annList2.begin(), annList2.end(), AnnotationsLess());
 
             for (int n = 0; (n != annList1.size()) && (n != annList2.size()); n++) {
-                if (annList1.at(n)->getType() == U2FeatureType::Comment) {
+                if (annList1.at(n)->getType() == U2FeatureTypes::Comment) {
                     annList1.removeAt(n);
                 }
-                if (annList2.at(n)->getType() == U2FeatureType::Comment) {
+                if (annList2.at(n)->getType() == U2FeatureTypes::Comment) {
                     annList2.removeAt(n);
                 }
                 U2Location l1 = annList1.at(n)->getLocation();
@@ -779,12 +779,12 @@ Task::ReportResult GTest_CheckAnnotationsLocationsAndNumReorderdered::report() {
         QList<Annotation *> anns1 = ato1->getAnnotations();
         QList<Annotation *> anns2 = ato2->getAnnotations();
         for (int n = 0; n < anns1.size(); n++) {
-            if (anns1.at(n)->getType() == U2FeatureType::Comment) {
+            if (anns1.at(n)->getType() == U2FeatureTypes::Comment) {
                 anns1.removeAt(n);
             }
         }
         for (int n = 0; n < anns2.size(); n++) {
-            if (anns2.at(n)->getType() == U2FeatureType::Comment) {
+            if (anns2.at(n)->getType() == U2FeatureTypes::Comment) {
                 anns2.removeAt(n);
             }
         }
