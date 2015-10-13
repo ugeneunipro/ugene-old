@@ -396,7 +396,9 @@ GTestLogHelper::GTestLogHelper()
 }
 
 GTestLogHelper::~GTestLogHelper(){
-
+    if (!statusWasVerified && !expectedMessages.isEmpty()) {
+        LogServer::getInstance()->removeListener(this);
+    }
 }
 
 void GTestLogHelper::initMessages(const QStringList& expectedList, const QStringList& unexpectedList)
