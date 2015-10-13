@@ -645,18 +645,18 @@ void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w
     int k2 = a2 - a1;
     kLinearTransformTrace = qreal (k1) / k2;
     bLinearTransformTrace = leftMargin - kLinearTransformTrace*a1;
-    int mk1 = qMin<int>(leftMargin/kLinearTransformTrace,a1);
-    int mk2 = qMin<int>(rightMargin/kLinearTransformTrace,chroma.traceLength-a2-1);
+    int mk1 = qMin(static_cast<int>(leftMargin / kLinearTransformTrace), a1);
+    int mk2 = qMin(static_cast<int>(rightMargin / kLinearTransformTrace), chroma.traceLength - a2 - 1);
     int polylineSize = a2-a1+mk1+mk2+1;
     QPolygonF polylineA(polylineSize), polylineC(polylineSize),
         polylineG(polylineSize), polylineT(polylineSize);
     int areaHeight = (heightPD - heightAreaBC + addUpIfQVL) * this->areaHeight / 100;
     for (int j = a1-mk1; j <= a2+mk2; ++j) {
         double x = kLinearTransformTrace*j+bLinearTransformTrace;
-        double yA = - qMin<double>(chroma.A[j]*areaHeight/chromaMax, h);
-        double yC = - qMin<double>(chroma.C[j]*areaHeight/chromaMax, h);
-        double yG = - qMin<double>(chroma.G[j]*areaHeight/chromaMax, h);
-        double yT = - qMin<double>(chroma.T[j]*areaHeight/chromaMax, h);
+        qreal yA = -qMin(static_cast<qreal>(chroma.A[j]) * areaHeight / chromaMax, h);
+        qreal yC = -qMin(static_cast<qreal>(chroma.C[j]) * areaHeight / chromaMax, h);
+        qreal yG = -qMin(static_cast<qreal>(chroma.G[j]) * areaHeight / chromaMax, h);
+        qreal yT = -qMin(static_cast<qreal>(chroma.T[j]) * areaHeight / chromaMax, h);
         polylineA[j-a1+mk1] = QPointF(x, yA);
         polylineC[j-a1+mk1] = QPointF(x, yC);
         polylineG[j-a1+mk1] = QPointF(x, yG);
@@ -833,22 +833,22 @@ void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y
         bool drawBase = true;
         switch (ba[j])  {
             case 'A':
-                yRes = -qMin<double>(chroma.A[temp]*areaHeight/chromaMax, h);
+                yRes = -qMin(static_cast<qreal>(chroma.A[temp])*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[0]);
                 drawBase = settings.drawTraceA;
                 break;
             case 'C':
-                yRes = -qMin<double>(chroma.C[temp]*areaHeight/chromaMax, h);
+                yRes = -qMin(static_cast<qreal>(chroma.C[temp]) * areaHeight / chromaMax, h);
                 p.setPen(colorForIds[1]);
                 drawBase = settings.drawTraceC;
                 break;
             case 'G':
-                yRes = -qMin<double>(chroma.G[temp]*areaHeight/chromaMax, h);
+                yRes = -qMin(static_cast<qreal>(chroma.G[temp]) * areaHeight / chromaMax, h);
                 p.setPen(colorForIds[2]);
                 drawBase = settings.drawTraceG;
                 break;
             case 'T':
-                yRes = -qMin<double>(chroma.T[temp]*areaHeight/chromaMax, h);
+                yRes = -qMin(static_cast<qreal>(chroma.T[temp]) * areaHeight / chromaMax, h);
                 p.setPen(colorForIds[3]);
                 drawBase = settings.drawTraceT;
                 break;

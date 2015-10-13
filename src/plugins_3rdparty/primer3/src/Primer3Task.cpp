@@ -355,8 +355,8 @@ namespace
 {
     bool clipRegion(U2Region &region, const U2Region &clippingRegion)
     {
-        int start = qMax(region.startPos, clippingRegion.startPos);
-        int end = qMin(region.endPos(), clippingRegion.endPos());
+        qint64 start = qMax(region.startPos, clippingRegion.startPos);
+        qint64 end = qMin(region.endPos(), clippingRegion.endPos());
         if(start > end)
         {
             return false;

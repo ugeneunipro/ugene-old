@@ -679,7 +679,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
 
         int pos = startSeq;
         foreach(const U2Region& r, range) {
-            int end = qMin((qint64)numRows, r.endPos());
+            int end = qMin(numRows, static_cast<int>(r.endPos()));
             for (int s = r.startPos; s < end; s++) {
                 bool isSelected = isRowInSelection(pos);
                 drawSequenceItem(p, s, getTextForRow(s), isSelected, yRange, pos);

@@ -276,7 +276,7 @@ void ORFFindAlgorithm::find(
                 if((seqPointer % BLOCK_READ_FROM_DB) == 0){// query to db
                     sequence.clear();
                     QByteArray tmp;
-                    qint64 regStart = qMax((qint64)maxInitiator, (qint64)i - (BLOCK_READ_FROM_DB + 3));
+                    qint64 regStart = qMax((qint64)maxInitiator, i - (BLOCK_READ_FROM_DB + 3));
                     qint64 regLen = qMin(i - maxInitiator + 1, (qint64)BLOCK_READ_FROM_DB + 3 + 1);
                     tmp.append(dnaSeq.getSequenceData(U2Region(regStart, regLen), os));
                     SAFE_POINT_OP(os, );

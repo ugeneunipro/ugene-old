@@ -104,7 +104,7 @@ QByteArray MysqlSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U
             CHECK_OP(os, QByteArray());
 
             int copyStart = pos - sstart;
-            int copyLength = qMin(regionLengthToRead, length - copyStart);
+            int copyLength = static_cast<int>(qMin(regionLengthToRead, length - copyStart));
             res.append(data.constData() + copyStart, copyLength);
             pos += copyLength;
             regionLengthToRead -= copyLength;

@@ -880,7 +880,7 @@ void GenbankPlainTextFormat::writeSequence(IOAdapter* io, U2SequenceObject* ao, 
     const char* spaces = TextUtils::SPACE_LINE.constData();
     QByteArray num;
     bool ok = true;
-    int blen = io->writeBlock(QByteArray("ORIGIN\n"));
+    qint64 blen = io->writeBlock(QByteArray("ORIGIN\n"));
     if (blen != 7) {
         si.setError(L10N::errorWritingFile(ao->getDocument()->getURL()));
         return;
@@ -896,28 +896,28 @@ void GenbankPlainTextFormat::writeSequence(IOAdapter* io, U2SequenceObject* ao, 
 
         //right spaces
         blen = 10 - num.length()-1;
-        int l = (int)io->writeBlock(QByteArray::fromRawData(spaces, blen));
+        qint64 l = io->writeBlock(QByteArray::fromRawData(spaces, blen));
         if (l!=blen) {
             ok = false;
             break;
         }
 
         //current pos
-        l = (int)io->writeBlock(num);
+        l = io->writeBlock(num);
         if (l != num.length()) {
             ok = false;
             break;
         }
 
         //sequence
-        int last = qMin(pos+charsInLine, slen);
-        for (int j=pos; j < last; j+=10) {
-            l = (int)io->writeBlock(QByteArray::fromRawData(" ", 1));
+        qint64 last = qMin(pos+charsInLine, slen);
+        for (qint64 j = pos; j < last; j += 10) {
+            l = io->writeBlock(QByteArray::fromRawData(" ", 1));
             if (l != 1) {
                 ok = false;
                 break;
             }
-            int chunkLen = qMin((qint64)10, slen - j);
+            qint64 chunkLen = qMin((qint64)10, slen - j);
             l = io->writeBlock(QByteArray::fromRawData(sequence + (j % DB_BLOCK_SIZE) , chunkLen));
             if (l!=chunkLen) {
                 ok = false;
@@ -929,7 +929,7 @@ void GenbankPlainTextFormat::writeSequence(IOAdapter* io, U2SequenceObject* ao, 
         }
 
         //line end
-        l = (int)io->writeBlock(QByteArray("\n", 1));
+        l = io->writeBlock(QByteArray("\n", 1));
         if (l != 1) {
             ok = false;
             break;

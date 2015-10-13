@@ -483,7 +483,7 @@ void LargeSizedTandemFinder::run(){
         while(currentDiffPos<sArrayLast){
             const qint32 diff  = currentDiffPos[1]-currentDiffPos[0];
             if (diff>=minPeriod && diff<=maxPeriod){    //skip already found tandems
-                unsigned suffixOffset = qMax(1, signed(settings.minTandemSize-prefixLength)/diff);
+                unsigned suffixOffset = static_cast<unsigned>(qMax(1, signed(settings.minTandemSize - prefixLength) / diff));
                 if (currentDiffPos+suffixOffset>sArrayLast || currentDiffPos[suffixOffset]-currentDiffPos[0]!=suffixOffset*diff){
                     //                    currentDiffPos += suffixOffset;continue;
                 }else{

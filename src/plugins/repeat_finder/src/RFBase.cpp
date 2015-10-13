@@ -203,9 +203,9 @@ bool RFAlgorithmBase::checkResult(const RFResult& r) {
 }
 
 bool Tandem::extend (const Tandem& t){
-    int newEnd = qMax(offset+size, t.offset+t.size);
+    qint64 newEnd = qMax(offset+size, t.offset+t.size);
     offset = qMin(offset, t.offset);
-    int oldSize = size;
+    qint64 oldSize = size;
     size = newEnd - offset;
     return size > oldSize;
 }

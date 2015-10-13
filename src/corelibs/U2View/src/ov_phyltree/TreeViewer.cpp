@@ -746,7 +746,7 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
                 }
             }
 
-            qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF * getOptionValue(WIDTH_COEF).toUInt());
+            qreal coef = qMax(static_cast<qreal>(1.0), TreeViewerUI::SIZE_COEF * getOptionValue(WIDTH_COEF).toUInt());
 
             switch (type) {
             case DEFAULT:
@@ -907,7 +907,7 @@ void TreeViewerUI::addLegend() {
 }
 
 void TreeViewerUI::updateLegend() {
-    qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF * getOptionValue(WIDTH_COEF).toUInt());
+    qreal coef  = qMax(static_cast<qreal>(1.0), TreeViewerUI::SIZE_COEF * getOptionValue(WIDTH_COEF).toUInt());
     qreal WIDTH = getOptionValue(SCALEBAR_RANGE).toDouble() * coef * curTreeViewer->getScale();
 
     qreal d = getOptionValue(SCALEBAR_RANGE).toDouble();
@@ -952,9 +952,9 @@ void TreeViewerUI::zooming(qreal horizontalZoom, qreal verticalZoom) {
     horizontalZoom = horizontalScale * horizontalZoom;
 
     verticalZoom = qMax(MINIMUM_ZOOM, verticalZoom);
-    verticalZoom  = qMin(MAXIMUM_ZOOM * qMax(getOptionValue(HEIGHT_COEF).toUInt() * TreeViewerUI::SIZE_COEF, 1.0), verticalZoom);
+    verticalZoom = qMin(MAXIMUM_ZOOM * qMax(getOptionValue(HEIGHT_COEF).toUInt() * TreeViewerUI::SIZE_COEF, static_cast<qreal>(1.0)), verticalZoom);
     horizontalZoom = qMax(MINIMUM_ZOOM, horizontalZoom);
-    horizontalZoom  = qMin(MAXIMUM_ZOOM * qMax(getOptionValue(WIDTH_COEF).toUInt() * TreeViewerUI::SIZE_COEF, 1.0), horizontalZoom);
+    horizontalZoom = qMin(MAXIMUM_ZOOM * qMax(getOptionValue(WIDTH_COEF).toUInt() * TreeViewerUI::SIZE_COEF, static_cast<qreal>(1.0)), horizontalZoom);
 
     scale(horizontalZoom / horizontalScale, verticalZoom / verticalScale);
     verticalScale = verticalZoom;
@@ -1489,7 +1489,7 @@ qreal TreeViewerUI::avgWidth(){
 
 void TreeViewerUI::updateActionsState(){
 
-    zoomToAction->setEnabled(horizontalScale < MAXIMUM_ZOOM * qMax(getOptionValue(WIDTH_COEF).toUInt() * TreeViewerUI::SIZE_COEF, 1.0));
+    zoomToAction->setEnabled(horizontalScale < MAXIMUM_ZOOM * qMax(getOptionValue(WIDTH_COEF).toUInt() * TreeViewerUI::SIZE_COEF, static_cast<qreal>(1.0)));
     zoomOutAction->setEnabled(horizontalScale > MINIMUM_ZOOM);
 
     if(isSelectedCollapsed()){

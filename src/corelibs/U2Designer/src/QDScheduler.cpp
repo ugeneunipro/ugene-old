@@ -809,8 +809,8 @@ void QDFindLocationTask::run() {
     if (step->hasPrev()) {
         resultLocation = linker->findLocation(step);
         foreach(const U2Region& r, resultLocation) {
-            int startPos = qMax(seqReg.startPos, r.startPos-REGION_DELTA);
-            int endPos = qMin(seqReg.endPos(), r.endPos()+REGION_DELTA);
+            qint64 startPos = qMax(seqReg.startPos, r.startPos - REGION_DELTA);
+            qint64 endPos = qMin(seqReg.endPos(), r.endPos() + REGION_DELTA);
             U2Region extended(startPos, endPos - startPos);
             searchLocation.append(extended);
         }

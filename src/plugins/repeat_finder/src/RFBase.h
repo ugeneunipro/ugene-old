@@ -59,7 +59,7 @@ public:
     // repeat len
     int repeatLen;
     //size of tandem in nucleotides
-    int size;
+    qint64 size;
     quint64 rightSide;
 };
 

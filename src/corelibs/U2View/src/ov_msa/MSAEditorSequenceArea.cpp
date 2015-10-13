@@ -1016,7 +1016,7 @@ void MSAEditorSequenceArea::onVisibleRangeChanged() {
 
         foreach(const U2Region& region, range) {
             int start = region.startPos;
-            int end = qMin(region.endPos(), lastVisibleSeq);
+            int end = static_cast<int>(qMin(region.endPos(), lastVisibleSeq));
             for (int seq = start; seq <= end; seq++) {
                 visibleSeqs.append(rowNames.at(seq));
             }

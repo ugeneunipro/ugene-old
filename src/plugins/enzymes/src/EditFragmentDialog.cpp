@@ -245,8 +245,8 @@ void EditFragmentDialog::resetLeftOverhang() {
     SEnzymeData enz = EnzymesIO::findEnzymeById(enzymeId, enzymes);
 
     int leftCutCompl = enz->seq.length() - enz->cutComplement;
-    int cutPos = dnaFragment.getFragmentRegions().first().startPos - qMax(enz->cutDirect, leftCutCompl);
-    int leftOverhangStart = cutPos + qMin(enz->cutDirect, leftCutCompl);
+    qint64 cutPos = dnaFragment.getFragmentRegions().first().startPos - qMax(enz->cutDirect, leftCutCompl);
+    qint64 leftOverhangStart = cutPos + qMin(enz->cutDirect, leftCutCompl);
     U2OpStatusImpl os;
     QByteArray overhang = dnaFragment.getSourceSequenceRegion( U2Region( leftOverhangStart, dnaFragment.getFragmentRegions().first().startPos - leftOverhangStart), os );
     SAFE_POINT_OP(os, );

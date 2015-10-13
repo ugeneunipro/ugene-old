@@ -91,7 +91,7 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
             QByteArray data = q.getBlob(2);
 
             int copyStart = pos - sstart;
-            int copyLength = qMin(regionLengthToRead, length - copyStart);
+            int copyLength = static_cast<int>(qMin(regionLengthToRead, length - copyStart));
             res.append(data.constData() + copyStart, copyLength);
             pos += copyLength;
             regionLengthToRead -= copyLength;
