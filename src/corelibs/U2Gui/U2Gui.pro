@@ -38,6 +38,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
            src/util/CreateObjectRelationDialogController.h \
+           src/util/CreateSequenceFromTextAndOpenViewTask.h \
            src/util/CredentialsAskerGui.h \
            src/util/DialogUtils.h \
            src/util/DocumentFormatComboboxController.h \
@@ -57,6 +58,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GUIUtils.h \
            src/util/HelpButton.h \
            src/util/ImportDialogsFactories.h \
+           src/util/ImportSequenceFromRawDataTask.h \
            src/util/InputWidgetsControllers.h \
            src/util/LabelClickTransmitter.h \
            src/util/LastUsedDirHelper.h \
@@ -177,6 +179,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
            src/util/CreateObjectRelationDialogController.cpp \
+           src/util/CreateSequenceFromTextAndOpenViewTask.cpp \
            src/util/CredentialsAskerGui.cpp \
            src/util/DialogUtils.cpp \
            src/util/DocumentFormatComboboxController.cpp \
@@ -196,6 +199,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/GUIUtils.cpp \
            src/util/HelpButton.cpp \
            src/util/ImportDialogsFactories.cpp \
+           src/util/ImportSequenceFromRawDataTask.cpp \
            src/util/InputWidgetsControllers.cpp \
            src/util/LabelClickTransmitter.cpp \
            src/util/LastUsedDirHelper.cpp \

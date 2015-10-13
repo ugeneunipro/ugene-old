@@ -46,19 +46,16 @@ public:
 
     virtual void accept();
     virtual void reject();
-    Document* getDocument(){return doc;}
 
 private slots:
     void sl_browseButtonClicked();
     void sl_indexChanged(int index);
-    void sl_projectLoaded();
     void sl_filepathTextChanged(const QString &text);
     
 private:
     void addSeqPasterWidget();
-    void acceptWithExistingProject();
+    QList<DNASequence> prepareSequences() const;
     
-    Document *doc;
     SeqPasterWidgetController *w;
     QString filter;
     Ui_CreateDocumentFromTextDialog* ui;

@@ -19,44 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/ProjectService.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/SelectionModel.h>
 #include <U2Core/Task.h>
-#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/DocumentFormatUtils.h>
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankPlainTextFormat.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "CreateDocumentFromTextDialogController.h"
+#include "CreateSequenceFromTextAndOpenViewTask.h"
 #include "ui/ui_CreateDocumentFromTextDialog.h"
 
 namespace U2{
@@ -120,81 +103,12 @@ void CreateDocumentFromTextDialogController::accept(){
         QMessageBox::critical(this, this->windowTitle(), tr("Sequence name is empty"));
         return;
     }    
-    
-    if(AppContext::getProject() == NULL) {
-        Task * openProj = AppContext::getProjectLoader()->createNewProjectTask();
-        connect(openProj, SIGNAL(si_stateChanged()), this, SLOT(sl_projectLoaded()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(openProj);
-        return;
-    }
-    acceptWithExistingProject();
-}
 
-void CreateDocumentFromTextDialogController::sl_projectLoaded() {
-    Task * openProjTask = qobject_cast<Task*>(sender());
-    assert(openProjTask != NULL);
-    if(openProjTask->getState() != Task::State_Finished) {
-        return;
-    }
-    
-    if( AppContext::getProject() == NULL ) {
-        QMessageBox::warning(this, tr("Error"), tr("The project cannot be created"));
-        close();
-        QDialog::reject();
-        return;
-    }
-    acceptWithExistingProject();
-}
-
-void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
-    Project *p = AppContext::getProject();
-    QString errorMessage; Q_UNUSED(errorMessage);
-    U2OpStatus2Log  os;
-    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), os);
     CHECK_OP(os, );
     GUrl url(fullPath);
-    Document *loadedDoc=p->findDocumentByURL(url);
-    if (loadedDoc) {
-        coreLog.details("The document already in the project");
-        QMessageBox::warning(this, tr("warning"), tr("The document already in the project"));
-        return;
-    }
-    
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(ui->filepathEdit->text()));
-    QVariant currentId = ui->formatBox->itemData(ui->formatBox->currentIndex());
-    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId.toString());
-    doc = df->createNewLoadedDocument(iof, fullPath, os);
-    CHECK_OP_EXT(os, delete doc, );
-    
-    foreach (DNASequence sequence, w->getSequences()) {
-        QList<GObject*> objs;
-        if (sequence.getName().isEmpty()) {
-            sequence.setName(ui->nameEdit->text());
-        }
-        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, sequence.getName(), objs, sequence, os);
-        CHECK_OP_EXT(os, delete doc, );
-        doc->addObject(seqObj);
-    }
 
-    p->addDocument(doc);
-    if(ui->saveImmediatelyBox->isChecked()){
-        AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL()));
-    }
-    
-    // Open view for created document
-    DocumentSelection ds;
-    ds.setSelection(QList<Document*>() << doc);
-    MultiGSelection ms;
-    ms.addSelection(&ds);
-    foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
-        if(f->canCreateView(ms)) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
-            break;
-        }
-    }
-
-    
-    this->close();
+    Task *task = new CreateSequenceFromTextAndOpenViewTask(prepareSequences(), ui->formatBox->currentData().toString(), url);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
     QDialog::accept();
 }
 
@@ -207,6 +121,16 @@ void CreateDocumentFromTextDialogController::addSeqPasterWidget(){
     w = new SeqPasterWidgetController(this);
     w->allowFastaFormat(true);
     ui->verticalLayout->insertWidget(0, w);
+}
+
+QList<DNASequence> CreateDocumentFromTextDialogController::prepareSequences() const {
+    QList<DNASequence> sequences = w->getSequences();
+    for (int i = 0; i < sequences.size(); i++) {
+        if (sequences[i].getName().isEmpty()) {
+            sequences[i].setName(ui->nameEdit->text());
+        }
+    }
+    return sequences;
 }
 
 void CreateDocumentFromTextDialogController::sl_indexChanged( int index ){
