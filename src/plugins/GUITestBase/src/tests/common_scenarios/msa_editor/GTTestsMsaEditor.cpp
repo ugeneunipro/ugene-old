@@ -4663,7 +4663,7 @@ GUI_TEST_CLASS_DEFINITION(test_0069){
 //    end
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(vscroll->value() == 1695, QString("end key works wrong: %1").arg(vscroll->value()));
+    CHECK_SET_ERR(vscroll->value() > 1650, QString("end key works wrong: %1").arg(vscroll->value()));
 //    home
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
     GTGlobals::sleep(500);
@@ -4747,7 +4747,7 @@ GUI_TEST_CLASS_DEFINITION(test_0072){
     QScrollBar* hbar = GTWidget::findExactWidget<QScrollBar*>(os, "horizontal_sequence_scroll");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
     GTGlobals::sleep(300);
-    CHECK_SET_ERR(hbar->value() == 1831, QString("end key scrollbar value: %1").arg(hbar->value()))
+    CHECK_SET_ERR(hbar->value() > 1820, QString("end key scrollbar value: %1").arg(hbar->value()))
 //    home
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
     GTGlobals::sleep(300);
@@ -4921,6 +4921,31 @@ GUI_TEST_CLASS_DEFINITION(test_0077){
     }
     GTGlobals::sleep(1000);
 //    Expected state: tree refreshed
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0078){
+//    Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open tree with msa
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk", 0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep();
+//    Shrink tree view to show horizontal scrollbar
+//    Move wheel
+    QWidget* parent = GTWidget::findWidget(os, "qt_scrollarea_hcontainer", GTWidget::findWidget(os, "treeView"));
+    QScrollBar* hbar = parent->findChild<QScrollBar*>();
+    int val = hbar->value();
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "treeView"));
+    for(int i = 0; i<2; i++){
+        GTMouseDriver::scroll(os, 1);
+        GTGlobals::sleep(100);
+    }
+    int val1 = hbar->value();
+    CHECK_SET_ERR(val1 < val, QString("unexpected scroll value: %1").arg(val1));
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
