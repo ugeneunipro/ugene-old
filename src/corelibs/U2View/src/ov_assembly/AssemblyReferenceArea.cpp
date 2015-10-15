@@ -68,6 +68,7 @@ void AssemblySequenceArea::initCellRenderer(QString id) {
 void AssemblySequenceArea::drawAll() {
     if(canDrawSequence()) {
         if (redraw) {
+            cachedView = QPixmap(size());
             cachedView.fill(Qt::transparent);
             QPainter p(&cachedView);
             redraw = false;
@@ -151,9 +152,8 @@ void AssemblySequenceArea::mouseMoveEvent(QMouseEvent * e) {
 }
 
 void AssemblySequenceArea::sl_redraw() {
-    cachedView = QPixmap(size());
-    redraw = true;
-    update();
+        redraw = true;
+        update();
 }
 
 void AssemblySequenceArea::sl_offsetsChanged() {
