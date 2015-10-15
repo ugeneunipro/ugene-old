@@ -961,6 +961,15 @@ void BedFormatParser::addToResults(QHash<QString, QList<SharedAnnotationData> > 
     result.clear();
 }
 
+namespace {
+const int maxStringLength = 100;
+QString getAbridgedString(const QString& value) {
+    QString resultString = value.left(maxStringLength);
+    resultString += (value.length() > 100) ? "..." : "";
+    return resultString;
+}
+}
+
 bool BedFormatParser::checkAnnotationParsingErrors(const BEDLineValidateFlags& validationStatus, const BedLineData& bedLineData) {
     // If there were some errors during parsing the output, write it to the log
     if (validationStatus.incorrectNumberOfFields) {
@@ -977,12 +986,12 @@ bool BedFormatParser::checkAnnotationParsingErrors(const BEDLineValidateFlags& v
     }
     if (validationStatus.incorrectScore) {
         os.addWarning(BedFormat::tr("BED parsing error: incorrect score value '%1'"
-            " at line %2!").arg(bedLineData.additionalFields[SCORE_QUALIFIER_NAME]).arg(lineNumber));
+            " at line %2!").arg(getAbridgedString(bedLineData.additionalFields[SCORE_QUALIFIER_NAME])).arg(lineNumber));
         return false;
     }
     if (validationStatus.incorrectStrand) {
         os.addWarning(BedFormat::tr("BED parsing error: incorrect strand value '%1'"
-            " at line %2!").arg(bedLineData.additionalFields[STRAND_QUALIFIER_NAME]).arg(lineNumber));
+            " at line %2!").arg(getAbridgedString(bedLineData.additionalFields[STRAND_QUALIFIER_NAME])).arg(lineNumber));
         return false;
     }
     if (validationStatus.incorrectThickCoordinates) {
@@ -991,7 +1000,7 @@ bool BedFormatParser::checkAnnotationParsingErrors(const BEDLineValidateFlags& v
     }
     if (validationStatus.incorrectItemRgb) {
         os.addWarning(BedFormat::tr("BED parsing error: incorrect itemRgb value '%1'"
-            " at line %2!").arg(bedLineData.additionalFields[ITEM_RGB_QUALIFIER_NAME]).arg(lineNumber));
+            " at line %2!").arg(getAbridgedString(bedLineData.additionalFields[ITEM_RGB_QUALIFIER_NAME])).arg(lineNumber));
         return false;
     }
     if (validationStatus.incorrectBlocks) {
