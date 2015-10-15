@@ -625,7 +625,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
     //Expected: file dialog appears.
     //3. Choose "data/samples/FASTQ/eas.fastq".
     //Expected: error notification is shown.
-    GTUtilsNotifications::waitForNotification(os, true, "There are several sequences in file");
+    GTUtilsNotifications::waitForNotification(os, true, "There are more than one sequence in file");
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
     GTWidget::click(os, GTAction::button(os, "setReferenceAction"));

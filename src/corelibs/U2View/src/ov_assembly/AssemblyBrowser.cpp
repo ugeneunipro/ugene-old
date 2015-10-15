@@ -241,7 +241,7 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         //    }
         //}
 
-        bool setRef = !isAssemblyObjectLocked(true);
+        bool setRef = !isAssemblyObjectLocked(true) && !model->isLoadingReference();
         setRef &= model->checkPermissions(QFile::WriteUser, setRef);
         if(!errs.isEmpty() && setRef) {
             const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
@@ -1000,7 +1000,7 @@ void AssemblyBrowser::showReferenceLoadingError(const QList<GObject*> &sequenceO
     if (sequenceObjects.isEmpty()) {
         message = tr("An error occurred while setting reference to \"%1\" assembly. The selected file \"%2\" does not contain sequences.").arg(gobject->getGObjectName()).arg(url);
     } else {
-        message = tr("There are several sequences in file \"%1\". Select the required sequence object in the Project View and click the \"Set reference\" button.").arg(url);
+        message = tr("An error occurred while setting reference to \"%1\" assembly. There are more than one sequence in file \"%2\". Please select the required sequence object in the Project View and click \"Set reference\" again.").arg(gobject->getGObjectName()).arg(url);
     }
     notificationStack->addNotification(message, Error_Not);
 }
@@ -1032,11 +1032,7 @@ void AssemblyBrowser::sl_setReference() {
         tryAddObject(objects.first());
     } else {
         QMessageBox::information(ui, tr("Choose Reference Sequence"),
-            tr("You have more than one sequence object selected in the Project View. "
-               "To set a sequence from the current project as reference, please select "
-               "only one sequence object in the Project View and click the \"Set reference\" item again.\n\n"
-               "Alternatively, to set a sequence from a file as reference, "
-               "deselect the objects in the Project View, click the \"Set reference\" item and browse for the file."),
+            tr("An error occurred while setting reference to \"%1\". You have more than one sequence object selected in the Project View. Please select only one object and try again.").arg(gobject->getGObjectName()),
             QMessageBox::Ok);
     }
 }
