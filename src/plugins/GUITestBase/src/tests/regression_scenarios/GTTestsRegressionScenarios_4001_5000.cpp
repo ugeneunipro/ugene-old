@@ -121,6 +121,7 @@
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 
 namespace U2 {
 
@@ -3472,6 +3473,29 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
                                                                    << (QStringList() << "Undo changes");
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, invisibleItems, PopupChecker::CheckOptions(PopupChecker::NotExists)));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4718) {
+    //1. Open swiss-prot file
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P01375.txt");
+
+    GTLogTracer lt;
+
+    // 2. Open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
+    CHECK_SET_ERR(NULL != dasPanel, "DasOptionsPanelWidget is NULL!");
+
+    // 2. Close the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+
+    // 3. open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(lt.hasError() == false, "log shouldn't contain errors");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4719_1) {
