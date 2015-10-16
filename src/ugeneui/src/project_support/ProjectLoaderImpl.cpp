@@ -1037,9 +1037,15 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
             if (info.openView) {
                 res << new AddDocumentAndOpenViewTask(doc);
             } else {
-                res<<new AddDocumentTask(doc);
-                if(info.loadDocuments){
-                    res<<new LoadUnloadedDocumentTask(doc);
+                Task *addDocTask = new AddDocumentTask(doc);
+                if (info.loadDocuments) {
+                    QList<Task*> tasks;
+                    tasks << addDocTask;
+                    tasks << new LoadUnloadedDocumentTask(doc);
+                    SequentialMultiTask *multiTask = new SequentialMultiTask(tr("Load document and add to project: %1").arg(doc->getName()), tasks);
+                    res << multiTask;
+                } else {
+                    res << addDocTask;
                 }
             }
         }
