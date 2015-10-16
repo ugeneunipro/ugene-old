@@ -96,6 +96,8 @@ private slots:
     void sl_alignmentChanged();
 
 private:
+    void updateWarningMessage();
+
     MSAEditor* msa;
     PairwiseAlignmentWidgetsSettings * pairwiseAlignmentWidgetsSettings;
     MSADistanceAlgorithm* distanceCalcTask;

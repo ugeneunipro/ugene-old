@@ -144,10 +144,15 @@ void PairAlign::initParameters() {
     lblMessage->setStyleSheet(
         "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
-    lblMessage->setText( tr("Warning: Current alphabet does not correspond the requirements."));
+    updateWarningMessage();
 
     sl_outputFileChanged("");
     sl_alignmentChanged();
+}
+
+void PairAlign::updateWarningMessage() {
+    QString alphabetName = msa->getMSAObject()->getAlphabet()->getName();
+    lblMessage->setText(tr("Pairwise alignment is not available for alignments with \"%1\" alphabet.").arg(alphabetName));
 }
 
 void PairAlign::connectSignals() {
@@ -180,6 +185,7 @@ void PairAlign::sl_alignmentChanged() {
         AlignmentAlgorithm* alg = getAlgorithmById(curAlgorithmId);
         SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(curAlgorithmId), );
         alphabetIsOk = alg->checkAlphabet(dnaAlphabet);
+        updateWarningMessage();
 
         if(NULL != settingsWidget) {
             settingsWidget->updateWidget();
