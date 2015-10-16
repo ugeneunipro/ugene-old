@@ -23,6 +23,7 @@
 #include "java/JavaSupport.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/U2SafePoints.h>
@@ -51,11 +52,16 @@ SnpEffSupport::SnpEffSupport(const QString& name, const QString& path) : Externa
     validationArguments << "-h";
     toolKitName = "SnpEff";
 
-
     toolRunnerProgramm = ET_JAVA;
     dependencies << ET_JAVA;
+}
 
-
+const QStringList SnpEffSupport::getToolRunnerAdditionalOptions() {
+    QStringList result;
+    AppResourcePool* s = AppContext::getAppSettings()->getAppResourcePool();
+    CHECK(s != NULL, result);
+    result << "-Xmx" + QString::number(s->getMaxMemorySizeInMB()) + "M";
+    return result;
 }
 
 }//namespace

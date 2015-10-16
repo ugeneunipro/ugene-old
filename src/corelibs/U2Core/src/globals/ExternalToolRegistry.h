@@ -69,6 +69,7 @@ public:
     const QIcon&        getWarnIcon()  const { return warnIcon; }
     const QString&      getDescription()  const { return description; }
     const QString&      getToolRunnerProgram()  const { return toolRunnerProgramm; }
+    const virtual QStringList  getToolRunnerAdditionalOptions() { return QStringList();};
     const QString&      getExecutableFileName()  const { return executableFileName; }
     const QStringList&  getValidationArguments()  const { return validationArguments; }
     const QString&      getValidMessage()  const { return validMessage; }
