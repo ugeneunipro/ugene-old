@@ -48,6 +48,7 @@ public:
 
     static const QString U2_ERROR;
     static const QString U2_WARNING;
+    static const QString U2_INFO;
 };
 
 }   // namespace U2

@@ -57,6 +57,9 @@ QString ProblemsWidget::problemImage(const Problem &info) {
     } else if (Problem::U2_WARNING == info.type) {
         image += "warning.png";
         tooltip = tr("Warning");
+    } else if (Problem::U2_INFO == info.type) {
+        image = "qrc:core/images/info.png";
+        tooltip = tr("Information");
     } else {
         FAIL("Unknown type: " + info.type, "");
     }

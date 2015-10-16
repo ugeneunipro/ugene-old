@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/L10n.h>
+
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "MultiplexerWorker.h"
 
@@ -121,6 +124,9 @@ Task *MultiplexerWorker::tick() {
 
         bool bothData = inChannel1->hasMessage() && inChannel2->hasMessage();
         if (!bothData) {
+            if (inChannel1->hasMessage() || inChannel2->hasMessage()) {
+                monitor()->addError(getMessagesMismatchError(), getActorId(), Problem::U2_INFO);
+            }
             shutDown();
             return NULL;
         }
@@ -220,6 +226,23 @@ void MultiplexerWorker::multiplexManyMode() {
         outChannel->setEnded();
         setDone();
     }
+}
+
+QString MultiplexerWorker::getInputActorName(IntegralBus *bus) const {
+    Port *port = actor->getPort(bus->getPortId());
+    SAFE_POINT(NULL != port, L10N::nullPointerError("Port"), "");
+    SAFE_POINT(!port->getLinks().isEmpty(), "No input links", "");
+    Port *inputPort = port->getLinks().keys().first();
+    return inputPort->owner()->getLabel();
+}
+
+QString MultiplexerWorker::getMessagesMismatchError() const {
+    int messages1 = inChannel1->takenMessages() + inChannel1->hasMessage();
+    int messages2 = inChannel2->takenMessages() + inChannel2->hasMessage();
+    QString inputName1 = getInputActorName(inChannel1);
+    QString inputName2 = getInputActorName(inChannel2);
+    return tr("The number of messages, received from \"%1\" (%2), does not correspond to the number of messages, received from \"%3\" (%4). Redundant messages were skipped.")
+        .arg(inputName1).arg(messages1).arg(inputName2).arg(messages2);
 }
 
 void MultiplexerWorker::cleanup() {

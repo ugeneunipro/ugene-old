@@ -71,6 +71,8 @@ private:
     bool hasDataFotMultiplexing() const;
     void sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2, int metadataId);
     void multiplexManyMode();
+    QString getInputActorName(IntegralBus *bus) const;
+    QString getMessagesMismatchError() const;
 
 }; // MultiplexerWorker
 

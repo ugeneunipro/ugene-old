@@ -28,6 +28,7 @@ namespace U2 {
 /************************************************************************/
 const QString Problem::U2_ERROR = "error";
 const QString Problem::U2_WARNING = "warning";
+const QString Problem::U2_INFO = "info";
 
 Problem::Problem(const QString &_message, const QString &_actor, const QString& _type)
     : message(_message),
