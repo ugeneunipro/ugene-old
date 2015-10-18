@@ -61,14 +61,11 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 //    {Minimum repeat length} 8bp
 //    {repeats identity} 80%
 //5. Click OK button
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa", testDir + "_common_data/scenarios/dp_view/dp2.fa");
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep(1000);
 //Expected state: Dot plot view has appear. There is 1 line at view.
 //6. Use context menu on dot plot view {Dotplot->Remove}
@@ -88,14 +85,11 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 }
 GUI_TEST_CLASS_DEFINITION(test_0011_1){
 //DIFFERENCE: ONE SEQUENCE USED
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot"<<"Remove"));
@@ -111,14 +105,11 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 }
 GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
 //DIFFERENCE: EXITBUTTON IS USED
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::DOTPLOT));
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTGlobals::sleep(500);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));
@@ -148,15 +139,11 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0013) {
-
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/NC_014267.gb", "secondparametrTest",true,true,false,10);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep();
 
 }
@@ -175,14 +162,11 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 //    {Minimum repeat length} 4bp
 
 //5. Click OK button
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -206,14 +190,11 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
 GUI_TEST_CLASS_DEFINITION(test_0014_1){
     //DIFFERENCE: ANNOTATION TREE WIDGET IS USED
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -229,14 +210,11 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1){
 }
 GUI_TEST_CLASS_DEFINITION(test_0014_2){
     //DIFFERENCE: ANNOTATION TREE WIDGET IS USED
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -263,14 +241,11 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 //Expected state: minimum repeat length changed to 2bp
 //5. Click OK button
 //Expected state: Dotplot view has appeared.
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os,100,0, false,true));
     Runnable *filler2 = new BuildDotPlotFiller(os, dataDir + "samples/PDB/1CF7.PDB","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep(4000);
     GTUtilsProjectTreeView::openView(os);
     GTGlobals::sleep(500);
@@ -359,9 +334,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
                                               testDir + "_common_data/genbank/pBR322.gb");
     GTUtilsDialog::waitForDialog(os, filler);
 
-    QMenu *menu;
-    menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Build dotplot...");
     GTGlobals::sleep();
 
     DotPlotExportImageFiller::performScenario(os, 1);

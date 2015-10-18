@@ -6,7 +6,6 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
-k
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -110,28 +109,31 @@ GUI_TEST_CLASS_DEFINITION(test_0002){//DIFFERENCE: delete sequence is checked
 //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
 //2. Delete 4-th sequence
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Roeseliana_roeseli", "Roeseliana_roeseli"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-
 
 // Expected state: sequence deleted
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Montana_montana", "Montana_montana"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
 
 //3. undo deletion
-    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
-    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    QAbstractButton *undo = GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo = GTAction::button(os,"msa_action_redo");
 
     GTWidget::click(os, undo);
 
-//Expected state: delition undone
+//Expected state: deletion undone
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Roeseliana_roeseli", "Roeseliana_roeseli"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
 
 //4. Redo delition
     GTWidget::click(os, redo);
@@ -140,6 +142,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){//DIFFERENCE: delete sequence is checked
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Montana_montana", "Montana_montana"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003){//DIFFERENCE: add sequence is checked

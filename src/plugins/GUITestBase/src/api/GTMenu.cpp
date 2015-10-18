@@ -95,9 +95,45 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
 }
 #undef GT_METHOD_NAME
 
+namespace {
+
+QStringList fixMenuItemPath(const QStringList &itemPath) {
+    QStringList fixedItemPath = itemPath;
+#ifdef Q_OS_MAC
+    // Some actions are moved to the application menu on mac
+#ifdef _DEBUG
+    const QString appName = "ugeneuid";
+#else
+    const QString appName = "Unipro UGENE";
+#endif
+    const QString menuName = "Apple";
+
+    static const QStringList appSettingsPath = QStringList() << "Settings" << "Preferences...";
+    if (appSettingsPath == itemPath) {
+        fixedItemPath = QStringList() << menuName << "Preferences...";
+    }
+
+    static const QStringList aboutPath = QStringList() << "Help" << "About";
+    if (aboutPath == itemPath) {
+        fixedItemPath = QStringList() << menuName << "About " + appName;
+    }
+#endif
+    return fixedItemPath;
+}
+
+}
+
 #define GT_METHOD_NAME "clickMainMenuItem"
-void GTMenu::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method) {
-    GTMenuPrivate::clickMainMenuItem(os, itemPath, method);
+void GTMenu::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method, Qt::MatchFlag matchFlag) {
+    GTMenuPrivate::clickMainMenuItem(os, fixMenuItemPath(itemPath), method, matchFlag);
+    GTGlobals::sleep(100);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkMainMenuItemState"
+void GTMenu::checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
+    GTMenuPrivate::checkMainMenuItemState(os, fixMenuItemPath(itemPath), expectedState);
+    GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME
 
@@ -207,14 +243,9 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
         GTGlobals::sleep(200);
 
-#ifndef Q_OS_MAC
         if (!clickingSubMenu) {
             GTMouseDriver::click(os);
         }
-#else
-        Q_UNUSED(clickingSubMenu);
-        GTMouseDriver::click(os);
-#endif
         break;
     }
     case GTGlobals::UseKey:
@@ -224,6 +255,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         }
 
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTGlobals::sleep(200);
         break;
     default:
         break;
@@ -247,7 +279,6 @@ void GTMenu::clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStri
         GTGlobals::sleep(500);
         QAction *action = clickMenuItem(os, menu, itemName, useMethod, byText);
         menu = action ? action->menu() : NULL;
-        GTGlobals::sleep(200);
     }
 }
 #undef GT_METHOD_NAME

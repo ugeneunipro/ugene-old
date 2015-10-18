@@ -52,10 +52,7 @@ void ZoomToRangeDialogFiller::run()
         GTLineEdit::setText(os, to, QString::number(maxVal));
     }
 
-    QPushButton *okButton = dialog->findChild<QPushButton*>("ok_button");
-    GT_CHECK(okButton != NULL, "Button \"Ok\" to  not found");
-
-    GTWidget::click(os, okButton);
+    GTWidget::click(os, GTWidget::findButtonByText(os, "Ok", dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

@@ -106,6 +106,7 @@ void GraphSettingsDialog::sl_onPickColorButtonClicked()
     QColor initial = colorMap.value(colorName);
 
     QObjectScopedPointer<QColorDialog> CD = new QColorDialog(initial, this);
+    CD->setOption(QColorDialog::DontUseNativeDialog, qgetenv("UGENE_GUI_TEST") == "1");
     CD->exec();
     CHECK(!CD.isNull(), );
 

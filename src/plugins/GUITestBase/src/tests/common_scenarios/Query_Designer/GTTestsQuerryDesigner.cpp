@@ -46,9 +46,8 @@ namespace GUITest_common_scenarios_querry_designer {
 void test1(U2OpStatus &os, QString s="") {
 //Bug: QD: Crash while resizing and deleting elements (0002402)
 //1. Open Query Designer
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::QUERY_DESIGNER);
-    GTGlobals::sleep(500);
+    GTUtilsQueryDesigner::openQueryDesigner(os);
+
     QString array[] = {"CDD", "Base Content","HMM2","HMM3","ORF"};
     QPoint p;
 //2. Add any algorithm to the scheme

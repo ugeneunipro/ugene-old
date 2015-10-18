@@ -33,7 +33,7 @@ namespace U2 {
 
 class GTWebView{
 public:
-    static QWebElement findElement(U2OpStatus &os, QWebView *view, QString text, QString tag = "*", bool exactMatch = false);
+    static QWebElement findElement(U2OpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
     static void checkElement(U2OpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
     static bool doesElementExist(U2OpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
 

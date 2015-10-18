@@ -182,7 +182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     // proj3 was modified, restoring
@@ -218,10 +218,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     CHECK_SET_ERR(expectedImage == foundImage, "Icon is unlocked");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");

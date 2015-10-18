@@ -66,8 +66,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -105,8 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -144,8 +142,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -191,8 +188,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //
 // 4. Click Create button
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "DDD", "D", "join(10..16,18..20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // Expected state: annotation with 2 segments has been created
@@ -226,8 +222,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 //
 // 4. Click Create button
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "DDD", "D", "join(10..16,18..20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // Expected state: annotation with 2 segments has been created
@@ -261,8 +256,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 //
 // 4. Click Create button
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "DDD", "D", "join(10..16,18..20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // Expected state: annotation with 2 segments has been created
@@ -288,8 +282,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -328,14 +321,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 // 3. Create 2 annotations:
 //     1) a1 in group a1
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a1_group", "a1", "10..16"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 //     2) a1 in group a2
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a2_group", "a1", "18..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Toggle highlight for a1.
@@ -365,14 +356,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 // 3. Create 2 annotations:
 //     1) a1 in group a1
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a1_group", "a1", "10..16"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 //     2) a1 in group a2
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a2_group", "a1", "18..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Toggle highlight for a1.
@@ -402,14 +391,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 // 3. Create 2 annotations:
 //     1) a1 in group a1
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a1_group", "a1", "10..16"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 //     2) a1 in group a2
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a2_group", "a1", "18..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Toggle highlight for a1.
@@ -443,8 +430,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -485,8 +471,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //
 // 4. Click Create button
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "DDD", "D", "join(10..16,18..20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // Expected state: annotation with 2 segments has been created
@@ -513,14 +498,12 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 // 3. Create 2 annotations:
 //     1) a1 in group a1
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a1_group", "a1", "10..16"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 //     2) a1 in group a2
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "a2_group", "a1", "18..20"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Toggle highlight for a1.
@@ -557,8 +540,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 //
 // 4. Click Create button
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "DDD", "D", "join(10..16,18..20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // Expected state: annotation with 2 segments has been created
@@ -589,8 +571,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
 // 3. Create annotation using menu {Actions->Add->New Annotation}
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
 // 4. Create annotation using keyboard shortcut Ctrl+N
@@ -1021,8 +1002,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
     // 3. Create annotation using menu {Actions->Add->New Annotation}, with description field filled
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)", "", "description"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 
     //4. Check what created annotation has corresponding qualifier 'note'

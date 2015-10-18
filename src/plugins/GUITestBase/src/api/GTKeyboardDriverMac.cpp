@@ -32,57 +32,14 @@ namespace U2 {
 #ifdef  Q_OS_MAC
 
 int asciiToVirtual(int);
+bool extractShiftModifier(char &key);
 
 #define GT_CLASS_NAME "GTKeyboardDriverMac"
 #define GT_METHOD_NAME "keyPress_char"
-void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
-{
+void GTKeyboardDriver::keyPress(U2OpStatus &os, char key, int modifiers) {
     GT_CHECK(key != 0, "key = 0");
 
-    bool isChanged = false;
-    switch(key) {
-    case '_':
-        key = asciiToVirtual('-');
-        isChanged = true;
-        break;
-    case '<':
-        key = asciiToVirtual(',');
-        isChanged = true;
-        break;
-    case '>':
-        key = asciiToVirtual('.');
-        isChanged = true;
-        break;
-    case '(':
-        key = asciiToVirtual('9');
-        isChanged = true;
-        break;
-    case ')':
-        key = asciiToVirtual('0');
-        isChanged = true;
-        break;
-    case '$':
-        key = asciiToVirtual('4');
-        isChanged = true;
-        break;
-    case '#':
-        key = asciiToVirtual('3');
-        isChanged = true;
-        break;
-    case '\"':
-        key = asciiToVirtual('\'');
-        isChanged = true;
-        break;
-    case ':':
-        key = asciiToVirtual(';');
-        isChanged = true;
-        break;
-    case '*':
-        key = asciiToVirtual('8');
-        isChanged = true;
-        break;
-    }
-
+    const bool isChanged = extractShiftModifier(key);
     if (isChanged) {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key["shift"], true);
         GT_CHECK(event != NULL, "Can't create event");
@@ -123,54 +80,10 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease_char"
-void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
-{
+void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers) {
     GT_CHECK(key != 0, "key = 0");
 
-    bool isChanged = false;
-    switch(key) {
-    case '_':
-        key = asciiToVirtual('-');
-        isChanged = true;
-        break;
-    case '<':
-        key = asciiToVirtual(',');
-        isChanged = true;
-        break;
-    case '>':
-        key = asciiToVirtual('.');
-        isChanged = true;
-        break;
-    case '(':
-        key = asciiToVirtual('9');
-        isChanged = true;
-        break;
-    case ')':
-        key = asciiToVirtual('0');
-        isChanged = true;
-        break;
-    case '$':
-        key = asciiToVirtual('4');
-        isChanged = true;
-        break;
-    case '#':
-        key = asciiToVirtual('3');
-        isChanged = true;
-        break;
-    case '\"':
-        key = asciiToVirtual('\'');
-        isChanged = true;
-        break;
-    case ':':
-        key = asciiToVirtual(';');
-        isChanged = true;
-        break;
-    case '*':
-        key = asciiToVirtual('8');
-        isChanged = true;
-        break;
-    }
-
+    const bool isChanged = extractShiftModifier(key);
     if (!isChanged) {
         key = asciiToVirtual(key);
     } else {
@@ -414,6 +327,49 @@ int asciiToVirtual(int key)
     }
 
     return key;
+}
+
+bool extractShiftModifier(char &key) {
+    switch(key) {
+    case '_':
+        key = asciiToVirtual('-');
+        return true;
+    case '<':
+        key = asciiToVirtual(',');
+        return true;
+    case '>':
+        key = asciiToVirtual('.');
+        return true;
+    case '(':
+        key = asciiToVirtual('9');
+        return true;
+    case ')':
+        key = asciiToVirtual('0');
+        return true;
+    case '$':
+        key = asciiToVirtual('4');
+        return true;
+    case '#':
+        key = asciiToVirtual('3');
+        return true;
+    case '\"':
+        key = asciiToVirtual('\'');
+        return true;
+    case ':':
+        key = asciiToVirtual(';');
+        return true;
+    case '*':
+        key = asciiToVirtual('8');
+        return true;
+    case '{':
+        key = asciiToVirtual('[');
+        return true;
+    case '}':
+        key = asciiToVirtual(']');
+        return true;
+    }
+
+    return false;
 }
 
 #endif

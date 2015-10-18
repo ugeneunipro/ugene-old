@@ -25,6 +25,7 @@
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorOverviewArea.h>
 #include <U2View/MSAGraphOverview.h>
+#include <U2View/MSASimpleOverview.h>
 
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
@@ -43,6 +44,10 @@ namespace U2 {
 #define GT_METHOD_NAME "getGraphOverviewTopLeftPixelColor"
 QColor GTUtilsMsaEditor::getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point) {
     return GTWidget::getColor(os, getGraphOverview(os), point);
+}
+
+QColor GTUtilsMsaEditor::getSimpleOverviewPixelColor(U2OpStatus &os, const QPoint &point) {
+    return GTWidget::getColor(os, getSimpleOverview(os), point);
 }
 #undef GT_METHOD_NAME
 
@@ -69,6 +74,17 @@ MSAGraphOverview * GTUtilsMsaEditor::getGraphOverview(U2OpStatus &os) {
 
     MSAGraphOverview *result = GTWidget::findExactWidget<MSAGraphOverview *>(os, MSAEditorOverviewArea::OVERVIEW_AREA_OBJECT_NAME + QString("_graph"), activeWindow);
     GT_CHECK_RESULT(NULL != result, "MSAGraphOverview is not found", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSimpleOverview"
+MSASimpleOverview * GTUtilsMsaEditor::getSimpleOverview(U2OpStatus &os) {
+    QWidget *activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_OP(os, NULL);
+
+    MSASimpleOverview *result = GTWidget::findExactWidget<MSASimpleOverview *>(os, MSAEditorOverviewArea::OVERVIEW_AREA_OBJECT_NAME + QString("_simple"), activeWindow);
+    GT_CHECK_RESULT(NULL != result, "MSASimpleOverview is not found", NULL);
     return result;
 }
 #undef GT_METHOD_NAME

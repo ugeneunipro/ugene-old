@@ -67,11 +67,7 @@ void ExportReadsDialogFiller::run() {
     GT_CHECK(addToPrj != NULL, "Add to project check box not found");
     GTCheckBox::setChecked(os, addToPrj, addToProject);
 
-    QDialogButtonBox* box = dialog->findChild<QDialogButtonBox*>("buttonBox");
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 
 #undef GT_METHOD_NAME

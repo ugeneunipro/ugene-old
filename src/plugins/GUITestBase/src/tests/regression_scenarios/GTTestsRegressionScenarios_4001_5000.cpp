@@ -326,7 +326,7 @@ GUI_TEST_CLASS_DEFINITION(test_4022) {
     GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, new Scenario()));
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New document from text...", GTGlobals::UseKey);
     GTGlobals::sleep();
 }
 
@@ -483,8 +483,7 @@ GUI_TEST_CLASS_DEFINITION(test_4046){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
 //    Create a new annotation
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTGlobals::sleep();
 //    Current state: new annotation has an empty qualifier 'note'
     QTreeWidgetItem* ann = GTUtilsAnnotationsTreeView::findItem(os, "ann1");
@@ -685,8 +684,7 @@ GUI_TEST_CLASS_DEFINITION(test_4084) {
     //Expected state: there is an annotation group with an annotation within.
     //Current state: there is an annotation group with two similar annotations within.
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "feature", "50..60"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
@@ -1045,7 +1043,7 @@ GUI_TEST_CLASS_DEFINITION(test_4111){
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4111.ugenedb"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
@@ -1279,7 +1277,7 @@ GUI_TEST_CLASS_DEFINITION(test_4124) {
     };
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4124()));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(200);
     GTUtilsProjectTreeView::click(os, "out.ugenedb");
@@ -1289,7 +1287,7 @@ GUI_TEST_CLASS_DEFINITION(test_4124) {
     GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4124()));
     GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 }
@@ -1434,7 +1432,7 @@ GUI_TEST_CLASS_DEFINITION(test_4148) {
     };
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4148()));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4150) {
@@ -1607,8 +1605,7 @@ GUI_TEST_CLASS_DEFINITION(test_4156) {
     GTLogTracer l;
 
     GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new scenario_4156()));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
-    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/query/crash_4156.uql");
@@ -1803,7 +1800,7 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
     parameters.indexAlgorithm = AlignShortReadsFiller::BwaParameters::Is;
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4221.ugenedb"));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "test_4221.ugenedb");
@@ -2115,8 +2112,7 @@ GUI_TEST_CLASS_DEFINITION(test_4302_1) {
     //3. Open main menu "Actions"
     //Expected state: "Replace subsequence" menu item enabled
     GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "ACCCT"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Replace subsequence...");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4302_2) {
@@ -2128,8 +2124,7 @@ GUI_TEST_CLASS_DEFINITION(test_4302_2) {
     GTMouseDriver::click(os);
     //3. Open main menu "Actions"
     //Expected state: menu item {Remove->Selected annotation and qualifiers} are enabled
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Remove" << "Selected annotations and qualifiers");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4306_1) {
@@ -2386,7 +2381,7 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
 
 GUI_TEST_CLASS_DEFINITION(test_4345) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList()<<"Close active view", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Close active view", GTGlobals::UseKey);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "CVU55762.gb");
@@ -2944,7 +2939,7 @@ GUI_TEST_CLASS_DEFINITION(test_4537) {
     //Expected: format selector dialog appears.
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Assembly/chrM.sam"));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << "Open as");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open as...");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4557){

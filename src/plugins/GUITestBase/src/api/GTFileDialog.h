@@ -54,13 +54,18 @@ private:
 };
 class GTFileDialogUtils_list : public GTFileDialogUtils{
 public:
-    GTFileDialogUtils_list(U2OpStatus&, const QString&, const QStringList&);
-    void setNameList(U2OpStatus &, const QStringList &);
-    void run();
+    GTFileDialogUtils_list(U2OpStatus &os, const QString &folderPath, const QStringList &fileNames);
+    GTFileDialogUtils_list(U2OpStatus &os, const QStringList &filePaths);
+
+    void setNameList(U2OpStatus &os, const QStringList &filePaths);
+    void commonScenario();
+
 private:
-    QString path;
-    QStringList fileNameList;
     void selectFile();
+
+    QString path;
+    QStringList fileNamesList;
+    QStringList filePaths;
 };
 
 class GTFileDialog {
@@ -70,6 +75,7 @@ public:
     static void openFile(U2OpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
     static void openFileList(U2OpStatus &, const QString &, const QStringList &);
+    static void openFileList(U2OpStatus &os, const QStringList &filePaths);
 };
 
 } // namespace

@@ -29,22 +29,25 @@
 namespace U2 {
 
 class MSAEditor;
-class MSAEditorUI;
 class MSAEditorConsensusArea;
 class MSAEditorNameList;
 class MSAEditorSequenceArea;
 class MSAEditorTreeViewerUI;
+class MSAEditorUI;
 class MSAGraphOverview;
+class MSASimpleOverview;
 class U2OpStatus;
 
 // If you can't find an appropriate method check the GTUtilsMsaEditorSequenceArea class
 class GTUtilsMsaEditor {
 public:
     static QColor getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point);
+    static QColor getSimpleOverviewPixelColor(U2OpStatus &os, const QPoint &point);
 
     static MSAEditor * getEditor(U2OpStatus &os);
     static MSAEditorUI * getEditorUi(U2OpStatus &os);
     static MSAGraphOverview * getGraphOverview(U2OpStatus &os);
+    static MSASimpleOverview * getSimpleOverview(U2OpStatus &os);
     static MSAEditorTreeViewerUI * getTreeView(U2OpStatus &os);
     static MSAEditorNameList * getNameListArea(U2OpStatus &os);
     static MSAEditorConsensusArea * getConsensusArea(U2OpStatus &os);

@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QPixmap>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtGui/QScreen>
-#endif
+#include <QMainWindow>
+#include <QScreen>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -35,15 +29,18 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GObject.h>
 #include <U2Core/Log.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/TaskStarter.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "MainThreadRunnable.h"
 #include "GUITestBase.h"
+#include "GUITestOpStatus.h"
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
+#include "GUITestThread.h"
 #include "GUITestWindow.h"
-#include "GUITestOpStatus.h"
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
@@ -65,16 +62,19 @@ extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existin
 #endif
 /******************************************************************************************************************************************/
 
-#define GUITESTING_REPORT_PREFIX "GUITesting"
-
-
 namespace U2 {
 
 #define ULOG_CAT_TEAMCITY "Teamcity Log"
 static Logger log(ULOG_CAT_TEAMCITY);
+const QString GUITestService::GUITESTING_REPORT_PREFIX = "GUITesting";
+const qint64 GUITestService::TIMER_INTERVAL = 100;
 
-GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
-runTestsAction(NULL), testLauncher(NULL) {
+GUITestService::GUITestService(QObject *) :
+    Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
+    runTestsAction(NULL),
+    testLauncher(NULL),
+    timer(TIMER_INTERVAL, this)
+{
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_allStartUpPluginsLoaded()));
     setQtFileDialogView();
 }
@@ -83,13 +83,24 @@ GUITestService::~GUITestService() {
     delete runTestsAction;
 }
 
-void GUITestService::sl_registerService() {
+qint64 GUITestService::getMainThreadTimerValue() const {
+    return timer.getCounter();
+}
 
+GUITestService *GUITestService::getGuiTestService() {
+    QList<Service *> services = AppContext::getServiceRegistry()->findServices(Service_GUITesting);
+    return services.isEmpty() ? NULL : qobject_cast<GUITestService *>(services.first());
+}
+
+void GUITestService::sl_registerService() {
+    registerServiceTask();
+}
+
+void GUITestService::sl_serviceRegistered() {
     const LaunchOptions launchedFor = getLaunchOptions(AppContext::getCMDLineRegistry());
 
     switch (launchedFor) {
         case RUN_ONE_TEST:
-
             QTimer::singleShot(1000, this, SLOT(runGUITest()));
             break;
 
@@ -119,7 +130,6 @@ void GUITestService::sl_registerService() {
 
         case NONE:
         default:
-            registerServiceTask();
             break;
     }
 }
@@ -333,53 +343,17 @@ void GUITestService::runGUICrazyUserTest() {
     runGUITest(t);
 }
 
-void GUITestService::runGUITest(GUITest* t) {
-    SAFE_POINT(NULL != t,"",);
-    GUITestOpStatus os;
-
-    GUITests tests = preChecks();
-    if (!t) {
-        os.setError("GUITestService __ Test not found");
-    }
-    tests.append(t);
-    tests.append(postChecks());
-
-    clearSandbox();    
-
-    QTimer::singleShot(t->getTimeout(), this, SLOT(sl_testTimeOut()));
-    try {
-        foreach (GUITest* t, tests) {
-            if (t) {
-                t->run(os);
-            }
-        }
-    } catch(GUITestOpStatus *) {
-
-    }
-
-#if (QT_VERSION < 0x050000) // deprecated method
-    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-#else
-    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-#endif
-    originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
-
-    foreach(GUITest* t, postActions()){
-        TaskStateInfo os1;
-        t->run(os1);
-    }
-
-    QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
-    writeTestResult(testResult);
-
-    //exit(0);
-    AppContext::getMainWindow()->getQMainWindow()->close();
+void GUITestService::runGUITest(GUITest *test) {
+    SAFE_POINT(NULL != test, "GUITest is NULL", );
+    GUITestThread *testThread = new GUITestThread(test, log);
+    connect(testThread, SIGNAL(finished()), SLOT(sl_testThreadFinish()));
+    testThread->start();
 }
 
 void GUITestService::registerServiceTask() {
-
     Task *registerServiceTask = AppContext::getServiceRegistry()->registerServiceTask(this);
-    SAFE_POINT(NULL != registerServiceTask,"",);
+    SAFE_POINT(NULL != registerServiceTask, "registerServiceTask is NULL", );
+    connect(new TaskSignalMapper(registerServiceTask), SIGNAL(si_taskFinished(Task *)), SLOT(sl_serviceRegistered()));
 
     AppContext::getTaskScheduler()->registerTopLevelTask(registerServiceTask);
 }
@@ -498,25 +472,13 @@ void GUITestService::removeDir(QString dirName)
     }dir.rmdir(dir.absoluteFilePath(dirName));
 }
 
-void GUITestService::sl_testTimeOut(){
-    CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
-    SAFE_POINT(NULL != cmdLine,"",);
-    QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
-
-#if (QT_VERSION < 0x050000) // deprecated method
-    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-#else
-    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-#endif
-    originalPixmap.save(GUITest::screenshotDir + testName + ".jpg");
-
-    foreach(GUITest* t, postActions()){
-        TaskStateInfo os1;
-        t->run(os1);
-    }
-
-    writeTestResult("test timed out");
-
-    exit(0);
+void GUITestService::sl_testThreadFinish() {
+    sender()->deleteLater();
+    AppContext::getMainWindow()->getQMainWindow()->close();
 }
+
+void GUITestService::sl_requestAsked(MainThreadRunnable *runnable) {
+    runnable->run();
+}
+
 }

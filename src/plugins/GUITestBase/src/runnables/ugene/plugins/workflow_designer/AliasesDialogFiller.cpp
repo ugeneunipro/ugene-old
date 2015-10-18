@@ -54,7 +54,6 @@ void AliasesDialogFiller::run(){
     }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-
 }
 
 #undef GT_METHOD_NAME

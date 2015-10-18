@@ -22,14 +22,11 @@
 #ifndef _U2_GT_LINEEDIT_H_
 #define _U2_GT_LINEEDIT_H_
 
-#include "api/GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QLineEdit>
-#endif
+#include <QLineEdit>
 
 namespace U2 {
+
+class U2OpStatus;
 
 class GTLineEdit {
 public:
@@ -42,6 +39,7 @@ public:
 #else
     static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = false);
 #endif
+    static QString getText(U2OpStatus &os, QLineEdit *lineEdit);
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
     static void clear(U2OpStatus& os, QLineEdit* lineEdit);
 
@@ -60,6 +58,6 @@ public:
     static bool tryToSetText(U2OpStatus& os, QLineEdit* lineEdit, const QString& str);
 };
 
-}
+}   // namespace U2
 
 #endif // _U2_GT_LINEEDIT_H_

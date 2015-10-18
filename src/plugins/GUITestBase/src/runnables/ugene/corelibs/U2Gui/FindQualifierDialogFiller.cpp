@@ -95,9 +95,7 @@ void FindQualifierFiller::commonScenario() {
     }
     GTGlobals::sleep();
 
-    QPushButton* closeButton = box->button(QDialogButtonBox::Close);
-    GT_CHECK(closeButton != NULL, "'Close' button is NULL");
-    GTWidget::click(os, closeButton);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Close);
 }
 #undef GT_METHOD_NAME
 

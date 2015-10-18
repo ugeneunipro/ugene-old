@@ -99,8 +99,8 @@ public:
 
     static bool isVisible(U2OpStatus &os);
 
-    static void dragAndDrop(U2OpStatus &os, QModelIndex from, QModelIndex to);
-    static void dragAndDrop(U2OpStatus &os, QModelIndex from, QWidget* to);
+    static void dragAndDrop(U2OpStatus &os, const QModelIndex &from, const QModelIndex &to);
+    static void dragAndDrop(U2OpStatus &os, const QModelIndex &from, QWidget* to);
     static void dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to);
 
     static void expandProjectView(U2OpStatus &os);
@@ -110,8 +110,8 @@ public:
     static const QString widgetName;
 
 private:
-    static void sendDragAndDrop(U2OpStatus &os, QMimeData* mimeData, QPoint enterPos, QPoint dropPos);
-    static void sendDragAndDrop(U2OpStatus &os, QMimeData* mimeData, QPoint enterPos, QWidget* dropWidget);
+    static void sendDragAndDrop(U2OpStatus &os, const QPoint &enterPos, const QPoint &dropPos);
+    static void sendDragAndDrop(U2OpStatus &os, const QPoint &enterPos, QWidget* dropWidget);
 
 
 };

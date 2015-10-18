@@ -60,12 +60,7 @@ void RemoteBLASTDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
-    GT_CHECK(buttonBox != NULL, "buttonBox not found");
-
-    QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
-    GT_CHECK(button != NULL, "standart button not found");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 
 }
 #undef GT_METHOD_NAME

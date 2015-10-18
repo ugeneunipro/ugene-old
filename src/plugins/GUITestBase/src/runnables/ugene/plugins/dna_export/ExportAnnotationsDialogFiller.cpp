@@ -93,12 +93,7 @@ void ExportAnnotationsFiller::run()
         GTCheckBox::setChecked(os, checkButton, saveSequenceNames);
     }
 
-    QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
-
-    GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    GT_CHECK(okButton != NULL, "okButton is NULL");
-    GTWidget::click(os, okButton);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

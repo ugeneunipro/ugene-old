@@ -23,6 +23,7 @@
 #include <QTimer>
 
 #include "GTMouseDriver.h"
+#include "GTThread.h"
 
 namespace U2 {
 
@@ -31,18 +32,30 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     press(os, button);
     release(os, button);
 
-    GTGlobals::sleep(250);
+    GTGlobals::sleep(500);
 }
 
-void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end, const QPoint extraShift) {
+namespace {
+
+bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
+    return (end - start).manhattanLength() > 2 * QApplication::startDragDistance();
+}
+
+}
+
+void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
     GTDragger d(os, end);
+    Q_UNUSED(d);
+
     press(os);
 
-    Q_UNUSED(d);
-    GTMouseDriver::moveTo(os, start + QPoint(QApplication::startDragDistance(),0));
-    GTMouseDriver::moveTo(os, start + extraShift);
-    GTGlobals::sleep(200);
+    const QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ?
+                                 (end + start) / 2 :
+                                 QPoint(0, 0));
+    GTMouseDriver::moveTo(os, farPoint);
+
+    GTGlobals::sleep(2000);
 }
 
 #ifndef Q_OS_MAC
@@ -58,20 +71,33 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
 }
 #endif
 
-GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to):QObject(), os(_os), to(_to){
-    timer = new QTimer(this);
-    timer->singleShot(2000, this, SLOT(sl_execDrag()));
+GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to) :
+    QObject(),
+    os(_os),
+    to(_to),
+    done(false)
+{
+    QTimer::singleShot(2000, this, SLOT(sl_execDrag()));
     GTGlobals::sleep(500);
+}
+
+GTDragger::~GTDragger() {
+    if (!done) {
+        sl_execDrag();
+    }
 }
 
 void GTDragger::sl_execDrag(){
     GTMouseDriver::moveTo(os, to);
-#ifdef Q_OS_WIN
+    GTGlobals::sleep();
+#ifndef Q_OS_LINUX
     GTMouseDriver::release(os);
+    GTGlobals::sleep(6000);
 #else
     GTMouseDriver::click(os);
     GTGlobals::sleep();
 #endif
+    done = true;
 }
 
 } //namespace

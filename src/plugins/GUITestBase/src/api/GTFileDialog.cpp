@@ -19,33 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTFileDialog.h"
-#include "GTMenu.h"
-#include "GTKeyboardDriver.h"
-#include "GTMouseDriver.h"
-#include "GTComboBox.h"
-#include "api/GTGlobals.h"
-#include "api/GTLineEdit.h"
-#include "GTWidget.h"
+#include <QApplication>
+#include <QComboBox>
+#include <QFileSystemModel>
+#include <QHeaderView>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTreeView>
 
 #include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QComboBox>
-#include <QtGui/QFileSystemModel>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QTreeView>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QFileSystemModel>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTreeView>
-#endif
+
+#include "GTComboBox.h"
+#include "GTFileDialog.h"
+#include "GTKeyboardDriver.h"
+#include "GTMenu.h"
+#include "GTMouseDriver.h"
+#include "GTUtilsTaskTreeView.h"
+#include "GTWidget.h"
+#include "api/GTGlobals.h"
+#include "api/GTLineEdit.h"
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"
@@ -128,37 +120,36 @@ void GTFileDialogUtils::commonScenario()
     }else{
         clickButton(button);
     }
-
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
-GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &_os, const QString &_path, const QStringList &_fileNameList) :
+GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &_os, const QString &_path, const QStringList &fileNames) :
     GTFileDialogUtils(_os,_path, "", Open, GTGlobals::UseMouse),
-    fileNameList(_fileNameList)
+    fileNamesList(fileNames)
 {
-    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (path.at(path.count() - 1) != '/') {
-        path += '/';
+//    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+//    if (path.at(path.count() - 1) != '/') {
+//        path += '/';
+//    }
+    foreach (const QString &name, fileNames) {
+        filePaths << _path + "/" + name;
     }
 }
 
-#define GT_METHOD_NAME "GTFileDialogUtils_list run"
-void GTFileDialogUtils_list::run(){
-    QWidget *dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
-                   "file dialog not found");
+GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &os, const QStringList &filePaths) :
+    GTFileDialogUtils(os, "", "", Open, GTGlobals::UseMouse),
+    filePaths(filePaths)
+{
 
-    fileDialog = dialog;
-    GTGlobals::sleep(200);
-    const bool dirWasChanged = setPath();
-    GTGlobals::sleep(200);
-    if(dirWasChanged){
-        clickButton(Open);
-        GTGlobals::sleep(200);
-    }
-    setViewMode(Detail);
-    GTGlobals::sleep(200);
-    setNameList(os,fileNameList);
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void GTFileDialogUtils_list::commonScenario() {
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(NULL != dialog && QString(dialog->metaObject()->className()) == "QFileDialog", "file dialog not found");
+
+    setNameList(os, filePaths);
     GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
@@ -166,36 +157,33 @@ void GTFileDialogUtils_list::run(){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setNameList"
-void GTFileDialogUtils_list::setNameList(U2OpStatus &os, const QStringList & nameList){
+void GTFileDialogUtils_list::setNameList(U2OpStatus &os, const QStringList &nameList) {
     QString str;
     foreach (QString name, nameList){
+        if (QFileInfo(name).isRelative()) {
+            name = QApplication::applicationDirPath() + "/" + name;
+        }
         str.append('\"' + name + "\" ");
     }
     QLineEdit* fileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,FILE_NAME_LINE_EDIT));
-    GTLineEdit::setText(os,fileEdit,str,false,false);
+    GTLineEdit::setText(os, fileEdit, str, false, true);
 }
 #undef GT_METHOD_NAME
 
 void GTFileDialogUtils_list::selectFile(){
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
-    foreach(QString name, fileNameList){
+    foreach(QString name, fileNamesList){
         GTFileDialogUtils::fileName = name;
         GTFileDialogUtils::selectFile();
     }
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
 }
-void GTFileDialogUtils::openFileDialog()
-{
-    QMenu *menu;
-    QStringList itemPath;
-    itemPath << ACTION_PROJECTSUPPORT__OPEN_PROJECT;
 
+void GTFileDialogUtils::openFileDialog() {
     switch(method) {
     case GTGlobals::UseMouse:
-        menu = GTMenu::showMainMenu(os, MWMENU_FILE, method);
-        GTMenu::clickMenuItemByName(os, menu, itemPath);
+        GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
         break;
-
     case GTGlobals::UseKey:
         GTKeyboardDriver::keyClick(os, 'O', GTKeyboardDriver::key["ctrl"]);
         break;
@@ -261,6 +249,7 @@ void GTFileDialogUtils::selectFile()
         w->scrollTo(index);
         indexCenter = w->visualRect(index).center();
         indexCenter.setY(indexCenter.y() + w->header()->rect().height());
+        indexCenter.setX(indexCenter.x()+1);
         GTMouseDriver::moveTo(os, w->mapToGlobal(indexCenter));
         GTMouseDriver::click(os);
         break;
@@ -300,8 +289,8 @@ void GTFileDialogUtils::clickButton(Button btn)
         break;
 
     case GTGlobals::UseMouse:
-        GTWidget::click(os, button_to_click);
         GTGlobals::sleep(100);
+        GTWidget::click(os, button_to_click);
         break;
     default:
         break;
@@ -348,8 +337,7 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
     GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
-
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 #define GT_METHOD_NAME "openFile"
@@ -374,6 +362,12 @@ void GTFileDialog::openFileList(U2OpStatus &os, const QString &path, const QStri
     ob->openFileDialog();
 
     GTGlobals::sleep();
+}
+
+void GTFileDialog::openFileList(U2OpStatus &os, const QStringList &filePaths) {
+    GTFileDialogUtils_list *openFileDialogFiller = new GTFileDialogUtils_list(os, filePaths);
+    GTUtilsDialog::waitForDialog(os, openFileDialogFiller);
+    openFileDialogFiller->openFileDialog();
 }
 
 #undef GT_CLASS_NAME

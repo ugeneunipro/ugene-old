@@ -240,6 +240,7 @@ void MainWindowImpl::createActions() {
     aboutAction->setObjectName("About");
     aboutAction->setShortcut(QKeySequence(Qt::Key_F1));
     aboutAction->setShortcutContext(Qt::ApplicationShortcut);
+    aboutAction->setMenuRole(QAction::AboutRole);
     connect(aboutAction, SIGNAL(triggered()), SLOT(sl_aboutAction()));
 
     visitWebAction = new QAction(tr("Visit UGENE Web Site"), this);

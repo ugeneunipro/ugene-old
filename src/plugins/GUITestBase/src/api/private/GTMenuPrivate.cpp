@@ -40,16 +40,33 @@ namespace U2 {
 #define GT_CLASS_NAME "GTMenu"
 
 #define GT_METHOD_NAME "clickMainMenuItem"
-void GTMenuPrivate::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, U2::GTGlobals::UseMethod method) {
+void GTMenuPrivate::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, U2::GTGlobals::UseMethod method, Qt::MatchFlag matchFlag) {
     GT_CHECK(itemPath.count() > 1, QString("Menu item path is too short: { %1 }").arg(itemPath.join(" -> ")));
+
 #ifdef Q_OS_MAC
     Q_UNUSED(method);
-    GTMenuPrivateMac::clickMainMenuItem(os, itemPath);
+    GTMenuPrivateMac::clickMainMenuItem(os, itemPath, matchFlag);
 #else
     QStringList cuttedItemPath = itemPath;
     const QString menuName = cuttedItemPath.takeFirst();
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, cuttedItemPath, method));
     showMainMenu(os, menuName, method);
+#endif
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkMainMenuItemState"
+void GTMenuPrivate::checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
+    GT_CHECK(itemPath.count() > 1, QString("Menu item path is too short: { %1 }").arg(itemPath.join(" -> ")));
+
+#ifdef Q_OS_MAC
+    GTMenuPrivateMac::checkMainMenuItemState(os, itemPath, expectedState);
+#else
+    QStringList cuttedItemPath = itemPath;
+    const QString menuName = cuttedItemPath.takeFirst();
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, cuttedItemPath, expectedState, GTGlobals::UseMouse));
+    showMainMenu(os, menuName, GTGlobals::UseMouse);
+    GTGlobals::sleep(100);
 #endif
 }
 #undef GT_METHOD_NAME
@@ -61,7 +78,14 @@ void GTMenuPrivate::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlob
     QMainWindow *mainWindow = mw->getQMainWindow();
     GT_CHECK(mainWindow != NULL, "QMainWindow is NULL");
 
-    QAction *menu = mainWindow->findChild<QAction*>(menuName);
+    QList<QAction *> actions = mainWindow->findChildren<QAction *>();
+    QAction *menu = NULL;
+    foreach (QAction* action, actions) {
+        QString name = action->text().replace('&',"");
+        if(menuName == name){
+            menu = action;
+        }
+    }
 
     GT_CHECK(menu != NULL, QString("menu \"%1\" not found").arg(menuName));
 

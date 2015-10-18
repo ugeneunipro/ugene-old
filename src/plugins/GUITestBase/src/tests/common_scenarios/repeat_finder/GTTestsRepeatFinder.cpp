@@ -56,9 +56,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     Runnable * swDialog = new FindRepeatsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/");
     GTUtilsDialog::waitForDialog(os, swDialog);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE
-        << "find_repeats_action", GTGlobals::UseMouse));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Analyze" << "Find repeats...", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
 // 3. Close sequence view, then reopen it

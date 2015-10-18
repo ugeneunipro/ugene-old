@@ -63,9 +63,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_NIAID_pipelines {
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
     //GTUtilsDialog::waitForDialog(os, new WizardFiller0001(os,"BED or position list file"));
@@ -106,7 +104,7 @@ public:
         QPoint j = cancel->mapToGlobal(cancel->rect().topLeft());
 
         CHECK_SET_ERR(qAbs(i.y()-j.y())<100, QString("%1   %2").arg(i.y()).arg(j.y()));
-        GTWidget::click(os,cancel);
+        GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
     }
 };
 #undef GT_METHOD_NAME
@@ -114,9 +112,8 @@ public:
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open WD
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
 //    2. Open tuxedo pipeline from samples
     GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<

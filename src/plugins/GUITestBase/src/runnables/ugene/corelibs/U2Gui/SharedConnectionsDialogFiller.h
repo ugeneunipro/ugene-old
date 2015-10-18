@@ -35,8 +35,6 @@ namespace U2 {
 
 class SharedConnectionsDialogFiller : public Filler {
 public:
-    enum Behavior { SAFE, UNSAFE };
-
     class Action {
     public:
         enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT};
@@ -51,12 +49,13 @@ public:
         ConnectResult expectedResult;
     };
 
-    SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions, const QFlags<Behavior> &behavior = QFlags<Behavior>(SAFE));
-    void run();
+    SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+    SharedConnectionsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    void commonScenario();
 
 private:
     QList<Action> actions;
-    QFlags<Behavior> behavior;
 };
 
 } // U2

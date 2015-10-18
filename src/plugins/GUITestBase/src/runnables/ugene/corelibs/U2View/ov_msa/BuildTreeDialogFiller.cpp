@@ -38,7 +38,7 @@
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTWidget.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreementDialogFiller.h"
 
 namespace U2 {
 

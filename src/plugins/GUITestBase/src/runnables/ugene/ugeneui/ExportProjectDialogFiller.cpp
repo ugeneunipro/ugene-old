@@ -48,11 +48,7 @@ void ExportProjectDialogChecker::run() {
     GT_CHECK(projectFileLineEdit != NULL, "LineEdit is NULL");
     GT_CHECK(projectFileLineEdit->text() == projectName, "Project name is not " + projectName);
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Cancel);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -72,11 +68,7 @@ void ExportProjectDialogSizeChecker::run() {
 
     GT_CHECK(projectFileLineEdit->height() == projectFolderLineEdit->height(), "LineEdits vertical sizes is different");
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Cancel);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -98,11 +90,7 @@ void ExportProjectDialogFiller::run() {
         GTLineEdit::setText(os, projectFileLineEdit, projectName);
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

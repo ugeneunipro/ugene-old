@@ -21,29 +21,34 @@
 
 #include <QApplication>
 
+#include "ConfigurationWizardFiller.h"
+#include "GTUtilsWizard.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTWidget.h"
 
-#include "GTUtilsWizard.h"
-
-#include "ConfigurationWizardFiller.h"
-
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
+#define GT_CLASS_NAME "ConfigurationWizardFiller"
+
 #define GT_METHOD_NAME "commonScenario"
-void ConfigurationWizardFiller::commonScenario(){
-    QWidget* dialog = QApplication::activeModalWidget();
+void ConfigurationWizardFiller::commonScenario() {
+    QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     GTGlobals::sleep(500);
 
-    foreach (QString s, radioNames) {
-        QRadioButton* b = GTWidget::findExactWidget<QRadioButton*>(os, s, dialog);
+    GTMouseDriver::moveTo(os, QPoint(dialog->pos().x() + dialog->rect().width() / 2, dialog->pos().y() + 5));
+    GTMouseDriver::click(os);
+
+    foreach (const QString &s, radioNames) {
+        QRadioButton *b = GTWidget::findExactWidget<QRadioButton *>(os, s, dialog);
         GTRadioButton::click(os, b);
     }
 
     GTUtilsWizard::clickButton(os, GTUtilsWizard::Setup);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
-}
+
+}   // namespace U2

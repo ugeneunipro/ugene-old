@@ -22,10 +22,11 @@
 #ifndef _U2_GT_UTILS_MDI_H_
 #define _U2_GT_UTILS_MDI_H_
 
+#include <QPoint>
+
 #include "api/GTGlobals.h"
 #include "api/GTMenuBar.h"
 #include "api/GTWidget.h"
-#include <QPoint>
 
 namespace U2 {
 class GTUtilsMdi {
@@ -44,7 +45,8 @@ public:
     // fails if windowName is empty or because of FindOptions settings
     static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static bool closeWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static void closeWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static void waitWindowOpened(U2OpStatus &os, const QString &windowNamePart, qint64 timeout = 180000);
 };
 
 } // namespace

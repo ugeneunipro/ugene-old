@@ -19,40 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QTreeView>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QTreeView>
-#endif
-
-#include "GUIInitialChecks.h"
-#include "api/GTClipboard.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTGlobals.h"
-#include "api/GTFile.h"
-#include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsProject.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsProjectTreeView.h"
-#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/qt/EscapeClicker.h"
+#include <QApplication>
+#include <QDir>
+#include <QMainWindow>
+#include <QTreeView>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/UserApplicationsSettings.h>
+
 #include <U2Gui/ObjectViewModel.h>
+
+#include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "GUIInitialChecks.h"
+#include "api/GTClipboard.h"
+#include "api/GTFile.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/EscapeClicker.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+
+#include <QMdiSubWindow>
 
 #include <QMdiSubWindow>
 
@@ -87,15 +86,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     Q_UNUSED(os);
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
-    mainWindow->showMaximized();
-
-#ifdef Q_OS_MAC
-    mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::CustomizeWindowHint);
-    mainWindow->show();
-    mainWindow->setFocus();
-#endif
-
-    GTGlobals::sleep(1000);
+    if (!mainWindow->isMaximized()) {
+        GTWidget::clickCornerMenu(os, mainWindow, GTGlobals::Maximize);
+        GTGlobals::sleep(1000);
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
@@ -130,17 +124,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 #ifdef Q_OS_MAC
     GTWidget::click(os, mw, Qt::LeftButton, QPoint(200,200));
 #endif
-
-
-
-    /*
-    TEMPORARY TO DETECT MAC ERROR
-*/
-#ifdef Q_OS_MAC
-//    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "QFileDialog"));
-//    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_FILE);
-//    GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION_PROJECTSUPPORT__OPEN_PROJECT);
-#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
@@ -153,10 +136,10 @@ GUI_TEST_CLASS_DEFINITION(post_test_0000){
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
-    QWidget* w = QApplication::activeModalWidget();
-    while(w!=NULL){
-        w = QApplication::activeModalWidget();
-        w->close();
+    QWidget* widget = QApplication::activeModalWidget();
+    while (widget != NULL) {
+        GTWidget::clickCornerMenu(os, widget, GTGlobals::Close);
+        widget = QApplication::activeModalWidget();
     }
 
     GTClipboard::text(os);
@@ -178,20 +161,12 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0002) {
-
     GTGlobals::sleep(1000);
     // close project
     if (AppContext::getProject() != NULL) {
-        int key;
-#ifdef Q_OS_MAC
-        key = GTKeyboardDriver::key["cmd"];
-#else
-        key = GTKeyboardDriver::key["ctrl"];
-#endif
-
         GTGlobals::sleep();
         GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
-        GTKeyboardDriver::keyClick(os, 'a', key);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep(100);
 
         GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
@@ -199,10 +174,9 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(500);
 #ifdef Q_OS_MAC
-        QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
-        GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+        GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 #else
-        GTKeyboardDriver::keyClick(os, 'q', key);
+        GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep(100);
 #endif
         GTGlobals::sleep(500);
@@ -210,16 +184,31 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
         GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
         GTGlobals::sleep();
     }
-    //close WD
-    QMdiSubWindow* WD = GTWidget::findExactWidget<QMdiSubWindow*>(os, "Workflow Designer_SubWindow", NULL, GTGlobals::FindOptions(false));
-    if(WD != NULL){
-        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os,QMessageBox::Discard));
-        WD->close();
-        GTGlobals::sleep(500);
+
+    // close all Workflow Designer windows
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    options.matchPolicy = Qt::MatchContains;
+    QWidget *wdWindow = NULL;
+    while (NULL != (wdWindow = GTUtilsMdi::findWindow(os, "Workflow Designer", options))) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+        GTUtilsMdi::activateWindow(os, "Workflow Designer");
+        GTWidget::clickCornerMenu(os, GTUtilsMdi::activeWindow(os), GTGlobals::Close);
     }
+
+    // close all Query Designer windows
+    QWidget *qdWindow = NULL;
+    while (NULL != (qdWindow = GTUtilsMdi::findWindow(os, "Query Designer", options))) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+        GTUtilsMdi::activateWindow(os, "Query Designer");
+        GTWidget::clickCornerMenu(os, GTUtilsMdi::activeWindow(os), GTGlobals::Close);
+    }
+
     //cancel all tasks
     AppContext::getTaskScheduler()->cancelAllTasks();
-    GTGlobals::sleep(1000);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0003) {

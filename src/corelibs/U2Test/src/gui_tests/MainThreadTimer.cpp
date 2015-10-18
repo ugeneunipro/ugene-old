@@ -19,37 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef LICENSEAGREEMNTDIALOGFILLER_H
-#define LICENSEAGREEMNTDIALOGFILLER_H
+#include <QApplication>
+#include <QThread>
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QApplication>
-#endif
+#include <U2Core/U2SafePoints.h>
 
-#include "GTUtilsDialog.h"
-#include "api/GTWidget.h"
+#include "MainThreadTimer.h"
 
 namespace U2 {
 
-class LicenseAgreemntDialogFiller : public Filler {
-public:
-    LicenseAgreemntDialogFiller(U2OpStatus &os) : Filler(os, "LicenseDialog"){}
-    virtual void run(){
-        QWidget* dialog = QApplication::activeModalWidget();
-        CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-        GTGlobals::sleep(1000);
-
-        QPushButton* accept = dialog->findChild<QPushButton*>("acceptButton");
-        GTWidget::click(os, accept);
-    }
-private:
-
-};
-
+MainThreadTimer::MainThreadTimer(int interval, QObject *parent) :
+    QObject(parent),
+    counter(0)
+{
+    SAFE_POINT(QThread::currentThread() == QApplication::instance()->thread(), "Timer is supposed to be created in the main thread", );
+    timer.setInterval(interval);
+    connect(&timer, SIGNAL(timeout()), SLOT(sl_timerTick()));
+    timer.start();
 }
-#endif // LICENSEAGREEMNTDIALOGFILLER_H
+
+qint64 MainThreadTimer::getCounter() const {
+    QMutexLocker locker(&guard);
+    Q_UNUSED(locker);
+    return counter;
+}
+
+void MainThreadTimer::sl_timerTick() {
+    QMutexLocker locker(&guard);
+    Q_UNUSED(locker);
+    counter++;
+}
+
+}   // namespace U2

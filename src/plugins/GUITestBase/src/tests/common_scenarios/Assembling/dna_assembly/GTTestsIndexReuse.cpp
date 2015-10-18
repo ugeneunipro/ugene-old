@@ -91,8 +91,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is built
     CHECK_SET_ERR(GTFile::check(os, sandBoxDir + refName + ".1.ebwt"), "index1 not found");
@@ -109,8 +108,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l1, false);
@@ -132,8 +130,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l2, false);
@@ -149,8 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l3, false);
@@ -167,8 +163,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("Bowtie", dataDir + "samples/CLUSTALW/COI.aln",
                                                                                       "These files have the incompatible format:",
                                                                                   testDir + "_common_data/bowtie2/reads_1.fq",  QMessageBox::No)));
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -187,8 +182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Delete one of the indes files
     QFile f(sandBoxDir + refName + ".3.ebwt");
@@ -198,8 +192,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("Bowtie", sandBoxDir + refName + ".1.ebwt",
                                                                                       "You set the index as a reference and the index files are corrupted")));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -221,8 +214,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is built
     CHECK_SET_ERR(GTFile::check(os, sandBoxDir + refName + ".1.bt2"), "index1 not created");
@@ -239,8 +231,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l1, false);
@@ -262,8 +253,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l2, false);
@@ -279,8 +269,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l3, false);
@@ -297,8 +286,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("Bowtie2", dataDir + "samples/CLUSTALW/COI.aln",
                                                                                       "These files have the incompatible format:",
                                                                                       testDir + "_common_data/bowtie2/reads_1.fq",  QMessageBox::No)));
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -315,8 +303,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Delete one of the indes files
     QFile f(sandBoxDir + refName + ".3.bt2");
@@ -326,8 +313,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("Bowtie2", sandBoxDir + refName + ".1.bt2",
                                                                                       "You set the index as a reference and the index files are corrupted")));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -346,8 +332,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is built
     CHECK_SET_ERR(GTFile::check(os, sandBoxDir + refName + ".fa.amb"), "amb not found");
@@ -363,8 +348,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l1, false);
@@ -388,8 +372,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l2, false);
@@ -409,8 +392,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l3, false);
@@ -431,8 +413,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("BWA", dataDir + "samples/CLUSTALW/COI.aln",
                                                                                       "These files have the incompatible format:",
                                                                                       testDir + "_common_data/bowtie2/reads_1.fq",  QMessageBox::No)));
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -449,8 +430,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Delete one of the indes files
     QFile f(sandBoxDir + refName + ".fa.bwt");
@@ -460,8 +440,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new WrongRefSetter("BWA", sandBoxDir + refName + ".fa.ann",
                                                                                       "You set the index as a reference and the index files are corrupted")));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTGlobals::sleep();
 }
 
@@ -479,8 +458,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is built
     CHECK_SET_ERR(GTFile::check(os, sandBoxDir + refName + ".fa.amb"), "amb not found");
@@ -496,8 +474,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l1, false);
@@ -517,8 +494,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l2, false);
@@ -534,8 +510,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
 
-    mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: index is reused
     GTUtilsLog::checkContainsMessage(os, l3, false);

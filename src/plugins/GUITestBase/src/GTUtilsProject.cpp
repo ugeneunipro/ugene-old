@@ -19,28 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QUrl>
-
-#include "GTUtilsProject.h"
-
-#include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTWidget.h"
-
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
-#include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsTaskTreeView.h"
-
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QHeaderView>
+#include <QMainWindow>
+#include <QTreeView>
+#include <QUrl>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -50,19 +34,21 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 
-#include <QtGui/QDragEnterEvent>
-#include <QtGui/QDropEvent>
-
-#include <QTreeView>
-
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QHeaderView>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QHeaderView>
-#endif
+#include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 namespace U2 {
 
@@ -71,9 +57,12 @@ namespace U2 {
 void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s) {
 
     switch (s.openMethod) {
-        case OpenFileSettings::DragDrop:
-        default:
-            openFilesDrop(os, urls);
+    case OpenFileSettings::DragDrop:
+        openFilesDrop(os, urls);
+        break;
+    case OpenFileSettings::Dialog:
+        openFilesWithDialog(os, urls);
+        break;
     }
 
     checkProject(os);
@@ -109,7 +98,7 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     QMimeData *mimeData = new QMimeData();
     mimeData->setUrls(urls);
 
-    Qt::DropActions dropActions = Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
+    Qt::DropActions dropActions = Qt::DropActions(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
     Qt::MouseButtons mouseButtons = Qt::LeftButton;
 
     if (urls.size() > 1) {
@@ -123,6 +112,12 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     GTGlobals::sendEvent(widget, dropEvent);
 }
 
+void GTUtilsProject::openFilesWithDialog(U2OpStatus &os, const QList<QUrl> &urls) {
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, QUrl::toStringList(urls)));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
+    GTGlobals::sleep(2000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 
 #define GT_METHOD_NAME "openFileExpectSequence"
 ADVSingleSequenceWidget * GTUtilsProject::openFileExpectSequence(U2OpStatus &os,
@@ -238,9 +233,15 @@ void GTUtilsProject::closeProject(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new AppCloseMessageBoxDialogFiller(os));
     GTGlobals::sleep(500);
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 }
+
+GTUtilsProject::OpenFileSettings::OpenFileSettings() :
+    openMethod(Dialog)
+{
+
+}
+
 #undef GT_METHOD_NAME
 
 

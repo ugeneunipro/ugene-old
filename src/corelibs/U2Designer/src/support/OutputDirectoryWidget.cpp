@@ -64,6 +64,7 @@ OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent, bool commitOnHide)
     QHBoxLayout *hl = new QHBoxLayout();
     hl->setContentsMargins(0, 0, 0, 0);
     pathEdit = new QLineEdit(this);
+    pathEdit->setObjectName("pathEdit");
     browseButton = new QToolButton(this);
     browseButton->setText("...");
     hl->addWidget(pathEdit);

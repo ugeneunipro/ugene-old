@@ -46,6 +46,7 @@ CommonImportOptionsDialogFiller::CommonImportOptionsDialogFiller(U2OpStatus& os,
 void CommonImportOptionsDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
+    GTWidget::clickWindowTitle(os, dialog);
 
     ImportOptionsWidget* optionsWidget = qobject_cast<ImportOptionsWidget*>(GTWidget::findWidget(os, "optionsWidget", dialog));
     GT_CHECK(NULL != optionsWidget, "optionsWidget is NULL");

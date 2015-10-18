@@ -56,6 +56,7 @@ void SequenceReadingModeSelectorDialogFiller::commonScenario()
         QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
         GT_CHECK(button != NULL, "standart button not found");
         GTWidget::click(os, button);
+        return;
     }
     if (readingMode == Separate) {
         QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
@@ -82,9 +83,7 @@ void SequenceReadingModeSelectorDialogFiller::commonScenario()
         GTRadioButton::click(os, refalignmentRB);
     }
 
-    QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
-    GT_CHECK(button != NULL, "standart button not found");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

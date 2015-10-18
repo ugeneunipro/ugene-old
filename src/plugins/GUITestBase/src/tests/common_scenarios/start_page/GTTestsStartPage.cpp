@@ -57,8 +57,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsStartPage::clickButton(os, GTUtilsStartPage::CreateWorkflow);
     GTGlobals::sleep(500);
 //    Expected state: WD opened.
-    QString windowName = GTUtilsMdi::activeWindowTitle(os);
-    CHECK_SET_ERR(windowName == "Workflow Designer - New workflow", "unexpected window title: " + windowName)
+    GTUtilsMdi::waitWindowOpened(os, "Workflow Designer - New workflow", 20000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003){
@@ -124,20 +123,20 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     GTGlobals::sleep();
     QString title = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(title == "Start Page", "unexpected window title: " + title);
+
 //    Use main menu: Help->Open start page
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"welcome_page"));
-    GTMenu::showMainMenu(os, MWMENU_HELP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Help" << "Open Start Page");
     GTGlobals::sleep(500);
+
 //    Expected state: nothing happens
     title = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(title == "Start Page", "unexpected window title: " + title);
 //    Close Start page
     GTUtilsMdi::click(os, GTGlobals::Close);
     QWidget* window = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(window == NULL, "start page was not closed")
+    CHECK_SET_ERR(window == NULL, "start page was not closed");
 //    Repeat step 2
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"welcome_page"));
-    GTMenu::showMainMenu(os, MWMENU_HELP);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Help" << "Open Start Page");
     GTGlobals::sleep(500);
 //    Expected state: Start page is opened
     title = GTUtilsMdi::activeWindowTitle(os);

@@ -20,6 +20,7 @@
  */
 
 #include <QTreeWidgetItem>
+#include <QListWidget>
 
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -29,6 +30,7 @@
 #include <U2View/AnnotationsTreeView.h>
 
 #include "GTDatabaseConfig.h"
+#include "GTTestsSharedDatabase.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsLog.h"
@@ -43,6 +45,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTListWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
@@ -61,10 +64,49 @@
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 
-#include "GTTestsSharedDatabase.h"
-
 namespace U2 {
 namespace GUITest_common_scenarios_shared_database {
+
+namespace {
+
+QListWidgetItem * getConnectionItem(U2OpStatus &os, const QString &connectionName) {
+    QWidget *dialog = QApplication::activeModalWidget();
+    CHECK_SET_ERR_RESULT(NULL != dialog, "Active modal widget is NULL", NULL);
+
+    QListWidget *list = GTWidget::findExactWidget<QListWidget *>(os, "lwConnections", dialog);
+    CHECK_SET_ERR_RESULT(NULL != list, "Connections list widget is NULL", NULL);
+    const QList<QListWidgetItem *> items = list->findItems(connectionName, Qt::MatchExactly);
+    CHECK_SET_ERR_RESULT(1 == items.size(), QString("List item '%1'' not found").arg(connectionName), NULL);
+
+    return items.first();
+}
+
+void checkButtonStateForConnectionItem(U2OpStatus &os, const QString &connectionName, const QString &buttonText, bool isEnabled) {
+    QWidget *dialog = QApplication::activeModalWidget();
+    CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+    GTListWidget::click(os, GTWidget::findExactWidget<QListWidget *>(os, "lwConnections", dialog), connectionName);
+
+    QWidget *button = GTWidget::findButtonByText(os, buttonText, dialog);
+    CHECK_SET_ERR(NULL != button, "Button is NULL");
+    CHECK_SET_ERR(isEnabled == button->isEnabled(), QString("Button '%1' has an incorrect state").arg(buttonText));
+}
+
+void checkConnectionItemIcon(U2OpStatus &os, const QString &connectionName, const QString &expectedIconPath) {
+    QListWidgetItem *connectionItem = getConnectionItem(os, connectionName);
+    CHECK_OP(os, );
+    const QIcon icon = connectionItem->icon();
+    const QIcon expectedIcon(expectedIconPath);
+    if (!expectedIconPath.isEmpty()) {
+        CHECK_SET_ERR(expectedIcon.pixmap(expectedIcon.availableSizes().first()).toImage() == icon.pixmap(icon.availableSizes().first()).toImage(), "Icon is incorrect");
+    } else {
+        QPixmap px(":/core/images/db/database_lightning.png");
+        px.fill(Qt::transparent);
+        CHECK_SET_ERR(px.toImage() == icon.pixmap(icon.availableSizes().first()).toImage(), "Icon is incorrect");
+    }
+}
+
+}
 
 GUI_TEST_CLASS_DEFINITION(cm_test_0001) {
     //1. File -> Shared databases.
@@ -94,11 +136,22 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0001) {
         params.connectionName = conName;
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 
     GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "cm_test_0001: new shared database", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "cm_test_0001: new shared database", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(cm_test_0002) {
@@ -125,7 +178,18 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0002) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "cm_test_0002: new shared database", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "cm_test_0002: new shared database", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
@@ -133,7 +197,10 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0002) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::DELETE, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    const bool exists = GTUtilsProjectTreeView::checkItem(os, conName, QModelIndex());
+    CHECK_SET_ERR(!exists, "A database connection unexpectedly is presented in the project view");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -175,7 +242,18 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0003) {
         params.connectionName = newConName;
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "cm_test_0003: new shared database 1", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "cm_test_0003: new shared database 1", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
@@ -183,7 +261,21 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0003) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::DISCONNECT, newConName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario2 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "cm_test_0003: new shared database 1", "");
+            checkButtonStateForConnectionItem(os, "cm_test_0003: new shared database 1", "Edit", true);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario2));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    const bool exists = GTUtilsProjectTreeView::checkItem(os, conName, QModelIndex());
+    CHECK_SET_ERR(!exists, "A database connection unexpectedly is presented in the project view");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -206,7 +298,18 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0004) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -234,7 +337,18 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0005) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
@@ -242,7 +356,21 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0005) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::DISCONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario2 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "ugene_gui_test", "");
+            checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", true);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario2));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    const bool exists = GTUtilsProjectTreeView::checkItem(os, conName, QModelIndex());
+    CHECK_SET_ERR(!exists, "A database connection unexpectedly is presented in the project view");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -264,23 +392,47 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0006) {
     //            c) There are no errors in the log.
     //            d) The "Edit" button is disabled.
     GTLogTracer lt;
-    QString conName = "cm_test_0006: uninitialized database";
+
+    const QString conName = "cm_test_0006: uninitialized database";
     GTDatabaseConfig::initTestConnectionInfo(conName, GTDatabaseConfig::uninitializedDatabase());
-    {
-        QList<SharedConnectionsDialogFiller::Action> actions;
-        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
 
-        SharedConnectionsDialogFiller::Action cAction(SharedConnectionsDialogFiller::Action::CONNECT, conName);
-        cAction.dbName = GTDatabaseConfig::uninitializedDatabase();
-        cAction.expectedResult = SharedConnectionsDialogFiller::Action::DONT_INITIALIZE;
-        actions << cAction;
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget");
 
-        cAction.expectedResult = SharedConnectionsDialogFiller::Action::INITIALIZE;
-        actions << cAction;
+            const QString conName = "cm_test_0006: uninitialized database";
 
-        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
-    }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+            GTGlobals::sleep(500);
+            GTListWidget::click(os, GTWidget::findExactWidget<QListWidget *>(os, "lwConnections", dialog), conName);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "is not initialized"));
+            GTWidget::click(os, GTWidget::findWidget(os, "pbConnect", dialog));
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "is not initialized"));
+            GTWidget::click(os, GTWidget::findWidget(os, "pbConnect", dialog));
+
+            GTUtilsTaskTreeView::waitTaskFinished(os);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    const bool exists = GTUtilsProjectTreeView::checkItem(os, conName, QModelIndex());
+    CHECK_SET_ERR(exists, "A database connection not found in the project view");
+
+    class Scenario2 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            const QString conName = "cm_test_0006: uninitialized database";
+            checkConnectionItemIcon(os, conName, ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, conName, "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario2));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -303,7 +455,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0007) {
 
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(cm_test_0008) {
@@ -333,7 +485,21 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0008) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName1);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    bool exists = GTUtilsProjectTreeView::checkItem(os, conName1, QModelIndex());
+    CHECK_SET_ERR(exists, "A database connection not found in the project view");
 
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
@@ -343,7 +509,21 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0008) {
         actions << cAction;
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario2 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "ugene_gui_test_2", ":/core/images/db/database_lightning.png");
+            checkButtonStateForConnectionItem(os, "ugene_gui_test_2", "Edit", false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario2));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    exists = GTUtilsProjectTreeView::checkItem(os, conName2, QModelIndex());
+    CHECK_SET_ERR(exists, "A database connection not found in the project view");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -380,7 +560,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0009) {
         params.password = "wrongPassword";
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::MANUAL));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
@@ -399,10 +579,10 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
     //    Login: ugene
     //7. Click "OK".
     //Expected: the connection is established:
-    //          1) The connection item has the "Connected" icon.
+    //          1) The connection item has no icon.
     //          2) The database document appears in the project.
     //          3) There are no errors in the log.
-    //          4) The "Edit" button is disabled.
+    //          4) The "Edit" button is enabled.
     GTLogTracer lt;
     if(GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false)) != NULL){
         GTUtilsMdi::click(os, GTGlobals::Close);
@@ -425,10 +605,23 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
         params.database = GTDatabaseConfig::database();
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::MANUAL));
     }
-    {
-        GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
-    }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            checkConnectionItemIcon(os, "cm_test_0013: new shared database", "");
+            checkButtonStateForConnectionItem(os, "cm_test_0013: new shared database", "Edit", true);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, new Scenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+
+    const bool exists = GTUtilsProjectTreeView::checkItem(os, conName, QModelIndex());
+    CHECK_SET_ERR(exists, "A database connection not found in the project view");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -480,7 +673,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0014) {
 
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, new ReadOnlyCheckScenario));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
     GTGlobals::sleep();
 }
 

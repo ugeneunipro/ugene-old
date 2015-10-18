@@ -28,6 +28,7 @@
 #endif // __OBJC__
 
 #include "api/GTGlobals.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
@@ -36,12 +37,15 @@ namespace U2 {
  */
 class GTMenuPrivateMac {
 public:
-    static void clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath);
+    static void clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
 
 private:
 #ifdef __OBJC__
-    static NSMenu *clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle);
-#endif // __OBJC__
+    static NSMenu *clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
+    static NSMenuItem *getMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
+    static void checkMenuItemState(U2OpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState);
+#endif // __OBJC__NSMenuItem
 };
 
 }   // namespace U2

@@ -61,8 +61,6 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 
-#include <U2Gui/ToolsMenu.h>
-
 namespace U2 {
 
 const int GTUtilsWorkflowDesigner::verticalShift = 35;
@@ -71,10 +69,8 @@ const int GTUtilsWorkflowDesigner::verticalShift = 35;
 #define GT_METHOD_NAME "openWorkflowDesigner"
 void GTUtilsWorkflowDesigner::openWorkflowDesigner(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
-
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
-    GTGlobals::sleep(500);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Workflow Designer...");
+    GTUtilsMdi::waitWindowOpened(os, "Workflow Designer");
 }
 #undef GT_METHOD_NAME
 
@@ -246,48 +242,36 @@ void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* a
     GT_CHECK(algorithm!=NULL, "algorithm is NULL");
     GTGlobals::sleep(500);
 
-    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
-    QList<QTreeWidgetItem*> childrenList = w->findItems("",Qt::MatchContains);
-    foreach(QTreeWidgetItem* child,childrenList){
-        child->setExpanded(false);
-    }
-
-    algorithm->parent()->setExpanded(true);
     algorithm->treeWidget()->scrollToItem(algorithm, QAbstractItemView::PositionAtCenter);
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSample"
-void GTUtilsWorkflowDesigner::addSample(U2OpStatus &os, QString sampName){
+void GTUtilsWorkflowDesigner::addSample(U2OpStatus &os, const QString &sampName) {
     expandTabs(os);
-    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
-    GT_CHECK(tabs!=NULL, "tabs widget not found");
+    QTabWidget *tabs = qobject_cast<QTabWidget *>(GTWidget::findWidget(os, "tabs"));
+    GT_CHECK(tabs != NULL, "tabs widget not found");
 
-    GTTabWidget::setCurrentIndex(os,tabs,1);
+    GTTabWidget::setCurrentIndex(os, tabs, 1);
 
-    QTreeWidgetItem *samp = findTreeItem(os, sampName,samples);
+    QTreeWidgetItem *samp = findTreeItem(os, sampName, samples);
     GTGlobals::sleep(100);
-    GT_CHECK(samp!=NULL,"sample is NULL");
+    GT_CHECK(samp != NULL,"sample is NULL");
 
-    selectSample(os,samp);
+    selectSample(os, samp);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
-
 #define GT_METHOD_NAME "selectSample"
-void GTUtilsWorkflowDesigner::selectSample(U2OpStatus &os, QTreeWidgetItem* sample){
-    GT_CHECK(sample!=NULL, "sample is NULL");
+void GTUtilsWorkflowDesigner::selectSample(U2OpStatus &os, QTreeWidgetItem *sample) {
+    GT_CHECK(sample != NULL, "sample is NULL");
     GTGlobals::sleep(500);
 
-    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"samples"));
-    QList<QTreeWidgetItem*> childrenList = w->findItems("",Qt::MatchContains);
-    foreach(QTreeWidgetItem* child,childrenList){
-        child->setExpanded(false);
-    }
-
-    sample->parent()->setExpanded(true);
-    GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,sample));
+    QTreeWidget *paletteTree = qobject_cast<QTreeWidget *>(GTWidget::findWidget(os,"samples"));
+    paletteTree->scrollToItem(sample);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, sample));
     GTMouseDriver::doubleClick(os);
 }
 #undef GT_METHOD_NAME
@@ -473,7 +457,7 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString i
             }
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found at scene", NULL);
+    GT_CHECK_RESULT(options.failIfNull == false, "Item '" + itemName + "' not found at scene", NULL);
 
     return NULL;
 }
@@ -587,7 +571,7 @@ void GTUtilsWorkflowDesigner::toggleDebugMode(U2OpStatus &os, bool enable) {
     };
 
     GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new DebugModeToggleScenario(enable)));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_SETTINGS), QStringList() << "action__settings");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
 }
 #undef GT_METHOD_NAME
 
@@ -870,12 +854,8 @@ void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVar
         break;
     }
     case(lineEditWithFileSelector) : {
-        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, value.toString()));
-        GTWidget::click(os, GTWidget::findButtonByText(os, "...", parent));
-#ifdef Q_OS_WIN
-        //added to fix UGENE-3597
+        GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "mainWidget", parent), value.toString());
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-#endif
         break;
     }
     case(spinValue):{

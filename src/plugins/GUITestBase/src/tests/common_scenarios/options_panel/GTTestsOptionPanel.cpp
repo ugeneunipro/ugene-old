@@ -23,6 +23,17 @@
 #include <QFontComboBox>
 #include <QTextStream>
 
+#include "GTTestsOptionPanel.h"
+#include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsApp.h"
+#include "GTUtilsCircularView.h"
+#include "GTUtilsDocument.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
@@ -35,34 +46,14 @@
 #include "api/GTSpinBox.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
-
-#include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsCircularView.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsOptionsPanel.h"
-#include "GTUtilsProject.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsSequenceView.h"
-
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/qt/PopupChooser.h"
-
-#include "GTTestsOptionPanel.h"
 
 namespace U2 {
-
-/*void EnterClicker::run()
-{   GTGlobals::sleep(1000);
-
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
-
-}*/
 
 namespace GUITest_common_scenarios_options_panel {
 
@@ -269,9 +260,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 GUI_TEST_CLASS_DEFINITION(test_0005){
 //    Options panel. Copyng
 //    1. Open file (_common_data\fasta\multy_fa.fa). Open fiel in separate sequences mode.
-    GTUtilsDialog::waitForDialog(os, new EnterClicker(os));
-    GTFileDialog::openFile(os,testDir + "_common_data/fasta/","multy_fa.fa");
-    //GTUtilsDialog::waitForDialog(os, new EnterClicker(os));
+    GTUtilsProject::openMultiSequenceFileAsSequences(os, testDir + "_common_data/fasta/multy_fa.fa");
 
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
@@ -539,8 +528,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
     ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
         dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
-    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-    GTGlobals::sleep(500);
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
 
     QWidget *openCvWidget = GTWidget::findWidget(os,"openCvWidget");
     CHECK_SET_ERR( openCvWidget != NULL, "No hint widget");
@@ -553,41 +541,22 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     // 1. Open sequence with CV
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
     // 2. Set some circular settings
+    const int fontSize1 = 28;
+    GTUtilsOptionPanelSequenceView::setTitleFontSize(os, fontSize1);
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
     // 3. Open another sequence
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
     // 4. Check difference between the modified and newly opened settings
-
-    ADVSingleSequenceWidget *seqWidget1 = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
-    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-    GTUtilsCv::cvBtn::click(os, seqWidget1);
-    GTGlobals::sleep();
-
-    QSpinBox*  titleFontSpinBox1 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
-    CHECK_SET_ERR( titleFontSpinBox1 != NULL, "Title font size spinBox is NULL");
-    GTSpinBox::setValue(os, titleFontSpinBox1, 28);
-    int fontSize1 = titleFontSpinBox1->value();
-    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-
-    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
-    QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
-    CHECK_SET_ERR(seqWidgets.size() == 1, "Wrong number of sequences");
-    ADVSingleSequenceWidget* seqWidget2 = seqWidgets.first();
-    GTUtilsCv::cvBtn::click(os, seqWidget2);
-    GTGlobals::sleep();
-
-    QWidget* parent = GTWidget::findWidget(os, "murine [s] NC_001363");
-    QWidget* cvTab = GTWidget::findWidget(os,"OP_CV_SETTINGS", parent);
-    CHECK_SET_ERR(cvTab != NULL, "CV settings tab is NULL");
-    GTWidget::click( os, cvTab);
-
-    QSpinBox*  titleFontSpinBox2 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox", parent));
-    CHECK_SET_ERR( titleFontSpinBox2 != NULL, "Title font size spinBox is NULL");
-    int fontSize2 = titleFontSpinBox2->value();
-
-    CHECK_SET_ERR( fontSize1 != fontSize2,
-                   "CV Settings should be differenct for different documents");
-
+    const int fontSize2 = GTUtilsOptionPanelSequenceView::getTitleFontSize(os);
+    CHECK_SET_ERR(fontSize1 != fontSize2, "CV Settings should be differenct for different documents");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0015) {

@@ -131,9 +131,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
 //Expected state: philogenetic tree appears
 
 //4. Use "Capture tree" button on toolbar to make screenshots
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Export Tree Image"<<"Screen Capture"));
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", "jpeg",50));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Export Tree Image" << "Screen Capture...");
 
     GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
 //Expected state: images on screenshots same as on your screen
@@ -249,10 +248,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
 
     //DIFFERENCE: Main menu is used for building tree
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Tree" << "Build Tree");
 
-    GTMenu::showMainMenu(os,MWMENU_ACTIONS);
-    GTGlobals::sleep(500);
 //3. Set save path to _common_data/scenarios/sandbox/COI.nwk Click  OK button
 //Expected state: philogenetic tree appears
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
@@ -281,10 +278,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,testDir + "_common_data/scenarios/sandbox/COI.nwk"));
     //DIFFERENCE: Main menu is used for building tree
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Tree" << "Build Tree");
 
-    GTGlobals::sleep(500);
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 //7. Click  OK button
 //Expected state: philogenetic tree appears
     GTGlobals::sleep(500);
@@ -370,10 +365,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //2. Do menu {Actions->Align->Align With Muscle}
 //Expected state: "Align with muscle" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Align" << "Align with MUSCLE...", GTGlobals::UseMouse);
 
-    GTMenu::showMainMenu(os,MWMENU_ACTIONS);
 //3. Click "Align" button
 //4. Click on "Build tree" button on toolbar
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
@@ -457,8 +451,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
         }
     }
 //2. Click on "Align name labels" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Align Labels"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Align Labels");
     GTGlobals::sleep(500);
     //GTWidget::click(os, GTAction::button(os,"Align Labels"));
 
@@ -479,8 +472,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 //Expected state: sequence labels aligned at right side of the screen
 
 //3. Click on "Align name labels" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Align Labels"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Align Labels");
     GTGlobals::sleep(500);
 
     QList<int> finalPos;
@@ -577,8 +569,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
 //2. Click on "Show sequence names" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Names"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Show Labels" << "Show Names", GTGlobals::UseMouse);
 
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QList<QGraphicsItem*> list = treeView->scene()->items();
@@ -592,8 +583,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
 //Expected state: sequence name labels disappers
 
 //3. Click on "Show distance labels" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Distances"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Show Labels" << "Show Distances", GTGlobals::UseMouse);
 
     foreach(QGraphicsItem* item, list){
             QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
@@ -606,8 +596,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
 //Expected state: distance labels disappers
 
 //4. Click on "Show sequence names" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Names"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Show Labels" << "Show Names", GTGlobals::UseMouse);
     GTGlobals::sleep(200);
     int i=0;
 
@@ -621,8 +610,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
 //Expected state: sequence name labels appers
 
 //5. Click on "Show distance labels" button on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Distances"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Show Labels" << "Show Distances", GTGlobals::UseMouse);
     GTGlobals::sleep(200);
     i=0;
 
@@ -734,7 +722,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     foreach (QGraphicsItem *item, list) {
         uiLog.trace(QString("element width = %1").arg(item->boundingRect().width()));
-        if (item->boundingRect().width() == nodeWidth) {
+        if (qRound(item->boundingRect().width()) == nodeWidth) {
             nodeList.append(item);
         }
     }
@@ -788,7 +776,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     QList<QGraphicsItem *> nodeList;
 
     foreach (QGraphicsItem *item, list) {
-        if (item->boundingRect().width() == nodeWidth) {
+        if (qRound(item->boundingRect().width()) == nodeWidth) {
             nodeList.append(item);
         }
     }
@@ -837,7 +825,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     QList<QGraphicsItem *> nodeList;
 
     foreach (QGraphicsItem * item, list) {
-        if (item->boundingRect().width() == nodeWidth) {
+        if (qRound(item->boundingRect().width()) == nodeWidth) {
             nodeList.append(item);
         }
     }

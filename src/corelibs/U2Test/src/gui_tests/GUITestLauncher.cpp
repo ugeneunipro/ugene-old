@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QMap>
+#include <QApplication>
+#include <QMap>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -54,6 +55,11 @@ GUITestLauncher::GUITestLauncher(int _suiteNumber, bool _noIgnored)
 
     tpm = Task::Progress_Manual;
     testOutDir = getTestOutDir();
+
+    QWidget *splashScreen = QApplication::activeWindow();
+    if (NULL != splashScreen) {
+        splashScreen->hide();
+    }
 }
 
 GUITestLauncher::GUITestLauncher(QString _pathToSuite, bool _noIgnored)

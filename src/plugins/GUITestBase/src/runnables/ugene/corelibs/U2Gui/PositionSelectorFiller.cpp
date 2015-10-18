@@ -49,10 +49,7 @@ void GoToDialogFiller::run()
 #endif
     GTLineEdit::setText(os, posEdit, QString::number(goTo));
 
-    QPushButton *goButton = dialog->findChild<QPushButton*>("okButton");
-    GT_CHECK(goButton != NULL, "Button \"Go!\" not found");
-
-    GTWidget::click(os, goButton);
+    GTWidget::click(os, GTWidget::findButtonByText(os, "Go!", dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

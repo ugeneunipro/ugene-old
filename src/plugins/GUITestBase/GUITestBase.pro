@@ -76,7 +76,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreementDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
@@ -274,6 +274,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTabWidget.h \
             src/api/GTTableView.h  \
             src/api/GTTextEdit.h \
+            src/api/GTThread.h \
             src/api/GTToolbar.h \
             src/api/GTTreeView.h \
             src/api/GTTreeWidget.h \
@@ -356,6 +357,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreementDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
@@ -559,6 +561,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTabWidget.cpp \
             src/api/GTTableView.cpp \
             src/api/GTTextEdit.cpp \
+            src/api/GTThread.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTTreeWidget.cpp \

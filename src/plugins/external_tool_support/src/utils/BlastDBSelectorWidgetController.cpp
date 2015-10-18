@@ -93,8 +93,6 @@ bool BlastDBSelectorWidgetController::validateDatabaseDir() {
     } else {
         extList << "pal" << "pin";
     }
-    bool indexFound = false;
-    int hits = 0;
     QDirIterator dirIt(databasePathLineEdit->text(), QDirIterator::Subdirectories);
     while (dirIt.hasNext()) {
         dirIt.next();

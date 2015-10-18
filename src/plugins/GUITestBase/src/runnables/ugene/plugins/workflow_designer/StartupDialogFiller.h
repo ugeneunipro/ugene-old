@@ -19,33 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef STARTUPDIALOGFILLER_H
-#define STARTUPDIALOGFILLER_H
+#ifndef _U2_STARTUP_DIALOG_FILLER_H_
+#define _U2_STARTUP_DIALOG_FILLER_H_
+
+#include <U2Test/GUITest.h>
 
 #include "GTUtilsDialog.h"
-#include <U2Test/GUITest.h>
 
 class QLineEdit;
 class QWidget;
 
 namespace U2 {
 
-class StartupDialogFiller : public Filler
-{
+class StartupDialogFiller : public Filler {
 public:
-    StartupDialogFiller(U2OpStatus &os, QString path = GUITest::sandBoxDir, bool isPathValid = true);
-    void run();
+    StartupDialogFiller(U2OpStatus &os, const QString &path = GUITest::sandBoxDir, bool isPathValid = true);
+    void commonScenario();
 
 private:
-    QString path;
-    bool isPathValid;
-
-private:
-    void clickButton(QWidget *dialog, const QString &text);
-    void dontUse(QWidget *dialog);
-    void use(QWidget *dialog);
-    QLineEdit * getPathEdit(QWidget *dialog);
+    const QString path;
+    const bool isPathValid;
 };
 
-}
-#endif // STARTUPDIALOGFILLER_H
+}   // namespace U2
+
+#endif // _U2_STARTUP_DIALOG_FILLER_H_

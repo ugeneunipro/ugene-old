@@ -18,79 +18,54 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
+#include <QApplication>
+#include <QLineEdit>
+#include <QPushButton>
+
 #include "StartupDialogFiller.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#endif
-
+#include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
-namespace U2{
+namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
-#define GT_METHOD_NAME "run"
 
-StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, QString _path, bool _isPathValid)
-    : Filler(os,"StartupDialog"), path(_path), isPathValid(_isPathValid)
+StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, const QString &path, bool isPathValid) :
+    Filler(os, "StartupDialog"),
+    path(path),
+    isPathValid(isPathValid)
 {
 
 }
 
-void StartupDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void StartupDialogFiller::commonScenario() {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     if (path != GUITest::sandBoxDir) {
-        QLineEdit *pathEdit = getPathEdit(dialog);
+        QLineEdit *pathEdit = GTWidget::findExactWidget<QLineEdit *>(os, "pathEdit", dialog);
         CHECK(NULL != pathEdit, );
-        QString rightPath = pathEdit->text();
-        pathEdit->setText(path);
+
+        const QString rightPath = GTLineEdit::getText(os, pathEdit);
+        GTLineEdit::setText(os, pathEdit, path);
 
         if (!isPathValid) {
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-            use(dialog);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
             CHECK_OP(os, );
 
-            pathEdit->setText(rightPath);
+            GTLineEdit::setText(os, pathEdit, rightPath);
         }
     }
 
-    use(dialog);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
-
-void StartupDialogFiller::clickButton(QWidget *dialog, const QString &text) {
-    QList<QPushButton*> list= dialog->findChildren<QPushButton*>();
-    bool clicked = false;
-    QString s;
-    foreach(QPushButton* but, list){
-        if (but->text().contains(text)) {
-            GTWidget::click(os,but);
-            clicked = true;
-        }
-    }
-    GT_CHECK(clicked, "Can not find a button: " + text);
-}
-
-void StartupDialogFiller::use(QWidget *dialog) {
-    clickButton(dialog, "OK");
-}
-
-QLineEdit * StartupDialogFiller::getPathEdit(QWidget *dialog) {
-    QList<QLineEdit*> list = dialog->findChildren<QLineEdit*>();
-    GT_CHECK_RESULT(!list.isEmpty(), "No line edit", NULL);
-
-    return list.first();
-}
-
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
-}
+
+}    // namespace U2

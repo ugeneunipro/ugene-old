@@ -220,12 +220,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gap_col.aln");
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets"));
-
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
 
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "View" << "Show offsets");
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -248,11 +246,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets"));
-
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "View" << "Show offsets");
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -270,9 +266,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets"));
-
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "View" << "Show offsets");
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -329,8 +323,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "View" << "Sort sequences by name");
     GTGlobals::sleep();
 
     GTUtilsMSAEditorSequenceArea::checkSorted(os);
@@ -357,8 +350,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
 
     GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "View" << "Sort sequences by name");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets"));
@@ -1653,9 +1645,8 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
 // CHANGES: using main menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Replace selected rows with reverse-complement");
     GTGlobals::sleep();
     //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
 // Expected state: sequence changed from TTG -> CAA
@@ -1675,8 +1666,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
 // 3. Do step 2 again
 // CHANGES: using main menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Replace selected rows with reverse-complement");
     GTGlobals::sleep();
 
 // Expected state: sequence changed from CAA -> TTG
@@ -1886,8 +1876,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
 // CHANGES: using main menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Multiple sequence alignment" << "Align with Kalign...");
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -1932,13 +1921,11 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
 // CHANGES: using main menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTGlobals::sleep();
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Align" << "Align with Kalign...");
     GTGlobals::sleep();
 
 // 2. after kalign finishes and msa opens insert gaps and click in alignment
-    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os);
@@ -1949,7 +1936,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
     GTMouseDriver::click(os);
 
 // Expected state: UGENE not crash
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0014_2) {
@@ -1997,7 +1984,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/", "COI.aln"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::MALIGN_MENU << ToolsMenu::MALIGN_KALIGN);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Multiple sequence alignment" << "Align with Kalign...");
     GTGlobals::sleep();
 
 // 3. aligned document opens
@@ -2052,7 +2039,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
 
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/", "COI.aln"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() <<  ToolsMenu::MALIGN_MENU << ToolsMenu::MALIGN_KALIGN);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Multiple sequence alignment" << "Align with Kalign...");
     GTGlobals::sleep();
 
 // 3. aligned document opens
@@ -2225,14 +2212,12 @@ GUI_TEST_CLASS_DEFINITION(test_0017_1) {
     GTGlobals::sleep();
 
 // 3. On MSA editor {Context Menu->Add->Sequence from current project}
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
-
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
 
 // CHANGES: using main menu instead of popup
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from current project...");
     GTGlobals::sleep();
 }
 
@@ -2252,14 +2237,12 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
     GTGlobals::sleep();
 
 // 3. On MSA editor {Context Menu->Add->Sequence from current project}
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
-
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
 
 // CHANGES: using main menu instead of popup
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from current project...");
     GTGlobals::sleep();
 }
 

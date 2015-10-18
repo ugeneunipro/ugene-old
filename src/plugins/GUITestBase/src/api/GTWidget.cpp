@@ -19,22 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTWidget.h"
-#include "GTMouseDriver.h"
-#include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QComboBox>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QComboBox>
-#endif
+#include <QComboBox>
+#include <QMainWindow>
+#include <QWidget>
+#include <QStyle>
 
-// TODO: this is a fast fix
+#include <U2Core/AppContext.h>
+
+#include <U2Gui/MainWindow.h>
+
 #include <U2View/ADVSingleSequenceWidget.h>
+
+#include "GTMouseDriver.h"
+#include "GTThread.h"
+#include "GTWidget.h"
 
 namespace U2 {
 
@@ -152,23 +150,53 @@ void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getColor"
-QColor GTWidget::getColor(U2OpStatus &os, QWidget *w, const QPoint &p) {
+QColor GTWidget::getColor(U2OpStatus &os, QWidget *widget, const QPoint &point) {
     Q_UNUSED(os);
-    GT_CHECK_RESULT(NULL != w, "Widget is NULL", QColor());
-    QPixmap pixmap = w->grab(w->rect());
-    QImage img = pixmap.toImage();
-    QRgb rgb = img.pixel(p);
-    QColor result = QColor(rgb);
-    return result;
+    GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QColor());
+
+    return QColor(getImage(os, widget).pixel(point));
 }
 #undef GT_METHOD_NAME
 
-QImage GTWidget::getImage(U2OpStatus &os, QWidget *w){
+#define GT_METHOD_NAME "getPixmap"
+QPixmap GTWidget::getPixmap(U2OpStatus &os, QWidget *widget) {
     Q_UNUSED(os);
-    QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
-    QImage img = pixmap.toImage();
-    return img;
+    GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QPixmap());
+
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWidget *widget, QPixmap &pixmap) :
+            widget(widget),
+            pixmap(pixmap)
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            CHECK_SET_ERR(NULL != widget, "Widget to grab is NULL");
+            pixmap = widget->grab(widget->rect());
+        }
+
+    private:
+        QWidget *widget;
+        QPixmap &pixmap;
+    };
+
+    QPixmap pixmap;
+    GTThread::runInMainThread(os, new Scenario(widget, pixmap));
+    return pixmap;
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getImage"
+QImage GTWidget::getImage(U2OpStatus &os, QWidget *widget) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QImage());
+
+    return getPixmap(os, widget).toImage();
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickLabelLink"
 void GTWidget::clickLabelLink(U2OpStatus &os, QWidget *label, int step){
@@ -190,6 +218,64 @@ void GTWidget::clickLabelLink(U2OpStatus &os, QWidget *label, int step){
         }
     }
     GT_CHECK(false, "label does not contain link");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickCornerMenu"
+void GTWidget::clickCornerMenu(U2OpStatus &os, QWidget *widget, GTGlobals::WindowAction action) {
+    GT_CHECK(NULL != widget, "Widget is NULL");
+
+    QStyleOptionTitleBar opt;
+    opt.initFrom(widget);
+    QStyle::SubControl subControl;
+    switch (action) {
+    case GTGlobals::Close:
+        subControl = QStyle::SC_TitleBarCloseButton;
+        break;
+    case GTGlobals::Maximize:
+        subControl = QStyle::SC_TitleBarMaxButton;
+        break;
+    case GTGlobals::Minimize:
+        subControl = QStyle::SC_TitleBarMinButton;
+        break;
+    default:
+        assert(false);
+    }
+
+    const QRect subControlRect = widget->style()->subControlRect(QStyle::CC_TitleBar, &opt, subControl);
+    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, widget) + subControlRect.center());
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickWindowTitle"
+void GTWidget::clickWindowTitle(U2OpStatus &os, QWidget *window) {
+    GT_CHECK(NULL != window, "Window is NULL");
+
+    QStyleOptionTitleBar opt;
+    opt.initFrom(window);
+    const QRect titleLabelRect = window->style()->subControlRect(QStyle::CC_TitleBar, &opt, QStyle::SC_TitleBarLabel);
+    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, window) + titleLabelRect.center());
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "resizeWidget"
+void GTWidget::resizeWidget(U2OpStatus &os, QWidget *widget, const QSize &size) {
+    GT_CHECK(NULL != widget, "Widget is NULL");
+    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, widget));
+    const QPoint bottomRightPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1);
+    const QPoint newBottomRightPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(size.width(), size.height());
+    GTMouseDriver::dragAndDrop(os, bottomRightPos, newBottomRightPos);
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getWidgetGlobalTopLeftPoint"
+QPoint GTWidget::getWidgetGlobalTopLeftPoint(U2OpStatus &os, QWidget *widget) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QPoint());
+    return (widget->isWindow() ? widget->pos() : widget->parentWidget()->mapToGlobal(QPoint(0, 0)));
 }
 #undef GT_METHOD_NAME
 

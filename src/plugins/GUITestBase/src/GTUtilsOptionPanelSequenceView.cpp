@@ -19,13 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsOptionPanelSequenceView.h"
-
 #include <QDir>
 #include <QLabel>
 #include <QTextEdit>
 #include <QTreeWidget>
 
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
@@ -34,10 +35,8 @@
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
 #include "api/GTTextEdit.h"
+#include "api/GTThread.h"
 #include "api/GTWidget.h"
-
-#include "GTUtilsMsaEditorSequenceArea.h"
-#include "GTUtilsTaskTreeView.h"
 
 namespace U2{
 
@@ -98,6 +97,7 @@ void GTUtilsOptionPanelSequenceView::toggleTab(U2OpStatus &os, GTUtilsOptionPane
 void GTUtilsOptionPanelSequenceView::openTab(U2OpStatus &os, Tabs tab){
     if (!isTabOpened(os, tab)) {
         toggleTab(os, tab);
+        GTThread::waitForMainThread(os);
     }
 }
 #undef GT_METHOD_NAME
@@ -177,6 +177,25 @@ bool GTUtilsOptionPanelSequenceView::isPrevNextEnabled(U2OpStatus &os){
 bool GTUtilsOptionPanelSequenceView::isGetAnnotationsEnabled(U2OpStatus &os){
     QPushButton *getAnnotations = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "getAnnotationsPushButton"));
     return getAnnotations->isEnabled();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "toggleCircularView"
+void GTUtilsOptionPanelSequenceView::toggleCircularView(U2OpStatus &os) {
+    GTWidget::click(os, GTWidget::findButtonByText(os, "Open Circular View(s)"));
+    GTThread::waitForMainThread(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setTitleFontSize"
+void GTUtilsOptionPanelSequenceView::setTitleFontSize(U2OpStatus &os, int fontSize) {
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "fontSizeSpinBox"), fontSize);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getTitleFontSize"
+int GTUtilsOptionPanelSequenceView::getTitleFontSize(U2OpStatus &os) {
+    return GTSpinBox::getValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "fontSizeSpinBox"));
 }
 #undef GT_METHOD_NAME
 

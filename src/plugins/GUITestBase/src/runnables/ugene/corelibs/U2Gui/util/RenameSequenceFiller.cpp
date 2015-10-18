@@ -39,7 +39,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::RenamesequenceFiller"
 #define GT_METHOD_NAME "run"
 
-void RenameSequenceFiller::commonScenario(){
+void RenameSequenceFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
     GT_CHECK(dialog->windowTitle() == "Rename", "dialog not found");
@@ -52,24 +52,16 @@ void RenameSequenceFiller::commonScenario(){
         GT_CHECK(oldName == actualText, "edited sequence name not match with expected");
     }
     
-    if(oldName != newName){ //if filler used only for checking sequence name
-        //GTLineEdit::setText(os, nameEdit, newName);
-        nameEdit->setText(newName);
+    if (oldName != newName){
+        //if filler used not for checking sequence name
+        GTLineEdit::setText(os, nameEdit, newName);
     }
  
-    GTGlobals::sleep(1000);
-
-#ifndef Q_OS_MAC
-    //instead clicking OK we will send 'Enter'
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-#else
-    //but on Mac we will definitly click OK
-    QList<QPushButton*> list = dialog->findChildren<QPushButton*>();
-    foreach(QPushButton* but,list){
-        if (but->text().contains("OK"))
-                GTWidget::click(os,but);
+    GTWidget::click(os, GTWidget::findButtonByText(os, "OK", dialog));
+    GTGlobals::sleep(500);
+    if (NULL != QApplication::activeModalWidget()) {
+        GTWidget::click(os, GTWidget::findButtonByText(os, "OK", QApplication::activeModalWidget()));
     }
-#endif
 }
 
 #undef GT_METHOD_NAME

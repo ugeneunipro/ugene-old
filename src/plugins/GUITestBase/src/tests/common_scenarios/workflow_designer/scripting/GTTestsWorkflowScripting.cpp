@@ -155,9 +155,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
 
     GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "workflow_scripting_test_0004"));
@@ -165,15 +163,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"workflow_scripting_test_0004"));
     GTMouseDriver::click(os);
-    QString scriptText;
-#ifdef  Q_OS_MAC
-    scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
-#else
-    scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
-#endif
 
-    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "",
-        scriptText));
+    const QString scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "", scriptText));
     GTWidget::click(os, GTAction::button(os, "editScriptAction"));
 
     WorkflowProcessItem *script = GTUtilsWorkflowDesigner::getWorker(os, "workflow_scripting_test_0004");

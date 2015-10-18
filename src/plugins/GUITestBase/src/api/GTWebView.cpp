@@ -23,9 +23,10 @@
 #include <QWebFrame>
 #include <QWebView>
 
-#include "api/GTMouseDriver.h"
+#include <U2Test/MainThreadRunnable.h>
 
 #include "GTWebView.h"
+#include "api/GTMouseDriver.h"
 
 namespace U2 {
 
@@ -39,21 +40,46 @@ bool compare(QString s1, QString s2, bool exactMatch){
 }
 }
 
-#define GT_CLASS_NAME "GTUtilsDashboard"
+#define GT_CLASS_NAME "GTWebView"
 
 #define GT_METHOD_NAME "findElement"
-QWebElement GTWebView::findElement(U2OpStatus &os, QWebView *view, QString text, QString tag, bool exactMatch){
+QWebElement GTWebView::findElement(U2OpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, QWebElement &webElement) :
+            view(view),
+            text(text),
+            tag(tag),
+            exactMatch(exactMatch),
+            webElement(webElement) {}
 
-    QWebFrame* frame = view->page()->mainFrame();
-    foreach (QWebElement el, frame->findAllElements(tag)) {
-        QString s = el.toPlainText();
-        int width = el.geometry().width();
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            QWebFrame* frame = view->page()->mainFrame();
+            foreach (QWebElement el, frame->findAllElements(tag)) {
+                QString s = el.toPlainText();
+                int width = el.geometry().width();
 
-        if (compare(s, text, exactMatch) && width != 0){
-            return el;
+                if (compare(s, text, exactMatch) && width != 0) {
+                    webElement = el;
+                    return;
+                }
+            }
+            GT_CHECK(false, QString("element with text '%1' and tag '%2' not found").arg(text).arg(tag));
         }
-    }
-    GT_CHECK_RESULT(false, "element with text " + text + " and tag " + tag + " not found", QWebElement());
+
+    private:
+        QWebView *view;
+        const QString text;
+        const QString tag;
+        bool exactMatch;
+        QWebElement &webElement;
+    };
+
+    QWebElement webElement;
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
+    mainThreadRunnable.doRequest();
+    return webElement;
 }
 #undef GT_METHOD_NAME
 

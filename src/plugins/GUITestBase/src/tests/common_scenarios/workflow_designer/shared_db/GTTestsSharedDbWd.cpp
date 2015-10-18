@@ -55,8 +55,7 @@ void createTestConnection(U2OpStatus &os) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
-        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions,
-            QFlags<SharedConnectionsDialogFiller::Behavior>(SharedConnectionsDialogFiller::UNSAFE)));
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     {
         EditConnectionDialogFiller::Parameters params;
@@ -374,7 +373,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_neg_test_0012) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
     createTestConnection(os);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
@@ -399,7 +398,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
     createTestConnection(os);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
@@ -427,7 +426,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0002) {
     createTestConnection(os);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
@@ -463,7 +462,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, connectionName);
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, connectionName);
     GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0001) {
@@ -491,7 +490,7 @@ GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0001) {
     GTLogTracer l;
 
     createTestConnection(os);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Variations");
@@ -690,7 +689,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
 
     GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Close without Saving"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Don't save"));
     GTUtilsMdi::click(os, GTGlobals::Close);
 }
 

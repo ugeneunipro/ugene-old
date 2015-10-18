@@ -107,7 +107,7 @@ void AuthenticationDialogFiller::run() {
     GT_CHECK(cbRemember, "cbRemember is NULL");
     GTCheckBox::setChecked(os, cbRemember, false);
 
-    GTWidget::click(os, GTWidget::findButtonByText(os, "OK", dialog));
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 
 #undef GT_METHOD_NAME

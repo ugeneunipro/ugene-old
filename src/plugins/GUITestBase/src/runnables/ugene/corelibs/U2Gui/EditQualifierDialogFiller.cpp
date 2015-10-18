@@ -74,10 +74,8 @@ void EditQualifierFiller::run()
 
         GTLineEdit::setText(os, nameEdit, "nice_name", noCheck);
         GTTextEdit::setText(os, valueEdit, "nice_val");
-        GTWidget::click(os, button);
-    }else{
-        GTWidget::click(os, button);
     }
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
     
 }
 #undef GT_METHOD_NAME

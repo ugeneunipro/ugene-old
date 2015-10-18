@@ -26,33 +26,134 @@ namespace U2 {
 #ifdef __OBJC__
 
 #define GT_CLASS_NAME "GTMenuPrivateMac"
+class U2CocoaAutoReleasePool {
+public:
+    U2CocoaAutoReleasePool();
+    ~U2CocoaAutoReleasePool();
 
-namespace {
+private:
+    NSAutoreleasePool *pool;
+};
 
-inline NSString *qStringToNSString(const QString &qstr) {
-    CFStringRef cfStringRef = CFStringCreateWithCharacters(0, reinterpret_cast<const UniChar *>(qstr.unicode()), qstr.length());
-    return [const_cast<NSString *>(reinterpret_cast<const NSString *>(cfStringRef)) autorelease];
+U2CocoaAutoReleasePool::U2CocoaAutoReleasePool() {
+    pool = [[NSAutoreleasePool alloc] init];
 }
+
+U2CocoaAutoReleasePool::~U2CocoaAutoReleasePool() {
+    [pool release];
 }
 
 #define GT_METHOD_NAME "clickMainMenuItem"
-void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath) {
+void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag) {
+    U2CocoaAutoReleasePool pool;
+    Q_UNUSED(pool);
+
     NSMenu *menu = [NSApp mainMenu];
     foreach (const QString &itemTitle, itemPath) {
         GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
-        menu = clickMenuItem(os, menu, itemTitle);
+        menu = clickMenuItem(os, menu, itemTitle, matchFlag);
     }
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkMainMenuItemState"
+void GTMenuPrivateMac::checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
+    U2CocoaAutoReleasePool pool;
+    Q_UNUSED(pool);
+
+    const QStringList itemContainerMenuPath = itemPath.mid(0, itemPath.size() - 1);
+    NSMenu *menu = [NSApp mainMenu];
+    foreach (const QString &itemTitle, itemContainerMenuPath) {
+        GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
+        menu = clickMenuItem(os, menu, itemTitle, Qt::MatchExactly);
+    }
+
+    checkMenuItemState(os, menu, itemPath.last(), expectedState);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clickMenuItem"
-NSMenu * GTMenuPrivateMac::clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle) {
-    NSMenuItem *item = [menu itemWithTitle:qStringToNSString(itemTitle)];
-    GT_CHECK_RESULT(NULL != item, QString("Menu item not found: '%1'").arg(itemTitle), NULL);
+NSMenu * GTMenuPrivateMac::clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
+    NSMenuItem *item = getMenuItem(os, menu, itemTitle, matchFlag);
+    if (NULL == item) {
+        QStringList items;
+        for (NSInteger i = 0, itemsCount = [menu  numberOfItems]; i < itemsCount; i++) {
+            items << QString::fromNSString([[menu itemAtIndex:i] title]);
+        }
+        GT_CHECK_RESULT(NULL != item, QString("Menu item not found: '%1', available items: %2")
+                        .arg(itemTitle).arg(items.join(", ")), NULL);
+    }
     NSMenu *submenu = [item submenu];
     [menu performActionForItemAtIndex:[menu indexOfItem:item]];
     return submenu;
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getMenuItem"
+NSMenuItem *GTMenuPrivateMac::getMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
+    switch (matchFlag) {
+    case Qt::MatchExactly:
+        return [menu itemWithTitle:(itemTitle.toNSString())];
+    case Qt::MatchContains: {
+        NSInteger itemsCount = [menu numberOfItems];
+        for (NSInteger i = 0; i < itemsCount; i++) {
+            NSMenuItem *menuItem = [menu itemAtIndex:i];
+            if (QString::fromNSString([menuItem title]).contains(itemTitle)) {
+                return menuItem;
+            }
+        }
+        break;
+    }
+    default:
+        GT_CHECK_RESULT(false, "Match flag is not supported", NULL);
+    }
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getMenuItem"
+void GTMenuPrivateMac::checkMenuItemState(U2OpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState) {
+    switch (expectedState) {
+    case PopupChecker::NotExists: {
+        NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
+        GT_CHECK(NULL == menuItem, QString("A menu item unexpectedly exists: %1").arg(itemTitle));
+        break;
+    }
+
+    case PopupChecker::Exists: {
+        NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
+        GT_CHECK(NULL != menuItem, QString("A menu item unexpectedly doesn't exist: %1").arg(itemTitle));
+        break;
+    }
+
+    case PopupChecker::IsEnabled: {
+        NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
+        GT_CHECK(NULL != menuItem, QString("A menu item unexpectedly doesn't exist: %1").arg(itemTitle));
+        GT_CHECK([menuItem isEnabled], QString("A menu item is unexpectedly disabled: %1").arg(itemTitle));
+        break;
+    }
+
+    case PopupChecker::IsDisabled: {
+        NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
+        GT_CHECK(NULL != menuItem, QString("A menu item unexpectedly doesn't exist: %1").arg(itemTitle));
+        GT_CHECK(![menuItem isEnabled], QString("A menu item is unexpectedly enabled: %1").arg(itemTitle));
+        break;
+    }
+
+    case PopupChecker::IsChecable: {
+        GT_CHECK(false, "Not implemented. Do you really need to check is menu item checkable or not?");
+        break;
+    }
+
+    case PopupChecker::IsChecked: {
+        NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
+        GT_CHECK(NULL != menuItem, QString("A menu item unexpectedly doesn't exist: %1").arg(itemTitle));
+        GT_CHECK(NSOnState == [menuItem state], QString("A menu item is unexpectedly not checked: %1").arg(itemTitle));
+        break;
+    }
+    }
+}
+
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME

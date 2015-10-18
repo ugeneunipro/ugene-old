@@ -49,13 +49,18 @@ public:
     static QAbstractButton *findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     //returns color of point p in widget w coordinates
-    static QColor getColor(U2OpStatus &os, QWidget* w, const QPoint &p);
-    static QImage getImage(U2OpStatus &os, QWidget* w);
+    static QColor getColor(U2OpStatus &os, QWidget *widget, const QPoint &point);
+    static QPixmap getPixmap(U2OpStatus &os, QWidget *widget);
+    static QImage getImage(U2OpStatus &os, QWidget *widget);
 
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
 
     static void clickLabelLink(U2OpStatus &os, QWidget* label, int step = 10);
+    static void clickCornerMenu(U2OpStatus &os, QWidget *widget, GTGlobals::WindowAction action);
+    static void clickWindowTitle(U2OpStatus &os, QWidget *window);
+    static void resizeWidget(U2OpStatus &os, QWidget *widget, const QSize &size);
+    static QPoint getWidgetGlobalTopLeftPoint(U2OpStatus &os, QWidget *widget);
 
     #define GT_CLASS_NAME "GTWidget"
     #define GT_METHOD_NAME "findWidget"

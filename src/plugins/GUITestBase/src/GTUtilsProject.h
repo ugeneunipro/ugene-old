@@ -43,7 +43,11 @@ class GTUtilsProject {
 public:
     class OpenFileSettings {
     public:
-        enum OpenMethod {DragDrop} openMethod;
+        enum OpenMethod {Dialog, DragDrop};
+
+        OpenFileSettings();
+
+        OpenMethod openMethod;
     };
 
     /*
@@ -94,6 +98,7 @@ public:
 
 protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
+    static void openFilesWithDialog(U2OpStatus &os, const QList<QUrl> &filePaths);
 };
 
 } // U2

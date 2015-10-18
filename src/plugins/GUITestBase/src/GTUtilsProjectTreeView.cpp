@@ -509,27 +509,15 @@ bool GTUtilsProjectTreeView::isVisible( U2OpStatus &os ){
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, QModelIndex from, QModelIndex to){
-    QTreeView* tree = getTreeView(os);
-    QAbstractItemModel *model = tree->model();
-    QMimeData *mimeData = model->mimeData(QModelIndexList()<<from);
-
-    QPoint enterPos = getItemCenter(os, from);
-    QPoint dropPos = getItemCenter(os, to);
-
-    sendDragAndDrop(os, mimeData, enterPos, dropPos);
+void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, const QModelIndex &from, const QModelIndex &to) {
+    sendDragAndDrop(os, getItemCenter(os, from), getItemCenter(os, to));
 }
 
-void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, QModelIndex from, QWidget *to){
-    QAbstractItemModel *model = getTreeView(os)->model();
-    QMimeData *mimeData = model->mimeData(QModelIndexList()<<from);
-
-    QPoint enterPos = getItemCenter(os, from);
-
-    sendDragAndDrop(os, mimeData, enterPos, to);
+void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, const QModelIndex &from, QWidget *to) {
+    sendDragAndDrop(os, getItemCenter(os, from), to);
 }
 
-void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to){
+void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to) {
     QTreeView *treeView = getTreeView(os);
 #ifdef Q_OS_MAC
     int key = GTKeyboardDriver::key["cmd"];
@@ -544,73 +532,18 @@ void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIn
     }
     GTKeyboardDriver::keyRelease(os, key);
 
-    QModelIndexList selected = treeView->selectionModel()->selectedIndexes();
-    QMimeData* mimeData = treeView->model()->mimeData(selected);
-
     QPoint enterPos = getItemCenter(os, from.at(0));
     QPoint dropPos = getItemCenter(os, to);
 
-    sendDragAndDrop(os, mimeData, enterPos, dropPos);
+    sendDragAndDrop(os, enterPos, dropPos);
 }
 
-void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData * /*mimeData*/, QPoint enterPos, QPoint dropPos){
-//    QTreeView *treeView = getTreeView(os);
-//    QAbstractItemModel *model = treeView->model();
-//    QString s = model->metaObject()->className();
-//    QWidget* veiwPort = treeView->viewport();//treeView->findChild<QWidget*>("qt_scrollarea_viewport");
-
-//    QPoint localEnterPos = treeView->mapFromGlobal(enterPos);
-//    QPoint localDropPos = treeView->mapFromGlobal(dropPos);
-
-/**
-*OLD CODE IS COMMENTED 05.12.14. IF EVERYTHING WORKS FINE AND YOU ARE THINKING ABOUT REMOVING IT, DO IT
-*/
-
-    GTMouseDriver::dragAndDrop(os, enterPos, dropPos, QPoint(100, -100));
-    //GTGlobals::sleep(20000);
-
-    /*GTMouseDriver::moveTo(os, enterPos);
-    GTMouseDriver::click(os);
-    Qt::DropActions dropActions = model->supportedDropActions();
-
-    QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(localEnterPos, dropActions, mimeData, Qt::LeftButton, 0);
-    //GTGlobals::sendEvent(veiwPort, dragEnterEvent);
-
-
-    GTMouseDriver::moveTo(os, dropPos);
-
-
-    QDragMoveEvent* dragmoveEvent = new QDragMoveEvent(localDropPos, dropActions, mimeData, Qt::LeftButton, 0);
-    //GTGlobals::sendEvent(veiwPort, dragmoveEvent );
-
-    QDropEvent* dropEvent = new QDropEvent(localDropPos, dropActions, mimeData, Qt::LeftButton, 0);
-    //dropEvent->
-    GTGlobals::sendEvent(veiwPort, dropEvent);
-    //model->dropMimeData(mimeData, dropActions,)
-    GTGlobals::sleep();*/
+void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, const QPoint &enterPos, const QPoint &dropPos) {
+    GTMouseDriver::dragAndDrop(os, enterPos, dropPos);
 }
 
-void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QWidget *dropWidget){
-    QTreeView *treeView = getTreeView(os);
-    QAbstractItemModel *model = treeView->model();
-    treeView->findChild<QWidget*>("qt_scrollarea_viewport");
-
-    treeView->mapFromGlobal(enterPos);
-
-    GTMouseDriver::moveTo(os, enterPos);
-    Qt::DropActions dropActions = model->supportedDropActions();
-
-    QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(dropWidget, dragEnterEvent);
-
-
-    GTMouseDriver::moveTo(os, dropWidget->mapToGlobal(dropWidget->geometry().center()));
-
-    QDragMoveEvent* dragmoveEvent = new QDragMoveEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(dropWidget, dragmoveEvent );
-
-    QDropEvent* dropEvent = new QDropEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(dropWidget, dropEvent);
+void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, const QPoint &enterPos, QWidget *dropWidget) {
+    sendDragAndDrop(os, enterPos, GTWidget::getWidgetCenter(os, dropWidget));
 }
 
 void GTUtilsProjectTreeView::expandProjectView(U2OpStatus &os){

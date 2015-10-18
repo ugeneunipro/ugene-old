@@ -19,20 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QTimer>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QApplication>
+#include <QPushButton>
+#include <QTimer>
 
 #include <U2Test/GUITest.h>
 
 #include "GTUtilsDialog.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTThread.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
@@ -349,11 +344,13 @@ GUIDialogWaiter::WaitSettings Filler::getSettings() const {
 }
 
 void Filler::run() {
+    GTGlobals::sleep(500);
     if (NULL == scenario) {
         commonScenario();
     } else {
         scenario->run(os);
     }
+    GTThread::waitForMainThread(os);
 }
 
 } //namespace

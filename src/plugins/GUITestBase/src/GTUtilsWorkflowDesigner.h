@@ -82,7 +82,7 @@ public:
     static QList<QTreeWidgetItem *> getPaletteGroupEntries(U2OpStatus &os, const QString &groupName);
 
     //add to scene
-    static void addSample(U2OpStatus &os, QString sampName);
+    static void addSample(U2OpStatus &os, const QString &sampName);
     static void addAlgorithm(U2OpStatus &os, QString algName, bool exactMatch = false);
     static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName, bool exactMatch = false);
 

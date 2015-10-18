@@ -63,16 +63,12 @@ void BuildDotPlotFiller::run() {
         }
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
     if (cancel) {
-        button = box->button(QDialogButtonBox::Cancel);
-        GT_CHECK(button !=NULL, "cancel button is NULL");
-        GTWidget::click(os, button);
+        dialog = QApplication::activeModalWidget();
+        GT_CHECK(dialog, "activeModalWidget is NULL");
+        GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
     }
-    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

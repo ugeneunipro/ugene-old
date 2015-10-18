@@ -62,24 +62,11 @@ void FindTandemsDialogFiller::commonScenario(){
         return;
     }
 
-    /*
-    QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
-    GTTabWidget::setCurrentIndex(os, tabWidget, 0);
-    */
-
     QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath", dialog));
     GT_CHECK(resultLocationEdit, "resultLocation is NULL");
     GTLineEdit::setText(os, resultLocationEdit, resultAnnotationFilesPath);
 
-    //GTTabWidget::setCurrentIndex(os, tabWidget, 1);
-
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
-
-    GTGlobals::sleep();
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 
 #undef GT_METHOD_NAME

@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialogButtonBox>
-#endif
+#include <QApplication>
+#include <QDialogButtonBox>
 
 #include "CreateObjectRelationDialogFiller.h"
 #include "api/GTWidget.h"
@@ -45,13 +39,10 @@ void CreateObjectRelationDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 
-    QDialogButtonBox *buttonBox = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(NULL != buttonBox, "buttonBox is NULL");
-    QAbstractButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    GT_CHECK(NULL != okButton, "okButton is NULL");
-    GTWidget::click(os, okButton);
-
-    GTGlobals::sleep(200);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+    if (NULL != QApplication::activeModalWidget()) {
+        GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+    }
 }
 
 #undef GT_METHOD_NAME

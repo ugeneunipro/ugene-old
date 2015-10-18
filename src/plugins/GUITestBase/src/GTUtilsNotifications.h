@@ -19,9 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-
-#ifndef GTUTILSNOTIFICATIONS_H
-#define GTUTILSNOTIFICATIONS_H
+#ifndef _U2_GT_UTILS_NOTIFICATIONS_H_
+#define _U2_GT_UTILS_NOTIFICATIONS_H_
 
 #include "GTUtilsDialog.h"
 #include "api/GTGlobals.h"
@@ -40,11 +39,12 @@ private:
     U2OpStatus &os;
 };
 
-class NotificationDialogFiller : public Filler{
+class NotificationDialogFiller : public Filler {
 public:
-    NotificationDialogFiller(U2OpStatus &os, QString _message = ""):
-        Filler(os, "NotificationDialog"), message(_message){}
-    virtual void run();
+    NotificationDialogFiller(U2OpStatus &os, const QString &message = "");
+
+    void commonScenario();
+
 private:
     QString message;
 };
@@ -54,6 +54,7 @@ class GTUtilsNotifications
 public:
     static void waitForNotification(U2OpStatus &os, bool dialogExpected = true, const QString &message = "");
 };
-}
 
-#endif // GTUTILSNOTIFICATIONS_H
+}   // namespace U2
+
+#endif // _U2_GT_UTILS_NOTIFICATIONS_H_

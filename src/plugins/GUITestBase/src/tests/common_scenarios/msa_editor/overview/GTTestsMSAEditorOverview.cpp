@@ -19,25 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsMSAEditorOverview.h"
-#include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
-#include "api/GTAction.h"
-#include "api/GTMenu.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTComboBox.h"
-#include "runnables/qt/PopupChooser.h"
-#include "runnables/qt/ColorDialogFiller.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsMsaEditorSequenceArea.h"
+#include <QMainWindow>
 
 #include <U2Core/AppContext.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMainWindow>
-#endif
+
+#include "GTTestsMSAEditorOverview.h"
+#include "GTUtilsMsaEditor.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTAction.h"
+#include "api/GTComboBox.h"
+#include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/ColorDialogFiller.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
@@ -126,20 +124,24 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
     CHECK_SET_ERR(simple->isVisible(), "simple overveiw is not visiable");
 //    2. Resize Ugene window to make overview area smaller.
-    QMainWindow* window = AppContext::getMainWindow()->getQMainWindow();
-    window->showNormal();
-    window->resize(550,550);
-    GTGlobals::sleep(1000);
+    QMainWindow *window = AppContext::getMainWindow()->getQMainWindow();
+    if (window->isMaximized()) {
+        GTWidget::clickCornerMenu(os, window, GTGlobals::Maximize);
+        GTGlobals::sleep(500);
+    }
+    GTWidget::resizeWidget(os, window, QSize(550, 550));
 //    Expected state: at some moment simple overview is not displayed -
 //    there is a gray area with "MSA is too big for current window size. Simple overview is unavailable." text.
 
-    // text can not be cheched, check color
+    // text can not be checked, check color
     QPixmap pixmap = QPixmap::grabWidget(simple, simple->rect());
     QImage img = pixmap.toImage();
     QRgb rgb = img.pixel(simple->rect().topLeft() + QPoint(5,5));
     QColor c(rgb);
-
     CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
+
+    const int tasksCount = GTUtilsTaskTreeView::getTopLevelTasksCount(os);
+    CHECK_SET_ERR(0 == tasksCount,"An unexpected task is running. Ensure that the overview is not calculating");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
@@ -405,14 +407,9 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
     GTGlobals::sleep(200);
 
 //    3. Change Color Scheme.
-    QPixmap pixmap = QPixmap::grabWidget(overviewSimple, overviewSimple->rect());
-    QImage img = pixmap.toImage();
-    QRgb rgb = img.pixel(QPoint(5, overviewSimple->rect().height() - 5));
-    QColor c(rgb);
-
+    const QColor c = GTUtilsMsaEditor::getSimpleOverviewPixelColor(os, QPoint(5, overviewSimple->rect().height() - 5));
     CHECK_SET_ERR(c.name()=="#ededed","simple overview has wrong color. Expected: #ededed, Found: " + c.name());
 //    Expected state: in simple msa overview color scheme was changed.
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0015){

@@ -277,7 +277,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         "Sequence", false
     );
     GTUtilsDialog::waitForDialog(os, filler);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New document from text...", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTGlobals::sleep();

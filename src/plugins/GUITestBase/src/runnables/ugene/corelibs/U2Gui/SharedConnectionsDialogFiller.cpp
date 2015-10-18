@@ -54,8 +54,14 @@ SharedConnectionsDialogFiller::Action::Action(Type type, QString itemName)
     dbName = GTDatabaseConfig::database();
 }
 
-SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions, const QFlags<Behavior> &behavior)
-    : Filler(os, "SharedConnectionsDialog"), actions(actions), behavior(behavior)
+SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+    Filler(os, "SharedConnectionsDialog"), actions(actions)
+{
+
+}
+
+SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "SharedConnectionsDialog", scenario)
 {
 
 }
@@ -115,43 +121,18 @@ void waitForConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Acti
     }
 }
 
-void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action,
-    const QFlags<SharedConnectionsDialogFiller::Behavior> &behavior)
+void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action)
 {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
 
-    QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect", dialog);
-    QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect", dialog);
-    QWidget *editBtn = GTWidget::findWidget(os,"pbEdit", dialog);
-    QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections", dialog));
-
     waitForConnection(os, action);
     CHECK_OP(os, );
 
-    GTWidget::click(os, cnctBtn, Qt::LeftButton, QPoint(), false);//no processing events after clicking
-    CHECK(behavior.testFlag(SharedConnectionsDialogFiller::SAFE), );
+    GTWidget::click(os, GTWidget::findWidget(os,"pbConnect", dialog));
 
     GTGlobals::sleep(2000);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    if (SharedConnectionsDialogFiller::Action::OK == action.expectedResult ||
-        SharedConnectionsDialogFiller::Action::INITIALIZE == action.expectedResult) {
-        if (SharedConnectionsDialogFiller::Action::INITIALIZE == action.expectedResult) {
-            GTGlobals::sleep(10000);
-        }
-        CHECK_SET_ERR(!cnctBtn->isEnabled(), "connect button enabled");
-        CHECK_SET_ERR(!editBtn->isEnabled(), "edit button enabled");
-        CHECK_SET_ERR(dcntBtn->isEnabled(), "disconnect button disabled");
-
-        // Check connection icon
-        QListWidgetItem *item = findConnection(os, list, action.itemName);
-        CHECK_OP(os, );
-        CHECK_SET_ERR(!item->icon().isNull(), "no icon");
-
-        // Check project view
-        checkDocument(os, action.dbName, true);
-    }
 }
 
 void deleteConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
@@ -187,9 +168,9 @@ void stopConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action 
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::SharedConnectionsDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void SharedConnectionsDialogFiller::run() {
+void SharedConnectionsDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections", dialog));
@@ -214,7 +195,7 @@ void SharedConnectionsDialogFiller::run() {
                 CHECK_OP(os, );
                 break;
             case Action::CONNECT:
-                establishConnection(os, action, behavior);
+                establishConnection(os, action);
                 CHECK_OP(os, );
                 if (Action::OK == action.expectedResult) {
                     connected = true;
@@ -231,8 +212,9 @@ void SharedConnectionsDialogFiller::run() {
         CHECK_OP(os, );
     }
 
-    if (!connected) {
-        GTWidget::click(os, GTWidget::findButtonByText(os, "Close"));
+    dialog = QApplication::activeModalWidget();
+    if (NULL != dialog) {
+        GTWidget::click(os, GTWidget::findButtonByText(os, "Close", dialog));
     }
 }
 

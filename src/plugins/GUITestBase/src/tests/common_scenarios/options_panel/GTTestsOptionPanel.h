@@ -33,29 +33,8 @@ k
 
 namespace U2 {
 
-class EnterClicker : public Filler {
-public:
-    EnterClicker(U2OpStatus &_os)
-        :Filler(_os,"SequenceReadingModeSelectorDialog"){}
-    virtual void run(){
-        GTGlobals::sleep(1000);
-#ifdef Q_OS_MAC
-        QWidget* dialog = QApplication::activeModalWidget();
-        QList<QPushButton*> list= dialog->findChildren<QPushButton*>();
-
-        foreach(QPushButton* but, list){
-            if (but->text().contains("OK"))
-                GTWidget::click(os,but);
-        }
-#else
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
-#endif
-    }
-private:
-
-};
-
 namespace GUITest_common_scenarios_options_panel {
+
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_options_panel_"
 

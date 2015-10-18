@@ -19,28 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-
-#include <QtCore/QTimer>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QTextBrowser>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QTextBrowser>
-#endif
+#include <QApplication>
+#include <QMainWindow>
+#include <QTextBrowser>
+#include <QTimer>
 
 #include <U2Core/AppContext.h>
+
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/Notification.h>
 
 #include "GTUtilsMdi.h"
+#include "GTUtilsNotifications.h"
 #include "api/GTWidget.h"
 
-#include "GTUtilsNotifications.h"
+namespace U2 {
 
-namespace U2{
 #define GT_CLASS_NAME "NotificationChecker"
 
 NotificationChecker::NotificationChecker(U2OpStatus &_os):os(_os){
@@ -71,8 +65,16 @@ void NotificationChecker::sl_checkNotification() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "NotificationDialogFiller"
-#define GT_METHOD_NAME "run"
-void NotificationDialogFiller::run(){
+
+NotificationDialogFiller::NotificationDialogFiller(U2OpStatus &os, const QString &message) :
+    Filler(os, "NotificationDialog"),
+    message(message)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void NotificationDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "active modal widget is invalid");
 
@@ -82,6 +84,7 @@ void NotificationDialogFiller::run(){
         QString actualMessage = tb->toPlainText();
         GT_CHECK(actualMessage.contains(message), "unexpected message: " + actualMessage);
     }
+
     QWidget* ok = GTWidget::findButtonByText(os, "Ok", dialog);
     GTWidget::click(os, ok);
 }
@@ -96,7 +99,8 @@ void GTUtilsNotifications::waitForNotification(U2OpStatus &os, bool dialogExpect
     }
     new NotificationChecker(os);
 }
+
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-}
+}   // namespace U2

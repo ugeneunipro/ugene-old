@@ -35,19 +35,32 @@ namespace U2 {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 Qt::MouseButtons GTMouseDriver::bp = Qt::NoButton;
 
+namespace {
+
+bool isPointInsideScreen(const QPoint &point) {
+    const CGDirectDisplayID displayID = CGMainDisplayID();
+    const size_t horres = CGDisplayPixelsWide(displayID);
+    const size_t vertres = CGDisplayPixelsHigh(displayID);
+
+    const QRect screen(0, 0, horres, vertres);
+    return screen.contains(point);
+}
+
+bool isPointInsideScreen(int x, int y) {
+    return isPointInsideScreen(QPoint(x, y));
+}
+
+}
+
 #define GT_METHOD_NAME "moveToP"
 void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 {
-    if(bp.testFlag(Qt::LeftButton)){
-        selectArea(os,x,y);
+    if (bp.testFlag(Qt::LeftButton)) {
+        selectArea(os, x, y);
         return;
     }
-    CGDirectDisplayID displayID = CGMainDisplayID();
-    size_t horres = CGDisplayPixelsWide (displayID);
-    size_t vertres = CGDisplayPixelsHigh (displayID);
 
-    QRect screen(0, 0, horres-1, vertres-1);
-    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+    GT_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
 
     CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
@@ -59,14 +72,10 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectArea"
-void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y)
-{
-    CGDirectDisplayID displayID = CGMainDisplayID();
-    size_t horres = CGDisplayPixelsWide (displayID);
-    size_t vertres = CGDisplayPixelsHigh (displayID);
+void GTMouseDriver::selectArea(U2OpStatus &os, const int x, const int y) {
+    Q_UNUSED(os);
 
-    QRect screen(0, 0, horres-1, vertres-1);
-    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+    GT_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
 
     CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDragged, CGPointMake(x, y), kCGMouseButtonLeft /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
@@ -112,10 +121,9 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doubleClick"
-void GTMouseDriver::doubleClick(U2OpStatus &os)
-{   //**********TODO: find out why click(os) is needed here*********
-                                click(os);
-    //**************************************************************
+void GTMouseDriver::doubleClick(U2OpStatus &os) {
+    Q_UNUSED(os);
+
     QPoint mousePos = QCursor::pos();
     CGEventType eventTypeMouseDown = kCGEventLeftMouseDown ;
     CGEventRef eventPress = CGEventCreateMouseEvent(NULL, eventTypeMouseDown, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
@@ -124,6 +132,11 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
     CGEventType eventTypeMouseUp = kCGEventLeftMouseUp ;
     CGEventRef eventRelease = CGEventCreateMouseEvent(NULL, eventTypeMouseUp, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
     GT_CHECK(eventRelease != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, eventPress);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
+    CGEventPost(kCGSessionEventTap, eventRelease);
+    GTGlobals::sleep(0);
 
     CGEventSetDoubleValueField(eventPress, kCGMouseEventClickState, 2);
     CGEventSetDoubleValueField(eventRelease, kCGMouseEventClickState, 2);

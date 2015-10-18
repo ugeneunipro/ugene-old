@@ -29,6 +29,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTSpinBox"
 
+#define GT_METHOD_NAME "getValue"
+int GTSpinBox::getValue(U2OpStatus &os, QSpinBox *spinBox) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(spinBox != NULL, "spinBox is NULL", -1);
+    return spinBox->value();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setValue"
 void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");

@@ -69,6 +69,7 @@ void GraphSettingsDialogFiller::commonScenario(){
         GTWidget::click(os, GTWidget::findWidget(os, "Default color", dialog));
     }
 
+    GTGlobals::sleep(200);
     GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
 }
 

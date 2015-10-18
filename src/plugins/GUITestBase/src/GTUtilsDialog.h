@@ -22,12 +22,9 @@
 #ifndef _U2_GUI_DIALOG_UTILS_H_
 #define _U2_GUI_DIALOG_UTILS_H_
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QDialogButtonBox>
-#endif
+#include <QDialogButtonBox>
+
+#include <U2Test/CustomScenario.h>
 
 #include "api/GTGlobals.h"
 
@@ -93,12 +90,6 @@ private:
 
     void finishWaiting(); // deletes timer and runnable
 
-};
-
-class CustomScenario {
-public:
-    virtual void run(U2OpStatus &os) = 0;
-    virtual ~CustomScenario() {}
 };
 
 class Filler : public Runnable {

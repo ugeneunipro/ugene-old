@@ -109,15 +109,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0004) {
-
-//1. open view for _common_data\scenarios\assembly\example-alignment.bam(.bam открывает окно экспорта)
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
-//2. open file samples/FASTA/human_T1.fa
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTUtilsTaskTreeView::waitTaskFinished(os, 5000);
-}
-
 GUI_TEST_CLASS_DEFINITION(test_0010) {
 //    Test default values and bounds of all GUI-elements.
 

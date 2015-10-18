@@ -69,8 +69,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
         patternSequence);
     GTUtilsDialog::waitForDialog(os, swDialog);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Analyze" << "Find pattern [Smith-Waterman]...", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
 
@@ -130,8 +129,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
         patternSequence);
     GTUtilsDialog::waitForDialog(os, swDialog);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Analyze" << "Find pattern [Smith-Waterman]...", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
 // 4. Close sequence view, then reopen it

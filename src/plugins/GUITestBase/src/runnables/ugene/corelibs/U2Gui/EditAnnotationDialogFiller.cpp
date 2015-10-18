@@ -19,26 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QPushButton>
+#include <QToolButton>
+
 #include "EditAnnotationDialogFiller.h"
-#include "api/GTWidget.h"
+#include "api/GTCheckBox.h"
+#include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QToolButton>
-#endif
-
+#include "api/GTWidget.h"
 
 namespace U2 {
 
@@ -63,19 +55,15 @@ void EditAnnotationFiller::commonScenario()
         GTWidget::click(os, complementStrand);
         }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditAnnotationChecker"
-#define GT_METHOD_NAME "run"
-void EditAnnotationChecker::commonScenario()
-    {
+
+#define GT_METHOD_NAME "commonScenario"
+void EditAnnotationChecker::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
@@ -83,12 +71,6 @@ void EditAnnotationChecker::commonScenario()
         QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("nameEdit");
         GT_CHECK(lineEdit != NULL, "line edit not found");
         QString text = lineEdit->text();
-
-        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-        GT_CHECK(box != NULL, "buttonBox is NULL");
-        QPushButton* button = box->button(QDialogButtonBox::Ok);
-        GT_CHECK(button !=NULL, "ok button is NULL");
-        GTWidget::click(os, button);
 
         GT_CHECK (text == annotationName, "This name is not expected name");
     }
@@ -99,21 +81,13 @@ void EditAnnotationChecker::commonScenario()
 
         QString text = lineEdit1->text();
 
-        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-        GT_CHECK(box != NULL, "buttonBox is NULL");
-        QPushButton* button = box->button(QDialogButtonBox::Ok);
-        GT_CHECK(button !=NULL, "ok button is NULL");
-        GTWidget::click(os, button);
-
         GT_CHECK (text == location, "This name is not expected name");
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
-    }
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
+
+}   // namespace U2

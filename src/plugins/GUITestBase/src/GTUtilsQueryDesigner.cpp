@@ -21,6 +21,7 @@
 
 #include "GTUtilsQueryDesigner.h"
 #include "api/GTGraphicsItem.h"
+#include "api/GTMenu.h"
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
@@ -40,6 +41,13 @@
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsQueryDesigner"
+
+#define GT_METHOD_NAME "findTreeItem"
+void GTUtilsQueryDesigner::openQueryDesigner(U2OpStatus &os) {
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Query Designer...");
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findTreeItem"
 QTreeWidgetItem* GTUtilsQueryDesigner::findAlgorithm(U2OpStatus &os,QString itemName){

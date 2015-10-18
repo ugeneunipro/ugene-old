@@ -43,11 +43,8 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_name_filter {
 
 GUI_TEST_CLASS_DEFINITION( test_0001 ) {
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new StartupDialogFiller( os ) );
-
     // 1. Open WD.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Open the samples tab.
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
@@ -84,11 +81,8 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0002 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
-
     // 1. Open WD.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Open the samples tab.
     GTWidget::click(os, GTWidget::findWidget(os, "samples"));

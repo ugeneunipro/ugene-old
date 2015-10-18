@@ -56,7 +56,7 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
 
@@ -74,7 +74,7 @@ Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
 

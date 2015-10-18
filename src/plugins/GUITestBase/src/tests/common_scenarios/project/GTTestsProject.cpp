@@ -96,11 +96,11 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 //     {Destination Directory} _common_data/scenarios/sandbox
 // 4. Click OK button
     GTUtilsDialog::waitForDialog(os, new ExportProjectDialogFiller(os, testDir+"_common_data/scenarios/sandbox"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Export project...");
     GTGlobals::sleep();
 
 // 5. Use menu {File->Close project}
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
 // Expected state: project is unloaded and project view is closed
@@ -145,10 +145,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
@@ -210,7 +210,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
 
     GTUtilsDialog::waitForDialog(os, new ExportProjectDialogChecker(os, "project.uprj"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Export project...");
     GTGlobals::sleep();
 }
 
@@ -276,7 +276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "1HTQ", 3));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...", GTGlobals::UseKey);
 
     GTGlobals::sleep();
 
@@ -407,8 +407,6 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0025) {
-
-//     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
@@ -420,13 +418,6 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
-
-/*
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
-    GTGlobals::sleep();
-*/
-//     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0026) {
@@ -452,7 +443,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::Cancel));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     GTUtilsLog::check(os, logTracer);
@@ -482,7 +473,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
 
     GTUtilsDialog::waitForDialog(os, new ExportProjectDialogSizeChecker(os, "project.uprj"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Export project...");
     GTGlobals::sleep();
 }
 
@@ -847,8 +838,8 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTGlobals::sleep(500);
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QFile savedFile(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard.fa");

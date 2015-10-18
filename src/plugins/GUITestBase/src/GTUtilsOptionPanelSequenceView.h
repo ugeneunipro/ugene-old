@@ -19,18 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_GT_UTILS_OPTION_PANEL_SEQUENCE_VIEW_H_
+#define _U2_GT_UTILS_OPTION_PANEL_SEQUENCE_VIEW_H_
 
-#ifndef U2_GTUTILS_OPTION_PANEL_SEQUENCE_VIEW_H
-#define U2_GTUTILS_OPTION_PANEL_SEQUENCE_VIEW_H
-
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QToolButton>
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QLineEdit>
-#endif
+#include <QToolButton>
+#include <QLineEdit>
 
 #include "api/GTGlobals.h"
 
@@ -96,6 +89,11 @@ public:
     static bool isPrevNextEnabled(U2OpStatus &os);
     static bool isGetAnnotationsEnabled(U2OpStatus &os);
 
+    // Circular view options panel tab
+    static void toggleCircularView(U2OpStatus &os);
+    static void setTitleFontSize(U2OpStatus &os, int fontSize);
+    static int getTitleFontSize(U2OpStatus &os);
+
     // DAS options panel tab
     static void fetchDasIds(U2OpStatus &os);
     static int getDasIdsCount(U2OpStatus &os);
@@ -123,7 +121,6 @@ private:
     static QMap<Tabs, QString> initInnerWidgetNames();
 };
 
+}   // namespace U2
 
-}
-
-#endif // GTUTILSOPTIONPANELMSA_H
+#endif // _U2_GT_UTILS_OPTION_PANEL_SEQUENCE_VIEW_H_

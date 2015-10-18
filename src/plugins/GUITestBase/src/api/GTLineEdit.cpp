@@ -20,12 +20,11 @@
  */
 
 #include "GTClipboard.h"
-#include "GTLineEdit.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
 #include "GTKeyboardUtils.h"
+#include "GTLineEdit.h"
+#include "GTMouseDriver.h"
+#include "GTWidget.h"
 
 namespace U2 {
 
@@ -65,6 +64,14 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
     }
     GT_CHECK(s == str, "Can't set text, set text differs from a given string in lineEdit " + lineEdit->objectName() +
              ". Expected: " + str + " Actual: " + s);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getText"
+QString GTLineEdit::getText(U2OpStatus &os, QLineEdit *lineEdit) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != lineEdit, "lineEdit is NULL", "");
+    return lineEdit->text();
 }
 #undef GT_METHOD_NAME
 
@@ -157,4 +164,4 @@ bool GTLineEdit::tryToSetText(U2OpStatus &os, QLineEdit *lineEdit, const QString
 
 #undef GT_CLASS_NAME
 
-}
+}   // namespace U2

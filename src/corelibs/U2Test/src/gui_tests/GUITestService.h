@@ -19,60 +19,65 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_TESTS_VIEWER_H_
-#define _U2_GUI_TESTS_VIEWER_H_
+#ifndef _U2_GUI_TEST_SERVICE_H_
+#define _U2_GUI_TEST_SERVICE_H_
 
-#include <U2Core/global.h>
-#include <U2Core/Task.h>
 #include <U2Core/MultiTask.h>
-#include <U2Gui/MainWindow.h>
+#include <U2Core/Task.h>
+#include <U2Core/global.h>
 
-#include <QtGui>
+#include <U2Gui/MainWindow.h>
 
 #include "GUITest.h"
 #include "GUITestLauncher.h"
-
+#include "MainThreadTimer.h"
 
 namespace U2 {
 
+class CMDLineRegistry;
 class GUITestLauncher;
 class GUITestService;
-class CMDLineRegistry;
+class MainThreadRunnable;
 
-class U2TEST_EXPORT GUITestService: public Service {
+class U2TEST_EXPORT GUITestService : public Service {
     Q_OBJECT
 public:
     enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE, RUN_CRAZY_USER_MODE, CREATE_GUI_TEST, RUN_ALL_TESTS_NO_IGNORED};
 
     GUITestService(QObject *parent = NULL);
-    virtual ~GUITestService();
+    ~GUITestService();
 
     void runTest(GUITests testsToRun);
+    qint64 getMainThreadTimerValue() const;
+
+    static GUITestService * getGuiTestService();    // the service should be already created and registered
+
+    static const QString GUITESTING_REPORT_PREFIX;
+    static const qint64 TIMER_INTERVAL;
 
 public slots:
      void runGUICrazyUserTest();
      void runGUITest();
      void runGUITest(GUITest* t);
 
-    static void runAllGUITests();
+    void runAllGUITests();
 
-protected:
+private slots:
+    void sl_allStartUpPluginsLoaded();
+    void sl_registerService();
+    void sl_serviceRegistered();
+    void sl_registerTestLauncherTask();
+    void sl_taskStateChanged(Task*);
+    void sl_testThreadFinish();
+    void sl_requestAsked(MainThreadRunnable *runnable);
+
+private:
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
 
     static GUITests preChecks();
     static GUITests postChecks();
     static GUITests postActions();
 
-protected slots:
-    void sl_allStartUpPluginsLoaded();
-    void sl_registerService();
-    void sl_registerTestLauncherTask();
-    void sl_taskStateChanged(Task*);
-
-private slots:
-    static void sl_testTimeOut();
-
-private:
     static void clearSandbox();
     static void removeDir(QString dirName);
 
@@ -95,8 +100,9 @@ private:
     QAction *runTestsAction;
     Task *testLauncher;
     GUITests testsToRun;
+    MainThreadTimer timer;
 };
 
-} // U2
+}   // namespace U2
 
-#endif
+#endif // _U2_GUI_TEST_SERVICE_H_

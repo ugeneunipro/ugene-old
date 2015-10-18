@@ -32,6 +32,8 @@ namespace U2 {
 
 class GTUtilsQueryDesigner {
 public:
+    static void openQueryDesigner(U2OpStatus &os);
+
     static QTreeWidgetItem* findAlgorithm(U2OpStatus &os, QString itemName);
     static void addAlgorithm(U2OpStatus &os, QString algName);
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);

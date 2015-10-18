@@ -268,12 +268,12 @@ QString EventFilter::setValuesWhenFocusGone(QWidget *w){
     return "";
 }
 
-QString EventFilter::menuBarCode(QMenuBar *menuBar) const{
+QString EventFilter::menuBarCode(QMenuBar *menuBar) const {
     QString result("");
     CHECK(m != NULL, "");
     CHECK(menuBar != NULL, "");
     QAction* menuBarAct = menuBar->actionAt(menuBar->mapFromGlobal(m->globalPos()));
-    if(menuBarAct != NULL){
+    if (menuBarAct != NULL) {
         result.append(QString("QMenu* menu = GTMenu::showMainMenu(os, \"%1\");\n").arg(menuBarAct->objectName()));
     }
     return result;

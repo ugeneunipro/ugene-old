@@ -65,14 +65,7 @@ void ConvertAceToSqliteDialogFiller::run(){
     GT_CHECK(leDest, "destination URL lineedit not found");
     GTLineEdit::setText(os, leDest, leDestUrl);
 
-    GTWidget::click(os, GTWidget::findButtonByText(os, "OK",dialog));
-    GTGlobals::sleep(300);
-
-    dialog = QApplication::activeModalWidget();
-    if(dialog!=NULL){
-        GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel",dialog));
-    }
-
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

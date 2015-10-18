@@ -23,12 +23,14 @@
 #define _U2_GT_MENU_PRIVATE_H_
 
 #include "api/GTGlobals.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
 class GTMenuPrivate {
 public:
-    static void clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    static void clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
 
 private:
     static void showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);

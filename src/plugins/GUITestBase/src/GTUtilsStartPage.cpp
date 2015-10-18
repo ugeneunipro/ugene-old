@@ -31,6 +31,8 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsStartPage"
+
 void GTUtilsStartPage::openStartPage(U2OpStatus &os){
     GTUtilsMdi::activateWindow(os, "Start Page");
 }
@@ -41,28 +43,25 @@ QWebView* GTUtilsStartPage::getStartPage(U2OpStatus &os){
     return result;
 }
 
-QWebElement GTUtilsStartPage::getButton(U2OpStatus &os, Buttons button){
-    QWebElement result;
+#define GT_METHOD_NAME "getButton"
+QWebElement GTUtilsStartPage::getButton(U2OpStatus &os, Buttons button) {
     switch (button) {
     case OpenFile:
-        result = GTWebView::findElement(os, getStartPage(os), "Open File(s)", "DIV");
-        break;
+        return GTWebView::findElement(os, getStartPage(os), "Open File(s)", "DIV");
     case CreateSequence:
-        result = GTWebView::findElement(os, getStartPage(os), "Create Sequence", "DIV");
-        break;
+        return GTWebView::findElement(os, getStartPage(os), "Create Sequence", "DIV");
     case CreateWorkflow:
-        result = GTWebView::findElement(os, getStartPage(os), "Create Workflow", "DIV");
-        break;
+        return GTWebView::findElement(os, getStartPage(os), "Create Workflow", "DIV");
     case QuickStartGuide:
-        //You do not need this button
+         // You do not need this button
+        GT_CHECK_RESULT(false, "Not implemented", QWebElement());
     default:
-        break;
+        GT_CHECK_RESULT(false, "Not implemented", QWebElement());
     }
-
-    return result;
 }
+#undef GT_METHOD_NAME
 
-void GTUtilsStartPage::clickButton(U2OpStatus &os, Buttons b){
+void GTUtilsStartPage::clickButton(U2OpStatus &os, Buttons b) {
     QWebElement but = getButton(os, b);
     QWebView* start = getStartPage(os);
     GTWebView::click(os, start, but);
@@ -76,5 +75,7 @@ void GTUtilsStartPage::clickResentDocument(U2OpStatus &os, QString text){
 void GTUtilsStartPage::clickResentProject(U2OpStatus &os, QString text){
     clickResentDocument(os, text);
 }
+
+#undef GT_CLASS_NAME
 
 }

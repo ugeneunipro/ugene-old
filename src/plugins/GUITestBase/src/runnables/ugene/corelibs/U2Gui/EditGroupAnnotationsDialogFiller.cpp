@@ -54,7 +54,6 @@ void EditGroupAnnotationsFiller::run()
     GTLineEdit::setText(os, lineEdit, groupName);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

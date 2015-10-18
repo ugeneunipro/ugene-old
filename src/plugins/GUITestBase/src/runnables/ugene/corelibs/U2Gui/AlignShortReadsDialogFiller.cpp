@@ -30,6 +30,7 @@
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTDoubleSpinBox.h"
+#include "api/GTGroupBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
@@ -72,20 +73,7 @@ void AlignShortReadsFiller::commonScenario() {
 
     GTGlobals::sleep(500);
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
-
-    GTGlobals::sleep(5000);
-    if (!dialog->isVisible()){
-        return;
-    }
-
-    button = box->button(QDialogButtonBox::Cancel);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTWidget::click(os, button);
-
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 
@@ -272,9 +260,7 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
 
 #define GT_METHOD_NAME "setUgaAdditionalParameters"
 void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog) {
-    QGroupBox *mismatchesGroupbox = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "groupBox_mismatches", dialog));
-    mismatchesGroupbox->setChecked(ugaParameters->mismatchesAllowed);
-
+    GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox_mismatches", dialog), ugaParameters->mismatchesAllowed);
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "firstMatchBox", dialog), ugaParameters->useBestMode);
 }
 #undef GT_METHOD_NAME

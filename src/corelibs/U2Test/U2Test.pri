@@ -4,7 +4,7 @@ UGENE_RELATIVE_DESTDIR = ''
 MODULE_ID=U2Test
 include( ../../ugene_lib_common.pri )
 
-QT += xml
+QT += xml gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2TEST_DLL
 LIBS += -L../../_release -lU2Core

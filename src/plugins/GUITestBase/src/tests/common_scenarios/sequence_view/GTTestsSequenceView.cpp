@@ -785,6 +785,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028) {
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTWidget::clickWindowTitle(os, dialog);
 
             QRadioButton* radioButton = dialog->findChild<QRadioButton*>("currentViewButton");
             GTRadioButton::click(os, radioButton);
@@ -847,6 +848,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTWidget::clickWindowTitle(os, dialog);
 
             QWidget* rangeSelector = dialog->findChild<QWidget*>("range_selector");
             CHECK_SET_ERR(rangeSelector != NULL, "range_selector not found");
@@ -1068,7 +1070,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){
 
 #define GET_ACTIONS QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
 CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL"); \
-GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Translation frames"); \
+GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Translation frames", GTGlobals::UseKey); \
 activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
 QAction* direct1 = GTMenu::getMenuItem(os, activePopupMenu, "1 direct translation frame", true); \
 QAction* direct2 = GTMenu::getMenuItem(os, activePopupMenu, "2 direct translation frame", true); \
@@ -1657,9 +1659,6 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
     QImageWriter writer1("2test.jpg");
     writer.write(image3);
 
-    image1.save("/home/vmalin/1.bmp", "BMP");
-    image3.save("/home/vmalin/3.bmp", "BMP");
-
     CHECK_SET_ERR(image1 != image2, "Image was not changed");
     CHECK_SET_ERR(image1 == image3, "Image was not restored");
 }
@@ -1823,13 +1822,16 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
 
     QWidget* chromView = GTWidget::findWidget(os, "chromatogram_view_A1#berezikov");
     CHECK_SET_ERR(chromView != NULL, "Cannot find chromatogram_view_A1#berezikov");
-    QPixmap pix = QPixmap::grabWidget(chromView, chromView->rect());
+
+    QImage image = GTWidget::getImage(os, chromView);
 
     QAction* bars = GTAction::findActionByText(os, "Show quality bars");
     CHECK_SET_ERR(bars, "Cannot find 'Show quality bars' action");
     GTWidget::click(os, GTAction::button(os, bars));
-    CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Bars adding");
-    pix = QPixmap::grabWidget(chromView, chromView->rect());
+
+    CHECK_SET_ERR(image != GTWidget::getImage(os, chromView), "Nothing changed on Chromatogram View after Bars adding");
+
+    image = GTWidget::getImage(os, chromView);
 
     QAction* traces = GTAction::findActionByText(os, "Show/hide trace");
     CHECK_SET_ERR(traces != NULL, "Cannot find 'Show/hide trace' action");
@@ -1840,7 +1842,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "C"));
     GTWidget::click(os, GTAction::button(os, traces));
 
-    CHECK_SET_ERR(pix.toImage() != QPixmap::grabWidget(chromView, chromView->rect()).toImage(), "Nothing changed on Chromatogram View after Traces hiding");
+    CHECK_SET_ERR(image != GTWidget::getImage(os, chromView), "Nothing changed on Chromatogram View after Traces hiding");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059){

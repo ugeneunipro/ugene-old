@@ -19,23 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QTextEdit>
+
 #include "CreateElementWithScriptDialogFiller.h"
 #include "api/GTLineEdit.h"
+#include "api/GTTextEdit.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTextEdit>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QPushButton>
-#endif
-
 
 namespace U2{
 
@@ -49,11 +42,7 @@ void CreateElementWithScriptDialogFiller::run(){
     GT_CHECK(nameEdit, "nameEdit not found");
     GTLineEdit::setText(os, nameEdit, name);
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -74,8 +63,8 @@ void ScriptEditorDialogFiller::run(){
         if (!textEdit->isReadOnly())
             edit = textEdit;
     }
-    GT_CHECK(edit, "textEdit not found")
-    edit->setText(text);
+    GT_CHECK(edit, "textEdit not found");
+    GTTextEdit::setText(os, edit, text);
 
     GTGlobals::sleep(3000);
     if(checkSyntax){
@@ -105,8 +94,8 @@ void ScriptEditorDialogSyntaxChecker::run(){
         if (!textEdit->isReadOnly())
             edit = textEdit;
     }
-    GT_CHECK(edit, "textEdit not found")
-    edit->setText(text);
+    GT_CHECK(edit, "textEdit not found");
+    GTTextEdit::setText(os, edit, text);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok, message));
     GTWidget::click(os, GTWidget::findWidget(os, "checkButton", dialog));

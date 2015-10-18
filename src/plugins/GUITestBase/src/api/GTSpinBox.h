@@ -22,23 +22,19 @@
 #ifndef _U2_GT_SPINBOX_H_
 #define _U2_GT_SPINBOX_H_
 
-#include "api/GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QSpinBox>
-#else
-#include <QtWidgets/QSpinBox>
-#endif
+#include <QSpinBox>
 
+#include "api/GTGlobals.h"
 
 namespace U2 {
 
 class GTSpinBox {
 public:
-    // fails if the spinBox is NULL or can't set value
-    static void setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
+    static int getValue(U2OpStatus &os, QSpinBox *spinBox);
+    static void setValue(U2OpStatus &os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
     static void checkLimits(U2OpStatus &os, QSpinBox *spinBox, int min, int max);
 };
 
-}
-#endif // _U2_GT_SPINBOX_H_
+}   // namespace U2
 
+#endif // _U2_GT_SPINBOX_H_

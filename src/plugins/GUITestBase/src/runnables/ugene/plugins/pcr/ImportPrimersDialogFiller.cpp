@@ -89,7 +89,7 @@ void ImportPrimersDialogFiller::connectDatabase(U2OpStatus &os, const QString &d
     QList<SharedConnectionsDialogFiller::Action> actions;
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, databaseName);
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT);
-    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions, SharedConnectionsDialogFiller::UNSAFE));
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     GTWidget::click(os, GTWidget::findWidget(os, "pbConnect", getDialog(os)));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }

@@ -39,19 +39,14 @@ const int widthMax = 9;
 #define GT_CLASS_NAME "GTUtilsPhyTree"
 
 #define GT_METHOD_NAME "getNodes"
-QList<QGraphicsItem*> GTUtilsPhyTree::getNodes(U2OpStatus &os, int width){
-    QList<QGraphicsItem*> result;
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+QList<QGraphicsItem *> GTUtilsPhyTree::getNodes(U2OpStatus &os, int width){
+    QList<QGraphicsItem *> result;
+    QGraphicsView *treeView = qobject_cast<QGraphicsView *>(GTWidget::findWidget(os, "treeView"));
     GT_CHECK_RESULT(treeView, "treeView not found", result);
 
-    QList<QGraphicsItem*> list = treeView->scene()->items();
-    foreach(QGraphicsItem* item, list){
-
-        qreal r = item->boundingRect().width();
-        if(r>2 && r<15){
-            uiLog.trace("for debug");
-        }
-        if(item->boundingRect().width()==width){
+    QList<QGraphicsItem *> list = treeView->scene()->items();
+    foreach (QGraphicsItem *item, list) {
+        if (qRound(item->boundingRect().width()) == width) {
             result.append(item);
         }
     }

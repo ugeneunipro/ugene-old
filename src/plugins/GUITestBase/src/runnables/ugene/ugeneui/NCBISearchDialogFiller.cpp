@@ -19,20 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "QComboBox"
+#include <QApplication>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QTreeWidget>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QDialogButtonBox>
-#endif
-
-#include "GTUtilsTaskTreeView.h"
-#include "NCBISearchDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
@@ -41,6 +32,8 @@
 #include "api/GTTextEdit.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
+#include "GTUtilsTaskTreeView.h"
+#include "NCBISearchDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 
 namespace U2 {

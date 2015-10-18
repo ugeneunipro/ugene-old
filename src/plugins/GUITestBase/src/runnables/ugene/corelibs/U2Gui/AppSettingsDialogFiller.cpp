@@ -106,11 +106,7 @@ void AppSettingsDialogFiller::commonScenario(){
         GTWidget::click(os,colorWidget);
     }
 
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-    GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 
@@ -124,14 +120,13 @@ void AppSettingsDialogFiller::setExternalToolPath(U2OpStatus &os, const QString 
     QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
     QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
     bool set = false;
-    foreach (QTreeWidgetItem* item, listOfItems){
-        if(item->text(0) == toolName){
-            QWidget* itemWid = treeWidget->itemWidget(item, 1);
-            QLineEdit* lineEdit = itemWid->findChild<QLineEdit*>("PathLineEdit");
+    foreach (QTreeWidgetItem* item, listOfItems) {
+        if (item->text(0) == toolName) {
+            QWidget *itemWid = treeWidget->itemWidget(item, 1);
+            QLineEdit *lineEdit = itemWid->findChild<QLineEdit*>("PathLineEdit");
             treeWidget->scrollToItem(item);
             GTLineEdit::setText(os, lineEdit, toolPath);
-            GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0, -30));
-            GTMouseDriver::click(os);
+            GTTreeWidget::click(os, item, 0);
             set = true;
         }
     }
