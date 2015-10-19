@@ -46,8 +46,6 @@
 # Languages
     !insertmacro MUI_LANGUAGE "English"
     !insertmacro MUI_LANGUAGE "Russian"
-    !insertmacro MUI_LANGUAGE "Czech"
-    !insertmacro MUI_LANGUAGE "SimpChinese"
 
 ;--------------------------------
 ;Reserve Files
@@ -113,10 +111,6 @@ Function languageUGENEIni
             FileWrite $4 "ru"
         StrCmp $LANGUAGE ${LANG_ENGLISH} 0 +2
             FileWrite $4 "en"
-        StrCmp $LANGUAGE ${LANG_SIMPCHINESE} 0 +2
-            FileWrite $4 "zh"
-        StrCmp $LANGUAGE ${LANG_CZECH} 0 +2
-            FileWrite $4 "cs"
 
     FileWrite $4 "$\r$\n"
     FileClose $4
@@ -157,8 +151,6 @@ Section "Build"
 
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
-    File "${ReleaseBuildDir}\transl_cs.qm"
-    File "${ReleaseBuildDir}\transl_zh.qm"
     File "includes\*.*"
     File "${PATH_TO_QT_LIBS}\Qt5Core.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Gui.dll"
