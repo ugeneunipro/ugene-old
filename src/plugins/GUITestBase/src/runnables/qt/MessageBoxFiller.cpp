@@ -19,25 +19,37 @@
  * MA 02110-1301, USA.
  */
 
+#include <QAbstractButton>
+#include <QApplication>
+
 #include "MessageBoxFiller.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
-#include "api/GTKeyboardDriver.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QAbstractButton>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QAbstractButton>
-#endif
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::MessageBoxDialogFiller"
-#define GT_METHOD_NAME "run"
-void MessageBoxDialogFiller::run() {
 
+MessageBoxDialogFiller::MessageBoxDialogFiller(U2OpStatus &os, QMessageBox::StandardButton b, const QString &message, const QString &objectName) :
+    Filler(os, objectName),
+    b(b),
+    message(message)
+{
+
+}
+
+MessageBoxDialogFiller::MessageBoxDialogFiller(U2OpStatus &os, const QString &buttonText, const QString &message) :
+    Filler(os, ""),
+    b(QMessageBox::NoButton),
+    buttonText(buttonText),
+    message(message)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void MessageBoxDialogFiller::commonScenario() {
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
@@ -65,11 +77,19 @@ void MessageBoxDialogFiller::run() {
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::AppCloseMessageBoxDialogFiller"
-#define GT_METHOD_NAME "run"
-void AppCloseMessageBoxDialogFiller::run() {
+
+AppCloseMessageBoxDialogFiller::AppCloseMessageBoxDialogFiller(U2OpStatus &os) :
+    Filler(os, "")
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void AppCloseMessageBoxDialogFiller::commonScenario() {
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
@@ -86,12 +106,19 @@ void AppCloseMessageBoxDialogFiller::run() {
     }
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::MessageBoxNoToAllOrNo"
-#define GT_METHOD_NAME "run"
-void MessageBoxNoToAllOrNo::run() {
 
+MessageBoxNoToAllOrNo::MessageBoxNoToAllOrNo(U2OpStatus &os) :
+    Filler(os, "")
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void MessageBoxNoToAllOrNo::commonScenario() {
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
@@ -105,12 +132,19 @@ void MessageBoxNoToAllOrNo::run() {
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "MessageBoxOpenAnotherProject"
-#define GT_METHOD_NAME "run"
-void MessageBoxOpenAnotherProject::run(){
 
+MessageBoxOpenAnotherProject::MessageBoxOpenAnotherProject(U2OpStatus &os) :
+    Filler(os, "")
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void MessageBoxOpenAnotherProject::commonScenario() {
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
@@ -127,16 +161,19 @@ void MessageBoxOpenAnotherProject::run(){
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "MessageBoxOpenAnotherProject"
-InputIntFiller::InputIntFiller(U2OpStatus &os, int value)
-: Filler(os, ""), value(value)
+
+InputIntFiller::InputIntFiller(U2OpStatus &os, int value) :
+    Filler(os, ""),
+    value(value)
 {
 
 }
 
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 void InputIntFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     QSpinBox *spinBox = dialog->findChild<QSpinBox*>();
@@ -147,6 +184,7 @@ void InputIntFiller::commonScenario() {
     GTWidget::click(os, GTWidget::findButtonByText(os, "OK", dialog));
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
-}
+}   // namespace U2

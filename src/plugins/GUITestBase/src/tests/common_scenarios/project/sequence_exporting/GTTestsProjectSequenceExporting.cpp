@@ -306,16 +306,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
-
-    GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(100);
-
-    //GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::NoToAll));
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-
-    GTGlobals::sleep(500);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008) {

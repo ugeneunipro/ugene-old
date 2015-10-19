@@ -22,53 +22,51 @@
 #ifndef _U2_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 #define _U2_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include <QMessageBox>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include "GTUtilsDialog.h"
 
 namespace U2 {
 
-    class MessageBoxDialogFiller : public Filler {
-    public:
-        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b, QString _message = "", const QString &objectName = "")
-            :Filler(_os, objectName), b(_b),buttonText(""), message(_message){}
-        MessageBoxDialogFiller(U2OpStatus &_os, QString _buttonText, QString _message = "")
-        :Filler(_os, ""), b(QMessageBox::NoButton),buttonText(_buttonText), message(_message){}
-        virtual void run();
-    protected:
-        QMessageBox::StandardButton b;
-        QString buttonText,message;
-    };
+class MessageBoxDialogFiller : public Filler {
+public:
+    MessageBoxDialogFiller(U2OpStatus &os, QMessageBox::StandardButton b, const QString &message = "", const QString &objectName = "");
+    MessageBoxDialogFiller(U2OpStatus &os, const QString &buttonText, const QString &message = "");
 
-    class AppCloseMessageBoxDialogFiller : public Filler {
-    public:
-        AppCloseMessageBoxDialogFiller(U2OpStatus &_os) : Filler(_os, "") {}
-        void run();
-    };
+    virtual void commonScenario();
 
-    class MessageBoxNoToAllOrNo : public Filler {
-    public:
-        MessageBoxNoToAllOrNo(U2OpStatus &_os) : Filler(_os, ""){}
-        virtual void run();
-    };
+protected:
+    QMessageBox::StandardButton b;
+    QString buttonText;
+    QString message;
+};
 
-    class MessageBoxOpenAnotherProject : public Filler {
-    public:
-        MessageBoxOpenAnotherProject(U2OpStatus &_os) : Filler(_os, ""){}
-        virtual void run();
-    };
+class AppCloseMessageBoxDialogFiller : public Filler {
+public:
+    AppCloseMessageBoxDialogFiller(U2OpStatus &os);
+    void commonScenario();
+};
 
-    class InputIntFiller : public Filler {
-    public:
-        InputIntFiller(U2OpStatus &os, int value);
-        void commonScenario();
-    private:
-        int value;
-    };
-}
+class MessageBoxNoToAllOrNo : public Filler {
+public:
+    MessageBoxNoToAllOrNo(U2OpStatus &os);
+    void commonScenario();
+};
 
-#endif
+class MessageBoxOpenAnotherProject : public Filler {
+public:
+    MessageBoxOpenAnotherProject(U2OpStatus &os);
+    void commonScenario();
+};
+
+class InputIntFiller : public Filler {
+public:
+    InputIntFiller(U2OpStatus &os, int value);
+    void commonScenario();
+private:
+    int value;
+};
+
+}   // namespace U2
+
+#endif // _U2_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
