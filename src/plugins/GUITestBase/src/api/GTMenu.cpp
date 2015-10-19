@@ -52,8 +52,8 @@ const QString GTMenu::WINDOW = MWMENU_WINDOW;
 const QString GTMenu::HELP = MWMENU_HELP;
 
 #define GT_METHOD_NAME "showMainMenu"
-QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m)
-{
+QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
+    assert(false);  // Use clickMainMenuItem instead
     MainWindow *mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow is NULL", NULL);
     QMainWindow *mainWindow = mw->getQMainWindow();
