@@ -94,9 +94,9 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     st->setResetSettings(state->resetSettings);
-    
-    QStyle* style = QStyleFactory::create(state->style);
-    if (style!=NULL) {
+
+    if (0 != state->style.compare(st->getVisualStyle(), Qt::CaseInsensitive)) {
+        QStyle* style = QStyleFactory::create(state->style);
         QApplication::setStyle(style);
         st->setVisualStyle(state->style);
     }
