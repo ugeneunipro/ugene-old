@@ -521,21 +521,20 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
 GUI_TEST_CLASS_DEFINITION(test_0013) {
     // 1. Open linear nucl sequence
-    // 2. Open "Circular View Settings" tab
-    // 3. Check the hint: it is visible
-    // 4. Open CV
-    // 5. Check the hint: it is hidden
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
 
-    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    // 2. Open "Circular View Settings" tab
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
 
+    // 3. Check the hint: it is visible
     QWidget *openCvWidget = GTWidget::findWidget(os,"openCvWidget");
     CHECK_SET_ERR( openCvWidget != NULL, "No hint widget");
     CHECK_SET_ERR( openCvWidget->isVisible(), "Hint label and OpenCV button should be visible");
 
-    GTUtilsCv::cvBtn::click(os, seqWidget);
-    GTGlobals::sleep(500);
+    // 4. Open CV
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
+    // 5. Check the hint: it is hidden
     CHECK_SET_ERR(openCvWidget->isHidden(), "Hint label and OpenCV button should be hidden");
 }
 
