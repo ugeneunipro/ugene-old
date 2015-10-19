@@ -211,11 +211,6 @@ void SharedConnectionsDialogFiller::commonScenario() {
         }
         CHECK_OP(os, );
     }
-
-    dialog = QApplication::activeModalWidget();
-    if (NULL != dialog) {
-        GTWidget::click(os, GTWidget::findButtonByText(os, "Close", dialog));
-    }
 }
 
 #undef GT_METHOD_NAME
