@@ -71,8 +71,8 @@ private:
 class GTFileDialog {
 public:
     enum Button {Open, Cancel};
-    static void openFile(U2OpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
-    static void openFile(U2OpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void openFile(U2OpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
+    static void openFile(U2OpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
 
     static void openFileList(U2OpStatus &, const QString &, const QStringList &);
     static void openFileList(U2OpStatus &os, const QStringList &filePaths);

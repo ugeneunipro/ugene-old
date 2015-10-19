@@ -60,6 +60,7 @@ namespace U2 {
 namespace GUITest_initial_checks {
 
 GUI_TEST_CLASS_DEFINITION(test_0000) {
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
@@ -86,10 +87,14 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     Q_UNUSED(os);
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
+#ifdef Q_OS_MAC
     if (!mainWindow->isMaximized()) {
         GTWidget::clickCornerMenu(os, mainWindow, GTGlobals::Maximize);
         GTGlobals::sleep(1000);
     }
+#else
+    mainWindow->showMaximized();
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {

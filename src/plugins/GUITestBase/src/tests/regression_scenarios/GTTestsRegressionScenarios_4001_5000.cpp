@@ -2168,7 +2168,7 @@ GUI_TEST_CLASS_DEFINITION(test_4306_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_4308) {
 //    1. Open "_common_data/clustal/10000_sequences.aln".
-    GTFileDialog::openFile(os, testDir + "_common_data/clustal/10000_sequences.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/10000_sequences.aln", GTFileDialog::Open, GTGlobals::UseMouse, false);
     GTUtilsTask::waitTaskStart(os, "Loading documents");
 
 //    2. Remove the document while the file is opening.

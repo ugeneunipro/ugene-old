@@ -331,17 +331,21 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 #undef GT_METHOD_NAME
 
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-                            Button button, GTGlobals::UseMethod m)
+                            Button button, GTGlobals::UseMethod m, bool waitForFinished)
 {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, (GTFileDialogUtils::Button)button, m);
     GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+    if(waitForFinished){
+        GTUtilsTaskTreeView::waitTaskFinished(os);
+    }else{
+        GTGlobals::sleep(1000);
+    }
 }
 
 #define GT_METHOD_NAME "openFile"
-void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m){
+void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m, bool wainForFinished){
     int num = filePath.lastIndexOf('/');
     if (num == -1){
         num = filePath.lastIndexOf('\\');
@@ -350,7 +354,7 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button butt
     QString path = filePath.left(num);
     QString name = filePath.right(filePath.length() - num - 1);
 
-    openFile(os, path, name, button, m);
+    openFile(os, path, name, button, m, wainForFinished);
 }
 #undef GT_METHOD_NAME
 

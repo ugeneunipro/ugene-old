@@ -988,10 +988,14 @@ GUI_TEST_CLASS_DEFINITION(test_1059) {
 
     //4. Copy&Paste this worker
     GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+    GTGlobals::sleep(1000);
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+    GTGlobals::sleep(1000);
+
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep();
 
     const QPoint workerCenterPos = GTUtilsWorkflowDesigner::getItemCenter(os, "Write Sequence");
     GTMouseDriver::moveTo(os, workerCenterPos);
@@ -1008,7 +1012,7 @@ GUI_TEST_CLASS_DEFINITION(test_1059) {
 
     GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence 1"));
     const QString outputFile = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
-    CHECK_SET_ERR(outputFile == "sample", "Unexpected output file parameter value");
+    CHECK_SET_ERR(outputFile == "sample", "Unexpected output file parameter value: " + outputFile);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1061) {
