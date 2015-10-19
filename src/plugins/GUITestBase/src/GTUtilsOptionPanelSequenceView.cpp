@@ -24,6 +24,7 @@
 #include <QTextEdit>
 #include <QTreeWidget>
 
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
@@ -38,7 +39,7 @@
 #include "api/GTThread.h"
 #include "api/GTWidget.h"
 
-namespace U2{
+namespace U2 {
 
 QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::initNames() {
     QMap<Tabs,QString> result;
@@ -88,7 +89,7 @@ void GTUtilsOptionPanelSequenceView::enterPattern( U2OpStatus &os, QString patte
 
 #define GT_METHOD_NAME "toggleTab"
 void GTUtilsOptionPanelSequenceView::toggleTab(U2OpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
-    GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
+    GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab], GTUtilsMdi::activeWindow(os)));
     GTGlobals::sleep(200);
 }
 #undef GT_METHOD_NAME
@@ -114,7 +115,7 @@ void GTUtilsOptionPanelSequenceView::closeTab(U2OpStatus &os, GTUtilsOptionPanel
 bool GTUtilsOptionPanelSequenceView::isTabOpened(U2OpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
-    QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
+    QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], GTUtilsMdi::activeWindow(os), options);
     return NULL != innerTabWidget && innerTabWidget->isVisible();
 }
 #undef GT_METHOD_NAME
@@ -182,7 +183,7 @@ bool GTUtilsOptionPanelSequenceView::isGetAnnotationsEnabled(U2OpStatus &os){
 
 #define GT_METHOD_NAME "toggleCircularView"
 void GTUtilsOptionPanelSequenceView::toggleCircularView(U2OpStatus &os) {
-    GTWidget::click(os, GTWidget::findButtonByText(os, "Open Circular View(s)"));
+    GTWidget::click(os, GTWidget::findButtonByText(os, "Open Circular View(s)", GTUtilsMdi::activeWindow(os)));
     GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
@@ -195,7 +196,7 @@ void GTUtilsOptionPanelSequenceView::setTitleFontSize(U2OpStatus &os, int fontSi
 
 #define GT_METHOD_NAME "getTitleFontSize"
 int GTUtilsOptionPanelSequenceView::getTitleFontSize(U2OpStatus &os) {
-    return GTSpinBox::getValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "fontSizeSpinBox"));
+    return GTSpinBox::getValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "fontSizeSpinBox", GTUtilsMdi::activeWindow(os)));
 }
 #undef GT_METHOD_NAME
 

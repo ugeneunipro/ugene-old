@@ -551,6 +551,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
     // 3. Open another sequence
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
     GTUtilsOptionPanelSequenceView::toggleCircularView(os);
 
     // 4. Check difference between the modified and newly opened settings
