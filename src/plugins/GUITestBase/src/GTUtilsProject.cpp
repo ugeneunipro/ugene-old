@@ -113,6 +113,7 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 }
 
 void GTUtilsProject::openFilesWithDialog(U2OpStatus &os, const QList<QUrl> &urls) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new GTSequenceReadingModeDialogUtils(os));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, QUrl::toStringList(urls)));
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
     GTGlobals::sleep(2000);
