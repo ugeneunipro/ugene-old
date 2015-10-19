@@ -26,6 +26,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QSet>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -388,17 +389,19 @@ void MWMDIManagerImpl::sl_onSubWindowActivated(QMdiSubWindow *w) {
         return;
     }
     MDIItem* mdiItem = getMDIItem(w);
-    assert(mdiItem != NULL); // we already know about this window
+    SAFE_POINT(mdiItem != NULL, "The window does not belong to the MDI manager!",);
     uiLog.trace(QString("Switching active MDI window from '%1' to '%2'").arg(getWindowName(mdiContentOwner)).arg(getWindowName(mdiItem)));
     // clear old windows menu/tb content
-        clearMDIContent(false);
+    clearMDIContent(false);
 
     // add new content to menu/tb
     QToolBar* tb = mw->getToolbar(MWTOOLBAR_ACTIVEMDI);
     mdiContentOwner = mdiItem;
+    SAFE_POINT(mdiContentOwner->w != NULL, "Incorrect MDI window is detected!", );
     mdiContentOwner->w->setupMDIToolbar(tb);
 
     QMenu* m = mw->getTopLevelMenu(MWMENU_ACTIONS);
+    SAFE_POINT(mdiContentOwner->w != NULL, "Incorrect menu is detected!", );
     mdiContentOwner->w->setupViewMenu(m);
     m->addAction(closeAct);
     onWindowsSwitched(w, mdiItem->w);
