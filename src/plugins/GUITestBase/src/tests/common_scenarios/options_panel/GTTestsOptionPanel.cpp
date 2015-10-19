@@ -580,14 +580,12 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 
 GUI_TEST_CLASS_DEFINITION(test_0016) {
     // 1. Open sequence with CV
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/NC_014267.1.gb");
+
     // 2. Open CV Settings tab
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
+
     // 3. Check font spinboxes bound values
-
-    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "NC_014267.1.gb", "NC_014267");
-    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget), "No CV opened");
-    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-
     QSpinBox* titleFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
     QSpinBox* rulerFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "rulerFontSizeSpinBox"));
     QSpinBox* annotFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "labelFontSizeSpinBox"));
