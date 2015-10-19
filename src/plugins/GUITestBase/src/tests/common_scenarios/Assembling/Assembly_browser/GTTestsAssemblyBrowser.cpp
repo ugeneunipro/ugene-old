@@ -568,8 +568,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 
     //5. Click the "Set reference sequence" actions menu item.
     //Expected: it becomes reference.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "setReferenceAction"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Set reference");
 
     //6. Add the "human_T1" object to the selection.
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
@@ -579,8 +578,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
     //7. Click the "Set reference sequence" actions menu item.
     //Expected: message box about two sequences appears.
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "You have more than one sequence"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "setReferenceAction"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Set reference");
 
     //8. Click the "chrM.fa" sequence object in Project View.
     GTUtilsProjectTreeView::click(os, "chrM.fa");
@@ -588,8 +586,8 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
     //9. Click the "Set reference sequence" actions menu item.
     //Expected: file dialog appears.
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Genbank/murine.gb"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "setReferenceAction"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Set reference");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {
