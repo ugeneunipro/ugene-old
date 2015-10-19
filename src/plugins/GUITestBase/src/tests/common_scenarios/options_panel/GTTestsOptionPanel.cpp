@@ -601,14 +601,12 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {
     // 1. Open sequence with CV
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/NC_014267.1.gb");
+
     // 2. Open CV Settings tab
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
+
     // 3. Check default conditions of checkboxes, uncheck them
-
-    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "NC_014267.1.gb", "NC_014267");
-    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget), "No CV opened");
-    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-
     QCheckBox* titleCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "titleCheckBox"));
     QCheckBox* lengthCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "lengthCheckBox"));
     QCheckBox* rulerLineCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "rulerLineCheckBox"));
