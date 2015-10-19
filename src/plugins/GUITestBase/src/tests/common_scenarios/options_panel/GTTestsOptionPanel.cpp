@@ -635,14 +635,13 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
 GUI_TEST_CLASS_DEFINITION(test_0018) {
     // 1. Open sequence with CV
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/murine.gb");
+
     // 2. Open CV Settings tab
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
     // 3. Check font combobox and bold attribute button
-
-    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "murine.gb", "NC_001363");
-    GTUtilsCv::cvBtn::click(os, seqWidget);
-    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-
     QWidget* boldButton = GTWidget::findWidget(os, "boldButton");
     CHECK_SET_ERR( boldButton != NULL, "Bold button is NULL");
     GTWidget::click(os, boldButton);
@@ -652,7 +651,11 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     CHECK_SET_ERR( fontComboBox != NULL, "Font comboBox is NULL");
 
     GTComboBox::setIndexWithText(os, fontComboBox, "Serif", false);
+#ifndef Q_OS_MAC
     GTComboBox::setIndexWithText(os, fontComboBox, "Sans Serif");
+#else
+    GTComboBox::setIndexWithText(os, fontComboBox, "Microsoft Sans Serif");
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0019) {
