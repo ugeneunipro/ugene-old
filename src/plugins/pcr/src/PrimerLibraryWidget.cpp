@@ -98,7 +98,7 @@ void PrimerLibraryWidget::sl_editPrimer() {
     Primer primerToEdit = selection.first();
     QObjectScopedPointer<EditPrimerDialog> dlg = new EditPrimerDialog(this, primerToEdit);
     const int result = dlg->exec();
-    CHECK(dlg.isNull(), );
+    CHECK(!dlg.isNull(), );
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
