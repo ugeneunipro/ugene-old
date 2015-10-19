@@ -211,12 +211,15 @@ void MSAEditorTreeViewer::disconnectSignals() {
 void MSAEditorTreeViewer::sl_alignmentUpdated() {
     if (sync() == false) {
         QObjectScopedPointer<QMessageBox> desyncQuestion = new QMessageBox( QMessageBox::Question,
-                                                                            tr("The alignment has been modified"),
-                                                                            tr("The list of sequences in the alignment has been modified.\n"
-                                                                               "If you confirm the modification, all phylogenetic tree(s), opened in the same view, will be no more synchronized with the alignment."));
+                                                                            tr("Alignment Modification Confirmation"),
+                                                                            tr("The list of sequences has been modified.\n\n"
+                                                                               "All phylogenetic tree(s), opened in the same view, "
+                                                                               "will be no more synchronized with the alignment."));
+        desyncQuestion->setInformativeText(tr("Do you want to confirm the modification?"));
+
         desyncQuestion->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         desyncQuestion->button(QMessageBox::No)->setText(tr("Cancel"));
-        desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm the modification"));
+        desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm"));
 
         int res = desyncQuestion->exec();
         if (res == QMessageBox::No) {
