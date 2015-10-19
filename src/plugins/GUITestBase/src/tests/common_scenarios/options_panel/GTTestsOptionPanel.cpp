@@ -561,15 +561,14 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
 GUI_TEST_CLASS_DEFINITION(test_0015) {
     // 1. Open sequence
+    GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
+
     // 2. Open CV
     // 3. Open CV Settings tab
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
+    GTUtilsOptionPanelSequenceView::toggleCircularView(os);
+
     // 4. Select each available label position option
-
-    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
-        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
-    GTUtilsCv::cvBtn::click(os, seqWidget);
-    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-
     QComboBox* positionComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "labelPositionComboBox"));
     CHECK_SET_ERR( positionComboBox != NULL, "Position comboBox is NULL");
     CHECK_SET_ERR( positionComboBox->count() == 4, "Wrong amount of available label position");
