@@ -58,6 +58,13 @@ enum ATVAnnUpdateFlag {
 
 typedef QFlags<ATVAnnUpdateFlag> ATVAnnUpdateFlags;
 
+class AnnotationsTreeWidget : public QTreeWidget {
+    Q_OBJECT
+public:
+    AnnotationsTreeWidget(QWidget* parent);
+    QTreeWidgetItem* itemFromIndex(const QModelIndex & index) const;
+};
+
 class U2VIEW_EXPORT AnnotationsTreeView : public QWidget {
     Q_OBJECT
     friend class AnnotatedDNAView;
@@ -69,7 +76,7 @@ public:
 
     void adjustStaticMenu(QMenu *m) const {adjustMenu(m);}
 
-    QTreeWidget* getTreeWidget() const {return tree;}
+    QTreeWidget* getTreeWidget() const { return tree; }
 
     QStringList getQualifierColumnNames() const {return qColumns;}
     void addQualifierColumn(const QString& q);
@@ -165,7 +172,7 @@ private:
     bool initiateDragAndDrop(QMouseEvent* me);
     void finishDragAndDrop(Qt::DropAction dndAction);
 
-    QTreeWidget* tree;
+    AnnotationsTreeWidget* tree;
 
     AnnotatedDNAView*   ctx;
     QAction*            addAnnotationObjectAction;

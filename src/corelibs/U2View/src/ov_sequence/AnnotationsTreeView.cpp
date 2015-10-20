@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPainter>
+#include <QStack>
 #include <QToolTip>
 #include <QVBoxLayout>
 
@@ -64,6 +65,9 @@
 
 namespace U2 {
 
+/************************************************************************/
+/* TreeSorter */
+/************************************************************************/
 class TreeSorter {
 public:
     TreeSorter(AnnotationsTreeView *t)
@@ -75,9 +79,23 @@ public:
         w->setSortingEnabled(true);
     }
 
+private:
     AnnotationsTreeView* w;
 };
 
+/************************************************************************/
+/* AnnotationsTreeWidget */
+/************************************************************************/
+AnnotationsTreeWidget::AnnotationsTreeWidget(QWidget* parent) : QTreeWidget(parent) {
+}
+
+QTreeWidgetItem* AnnotationsTreeWidget::itemFromIndex(const QModelIndex & index) const {
+    return QTreeWidget::itemFromIndex(index);
+}
+
+/************************************************************************/
+/* AnnotationsTreeView */
+/************************************************************************/
 #define SETTINGS_ROOT QString("view_adv/annotations_tree_view/")
 #define COLUMN_SIZES QString("columnSizes")
 
@@ -93,7 +111,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     lastMB = Qt::NoButton;
     lastClickedColumn = 0;
 
-    tree = new QTreeWidget(this);
+    tree = new AnnotationsTreeWidget(this);
     tree->setObjectName("annotations_tree_widget");
 
     tree->setSortingEnabled(true);
@@ -1582,8 +1600,34 @@ void AnnotationsTreeView::sl_searchQualifier() {
 void AnnotationsTreeView::sl_invertSelection(){
     QItemSelectionModel * selectionModel = tree->selectionModel();
     QItemSelection originalSelection = selectionModel->selection();
-    tree->selectAll();
-    selectionModel->select(originalSelection, QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
+    QItemSelection unselectedAnnotations;
+    QItemSelection selectedAnnotations;
+
+    QStack<QModelIndex> stack;
+    stack.push(tree->rootIndex());
+
+    QAbstractItemModel* itemModel = tree->model();
+    while (!stack.isEmpty()) {
+        const QModelIndex parent = stack.pop();
+        AVAnnotationItem *aItem = dynamic_cast<AVAnnotationItem*>(tree->itemFromIndex(parent));
+        if (NULL != aItem) {
+            if (originalSelection.contains(parent)) {
+                selectedAnnotations.select(parent, parent);
+            } else {
+                unselectedAnnotations.select(parent, parent);
+            }
+        }
+
+        const int childCount = itemModel->rowCount(parent);
+        for (int i = 0; i < childCount; ++i) {
+            const QModelIndex child = itemModel->index(i, 0, parent);
+            if (child.isValid()) {
+                stack.push(child);
+            }
+        }
+    }
+    selectionModel->select(selectedAnnotations, QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
+    selectionModel->select(unselectedAnnotations, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 }
 
 void AnnotationsTreeView::updateAllAnnotations(ATVAnnUpdateFlags flags) {
