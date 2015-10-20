@@ -34,8 +34,6 @@
 #include <QTreeWidget>
 #include <QWidget>
 
-#include <U2Core/Timer.h>
-
 #include <U2Gui/MainWindow.h>
 
 #include "Log.h"
@@ -47,8 +45,6 @@
 namespace U2 {
 
 bool UserActionsWriter::eventFilter(QObject *obj, QEvent *event) {
-    GCOUNTER(c1, t1, "UserActionsWriter::eventFilter");
-    GTIMER(c2, t2, "UserActionsWriter::eventFilter");
     QMutexLocker locker(&guard);
     Q_UNUSED(locker);
 
