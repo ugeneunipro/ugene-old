@@ -220,6 +220,7 @@ void MSAEditorTreeViewer::sl_alignmentUpdated() {
         desyncQuestion->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         desyncQuestion->button(QMessageBox::No)->setText(tr("Cancel"));
         desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm"));
+        desyncQuestion->setDefaultButton(QMessageBox::No);
 
         int res = desyncQuestion->exec();
         if (res == QMessageBox::No) {
