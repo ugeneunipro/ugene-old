@@ -3215,6 +3215,18 @@ GUI_TEST_CLASS_DEFINITION(test_4624) {
     CHECK_SET_ERR(templateCoverage == resCoverage, "Incorrect coverage has been exported");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4628) {
+    GTUtilsNotifications::waitForNotification(os, false);
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4628", "cow.chr13.repeats.shifted.bed");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTGlobals::sleep();
+    QTextEdit *textEdit = dynamic_cast<QTextEdit*>(GTWidget::findWidget(os, "reportTextEdit", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(textEdit->toPlainText().contains("incorrect strand value '+379aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...' at line 5333"),
+        "Expected message is not found in the report text");
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4674) {
     // 1. Open COI.aln
     // 2. Build the tree and synchronize it with the alignment
@@ -3386,12 +3398,20 @@ GUI_TEST_CLASS_DEFINITION(test_4694) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4702) {
+    // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
     GTGlobals::sleep();
+    // 2. Select one annotation
     QList<QTreeWidgetItem *> commentItem = GTUtilsAnnotationsTreeView::findItems(os, "comment");
     GTUtilsAnnotationsTreeView::selectItems(os, commentItem);
+    int selectedItemsCount = GTUtilsAnnotationsTreeView::getAllSelectedItems(os).size();
+    CHECK_SET_ERR(1 == selectedItemsCount, QString("Incorrect selected annotations count: expected - %1, obtained - %2 ").arg(1).arg(selectedItemsCount));
+    // 3. Use context menu on AnnotationsTreeView {Invert annotations selection}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "invert_selection_action"));
     GTMouseDriver::click(os, Qt::RightButton);
+    // Expected state: all annotations other besides the originally selected annotation are selected
+    selectedItemsCount = GTUtilsAnnotationsTreeView::getAllSelectedItems(os).size();
+    CHECK_SET_ERR(359 == selectedItemsCount, QString("Incorrect selected annotations count: expected - %1, obtained - %2 ").arg(359).arg(selectedItemsCount));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {
