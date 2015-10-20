@@ -33,7 +33,7 @@ public:
 
     static void setText(U2OpStatus &os, QString text);
 
-    static void setUrls(U2OpStatus &os, const QList<QUrl>& urls);
+    static void setUrls(U2OpStatus &os, const QList<QString>& urls);
 };
 
 } //namespace

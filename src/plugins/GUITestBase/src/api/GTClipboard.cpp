@@ -23,6 +23,8 @@
 
 #include <QtCore/QMimeData>
 #include <QtGui/QClipboard>
+#include <QtCore/QUrl>
+#include <QtCore/QFileInfo>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #else
@@ -63,10 +65,22 @@ void GTClipboard::setText( U2OpStatus &os, QString text ){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setUrls"
-void GTClipboard::setUrls( U2OpStatus &os, const QList<QUrl>& urls ){
+void GTClipboard::setUrls( U2OpStatus &os, const QList<QString>& urls ){
     Q_UNUSED(os);
+    QList<QUrl> updated;
+    foreach (QString url, urls){
+        QFileInfo fi (url);
+        if (fi.makeAbsolute()){
+            QString updatedurl = fi.absoluteFilePath();
+            updatedurl.prepend("file://");
+            updated.append(updatedurl);
+        }else{
+            os.setError("cannot make an absolute path");
+            return;
+        }
+    }
     QMimeData *urlMime = new QMimeData();
-    urlMime->setUrls(urls);
+    urlMime->setUrls(updated);
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->clear();
