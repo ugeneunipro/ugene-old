@@ -297,6 +297,7 @@ void Document::addObject(GObject* obj){
 }
 
 void Document::_addObjectToHierarchy(GObject* obj) {
+    SAFE_POINT(obj != NULL, "Object is NULL", );
     obj->setParentStateLockItem(this);
     obj->setGHints(new ModTrackHints(this, obj->getGHintsMap(), true));
     obj->setModified(false);
@@ -305,6 +306,7 @@ void Document::_addObjectToHierarchy(GObject* obj) {
 }
 
 void Document::_addObject(GObject* obj) {
+    SAFE_POINT(obj != NULL, "Object is NULL", );
     _addObjectToHierarchy(obj);
     assert(objects.size() == getChildItems().size());
     emit si_objectAdded(obj);

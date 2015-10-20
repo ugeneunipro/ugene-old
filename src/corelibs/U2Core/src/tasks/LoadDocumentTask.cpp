@@ -359,11 +359,14 @@ static QList<Document*> loadMulti(const QVariantMap& fs, U2OpStatus& os){
         QVariantMap fsLocal;
         fsLocal.unite(fs);
         fsLocal.remove(DocumentReadingMode_SequenceMergeGapSize);
-        SAFE_POINT(AppContext::getDocumentFormatRegistry() != NULL, "DocumentFormatRegistry is NULL", docs);
+        SAFE_POINT_EXT(AppContext::getDocumentFormatRegistry() != NULL, os.setError("DocumentFormatRegistry is NULL"), docs);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formats[0].format->getFormatId());
-        SAFE_POINT(AppContext::getIOAdapterRegistry() != NULL, "IOAdapterRegistry is NULL", docs);
+        SAFE_POINT_EXT(AppContext::getIOAdapterRegistry() != NULL, os.setError("IOAdapterRegistry is NULL"), docs);
         IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io(gurl) );
-        SAFE_POINT(factory != NULL, "IOAdapterFactory is NULL", docs);
+        SAFE_POINT_EXT(factory != NULL, os.setError("IOAdapterFactory is NULL"), docs);
+        Document* doc = df->loadDocument(factory, gurl, fsLocal, localOs);
+        CHECK_OP(os, docs);
+        SAFE_POINT_EXT(doc != NULL, os.setError("Document is NULL"), docs);
         docs << df->loadDocument(factory, gurl, fsLocal, localOs);
 
         CHECK_OP(os, docs);
@@ -408,10 +411,15 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
     U2DbiRef ref;
     if(fs.value(DocumentReadingMode_SequenceMergeGapSize, -1) != - 1){
         ref = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
-        newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
+        QList<GObject*> sequences = U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
+        CHECK_OP(os, NULL);
+        newObjects << sequences;
     }
     else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
-        newObjects << MSAUtils::seqDocs2msaObj(docs, fs, os);
+        MAlignmentObject* msaObject = MSAUtils::seqDocs2msaObj(docs, fs, os);
+        CHECK_OP(os, NULL);
+        SAFE_POINT_EXT(NULL != msaObject, os.setError("The alignment object is NULL!"), NULL);
+        newObjects << msaObject;
         ref = U2DbiRef();
     }
     else{

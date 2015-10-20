@@ -284,7 +284,7 @@ MAlignmentObject * MSAUtils::seqObjs2msaObj(const QList<GObject *> &objects, con
 
     int firstSeqObjPos = -1;
     CHECK(listContainsSeqObject(objects, firstSeqObjPos), NULL);
-    SAFE_POINT(-1 != firstSeqObjPos, "Sequence object not found", NULL);
+    SAFE_POINT_EXT(-1 != firstSeqObjPos, os.setError("Sequence object not found"), NULL);
 
     const U2DbiRef dbiRef = objects.at(firstSeqObjPos)->getEntityRef().dbiRef; // make a copy instead of referencing since objects will be deleted
 
@@ -294,7 +294,7 @@ MAlignmentObject * MSAUtils::seqObjs2msaObj(const QList<GObject *> &objects, con
 
     const bool useGenbankHeader = hints.value(ObjectConvertion_UseGenbankHeader, false).toBool();
     MAlignment ma = seq2ma(objects, os, useGenbankHeader);
-
+    CHECK_OP(os, NULL);
     CHECK(!ma.isEmpty(), NULL);
 
     const QList<U2Sequence> sequencesInDB = shallowCopy ? getDbSequences(objects) : QList<U2Sequence>();

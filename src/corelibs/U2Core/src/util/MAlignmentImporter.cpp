@@ -48,7 +48,7 @@ MAlignmentObject * MAlignmentImporter::createAlignment(const U2DbiRef &dbiRef, c
     DbiConnection con(dbiRef, true, os);
     CHECK(!os.isCanceled(), NULL);
     SAFE_POINT_OP(os, NULL);
-    SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("Destination database"), NULL);
+    SAFE_POINT_EXT(NULL != con.dbi, os.setError(L10N::nullPointerError("Destination database")), NULL);
 
     TmpDbiObjects objs(dbiRef, os); // remove the MSA object if opStatus is incorrect
 
