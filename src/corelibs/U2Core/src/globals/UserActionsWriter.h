@@ -19,23 +19,27 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_USER_ACTIONS_WRITER_H_
+#define _U2_USER_ACTIONS_WRITER_H_
 
-#ifndef UserActionsWriter_H
-#define UserActionsWriter_H
-
+#include <QEvent>
+#include <QFile>
+#include <QMouseEvent>
 #include <QObject>
+
 #include <U2Core/global.h>
 #include <U2Core/AppContext.h>
-#include <QtCore/QFile>
-#include <QtCore/QEvent>
-#include <QMouseEvent>
+
 namespace U2 {
-class U2CORE_EXPORT UserActionsWriter : public QObject
-{    Q_OBJECT
+
+class U2CORE_EXPORT UserActionsWriter : public QObject {
+    Q_OBJECT
 public:
      UserActionsWriter();
+
 protected:
-    virtual bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event);
+
 private:
     void generateMouseMeassage();
     void appendTreeWidgetInfo(QWidget* parent);
@@ -51,16 +55,19 @@ private:
     void filterMouseMessages();
     void filterKeyboardMessages();
 
-
-    QMap<QEvent::Type,QString> typeMap;
+    QMutex guard;
+    QMap<QEvent::Type, QString> typeMap;
     QMap<Qt::KeyboardModifier, QString> modMap;
-    QMap<Qt::Key,QString> keys;
+    QMap<Qt::Key, QString> keys;
     QMouseEvent* m;
     QKeyEvent* k;
-    QString message,prevMessage;
+    QString message;
+    QString prevMessage;
     QString buffer;
     int counter;
     QPoint windowSize;
 };
-}
-#endif // UserActionsWriter_H
+
+}   // namespace U2
+
+#endif // _U2_USER_ACTIONS_WRITER_H_
