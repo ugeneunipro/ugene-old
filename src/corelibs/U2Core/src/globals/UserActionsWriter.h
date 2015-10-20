@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QMouseEvent>
 #include <QObject>
+#include <QMutex>
 
 #include <U2Core/global.h>
 #include <U2Core/AppContext.h>
