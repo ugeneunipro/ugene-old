@@ -43,7 +43,7 @@ public:
     static void addRefFromProject(U2OpStatus &os, QString docName, QModelIndex parent = QModelIndex());
 
     static bool hasReference(U2OpStatus &os, const QString &viewTitle);
-    static bool hasReference(U2OpStatus &os, QWidget *view);
+    static bool hasReference(U2OpStatus &os, QWidget *view = NULL);
     static bool hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser);
 
     static qint64 getLength(U2OpStatus &os);

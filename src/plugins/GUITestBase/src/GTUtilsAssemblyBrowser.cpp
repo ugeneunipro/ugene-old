@@ -79,6 +79,11 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, const QString &viewTit
 bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, QWidget* view) {
     Q_UNUSED(os);
 
+    if (NULL == view) {
+        view = GTUtilsMdi::activeWindow(os);
+    }
+    GT_CHECK_RESULT(NULL != view, "View is NULL", false);
+
     AssemblyBrowserUi* assemblyBrowser = view->findChild<AssemblyBrowserUi*>("assembly_browser_" + view->objectName());
     GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", false);
 
