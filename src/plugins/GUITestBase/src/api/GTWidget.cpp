@@ -149,6 +149,87 @@ void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "close"
+void GTWidget::close(U2OpStatus &os, QWidget *widget) {
+    GT_CHECK(NULL != widget, "Widget is NULL");
+
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWidget *widget) :
+            widget(widget)
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            CHECK_SET_ERR(NULL != widget, "Widget is NULL");
+            widget->close();
+            GTGlobals::sleep(100);
+        }
+
+    private:
+        QWidget *widget;
+    };
+
+    GTThread::runInMainThread(os, new Scenario(widget));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "showMaximized"
+void GTWidget::showMaximized(U2OpStatus &os, QWidget *widget) {
+    GT_CHECK(NULL != widget, "Widget is NULL");
+
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWidget *widget) :
+            widget(widget)
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            CHECK_SET_ERR(NULL != widget, "Widget is NULL");
+            widget->showMaximized();
+            GTGlobals::sleep(100);
+        }
+
+    private:
+        QWidget *widget;
+    };
+
+    GTThread::runInMainThread(os, new Scenario(widget));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "showNormal"
+void GTWidget::showNormal(U2OpStatus &os, QWidget *widget) {
+    GT_CHECK(NULL != widget, "Widget is NULL");
+
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWidget *widget) :
+            widget(widget)
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            CHECK_SET_ERR(NULL != widget, "Widget is NULL");
+            widget->showNormal();
+            GTGlobals::sleep(100);
+        }
+
+    private:
+        QWidget *widget;
+    };
+
+    GTThread::runInMainThread(os, new Scenario(widget));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getColor"
 QColor GTWidget::getColor(U2OpStatus &os, QWidget *widget, const QPoint &point) {
     Q_UNUSED(os);
@@ -218,33 +299,6 @@ void GTWidget::clickLabelLink(U2OpStatus &os, QWidget *label, int step){
         }
     }
     GT_CHECK(false, "label does not contain link");
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "clickCornerMenu"
-void GTWidget::clickCornerMenu(U2OpStatus &os, QWidget *widget, GTGlobals::WindowAction action) {
-    GT_CHECK(NULL != widget, "Widget is NULL");
-
-    QStyleOptionTitleBar opt;
-    opt.initFrom(widget);
-    QStyle::SubControl subControl;
-    switch (action) {
-    case GTGlobals::Close:
-        subControl = QStyle::SC_TitleBarCloseButton;
-        break;
-    case GTGlobals::Maximize:
-        subControl = QStyle::SC_TitleBarMaxButton;
-        break;
-    case GTGlobals::Minimize:
-        subControl = QStyle::SC_TitleBarMinButton;
-        break;
-    default:
-        assert(false);
-    }
-
-    const QRect subControlRect = widget->style()->subControlRect(QStyle::CC_TitleBar, &opt, subControl);
-    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, widget) + subControlRect.center());
-    GTMouseDriver::click(os);
 }
 #undef GT_METHOD_NAME
 

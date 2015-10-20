@@ -51,10 +51,6 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
-#include <QMdiSubWindow>
-
-#include <QMdiSubWindow>
-
 namespace U2 {
 
 namespace GUITest_initial_checks {
@@ -89,7 +85,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
 #ifdef Q_OS_MAC
     if (!mainWindow->isMaximized()) {
-        GTWidget::clickCornerMenu(os, mainWindow, GTGlobals::Maximize);
+        GTWidget::showMaximized(os, mainWindow);
         GTGlobals::sleep(1000);
     }
 #else
@@ -143,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0000){
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     QWidget* widget = QApplication::activeModalWidget();
     while (widget != NULL) {
-        GTWidget::clickCornerMenu(os, widget, GTGlobals::Close);
+        GTWidget::close(os, widget);
         widget = QApplication::activeModalWidget();
     }
 
@@ -194,22 +190,8 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
     options.matchPolicy = Qt::MatchContains;
-    QWidget *wdWindow = NULL;
-    while (NULL != (wdWindow = GTUtilsMdi::findWindow(os, "Workflow Designer", options))) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
-        GTUtilsMdi::activateWindow(os, "Workflow Designer");
-        GTWidget::clickCornerMenu(os, GTUtilsMdi::activeWindow(os), GTGlobals::Close);
-    }
 
-    // close all Query Designer windows
-    QWidget *qdWindow = NULL;
-    while (NULL != (qdWindow = GTUtilsMdi::findWindow(os, "Query Designer", options))) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
-        GTUtilsMdi::activateWindow(os, "Query Designer");
-        GTWidget::clickCornerMenu(os, GTUtilsMdi::activeWindow(os), GTGlobals::Close);
-    }
+    GTUtilsMdi::closeAllWindows(os);
 
     //cancel all tasks
     AppContext::getTaskScheduler()->cancelAllTasks();

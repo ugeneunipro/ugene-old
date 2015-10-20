@@ -29,8 +29,11 @@
 #include <U2Gui/MainWindow.h>
 
 #include "GTUtilsMdi.h"
+#include "api/GTGlobals.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTThread.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 namespace U2 {
 
@@ -55,7 +58,24 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 #else
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
     GT_CHECK(mdiWindow != NULL, "MDIWindow == NULL");
-    GTWidget::clickCornerMenu(os, mdiWindow, action);
+
+    // TODO: make click on button
+    switch (action) {
+    case GTGlobals::Maximize:
+        GTWidget::showMaximized(os, mdiWindow);
+        break;
+    case GTGlobals::Close: {
+        int left = mdiWindow->rect().left();
+        int top = mdiWindow->rect().top();
+        QPoint p(left + 15,top - 10);
+        GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(p));
+        GTMouseDriver::click(os);
+        break;
+    }
+    default:
+        assert(false);
+        break;
+    }
 #endif
 }
 #undef GT_METHOD_NAME
@@ -104,7 +124,25 @@ void GTUtilsMdi::closeWindow(U2OpStatus &os, const QString &windowName, const GT
 
     MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName, options));
     GT_CHECK(window != NULL, "Cannot find MDI window");
-    GTWidget::clickCornerMenu(os, window, GTGlobals::Close);
+    GTWidget::close(os, window);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "closeAllWindows"
+void GTUtilsMdi::closeAllWindows(U2OpStatus &os) {
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            const QList<QMdiSubWindow *> mdiWindows = AppContext::getMainWindow()->getQMainWindow()->findChildren<QMdiSubWindow *>();
+            foreach (QMdiSubWindow *mdiWindow, mdiWindows) {
+                GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+                mdiWindow->close();
+                GTGlobals::sleep(100);
+            }
+        }
+    };
+
+    GTThread::runInMainThread(os, new Scenario);
 }
 #undef GT_METHOD_NAME
 

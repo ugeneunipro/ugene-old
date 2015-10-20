@@ -56,8 +56,11 @@ public:
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
 
+    static void close(U2OpStatus &os, QWidget *widget);
+    static void showMaximized(U2OpStatus &os, QWidget *widget);
+    static void showNormal(U2OpStatus &os, QWidget *widget);
+
     static void clickLabelLink(U2OpStatus &os, QWidget* label, int step = 10);
-    static void clickCornerMenu(U2OpStatus &os, QWidget *widget, GTGlobals::WindowAction action);
     static void clickWindowTitle(U2OpStatus &os, QWidget *window);
     static void resizeWidget(U2OpStatus &os, QWidget *widget, const QSize &size);
     static QPoint getWidgetGlobalTopLeftPoint(U2OpStatus &os, QWidget *widget);

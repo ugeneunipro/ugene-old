@@ -46,6 +46,7 @@ public:
     static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     static void closeWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static void closeAllWindows(U2OpStatus &os);
     static void waitWindowOpened(U2OpStatus &os, const QString &windowNamePart, qint64 timeout = 180000);
 };
 

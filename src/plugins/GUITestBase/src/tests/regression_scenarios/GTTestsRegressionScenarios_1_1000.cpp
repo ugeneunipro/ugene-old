@@ -785,7 +785,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
                 CHECK_SET_ERR( exceptions.contains(name), QString("The following field has no tool tip: %1").arg(name));
             }
 
-            GTWidget::clickCornerMenu(os, dialog, GTGlobals::Close);
+            GTWidget::close(os, dialog);
         }
 
     private:

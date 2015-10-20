@@ -126,7 +126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //    2. Resize Ugene window to make overview area smaller.
     QMainWindow *window = AppContext::getMainWindow()->getQMainWindow();
     if (window->isMaximized()) {
-        GTWidget::clickCornerMenu(os, window, GTGlobals::Maximize);
+        GTWidget::showNormal(os, window);
         GTGlobals::sleep(500);
     }
     GTWidget::resizeWidget(os, window, QSize(550, 550));
