@@ -68,12 +68,11 @@ void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
 }
 
 void GTGlobals::takeScreenShot(QString path) {
-#if (QT_VERSION < 0x050000) // deprecated method
-    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-#else
-    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-#endif
-    originalPixmap.save(path);
+    //Very fast fix was needed. Temporary screenshots are not taken
+    uiLog.trace("Very fast fix was needed. Temporary screenshots are not taken");
+    Q_UNUSED(path)
+    //QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+    //originalPixmap.save(path);
 }
 
 GTGlobals::FindOptions::FindOptions(bool fail) :
