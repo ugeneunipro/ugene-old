@@ -316,8 +316,8 @@ QString PrimerGrouperTask::createCell(const QString& value, bool center, const Q
     return QString("<td align=\"%1\" %2>%3</td>").arg(align).arg(attrs).arg(value);
 }
 
-QString PrimerGrouperTask::createColumn(const QString& name) {
-    return QString("<th width=\"20%\"/><p align=\"left\"><strong>%2</strong></p></th>").arg(name);
+QString PrimerGrouperTask::createColumn(const QString& name, const QString &attrs) {
+    return QString("<th %1 /><p align=\"left\"><strong>%2</strong></p></th>").arg(attrs).arg(name);
 }
 
 } //U2 namespace

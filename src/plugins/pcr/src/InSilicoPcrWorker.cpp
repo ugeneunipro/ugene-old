@@ -389,9 +389,9 @@ QByteArray InSilicoPcrReportTask::createReport() const {
 
 QByteArray InSilicoPcrReportTask::productsTable() const {
     QByteArray result;
-    result += "<table bordercolor=\"gray\" border=\"1\">";
+    result += "<table bordercolor=\"gray\" border=\"1\" width=\"100%\">";
     result += "<tr>";
-    result += PrimerGrouperTask::createColumn(tr("Sequence name"));
+    result += PrimerGrouperTask::createColumn(tr("Sequence name"), "width=\"20%\"");
     for (int i=0; i<primers.size(); i++) {
         result += PrimerGrouperTask::createColumn(primers[i].first.name + "<br/>" + primers[i].second.name);
     }
@@ -416,7 +416,7 @@ QByteArray InSilicoPcrReportTask::primerDetails() const {
         QPair<Primer, Primer> pair = primers[i];
         PrimersPairStatistics calc(pair.first.sequence.toLocal8Bit(), pair.second.sequence.toLocal8Bit());
         result += chapter(
-                chapterName(pair.first.name + " / " + pair.second.name),
+                chapterName("<span class=\"span-closed\">&#9656;</span> " + pair.first.name + " / " + pair.second.name),
                 chapterContent(calc.generateReport().toLocal8Bit())
             );
     }

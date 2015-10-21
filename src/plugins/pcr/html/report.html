@@ -14,6 +14,10 @@
     .green {
         background-color: #CCFFCC;
     }
+    a {
+        text-decoration: none;
+        color: black;
+    }
 </style>
 <script type="text/javascript">
     function showContent(obj) {
@@ -23,6 +27,15 @@
         } else {
             inner.style.display = "block";
         }
+        var span = obj.parentNode.getElementsByTagName("span")[0];
+        if (span.className == "span-closed") {
+            span.innerHTML = "&#9662;";
+            span.className = "span-opened";
+        } else {
+            span.innerHTML = "&#9656;";
+            span.className = "span-closed";
+        }
+
     }
 </script></head>
 <body>
