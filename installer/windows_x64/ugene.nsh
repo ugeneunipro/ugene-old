@@ -171,6 +171,7 @@ SetRegView 64
     File "${PATH_TO_QT_LIBS}\Qt5Qml.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Quick.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Script.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5ScriptTools.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Sensors.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Sql.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Svg.dll"

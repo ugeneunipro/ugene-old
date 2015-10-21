@@ -35,6 +35,7 @@ copy %PATH_TO_QT_LIBS%\Qt5PrintSupport.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Qml.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Quick.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Script.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5ScriptTools.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Sensors.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Sql.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Svg.dll %OUTPUT_DIR%

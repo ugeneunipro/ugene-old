@@ -124,6 +124,7 @@ add-qt-library Qt5PrintSupport
 add-qt-library Qt5Qml
 add-qt-library Qt5Quick
 add-qt-library Qt5Script
+add-qt-library Qt5ScriptTools
 add-qt-library Qt5Sensors
 add-qt-library Qt5Sql
 add-qt-library Qt5Svg
