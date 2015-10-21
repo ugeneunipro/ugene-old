@@ -200,8 +200,6 @@ bool TaskSchedulerImpl::processFinishedTasks() {
 
         hasFinished = true;
         promoteTask(ti, Task::State_Finished);
-        // ensure signal about task finished to be delivered to other threads if required
-        QCoreApplication::processEvents();
 
         releaseResources(ti, true); //release resources for PREPARE stage
 
