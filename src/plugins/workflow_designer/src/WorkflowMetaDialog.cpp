@@ -35,7 +35,7 @@ namespace U2 {
 
 WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta): QDialog(p), meta(meta) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122510");
+    new HelpButton(this, buttonBox, "16126275");
 
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     okButton = buttonBox->button(QDialogButtonBox::Ok);

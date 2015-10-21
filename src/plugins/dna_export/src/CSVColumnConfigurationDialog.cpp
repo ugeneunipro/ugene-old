@@ -37,7 +37,7 @@ CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const Col
 : QDialog(w), config(_config)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122181");
+    new HelpButton(this, buttonBox, "16126632");
 
     connect(complMarkRB, SIGNAL(toggled(bool)), SLOT(sl_complMarkToggle(bool)));
     connect(startRB, SIGNAL(toggled(bool)), SLOT(sl_startToggle(bool)));

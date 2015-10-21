@@ -43,7 +43,7 @@ namespace U2 {
 
 ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p): QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122114");
+    new HelpButton(this, buttonBox, "16126564");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

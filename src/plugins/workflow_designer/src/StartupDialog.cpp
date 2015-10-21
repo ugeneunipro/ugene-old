@@ -41,7 +41,7 @@ StartupDialog::StartupDialog(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122488");
+    new HelpButton(this, buttonBox, "16126253");
 
     outDirWidget = new OutputDirectoryWidget(this, false /*don't commitOnHide*/);
     QVBoxLayout *l = new QVBoxLayout(box);

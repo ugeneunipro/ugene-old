@@ -35,7 +35,7 @@ BreakpointConditionEditDialog::BreakpointConditionEditDialog(QWidget *parent,
 {
     ui = new Ui_BreakpointConditionEditDialog();
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "16122746");
+    new HelpButton(this, ui->buttonBox, "16126517");
 
     scriptEdit = new ScriptEditorWidget(this);
     scriptEdit->setVariablesText(variablesText);

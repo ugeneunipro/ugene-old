@@ -32,7 +32,7 @@ BioStruct3DSettingsDialog::BioStruct3DSettingsDialog()
 {
     setupUi(this);
 
-    new HelpButton(this, buttonBox, "16122196");
+    new HelpButton(this, buttonBox, "16126647");
 
     glWidget = NULL;
     initColorSchemes();

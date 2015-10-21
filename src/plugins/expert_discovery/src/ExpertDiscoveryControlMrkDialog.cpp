@@ -38,7 +38,7 @@ ExpertDiscoveryControlMrkDialog::ExpertDiscoveryControlMrkDialog(QWidget *parent
 : QDialog(parent){
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122413");
+    new HelpButton(this, buttonBox, "16126866");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
 

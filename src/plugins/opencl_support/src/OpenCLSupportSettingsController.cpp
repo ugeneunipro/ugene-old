@@ -74,7 +74,7 @@ AppSettingsGUIPageWidget * OpenCLSupportSettingsPageController::createWidget( Ap
     return w;
 }
 
-const QString OpenCLSupportSettingsPageController::helpPageId = QString("4227272");
+const QString OpenCLSupportSettingsPageController::helpPageId = QString("16126578");
 
 OpenCLSupportSettingsPageState::OpenCLSupportSettingsPageState( int num_gpus ) {
     assert( num_gpus >= 0 );

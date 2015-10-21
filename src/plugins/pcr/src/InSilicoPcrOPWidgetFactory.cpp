@@ -30,6 +30,8 @@
 
 namespace U2 {
 
+const QString InSilicoPcrOPWidgetFactory::GROUP_DOC_PAGE = "16126877";
+
 InSilicoPcrOPWidgetFactory::InSilicoPcrOPWidgetFactory()
 : OPWidgetFactory()
 {
@@ -45,7 +47,7 @@ QWidget * InSilicoPcrOPWidgetFactory::createWidget(GObjectView *objView) {
 }
 
 OPGroupParameters InSilicoPcrOPWidgetFactory::getOPGroupParameters() {
-    return OPGroupParameters("OP_IN_SILICO_PCR", QPixmap(":/primer3/images/primer3.png"), tr("In Silico PCR"), "16122424");
+    return OPGroupParameters("OP_IN_SILICO_PCR", QPixmap(":/primer3/images/primer3.png"), tr("In Silico PCR"), GROUP_DOC_PAGE);
 }
 
 bool InSilicoPcrOPWidgetFactory::passFiltration(OPFactoryFilterVisitorInterface *filter) {

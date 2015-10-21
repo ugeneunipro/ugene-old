@@ -43,7 +43,7 @@ CustomAutoAnnotationDialog::CustomAutoAnnotationDialog(ADVSequenceObjectContext*
  : QDialog(ctx->getAnnotatedDNAView()->getWidget()), seqCtx(ctx)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122401");
+    new HelpButton(this, buttonBox, "16126854");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Annotate"));
 
     loadSettings();

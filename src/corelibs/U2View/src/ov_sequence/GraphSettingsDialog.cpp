@@ -88,7 +88,7 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
 
     QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-    new HelpButton(this, buttonBox, "16122208");
+    new HelpButton(this, buttonBox, "16126659");
 
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));

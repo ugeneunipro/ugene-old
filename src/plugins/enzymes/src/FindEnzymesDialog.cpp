@@ -520,7 +520,7 @@ void EnzymesSelectorWidget::sl_saveEnzymesFile()
 FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
 : QDialog(sctx->getAnnotatedDNAView()->getWidget()), seqCtx(sctx) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122335");
+    new HelpButton(this, buttonBox, "16126788");
 
     maxHitSB->setMaximum(INT_MAX);
     minHitSB->setMaximum(INT_MAX);

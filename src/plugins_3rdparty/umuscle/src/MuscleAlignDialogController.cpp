@@ -50,7 +50,7 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
     : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122372");
+    new HelpButton(this, buttonBox, "16126825");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -138,7 +138,7 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122371");
+    new HelpButton(this, buttonBox, "16126824");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     //this->adjustSize();

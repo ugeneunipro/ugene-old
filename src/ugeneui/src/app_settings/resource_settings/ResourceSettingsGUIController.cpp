@@ -59,7 +59,7 @@ AppSettingsGUIPageWidget* ResourceSettingsGUIPageController::createWidget(AppSet
     return r;
 }
 
-const QString ResourceSettingsGUIPageController::helpPageId = QString("4227264");
+const QString ResourceSettingsGUIPageController::helpPageId = QString("16126574");
 
 ResourceSettingsGUIPageWidget::ResourceSettingsGUIPageWidget(ResourceSettingsGUIPageController*) {
     setupUi(this);

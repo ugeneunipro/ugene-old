@@ -70,7 +70,7 @@ EditSequenceDialogController::EditSequenceDialogController(const EditSequencDial
 {
     ui = new Ui_EditSequenceDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "16122161");
+    new HelpButton(this, ui->buttonBox, "16126611");
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     addSeqpasterWidget();

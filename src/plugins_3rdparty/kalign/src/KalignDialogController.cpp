@@ -66,7 +66,7 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122410");
+    new HelpButton(this, buttonBox, "16126863");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -128,7 +128,7 @@ KalignAlignWithExtFileSpecifyDialogController::KalignAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
     {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122444");
+    new HelpButton(this, buttonBox, "16126897");
 
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

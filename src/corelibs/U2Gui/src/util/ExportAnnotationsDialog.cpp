@@ -43,7 +43,7 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     : QDialog( parent ), ui( new Ui::ExportAnnotationsDialog( ) )
 {
     ui->setupUi( this );
-    new HelpButton(this, ui->buttonBox, "16122182");
+    new HelpButton(this, ui->buttonBox, "16126633");
 
     ui->fileNameEdit->setText( filename );
     connect( ui->chooseFileButton, SIGNAL( clicked( ) ), SLOT( sl_onChooseFileButtonClicked( ) ) );

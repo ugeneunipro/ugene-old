@@ -35,6 +35,8 @@ public:
     QWidget * createWidget(GObjectView *objView);
     OPGroupParameters getOPGroupParameters();
     bool passFiltration(OPFactoryFilterVisitorInterface *filter);
+private:
+    static const QString GROUP_DOC_PAGE;
 };
 
 } // U2

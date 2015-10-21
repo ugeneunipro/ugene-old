@@ -60,7 +60,7 @@ ExportPrimersDialog::ExportPrimersDialog(const QList<Primer> &primers) :
     primers(primers)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122426");
+    new HelpButton(this, buttonBox, "16126879");
 
     init();
     connectSignals();
