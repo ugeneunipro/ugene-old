@@ -29,6 +29,7 @@
 #include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
@@ -246,28 +247,9 @@ void TaskViewDockWidget::sl_onTopLevelTaskRegistered(Task* t) {
 
 void TaskViewDockWidget::sl_onTopLevelTaskUnregistered(Task* t) {
     TVTreeItem* ti = findItem(t, true);
-    assert(ti!=NULL);
-
-    /*if (t->isReportingEnabled()) {
-        log.info(tr("New report available from task: %1").arg(t->getTaskName()));
-
-        ti->detachFromTask();
-        ti->reportButton = new TVButton(ti);
-        ti->reportButton->setFlat(true);
-        ti->reportButton->setIcon(viewReportAction->icon());
-        ti->reportButton->setFixedSize(QSize(20, 20));
-        connect(ti->reportButton, SIGNAL(clicked()), SLOT(sl_activateReportByButton()));
-
-        QWidget*  w = tree->itemWidget(ti, TVColumns_Actions);
-        QHBoxLayout* l = (QHBoxLayout*)w->layout();
-        l->insertWidget(1, ti->reportButton);
-
-        ti->cancelButton->setIcon(removeReportAction->icon());
-
-        emit si_reportsCountChanged();
-    } else {*/
-        delete ti;
-    //}
+    CHECK(ti != NULL, );
+    disconnect(t, NULL, this, NULL);
+    delete ti;
 }
 
 void TaskViewDockWidget::sl_activateReportByButton() {
@@ -277,7 +259,7 @@ void TaskViewDockWidget::sl_activateReportByButton() {
 
 void TaskViewDockWidget::sl_onViewTaskReport() {
     QList<QTreeWidgetItem*> items = tree->selectedItems();
-    assert(items.size() == 1);
+    SAFE_POINT(items.size() == 1, "An incorrect selection in the Task View", );
     TVTreeItem* ti = static_cast<TVTreeItem*>(items.first());
     activateReport(ti);
 }
@@ -293,21 +275,21 @@ int TaskViewDockWidget::countAvailableReports() const {
 }
 
 void TaskViewDockWidget::removeReport(TVTreeItem* ti) {
-    assert(ti->reportButton!=NULL);
+    SAFE_POINT(ti->reportButton != NULL, L10N::nullPointerError("report button"), );
     delete ti;
     emit si_reportsCountChanged();
 }
 
 void TaskViewDockWidget::sl_onRemoveTaskReport() {
     QList<QTreeWidgetItem*> items = tree->selectedItems();
-    assert(items.size() == 1);
+    SAFE_POINT(items.size() == 1, "An incorrect selection in the Task View", );
     TVTreeItem* ti = static_cast<TVTreeItem*>(items.first());
     removeReport(ti);
 }
 
 
 void TaskViewDockWidget::activateReport(TVTreeItem* ti) {
-    assert(ti->reportButton!=NULL);
+    SAFE_POINT(ti->reportButton != NULL, L10N::nullPointerError("report button"), );
     uiLog.details(tr("Activating task report: %1").arg(ti->taskName));
 
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
@@ -324,9 +306,7 @@ void TaskViewDockWidget::activateReport(TVTreeItem* ti) {
 void TaskViewDockWidget::sl_onSubtaskAdded(Task* sub) {
     Task* parent = qobject_cast<Task*>(sender());
     TVTreeItem* ti = findItem(parent, false);
-    if (ti == NULL) {
-        return;
-    }
+    CHECK(ti != NULL, );
     if (ti->isExpanded() || ti->childCount() > 0) {
         TVTreeItem* childItem = createTaskItem(sub);
         ti->addChild(childItem);
@@ -337,8 +317,8 @@ void TaskViewDockWidget::sl_onSubtaskAdded(Task* sub) {
 void TaskViewDockWidget::sl_onTaskProgress()  {
     Task* t = qobject_cast<Task*>(sender());
     TVTreeItem* ti = findItem(t, false);
-    if (ti==NULL) {
-        if (t!=NULL){
+    if (ti == NULL) {
+        if (t != NULL){
             assert(!t->isTopLevelTask());
         }
         return;

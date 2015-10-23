@@ -201,6 +201,10 @@ bool TaskSchedulerImpl::processFinishedTasks() {
         hasFinished = true;
         promoteTask(ti, Task::State_Finished);
 
+#ifndef Q_OS_MAC
+        QCoreApplication::processEvents();
+#endif
+
         releaseResources(ti, true); //release resources for PREPARE stage
 
         Task* task = ti->task;
@@ -885,7 +889,7 @@ void TaskSchedulerImpl::deleteTask(Task* task) {
         deleteTask(sub);
     }
     taskLog.trace(tr("Deleting task: %1").arg(task->getTaskName()));
-    delete task;
+    task->deleteLater();
 }
 
 void TaskSchedulerImpl::finishSubtasks(TaskInfo *pti) {
