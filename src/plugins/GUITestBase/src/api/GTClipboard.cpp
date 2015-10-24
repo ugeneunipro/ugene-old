@@ -20,6 +20,7 @@
  */
 
 #include "GTClipboard.h"
+#include "GTThread.h"
 
 #include <QtCore/QMimeData>
 #include <QtGui/QClipboard>
@@ -56,10 +57,30 @@ QString GTClipboard::text(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "setText"
 void GTClipboard::setText( U2OpStatus &os, QString text ){
+#ifdef Q_OS_WIN
+	//On windows clipboard actions should be done in main thread
+	class Scenario : public CustomScenario {
+	public:
+		Scenario(const QString &_text) : text(_text){}
+		void run(U2OpStatus &os) {
+			Q_UNUSED(os);
+			QClipboard *clipboard = QApplication::clipboard();
+			clipboard->clear();
+			clipboard->setText(text);
+			GTGlobals::sleep();
+		}
+	private:
+		QString text;
+	};
+
+	GTThread::runInMainThread(os, new Scenario(text));
+#else
     Q_UNUSED(os);
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->clear();
     clipboard->setText(text);
+	GTGlobals::sleep();
+#endif
 }
 
 #undef GT_METHOD_NAME
