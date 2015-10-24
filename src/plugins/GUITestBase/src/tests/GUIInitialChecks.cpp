@@ -83,14 +83,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     Q_UNUSED(os);
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
-#ifdef Q_OS_MAC
+
     if (!mainWindow->isMaximized()) {
         GTWidget::showMaximized(os, mainWindow);
         GTGlobals::sleep(1000);
     }
-#else
-    mainWindow->showMaximized();
-#endif
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
