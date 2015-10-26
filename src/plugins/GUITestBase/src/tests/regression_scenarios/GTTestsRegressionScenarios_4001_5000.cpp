@@ -3606,7 +3606,7 @@ GUI_TEST_CLASS_DEFINITION(test_4719_1) {
     GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 
     //    4. Undo changes
-    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMsaEditor::undo(os);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -3636,13 +3636,42 @@ GUI_TEST_CLASS_DEFINITION(test_4719_2) {
     GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 
     //    4. Undo changes
-    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMsaEditor::undo(os);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    Expected state: "UGENE" color scheme is selected, "No highlighting" highlight scheme is selected
     colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
     highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
+    GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4719_3) {
+    //    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
+
+    //    3. Click "Align sequence to this alignment" and select "data/samples/Genbank/PBR322.gb".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Genbank/PBR322.gb"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    4. Open/close highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+    //    5. Undo changes
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    4. Open/close highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+    //    Expected state: "UGENE" color scheme is selected, "No highlighting" highlight scheme is selected
+    QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+
     GTComboBox::checkCurrentValue(os, colorScheme, "UGENE");
     GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 }

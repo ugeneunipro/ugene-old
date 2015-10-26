@@ -142,6 +142,10 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
 
     seqArea = msa->getUI()->getSequenceArea();
 
+    savableTab.disableSavingForWidgets(QStringList() << thresholdSlider->objectName() << highlightingScheme->objectName()
+        << colorScheme->objectName() << highlightingScheme->objectName());
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
+
     initColorCB();
     sl_sync();
     connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_doUseDots()));
@@ -155,12 +159,9 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
     connect(thresholdSlider, SIGNAL(valueChanged(int)), SLOT(sl_highlightingParametersChanged()));
     connect(thresholdMoreRb, SIGNAL(toggled(bool)), SLOT(sl_highlightingParametersChanged()));
-    connect(thresholdLessRb, SIGNAL(toggled(bool)), SLOT(sl_highlightingParametersChanged()));
+    connect(thresholdLessRb, SIGNAL(toggled(bool)), SLOT(sl_highlightingParametersChanged()));   
 
     sl_updateHint();
-
-    savableTab.disableSavingForWidgets(QStringList() << thresholdSlider->objectName() << highlightingScheme->objectName());
-    U2WidgetStateStorage::restoreWidgetState(savableTab);
     sl_highlightingParametersChanged();
 }
 
