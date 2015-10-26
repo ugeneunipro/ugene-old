@@ -50,26 +50,18 @@
 </head>
 <body>
 <div>
-    <h3>Major changes in UGENE 1.18</h3>
+    <h3>Major changes in UGENE 1.19</h3>
     <ul class="features_list">
-        <li><span class="research_field">Usability:</span> Ctrl+V in the Project View was supported.
-            For example, if you have a sequence in the FASTA format, written in a text editor, try to:
-            <ul class="sub_features_list">
-                <li>Select the text of the sequence. Press Ctrl+C.</li>
-                <li>Open UGENE and activate the Project View. Press Ctrl+V.</li>
-            </ul>
-            <p>
-            You should see that a new document has been created with the corresponding data.<br/>
-            Note that this feature is supported for other formats as well.
-            </p>
-        </li>
-        <li><span class="research_field">In silico PCR:</span> a possibility to include annotations to the extracted PCR product was added.</li>
-        <li><span class="research_field">Sequence View:</span> exporting of a sequence image was improved. It is now possible to export the Details View and the Zoom View separately in different formats, including SVG.</li>
-        <li><span class="research_field">NGS:</span> partially valid VCF files can now be opened. A warning notification is shown for lines that can't be parsed.</li>
-        <li><span class="research_field">Usability:</span> some buttons from a toolbar of the Sequence View were moved to the left toolbars of the sequence sub-views: Zoom View, Details View, etc.</li>
-        <li><span class="research_field">Usability:</span> a new icon for a circular sequence was added to the Project View.<br/>
-        When you work with a circular sequence, don't forget to check "Mark as circular" in the Project View. In this case all algorithms in the Sequence View will take into account that the sequence is circular.</li>
-        <li>Optimizations of big data processing in UGENE.</li>
+        <li><span class="research_field">Usability:</span> Pasting of data into UGENE was further improved. In particular, you can now paste file using its URL.</li>
+        <li><span class="research_field">Sequence View:</span> Visibility of the Sequence View subviews (Overview, Zoom View, Details View) can be configured using new buttons on the Sequence View toolbar.</li>
+        <li><span class="research_field">Multiple Alignments:</span> A region of an alignment can now be copied in the RichText (HTML) format.</li>
+        <li><span class="research_field">Phylogeny:</span> The <i>Build Phylogenetic Tree</i> dialog interface was improved.</li>
+        <li><span class="research_field">NGS:</span> Setting of a reference for an assembly became much easier.</li>
+        <li><span class="research_field">NGS:</span> The <i>SPAdes de novo</i> assembler was updated to 3.6.0 version.</li>
+        <li><span class="research_field">NGS:</span> Partially valid BED files can now be opened. A warning notification is shown for lines that can't be parsed.</li>
+        <li><span class="research_field">Workflows Automation:</span> The <i>Multiplexer</i> workflow element was simplified.</li>
+        <li>UGENE appearance on HiDPI displays was improved.</li>
+        <li>Chinese and Czech languages are no more supported since this UGENE version.</li>
     </ul>
 </div>
 </body>
