@@ -37,6 +37,7 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
 #define GT_METHOD_NAME "run"
 void ColorDialogFiller::run(){
+    GTGlobals::sleep();
 #ifdef Q_OS_LINUX
     setWithQt = true;
 #endif

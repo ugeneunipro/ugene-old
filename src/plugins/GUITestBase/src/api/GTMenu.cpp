@@ -182,8 +182,7 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
         foreach(QAction *act, actions) {
             QString text = act->text();
             uiLog.trace("GT_DEBUG_MESSAGE: Action text: <" + text + ">");
-            if (text.contains(itemName, Qt::CaseInsensitive)) { //TODO: if (text == itemName) {
-
+            if (text == itemName) {//(text.contains(itemName, Qt::CaseInsensitive)) { //TODO:
                 uiLog.trace("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;

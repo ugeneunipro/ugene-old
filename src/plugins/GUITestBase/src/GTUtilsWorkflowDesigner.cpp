@@ -225,7 +225,7 @@ void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName, bool
     int workerNum = getWorkers(os).size();
     QPoint p(w->rect().topLeft() + QPoint(100+300*(workerNum-(workerNum/2)*2),100 + 200*(workerNum/2)));//shifting workers position
     GTWidget::click(os, w,Qt::LeftButton, p);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
@@ -747,6 +747,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePa
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addFileButton);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 

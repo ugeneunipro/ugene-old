@@ -124,7 +124,7 @@ void GTUtilsMdi::closeWindow(U2OpStatus &os, const QString &windowName, const GT
 
     MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName, options));
     GT_CHECK(window != NULL, "Cannot find MDI window");
-    GTWidget::close(os, window);
+    GTWidget::close(os, window->parentWidget());
 }
 #undef GT_METHOD_NAME
 

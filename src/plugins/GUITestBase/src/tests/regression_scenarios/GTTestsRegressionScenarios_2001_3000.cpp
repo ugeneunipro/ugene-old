@@ -6238,7 +6238,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::release(os);
     GTGlobals::sleep();
 
-    CHECK_SET_ERR(handlePosition == splitterHandler->pos(), "Handler was moved");
+    CHECK_SET_ERR(handlePosition == splitterHandler->pos(), QString("Handler was moved: expected: %1, actual: %2").arg(splitter->pos().y()).arg(handlePosition.y()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2951) {

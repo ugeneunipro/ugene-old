@@ -77,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
             }
         }
     }
-    CHECK_SET_ERR(count == 2, "Wrong number of visible items in sample tree");
+    CHECK_SET_ERR(count == 2, QString("Wrong number of visible items in sample tree: expected: 2, actual: %1").arg(count));
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0002 ) {

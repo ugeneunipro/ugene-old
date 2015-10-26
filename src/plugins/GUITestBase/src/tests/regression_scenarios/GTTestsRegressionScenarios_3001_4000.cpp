@@ -319,6 +319,7 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
     GTMouseDriver::click(os, Qt::RightButton);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
     GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
     QString name = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(name == " [s] et0001_sequence", QString("unexpected window title:%1").arg(name));
 
@@ -448,9 +449,9 @@ GUI_TEST_CLASS_DEFINITION(test_3073) {
 
     GTUtilsDocument::saveDocument(os, "test_3073.gb");
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj_test_3073", sandBoxDir, "proj_test_3073"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...", GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project &as...", GTGlobals::UseMouse);
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project", GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
     GTFileDialog::openFile( os, sandBoxDir, "proj_test_3073.uprj" );
@@ -459,7 +460,7 @@ GUI_TEST_CLASS_DEFINITION(test_3073) {
     GTUtilsDocument::loadDocument(os, "human_T1.fa");
     CHECK_SET_ERR( GTUtilsDocument::isDocumentLoaded(os, "test_3073.gb"), "Annotation file is not loaded!");
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project", GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
     GTFileDialog::openFile( os, sandBoxDir, "proj_test_3073.uprj" );
@@ -771,10 +772,10 @@ GUI_TEST_CLASS_DEFINITION(test_3133) {
     CHECK_OP(os, );
     //2. Save the project.
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "test_3133", testDir + "_common_data/scenarios/sandbox/", "test_3133"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project &as...");
 
     //3. Close the project.
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     //4. Open the saved project.
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/", "test_3133.uprj");
     //Expected state: project view is present, there are no documents presented.
@@ -3175,10 +3176,10 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj_3484_1",
                                                                    testDir + "_common_data/scenarios/sandbox/",
                                                                    "proj_3484_1"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project &as...");
     GTGlobals::sleep();
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));
     GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
@@ -3190,10 +3191,10 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     CHECK_SET_ERR(treeView1 != NULL,"TreeView not found");
 
     GTUtilsDocument::removeDocument(os, "COI_3484_1.nwk");
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all");
 
     GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
@@ -3427,7 +3428,7 @@ GUI_TEST_CLASS_DEFINITION(test_3551){
 
 GUI_TEST_CLASS_DEFINITION(test_3552){
 //1. Open "_common_data\clustal\fungal - all.aln"
-    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "10000_sequences.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "10000_sequences.aln", GTFileDialog::Open, GTGlobals::UseMouse, false);
 
     QLabel* taskInfoLabel = GTWidget::findExactWidget<QLabel*>(os, "taskInfoLabel");
     while (!taskInfoLabel->text().contains("Render")) {
@@ -5073,8 +5074,6 @@ GUI_TEST_CLASS_DEFINITION(test_3797) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
 
     GTGlobals::sleep(5000);
-
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3805){
@@ -5097,17 +5096,17 @@ GUI_TEST_CLASS_DEFINITION(test_3805){
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Complement sequence", GTGlobals::UseKey);
 
     //5. Reverse complement sequence
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Reverse complement sequence", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Reverse-complement sequence", GTGlobals::UseKey);
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(400);
     const QString newContent = GTClipboard::text( os );
 
-    CHECK_SET_ERR(initialContent == newContent, "Result of actions is incorrect");
+    CHECK_SET_ERR(initialContent == newContent, "Result of actions is incorrect. Expected: " + initialContent +  ", found: " + newContent);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3809){
@@ -6003,7 +6002,7 @@ GUI_TEST_CLASS_DEFINITION(test_3998){
 //    2. a) Use menu
 //    {Edit sequence->Reverse complement sequence}
     GTFileDialog::openFile(os, testDir + "_common_data/regression/3998/sequence.fasta");
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Reverse complement sequence");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Reverse-complement sequence");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::click(os, "sequence.fasta");
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));

@@ -5307,7 +5307,7 @@ GUI_TEST_CLASS_DEFINITION(test_1533){
 
 GUI_TEST_CLASS_DEFINITION(test_1537){
 //    1. Open "_common_data/clustal/10000_sequences.aln".
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/PF07724_full_family.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/PF07724_full_family.fa", GTFileDialog::Open, GTGlobals::UseMouse, false);
 //    2. Cancel the loading task.
     GTUtilsTaskTreeView::cancelTask(os, "Loading documents");
 //    Expected: UGENE does not crash.
