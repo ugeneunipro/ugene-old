@@ -3651,21 +3651,21 @@ GUI_TEST_CLASS_DEFINITION(test_4719_3) {
     //    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
 
-    //    3. Click "Align sequence to this alignment" and select "data/samples/Genbank/PBR322.gb".
+    //    2. Click "Align sequence to this alignment" and select "data/samples/Genbank/PBR322.gb".
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Genbank/PBR322.gb"));
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    4. Open/close highlighting option panel tab
+    //    3. Open/close highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
-    //    5. Undo changes
+    //    4. Undo changes
     GTUtilsMsaEditor::undo(os);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //    4. Open/close highlighting option panel tab
+    //    5. Open/close highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
     //    Expected state: "UGENE" color scheme is selected, "No highlighting" highlight scheme is selected
