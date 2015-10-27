@@ -80,6 +80,7 @@
 #include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
 #include "api/GTTextEdit.h"
+#include "api/GTThread.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
@@ -952,7 +953,7 @@ GUI_TEST_CLASS_DEFINITION(test_4104) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     const QString activeWindowName = GTUtilsMdi::activeWindow(os)->windowTitle();
-    CHECK_SET_ERR(activeWindowName == "Dataset 1 [s] NC_001363", "Unexpected active window name");
+    CHECK_SET_ERR(activeWindowName == "Dataset 1 [s] NC_001363", "Unexpected active window name: " + activeWindowName);
     GTUtilsProjectTreeView::findIndex(os, "NC_001363");
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
 }
@@ -2814,15 +2815,18 @@ GUI_TEST_CLASS_DEFINITION(test_4505) {
 //    2. Delete any column
     GTUtilsMSAEditorSequenceArea::selectColumnInConsensus(os, 1);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTThread::waitForMainThread(os);
+    //GTUtilsTaskTreeView::waitTaskFinished(os);
 //    3. Press "Undo"
     GTUtilsMsaEditor::undo(os);
-    GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
 //    Bug state: Error appeared in log: "[ERROR][19:02] Failed to create a multiple alignment row!"
     GTUtilsLog::check(os, l);
 //    4. Click right button on MSA
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Consensus mode"));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 //    Bug state: UGENE crashes
+    GTGlobals::sleep();
 
 }
 

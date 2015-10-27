@@ -140,23 +140,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTWidget::close(os, widget);
         widget = QApplication::activeModalWidget();
     }
-
-    GTClipboard::text(os);
-//#ifdef Q_OS_WIN
-    TaskScheduler* scheduller = AppContext::getTaskScheduler();
-    QString s;
-    foreach (Task* t, scheduller->getTopLevelTasks()) {
-        s.append(t->getTaskName() + '\n');
-    }
-    if(!s.isEmpty()){
-        QFile f(testDir + QDateTime::currentDateTime().toString() + ".txt");
-        f.open(QFile::ReadWrite);
-        f.write(s.toUtf8());
-        f.close();
-    }
-
-//#endif
-
+    GTClipboard::clear(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0002) {

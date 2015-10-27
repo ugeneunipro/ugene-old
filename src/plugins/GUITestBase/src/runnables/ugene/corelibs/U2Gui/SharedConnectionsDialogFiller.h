@@ -37,7 +37,7 @@ class SharedConnectionsDialogFiller : public Filler {
 public:
     class Action {
     public:
-        enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT};
+        enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT, CLOSE};
 
         Action(Type type, QString itemName = "");
         Type type;

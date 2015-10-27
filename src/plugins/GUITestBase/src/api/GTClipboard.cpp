@@ -42,6 +42,7 @@ QString GTClipboard::text(U2OpStatus &os) {
     GTGlobals::sleep(300);
 // check that clipboard contains text
     QClipboard *clipboard = QApplication::clipboard();
+
     GT_CHECK_RESULT(clipboard != NULL, "Clipboard is NULL", "");
     const QMimeData *mimeData = clipboard->mimeData();
     GT_CHECK_RESULT(mimeData != NULL, "Clipboard MimeData is NULL", "");
@@ -108,6 +109,31 @@ void GTClipboard::setUrls( U2OpStatus &os, const QList<QString>& urls ){
     clipboard->setMimeData(urlMime);
 }
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clear"
+void GTClipboard::clear(U2OpStatus &os){
+#ifdef Q_OS_WIN
+    //On windows clipboard actions should be done in main thread
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(){}
+        void run(U2OpStatus &os) {
+            Q_UNUSED(os);
+            QClipboard *clipboard = QApplication::clipboard();
+            clipboard->clear();
+            GTGlobals::sleep(500);
+        }
+    };
+
+    GTThread::runInMainThread(os, new Scenario(text));
+#else
+    Q_UNUSED(os);
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->clear();
+    GTGlobals::sleep(500);
+#endif
+}
 #undef GT_METHOD_NAME
 
 

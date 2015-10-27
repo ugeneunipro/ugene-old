@@ -205,6 +205,9 @@ void SharedConnectionsDialogFiller::commonScenario() {
                 stopConnection(os, action);
                 CHECK_OP(os, );
                 break;
+            case Action::CLOSE:
+                GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Close);
+                break;
             default:
                 os.setError("Unknown action type");
                 return;
