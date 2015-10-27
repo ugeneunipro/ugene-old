@@ -28,6 +28,7 @@ namespace U2 {
 
 class Document;
 class Folder;
+class LoadUnloadedDocumentTask;
 
 class U2GUI_EXPORT ProjectUtils {
 public:
@@ -41,6 +42,11 @@ public:
     static bool isFolderInRecycleBinSubtree(const QString &folderPath);
 
     static bool isSystemFolder(const QString &folderPath);
+
+    static Document * findDocument(const QString &url);
+    static bool hasLoadedDocument(const QString &url);
+    static bool hasUnloadedDocument(const QString &url);
+    static LoadUnloadedDocumentTask * findLoadTask(const QString &url);
 
     static const int MAX_OBJS_TO_SHOW_LOAD_PROGRESS;
     static const QString RECYCLE_BIN_FOLDER_PATH;

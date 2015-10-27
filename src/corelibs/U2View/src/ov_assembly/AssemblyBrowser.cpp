@@ -38,6 +38,7 @@
 #include <U2Core/FormatUtils.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/QObjectScopedPointer.h>
@@ -62,6 +63,7 @@
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
+#include <U2Gui/ProjectUtils.h>
 #include <U2Gui/ProjectView.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
@@ -974,13 +976,14 @@ namespace {
         return loadReferenceTask->property(REFERENCE_URL_PROPERTY).toString();
     }
 
+    void prepareLoadReferenceTask(const QString &referenceUrl, Task *loadReferenceTask) {
+        loadReferenceTask->setProperty(REFERENCE_URL_PROPERTY, referenceUrl);
+    }
+
     Task * createLoadReferenceTask(const QString &url) {
         QVariantMap hints;
         hints[ProjectLoaderHint_LoadWithoutView] = true;
-        Task *task = AppContext::getProjectLoader()->openWithProjectTask(QList<GUrl>() << url, hints);
-        CHECK(NULL != task, NULL);
-        task->setProperty(REFERENCE_URL_PROPERTY, url);
-        return task;
+        return AppContext::getProjectLoader()->openWithProjectTask(QList<GUrl>() << url, hints);
     }
 }
 
@@ -1009,14 +1012,43 @@ void AssemblyBrowser::loadReferenceFromFile() {
     QString url = chooseReferenceUrl();
     CHECK(!url.isEmpty(), );
 
-    loadReferenceTask = createLoadReferenceTask(url);
-    CHECK(NULL != loadReferenceTask, );
+    if (ProjectUtils::hasLoadedDocument(url)) {
+        setReference(ProjectUtils::findDocument(url));
+        return;
+    }
 
+    bool loadInProgress = false;
+    if (ProjectUtils::hasUnloadedDocument(url)) {
+        loadReferenceTask = ProjectUtils::findLoadTask(url);
+        if (NULL == loadReferenceTask) {
+            loadReferenceTask = new LoadUnloadedDocumentTask(ProjectUtils::findDocument(url));
+        } else {
+            loadInProgress = true;
+        }
+    } else {
+        loadReferenceTask = createLoadReferenceTask(url);
+        CHECK(NULL != loadReferenceTask, );
+    }
+
+    prepareLoadReferenceTask(url, loadReferenceTask);
     connect(loadReferenceTask, SIGNAL(si_stateChanged()), SLOT(sl_onReferenceLoaded()));
-    AppContext::getTaskScheduler()->registerTopLevelTask(loadReferenceTask);
-
     setReferenceAction->setDisabled(true);
     model->setLoadingReference(true);
+
+    if (!loadInProgress) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(loadReferenceTask);
+    }
+}
+
+void AssemblyBrowser::setReference(const Document *doc) {
+    CHECK(NULL != doc, );
+    const QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+
+    if (1 == objects.size()) {
+        tryAddObject(objects.first());
+    } else {
+        showReferenceLoadingError(objects, doc->getURLString());
+    }
 }
 
 void AssemblyBrowser::sl_setReference() {
@@ -1052,15 +1084,8 @@ void AssemblyBrowser::sl_onReferenceLoaded() {
 
     const Project *project = AppContext::getProject();
     CHECK(NULL != project, );
-    const Document *doc = project->findDocumentByURL(url);
-    CHECK(NULL != doc, );
-    const QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
 
-    if (1 == objects.size()) {
-        tryAddObject(objects.first());
-    } else {
-        showReferenceLoadingError(objects, url);
-    }
+    setReference(project->findDocumentByURL(url));
 }
 
 //==============================================================================

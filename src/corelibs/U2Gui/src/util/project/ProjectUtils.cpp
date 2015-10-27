@@ -23,6 +23,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Folder.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
@@ -72,6 +73,30 @@ bool ProjectUtils::isFolderInRecycleBinSubtree(const QString &folderPath) {
 
 bool ProjectUtils::isSystemFolder(const QString &folderPath) {
     return folderPath == U2ObjectDbi::ROOT_FOLDER || folderPath == RECYCLE_BIN_FOLDER_PATH;
+}
+
+Document * ProjectUtils::findDocument(const QString &url) {
+    Project *project = AppContext::getProject();
+    CHECK(NULL != project, NULL);
+    return project->findDocumentByURL(url);
+}
+
+bool ProjectUtils::hasLoadedDocument(const QString &url) {
+    const Document *doc = findDocument(url);
+    CHECK(NULL != doc, false);
+    return doc->isLoaded();
+}
+
+bool ProjectUtils::hasUnloadedDocument(const QString &url) {
+    const Document *doc = findDocument(url);
+    CHECK(NULL != doc, false);
+    return !doc->isLoaded();
+}
+
+LoadUnloadedDocumentTask * ProjectUtils::findLoadTask(const QString &url) {
+    Document *doc = findDocument(url);
+    CHECK(NULL != doc, NULL);
+    return LoadUnloadedDocumentTask::findActiveLoadingTask(doc);
 }
 
 } // U2

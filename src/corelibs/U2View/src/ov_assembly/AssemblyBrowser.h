@@ -186,6 +186,7 @@ private:
     QString chooseReferenceUrl() const;
     void loadReferenceFromFile();
     void showReferenceLoadingError(const QList<GObject*> &sequenceObjects, const QString &url) const;
+    void setReference(const Document *doc);
 
 private:
     AssemblyBrowserUi * ui;
