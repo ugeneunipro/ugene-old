@@ -24,7 +24,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorDataList.h>
+#include <U2View/MsaEditorSimilarityColumn.h>
 
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMdi.h"
@@ -279,7 +279,7 @@ void GTUtilsMSAEditorSequenceArea::removeSequence(U2OpStatus &os, const QString 
 #define GT_METHOD_NAME "getSimilarityValue"
 QString GTUtilsMSAEditorSequenceArea::getSimilarityValue(U2OpStatus &os, int row){
     //bad sulution, but better then nothing
-    MSAEditorSimilarityColumn* simCol = dynamic_cast<MSAEditorSimilarityColumn*>(GTWidget::findWidget(os, "msa_editor_similarity_column"));
+    MsaEditorSimilarityColumn* simCol = dynamic_cast<MsaEditorSimilarityColumn*>(GTWidget::findWidget(os, "msa_editor_similarity_column"));
     GT_CHECK_RESULT(simCol != NULL, "SimilarityColumn is NULL", "");
 
     return simCol->getTextForRow(row);
