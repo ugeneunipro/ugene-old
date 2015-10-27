@@ -56,14 +56,7 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
 
 void JavaSupport::sl_toolValidationStatusChanged(bool isValid) {
     Q_UNUSED(isValid);
-    ScriptingTool::onPathChanged(this, QStringList()
-
-     #ifdef Q_OS_WIN
-     #else
-     << "-Xmx6G" //default memory pool is 2GB. This command makes it 6Gb
-     #endif
-
-    << "-jar");
+    ScriptingTool::onPathChanged(this, QStringList() << "-jar");
 }
 
 } // U2
