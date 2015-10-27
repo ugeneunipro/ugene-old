@@ -30,6 +30,7 @@
 #include "GTUtilsApp.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsDocument.h"
+#include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsProjectTreeView.h"
@@ -635,6 +636,74 @@ GUI_TEST_CLASS_DEFINITION(test_0022) {
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/COI.aln"));
     GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0023) {
+    QFile::copy(testDir + "_common_data/ugenedb/chrM.sorted.bam.ugenedb", sandBoxDir + "assembly_test_0023.ugenedb");
+
+    //1. Open "samples/Assembly/chrM.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+
+    //2. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0023.ugenedb");
+
+    //3. Click the "Set reference sequence" toolbar button.
+    //Expected: file dialog appears.
+    //4. Choose "samples/Assembly/chrM.fa".
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Assembly/chrM.fa"));
+    GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
+
+    //Expected: the sequence becomes reference.
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0024) {
+    QFile::copy(testDir + "_common_data/ugenedb/chrM.sorted.bam.ugenedb", sandBoxDir + "assembly_test_0024.ugenedb");
+
+    //1. Open "samples/Assembly/chrM.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+
+    //2. Unload the document.
+    GTUtilsDocument::unloadDocument(os, "chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0024.ugenedb");
+
+    //4. Click the "Set reference sequence" toolbar button.
+    //Expected: file dialog appears.
+    //5. Choose "samples/Assembly/chrM.fa".
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Assembly/chrM.fa"));
+    GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
+
+    //Expected: the document is loaded, the sequence becomes reference.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0025) {
+    QFile::copy(testDir + "_common_data/ugenedb/chrM.sorted.bam.ugenedb", sandBoxDir + "assembly_test_0025.ugenedb");
+
+    //1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Unload the document.
+    GTUtilsDocument::unloadDocument(os, "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0025.ugenedb");
+
+    //4. Click the "Set reference sequence" toolbar button.
+    //Expected: file dialog appears.
+    //5. Choose "samples/CLUSTALW/COI.aln".
+    //Expected: the document is loaded, error notification is shown.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/COI.aln"));
+    GTUtilsNotifications::waitForNotification(os, true, "does not contain sequences");
+    GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
 }
 
 } // namespace GUITest_Assembly_browser
