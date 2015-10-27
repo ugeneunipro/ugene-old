@@ -44,6 +44,12 @@ public:
     static void removeChars(DNASequence& sequence, int startPos, int endPos, U2OpStatus& os);
     static void removeChars(QByteArray& sequence, int startPos, int endPos, U2OpStatus& os);
 
+    /** Replace chars from 'startPos' (inclusive) to 'endPos' (non-inclusive) */
+    static void replaceChars(QByteArray& sequence, int startPos, const QByteArray& newChars, U2OpStatus& os);
+
+    /** Insert chars to 'startPos' */
+    static void insertChars(QByteArray& sequence, int startPos, const QByteArray& newChars, U2OpStatus& os);
+
     /** Converts characters of the sequence to upper case */
     static void toUpperCase(DNASequence& sequence);
 

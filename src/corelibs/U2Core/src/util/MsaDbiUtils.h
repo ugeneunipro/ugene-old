@@ -44,7 +44,25 @@ public:
      */
     static void updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2OpStatus& os);
 
+    /**
+    * Get the length of the alignment in the database.
+    */
+    static qint64 getMsaLength(const U2EntityRef& msaRef, U2OpStatus& os);
+
+    /**
+    * Update the length of the alignment in the database.
+    */
     static void updateMsaLength(const U2EntityRef& msaRef, qint64 newLen, U2OpStatus& os);
+
+    /**
+    * Get the alphabet of the alignment in the database.
+    */
+    static U2AlphabetId getMsaAlphabet(const U2EntityRef& msaRef, U2OpStatus& os);
+
+    /**
+    * Update the alphabet of the alignment in the database.
+    */
+    static void updateMsaAlphabet(const U2EntityRef& msaRef, const U2AlphabetId& alphabet, U2OpStatus& os);
 
     /**
      * Renames an alignment.
@@ -70,6 +88,13 @@ public:
      * The sum 'pos' + 'count' must be <= the alignment length.
      */
     static void removeRegion(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os);
+
+    /**
+    * Replace a character in an alignment.
+    * Parameter 'rowId' must be valid ID of the alignment row in the database!
+    * Parameter 'pos' must be >= 0.
+    */
+    static void replaceCharacterInRow(const U2EntityRef& msaRef, qint64 rowId, qint64 pos, char newChar, U2OpStatus& os);
 
     /**
      * Keeps only the specified rows in the alignment - 'count' characters from position 'pos'.
@@ -189,6 +214,9 @@ private:
 
     /** Removes chars/gaps from the row */
     static void removeCharsFromRow(QByteArray &seq, QList<U2MsaGap> &gaps, qint64 pos, qint64 count);
+
+    /** Replace chars in the row */
+    static void replaceCharInRow(QByteArray &seq, QList<U2MsaGap> &gaps, qint64 pos, char newChar);
 
     /**
      * Crops a row to region from 'pos' to 'pos' + 'count',

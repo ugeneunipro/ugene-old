@@ -55,6 +55,12 @@ public:
     /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
     virtual QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os);
 
+    /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
+    virtual U2AlphabetId getMsaAlphabet(const U2DataId& msaId, U2OpStatus& os);
+
+    /** Returns length stored in Msa table */
+    virtual qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os);
+
     /**
      * Creates a new empty multiple alignment in the database.
      * The folder must exist in the database.
@@ -171,9 +177,6 @@ public:
     void redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
 
 private:
-    /** Returns length stored in Msa table */
-    qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os);
-
     /**
      * Creates new records in MsaRow and MsaRowGap tables for the added row, and
      * sets the parent of the sequence object to the MSA object.

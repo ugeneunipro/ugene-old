@@ -51,6 +51,12 @@ public:
     /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
     virtual QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os) = 0;
 
+    /** Return the MSA alphabet */
+    virtual U2AlphabetId getMsaAlphabet(const U2DataId& msaId, U2OpStatus& os) = 0;
+    
+    /** Return the MSA length */
+    virtual qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os) = 0;
+
     /**
      * Creates a new empty MSA object
      * Requires: U2DbiFeature_WriteMsa feature support

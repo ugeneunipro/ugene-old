@@ -356,6 +356,20 @@ QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) 
     return res;
 }
 
+U2AlphabetId SQLiteMsaDbi::getMsaAlphabet(const U2DataId& msaId, U2OpStatus& os) {
+    QString alphabetName;
+    SQLiteQuery q("SELECT alphabet FROM Msa WHERE object = ?1", db, os);
+    q.bindDataId(1, msaId);
+    if (q.step()) {
+        alphabetName = q.getString(0);
+        q.ensureDone();
+    } else if (!os.hasError()) {
+        os.setError(U2DbiL10n::tr("Msa object not found"));
+    }
+
+    return U2AlphabetId(alphabetName);
+}
+
 void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) {
     // Init track info
     SQLiteTransaction t(db, os);

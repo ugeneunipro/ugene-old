@@ -205,6 +205,20 @@ QList<qint64> MysqlMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
     return res;
 }
 
+U2AlphabetId MysqlMsaDbi::getMsaAlphabet(const U2DataId& msaId, U2OpStatus& os) {
+    QString alphabetName;
+    U2SqlQuery q("SELECT alphabet FROM Msa WHERE object = :object", db, os);
+    q.bindDataId(":object", msaId);
+    if (q.step()) {
+        alphabetName = q.getString(0);
+        q.ensureDone();
+    } else if (!os.hasError()) {
+        os.setError(U2DbiL10n::tr("Msa object not found"));
+    }
+
+    return U2AlphabetId(alphabetName);
+}
+
 U2DataId MysqlMsaDbi::createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {
     return createMsaObject(folder, name, alphabet, 0, os);
 }

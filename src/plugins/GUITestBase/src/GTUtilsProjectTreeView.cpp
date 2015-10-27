@@ -71,7 +71,7 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
     QMainWindow *qmw = mw->getQMainWindow();
     GT_CHECK(qmw != NULL, "QMainWindow is NULL");
 
-    qmw->setFocus();
+    //qmw->setFocus();
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }

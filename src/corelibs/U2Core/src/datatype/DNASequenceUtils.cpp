@@ -50,13 +50,39 @@ void DNASequenceUtils::removeChars(DNASequence& sequence, int startPos, int endP
 
 void DNASequenceUtils::removeChars(QByteArray& sequence, int startPos, int endPos, U2OpStatus& os) {
     if ((endPos <= startPos) || (startPos < 0) || (endPos > sequence.length())) {
-        coreLog.trace(QString("Internal error: incorrect parameters was passed to DNASequenceUtils::removeChars,"
+        coreLog.trace(L10N::internalError("incorrect parameters was passed to DNASequenceUtils::removeChars,"
             "startPos '%1', endPos '%2', sequence length '%3'!").arg(startPos).arg(endPos).arg(sequence.length()));
         os.setError("Can't remove chars from a sequence.");
         return;
     }
 
     sequence.remove(startPos, endPos - startPos);
+}
+
+void DNASequenceUtils::insertChars(QByteArray& sequence, int startPos, const QByteArray& newChars, U2OpStatus& os) {
+    int endPos = startPos + newChars.length();
+    CHECK_EXT(newChars.length() > 0, os.setError("Array of chars for replacing is empty!"), );
+    if ((startPos < 0) || (endPos > sequence.length())) {
+        coreLog.trace(L10N::internalError("incorrect parameters was passed to DNASequenceUtils::insertChars, "
+            "startPos '%1', endPos '%2', sequence length '%3'!").arg(startPos).arg(endPos).arg(sequence.length()));
+        os.setError("Can't remove chars from a sequence.");
+        return;
+    }
+
+    sequence.insert(startPos, newChars);
+}
+
+void DNASequenceUtils::replaceChars(QByteArray& sequence, int startPos, const QByteArray& newChars, U2OpStatus& os) {
+    int endPos = startPos + newChars.length();
+    CHECK_EXT(newChars.length() > 0, os.setError("Array of chars for replacing is empty!"),);
+    if ((startPos < 0) || (endPos > sequence.length())) {
+        coreLog.trace(QString("Internal error: incorrect parameters was passed to DNASequenceUtils::replaceChars,"
+            "startPos '%1', endPos '%2', sequence length '%3'!").arg(startPos).arg(endPos).arg(sequence.length()));
+        os.setError("Can't remove chars from a sequence.");
+        return;
+    }
+
+    sequence.replace(startPos, newChars.length(), newChars);
 }
 
 void DNASequenceUtils::toUpperCase(DNASequence& sequence) {

@@ -41,11 +41,13 @@ public:
         : sequenceContentChanged(true),
           sequenceListChanged(true),
           alignmentLengthChanged(true),
-          middleState(false) {}
+          middleState(false),
+          alphabetChanged(false){}
     bool sequenceContentChanged;
     bool sequenceListChanged;
     bool alignmentLengthChanged;
     bool middleState;
+    bool alphabetChanged;
     QVariantMap hints;
     QList<qint64> modifiedRowIds;
 
@@ -147,6 +149,11 @@ public:
     /** Method that affect the whole alignment, including sequences
      */
     void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track = true);
+
+    /** Replace character in row and change alphabet, if it does not contain the character 
+    */
+    void replaceCharacter(int startPos, int rowIndex, char newChar);
+
     void crop(U2Region window, const QSet<QString>& rowNames);
     /**
      * Performs shift of the region specified by parameters @startPos (leftmost column number),

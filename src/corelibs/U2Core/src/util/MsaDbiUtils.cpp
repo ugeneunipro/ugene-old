@@ -386,9 +386,78 @@ void MsaDbiUtils::removeCharsFromRow(QByteArray &seq, QList<U2MsaGap> &gaps, qin
     mergeConsecutiveGaps(gaps);
 }
 
-void MsaDbiUtils::cropCharsFromRow(MAlignmentRow& alRow, qint64 pos, qint64 count) {
+namespace {
+void calculateGapModelAfterReplaceChar(QList<U2MsaGap>& gapModel, qint64 pos) {
+    SAFE_POINT(pos >= 0, QString("Invalid position '%1'!").arg(pos), );
+
+    for (int i = 0; i < gapModel.count(); ++i) {
+        U2MsaGap& curGap = gapModel[i];
+        qint64 gapStart = curGap.offset;
+        qint64 gapEnd = gapStart + curGap.gap;
+        if (pos >= gapStart && pos <= gapEnd) {
+            if (pos == gapStart) {
+                if (curGap.gap == 1) {
+                    gapModel.removeAt(i);
+                } else {
+                    curGap.offset++;
+                    curGap.gap--;
+                }
+            } else if (pos == gapEnd - 1) {
+                if (curGap.gap == 1) {
+                    gapModel.removeAt(i);
+                } else {
+                    curGap.gap--;
+                }
+            } else {
+                gapModel.removeAt(i);
+                U2MsaGap firstGap(gapStart, pos - gapStart);
+                U2MsaGap secondGap(pos + 1, gapEnd - pos - 1);
+                gapModel.insert(i, secondGap);
+                gapModel.insert(i, firstGap);
+            }
+            break;
+        }
+    }
+}
+
+void calculateGapModelAfterAppendChar(QList<U2MsaGap>& gapModel, qint64 pos, qint64 originalRowLength) {
+    CHECK(pos > originalRowLength, );
+    gapModel.append(U2MsaGap(originalRowLength, pos - originalRowLength));
+}
+}
+
+void MsaDbiUtils::replaceCharInRow(QByteArray &seq, QList<U2MsaGap> &gaps, qint64 pos, char newChar) {
     SAFE_POINT(pos >= 0, "Incorrect position!", );
-    SAFE_POINT(count > 0, "Incorrect characters count!", );
+
+    qint64 rowLength = MsaRowUtils::getRowLengthWithoutTrailing(seq, gaps);
+
+    if (rowLength > pos) {
+        qint64 posInSeq = -1;
+        qint64 endPosInSeq = -1;
+        getStartAndEndSequencePositions(seq, gaps, pos, 1, posInSeq, endPosInSeq);
+        if (posInSeq >= 0 && endPosInSeq > posInSeq) {
+            U2OpStatus2Log os;
+            DNASequenceUtils::replaceChars(seq, posInSeq, QByteArray(1, newChar), os);
+            SAFE_POINT_OP(os, );
+        } else {
+            U2OpStatus2Log os;
+            DNASequenceUtils::insertChars(seq, posInSeq, QByteArray(1, newChar), os);
+            SAFE_POINT_OP(os, );
+            calculateGapModelAfterReplaceChar(gaps, pos);
+        }
+    } else {
+        U2OpStatus2Log os;
+        seq.append(newChar);
+        SAFE_POINT_OP(os, );
+        if (pos != rowLength) {
+            calculateGapModelAfterAppendChar(gaps, pos, rowLength);
+        }
+    }
+}
+
+void MsaDbiUtils::cropCharsFromRow(MAlignmentRow& alRow, qint64 pos, qint64 count) {
+    SAFE_POINT(pos >= 0, "Incorrect position!",);
+    SAFE_POINT(count > 0, "Incorrect characters count!",);
 
     // Change the sequence
     qint64 initialRowLength = alRow.getRowLength();
@@ -629,17 +698,57 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
     }
 }
 
+qint64 MsaDbiUtils::getMsaLength(const U2EntityRef& msaRef, U2OpStatus& os) {
+    DbiConnection con(msaRef.dbiRef, os);
+    CHECK_OP(os, -1);
+
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    SAFE_POINT_EXT(NULL != msaDbi, os.setError("NULL Msa Dbi!"), -1);
+
+    qint64 length = msaDbi->getMsaLength(msaRef.entityId, os);
+    CHECK_OP(os, -1);
+
+    return length;
+}
+
 void MsaDbiUtils::updateMsaLength(const U2EntityRef &msaRef, qint64 newLen, U2OpStatus &os) {
     // Prepare the connection
     DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
+    SAFE_POINT_EXT(NULL != msaDbi, os.setError("NULL Msa Dbi!"), );
 
     // Update the data
     msaDbi->updateMsaLength(msaRef.entityId, newLen, os);
 }
+
+U2AlphabetId MsaDbiUtils::getMsaAlphabet(const U2EntityRef& msaRef, U2OpStatus& os) {
+    DbiConnection con(msaRef.dbiRef, os);
+    CHECK_OP(os, U2AlphabetId());
+
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    SAFE_POINT_EXT(NULL != msaDbi, os.setError("NULL Msa Dbi!"), U2AlphabetId());
+
+    U2AlphabetId alphabet = msaDbi->getMsaAlphabet(msaRef.entityId, os);
+    CHECK_OP(os, U2AlphabetId());
+
+    return alphabet;
+}
+
+void MsaDbiUtils::updateMsaAlphabet(const U2EntityRef& msaRef, const U2AlphabetId& alphabet, U2OpStatus& os) {
+    // Prepare the connection
+    SAFE_POINT_EXT(alphabet.isValid(), os.setError("Invalid alphabet was passed !"),);
+    DbiConnection con(msaRef.dbiRef, os);
+    CHECK_OP(os, );
+
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    SAFE_POINT_EXT(NULL != msaDbi, os.setError("NULL Msa Dbi!"), );
+
+    // Update the data
+    msaDbi->updateMsaAlphabet(msaRef.entityId, alphabet, os);
+}
+
 
 void MsaDbiUtils::updateRowContent(const U2EntityRef& msaRef, qint64 rowId,
                                    const QByteArray& seqBytes, const QList<U2MsaGap>& gaps,
@@ -887,6 +996,37 @@ void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& r
     if (!keepAlignmentLength) {
         msaDbi->updateMsaLength(msaRef.entityId, msa.length - count, os);
     }
+}
+
+void MsaDbiUtils::replaceCharacterInRow(const U2EntityRef& msaRef, qint64 rowId, qint64 pos, char newChar, U2OpStatus& os) {
+    // Check parameters
+    CHECK_EXT(pos >= 0, os.setError(QString("Negative MSA pos: %1").arg(pos)), );
+
+    // Prepare the connection
+    QScopedPointer<DbiConnection> con(getCheckedConnection(msaRef.dbiRef, os));
+    CHECK_OP(os, );
+    U2MsaDbi* msaDbi = con->dbi->getMsaDbi();
+    U2SequenceDbi* sequenceDbi = con->dbi->getSequenceDbi();
+
+    U2Msa msa = msaDbi->getMsaObject(msaRef.entityId, os);
+    CHECK_OP(os, );
+
+    validateRowIds(msaDbi, msaRef.entityId, QList<qint64>() << rowId, os);
+    CHECK_OP(os, );
+
+    U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
+    CHECK_OP(os, );
+    qint64 msaLength = msaDbi->getMsaLength(msaRef.entityId, os);
+    CHECK(pos < msaLength,);
+
+    U2Region seqReg(row.gstart, row.gend - row.gstart);
+    QByteArray seq = sequenceDbi->getSequenceData(row.sequenceId, seqReg, os);
+    CHECK_OP(os, );
+
+    replaceCharInRow(seq, row.gaps, pos, newChar);
+
+    msaDbi->updateRowContent(msaRef.entityId, rowId, seq, row.gaps, os);
+    CHECK_OP(os, );
 }
 
 QList<qint64> MsaDbiUtils::removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os) {

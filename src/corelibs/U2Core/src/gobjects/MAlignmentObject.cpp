@@ -89,10 +89,19 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
     U2OpStatus2Log os;
 
     if (mi.alignmentLengthChanged) {
-        MAlignmentExporter alExporter;
-        U2Msa msa = alExporter.getAlignmentObject(entityRef.dbiRef, entityRef.entityId, os);
-        if (msa.length != cachedMAlignment.getLength()) {
-            cachedMAlignment.setLength(msa.length);
+        qint64 msaLength = MsaDbiUtils::getMsaLength(entityRef, os);
+        SAFE_POINT_OP(os, );
+        if (msaLength != cachedMAlignment.getLength()) {
+            cachedMAlignment.setLength(msaLength);
+        }
+    }
+
+    if (mi.alphabetChanged) {
+        U2AlphabetId alphabet = MsaDbiUtils::getMsaAlphabet(entityRef, os);
+        SAFE_POINT_OP(os, );
+        if (alphabet.id != cachedMAlignment.getAlphabet()->getId() && !alphabet.id.isEmpty()) {
+            const DNAAlphabet* newAlphabet = U2AlphabetUtils::getById(alphabet);
+            cachedMAlignment.setAlphabet(newAlphabet);
         }
     }
 
@@ -474,6 +483,44 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     if (!removedRows.isEmpty()) {
         emit si_rowsRemoved(removedRows);
     }
+}
+
+void MAlignmentObject::replaceCharacter(int startPos, int rowIndex, char newChar) {
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+    const MAlignment &msa = getMAlignment();
+    SAFE_POINT(rowIndex >= 0 && startPos + 1 <= msa.getLength(), "Invalid parameters!", );
+    qint64 modifiedRowId = msa.getRow(rowIndex).getRowId();
+
+    //msa.setAlphabet(newAlphabet);
+
+    U2OpStatus2Log os;
+    if (newChar != MAlignment_GapChar) {
+        MsaDbiUtils::replaceCharacterInRow(entityRef, modifiedRowId, startPos, newChar, os);
+    } else {
+        MsaDbiUtils::removeRegion(entityRef, QList<qint64>() << modifiedRowId, startPos, 1, os);
+        MsaDbiUtils::insertGaps(entityRef, QList<qint64>() << modifiedRowId, startPos, 1, os);
+    }
+    SAFE_POINT_OP(os, );
+
+    MAlignmentModInfo mi;
+    mi.sequenceContentChanged = true;
+    mi.sequenceListChanged = false;
+    mi.alignmentLengthChanged = false;
+    mi.modifiedRowIds << modifiedRowId;
+
+    if (newChar != ' ' && !msa.getAlphabet()->contains(newChar)) {
+        const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(QByteArray(1, newChar));
+        const DNAAlphabet *newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(alp, msa.getAlphabet());
+        SAFE_POINT(NULL != newAlphabet, "Common alphabet is NULL!", );
+
+        if (newAlphabet->getId() != msa.getAlphabet()->getId()) {
+            MsaDbiUtils::updateMsaAlphabet(entityRef, newAlphabet->getId(), os);
+            mi.alphabetChanged = true;
+            SAFE_POINT_OP(os, );
+        }
+    }
+
+    updateCachedMAlignment(mi, QList<qint64>());
 }
 
 void MAlignmentObject::renameRow(int rowIdx, const QString& newName) {

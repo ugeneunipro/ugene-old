@@ -34,6 +34,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QRubberBand>
 #endif
+#include <QTimer>
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
@@ -252,6 +253,9 @@ public:
 
     void deleteCurrentSelection();
 
+    void processCharacterInEditMode(QKeyEvent *e);
+    void replaceSelectedCharacter(char newCharacter);
+
     void addRowToSelection(int rowNumber);
     void deleteRowFromSelection(int rowNumber);
     void clearSelection();
@@ -284,7 +288,7 @@ private:
 
     void moveCursor(int dx, int dy);
 
-    void highlightCurrentCursorPos();
+    void highlightCurrentSelection();
 
 public:
     void centerPos(const QPoint& pos);
@@ -359,6 +363,7 @@ private slots:
     void sl_addSeqFromFile();
     void sl_addSeqFromProject();
 
+    void sl_replaceSelectedCharacter();
     void sl_delCurrentSelection();
     void sl_copyCurrentSelection();
     void sl_copyFormattedSelection();
@@ -395,10 +400,18 @@ private slots:
     void sl_useDots();
     void sl_fontChanged(QFont font);
 
+    void sl_changeSelectionColor();
+
+
 protected:
     virtual void wheelEvent (QWheelEvent * event);
 
 private:
+    enum MsaMode {
+        ViewMode,
+        EditCharacterMode
+    };
+
     void buildMenu(QMenu* m);
     void updateColorAndHighlightSchemes();
 
@@ -408,13 +421,14 @@ private:
 
     void getColorAndHighlightingIds(QString &csid, QString &hsid, DNAAlphabetType atype, bool isFirstInitialization);
 
+    void exitFromEditCharacterMode();
+
     void updateActions();
 
     void updateHScrollBar();
     void updateVScrollBar();
 
     void drawAll();
-    void drawCursor(QPainter& p);
     void drawFocus(QPainter& p);
     void drawSelection(QPainter &p);
 
@@ -465,6 +479,9 @@ private:
 
     int             startPos; //first visible x pos
     int             startSeq; //first visible y pos
+    MsaMode         msaMode;
+    QTimer          editModeAnimationTimer;
+    QColor          selectionColor;
 
     bool                shifting;
     bool                selecting;
@@ -489,6 +506,7 @@ private:
     QAction*        sortByNameAction;
     QAction*        collapseModeSwitchAction;
     QAction*        collapseModeUpdateAction;
+    QAction*        replaceCharacterAction;
     QAction*        reverseComplementAction;
     QAction*        reverseAction;
     QAction*        complementAction;
