@@ -126,7 +126,7 @@ void GTClipboard::clear(U2OpStatus &os){
         }
     };
 
-    GTThread::runInMainThread(os, new Scenario(text));
+    GTThread::runInMainThread(os, new Scenario());
 #else
     Q_UNUSED(os);
     QClipboard *clipboard = QApplication::clipboard();
