@@ -56,7 +56,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditor.h \
            src/ov_msa/MSAEditorConsensusArea.h \
            src/ov_msa/MSAEditorConsensusCache.h \
-           src/ov_msa/MSAEditorDataList.h \
+           src/ov_msa/MsaEditorSimilarityColumn.h \
            src/ov_msa/MSAEditorFactory.h \
            src/ov_msa/MSAEditorNameList.h \
            src/ov_msa/MSAEditorOffsetsView.h \
@@ -66,6 +66,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditorStatusBar.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
+           src/ov_msa/MsaUpdatedWidgetInterface.h \
            src/ov_msa/MsaOpSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
            src/ov_msa/MsaEditorUserModStepController.h \
@@ -80,6 +81,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/PairAlign/PairAlignFactory.h \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
+           src/ov_msa/PhyTrees/MsaEditorTreeTabArea.h \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
@@ -273,7 +275,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/MSAEditor.cpp \
            src/ov_msa/MSAEditorConsensusArea.cpp \
            src/ov_msa/MSAEditorConsensusCache.cpp \
-           src/ov_msa/MSAEditorDataList.cpp \
+           src/ov_msa/MsaEditorSimilarityColumn.cpp \
            src/ov_msa/MSAEditorFactory.cpp \
            src/ov_msa/MSAEditorNameList.cpp \
            src/ov_msa/MSAEditorOffsetsView.cpp \
@@ -299,9 +301,10 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/PairAlign/PairAlignFactory.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
-           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
+           src/ov_msa/PhyTrees/MsaEditorTreeTabArea.cpp \
+           src/ov_msa/PhyTrees/MsaEditorTreeViewer.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \

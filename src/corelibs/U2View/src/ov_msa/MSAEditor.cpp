@@ -80,7 +80,7 @@
 #include "ExportHighlightedDialogController.h"
 #include "MSAEditor.h"
 #include "MSAEditorConsensusArea.h"
-#include "MSAEditorDataList.h"
+#include "MsaEditorSimilarityColumn.h"
 #include "MSAEditorFactory.h"
 #include "MSAEditorNameList.h"
 #include "MSAEditorOffsetsView.h"
@@ -1042,7 +1042,7 @@ void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* matrix)
 {
     dataList->setMatrix(matrix);
     dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-    MSAEditorAlignmentDependentWidget* statisticsWidget = new MSAEditorAlignmentDependentWidget(dataList);
+    MsaEditorAlignmentDependentWidget* statisticsWidget = new MsaEditorAlignmentDependentWidget(dataList);
 
     view.addObject(nameAreaContainer, statisticsWidget, 0.04, 1);
 }
@@ -1075,9 +1075,9 @@ void MSAEditorUI::showSimilarity() {
         settings.algoName = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmIds().at(0);
         settings.ui = this;
 
-        dataList = new MSAEditorSimilarityColumn(this, new QScrollBar(Qt::Horizontal), &settings);
+        dataList = new MsaEditorSimilarityColumn(this, new QScrollBar(Qt::Horizontal), &settings);
         dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-        similarityStatistics = new MSAEditorAlignmentDependentWidget(dataList);
+        similarityStatistics = new MsaEditorAlignmentDependentWidget(dataList);
 
         view.addObject(nameAreaContainer, similarityStatistics, 0.04, 1);
     }

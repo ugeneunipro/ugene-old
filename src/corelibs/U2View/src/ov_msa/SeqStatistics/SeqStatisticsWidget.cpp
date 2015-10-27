@@ -32,7 +32,7 @@
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
-#include "U2View/MSAEditorDataList.h"
+#include "../MsaEditorSimilarityColumn.h"
 
 namespace U2 {
 
@@ -68,7 +68,7 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m)
 }
 
 void SeqStatisticsWidget::copySettings() {
-    const MSAEditorAlignmentDependentWidget* similarityWidget= msa->getUI()->getSimilarityWidget();
+    const MsaEditorAlignmentDependentWidget* similarityWidget= msa->getUI()->getSimilarityWidget();
     statisticsIsShown = false;
     if(NULL != similarityWidget) {
         const SimilarityStatisticsSettings* s = static_cast<const SimilarityStatisticsSettings*>(similarityWidget->getSettings());

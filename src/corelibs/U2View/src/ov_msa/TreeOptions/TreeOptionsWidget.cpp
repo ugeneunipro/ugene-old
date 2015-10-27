@@ -39,9 +39,10 @@
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
-#include "ov_msa/MSAEditorDataList.h"
 #include "ov_phyltree/TreeViewer.h"
 #include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
+#include "ov_msa/PhyTrees/MSAEditorTreeViewer.h"
+#include "ov_msa/PhyTrees/MsaEditorTreeTabArea.h"
 #include "phyltree/TreeSettingsDialog.h"
 
 #include "TreeOptionsWidget.h"

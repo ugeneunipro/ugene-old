@@ -49,7 +49,6 @@
 #include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorDataList.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
 
@@ -60,6 +59,7 @@
 #include "ov_phyltree/TreeViewer.h"
 #include "ov_phyltree/TreeViewerTasks.h"
 #include "phyltree/CreatePhyTreeDialogController.h"
+#include "MsaEditorTreeTabArea.h"
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor)

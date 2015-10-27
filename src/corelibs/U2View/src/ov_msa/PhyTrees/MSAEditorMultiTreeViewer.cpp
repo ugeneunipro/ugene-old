@@ -19,23 +19,19 @@
 * MA 02110-1301, USA.
 */
 #include "MSAEditorMultiTreeViewer.h"
+#include "MsaEditorTreeTabArea.h"
 #include <U2View/GraphicsRectangularBranchItem.h>
-#include <U2View/MSAEditorDataList.h>
 #include <U2View/MSAEditor.h>
 #include <U2Gui/ObjectViewModel.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QVBoxLayout>
-#endif
 #include <U2Core/DocumentModel.h>
+#include <QVBoxLayout>
 
 
 namespace U2 {
 
 MSAEditorMultiTreeViewer::MSAEditorMultiTreeViewer(QString _title, MSAEditor* _editor)
 : editor(_editor) {
-    treeTabs = new MSAEditorTabWidgetArea(editor, this);
+    treeTabs = new MsaEditorTreeTabArea(editor, this);
     titleWidget = _editor->getUI()->createLabelWidget(_title);
     MSAWidget* title = dynamic_cast<MSAWidget*>(titleWidget);
     title->setHeightMargin(-55);
@@ -69,7 +65,7 @@ QWidget* MSAEditorMultiTreeViewer::getCurrentWidget() const {
     return treeTabs->getCurrentWidget();
 }
 
-UpdatedTabWidget* MSAEditorMultiTreeViewer::getCurrentTabWidget() const {
+MsaEditorTreeTab* MSAEditorMultiTreeViewer::getCurrentTabWidget() const {
     return treeTabs->getCurrentTabWidget();
 }
 

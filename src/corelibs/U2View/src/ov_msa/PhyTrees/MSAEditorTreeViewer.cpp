@@ -20,6 +20,7 @@
 */
 
 #include "MSAEditorTreeViewer.h"
+#include "MsaEditorTreeTabArea.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/PhyTree.h>
@@ -32,7 +33,6 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAEditorNameList.h>
-#include <U2View/MSAEditorDataList.h>
 
 #include <QCursor>
 #include <QDateTime>

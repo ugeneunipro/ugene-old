@@ -37,10 +37,10 @@
 namespace U2 {
 
 class MSAEditor;
-class MSAEditorTabWidgetArea;
+class MsaEditorTreeTabArea;
 class MSALabelWidget;
 class GObjectViewWindow;
-class UpdatedTabWidget;
+class MsaEditorTreeTab;
 
 class U2VIEW_EXPORT MSAEditorMultiTreeViewer: public QWidget {
     Q_OBJECT
@@ -52,7 +52,7 @@ public:
 
     QWidget* getCurrentWidget() const;
 
-    UpdatedTabWidget* getCurrentTabWidget() const;
+    MsaEditorTreeTab* getCurrentTabWidget() const;
 
     const QStringList& getTreeNames() const;
 signals:
@@ -60,7 +60,7 @@ signals:
 public slots:
     void sl_onTabCloseRequested(QWidget*);
 private:
-    MSAEditorTabWidgetArea*         treeTabs;
+    MsaEditorTreeTabArea*           treeTabs;
     QWidget*                        titleWidget;
     MSAEditor*                      editor;
     QList<QWidget*>                 treeViews;

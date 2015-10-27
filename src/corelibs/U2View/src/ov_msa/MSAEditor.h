@@ -62,11 +62,11 @@ class MSAEditorUndoFramework;
 class PhyTreeGeneratorLauncherTask;
 class MSAEditorTreeViewer;
 class MSACollapsibleItemModel;
-class MSAEditorSimilarityColumn;
+class MsaEditorSimilarityColumn;
 class MSADistanceMatrix;
 class MSASNPHighligtingScheme;
 class SimilarityStatisticsSettings;
-class MSAEditorAlignmentDependentWidget;
+class MsaEditorAlignmentDependentWidget;
 class TreeViewer;
 class MSAEditorMultiTreeViewer;
 class PairwiseAlignmentTask;
@@ -303,7 +303,7 @@ class U2VIEW_EXPORT MSAEditorUI : public QWidget {
     friend class MSAEditorNameList;
     friend class MSAEditorTreeViewer;
     friend class MSAEditor;
-    friend class MSAEditorSimilarityColumn;
+    friend class MsaEditorSimilarityColumn;
 
 public:
     MSAEditorUI(MSAEditor* editor);
@@ -336,7 +336,7 @@ public:
     void showSimilarity();
     void hideSimilarity();
 
-    const MSAEditorAlignmentDependentWidget* getSimilarityWidget(){return similarityStatistics;}
+    const MsaEditorAlignmentDependentWidget* getSimilarityWidget(){return similarityStatistics;}
 
     MSAEditorTreeViewer* getCurrentTree() const;
 
@@ -374,9 +374,9 @@ private:
     MSACollapsibleItemModel*        collapseModel;
     bool                            collapsibleMode;
 
-    MSAEditorSimilarityColumn*         dataList;
+    MsaEditorSimilarityColumn*         dataList;
     MSAEditorMultiTreeViewer*          multiTreeViewer;
-    MSAEditorAlignmentDependentWidget* similarityStatistics;
+    MsaEditorAlignmentDependentWidget* similarityStatistics;
     MSAEditorTreeViewer*               treeViewer;
 
     QAction                         *copySelectionAction;
