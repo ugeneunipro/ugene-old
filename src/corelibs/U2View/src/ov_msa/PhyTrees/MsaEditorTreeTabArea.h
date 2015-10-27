@@ -25,7 +25,7 @@
 #include <QPushButton>
 #include <QTabWidget>
 
-#include "../MSAUpdatedWidgetInterface.h"
+#include "../MsaUpdatedWidgetInterface.h"
 
 namespace U2
 {

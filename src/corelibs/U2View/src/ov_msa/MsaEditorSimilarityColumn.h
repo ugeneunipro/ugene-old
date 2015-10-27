@@ -29,7 +29,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 #include "MSAEditorNameList.h"
-#include "MSAUpdatedWidgetInterface.h"
+#include "MsaUpdatedWidgetInterface.h"
 
 
 namespace U2
