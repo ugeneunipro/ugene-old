@@ -304,7 +304,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
            src/ov_msa/PhyTrees/MsaEditorTreeTabArea.cpp \
-           src/ov_msa/PhyTrees/MsaEditorTreeViewer.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
