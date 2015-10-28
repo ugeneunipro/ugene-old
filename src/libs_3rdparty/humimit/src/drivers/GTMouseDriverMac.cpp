@@ -72,7 +72,7 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectArea"
-void GTMouseDriver::selectArea(U2OpStatus &os, const int x, const int y) {
+void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y) {
     Q_UNUSED(os);
 
     GT_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
@@ -121,7 +121,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doubleClick"
-void GTMouseDriver::doubleClick(U2OpStatus &os) {
+void GTMouseDriver::doubleClick(U2::U2OpStatus &os) {
     Q_UNUSED(os);
 
     QPoint mousePos = QCursor::pos();
@@ -154,7 +154,7 @@ void GTMouseDriver::doubleClick(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "scroll"
-void GTMouseDriver::scroll(U2OpStatus &os, int value)
+void GTMouseDriver::scroll(U2::U2OpStatus &os, int value)
 {
     CGEventRef event = CGEventCreateScrollWheelEvent(NULL, kCGScrollEventUnitPixel, 1, value > 0 ? 10 : -10);
     GT_CHECK(event != NULL, "Can't create event");

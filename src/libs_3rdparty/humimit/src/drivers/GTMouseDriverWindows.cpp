@@ -158,7 +158,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 }
 #undef GT_METHOD_NAME
 
-void GTMouseDriver::scroll(U2OpStatus &os, int value)
+void GTMouseDriver::scroll(U2::U2OpStatus &os, int value)
 {
     INPUT event;
     event.type = INPUT_MOUSE;

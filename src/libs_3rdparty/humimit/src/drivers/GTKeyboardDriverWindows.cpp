@@ -156,7 +156,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
     }
 }
 
-void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
@@ -266,7 +266,7 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 }
 
 #define GT_METHOD_NAME "keyClick"
-void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
 

@@ -24,6 +24,7 @@
 
 #include <QMap>
 #include "GTGlobals.h"
+#include <U2Core/U2OpStatus.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -37,10 +38,10 @@ class GTKeyboardDriver {
 public:
     //
 #if defined Q_OS_WIN || defined Q_OS_MAC
-    static void keyClick(U2OpStatus &os, char key, int modifiers = 0);
+    static void keyClick(U2:U2OpStatus &os, char key, int modifiers = 0);
 
-    static void keyPress(U2OpStatus &os, char key, int modifiers = 0);
-    static void keyRelease(U2OpStatus &os, char key, int modifiers = 0);
+    static void keyPress(U2:U2OpStatus &os, char key, int modifiers = 0);
+    static void keyRelease(U2:U2OpStatus &os, char key, int modifiers = 0);
 #if defined Q_OS_WIN
     static INPUT getKeyEvent(int key, bool keyUp = false);
 #endif
