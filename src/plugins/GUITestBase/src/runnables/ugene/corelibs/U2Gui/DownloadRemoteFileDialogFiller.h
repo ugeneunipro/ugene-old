@@ -25,6 +25,7 @@
 #include "GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class DownloadRemoteFileDialogFiller : public Filler {
 public:

@@ -24,6 +24,7 @@
 #include <QTextEdit>
 #include <QTreeWidget>
 
+#include <U2Core/global.h>
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelSequenceView.h"
@@ -31,7 +32,7 @@
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
@@ -40,6 +41,7 @@
 #include "api/GTWidget.h"
 
 namespace U2 {
+using namespace HI;
 
 QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::initNames() {
     QMap<Tabs,QString> result;

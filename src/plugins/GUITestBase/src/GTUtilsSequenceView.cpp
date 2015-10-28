@@ -56,17 +56,18 @@
 #include "GTUtilsSequenceView.h"
 
 #include "api/GTClipboard.h"
-#include "api/GTGlobals.h"
-#include "api/GTKeyboardDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTToolbar.h"
 
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTSequenceReader"
 #define GT_METHOD_NAME "run"

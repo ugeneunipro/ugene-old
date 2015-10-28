@@ -44,10 +44,10 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGraphicsItem.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
@@ -62,6 +62,7 @@
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 const int GTUtilsWorkflowDesigner::verticalShift = 35;
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"

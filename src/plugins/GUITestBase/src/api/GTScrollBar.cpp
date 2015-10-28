@@ -24,6 +24,7 @@
 
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTScrollBar"
 

@@ -22,7 +22,7 @@
 #ifndef GTUTILSTASK_H
 #define GTUTILSTASK_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class Task;
 

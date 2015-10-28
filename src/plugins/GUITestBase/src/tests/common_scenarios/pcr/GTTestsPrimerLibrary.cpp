@@ -33,9 +33,9 @@
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsLog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
@@ -43,7 +43,7 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_primer_library {
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsMdi::click(os, GTGlobals::Close);
     //The library is the singleton MDI window

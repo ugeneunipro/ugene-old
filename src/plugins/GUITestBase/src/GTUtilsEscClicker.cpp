@@ -19,12 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 #include "GTUtilsEscClicker.h"
 
 namespace U2 {
+using namespace HI;
 
 GTUtilsEscClicker::GTUtilsEscClicker( U2OpStatus &_os, const QString &menuObjectName, bool _mouse )
     : Filler( _os, GUIDialogWaiter::WaitSettings( menuObjectName, GUIDialogWaiter::Popup ) ),

@@ -37,9 +37,9 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTWidget.h"
@@ -60,7 +60,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_options_panel_sequence_view{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //checking 'next' 'prev' buttons functionality
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");

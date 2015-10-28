@@ -21,7 +21,7 @@
 
 #include "DatasetNameEditDialogFiller.h"
 #include "api/GTLineEdit.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -30,6 +30,7 @@
 #endif
 
 namespace U2{
+using namespace HI;
 
 #define GT_CLASS_NAME "DatasetNameEditDialogFiller"
 #define GT_METHOD_NAME "run"

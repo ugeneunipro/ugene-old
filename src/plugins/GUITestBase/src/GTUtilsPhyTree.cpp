@@ -28,10 +28,11 @@
 
 #include "GTUtilsMdi.h"
 #include "GTUtilsPhyTree.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
+using namespace HI;
 
 const int widthMin = 7;
 const int widthMax = 9;

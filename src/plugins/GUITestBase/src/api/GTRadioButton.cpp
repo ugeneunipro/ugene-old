@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2IdTypes.h>
 #include "GTRadioButton.h"
 #include "GTWidget.h"
 #include <U2Gui/MainWindow.h>
@@ -31,11 +32,11 @@
 #endif
 
 
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 namespace U2 {
-
+using namespace HI;
 #define GT_CLASS_NAME "GTRadioButton"
 
 #define GT_METHOD_NAME "click"

@@ -22,9 +22,11 @@
 #ifndef _U2_GUI_DOCUMENT_UTILS_H_
 #define _U2_GUI_DOCUMENT_UTILS_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
+#include <U2Core/U2IdTypes.h>
 
 namespace U2 {
+using namespace HI;
 
 class GObjectView;
 class Document;

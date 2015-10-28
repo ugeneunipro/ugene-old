@@ -30,7 +30,7 @@
 
 #include "GTUtilsProject.h"
 #include "api/GTFileDialog.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTTreeWidget.h"
 
@@ -47,7 +47,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_sw_dialog {
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //Performing Smith-Waterman algorithm with multiple alignment as result
 //

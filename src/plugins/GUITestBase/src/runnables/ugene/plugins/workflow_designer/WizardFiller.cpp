@@ -25,10 +25,10 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTRadioButton.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -56,7 +56,7 @@
 #include "GTUtilsWizard.h"
 
 namespace U2 {
-
+using namespace HI;
 
 #define GET_ACTIVE_DIALOG QWidget* dialog = QApplication::activeModalWidget();\
                           GT_CHECK(dialog, "activeModalWidget is NULL");\

@@ -23,6 +23,7 @@
 #include "U2Core/LogCache.h"
 
 namespace U2 {
+using namespace HI;
 
 GTLogTracer::GTLogTracer(QString _expectedMessage)
 : wasError(false), wasMessage(false), expectedMessage(_expectedMessage) {

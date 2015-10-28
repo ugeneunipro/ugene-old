@@ -20,10 +20,10 @@
  */
 
 #include "GTTestsFromProjectView.h"
-#include "api/GTGlobals.h"
-#include "api/GTKeyboardDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTTreeWidget.h"
@@ -52,6 +52,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_project_sequence_exporting_from_project_view {
+using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 

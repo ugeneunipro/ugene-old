@@ -24,7 +24,7 @@
 
 #include <U2View/TreeViewer.h>
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

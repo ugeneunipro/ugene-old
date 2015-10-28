@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_APP_UTILS_H_
 #define _U2_GUI_APP_UTILS_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

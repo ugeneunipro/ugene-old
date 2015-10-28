@@ -20,8 +20,8 @@
  */
 
 #include "GTTestsAnnotationsEdit.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
@@ -41,7 +41,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_annotations_edit {
-
+using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     // Rename annotation

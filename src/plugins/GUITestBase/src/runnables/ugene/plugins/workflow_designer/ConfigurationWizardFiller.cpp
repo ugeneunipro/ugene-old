@@ -23,11 +23,12 @@
 
 #include "ConfigurationWizardFiller.h"
 #include "GTUtilsWizard.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "ConfigurationWizardFiller"
 

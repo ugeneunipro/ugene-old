@@ -24,12 +24,12 @@
 #include <QTreeView>
 
 #include "GTTestsProjectSequenceExporting.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTComboBox.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTFile.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsAnnotationsTreeView.h"
@@ -61,6 +61,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_project_sequence_exporting {
+using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj

@@ -24,7 +24,7 @@
 
 #include <QtCore/QModelIndex>
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

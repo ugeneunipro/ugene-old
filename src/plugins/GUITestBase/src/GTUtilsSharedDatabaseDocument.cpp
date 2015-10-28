@@ -34,7 +34,7 @@
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h"
@@ -42,6 +42,7 @@
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsSharedDatabaseDocument"
 

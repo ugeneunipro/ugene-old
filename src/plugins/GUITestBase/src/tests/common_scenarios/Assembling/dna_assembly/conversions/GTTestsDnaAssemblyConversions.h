@@ -22,6 +22,7 @@
 #ifndef _U2_GUITEST_DNA_ASSEMBLY_CONVERSIONS_H_
 #define _U2_GUITEST_DNA_ASSEMBLY_CONVERSIONS_H_
 
+#include <U2Core/global.h>
 #include <U2Test/GUITestBase.h>
 
 namespace U2 {

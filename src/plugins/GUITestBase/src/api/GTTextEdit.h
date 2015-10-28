@@ -22,7 +22,7 @@
 #ifndef _U2_GT_TEXTEDIT_H_
 #define _U2_GT_TEXTEDIT_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTextEdit>

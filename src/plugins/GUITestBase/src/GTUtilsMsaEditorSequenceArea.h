@@ -22,7 +22,7 @@
 #ifndef GTUTILSMSAEDITORSEQUENCEAREA_H
 #define GTUTILSMSAEDITORSEQUENCEAREA_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include <U2View/MSAEditorSequenceArea.h>
 

@@ -23,7 +23,6 @@
 #include <QWebFrame>
 #include <QWebView>
 
-#include "api/GTMouseDriver.h"
 #include "api/GTWebView.h"
 #include "api/GTWidget.h"
 

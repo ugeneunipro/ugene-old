@@ -20,8 +20,8 @@
  */
 
 #include "EditSequenceDialogFiller.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
@@ -39,6 +39,7 @@
 #include <QGroupBox>
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::insertSequenceFiller"
 InsertSequenceFiller::InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode, int _insertPosition,

@@ -23,11 +23,12 @@
 #define U2_GUI_GTMOUSE_H
 
 #include "GTMouse.h"
-#include "api/GTGlobals.h"
-#include "GTMouseDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTMouseDriver.h"
 #include <QtGui/QCursor>
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTMouse"
 

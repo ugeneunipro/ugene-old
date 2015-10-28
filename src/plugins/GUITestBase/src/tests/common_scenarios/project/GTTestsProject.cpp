@@ -46,11 +46,11 @@
 #include "api/GTClipboard.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "api/GTGlobals.h"
-#include "api/GTKeyboardDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWebView.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -73,7 +73,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_project{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");

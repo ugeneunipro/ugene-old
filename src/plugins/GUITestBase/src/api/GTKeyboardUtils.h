@@ -22,8 +22,8 @@
 #ifndef GTKEYBOARD_UTILS_H
 #define GTKEYBOARD_UTILS_H
 
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include "drivers/GTKeyboardDriver.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

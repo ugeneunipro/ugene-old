@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "GTKeyboardUtils.h"
 
 namespace U2 {
+using namespace HI;
 
 void GTKeyboardUtils::selectAll(U2OpStatus &os)
 {

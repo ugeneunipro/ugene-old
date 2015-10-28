@@ -23,7 +23,7 @@
 #define _U2_GUI_GTKEYBOARDDRIVER_H_
 
 #include <QMap>
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -31,7 +31,7 @@
 
 #define ADD_KEY(name, code) insert(name, code)
 
-namespace U2 {
+namespace HI {
 
 class GTKeyboardDriver {
 public:
@@ -49,11 +49,11 @@ public:
     // fails if key == 0
     // Linux: fails if there is an opening X display error
 
-    static void keyClick(U2OpStatus &os, int key, int modifiers = 0);
-    static void keySequence(U2OpStatus &os, const QString &str, int modifiers = 0);
+    static void keyClick(U2::U2OpStatus &os, int key, int modifiers = 0);
+    static void keySequence(U2::U2OpStatus &os, const QString &str, int modifiers = 0);
 
-    static void keyPress(U2OpStatus &os, int key, int modifiers = 0);
-    static void keyRelease(U2OpStatus &os, int key, int modifiers = 0);
+    static void keyPress(U2::U2OpStatus &os, int key, int modifiers = 0);
+    static void keyRelease(U2::U2OpStatus &os, int key, int modifiers = 0);
 
     class keys : private QMap<QString, int> {
     public:

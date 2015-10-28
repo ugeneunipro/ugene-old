@@ -21,10 +21,11 @@
 
 #include "GTTextEdit.h"
 #include "GTWidget.h"
-#include "GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "GTKeyboardUtils.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTTextEdit"
 

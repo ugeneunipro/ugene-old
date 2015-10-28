@@ -29,9 +29,9 @@
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSpinBox.h"
@@ -40,6 +40,7 @@
 #include "ImportAnnotationsToCsvFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportAnnotationsToCsvFiller"
 

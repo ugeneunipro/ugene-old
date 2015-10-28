@@ -20,14 +20,14 @@
  */
 
 #include "GTTestsUndoRedo.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "api/GTClipboard.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsDialog.h"
@@ -47,6 +47,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_undo_redo{
+using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001){//DIFFERENCE: lock document is checked
 //Check Undo/Redo functional

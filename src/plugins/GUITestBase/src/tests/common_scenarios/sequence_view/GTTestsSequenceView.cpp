@@ -23,15 +23,15 @@
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTGlobals.h"
+#include "drivers/GTMouseDriver.h"
+#include "GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/GTAction.h"
 #include "api/GTMenu.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTSequenceReadingModeDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsAnnotationsTreeView.h"
@@ -82,7 +82,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_sequence_view {
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 //    disable circular view for protein sequences (0002400)
 

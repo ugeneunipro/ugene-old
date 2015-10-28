@@ -21,10 +21,10 @@
 
 #include "GTTestsProjectDocumentModifying.h"
 #include "api/GTMenu.h"
-#include "api/GTGlobals.h"
-#include "api/GTMouseDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
@@ -41,7 +41,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_project_document_modifying{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
