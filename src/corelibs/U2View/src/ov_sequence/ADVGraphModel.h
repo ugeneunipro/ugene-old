@@ -87,6 +87,7 @@ struct PairVector {
     QVector<float>  firstPoints;  //max if use both
     QVector<float>  secondPoints;
     QVector<float>  cutoffPoints;
+    QVector<float>  allCutoffPoints;
     bool useIntervals;
 
     bool isEmpty() const;
@@ -185,22 +186,27 @@ public:
 
 };
 
-class CalculatePointsTask : public BackgroundTask<PairVector> {
-    Q_OBJECT
+class GraphPointsUpdater {
 public:
-    CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata,  U2SequenceObject* o, const U2Region &visibleRange);
-    virtual void run();
-private:
-    // calculates points (> visual area size) and fits the result into visual size
-    void calculateWithFit(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedStart, int alignedEnd, U2OpStatus &os);
+    GraphPointsUpdater(const QSharedPointer<GSequenceGraphData>& d, int numPoints, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange, U2OpStatus& os);
+
+    void recalculateGraphData();
+
+    void updateGraphData();
+
+    void calculateWithFit();
 
     // calculates points (< visual area size) and expands points to fill all visual area size
-    void calculateWithExpand(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedStart, int alignedEnd, U2OpStatus &os);
+    void calculateWithExpand();
 
-    void calculateCutoffPoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os);
+    void calculateCutoffPoints();
+
+    QVector<float> getCutoffRegion(int regionStart, int regionEnd);
+
+private:
+    void setChahedDataParametrs();
 
     QSharedPointer<GSequenceGraphData> d;
-    GSequenceGraphDrawer *drawer;
     PairVector result;
     int alignedFirst;
     int alignedLast;
@@ -208,6 +214,16 @@ private:
     const GSequenceGraphWindowData wdata;
     QPointer<U2SequenceObject> o;
     const U2Region visibleRange;
+    U2OpStatus& os;
+};
+
+class CalculatePointsTask : public BackgroundTask<PairVector> {
+    Q_OBJECT
+public:
+    CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, int numPoints, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange);
+    virtual void run();
+private:
+    GraphPointsUpdater graphUpdater;
 };
 
 } // namespace

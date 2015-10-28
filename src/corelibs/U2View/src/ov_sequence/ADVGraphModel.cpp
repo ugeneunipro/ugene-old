@@ -784,10 +784,7 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
     points.firstPoints.fill(UNKNOWN_VAL);
     points.secondPoints.resize(numPoints);
     points.secondPoints.fill(UNKNOWN_VAL);
-    /*
-    points.cutoffPoints.resize(seqLen - win);
-    points.cutoffPoints.fill(UNKNOWN_VAL);
-    */
+
     min = UNKNOWN_VAL;
     max = UNKNOWN_VAL;
     int alignedFirst = 0; //start point for the first window
@@ -798,14 +795,19 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
     bool winStepNotChanged = win == d->cachedW && step == d->cachedS ;
     bool numPointsNotChanged = numPoints == d->cachedData.firstPoints.size();
 
-    bool isCacheValid = vr.length == d->cachedLen && vr.startPos == d->cachedFrom && winStepNotChanged;
-    bool useCached = isCacheValid && numPointsNotChanged;
-
-    if (!calculationTaskRunner.isIdle() && isCacheValid && d->cachedData.firstPoints.size() == 0) { //first time calculation condition
+    if (!calculationTaskRunner.isIdle() && winStepNotChanged && d->cachedData.firstPoints.size() == 0) { //first time calculation condition
         return;
     }
     CalculatePointsTask *calculationTask = NULL;
-    if (useCached) {
+    if (winStepNotChanged) {
+        bool isCacheValid = vr.length == d->cachedLen && vr.startPos == d->cachedFrom;
+        bool isWindowCorrect = alignedLast != alignedFirst && alignedFirst + wdata.window <= seqLen;
+        if ((!isCacheValid || d->cachedData.firstPoints.size() != numPoints) && isWindowCorrect) {
+            U2OpStatusImpl os;
+            GraphPointsUpdater graphUpdater(d, numPoints, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr, os);
+            graphUpdater.updateGraphData();
+        }
+
         points = d->cachedData;
     } else if (nSteps > numPoints) {
         points.useIntervals = true;
@@ -817,27 +819,20 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
                         && (qAbs(alignedFirst - d->alignedFC) < basesPerPoint);
 
         if (offsetIsTooSmall && winStepNotChanged && numPointsNotChanged && vr.length == d->cachedLen ) {
-            useCached = true;
             points = d->cachedData;
         } else {
-            calculationTask = new CalculatePointsTask(d, this, points, alignedFirst, alignedLast, false, wdata, view->getSequenceObject(), vr);
+            calculationTask = new CalculatePointsTask(d, numPoints, alignedFirst, alignedLast, false, wdata, view->getSequenceObject(), vr);
         }
     } else {
         points.useIntervals = false;
         if(vr.startPos + win2 <= seqLen){
-            calculationTask = new CalculatePointsTask(d, this, points, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr);
+            calculationTask = new CalculatePointsTask(d, numPoints, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr);
         }
     }
 
     if (calculationTask != NULL) {
         calculationTaskRunner.run(calculationTask);
         d->cachedData = PairVector();
-        d->cachedFrom = vr.startPos;
-        d->cachedLen = vr.length;
-        d->cachedW = win;
-        d->cachedS = step;
-        d->alignedFC = alignedFirst;
-        d->alignedLC = alignedLast;
         return;
     }
 
@@ -867,18 +862,6 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
 
         }
     }
-    if (useCached) {
-        return;
-    }
-
-    // cache this result
-    d->cachedData = points;
-    d->cachedFrom = vr.startPos;
-    d->cachedLen = vr.length;
-    d->cachedW = win;
-    d->cachedS = step;
-    d->alignedFC = alignedFirst;
-    d->alignedLC = alignedLast;
 }
 
 void GSequenceGraphDrawer::showSettingsDialog() {
@@ -905,50 +888,72 @@ bool PairVector::isEmpty()const {
     return firstPoints == emptyFp && secondPoints == emptySp && cutoffPoints == emptyCutoff;
 }
 
-CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange)
+CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, int numPoints, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange)
     : BackgroundTask<PairVector>(tr("Calculate graph points"), TaskFlag_None),
-      d(d),
-      drawer(drawer),
-      result(points),
-      alignedFirst(alignedFirst),
-      alignedLast(alignedLast),
-      expandMode(expandMode),
-      wdata(wdata),
-      o(o),
-      visibleRange(visibleRange) {}
+    graphUpdater(d, numPoints, alignedFirst, alignedLast, expandMode, wdata, o, visibleRange, stateInfo)
+{
+}
 
 void CalculatePointsTask::run() {
-    if(o.isNull()){
-        return;
+    graphUpdater.recalculateGraphData();
+}
+
+GraphPointsUpdater::GraphPointsUpdater(const QSharedPointer<GSequenceGraphData>& d, int numPoints, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata,
+    U2SequenceObject* o, const U2Region &visibleRange, U2OpStatus& os)
+    : d(d),
+    alignedFirst(alignedFirst),
+    alignedLast(alignedLast),
+    expandMode(expandMode),
+    wdata(wdata),
+    o(o),
+    visibleRange(visibleRange),
+    os(os)
+{
+    result.firstPoints.resize(numPoints);
+    result.firstPoints.fill(GSequenceGraphDrawer::UNKNOWN_VAL);
+    result.secondPoints.resize(numPoints);
+    result.secondPoints.fill(GSequenceGraphDrawer::UNKNOWN_VAL);
+}
+
+void GraphPointsUpdater::recalculateGraphData() {
+    CHECK(!o.isNull(),);
+
+    QVector<float> newCutoff;
+    int lastAligned = o->getSequenceLength() - o->getSequenceLength() % wdata.step;
+    U2Region r = U2Region(0, lastAligned);
+    d->ga->calculate(result.allCutoffPoints, o, r, &wdata, os);
+
+    updateGraphData();
+}
+
+void GraphPointsUpdater::updateGraphData() {
+    setChahedDataParametrs();
+
+    if (result.allCutoffPoints.isEmpty()) {
+        result.allCutoffPoints = d->cachedData.allCutoffPoints;
     }
-    calculateCutoffPoints(d, result, alignedFirst, alignedLast, stateInfo);
-    CHECK_OP(stateInfo, );
+    calculateCutoffPoints();
+    CHECK_OP(os, );
     if (expandMode) {
-        calculateWithExpand(d, result, alignedFirst, alignedLast, stateInfo);
+        calculateWithExpand();
     } else {
-        calculateWithFit(d, result, alignedFirst, alignedLast, stateInfo);
+        calculateWithFit();
     }
-    CHECK_OP(stateInfo, );
+    CHECK_OP(os, );
 
     d->cachedData = result;
+    d->cachedData.useIntervals = !expandMode;
 }
 
-void CalculatePointsTask::calculateCutoffPoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os){
-    Q_UNUSED(alignedFirst);
-    Q_UNUSED(alignedLast);
-    points.cutoffPoints.clear();
+QVector<float> GraphPointsUpdater::getCutoffRegion(int regionStart, int regionEnd) {
+    int firstPointIndex = regionStart / wdata.step;
+    int lastPointIndex = qMin(regionEnd / wdata.step + 1, (qint64)result.allCutoffPoints.length());
 
-    int win = wdata.window;
-    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    if (r.startPos + win > o->getSequenceLength()) {
-        return;
-    }
-
-    d->ga->calculate(points.cutoffPoints, o, r, &wdata, os);
+    return result.allCutoffPoints.mid(firstPointIndex, lastPointIndex - firstPointIndex);
 }
 
-void CalculatePointsTask::calculateWithFit(const QSharedPointer<GSequenceGraphData>&, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os) {
-    int nPoints = points.firstPoints.size();
+void GraphPointsUpdater::calculateWithFit() {
+    int nPoints = result.firstPoints.size();
     float basesPerPoint = (alignedLast - alignedFirst) / float(nPoints);
     CHECK(int(basesPerPoint) >= wdata.step, ); //ensure that every point is associated with some step data
     QVector<float> pointData;
@@ -959,42 +964,39 @@ void CalculatePointsTask::calculateWithFit(const QSharedPointer<GSequenceGraphDa
     for (int i = 0; i < nPoints; i++) {
         pointData.clear();
         qint64 startPos = alignedFirst + qint64(i * basesPerPoint);
-        U2Region r(startPos, len);
+        qint64 endPos = startPos + len;
+        CHECK(endPos <= lastBase, );
 
-        CHECK(r.endPos() <= lastBase, );
+        pointData = GraphPointsUpdater::getCutoffRegion(startPos, endPos - wdata.window);
 
-        d->ga->calculate(pointData, o, r, &wdata, os);
         CHECK_OP(os, );
         float min, max;
         GSequenceGraphUtils::calculateMinMax(pointData, min, max, os);
         CHECK_OP(os, );
 
-        points.firstPoints[i] = max; //BUG:422: support interval based graph!!!
-        points.secondPoints[i] = min;
+        result.firstPoints[i] = max; //BUG:422: support interval based graph!!!
+        result.secondPoints[i] = min;
     }
 }
 
-void CalculatePointsTask::calculateWithExpand(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os) {
+void GraphPointsUpdater::calculateWithExpand() {
     int win = wdata.window;
-    int win2 = (win+1)/2;
+    int win2 = (win + 1) / 2;
     int step = wdata.step;
-    assert((alignedLast - alignedFirst) % step == 0);
+    SAFE_POINT((alignedLast - alignedFirst) % step == 0, "Incorrect region for graph calculation is detected", );
 
-    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    QVector<float> res;
-
-    if( r.startPos + win > o->getSequenceLength() ){
+    if (alignedFirst + win > o->getSequenceLength()){
         return;
     }
 
-    d->ga->calculate(res, o, r, &wdata, os);
-    CHECK_OP(os, );
+    QVector<float> res = getCutoffRegion(alignedFirst, alignedLast);
 
-    assert(alignedFirst + win2 + step >= visibleRange.startPos); //0 or 1 step is before the visible range
-    assert(alignedLast + win2 - step <= visibleRange.endPos()); //0 or 1 step is after the the visible range
+    //0 or 1 step is before the visible range
+    SAFE_POINT(alignedFirst + win2 + step >= visibleRange.startPos, "Incorrect region for graph calculation is detected", );
+    SAFE_POINT(alignedLast + win2 - step <= visibleRange.endPos(), "Incorrect region for graph calculation is detected", );
 
     bool hasBeforeStep = alignedFirst + win2 < visibleRange.startPos;
-    bool hasAfterStep  = alignedLast + win2 >= visibleRange.endPos();
+    bool hasAfterStep = alignedLast + win2 >= visibleRange.endPos();
 
     int firstBaseOffset = hasBeforeStep ?
         (step - (visibleRange.startPos - (alignedFirst + win2)))
@@ -1003,39 +1005,55 @@ void CalculatePointsTask::calculateWithExpand(const QSharedPointer<GSequenceGrap
         (step - (alignedLast + win2 - visibleRange.endPos()))  //extra step on the right is available
         : (visibleRange.endPos() - (alignedLast + win2)); // no extra step available -> end of the sequence
 
-    assert(firstBaseOffset >= 0 && lastBaseOffset >= 0);
-    assert(hasBeforeStep ? (firstBaseOffset < step && firstBaseOffset!=0): firstBaseOffset <= win2);
-    assert(hasAfterStep ? (lastBaseOffset <= step && lastBaseOffset !=0) : lastBaseOffset < win2 + step);
+    SAFE_POINT(firstBaseOffset >= 0 && lastBaseOffset >= 0, "Incorrect offset is detected",);
+    SAFE_POINT(hasBeforeStep ? (firstBaseOffset < step && firstBaseOffset != 0) : firstBaseOffset <= win2, "Incorrect offset is detected",);
+    SAFE_POINT(hasAfterStep ? (lastBaseOffset <= step && lastBaseOffset != 0) : lastBaseOffset < win2 + step, "Incorrect offset is detected",);
 
-    float base2point = points.firstPoints.size() / (float)visibleRange.length;
+    float base2point = result.firstPoints.size() / (float)visibleRange.length;
 
     int ri = hasBeforeStep ? 1 : 0;
-    int rn = hasAfterStep ? res.size()-1 : res.size();
-    for (int i=0;  ri < rn; ri++, i++) {
+    int rn = hasAfterStep ? res.size() - 1 : res.size();
+    for (int i = 0; ri < rn; ri++, i++) {
         int b = firstBaseOffset + i * step;
         int px = int(b * base2point);
-        assert(px < points.firstPoints.size());
-        points.firstPoints[px] = res[ri];
+        CHECK_BREAK(px < result.firstPoints.size());
+        result.firstPoints[px] = res[ri];
     }
 
     //restore boundary points if possible
-    if(res.size() < 2){
+    if (res.size() < 2){
         return;
     }
 
     if (hasBeforeStep && !GSequenceGraphDrawer::isUnknownValue(res[0]) && !GSequenceGraphDrawer::isUnknownValue(res[1])) {
         assert(firstBaseOffset > 0);
         float k = firstBaseOffset / (float)step;
-        float val = res[1] + (res[0]-res[1])*k;
-        points.firstPoints[0] = val;
+        float val = res[1] + (res[0] - res[1])*k;
+        result.firstPoints[0] = val;
     }
 
-    if (hasAfterStep && !GSequenceGraphDrawer::isUnknownValue(res[rn-1]) &&  !GSequenceGraphDrawer::isUnknownValue(res[rn])) {
+    if (hasAfterStep && !GSequenceGraphDrawer::isUnknownValue(res[rn - 1]) && !GSequenceGraphDrawer::isUnknownValue(res[rn])) {
         assert(lastBaseOffset > 0);
         float k = lastBaseOffset / (float)step;
-        float val = res[rn-1] + (res[rn]-res[rn-1])*k;
-        points.firstPoints[points.firstPoints.size()-1] = val;
+        float val = res[rn - 1] + (res[rn] - res[rn - 1])*k;
+        result.firstPoints[result.firstPoints.size() - 1] = val;
     }
+}
+
+void GraphPointsUpdater::calculateCutoffPoints(){
+    if (alignedFirst + wdata.window > o->getSequenceLength()) {
+        return;
+    }
+    d->cachedData.cutoffPoints = GraphPointsUpdater::getCutoffRegion(alignedFirst, alignedLast);
+}
+
+void GraphPointsUpdater::setChahedDataParametrs() {
+    d->cachedFrom = visibleRange.startPos;
+    d->cachedLen = visibleRange.length;
+    d->cachedW = wdata.window;
+    d->cachedS = wdata.step;
+    d->alignedFC = alignedFirst;
+    d->alignedLC = alignedLast;
 }
 
 PairVector::PairVector():useIntervals(false) {}
