@@ -2501,10 +2501,10 @@ void MSAEditorSequenceArea::processCharacterInEditMode(QKeyEvent *e) {
 
     QString text = e->text().toUpper();
     if (1 == text.length()) {
-        QRegExp latinCharacterOrGap("([A-Z]| |-|–)");
+        QRegExp latinCharacterOrGap("([A-Z]| |-|â€“)");
         if (latinCharacterOrGap.exactMatch(text)) {
             char newChar = text.toLatin1().at(0);
-            newChar = (newChar == '-' || newChar == '–' || newChar == ' ') ? MAlignment_GapChar : newChar;
+            newChar = (newChar == '-' || newChar == 'â€“' || newChar == ' ') ? MAlignment_GapChar : newChar;
             replaceSelectedCharacter(newChar);
         }
         else {
