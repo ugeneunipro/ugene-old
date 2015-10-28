@@ -24,7 +24,7 @@
 
 #include <QAbstractItemModel>
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include <U2Gui/ProjectTreeController.h>
 
 class QTreeView;
@@ -32,6 +32,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsProjectTreeView {
 public:

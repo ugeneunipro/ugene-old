@@ -20,14 +20,14 @@
  */
 
 #include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 #ifdef  Q_OS_MAC
 #include <ApplicationServices/ApplicationServices.h>
 #include <Carbon/Carbon.h>
 #endif
 
-namespace U2 {
+namespace HI {
 
 #ifdef  Q_OS_MAC
 

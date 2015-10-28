@@ -25,8 +25,8 @@
 #include "api/GTSpinBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTCheckBox.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -49,6 +49,7 @@
 
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExtractSelectedAsMSADialogFiller"
 #define GT_METHOD_NAME "run"

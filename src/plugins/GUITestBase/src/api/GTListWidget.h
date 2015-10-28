@@ -23,7 +23,7 @@
 #ifndef _U2_GT_LISTWIDGET_H_
 #define _U2_GT_LISTWIDGET_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class QListWidget;
 

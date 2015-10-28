@@ -28,12 +28,13 @@
 #include "GTUtilsPrimerLibrary.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTTableView.h"
 #include "api/GTWidget.h"
 #include "runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsPrimerLibrary"
 

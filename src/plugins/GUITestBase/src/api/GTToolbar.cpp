@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2IdTypes.h>
 #include "GTToolbar.h"
 #include "GTWidget.h"
 #include <U2Gui/MainWindow.h>

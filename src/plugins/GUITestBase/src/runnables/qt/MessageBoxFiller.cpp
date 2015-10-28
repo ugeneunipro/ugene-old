@@ -23,7 +23,7 @@
 #include <QApplication>
 
 #include "MessageBoxFiller.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
 

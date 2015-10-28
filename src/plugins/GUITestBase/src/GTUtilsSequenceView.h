@@ -23,7 +23,7 @@
 #define _U2_GT_UTILS_SEQUENCE_VIEW_H
 
 #include <QString>
-#include <api/GTGlobals.h>
+#include <GTGlobals.h>
 
 namespace U2 {
 

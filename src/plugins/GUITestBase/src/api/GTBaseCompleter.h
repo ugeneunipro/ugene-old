@@ -23,7 +23,7 @@
 #ifndef U2_GT_BASECOMPLETER_H
 #define U2_GT_BASECOMPLETER_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class QTreeWidget;
 

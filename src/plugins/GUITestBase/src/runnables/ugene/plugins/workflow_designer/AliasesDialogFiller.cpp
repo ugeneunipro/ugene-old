@@ -32,10 +32,11 @@
 
 #include "api/GTWidget.h"
 #include "api/GTTableView.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 namespace U2{
+using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
 #define GT_METHOD_NAME "run"
 

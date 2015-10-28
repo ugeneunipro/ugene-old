@@ -20,8 +20,8 @@
  */
 
 #include "GTTestsProjectRelations.h"
-#include "api/GTGlobals.h"
-#include "api/GTMouseDriver.h"
+#include "GTGlobals.h"
+#include "drivers/GTMouseDriver.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
@@ -31,7 +31,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_project_relations{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");

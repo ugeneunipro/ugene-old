@@ -32,66 +32,13 @@
 #include <QtWidgets/QAction>
 #endif
 
-namespace U2 {
+#ifdef BUILDING_HUMIMIT_DLL
+#   define HI_EXPORT Q_DECL_EXPORT
+#else
+#   define HI_EXPORT Q_DECL_IMPORT
+#endif
 
-#define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
-{ \
-    uiLog.trace("\n------------"); \
-    uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
-    uiLog.trace("GT_DEBUG_MESSAGE errorMessage <" + QString(errorMessage) + ">"); \
-    if (condition) { \
-        uiLog.trace("GT_DEBUG_MESSAGE ok"); \
-    } \
-    else { \
-        uiLog.trace("GT_DEBUG_MESSAGE FAILED"); \
-    } \
-    if (os.hasError()) { \
-        uiLog.trace("GT_DEBUG_MESSAGE OpStatus already has error"); \
-        uiLog.trace("GT_DEBUG_MESSAGE OpStatus error <" + os.getError() + ">"); \
-    } \
-    uiLog.trace("------------\n"); \
-}
-
-/** Used in tests */
-#define CHECK_SET_ERR(condition, errorMessage) \
-    CHECK_SET_ERR_RESULT(condition, errorMessage, )
-
-#define CHECK_SET_ERR_NO_MESSAGE(condition, errorMessage) \
-    if(!condition){ \
-    CHECK_SET_ERR(condition, errorMessage) \
-}
-
-#define CHECK_OP_SET_ERR(os, errorMessage) \
-    CHECK_SET_ERR(!os.isCoR(), errorMessage)
-
-#define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
-{ \
-    GT_DEBUG_MESSAGE(condition, errorMessage, result); \
-    if (os.hasError()) { GTGlobals::GUITestFail(); os.setError(os.getError()); return result; } \
-    CHECK_EXT(condition, if (!os.hasError()) { GTGlobals::GUITestFail(); os.setError(errorMessage);}, result) \
-}
-
-#define CHECK_OP_SET_ERR_RESULT(os, errorMessage, result) \
-    CHECK_SET_ERR_RESULT(!os.isCoR(), errorMessage, result)
-
-/** Used in util methods */
-#define GT_CHECK(condition, errorMessage) \
-    GT_CHECK_RESULT(condition, errorMessage, )
-
-#define GT_CHECK_NO_MESSAGE(condition, errorMessage) \
-    if (!(condition)) { \
-    GT_CHECK(condition, errorMessage) \
-}
-
-#define GT_CHECK_RESULT(condition, errorMessage, result) \
-    CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " __ " GT_METHOD_NAME " _  " + QString(errorMessage), result)
-
-#define GT_CHECK_OP(os, errorMessage) \
-    GT_CHECK(!os.isCoR(), errorMessage)
-
-#define GT_CHECK_OP_RESULT(os, errorMessage, result) \
-    GT_CHECK_RESULT(!os.isCoR(), errorMessage, result)
-
+namespace HI {
 
 class GTGlobals {
 public:
@@ -116,6 +63,64 @@ public:
     static void takeScreenShot(QString path);
     static void GUITestFail();
 };
+
+#define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
+{ \
+    U2::uiLog.trace("\n------------"); \
+    U2::uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
+    U2::uiLog.trace("GT_DEBUG_MESSAGE errorMessage <" + QString(errorMessage) + ">"); \
+    if (condition) { \
+        U2::uiLog.trace("GT_DEBUG_MESSAGE ok"); \
+    } \
+    else { \
+        U2::uiLog.trace("GT_DEBUG_MESSAGE FAILED"); \
+    } \
+    if (os.hasError()) { \
+        U2::uiLog.trace("GT_DEBUG_MESSAGE OpStatus already has error"); \
+        U2::uiLog.trace("GT_DEBUG_MESSAGE OpStatus error <" + os.getError() + ">"); \
+    } \
+    U2::uiLog.trace("------------\n"); \
+}
+
+/** Used in tests */
+#define CHECK_SET_ERR(condition, errorMessage) \
+    CHECK_SET_ERR_RESULT(condition, errorMessage, )
+
+#define CHECK_SET_ERR_NO_MESSAGE(condition, errorMessage) \
+    if(!condition){ \
+    CHECK_SET_ERR(condition, errorMessage) \
+}
+
+#define CHECK_OP_SET_ERR(os, errorMessage) \
+    CHECK_SET_ERR(!os.isCoR(), errorMessage)
+
+#define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
+{ \
+    GT_DEBUG_MESSAGE(condition, errorMessage, result); \
+    if (os.hasError()) { HI::GTGlobals::GUITestFail(); os.setError(os.getError()); return result; } \
+    CHECK_EXT(condition, if (!os.hasError()) { HI::GTGlobals::GUITestFail(); os.setError(errorMessage);}, result) \
+}
+
+#define CHECK_OP_SET_ERR_RESULT(os, errorMessage, result) \
+    CHECK_SET_ERR_RESULT(!os.isCoR(), errorMessage, result)
+
+/** Used in util methods */
+#define GT_CHECK(condition, errorMessage) \
+    GT_CHECK_RESULT(condition, errorMessage, )
+
+#define GT_CHECK_NO_MESSAGE(condition, errorMessage) \
+    if (!(condition)) { \
+    GT_CHECK(condition, errorMessage) \
+}
+
+#define GT_CHECK_RESULT(condition, errorMessage, result) \
+    CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " __ " GT_METHOD_NAME " _  " + QString(errorMessage), result)
+
+#define GT_CHECK_OP(os, errorMessage) \
+    GT_CHECK(!os.isCoR(), errorMessage)
+
+#define GT_CHECK_OP_RESULT(os, errorMessage, result) \
+    GT_CHECK_RESULT(!os.isCoR(), errorMessage, result)
 
 } //namespace
 

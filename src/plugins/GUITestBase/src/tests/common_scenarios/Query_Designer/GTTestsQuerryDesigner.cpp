@@ -22,13 +22,13 @@
 
 #include "GTTestsQuerryDesigner.h"
 
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "api/GTTreeWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "GTUtilsQueryDesigner.h"
@@ -42,6 +42,7 @@ namespace U2 {
 
 
 namespace GUITest_common_scenarios_querry_designer {
+using namespace HI;
 
 void test1(U2OpStatus &os, QString s="") {
 //Bug: QD: Crash while resizing and deleting elements (0002402)

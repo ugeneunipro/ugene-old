@@ -31,19 +31,19 @@
 
 #include "GTComboBox.h"
 #include "GTFileDialog.h"
-#include "GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "GTMenu.h"
-#include "GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTWidget.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "api/GTLineEdit.h"
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"
 
 namespace U2 {
-
+using namespace HI;
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,

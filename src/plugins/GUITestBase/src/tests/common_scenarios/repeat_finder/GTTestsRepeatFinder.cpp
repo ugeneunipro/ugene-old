@@ -31,7 +31,7 @@
 #include "api/GTMenu.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsAnnotationsTreeView.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
@@ -42,7 +42,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_repeat_finder {
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // The Test Runs Repeat Finder then checks if the qualifier "repeat homology" exists in resulting annotations
 //

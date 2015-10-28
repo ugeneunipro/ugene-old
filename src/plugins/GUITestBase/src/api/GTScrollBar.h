@@ -31,11 +31,12 @@
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStyleOptionSlider>
 #endif
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 
 namespace U2 {
+using namespace HI;
 
 class GTScrollBar {
 public:

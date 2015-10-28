@@ -31,15 +31,16 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTAction.h"
 #include "api/GTClipboard.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMSAEditorStatusWidget.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 
 namespace U2 {
+using namespace HI;
 const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9999cc";
 
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"

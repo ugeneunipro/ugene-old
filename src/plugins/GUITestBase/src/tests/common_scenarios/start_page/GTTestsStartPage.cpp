@@ -28,7 +28,7 @@
 
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTWebView.h"
 
 #include "runnables/qt/DefaultDialogFiller.h"
@@ -40,7 +40,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_start_page{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001){
 //    Start UGENE
 //    Press "Open file(s)" button on start page

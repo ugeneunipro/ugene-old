@@ -22,7 +22,7 @@
 #ifndef GT_UTILS_WORKFLOW_DESIGNER_H
 #define GT_UTILS_WORKFLOW_DESIGNER_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>

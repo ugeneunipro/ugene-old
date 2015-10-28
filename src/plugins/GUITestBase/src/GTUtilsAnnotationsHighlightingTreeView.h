@@ -22,12 +22,13 @@
 #ifndef _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
 #define _U2_GUI_ANNOTATIONS_HIGHLIGHTING_TREE_VIEW_UTILS_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class QTreeWidget;
 class QTreeWidgetItem;
 
 namespace U2 {
+using namespace HI;
 class GTUtilsAnnotHighlightingTreeView {
 public:
     static QTreeWidget* getTreeWidget(U2OpStatus &os);

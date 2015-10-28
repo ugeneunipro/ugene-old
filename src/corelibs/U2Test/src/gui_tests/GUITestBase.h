@@ -2,6 +2,7 @@
 #define _U2_GUI_TEST_BASE_H_
 
 #include <U2Core/global.h>
+#include <U2Core/U2IdTypes.h>
 #include <U2Core/Task.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/GObject.h>

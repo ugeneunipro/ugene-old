@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsApp.h"
+#include <U2Core/U2IdTypes.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -29,6 +30,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsApp"
 

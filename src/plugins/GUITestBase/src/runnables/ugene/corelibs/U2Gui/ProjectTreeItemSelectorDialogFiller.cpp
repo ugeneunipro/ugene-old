@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2IdTypes.h>
 #include "GTUtilsProjectTreeView.h"
 #include "ProjectTreeItemSelectorDialogFiller.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -38,6 +39,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "ProjectTreeItemSelectorDialogFiller"
 

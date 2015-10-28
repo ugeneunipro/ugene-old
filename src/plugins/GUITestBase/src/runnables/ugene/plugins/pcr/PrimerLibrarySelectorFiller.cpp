@@ -22,12 +22,13 @@
 #include <QApplication>
 
 #include "GTUtilsPrimerLibrary.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
 #include "PrimerLibrarySelectorFiller.h"
 
 namespace U2 {
+using namespace HI;
 
 PrimerLibrarySelectorFiller::PrimerLibrarySelectorFiller(U2OpStatus &os, int number, bool doubleClick)
 : Filler(os, "PrimerLibrarySelector"), number(number), doubleClick(doubleClick)

@@ -27,7 +27,7 @@
 #include <QtWidgets/QApplication>
 #endif
 
-namespace U2 {
+namespace HI {
 
 #define GT_CLASS_NAME "GTKeyboardDriver"
 

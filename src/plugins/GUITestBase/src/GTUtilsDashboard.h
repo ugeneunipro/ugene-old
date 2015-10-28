@@ -23,7 +23,7 @@
 #ifndef GTUTILSDASHBOARD_H
 #define GTUTILSDASHBOARD_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class QWebView;
 class QWebElement;

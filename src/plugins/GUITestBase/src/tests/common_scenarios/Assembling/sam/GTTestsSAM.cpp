@@ -24,7 +24,7 @@
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include "GTUtilsLog.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"

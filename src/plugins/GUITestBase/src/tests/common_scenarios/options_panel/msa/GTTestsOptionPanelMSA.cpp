@@ -37,7 +37,7 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
@@ -61,7 +61,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_options_panel_MSA{
-
+using namespace HI;
 GUI_TEST_CLASS_DEFINITION(general_test_0001){
     const QString seqName = "Phaneroptera_falcata";
 //    1. Open file data/samples/CLUSTALW/COI.aln

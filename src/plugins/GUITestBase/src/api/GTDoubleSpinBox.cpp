@@ -22,10 +22,11 @@
 #include "GTDoubleSpinBox.h"
 #include "GTWidget.h"
 
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTSpinBox"
 

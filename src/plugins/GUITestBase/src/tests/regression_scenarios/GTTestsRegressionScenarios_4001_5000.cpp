@@ -69,11 +69,11 @@
 #include "api/GTComboBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "api/GTKeyboardDriver.h"
+#include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTListWidget.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
+#include "drivers/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTSpinBox.h"
@@ -127,6 +127,7 @@
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_4007) {
     GTLogTracer l;

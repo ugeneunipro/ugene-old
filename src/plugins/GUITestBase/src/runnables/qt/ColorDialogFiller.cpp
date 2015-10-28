@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <api/GTKeyboardDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include <api/GTSpinBox.h>
 #include "api/GTWidget.h"
 #include "ColorDialogFiller.h"
@@ -33,6 +33,7 @@
 #include <QWidget>
 #include <QSpinBox>
 namespace U2{
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
 #define GT_METHOD_NAME "run"

@@ -25,6 +25,7 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
+#include <U2Core/U2IdTypes.h>
 #include "GTTestsDnaAssemblyConversions.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"

@@ -22,10 +22,11 @@
 #ifndef _U2_GT_MENU_BAR_H_
 #define _U2_GT_MENU_BAR_H_
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 
 class QMenuBar;
 namespace U2 {
+using namespace HI;
 
 class GTMenuBar {
 public:

@@ -22,7 +22,7 @@
 #ifndef GT_UTILS_QUERY_DESIGNER_H
 #define GT_UTILS_QUERY_DESIGNER_H
 
-#include "api/GTGlobals.h"
+#include "GTGlobals.h"
 #include <U2View/MSAEditorSequenceArea.h>
 
 #include <QTreeWidget>
