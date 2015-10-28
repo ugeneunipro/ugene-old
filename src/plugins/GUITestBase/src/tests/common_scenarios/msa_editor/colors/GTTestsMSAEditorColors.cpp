@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 #include "GTTestsMSAEditorColors.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTTreeWidget.h"
-#include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
@@ -45,7 +45,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_colors {
-using namespace HI;
+
 void checkColor(U2OpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     CHECK_SET_ERR(seq!=NULL,"msa_editor_sequence_area widget is NULL")

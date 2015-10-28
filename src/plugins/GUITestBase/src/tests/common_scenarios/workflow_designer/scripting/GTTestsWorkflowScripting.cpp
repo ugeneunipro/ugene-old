@@ -28,12 +28,12 @@
 
 #include "api/GTAction.h"
 #include "api/GTFile.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
 #include "api/GTTreeWidget.h"
@@ -67,7 +67,6 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_workflow_scripting {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //    1. Open WD. Press toolbar button "Create script object".

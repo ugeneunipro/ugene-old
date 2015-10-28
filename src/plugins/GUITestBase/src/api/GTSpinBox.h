@@ -24,10 +24,9 @@
 
 #include <QSpinBox>
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
-using namespace HI;
 
 class GTSpinBox {
 public:

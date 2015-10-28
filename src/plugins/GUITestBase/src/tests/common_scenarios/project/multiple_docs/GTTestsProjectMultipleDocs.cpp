@@ -20,8 +20,8 @@
  */
 
 #include "GTTestsProjectMultipleDocs.h"
-#include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProject.h"

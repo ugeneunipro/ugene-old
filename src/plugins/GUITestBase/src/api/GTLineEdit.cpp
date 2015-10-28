@@ -20,14 +20,14 @@
  */
 
 #include "GTClipboard.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "GTKeyboardDriver.h"
 #include "GTKeyboardUtils.h"
 #include "GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "GTMouseDriver.h"
 #include "GTWidget.h"
 
 namespace U2 {
-using namespace HI;
+
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME ""

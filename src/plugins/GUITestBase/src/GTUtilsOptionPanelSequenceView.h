@@ -25,7 +25,7 @@
 #include <QToolButton>
 #include <QLineEdit>
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
 

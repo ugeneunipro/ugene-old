@@ -26,15 +26,15 @@
 #include <QTableWidget>
 
 #include "GTTestsMSAEditorEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTSpinBox.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTClipboard.h"
 #include "api/GTAction.h"
 #include "api/GTTreeWidget.h"
@@ -54,7 +54,6 @@
 #include <U2View/MSAEditorSequenceArea.h>
 
 namespace U2 {
-using namespace HI;
 
 void test_1(U2OpStatus &os,int i, QString expectedSec, int j = 0) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(j,i));

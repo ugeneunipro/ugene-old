@@ -40,11 +40,11 @@
 #include "api/GTAction.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
@@ -62,7 +62,6 @@
 namespace U2 {
 
 namespace GUITest_Assembly_browser {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //It is possible to reach negative coord in assembly browser (UGENE-105)

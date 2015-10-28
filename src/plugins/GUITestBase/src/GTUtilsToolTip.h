@@ -22,8 +22,7 @@
 #ifndef _U2_GUI_TOOLTIP_UTILS_H_
 #define _U2_GUI_TOOLTIP_UTILS_H_
 
-#include <U2Core/global.h>
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
 

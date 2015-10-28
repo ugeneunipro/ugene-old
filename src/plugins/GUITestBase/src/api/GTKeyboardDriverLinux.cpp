@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #else
@@ -35,7 +35,7 @@
     #include <X11/extensions/XTest.h>
 #endif
 
-namespace HI {
+namespace U2 {
 
 #if defined __linux__
 

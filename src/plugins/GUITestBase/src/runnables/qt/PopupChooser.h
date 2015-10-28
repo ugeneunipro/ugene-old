@@ -25,7 +25,6 @@
 #include "GTUtilsDialog.h"
 
 namespace U2 {
-using namespace HI;
 
     class PopupChooser : public Filler {
         friend class PopupChecker;

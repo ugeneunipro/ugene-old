@@ -35,9 +35,9 @@
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
@@ -47,7 +47,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_annotations_qualifiers {
-using namespace HI;
+
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");

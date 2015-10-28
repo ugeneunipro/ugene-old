@@ -21,7 +21,7 @@
 
 #include "Primer3DialogFiller.h"
 #include "api/GTCheckBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
@@ -36,7 +36,6 @@
 #include <QCheckBox>
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
 Primer3DialogFiller::Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings)

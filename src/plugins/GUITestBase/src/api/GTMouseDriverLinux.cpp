@@ -20,14 +20,14 @@
  */
 
 #include "GTMouseDriver.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include <QByteArray>
 
 #ifdef __linux__
     #include <X11/extensions/XTest.h>
 #endif
 
-namespace HI {
+namespace U2 {
 
 #ifdef __linux__
 
@@ -155,7 +155,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "scroll"
-void GTMouseDriver::scroll(U2::U2OpStatus &os, int value)
+void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");

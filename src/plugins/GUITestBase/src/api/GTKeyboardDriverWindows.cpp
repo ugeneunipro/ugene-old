@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #else
@@ -34,7 +34,7 @@
     #define VIRTUAL_TO_SCAN_CODE 0
 #endif
 
-namespace HI {
+namespace U2 {
 
 #ifdef _WIN32
 

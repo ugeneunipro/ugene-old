@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2IdTypes.h>
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsProjectTreeView.h"
@@ -27,9 +26,9 @@
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
@@ -40,7 +39,7 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_in_silico_pcr {
-using namespace HI;
+
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsPcr::clearPcrDir(os);
     //The PCR options panel is available only for nucleic sequences

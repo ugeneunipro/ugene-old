@@ -20,13 +20,13 @@
  */
 
 #include "GTMouseDriver.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 #ifdef _WIN32
     #include <windows.h>
 #endif
 
-namespace HI {
+namespace U2 {
 
 #ifdef _WIN32
 

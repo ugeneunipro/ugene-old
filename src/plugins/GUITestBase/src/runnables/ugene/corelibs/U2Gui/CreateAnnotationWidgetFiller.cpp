@@ -28,7 +28,7 @@
 
 #include "CreateAnnotationWidgetFiller.h"
 #include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTWidget.h"

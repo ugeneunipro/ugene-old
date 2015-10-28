@@ -21,7 +21,7 @@
 #ifndef GTTABLEVIEW_H
 #define GTTABLEVIEW_H
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include <QtCore/QPoint>
 
 #if (QT_VERSION < 0x050000) //Qt 5

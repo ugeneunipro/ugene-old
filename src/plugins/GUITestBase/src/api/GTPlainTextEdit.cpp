@@ -22,12 +22,12 @@
 #include "GTPlainTextEdit.h"
 #include "GTWidget.h"
 
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include <QDebug>
 namespace U2 {
-using namespace HI;
+
 #define GT_CLASS_NAME "GTPlainTextEdit"
 
 #define GT_METHOD_NAME ""

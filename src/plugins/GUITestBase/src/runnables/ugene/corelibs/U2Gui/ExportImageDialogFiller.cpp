@@ -31,13 +31,12 @@
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportImage"
 

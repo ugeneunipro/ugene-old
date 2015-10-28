@@ -23,8 +23,9 @@
 #include <QTimer>
 
 #include "GTMouseDriver.h"
+#include "GTThread.h"
 
-namespace HI {
+namespace U2 {
 
 void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
 {
@@ -42,7 +43,7 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 
 }
 
-void GTMouseDriver::dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const QPoint& end) {
+void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
     GTDragger d(os, end);
     Q_UNUSED(d);
@@ -58,7 +59,7 @@ void GTMouseDriver::dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const Q
 }
 
 #ifndef Q_OS_MAC
-void GTMouseDriver::doubleClick(U2::U2OpStatus &os)
+void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
     press(os, Qt::LeftButton);
     release(os, Qt::LeftButton);
@@ -70,7 +71,7 @@ void GTMouseDriver::doubleClick(U2::U2OpStatus &os)
 }
 #endif
 
-GTDragger::GTDragger(U2::U2OpStatus &_os, const QPoint& _to) :
+GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to) :
     QObject(),
     os(_os),
     to(_to),
@@ -88,6 +89,7 @@ GTDragger::~GTDragger() {
 
 void GTDragger::sl_execDrag(){
     GTMouseDriver::moveTo(os, to);
+    GTGlobals::sleep();
 #ifndef Q_OS_LINUX
     GTMouseDriver::release(os);
     GTGlobals::sleep(6000);

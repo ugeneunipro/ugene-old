@@ -20,8 +20,6 @@
  */
 
 #include "GTAction.h"
-#include <U2Core/global.h>
-#include <U2Core/U2IdTypes.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
 #if (QT_VERSION < 0x050000) //Qt 5

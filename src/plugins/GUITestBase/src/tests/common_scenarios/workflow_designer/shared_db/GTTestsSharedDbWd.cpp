@@ -21,11 +21,10 @@
 
 #include <QListWidget>
 
-#include <U2Core/global.h>
 #include "api/GTAction.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
@@ -45,7 +44,7 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_shared_db_wd {
-using namespace HI;
+
 namespace {
 
 void createTestConnection(U2OpStatus &os) {

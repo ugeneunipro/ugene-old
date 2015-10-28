@@ -26,7 +26,7 @@
 #include "GTThread.h"
 
 namespace U2 {
-using namespace HI;
+
 #define GT_CLASS_NAME "ThreadWaiter"
 
 ThreadWaiter::ThreadWaiter(U2OpStatus &os) :

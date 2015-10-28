@@ -25,17 +25,15 @@
 #include <QToolButton>
 #include <QTreeWidget>
 
-#include <U2Core/U2IdTypes.h>
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "api/GTBaseCompleter.h"
 #include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
-using namespace HI;
 
 QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames() {
     QMap<Tabs,QString> result;

@@ -20,7 +20,7 @@
  */
 
 #include "GTMenuBar.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenuBar>
 #else
@@ -28,7 +28,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTMenuBar"
 

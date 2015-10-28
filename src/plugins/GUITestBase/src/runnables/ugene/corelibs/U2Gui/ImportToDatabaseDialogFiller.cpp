@@ -34,9 +34,9 @@
 
 #include "ImportToDatabaseDialogFiller.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.h"
@@ -44,7 +44,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
+
 namespace {
 
 QMap<QString, QStringList> convertProjectItemsMap(const QMap<QString, QVariant>& map) {

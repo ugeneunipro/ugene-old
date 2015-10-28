@@ -22,7 +22,7 @@
 #ifndef _U2_GT_MENU_PRIVATE_H_
 #define _U2_GT_MENU_PRIVATE_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "runnables/qt/PopupChooser.h"
 
 namespace U2 {

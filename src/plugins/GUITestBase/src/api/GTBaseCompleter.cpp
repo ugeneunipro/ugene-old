@@ -27,13 +27,12 @@
 #endif
 
 #include "api/GTTreeWidget.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
 #include "GTBaseCompleter.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTBaseCompleter"
 #define GT_METHOD_NAME "click"

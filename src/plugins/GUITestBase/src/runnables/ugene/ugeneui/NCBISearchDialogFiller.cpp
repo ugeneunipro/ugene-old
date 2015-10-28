@@ -25,9 +25,9 @@
 #include <QTreeWidget>
 
 #include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTextEdit.h"
 #include "api/GTTreeWidget.h"
@@ -37,7 +37,6 @@
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "NcbiSearchDialogFiller"
 

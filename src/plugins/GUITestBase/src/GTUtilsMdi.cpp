@@ -29,14 +29,13 @@
 #include <U2Gui/MainWindow.h>
 
 #include "GTUtilsMdi.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTThread.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsMdi"
 

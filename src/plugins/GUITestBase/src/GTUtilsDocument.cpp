@@ -20,9 +20,9 @@
  */
 
 #include "GTUtilsDocument.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
 #include "runnables/qt/PopupChooser.h"
@@ -41,7 +41,6 @@
 
 
 namespace U2 {
-using namespace HI;
 
 const QString GTUtilsDocument::DocumentUnloaded = "Unloaded";
 

@@ -22,7 +22,7 @@
 #ifndef _U2_PROJECT_UTILS_H_
 #define _U2_PROJECT_UTILS_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 

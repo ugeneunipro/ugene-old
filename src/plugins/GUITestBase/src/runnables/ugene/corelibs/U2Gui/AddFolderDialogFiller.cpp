@@ -26,14 +26,13 @@
 #include <QtWidgets/QApplication>
 #endif
 
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
 
 #include "AddFolderDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 AddFolderDialogFiller::AddFolderDialogFiller(U2OpStatus &os, const QString &folderName, GTGlobals::UseMethod acceptMethod)
     : Filler(os, "FolderNameDialog"), folderName(folderName), acceptMethod(acceptMethod)

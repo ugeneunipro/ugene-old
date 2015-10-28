@@ -20,9 +20,9 @@
  */
 
 #include "GTTestsBookmarks.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "GTUtilsProject.h"
@@ -48,7 +48,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_project_bookmarks {
-using namespace HI;
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 //  1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)

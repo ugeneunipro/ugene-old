@@ -21,13 +21,13 @@
 
 #include "GTTestsNiaidPipelines.h"
 
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTAction.h"
 #include "api/GTFile.h"

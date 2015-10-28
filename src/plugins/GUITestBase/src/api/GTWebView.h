@@ -24,7 +24,7 @@
 #ifndef GTWEBVIEW_H
 #define GTWEBVIEW_H
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QWebView;
 class QWebElement;

@@ -22,7 +22,7 @@
 #ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
 #define U2_GTUTILS_OPTION_PANEL_MSA_H
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QLineEdit;
 class QPushButton;

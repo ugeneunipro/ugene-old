@@ -23,8 +23,8 @@
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
 #include "api/GTClipboard.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

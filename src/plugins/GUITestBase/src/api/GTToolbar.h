@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_GTTOOLBAR_H_
 #define _U2_GUI_GTTOOLBAR_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolBar>
 #else

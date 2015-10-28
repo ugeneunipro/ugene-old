@@ -22,8 +22,8 @@
 #include <QTreeWidget>
 
 #include "GTTestsAnnotations.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
@@ -47,7 +47,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_annotations {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // Creating annotations by different ways

@@ -25,9 +25,9 @@
 #include "GTUtilsDialog.h"
 
 #include <api/GTComboBox.h>
-#include <drivers/GTKeyboardDriver.h>
+#include <api/GTKeyboardDriver.h>
 #include <api/GTLineEdit.h>
-#include <drivers/GTMouseDriver.h>
+#include <api/GTMouseDriver.h>
 #include <api/GTTableView.h>
 #include <api/GTWidget.h>
 
@@ -40,7 +40,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 class CreateElementWithCommandLineToolFiller : public Filler {
 public:

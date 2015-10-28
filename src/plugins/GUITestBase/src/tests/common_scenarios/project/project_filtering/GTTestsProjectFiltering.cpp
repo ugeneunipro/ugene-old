@@ -21,11 +21,10 @@
 
 #include <QTreeView>
 
-#include <U2Core/U2IdTypes.h>
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/qt/DefaultDialogFiller.h"
@@ -41,7 +40,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_project_filtering {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     // 1. Open "data/samples/FASTA/human_T1.fa"

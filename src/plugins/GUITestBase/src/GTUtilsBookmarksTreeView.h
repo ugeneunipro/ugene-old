@@ -22,14 +22,12 @@
 #ifndef _U2_GUI_BOOKMARKS_TREE_VIEW_UTILS_H_
 #define _U2_GUI_BOOKMARKS_TREE_VIEW_UTILS_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QTreeWidget;
 class QTreeWidgetItem;
 
 namespace U2 {
-using namespace HI;
-
 class GTUtilsBookmarksTreeView {
 public:
     static QTreeWidget* getTreeWidget(U2OpStatus &os);

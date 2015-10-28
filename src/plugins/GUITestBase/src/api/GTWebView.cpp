@@ -26,10 +26,10 @@
 #include <U2Test/MainThreadRunnable.h>
 
 #include "GTWebView.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 
 namespace U2 {
-using namespace HI;
+
 namespace {
 bool compare(QString s1, QString s2, bool exactMatch){
     if(exactMatch){

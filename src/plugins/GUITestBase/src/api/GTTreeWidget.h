@@ -22,13 +22,12 @@
 #ifndef _U2_GT_TREE_WIDGET_H_
 #define _U2_GT_TREE_WIDGET_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QTreeWidget;
 class QTreeWidgetItem;
 
 namespace U2 {
-using namespace HI;
 
 class GTTreeWidget {
 public:

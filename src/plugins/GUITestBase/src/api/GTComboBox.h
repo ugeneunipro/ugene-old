@@ -22,7 +22,7 @@
 #ifndef _U2_GT_COMBOBOX_H_
 #define _U2_GT_COMBOBOX_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QComboBox>
 #else
@@ -30,7 +30,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 class GTComboBox {
 public:

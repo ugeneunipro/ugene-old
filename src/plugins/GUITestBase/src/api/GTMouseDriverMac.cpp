@@ -20,7 +20,7 @@
  */
 
 #include "GTMouseDriver.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 #include <QCursor>
 
@@ -28,7 +28,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-namespace HI {
+namespace U2 {
 
 #ifdef  Q_OS_MAC
 #define GT_CLASS_NAME "GTMouseDriverMac"

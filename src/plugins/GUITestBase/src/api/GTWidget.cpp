@@ -30,12 +30,12 @@
 
 #include <U2View/ADVSingleSequenceWidget.h>
 
-#include "drivers/GTMouseDriver.h"
+#include "GTMouseDriver.h"
 #include "GTThread.h"
 #include "GTWidget.h"
 
 namespace U2 {
-using namespace HI;
+
 #define GT_CLASS_NAME "GTWidget"
 
 #define GT_METHOD_NAME "click"

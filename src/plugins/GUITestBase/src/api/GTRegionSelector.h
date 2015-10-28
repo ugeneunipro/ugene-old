@@ -22,7 +22,7 @@
 #ifndef _U2_GT_REGIONSELECTOR_H_
 #define _U2_GT_REGIONSELECTOR_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include <U2Gui/RegionSelector.h>
 
 namespace U2 {

@@ -19,10 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/global.h>
 #include "GTUtilsTaskTreeView.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 
@@ -38,7 +37,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsTaskTreeView"
 

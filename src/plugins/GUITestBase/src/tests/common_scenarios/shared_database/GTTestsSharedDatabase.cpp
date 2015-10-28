@@ -43,11 +43,11 @@
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTListWidget.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -66,7 +66,7 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_shared_database {
-using namespace HI;
+
 namespace {
 
 QListWidgetItem * getConnectionItem(U2OpStatus &os, const QString &connectionName) {

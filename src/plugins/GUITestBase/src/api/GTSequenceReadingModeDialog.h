@@ -30,10 +30,9 @@
 #endif
 
 #include <QString>
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
-using namespace HI;
 
 class GTSequenceReadingModeDialog {
 public:

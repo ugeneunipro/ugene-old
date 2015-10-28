@@ -20,9 +20,9 @@
  */
 
 #include "GTTestsToggleView.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTFileDialog.h"
@@ -59,7 +59,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_toggle_view {
-using namespace HI;
+
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa

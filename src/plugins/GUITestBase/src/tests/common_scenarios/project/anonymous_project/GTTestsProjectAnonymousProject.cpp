@@ -20,8 +20,8 @@
  */
 
 #include "GTTestsProjectAnonymousProject.h"
-#include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProject.h"
@@ -39,7 +39,7 @@
 namespace U2{
 
 namespace GUITest_common_scenarios_project_anonymous_project{
-using namespace HI;
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 1. Use menu {File->Open}. Open file data/samples/PDB/1CF7.pdb

@@ -23,10 +23,10 @@
 #include "runnables/qt/ColorDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTListWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -50,7 +50,6 @@
 #include <QTextBrowser>
 
 namespace U2{
-using namespace HI;
 
 #define GT_CLASS_NAME "AppSettingsDialogFiller"
 QMap<AppSettingsDialogFiller::Tabs, QString> AppSettingsDialogFiller::initMap(){

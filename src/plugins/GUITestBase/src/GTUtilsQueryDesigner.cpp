@@ -19,13 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2IdTypes.h>
 #include "GTUtilsQueryDesigner.h"
 #include "api/GTGraphicsItem.h"
 #include "api/GTMenu.h"
 #include "api/GTWidget.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 
@@ -41,7 +40,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 #define GT_CLASS_NAME "GTUtilsQueryDesigner"
 
 #define GT_METHOD_NAME "findTreeItem"

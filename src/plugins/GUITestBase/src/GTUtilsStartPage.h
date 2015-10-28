@@ -23,7 +23,7 @@
 #ifndef _U2_GT_UTILS_START_PAGE_
 #define _U2_GT_UTILS_START_PAGE_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QWebView;
 class QWebElement;

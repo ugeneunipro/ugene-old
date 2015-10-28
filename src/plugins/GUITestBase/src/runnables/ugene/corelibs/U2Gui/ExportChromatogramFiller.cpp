@@ -37,7 +37,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportChromatogramFiller"
 ExportChromatogramFiller::ExportChromatogramFiller(U2OpStatus &_os, const QString &_path, const QString &_name,

@@ -34,7 +34,7 @@
 
 
 namespace U2 {
-using namespace HI;
+
 #define GT_CLASS_NAME "GTClipboard"
 
 #define GT_METHOD_NAME "text"

@@ -41,10 +41,10 @@
 #include "api/GTClipboard.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/EscapeClicker.h"
@@ -54,7 +54,6 @@
 namespace U2 {
 
 namespace GUITest_initial_checks {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0000) {
     GTUtilsTaskTreeView::waitTaskFinished(os);

@@ -36,14 +36,13 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTToolbar.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsAssemblyBrowser"
 

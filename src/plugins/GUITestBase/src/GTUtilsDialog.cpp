@@ -26,6 +26,7 @@
 #include <U2Test/GUITest.h>
 
 #include "GTUtilsDialog.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTThread.h"
 #include "api/GTWidget.h"
 

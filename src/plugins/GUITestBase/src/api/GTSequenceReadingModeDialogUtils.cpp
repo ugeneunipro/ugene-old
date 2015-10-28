@@ -21,9 +21,9 @@
 
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTSequenceReadingModeDialog.h"
-#include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -51,7 +51,6 @@
 
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTSequenceReadingModeDialogUtils"
 

@@ -33,8 +33,8 @@
 #include <QtGui/QScreen>
 #endif
 
-#include "GTGlobals.h"
-//#include <U2Core/AppContext.h>
+#include "api/GTGlobals.h"
+#include <U2Core/AppContext.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -42,7 +42,7 @@
 #include <unistd.h>
 #endif
 
-namespace HI {
+namespace U2 {
 namespace {
     void sysSleep(int sec) {
 #ifdef Q_OS_WIN
@@ -69,7 +69,7 @@ void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
 
 void GTGlobals::takeScreenShot(QString path) {
     //Very fast fix was needed. Temporary screenshots are not taken
-    U2::uiLog.trace("Very fast fix was needed. Temporary screenshots are not taken");
+    uiLog.trace("Very fast fix was needed. Temporary screenshots are not taken");
     Q_UNUSED(path)
     //QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
     //originalPixmap.save(path);
@@ -83,7 +83,7 @@ GTGlobals::FindOptions::FindOptions(bool fail) :
 }
 
 void GTGlobals::GUITestFail(){
-    U2::uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
+    uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
 }
 
 } //namespace

@@ -24,7 +24,7 @@
 
 #include <QPoint>
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTMenuBar.h"
 #include "api/GTWidget.h"
 

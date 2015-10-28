@@ -21,7 +21,7 @@
 
 #include "GUICrazyUserTest.h"
 #include "GTRandomGUIActionFactory.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "GTRandomGUIActionFactory.h"

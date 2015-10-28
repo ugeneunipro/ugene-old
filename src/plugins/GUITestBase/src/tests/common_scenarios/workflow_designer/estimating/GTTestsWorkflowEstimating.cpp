@@ -22,7 +22,7 @@
 #include "api/GTMenu.h"
 #include "api/GTWidget.h"
 #include "api/GTAction.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsDialog.h"
@@ -33,7 +33,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_estimating {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     //1. Open WD.

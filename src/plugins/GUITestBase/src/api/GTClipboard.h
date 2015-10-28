@@ -22,7 +22,7 @@
 #ifndef _U2_GT_CLIPBOARD_H_
 #define _U2_GT_CLIPBOARD_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
 

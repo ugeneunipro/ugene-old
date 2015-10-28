@@ -34,11 +34,11 @@
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTListWidget.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
@@ -55,7 +55,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_create_annotation_widget {
-using namespace HI;
 
 namespace {
 

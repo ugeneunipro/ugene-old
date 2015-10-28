@@ -43,11 +43,11 @@
 #include "api/GTCheckBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -59,8 +59,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_tree_viewer {
-using namespace HI;
-
 const int nodeWidth = 7;
 GUI_TEST_CLASS_DEFINITION(test_0001){
 //Screenshoting MSA editor (regression test)

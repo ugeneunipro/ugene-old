@@ -29,11 +29,10 @@
 
 #include "GTComboBox.h"
 #include "GTWidget.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTComboBox"
 

@@ -1,7 +1,7 @@
 #include "GTUtilsCircularView.h"
 
 #include <api/GTAction.h>
-#include <GTGlobals.h>
+#include <api/GTGlobals.h>
 #include <api/GTWidget.h>
 
 #include <U2Core/U2SafePoints.h>

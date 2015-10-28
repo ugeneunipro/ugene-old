@@ -22,11 +22,11 @@
 #ifndef _U2_GUI_GTACTION_H_
 #define _U2_GUI_GTACTION_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QAbstractButton;
 namespace U2 {
-using namespace HI;
+
 class GTAction {
 public:
     // returns first QAbstractButton associated with an action with a given name

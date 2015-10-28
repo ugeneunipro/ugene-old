@@ -32,12 +32,11 @@
 #include <QtWidgets/QListWidget>
 #endif
 
-#include <U2Core/U2IdTypes.h>
 #include "GTDatabaseConfig.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "SharedConnectionsDialogFiller.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
 #include "api/GTDoubleSpinBox.h"
@@ -48,7 +47,6 @@
 #include "runnables/qt/MessageBoxFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 SharedConnectionsDialogFiller::Action::Action(Type type, QString itemName)
 : type(type), itemName(itemName), expectedResult(OK)

@@ -22,6 +22,9 @@
 #include "GTCheckBox.h"
 #include "GTWidget.h"
 
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
+
 namespace U2 {
 
 #define GT_CLASS_NAME "GTCheckBox"

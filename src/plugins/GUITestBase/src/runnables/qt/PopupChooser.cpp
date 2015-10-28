@@ -20,9 +20,9 @@
  */
 
 #include "PopupChooser.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 
 #include <U2Core/U2OpStatusUtils.h>
 
@@ -35,7 +35,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "PopupChooser"
 

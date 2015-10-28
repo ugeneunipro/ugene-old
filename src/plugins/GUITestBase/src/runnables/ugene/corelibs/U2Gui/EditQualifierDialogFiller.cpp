@@ -26,7 +26,7 @@
 #include "api/GTRadioButton.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
@@ -45,7 +45,6 @@
 
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditQualifierFiller"
 #define GT_METHOD_NAME "run"

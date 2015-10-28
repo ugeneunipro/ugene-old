@@ -22,14 +22,13 @@
 #include <QApplication>
 #include <QTreeWidget>
 
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 
 #include "DashboardsManagerDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "DashboardsManagerDialogFiller"
 #define GT_METHOD_NAME "commonScenario"

@@ -254,17 +254,17 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTFile.h \
             src/api/GTFileDialog.h \
-#            src/GTGlobals.h \
+            src/api/GTGlobals.h \
             src/api/GTGraphicsItem.h \
             src/api/GTGroupBox.h \
-#            src/drivers/GTKeyboardDriver.h \
+            src/api/GTKeyboardDriver.h \
             src/api/GTKeyboardUtils.h \
             src/api/GTLineEdit.h \
             src/api/GTListWidget.h \
             src/api/GTMenu.h \
             src/api/GTMenuBar.h \
             src/api/GTMouse.h \
-#            src/drivers/GTMouseDriver.h \
+            src/api/GTMouseDriver.h \
             src/api/GTPlainTextEdit.h \
             src/api/GTRadioButton.h \
             src/api/GTScrollBar.h \
@@ -536,23 +536,23 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTFile.cpp \
             src/api/GTFileDialog.cpp \
-#            src/api/GTGlobals.cpp \
+            src/api/GTGlobals.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTGroupBox.cpp \
-#            src/api/GTKeyboardDriver.cpp \
-#            src/api/GTKeyboardDriverLinux.cpp \
-#            src/api/GTKeyboardDriverMac.cpp \
-#            src/api/GTKeyboardDriverWindows.cpp \
+            src/api/GTKeyboardDriver.cpp \
+            src/api/GTKeyboardDriverLinux.cpp \
+            src/api/GTKeyboardDriverMac.cpp \
+            src/api/GTKeyboardDriverWindows.cpp \
             src/api/GTKeyboardUtils.cpp \
             src/api/GTLineEdit.cpp \
             src/api/GTListWidget.cpp \
             src/api/GTMenu.cpp \
             src/api/GTMenuBar.cpp \
             src/api/GTMouse.cpp \
-#            src/api/GTMouseDriver.cpp \
-#            src/api/GTMouseDriverLinux.cpp \
-#            src/api/GTMouseDriverMac.cpp \
-#            src/api/GTMouseDriverWindows.cpp \
+            src/api/GTMouseDriver.cpp \
+            src/api/GTMouseDriverLinux.cpp \
+            src/api/GTMouseDriverMac.cpp \
+            src/api/GTMouseDriverWindows.cpp \
             src/api/GTPlainTextEdit.cpp \
             src/api/GTRadioButton.cpp \
             src/api/GTScrollBar.cpp \

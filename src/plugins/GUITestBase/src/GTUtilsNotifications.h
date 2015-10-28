@@ -23,7 +23,7 @@
 #define _U2_GT_UTILS_NOTIFICATIONS_H_
 
 #include "GTUtilsDialog.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
 

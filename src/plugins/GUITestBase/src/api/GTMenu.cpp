@@ -20,13 +20,12 @@
  */
 
 #include "GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "GTGlobals.h"
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/private/GTMenuPrivate.h"
 
-#include <U2Core/U2IdTypes.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
@@ -42,7 +41,6 @@
 #endif
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTMenu"
 

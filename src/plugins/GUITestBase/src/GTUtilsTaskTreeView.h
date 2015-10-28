@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_TASK_TREE_VIEW_UTILS_H_
 #define _U2_GUI_TASK_TREE_VIEW_UTILS_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 class QTreeWidget;
 class QTreeWidgetItem;

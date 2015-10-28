@@ -22,7 +22,7 @@
 #ifndef _U2_GT_FILE_H_
 #define _U2_GT_FILE_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include <QtCore/QFile>
 
 namespace U2 {

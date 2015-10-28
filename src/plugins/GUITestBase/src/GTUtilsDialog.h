@@ -26,7 +26,7 @@
 
 #include <U2Test/CustomScenario.h>
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 namespace U2 {
 

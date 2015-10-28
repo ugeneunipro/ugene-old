@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_GTWIDGET_H_
 #define _U2_GUI_GTWIDGET_H_
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAbstractButton>
@@ -33,7 +33,7 @@
 #endif
 
 namespace U2 {
-using namespace HI;
+
 class GTWidget {
 public:
     // fails if widget is NULL, not visible or not enabled; if p isNull, clicks on the center of widget

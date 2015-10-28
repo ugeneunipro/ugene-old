@@ -30,9 +30,9 @@
 #include "api/GTAction.h"
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/ColorDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -40,7 +40,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_overview {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //1. Open "_common_data/fasta/empty.fa".

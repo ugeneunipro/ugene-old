@@ -26,11 +26,11 @@
 #include <QTableWidget>
 
 #include "GTTestsMSAEditorReplaceCharacter.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTClipboard.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsNotifications.h"
@@ -46,7 +46,6 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_replace_character {
-using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //1. Open an alignment in the Alignment Editor.

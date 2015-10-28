@@ -19,12 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 
 #include "EscapeClicker.h"
 
 namespace U2 {
-using namespace HI;
 
 EscapeClicker::EscapeClicker(U2OpStatus &os, const QString &name, CustomScenario *scenario)
     : Filler(os, name, scenario)

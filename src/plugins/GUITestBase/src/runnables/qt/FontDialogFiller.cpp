@@ -21,7 +21,7 @@
 
 #include "FontDialogFiller.h"
 #include "api/GTWidget.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -33,7 +33,6 @@
 
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::FontDialogFiller"
 #define GT_METHOD_NAME "run"

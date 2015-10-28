@@ -39,15 +39,14 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsBookmarksTreeView"
 

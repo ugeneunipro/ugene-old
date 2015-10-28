@@ -22,11 +22,10 @@
 #ifndef GTTREEVIEW_H
 #define GTTREEVIEW_H
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include <QTreeView>
 
 namespace U2{
-using namespace HI;
 
 class GTTreeView
 {
