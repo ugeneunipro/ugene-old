@@ -329,16 +329,7 @@ public:
         errorMessage = "";
     }
 
-    MemoryLocker& operator=(MemoryLocker& other) {
-        MemoryLocker tmp(other);
-        qSwap(os, tmp.os);
-        qSwap(preLockMB, tmp.preLockMB);
-        qSwap(lockedMB, tmp.lockedMB);
-        qSwap(needBytes, tmp.needBytes);
-        qSwap(memoryLockType, tmp.memoryLockType);
-
-        return *this;
-    }
+    MemoryLocker& operator=(MemoryLocker& other);
 
     virtual ~MemoryLocker() {
         release();

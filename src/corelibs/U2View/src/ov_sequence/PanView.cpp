@@ -624,12 +624,10 @@ void PanViewRenderArea::drawAll(QPainter &p, const U2Region &visibleRange) {
         p.drawLine( firstCharCenter - halfChar, lineY, w, lineY);
 
         const PVRowData *rData = rm->getRow(row);
-        const QString text = (NULL == rData)
-                ? U2::PanView::tr("empty")
-                : rData->key + " (" + QString::number(rData->annotations.size()) + ")";
+
 
         const QRect textRect( firstCharCenter - halfChar + LINE_TEXT_OFFSET, lineY + 1, width(), lineHeight - 2);
-        p.drawText(textRect, text);
+        p.drawText(textRect, getText(rData));
 
         if (NULL != rData) {
             AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
@@ -856,12 +854,8 @@ void PanViewRenderArea::drawAnnotations(QPainter &p) {
         p.drawLine(0, lineY, cachedViewWidth, lineY);
 
         const PVRowData *rData = rm->getRow(row);
-        const QString text = (NULL == rData)
-            ? U2::PanView::tr("empty")
-            : rData->key + " (" + QString::number(rData->annotations.size()) + ")";
-
         const QRect textRect(LINE_TEXT_OFFSET, lineY + 1, width(), lineHeight - 2);
-        p.drawText(textRect, text);
+        p.drawText(textRect, getText(rData));
 
         if (NULL != rData) {
             AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
@@ -915,6 +909,13 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
         int x = qRound(posToCoordF(visibleRange.startPos + i, true) + halfCharByScale - halfCharByFont);
         p.drawText(x, y, QString(c));
     }
+}
+
+const QString PanViewRenderArea::getText(const PVRowData * rData) const {
+    const QString text = (NULL == rData)
+        ? U2::PanView::tr("empty")
+        : rData->key + " (" + QString::number(rData->annotations.size()) + ")";
+    return text;
 }
 
 void PanViewRenderArea::resizeEvent(QResizeEvent *e) {

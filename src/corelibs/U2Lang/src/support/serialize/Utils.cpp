@@ -26,7 +26,7 @@
 namespace U2 {
 namespace WorkflowSerialize {
 
-FlowGraph::FlowGraph( const QList<QPair<Port*, Port*> >& d ) : dataflowLinks(d) {
+FlowGraph::FlowGraph(const QList<QPair<Port*, Port*> >& d) : dataflowLinks(d), findRecursion(0) {
     removeDuplicates();
     for(int i = 0; i < dataflowLinks.size(); ++i) {
         const QPair<Port*, Port*> & pair = dataflowLinks.at(i);

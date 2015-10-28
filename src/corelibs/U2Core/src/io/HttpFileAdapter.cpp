@@ -65,7 +65,7 @@ QNetworkProxy HttpFileAdapterFactory::getProxyByUrl( const QUrl & url ) const {
 
 HttpFileAdapter::HttpFileAdapter(HttpFileAdapterFactory* factory, QObject* o)
 : IOAdapter(factory, o), is_cached(false), begin_ptr(-1), end_ptr(0),
-  badstate(false), is_downloaded(false), downloaded(0), total(0)
+  reply(NULL), badstate(false), is_downloaded(false), downloaded(0), total(0)
 {
     chunk_list.push_back( QByteArray(CHUNKSIZE, char(0)) );
     netManager=new QNetworkAccessManager(this);

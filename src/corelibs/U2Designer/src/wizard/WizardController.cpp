@@ -494,17 +494,6 @@ QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
     return attr->getAttributePureValue();
 }
 
-bool WizardController::canSetValue(const AttributeInfo &info, const QVariant &value) {
-    Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
-    Attribute *attr = getAttribute(info);
-
-    bool dir = false;
-    bool isOutUrlAttr = RFSUtils::isOutUrlAttribute(attr, actor, dir);
-    CHECK(isOutUrlAttr, true);
-
-    return getRFS()->canAdd(value.toString(), dir);
-}
-
 void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
     values[info.toString()] = value;
 
@@ -518,7 +507,19 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
         AttributeInfo related(info.actorId, relation->getRelatedAttrId());
         QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info),
                                                       getTags(related, true));
-        if (canSetValue(related, newValue)) {
+        Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
+        Attribute *attr = getAttribute(info);
+
+        bool canSetValue = false;
+        bool dir = false;
+        bool isOutUrlAttr = RFSUtils::isOutUrlAttribute(attr, actor, dir);
+        if (!isOutUrlAttr) {
+            canSetValue = true;
+        } else {
+            canSetValue = getRFS()->canAdd(value.toString(), dir);
+        }
+
+        if (canSetValue) {
             setAttributeValue(related, newValue);
             if (propertyControllers.contains(related.toString())) {
                 propertyControllers[related.toString()]->updateGUI(newValue);
@@ -531,13 +532,13 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
 /* WidgetCreator */
 /************************************************************************/
 WidgetCreator::WidgetCreator(WizardController *_wc)
-: wc(_wc), labelSize(0), result(NULL), layout(NULL), fullWidth(false)
+: wc(_wc), labelSize(0), result(NULL), layout(NULL), fullWidth(false), widgetsArea(NULL)
 {
 
 }
 
 WidgetCreator::WidgetCreator(WizardController *_wc, int _labelSize)
-: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL), fullWidth(false)
+: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL), fullWidth(false), widgetsArea(NULL)
 {
 
 }
@@ -735,7 +736,7 @@ void WidgetCreator::setGroupBoxLayout(GroupBox *gb) {
 /* PageContentCreator */
 /************************************************************************/
 PageContentCreator::PageContentCreator(WizardController *_wc)
-    : wc(_wc), result(NULL), pageTitle(NULL)
+    : wc(_wc), result(NULL), pageTitle(NULL), pageSubtitle(NULL)
 {
 
 }

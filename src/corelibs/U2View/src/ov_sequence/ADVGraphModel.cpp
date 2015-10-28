@@ -334,7 +334,7 @@ void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequence
             float fymin = comin;
             float fymax = comax;
             float fymid = (comin + comax)/2;
-            float fy, fy2;
+            float fy;
             int prevFY = -1;
             bool rp = false, lp = false;
             if(!points.useIntervals){
@@ -378,7 +378,7 @@ void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequence
                 for (int i=0, n = points.firstPoints.size(); i < n; i++) {
                     assert(points.firstPoints.size() == points.secondPoints.size());
                     fy = calculatePointValue(nPoints, points, i);
-                    fy2 = calculatePointValue(nPoints, points, i);;
+                    float fy2 = calculatePointValue(nPoints, points, i);;
                     rp = false;
                     lp = false;
                     if (isUnknownValue(fy)) {

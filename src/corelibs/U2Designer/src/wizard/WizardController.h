@@ -118,8 +118,7 @@ private:
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
     void assignParameters();
     void applySettings();
-    void saveDelegateTags();
-    bool canSetValue(const AttributeInfo &info, const QVariant &value);
+    void saveDelegateTags();    
     void run();
     void defaults(QWizardPage *wPage);
     WizardPage * findPage(QWizardPage *wPage);

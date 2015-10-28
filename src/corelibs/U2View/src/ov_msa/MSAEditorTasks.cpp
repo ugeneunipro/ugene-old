@@ -217,7 +217,7 @@ void UpdateMSAEditorTask::update() {
 ExportMSAConsensusTask::ExportMSAConsensusTask(const ExportMSAConsensusTaskSettings& s )
 : DocumentProviderTask(tr("Export consensus to MSA")
 , (TaskFlags(TaskFlag_NoRun) | TaskFlag_FailOnSubtaskError | TaskFlag_CancelOnSubtaskCancel))
-, settings(s){
+, settings(s), extractConsensus(NULL) {
     setVerboseLogMode(true);
     SAFE_POINT_EXT(s.msa != NULL, setError("Given msa pointer is NULL"), );
 }

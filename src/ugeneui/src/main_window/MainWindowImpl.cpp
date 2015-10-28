@@ -187,6 +187,7 @@ MainWindowImpl::MainWindowImpl() {
     openWDManualAction = NULL;
     openQDManualAction = NULL;
     welcomePageAction = NULL;
+    crashUgeneAction = NULL;
     shutDownInProcess = false;
 #ifdef _INSTALL_TO_PATH_ACTION
     installToPathAction = NULL;

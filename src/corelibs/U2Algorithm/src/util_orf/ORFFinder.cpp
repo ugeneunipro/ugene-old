@@ -349,7 +349,7 @@ void ORFFindAlgorithm::addStartCodonsFromJunction(const U2SequenceObject &dnaSeq
         }
     }
 
-    delete tmp;
+    delete[] tmp;
 }
 
 void ORFFindAlgorithm::checkStopCodonOnJunction(const U2SequenceObject &dnaSeq, const ORFAlgorithmSettings &cfg,

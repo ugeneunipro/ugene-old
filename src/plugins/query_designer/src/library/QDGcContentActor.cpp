@@ -165,7 +165,7 @@ Task* QDFindGcRegionsActor::getAlgorithmTask( const QVector<U2Region>& location 
 
     int regionStart = cfg->getParameter(REGION_START_ATTR)->getAttributeValueWithoutScript<int>();
 
-    if (regionStart < 0 && regionStart > 100) {
+    if (regionStart < 0 || regionStart > 100) {
         QString err = tr("'%1' error. Region start parameter should be not less than 0% not higher than 100%. Setting up default value: 20%.");
         settings.gcRangeInPercents.startPos = 20;
         regionStart = 20;

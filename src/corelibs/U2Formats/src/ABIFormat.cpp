@@ -464,7 +464,6 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
 
 bool ABIFormat::loadABIObjects(SeekableBuf* fp, DNASequence &dna, DNAChromatogram &cd)
 {
-    float fspacing; /* average base spacing */
     uint numPoints, numBases;
     uint signalO;
     int no_bases = 0;
@@ -747,7 +746,7 @@ skip_bases:
         }
 
         /* Get the spacing.. it's a float but don't worry yet */
-        fspacing = 0;
+        float fspacing = 0;
         if (-1 != getABIint4(fp, indexO, SpacingEntryLabel, 1, (uint *)&spacing, 1)) {
             fspacing = int_to_float(spacing);
             sequenceComment.append(QString("SPAC=%1\n").arg(fspacing)); //-6.2f",

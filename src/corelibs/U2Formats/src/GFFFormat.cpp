@@ -452,6 +452,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();
+            delete seqObj;
             return;
         }
         SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);

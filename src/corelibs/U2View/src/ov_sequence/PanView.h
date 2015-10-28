@@ -46,6 +46,7 @@ class GScrollBar;
 class GObjectView;
 class PVRowsManager;
 class ADVSingleSequenceWidget;
+class PVRowData;
 
 
 class RulerInfo {
@@ -209,6 +210,7 @@ public:
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
+
     virtual void drawAnnotations(QPainter& p);
     virtual void drawSequence(QPainter& p);
 
@@ -216,6 +218,8 @@ protected:
 
 private:
     int getSelectionLine() const {return numLines - 1;}
+
+    const QString getText(const PVRowData * rData) const;
 
     int getRulerLine() const {
         assert(showMainRuler);

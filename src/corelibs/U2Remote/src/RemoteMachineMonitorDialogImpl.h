@@ -53,7 +53,7 @@ struct RemoteMachineItemInfo {
     bool                        isSelected;
 
     RemoteMachineItemInfo(const RemoteMachineSettingsPtr& s)
-        : settings( s ) {
+        : settings(s), isSelected(false) {
         assert( NULL != settings );
     }
     RemoteMachineItemInfo()

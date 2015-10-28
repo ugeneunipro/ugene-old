@@ -98,7 +98,7 @@ QStringList MsaClipboardDataTaskFactory::getNamesBySelection(MSAEditor *context,
 }
 
 FormatsMsaClipboardTask::FormatsMsaClipboardTask(MAlignmentObject *msaObj, const U2Region &window, const QStringList &names, const DocumentFormatId &formatId)
-    :PrepareMsaClipboardDataTask(window, names), msaObj(msaObj), formatId(formatId){
+    :PrepareMsaClipboardDataTask(window, names), createSubalignmentTask(NULL), msaObj(msaObj), formatId(formatId){
 
 }
 

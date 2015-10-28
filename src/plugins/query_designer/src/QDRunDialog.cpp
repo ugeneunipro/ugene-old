@@ -265,14 +265,16 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
             SaveDocumentTask* saveTask = new SaveDocumentTask(docWithAnnotations, SaveDoc_DestroyAfter, QSet<QString>());
             res.append(saveTask);
         } else {
+            SAFE_POINT(proj != NULL, "Project is null", res);
             Document* sameUrlDoc = proj->findDocumentByURL(url);
             if (sameUrlDoc) {
                 proj->removeDocument(sameUrlDoc);
             }
             res.append(new SaveDocumentTask(docWithAnnotations));
             res.append(new AddDocumentTask(docWithAnnotations));
-            assert(docWithSequence && docWithSequence->isLoaded());
-            if (proj && proj->getDocuments().contains(docWithSequence)) {
+            SAFE_POINT(docWithSequence , "Document is NULL", res);
+            SAFE_POINT(docWithSequence->isLoaded(), "Document is not loaded", res);
+            if (proj->getDocuments().contains(docWithSequence)) {
                 res.append(new OpenViewTask(docWithSequence));
             } else {
                 res.append(new AddDocumentTask(docWithSequence));

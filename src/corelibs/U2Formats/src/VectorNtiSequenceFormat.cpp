@@ -147,11 +147,9 @@ void VectorNtiSequenceFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
         CHECK_OP(os, );
     }
 
-    if (NULL != seq) {
-        QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(seq, anns);
-        writeSequence(io, seq, lowerCaseRegs, os);
-        CHECK_OP(os, );
-    }
+    QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(seq, anns);
+    writeSequence(io, seq, lowerCaseRegs, os);
+    CHECK_OP(os, );
 
     // write last line marker
     QByteArray lastLine("//\n");

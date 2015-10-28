@@ -56,7 +56,7 @@ const int LoadSequencesTask::maxErrorListSize = 5;
 /************************************************************************/
 /* SequencesExtractor */
 /************************************************************************/
-SequenceObjectsExtractor::SequenceObjectsExtractor() : extractFromMsa(false), sequencesMaxLength(0) {}
+SequenceObjectsExtractor::SequenceObjectsExtractor() : sequenceNames(NULL), extractFromMsa(false), sequencesMaxLength(0) {}
 
 void SequenceObjectsExtractor::setAlphabet(const DNAAlphabet* newAlphabet) {
     seqsAlphabet = newAlphabet;

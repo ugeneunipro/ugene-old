@@ -281,7 +281,7 @@ void BlastAllSupportTask::parseTabularResult() {
 void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
     SharedAnnotationData ad(new AnnotationData);
     bool isOk;
-    int from = -1,to = -1,align_len = -1,gaps = -1, identities = -1, hitFrom = -1,hitTo = -1;
+    int from = -1,to = -1,align_len = -1,gaps = -1, hitFrom = -1,hitTo = -1;
     //Fields: Query id (0), Subject id(1), % identity(2), alignment length(3), mismatches(4), gap openings(5), q. start(6), q. end(7), s. start(8), s. end(9), e-value(10), bit score(11)
     QList<QByteArray> elements=line.split('\t');
     if(elements.size()!=12){
@@ -370,7 +370,7 @@ void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
         }
         if(identitiesPercent != -1) {
             //float percent = (float)identities / (float)align_len * 100;
-            identities=(float)align_len*identitiesPercent/100.;
+            int identities=(float)align_len*identitiesPercent/100.;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(identitiesPercent,'g',4) + "%)";
             ad->qualifiers.push_back(U2Qualifier("identities", str));
         }

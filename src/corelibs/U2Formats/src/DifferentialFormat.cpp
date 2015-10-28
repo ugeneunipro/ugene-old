@@ -92,8 +92,8 @@ FormatCheckResult DifferentialFormat::checkRawData(const QByteArray &rawData,
 
     for (QStringList::iterator i=lines.begin(); i!=lines.end();) {
         // skip the last line because it can be cut
-        QStringList::iterator current = i;
-        i++;
+        QStringList::iterator current(i);
+        ++i;
         if (i == lines.end()) {
             break;
         }

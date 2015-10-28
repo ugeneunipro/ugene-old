@@ -1085,9 +1085,9 @@ bool checkDbConnectionAndFixProblems(const QString &dbUrl, ProblemList &problemL
         problemList << problemMsg;
         return false;
     } else {
-        for (ProblemList::iterator i = problemList.begin(); i != problemList.end(); ++i) {
-            if (i->message == problemMsg.message && i->type == problemMsg.type) {
-                problemList.erase(i);
+        foreach(Problem problem, problemList) {
+            if (problem.message == problemMsg.message && problem.type == problemMsg.type) {
+                problemList.removeAll(problem);
             }
         }
         return true;

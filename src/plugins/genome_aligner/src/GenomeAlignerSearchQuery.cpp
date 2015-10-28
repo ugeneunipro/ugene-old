@@ -200,7 +200,15 @@ SearchQueryContainer::~SearchQueryContainer() {
 
 void SearchQueryContainer::append(SearchQuery *qu) {
     if (length == allocated) {
-        queries = (SearchQuery**) realloc(queries, (allocated + reallocSize)*sizeof(SearchQuery*));
+         void *reallocRetValue = realloc(queries, (allocated + reallocSize)*sizeof(SearchQuery*));
+        if (reallocRetValue == NULL) {
+            delete[] queries;
+            queries = NULL;
+            coreLog.error(QString("Unable to perform realloc() at %1:%2").arg(__FILE__).arg(__LINE__));
+            return;
+        } else {
+            queries = (SearchQuery **)reallocRetValue;
+        }
         allocated += reallocSize;
     }
 
