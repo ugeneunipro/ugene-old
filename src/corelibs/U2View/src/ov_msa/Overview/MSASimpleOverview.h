@@ -62,10 +62,14 @@ private:
 
     void moveVisibleRange(QPoint pos);
 
+    void recalculateSelection();
+    void recalculateScale();
+
 private:
     mutable QPixmap cachedMSAOverview;
 
     mutable bool    redrawMSAOverview;
+    mutable bool    redrawSelection;
 };
 
 } // namespace

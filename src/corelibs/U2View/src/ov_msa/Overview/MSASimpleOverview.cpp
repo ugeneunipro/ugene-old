@@ -36,7 +36,8 @@ namespace U2 {
 
 MSASimpleOverview::MSASimpleOverview(MSAEditorUI *_ui)
     : MSAOverview(_ui),
-      redrawMSAOverview(true)
+      redrawMSAOverview(true),
+      redrawSelection(true)
 {
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     setFixedHeight(FIXED_HEIGTH);
@@ -74,20 +75,15 @@ void MSASimpleOverview::sl_selectionChanged() {
     if (!isValid()) {
         return;
     }
-    const MSAEditorSelection& selection = sequenceArea->getSelection();
-
-    cachedSelection.setX( qRound( selection.x() * stepX ) );
-    cachedSelection.setY( qRound( selection.y() * stepY ) );
-
-    //(!) [(a - b)*c] != [a*c] - [b*c]
-    cachedSelection.setWidth( qRound(stepX * (selection.x() + selection.width())) - qRound(stepX * selection.x()));
-    cachedSelection.setHeight( qRound(stepY * (selection.y() + selection.height())) - qRound(stepY * selection.y()));
+    redrawSelection = true;
 
     update();
 }
 
 void MSASimpleOverview::sl_redraw() {
     redrawMSAOverview = true;
+    redrawSelection = true;
+
     update();
 }
 
@@ -118,6 +114,11 @@ void MSASimpleOverview::paintEvent(QPaintEvent *e) {
     drawVisibleRange(pVisibleRange);
     pVisibleRange.end();
 
+    if (redrawSelection) {
+        recalculateSelection();
+        redrawSelection = false;
+    }
+
     QPainter pSelection(&cachedView);
     drawSelection(pSelection);
     pSelection.end();
@@ -139,8 +140,7 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
         return;
     }
 
-    stepX = width() / (double)editor->getAlignmentLen();
-    stepY = height() / (double)editor->getNumSequences();
+    recalculateScale();
 
     QString highlightingSchemeId = sequenceArea->getCurrentHighlightingScheme()->getFactory()->getId();
 
@@ -244,5 +244,22 @@ void MSASimpleOverview::moveVisibleRange(QPoint _pos) {
     sequenceArea->setFirstVisibleSequence(pos);
 }
 
+void MSASimpleOverview::recalculateSelection() {
+    recalculateScale();
+
+    const MSAEditorSelection& selection = sequenceArea->getSelection();
+
+    cachedSelection.setX( qRound( selection.x() * stepX ) );
+    cachedSelection.setY( qRound( selection.y() * stepY ) );
+
+    //(!) [(a - b)*c] != [a*c] - [b*c]
+    cachedSelection.setWidth( qRound(stepX * (selection.x() + selection.width())) - qRound(stepX * selection.x()));
+    cachedSelection.setHeight( qRound(stepY * (selection.y() + selection.height())) - qRound(stepY * selection.y()));
+}
+
+void MSASimpleOverview::recalculateScale() {
+    stepX = width() / (double)editor->getAlignmentLen();
+    stepY = height() / (double)editor->getNumSequences();
+}
 
 } // namespace
