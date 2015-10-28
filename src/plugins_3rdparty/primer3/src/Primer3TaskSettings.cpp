@@ -65,7 +65,7 @@ Primer3TaskSettings::Primer3TaskSettings(const Primer3TaskSettings &settings):
     initMaps();
 }
 
-const Primer3TaskSettings &Primer3TaskSettings::operator=(const Primer3TaskSettings &settings)
+Primer3TaskSettings &Primer3TaskSettings::operator=(const Primer3TaskSettings &settings)
 {
     sequenceName = settings.sequenceName;
     sequence = settings.sequence;

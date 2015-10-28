@@ -201,7 +201,7 @@ PrimerPair::PrimerPair(const PrimerPair &primerPair):
 {
 }
 
-const PrimerPair &PrimerPair::operator=(const PrimerPair &primerPair)
+PrimerPair &PrimerPair::operator=(const PrimerPair &primerPair)
 {
     leftPrimer.reset( ( primerPair.leftPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.leftPrimer ) );
     rightPrimer.reset( ( primerPair.rightPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.rightPrimer ) );

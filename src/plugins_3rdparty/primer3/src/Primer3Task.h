@@ -77,7 +77,7 @@ public:
     PrimerPair();
     PrimerPair(const primer_pair &primerPair, int offset = 0);
     PrimerPair(const PrimerPair &primerPair);
-    const PrimerPair &operator=(const PrimerPair &primerPair);
+    PrimerPair &operator=(const PrimerPair &primerPair);
     bool operator==(const PrimerPair& primerPair) const;
 
     Primer *getLeftPrimer()const;
