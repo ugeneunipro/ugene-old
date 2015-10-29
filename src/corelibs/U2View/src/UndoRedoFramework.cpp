@@ -117,7 +117,9 @@ void MsaUndoRedoFramework::sl_undo() {
     objDbi->undo(msaRef.entityId, os);
     SAFE_POINT_OP(os, );
 
-    maObj->updateCachedMAlignment();
+    MAlignmentModInfo modInfo;
+    modInfo.type = MAlignmentModType_Undo;
+    maObj->updateCachedMAlignment(modInfo);
 }
 
 void MsaUndoRedoFramework::sl_redo() {
@@ -138,7 +140,9 @@ void MsaUndoRedoFramework::sl_redo() {
     objDbi->redo(msaRef.entityId, os);
     SAFE_POINT_OP(os, );
 
-    maObj->updateCachedMAlignment();
+    MAlignmentModInfo modInfo;
+    modInfo.type = MAlignmentModType_Redo;
+    maObj->updateCachedMAlignment(modInfo);
 }
 
 

@@ -35,6 +35,12 @@ namespace U2 {
 class GHints;
 class DNASequence;
 
+enum MAlignmentModType {
+    MAlignmentModType_User,
+    MAlignmentModType_Undo,
+    MAlignmentModType_Redo
+};
+
 class MAlignmentModInfo {
 public:
     MAlignmentModInfo()
@@ -42,7 +48,9 @@ public:
           sequenceListChanged(true),
           alignmentLengthChanged(true),
           middleState(false),
-          alphabetChanged(false){}
+          alphabetChanged(false),
+          type(MAlignmentModType_User) {}
+
     bool sequenceContentChanged;
     bool sequenceListChanged;
     bool alignmentLengthChanged;
@@ -50,6 +58,7 @@ public:
     bool alphabetChanged;
     QVariantMap hints;
     QList<qint64> modifiedRowIds;
+    MAlignmentModType type;
 
 private:
     static bool registerMeta;
@@ -150,7 +159,7 @@ public:
      */
     void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track = true);
 
-    /** Replace character in row and change alphabet, if it does not contain the character 
+    /** Replace character in row and change alphabet, if it does not contain the character
     */
     void replaceCharacter(int startPos, int rowIndex, char newChar);
 
