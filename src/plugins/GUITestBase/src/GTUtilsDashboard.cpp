@@ -19,6 +19,7 @@
 * MA 02110-1301, USA.
 */
 
+#include <QTabWidget>
 #include <QWebElement>
 #include <QWebFrame>
 #include <QWebView>
@@ -43,6 +44,10 @@ const QMap<QString, GTUtilsDashboard::Tabs> GTUtilsDashboard::tabMap = initTabMa
 
 QWebView* GTUtilsDashboard::getDashboard(U2OpStatus &os){
     return GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
+}
+
+QTabWidget* GTUtilsDashboard::getTabWidget(U2OpStatus &os){
+    return GTWidget::findExactWidget<QTabWidget*>(os, "WorkflowTabView");
 }
 
 QWebElement GTUtilsDashboard::findElement(U2OpStatus &os, QString text, QString tag, bool exactMatch){

@@ -880,7 +880,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
@@ -906,7 +906,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.gb");
@@ -931,7 +931,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");

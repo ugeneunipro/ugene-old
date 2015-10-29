@@ -4412,7 +4412,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061){
             GTLineEdit::setText(os, schemeName, "");
             CHECK_SET_ERR(validLabel->text() == "Warning: Name of scheme is empty.", "unexpected hint: " + validLabel->text());
             GTLineEdit::setText(os, schemeName, "name*");
-            CHECK_SET_ERR(validLabel->text() == "Warning: Name has to consist of letters, digits, spaces", "unexpected hint: " + validLabel->text());
+            CHECK_SET_ERR(validLabel->text() == "Warning: Name has to consist of letters, digits, spaces<br>or underscore symbols only.", "unexpected hint: " + validLabel->text());
             GTLineEdit::setText(os, schemeName, "GUITest_common_scenarios_msa_editor_test_0061");
             CHECK_SET_ERR(validLabel->text() == "Warning: Color scheme with the same name already exists.", "unexpected hint: " + validLabel->text());
 
@@ -4748,7 +4748,7 @@ GUI_TEST_CLASS_DEFINITION(test_0072){
     QScrollBar* vbar = GTWidget::findExactWidget<QScrollBar*>(os, "vertical_sequence_scroll");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"], GTKeyboardDriver::key["shift"]);
     GTGlobals::sleep(300);
-    CHECK_SET_ERR(vbar->value() == 1695, QString("shift + end key works wrong. Scrollbar value: %1").arg(vbar->value()))
+    CHECK_SET_ERR(vbar->value() == vbar->maximum(), QString("shift + end key works wrong. Scrollbar value: %1").arg(vbar->value()))
 //  home+shift
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"], GTKeyboardDriver::key["shift"]);
     GTGlobals::sleep(300);

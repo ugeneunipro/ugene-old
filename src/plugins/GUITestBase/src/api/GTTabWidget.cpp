@@ -21,6 +21,7 @@
 
 #include "GTTabWidget.h"
 #include "GTTabBar.h"
+#include "GTWidget.h"
 
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
@@ -71,7 +72,18 @@ void GTTabWidget::clickTab(U2OpStatus &os, QTabWidget* tabWidget, int idx, Qt::M
 
 #define GT_METHOD_NAME "clickTab"
 void GTTabWidget::clickTab(U2OpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button){
-    GT_CHECK(tabWidget != NULL, "tabWidget is NULL");
+    int num = getTabNumByName(os, tabWidget, tabName);
+    clickTab(os, tabWidget, num, button);
+}
+#undef GT_METHOD_NAME
+
+QString GTTabWidget::getTabName(U2OpStatus &os, QTabWidget *tabWidget, int idx){
+    return getTabBar(os, tabWidget)->tabText(idx);
+}
+
+#define GT_METHOD_NAME "getTabNumByName"
+int GTTabWidget::getTabNumByName(U2OpStatus &os, QTabWidget *tabWidget, QString tabName){
+    GT_CHECK_RESULT(tabWidget != NULL, "tabWidget is NULL", -1);
     QTabBar* tabBar = getTabBar(os, tabWidget);
     int num = -1;
     for(int i=0; i<tabBar->count(); i++){
@@ -80,13 +92,32 @@ void GTTabWidget::clickTab(U2OpStatus &os, QTabWidget* tabWidget, QString tabNam
             num = -1;
         }
     }
-    GT_CHECK(num != -1, "tab " + tabName + " not found");
-    clickTab(os, tabWidget, num, button);
+    GT_CHECK_RESULT(num != -1, "tab " + tabName + " not found", -1);
+    return num;
 }
 #undef GT_METHOD_NAME
 
-QString GTTabWidget::getTabName(U2OpStatus &os, QTabWidget *tabWidget, int idx){
-    return getTabBar(os, tabWidget)->tabText(idx);
+#define GT_METHOD_NAME "getTabCornerWidget"
+QWidget* GTTabWidget::getTabCornerWidget(U2OpStatus &os, QTabWidget *tabWidget, int idx){
+    QWidget* result = GTTabWidget::getTabBar(os, tabWidget)->tabButton(idx, QTabBar::RightSide);
+    GT_CHECK_RESULT(result != NULL, "corner widget not found", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getTabCornerWidget"
+QWidget* GTTabWidget::getTabCornerWidget(U2OpStatus &os, QTabWidget *tabWidget, QString tabName){
+    int idx = getTabNumByName(os, tabWidget, tabName);
+    return getTabCornerWidget(os, tabWidget, idx);
+}
+#undef GT_METHOD_NAME
+
+void GTTabWidget::closeTab(U2OpStatus &os, QTabWidget *tabWidget, int idx){
+    GTWidget::click(os, getTabCornerWidget(os, tabWidget, idx));
+}
+
+void GTTabWidget::closeTab(U2OpStatus &os, QTabWidget *tabWidget, QString tabName){
+    GTWidget::click(os, getTabCornerWidget(os, tabWidget, tabName));
 }
 
 #undef GT_CLASS_NAME

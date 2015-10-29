@@ -44,12 +44,13 @@ using namespace HI;
 
     class PopupChooserByText : public Filler {
     public:
-        PopupChooserByText(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
-            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
+        PopupChooserByText(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey, Qt::MatchFlag _matchFlag = Qt::MatchExactly) //UseKey need for Ubuntu
+            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod), matchFlag(_matchFlag){}
         virtual void run();
     protected:
         QStringList namePath;
         GTGlobals::UseMethod useMethod;
+        Qt::MatchFlag matchFlag;
     };
 
     class PopupChecker : public Filler {

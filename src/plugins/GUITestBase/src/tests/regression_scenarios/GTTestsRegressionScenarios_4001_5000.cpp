@@ -117,6 +117,7 @@
 #include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
@@ -3492,6 +3493,76 @@ GUI_TEST_CLASS_DEFINITION(test_4702_5) {
     // Expected state: All annotations are selected.
     selectedItemsCount = GTUtilsAnnotationsTreeView::getAllSelectedItems(os).size();
     CHECK_SET_ERR(361 == selectedItemsCount, QString("Incorrect selected annotations count: expected - %1, obtained - %2 ").arg(361).arg(selectedItemsCount));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4710){
+//    1) Make sure to have several dashboards for different workflows runs.
+//    2) Run a workflow, e.g. I ran "Variation annotation with SnpEff" with the tutorial data.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
+    GTUtilsWorkflowDesigner::click(os, "Input Variations File");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/vcf", "valid.vcf");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+
+    QTabWidget* tabs = GTUtilsDashboard::getTabWidget(os);
+    //int initialIndex = tabs->count();
+    QString initTabName = GTTabWidget::getTabName(os, tabs, tabs->currentIndex());
+//    3) During the workflow run open the "Dashboard Manager", select one of the several dashboard, and click "Remove selected."
+    QWidget* dmButton = GTAction::button(os, GTAction::findAction(os, "Dashboards manager"));
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //    4) Select some dashboards in the dialog
+            GTGlobals::sleep(500);
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QTreeWidget* listWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "listWidget", dialog);
+            GTTreeWidget::click(os, listWidget->invisibleRootItem()->child(0));
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Confirm"));
+            GTWidget::click(os, GTWidget::findWidget(os, "removeButton", dialog));
+            GTGlobals::sleep(500);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DashboardsManagerDialogFiller(os, new custom()));
+    GTWidget::click(os, dmButton);
+//    Expected result: the selected dashboard was removed, the current workflow execution is proceeding and its dashboard is shown.
+//    Actual result: the workflow execution is proceeding, but the current dashboard is removed.
+    GTGlobals::sleep();
+
+    //int finalIndex = tabs->count();
+    QString finalTabName = GTTabWidget::getTabName(os, tabs, tabs->currentIndex());
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(initTabName == finalTabName, "tab name changed. Initial: " + initTabName + ", actual: " + finalTabName);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4710_1){
+//    1) Run "Align with MUSCLE" with "_common_data\fasta\PF07724_full_family.fa".
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    GTUtilsWorkflowDesigner::click(os, "Read alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "PF07724_full_family.fa");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+//    Expected state: Close dashboard tab button is disabled
+
+    QTabWidget* dashboardWidget = GTUtilsDashboard::getTabWidget(os);
+    QWidget* corner = GTTabWidget::getTabCornerWidget(os, dashboardWidget, dashboardWidget->currentIndex());
+    CHECK_SET_ERR(!corner->isEnabled(), "close tab button is unexpectidly enabled");
+
+//    2) Stop the workflow execution
+    GTWidget::click(os, GTAction::button(os, "Stop workflow"));
+    GTGlobals::sleep(500);
+    corner = GTTabWidget::getTabCornerWidget(os, dashboardWidget, dashboardWidget->currentIndex());
+    CHECK_SET_ERR(corner->isEnabled(), "close tab button is unexpectidly disabled");
+//    Expected result: Close dashboard tab button is enabled
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {

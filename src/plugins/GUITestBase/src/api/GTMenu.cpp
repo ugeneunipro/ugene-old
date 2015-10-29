@@ -123,6 +123,17 @@ QStringList fixMenuItemPath(const QStringList &itemPath) {
     return fixedItemPath;
 }
 
+bool compre(QString s1, QString s2, Qt::MatchFlag mathcFlag){
+    switch (mathcFlag) {
+    case Qt::MatchContains:
+        return s1.contains(s2);
+    case Qt::MatchExactly:
+        return s1 == s2;
+    default:
+        return false;
+    }
+}
+
 }
 
 #define GT_METHOD_NAME "clickMainMenuItem"
@@ -164,7 +175,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, QWidget *ground, GTGlobals::UseMe
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMenuItem"
-QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName, bool byText) {
+QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName, bool byText, Qt::MatchFlag matchFlag) {
 
     GT_CHECK_RESULT(menu != NULL, "menu not found", NULL);
 
@@ -174,7 +185,7 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
         foreach(QAction *act, actions) {
             QString objName = act->objectName();
             uiLog.trace("GT_DEBUG_MESSAGE: Action name: <" + objName + ">");
-            if (objName == itemName) {
+            if (compre(objName, itemName, matchFlag)) {
                 uiLog.trace("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;
@@ -184,7 +195,7 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
         foreach(QAction *act, actions) {
             QString text = act->text();
             uiLog.trace("GT_DEBUG_MESSAGE: Action text: <" + text + ">");
-            if (text == itemName) {//(text.contains(itemName, Qt::CaseInsensitive)) { //TODO:
+            if (compre(text, itemName, matchFlag)) {
                 uiLog.trace("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;
@@ -211,12 +222,12 @@ QPoint GTMenu::actionPos(U2OpStatus &os, const QMenu* menu, QAction* action) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickMenuItem"
-QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m,bool byText) {
+QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m,bool byText, Qt::MatchFlag matchFlag) {
 
     GT_CHECK_RESULT(menu != NULL, "menu not found", NULL);
     GT_CHECK_RESULT(itemName.isEmpty() == false, "itemName is empty", NULL);
 
-    QAction *action = getMenuItem(os, menu, itemName, byText);
+    QAction *action = getMenuItem(os, menu, itemName, byText, matchFlag);
     GT_CHECK_RESULT(action != NULL, "action not found for item " + itemName, NULL);
     GT_CHECK_RESULT(action->isEnabled() == true, "action <" + itemName + "> is not enabled", NULL);
 
@@ -269,7 +280,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickMenuItem"
-void GTMenu::clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod, bool byText) {
+void GTMenu::clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod, bool byText, Qt::MatchFlag matchFlag) {
 
     GT_CHECK(menu != NULL, "menu is NULL");
     GT_CHECK(itemPath.isEmpty() == false, "itemPath is empty");
@@ -278,21 +289,21 @@ void GTMenu::clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStri
         GT_CHECK(menu != NULL, "menu not found for item " + itemName);
 
         GTGlobals::sleep(500);
-        QAction *action = clickMenuItem(os, menu, itemName, useMethod, byText);
+        QAction *action = clickMenuItem(os, menu, itemName, useMethod, byText, matchFlag);
         menu = action ? action->menu() : NULL;
     }
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickMenuItemByName"
-void GTMenu::clickMenuItemByName(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m){
-    clickMenuItemPrivate(os, menu, itemPath, m, false);
+void GTMenu::clickMenuItemByName(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m, Qt::MatchFlag matchFlag){
+    clickMenuItemPrivate(os, menu, itemPath, m, false, matchFlag);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickMenuItemByText"
-void GTMenu::clickMenuItemByText(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m){
-    clickMenuItemPrivate(os, menu, itemPath, m, true);
+void GTMenu::clickMenuItemByText(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m, Qt::MatchFlag matchFlag){
+    clickMenuItemPrivate(os, menu, itemPath, m, true, matchFlag);
 }
 #undef GT_METHOD_NAME
 

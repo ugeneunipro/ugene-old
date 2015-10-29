@@ -1119,7 +1119,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005_1){
 //    Expected state: wrong alphabet hint appeared
     QLabel* lblMessage = qobject_cast<QLabel*>(GTWidget::findWidget(os, "lblMessage"));
     CHECK_SET_ERR(lblMessage != NULL, "lblMessage not found");
-    CHECK_SET_ERR(lblMessage->text() == "Warning: Current alphabet does not correspond the requirements.",
+    CHECK_SET_ERR(lblMessage->text() == "Pairwise alignment is not available for alignments with \"All symbols\" alphabet.",
                   QString("wrong label text: %1").arg(lblMessage->text()));
 //    3. Add two sequences to PA line edits
     GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "seq7");

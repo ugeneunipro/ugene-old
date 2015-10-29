@@ -27,6 +27,7 @@
 
 class QWebView;
 class QWebElement;
+class QTabWidget;
 
 namespace U2 {
 
@@ -35,6 +36,7 @@ class GTUtilsDashboard
 public:
     enum Tabs{Overview, Input, ExternalTools};
     static QWebView* getDashboard(U2OpStatus &os);
+    static QTabWidget* getTabWidget(U2OpStatus &os);
 
     static QWebElement findElement(U2OpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
     static QWebElement findTreeElement(U2OpStatus &os, QString text);

@@ -42,6 +42,13 @@ public:
     static void clickTab(U2OpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button = Qt::LeftButton);
     static QString getTabName(U2OpStatus &os, QTabWidget* tabWidget, int idx);
 
+    static int getTabNumByName(U2OpStatus &os, QTabWidget* tabWidget, QString tabName);
+    static QWidget* getTabCornerWidget(U2OpStatus &os, QTabWidget* tabWidget, int idx);
+    static QWidget* getTabCornerWidget(U2OpStatus &os, QTabWidget* tabWidget, QString tabName);
+
+    static void closeTab(U2OpStatus &os, QTabWidget *tabWidget, int idx);
+    static void closeTab(U2OpStatus &os, QTabWidget *tabWidget, QString tabName);
+
 
 };
 

@@ -37,14 +37,14 @@ public:
     static void checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
     static QMenu* showContextMenu(U2OpStatus &os, QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
-    static void clickMenuItemByName(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
-    static void clickMenuItemByText(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void clickMenuItemByName(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void clickMenuItemByText(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
     // moves cursor to menu item, clicks on menu item;
 
-    static QAction* clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false);
+    static QAction* clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
-    static QAction* getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName, bool byText = false);
+    static QAction* getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
     // global position of menu action's center
     static QPoint actionPos(U2OpStatus &os, const QMenu* menu, QAction* action);
@@ -57,7 +57,8 @@ public:
     static const QString HELP;
 
 private:
-    static void clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStringList &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false);
+    static void clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStringList &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse,
+                                     bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 };
 
 }
