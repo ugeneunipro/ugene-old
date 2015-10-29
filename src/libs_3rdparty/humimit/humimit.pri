@@ -5,13 +5,15 @@ UGENE_RELATIVE_DESTDIR = ''
 
 TARGET = humimit
 TEMPLATE = lib
-CONFIG +=thread debug_and_release warn_off
+CONFIG += thread debug_and_release warn_off qt dll
 INCLUDEPATH += src _tmp ../../include
-LIBS += -L../../_release
-QT += testlib
+LIBS += -L../../_release -lU2Core
+QT += testlib 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets 
 
-DEFINES+= BUILDING_HUMIMIT_DLL
+DEFINES += BUILDING_HUMIMIT_DLL
+DEFINES += QT_DLL
 
 !debug_and_release|build_pass {
 
@@ -21,8 +23,8 @@ DEFINES+= BUILDING_HUMIMIT_DLL
         CONFIG +=console
         DESTDIR=../../_debug/
         OBJECTS_DIR=_tmp/obj/debug
-        LIBS -= -L../../_release
-        LIBS += -L../../_debug
+        LIBS -= -L../../_release -lU2Core
+        LIBS += -L../../_debug -lU2Cored
     }
 
     CONFIG(release, debug|release) {
@@ -64,3 +66,4 @@ unix {
     target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
     INSTALLS += target
 }
+

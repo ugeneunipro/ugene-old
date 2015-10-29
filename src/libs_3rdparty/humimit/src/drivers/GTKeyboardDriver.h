@@ -34,14 +34,14 @@
 
 namespace HI {
 
-class GTKeyboardDriver {
+class HI_EXPORT GTKeyboardDriver {
 public:
     //
 #if defined Q_OS_WIN || defined Q_OS_MAC
-    static void keyClick(U2:U2OpStatus &os, char key, int modifiers = 0);
+    static void keyClick(U2::U2OpStatus &os, char key, int modifiers = 0);
 
-    static void keyPress(U2:U2OpStatus &os, char key, int modifiers = 0);
-    static void keyRelease(U2:U2OpStatus &os, char key, int modifiers = 0);
+    static void keyPress(U2::U2OpStatus &os, char key, int modifiers = 0);
+    static void keyRelease(U2::U2OpStatus &os, char key, int modifiers = 0);
 #if defined Q_OS_WIN
     static INPUT getKeyEvent(int key, bool keyUp = false);
 #endif
@@ -56,7 +56,7 @@ public:
     static void keyPress(U2::U2OpStatus &os, int key, int modifiers = 0);
     static void keyRelease(U2::U2OpStatus &os, int key, int modifiers = 0);
 
-    class keys : private QMap<QString, int> {
+	class HI_EXPORT keys : private QMap<QString, int> {
     public:
         keys();
         const QStringList mapKeys() const {

@@ -27,7 +27,7 @@
 
 namespace HI {
 
-class GTMouseDriver {
+class HI_EXPORT GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
@@ -57,7 +57,7 @@ private:
     static void selectArea(U2::U2OpStatus &os, const int x, const int y);
 };
 
-class GTDragger: public QObject{
+class HI_EXPORT GTDragger : public QObject{
     Q_OBJECT
 public:
     GTDragger(U2::U2OpStatus &_os, const QPoint& _to);

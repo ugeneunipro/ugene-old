@@ -40,13 +40,13 @@
 
 namespace HI {
 
-class GTGlobals {
+class HI_EXPORT GTGlobals {
 public:
     enum UseMethod {UseMouse, UseKey, UseKeyBoard};
     enum WindowAction {Minimize, Maximize, Close, WindowActionCount};
 
     // if failIfNull is set to true, fails if object wasn't found
-    class FindOptions {
+	class HI_EXPORT FindOptions {
     public:
         FindOptions(bool fail = true);
 
