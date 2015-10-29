@@ -225,6 +225,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
            src/util/TextUtils.h \
+           src/util/TaskWatchdog.h \
            src/util/U1AnnotationUtils.h \
            src/util/U2AlphabetUtils.h \
            src/util/U2AssemblyReadIterator.h \
@@ -421,6 +422,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
            src/util/TextUtils.cpp \
+           src/util/TaskWatchdog.cpp \
            src/util/U1AnnotationUtils.cpp \
            src/util/U2AlphabetUtils.cpp \
            src/util/U2AssemblyReadIterator.cpp \

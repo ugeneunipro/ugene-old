@@ -143,6 +143,8 @@ public:
     int                     offsInGlobalSeq;
     TriState                directStrand;
 
+    // service settings
+    U2SequenceObject *querySequenceObject; // can be NULL
 };
 }
 #endif // _U2_BLAST_TASK_SETTINGS_H

@@ -64,6 +64,7 @@ void BlastTaskSettings::reset() {
     isDefaultThreshold=true;
     isSequenceCircular=false;
     directStrand = TriState_Unknown;
+    querySequenceObject = NULL;
 }
 
 }//namespace

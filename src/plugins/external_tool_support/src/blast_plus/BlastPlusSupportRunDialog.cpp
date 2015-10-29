@@ -346,6 +346,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
             localSettings.isNucleotideSeq = true;
         }
         localSettings.queryFile = doc->getURLString();
+        localSettings.querySequenceObject = seq;
         settingsList.append(localSettings);
         sequencesRefList.append(GObjectReference(obj));
     }

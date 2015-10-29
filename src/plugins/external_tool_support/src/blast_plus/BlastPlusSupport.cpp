@@ -368,6 +368,7 @@ void BlastPlusSupportContext::sl_showDialog() {
             settings.offsInGlobalSeq=r.startPos;
             SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
             settings.isSequenceCircular = seqCtx->getSequenceObject()->isCircular();
+            settings.querySequenceObject = seqCtx->getSequenceObject();
             Task * t=NULL;
             if(settings.programName == "blastn"){
                 t = new BlastNPlusSupportTask(settings);

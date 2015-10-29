@@ -122,6 +122,8 @@ void ExternalToolRunTask::run(){
     while(!externalToolProcess->waitForFinished(1000)){
         if (isCanceled()) {
             killProcess();
+            algoLog.details(tr("Tool %1 is cancelled").arg(toolName));
+            return;
         }
     }
 

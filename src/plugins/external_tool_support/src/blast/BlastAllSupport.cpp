@@ -203,6 +203,7 @@ void BlastAllSupportContext::sl_showDialog() {
             settings.offsInGlobalSeq=r.startPos;
             SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
             settings.isSequenceCircular = seqCtx->getSequenceObject()->isCircular();
+            settings.querySequenceObject = seqCtx->getSequenceObject();
             Task * t = new BlastAllSupportTask(settings);
             AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }

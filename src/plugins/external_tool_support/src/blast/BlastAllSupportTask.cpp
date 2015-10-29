@@ -34,6 +34,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/TaskWatchdog.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -55,6 +56,10 @@ BlastAllSupportTask::BlastAllSupportTask(const BlastTaskSettings& _settings) :
     sequenceObject=NULL;
     circularization = new U2PseudoCircularization(this, settings.isSequenceCircular, settings.querySequence);
     addTaskResource(TaskResourceUsage(RESOURCE_THREAD, settings.numberOfProcessors));
+
+    if (NULL != settings.querySequenceObject) {
+        TaskWatchdog::trackResourceExistence(settings.querySequenceObject, this, tr("A problem occurred during doing BLAST. The sequence is no more available."));
+    }
 }
 
 void BlastAllSupportTask::prepare(){
