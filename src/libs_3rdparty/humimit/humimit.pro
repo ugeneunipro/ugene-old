@@ -48,7 +48,7 @@ HEADERS += \
            src/utils/GTThread.h \
            src/utils/GTUtilsApp.h \
            src/utils/GTUtilsDialog.h \
-           src/utils/GTUtilsMdi.h \
+#           src/utils/GTUtilsMdi.h \
            src/utils/GTUtilsToolTip.h
 SOURCES += \
            src/GTGlobals.cpp \
@@ -100,7 +100,7 @@ SOURCES += \
            src/utils/GTThread.cpp \
            src/utils/GTUtilsApp.cpp \
            src/utils/GTUtilsDialog.cpp \
-           src/utils/GTUtilsMdi.cpp \
+#           src/utils/GTUtilsMdi.cpp \
            src/utils/GTUtilsToolTip.cpp
 
 macx {

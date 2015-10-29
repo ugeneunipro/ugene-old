@@ -28,21 +28,22 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTGlobals.h"
 #include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 #include "utils/GTThread.h"
 #include "base_dialogs/MessageBoxFiller.h"
 
-namespace HI {
+namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsMdi"
 
 #define GT_METHOD_NAME "click"
-void GTUtilsMdi::click(U2::U2OpStatus &os, GTGlobals::WindowAction action) {
+void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 
-    U2::MainWindow* mw = U2::AppContext::getMainWindow();
+    MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK(mw != NULL, "MainWindow == NULL");
 
     QMainWindow* mainWindow = mw->getQMainWindow();
@@ -81,15 +82,15 @@ void GTUtilsMdi::click(U2::U2OpStatus &os, GTGlobals::WindowAction action) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWindow"
-QWidget * GTUtilsMdi::findWindow(U2::U2OpStatus &os, const QString &windowName, const GTGlobals::FindOptions &options) {
+QWidget * GTUtilsMdi::findWindow(U2OpStatus &os, const QString &windowName, const GTGlobals::FindOptions &options) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
 
-    U2::MainWindow *mw = U2::AppContext::getMainWindow();
+    MainWindow *mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
-    QList<U2::MWMDIWindow *> mdiWindows = mw->getMDIManager()->getWindows();
-    foreach (U2::MWMDIWindow *w, mdiWindows) {
+    QList<MWMDIWindow *> mdiWindows = mw->getMDIManager()->getWindows();
+    foreach (MWMDIWindow *w, mdiWindows) {
         QString mdiTitle = w->windowTitle();
         switch (options.matchPolicy) {
         case Qt::MatchExactly:
@@ -116,24 +117,24 @@ QWidget * GTUtilsMdi::findWindow(U2::U2OpStatus &os, const QString &windowName, 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "closeWindow"
-void GTUtilsMdi::closeWindow(U2::U2OpStatus &os, const QString &windowName, const GTGlobals::FindOptions& options) {
+void GTUtilsMdi::closeWindow(U2OpStatus &os, const QString &windowName, const GTGlobals::FindOptions& options) {
     GT_CHECK(windowName.isEmpty() == false, "windowname is empty");
 
-    U2::MainWindow* mw = U2::AppContext::getMainWindow();
+    MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK(mw != NULL, "MainWindow == NULL");
 
-    U2::MWMDIWindow* window = qobject_cast<U2::MWMDIWindow*>(findWindow(os, windowName, options));
+    MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName, options));
     GT_CHECK(window != NULL, "Cannot find MDI window");
     GTWidget::close(os, window->parentWidget());
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "closeAllWindows"
-void GTUtilsMdi::closeAllWindows(U2::U2OpStatus &os) {
-    class Scenario : public U2::CustomScenario {
+void GTUtilsMdi::closeAllWindows(U2OpStatus &os) {
+    class Scenario : public CustomScenario {
     public:
-        void run(U2::U2OpStatus &os) {
-            const QList<QMdiSubWindow *> mdiWindows = U2::AppContext::getMainWindow()->getQMainWindow()->findChildren<QMdiSubWindow *>();
+        void run(U2OpStatus &os) {
+            const QList<QMdiSubWindow *> mdiWindows = AppContext::getMainWindow()->getQMainWindow()->findChildren<QMdiSubWindow *>();
             foreach (QMdiSubWindow *mdiWindow, mdiWindows) {
                 GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
                 mdiWindow->close();
@@ -147,16 +148,16 @@ void GTUtilsMdi::closeAllWindows(U2::U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "waitWindowOpened"
-void GTUtilsMdi::waitWindowOpened(U2::U2OpStatus &os, const QString &windowNamePart, qint64 timeout) {
-    U2::MainWindow *mainWindow = U2::AppContext::getMainWindow();
+void GTUtilsMdi::waitWindowOpened(U2OpStatus &os, const QString &windowNamePart, qint64 timeout) {
+    MainWindow *mainWindow = AppContext::getMainWindow();
     GT_CHECK(mainWindow != NULL, "MainWindow == NULL");
-    U2::MWMDIManager *mdiManager = mainWindow->getMDIManager();
+    MWMDIManager *mdiManager = mainWindow->getMDIManager();
     GT_CHECK(mdiManager != NULL, "MainWindow == NULL");
 
     bool found = false;
     int passedTime = 0;
     while (!found && passedTime < timeout / 1000) {
-        foreach (U2::MWMDIWindow *window, mdiManager->getWindows()) {
+        foreach (MWMDIWindow *window, mdiManager->getWindows()) {
             found |= window->windowTitle().contains(windowNamePart, Qt::CaseInsensitive);
         }
         GTGlobals::sleep(1000);
@@ -170,9 +171,9 @@ void GTUtilsMdi::waitWindowOpened(U2::U2OpStatus &os, const QString &windowNameP
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "activeWindow"
-QWidget* GTUtilsMdi::activeWindow(U2::U2OpStatus &os, const GTGlobals::FindOptions& options) {
+QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& options) {
 
-    U2::MainWindow* mw = U2::AppContext::getMainWindow();
+    MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
     QWidget* w = mw->getMDIManager()->getActiveWindow();
@@ -184,24 +185,24 @@ QWidget* GTUtilsMdi::activeWindow(U2::U2OpStatus &os, const GTGlobals::FindOptio
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "activeWindowTitle"
-QString GTUtilsMdi::activeWindowTitle(U2::U2OpStatus &os){
+QString GTUtilsMdi::activeWindowTitle(U2OpStatus &os){
     QWidget* w = activeWindow(os);
-    U2::MWMDIWindow* mdi = qobject_cast<U2::MWMDIWindow*>(w);
+    MWMDIWindow* mdi = qobject_cast<MWMDIWindow*>(w);
     GT_CHECK_RESULT(mdi, "unexpected object type", QString());
     return mdi->windowTitle();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "activateWindow"
-void GTUtilsMdi::activateWindow(U2::U2OpStatus &os, const QString &windowName){
-    U2::MainWindow* mw = U2::AppContext::getMainWindow();
+void GTUtilsMdi::activateWindow(U2OpStatus &os, const QString &windowName){
+    MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK(mw != NULL, "MainWindow == NULL");
 
     CHECK(!activeWindowTitle(os).contains(windowName), );
 
     GTGlobals::FindOptions options;
     options.matchPolicy = Qt::MatchContains;
-    U2::MWMDIWindow* window = qobject_cast<U2::MWMDIWindow*>(findWindow(os, windowName, options));
+    MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName, options));
     GT_CHECK(window != NULL, "window " + windowName + " not found");
 
     GTMenu::clickMainMenuItem(os, QStringList() << "Window" << windowName, GTGlobals::UseMouse, Qt::MatchContains);
@@ -210,7 +211,7 @@ void GTUtilsMdi::activateWindow(U2::U2OpStatus &os, const QString &windowName){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMdiItemPosition"
-QPoint GTUtilsMdi::getMdiItemPosition(U2::U2OpStatus &os, const QString& windowName){
+QPoint GTUtilsMdi::getMdiItemPosition(U2OpStatus &os, const QString& windowName){
     QWidget* w = findWindow(os, windowName);
     GT_CHECK_RESULT(w != NULL, "MDI window not found", QPoint());
     const QRect r = w->rect();
@@ -219,7 +220,7 @@ QPoint GTUtilsMdi::getMdiItemPosition(U2::U2OpStatus &os, const QString& windowN
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectRandomRegion"
-void GTUtilsMdi::selectRandomRegion(U2::U2OpStatus &os, const QString& windowName){
+void GTUtilsMdi::selectRandomRegion(U2OpStatus &os, const QString& windowName){
     QWidget* w = findWindow(os, windowName);
     GT_CHECK(w != NULL, "MDI window not found");
     const QRect r = w->rect();
@@ -252,7 +253,7 @@ bool isWidgetPartVisible(QWidget *widget) {
 }
 
 #define GT_METHOD_NAME "isAnyPartOfWindowVisible"
-bool GTUtilsMdi::isAnyPartOfWindowVisible(U2::U2OpStatus &os, const QString &windowName) {
+bool GTUtilsMdi::isAnyPartOfWindowVisible(U2OpStatus &os, const QString &windowName) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
     QWidget *window = findWindow(os, windowName, options);

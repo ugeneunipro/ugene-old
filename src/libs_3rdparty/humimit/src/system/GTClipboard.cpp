@@ -21,7 +21,7 @@
 
 #include "GTClipboard.h"
 #ifdef Q_OS_WIN
-#include "GTThread.h"
+#include "utils/GTThread.h"
 #endif
 
 #include <QtCore/QMimeData>
@@ -62,7 +62,7 @@ QString GTClipboard::text(U2::U2OpStatus &os) {
 void GTClipboard::setText(U2::U2OpStatus &os, QString text ){
 #ifdef Q_OS_WIN
 	//On windows clipboard actions should be done in main thread
-	class Scenario : public CustomScenario {
+    class Scenario : public U2::CustomScenario {
 	public:
 		Scenario(const QString &_text) : text(_text){}
         void run(U2::U2OpStatus &os) {
@@ -117,7 +117,7 @@ void GTClipboard::setUrls(U2::U2OpStatus &os, const QList<QString>& urls ){
 void GTClipboard::clear(U2::U2OpStatus &os){
 #ifdef Q_OS_WIN
     //On windows clipboard actions should be done in main thread
-    class Scenario : public CustomScenario {
+    class Scenario : public U2::CustomScenario {
     public:
         Scenario(){}
         void run(U2::U2OpStatus &os) {

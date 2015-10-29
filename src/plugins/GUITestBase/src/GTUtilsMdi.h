@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _HI_GT_UTILS_MDI_H_
-#define _HI_GT_UTILS_MDI_H_
+#ifndef _U2_GT_UTILS_MDI_H_
+#define _U2_GT_UTILS_MDI_H_
 
 #include <QPoint>
 
@@ -28,26 +28,27 @@
 #include "primitives/GTMenuBar.h"
 #include "primitives/GTWidget.h"
 
-namespace HI {
-class HI_EXPORT GTUtilsMdi {
+namespace U2 {
+using namespace HI;
+class GTUtilsMdi {
 public:
-    static void click(U2::U2OpStatus &os, GTGlobals::WindowAction action);
-    static QPoint getMdiItemPosition(U2::U2OpStatus &os, const QString& windowName);
-    static void selectRandomRegion(U2::U2OpStatus &os, const QString& windowName);
-    static bool isAnyPartOfWindowVisible(U2::U2OpStatus &os, const QString& windowName);
+    static void click(U2OpStatus &os, GTGlobals::WindowAction action);
+    static QPoint getMdiItemPosition(U2OpStatus &os, const QString& windowName);
+    static void selectRandomRegion(U2OpStatus &os, const QString& windowName);
+    static bool isAnyPartOfWindowVisible(U2OpStatus &os, const QString& windowName);
 
     // fails if MainWindow is NULL or because of FindOptions settings
-    static QWidget* activeWindow(U2::U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QString activeWindowTitle(U2::U2OpStatus &os);
-    static void activateWindow(U2::U2OpStatus &os, const QString& windowName);
+    static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QString activeWindowTitle(U2OpStatus &os);
+    static void activateWindow(U2OpStatus &os, const QString& windowName);
 
     // finds a window with a given window title in MDIManager windows
     // fails if windowName is empty or because of FindOptions settings
-    static QWidget* findWindow(U2::U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static void closeWindow(U2::U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static void closeAllWindows(U2::U2OpStatus &os);
-    static void waitWindowOpened(U2::U2OpStatus &os, const QString &windowNamePart, qint64 timeout = 180000);
+    static void closeWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static void closeAllWindows(U2OpStatus &os);
+    static void waitWindowOpened(U2OpStatus &os, const QString &windowNamePart, qint64 timeout = 180000);
 };
 
 } // namespace
