@@ -25,7 +25,7 @@
 #include "GTTestsPrimerLibrary.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsPrimerLibrary.h"
 #include "GTUtilsProject.h"

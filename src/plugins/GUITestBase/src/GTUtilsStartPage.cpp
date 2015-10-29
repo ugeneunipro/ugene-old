@@ -25,7 +25,7 @@
 #include "api/GTWebView.h"
 #include "primitives/GTWidget.h"
 
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 
 #include "GTUtilsStartPage.h"
 

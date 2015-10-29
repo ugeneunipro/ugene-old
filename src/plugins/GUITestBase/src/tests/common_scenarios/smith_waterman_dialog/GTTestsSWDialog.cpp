@@ -38,7 +38,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTTestsSWDialog.h"
 #include "GTUtilsProjectTreeView.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 
 #include "../../../runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "primitives/PopupChooser.h"

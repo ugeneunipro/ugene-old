@@ -49,7 +49,7 @@
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsPhyTree.h"

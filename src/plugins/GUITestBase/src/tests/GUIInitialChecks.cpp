@@ -33,7 +33,7 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"

@@ -36,7 +36,7 @@
 #include <U2View/MSAEditor.h>
 
 #include "../../workflow_designer/src/WorkflowViewItems.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"

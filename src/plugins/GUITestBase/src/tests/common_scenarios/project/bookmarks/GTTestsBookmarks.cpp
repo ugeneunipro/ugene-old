@@ -31,13 +31,13 @@
 #include "utils/GTUtilsApp.h"
 #include "utils/GTUtilsToolTip.h"
 #include "base_dialogs/MessageBoxFiller.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "api/GTTreeWidget.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <api/GTFileDialog.h>

@@ -37,7 +37,7 @@
 #include "GTDatabaseConfig.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 

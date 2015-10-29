@@ -29,7 +29,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"

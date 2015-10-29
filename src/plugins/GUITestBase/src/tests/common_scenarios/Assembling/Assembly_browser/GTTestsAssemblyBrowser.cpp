@@ -31,7 +31,7 @@
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"

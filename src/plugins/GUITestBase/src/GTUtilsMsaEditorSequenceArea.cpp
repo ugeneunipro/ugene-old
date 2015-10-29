@@ -27,7 +27,7 @@
 #include <U2View/MsaEditorSimilarityColumn.h>
 
 #include "GTUtilsMsaEditor.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTAction.h"
 #include "system/GTClipboard.h"

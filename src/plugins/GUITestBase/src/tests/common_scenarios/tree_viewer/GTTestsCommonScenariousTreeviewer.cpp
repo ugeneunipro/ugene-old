@@ -34,7 +34,7 @@
 #include "GTTestsCommonScenariousTreeviewer.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProjectTreeView.h"

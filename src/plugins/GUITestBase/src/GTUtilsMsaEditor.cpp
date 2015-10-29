@@ -27,7 +27,7 @@
 #include <U2View/MSAGraphOverview.h>
 #include <U2View/MSASimpleOverview.h>
 
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"

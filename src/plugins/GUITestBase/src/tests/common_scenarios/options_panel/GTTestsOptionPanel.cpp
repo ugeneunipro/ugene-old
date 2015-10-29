@@ -28,7 +28,7 @@
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDocument.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsProject.h"

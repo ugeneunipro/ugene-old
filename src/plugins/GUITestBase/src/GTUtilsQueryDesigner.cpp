@@ -27,7 +27,7 @@
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 
 #include <U2View/MSAEditor.h>
 #if (QT_VERSION < 0x050000) //Qt 5

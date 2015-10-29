@@ -34,7 +34,7 @@
 #include "primitives/GTSpinBox.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsLog.h"

@@ -24,7 +24,7 @@
 #include <U2Gui/MainWindow.h>
 
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsPrimerLibrary.h"
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"

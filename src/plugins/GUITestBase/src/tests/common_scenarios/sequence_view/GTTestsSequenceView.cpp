@@ -37,7 +37,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsCircularView.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"

@@ -25,7 +25,7 @@
 #include <QTreeWidget>
 
 #include <U2Core/global.h>
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsTaskTreeView.h"

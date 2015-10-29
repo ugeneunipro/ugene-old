@@ -31,7 +31,7 @@
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "primitives/PopupChooser.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"

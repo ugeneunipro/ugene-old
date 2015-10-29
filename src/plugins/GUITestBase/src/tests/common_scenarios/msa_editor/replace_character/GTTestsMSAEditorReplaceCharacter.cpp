@@ -34,7 +34,7 @@
 #include "system/GTClipboard.h"
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsNotifications.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"

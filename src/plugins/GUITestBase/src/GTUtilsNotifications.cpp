@@ -29,7 +29,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/Notification.h>
 
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsNotifications.h"
 #include "primitives/GTWidget.h"
 

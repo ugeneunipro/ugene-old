@@ -31,11 +31,11 @@
 #include "api/GTComboBox.h"
 #include "utils/GTUtilsApp.h"
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "primitives/PopupChooser.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 namespace U2 {

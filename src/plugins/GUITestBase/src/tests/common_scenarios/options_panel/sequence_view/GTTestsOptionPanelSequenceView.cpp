@@ -49,7 +49,7 @@
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"

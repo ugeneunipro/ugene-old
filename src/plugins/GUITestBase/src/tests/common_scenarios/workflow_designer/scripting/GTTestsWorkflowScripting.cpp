@@ -23,7 +23,7 @@
 #include "utils/GTUtilsApp.h"
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsLog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
 
 #include "api/GTAction.h"

@@ -39,7 +39,7 @@
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "base_dialogs/MessageBoxFiller.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 namespace U2 {

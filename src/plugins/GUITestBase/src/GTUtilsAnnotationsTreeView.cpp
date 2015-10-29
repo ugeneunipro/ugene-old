@@ -32,7 +32,7 @@
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "drivers/GTKeyboardDriver.h"

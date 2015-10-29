@@ -27,7 +27,7 @@
 #include "api/GTTableView.h"
 #include "primitives/GTWidget.h"
 #include "utils/GTUtilsDialog.h"
-#include "utils/GTUtilsMdi.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTTestsWorkflowParemeterValidation.h"
