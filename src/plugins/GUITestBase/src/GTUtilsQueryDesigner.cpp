@@ -22,12 +22,12 @@
 #include <U2Core/U2IdTypes.h>
 #include "GTUtilsQueryDesigner.h"
 #include "api/GTGraphicsItem.h"
-#include "api/GTMenu.h"
-#include "api/GTWidget.h"
+#include "primitives/GTMenu.h"
+#include "primitives/GTWidget.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 
 #include <U2View/MSAEditor.h>
 #if (QT_VERSION < 0x050000) //Qt 5

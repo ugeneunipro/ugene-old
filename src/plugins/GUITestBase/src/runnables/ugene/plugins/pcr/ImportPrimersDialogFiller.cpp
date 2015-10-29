@@ -29,7 +29,7 @@
 #include "ImportPrimersDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 

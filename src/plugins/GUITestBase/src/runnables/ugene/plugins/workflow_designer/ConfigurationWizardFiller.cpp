@@ -25,7 +25,7 @@
 #include "GTUtilsWizard.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

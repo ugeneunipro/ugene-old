@@ -31,11 +31,11 @@
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "runnables/qt/ColorDialogFiller.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 
 namespace U2 {
 

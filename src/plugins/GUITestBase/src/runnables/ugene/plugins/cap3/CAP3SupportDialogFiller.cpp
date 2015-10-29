@@ -22,7 +22,7 @@
 #include <QApplication>
 
 #include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "CAP3SupportDialogFiller.h"
 

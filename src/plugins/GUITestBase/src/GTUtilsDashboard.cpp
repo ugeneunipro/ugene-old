@@ -25,7 +25,7 @@
 #include <QWebView>
 
 #include "api/GTWebView.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "GTUtilsDashboard.h"
 

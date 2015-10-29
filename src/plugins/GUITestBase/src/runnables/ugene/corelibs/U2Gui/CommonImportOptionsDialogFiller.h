@@ -22,10 +22,10 @@
 #ifndef _U2_COMMON_IMPORT_OPTIONS_DIALOG_FILLER_H_
 #define _U2_COMMON_IMPORT_OPTIONS_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
 class CommonImportOptionsDialogFiller : public Filler {
 public:
     CommonImportOptionsDialogFiller(U2OpStatus& os, const QVariantMap& data);

@@ -24,12 +24,13 @@
 
 #include <U2Test/GUITest.h>
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 class QLineEdit;
 class QWidget;
 
 namespace U2 {
+using namespace HI;
 
 class StartupDialogFiller : public Filler {
 public:

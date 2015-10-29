@@ -21,8 +21,8 @@
 
 #include <QApplication>
 
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "SetSequenceOriginDialogFiller.h"
 

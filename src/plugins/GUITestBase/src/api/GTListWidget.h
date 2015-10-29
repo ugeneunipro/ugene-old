@@ -28,6 +28,7 @@
 class QListWidget;
 
 namespace U2{
+using namespace HI;
 
 class GTListWidget
 {

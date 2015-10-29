@@ -1,4 +1,4 @@
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
 
 namespace U2 {

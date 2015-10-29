@@ -22,10 +22,10 @@
 #ifndef _U2_GT_RUNNABLES_SEQUENCE_READING_MODE_SELECTOR_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_SEQUENCE_READING_MODE_SELECTOR_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
     class SequenceReadingModeSelectorDialogFiller : public Filler {
     public:
         enum ReadingMode {Separate, Merge, Join, Align};

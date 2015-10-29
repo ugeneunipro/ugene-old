@@ -27,15 +27,15 @@
 #include <QTableWidget>
 
 #include "api/GTCheckBox.h"
-#include "api/GTClipboard.h"
+#include "system/GTClipboard.h"
 #include "api/GTComboBox.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "ImportAnnotationsToCsvFiller.h"
 

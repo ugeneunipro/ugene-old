@@ -22,8 +22,8 @@
 #include <QApplication>
 
 #include "api/GTCheckBox.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "GraphLabelsSelectDialogFiller.h"
 

@@ -24,13 +24,13 @@
 
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
+#include "utils/GTKeyboardUtils.h"
+#include "primitives/GTWidget.h"
 #include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "GTGlobals.h"
 #include "api/GTTreeWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "GTUtilsQueryDesigner.h"
 
 #include <U2Gui/ToolsMenu.h>

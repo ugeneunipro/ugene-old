@@ -33,7 +33,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

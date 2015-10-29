@@ -31,6 +31,8 @@
 #endif
 
 namespace U2{
+using namespace HI;
+
 class GTTableView
 {
 public:

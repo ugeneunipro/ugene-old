@@ -36,6 +36,7 @@ class QTableView;
 class QTableWidget;
 
 namespace U2 {
+using namespace HI;
 class WorkflowProcessItem;
 class WorkflowPortItem;
 class WorkflowBusItem;

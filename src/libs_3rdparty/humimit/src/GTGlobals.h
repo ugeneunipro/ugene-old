@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_GLOBALS_H_
-#define _U2_GT_GLOBALS_H_
+#ifndef _HI_GT_GLOBALS_H_
+#define _HI_GT_GLOBALS_H_
 
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>

@@ -27,7 +27,7 @@
 #include <U2View/MSAGraphOverview.h>
 #include <U2View/MSASimpleOverview.h>
 
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
@@ -35,7 +35,7 @@
 #include "drivers/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTToolbar.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 
 namespace U2 {
 using namespace HI;

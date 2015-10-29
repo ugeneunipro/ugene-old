@@ -27,6 +27,7 @@
 #include "GTGlobals.h"
 
 namespace U2 {
+using namespace HI;
 
 class GTGroupBox {
 public:

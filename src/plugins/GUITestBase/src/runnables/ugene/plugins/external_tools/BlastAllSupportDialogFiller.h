@@ -22,9 +22,10 @@
 #ifndef _U2_BLAST_ALL_SUPPORT_DIALOG_FILLER_H_
 #define _U2_BLAST_ALL_SUPPORT_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 /**
  * @brief The BlastAllSupportDialogFiller class

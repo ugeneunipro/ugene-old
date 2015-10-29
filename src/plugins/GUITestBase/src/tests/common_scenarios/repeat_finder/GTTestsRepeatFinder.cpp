@@ -28,14 +28,14 @@
 
 #include "GTTestsRepeatFinder.h"
 #include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "drivers/GTMouseDriver.h"
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTTreeWidget.h"
-#include "GTUtilsMdi.h"
-#include "runnables/qt/PopupChooser.h"
+#include "utils/GTUtilsMdi.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
 #include <U2View/ADVConstants.h>
 

@@ -23,9 +23,10 @@ k
 #ifndef GTUTILS_ESC_CLICKER_H_
 #define GTUTILS_ESC_CLICKER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsEscClicker : public Filler {
 public:

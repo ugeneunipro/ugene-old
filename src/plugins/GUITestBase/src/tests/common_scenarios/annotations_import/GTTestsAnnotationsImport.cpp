@@ -18,26 +18,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "GTTestsAnnotationsImport.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTLineEdit.h"
 #include "api/GTAction.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "api/GTTreeWidget.h"
-#include "GTUtilsApp.h"
+#include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
 //#include <QtGui/QApplication>
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 

@@ -2,7 +2,7 @@
 
 #include "api/GTFileDialog.h"
 #include "api/GTComboBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

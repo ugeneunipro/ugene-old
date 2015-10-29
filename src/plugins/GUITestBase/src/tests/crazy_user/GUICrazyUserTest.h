@@ -24,7 +24,7 @@
 
 #include <U2Test/GUITestBase.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
 

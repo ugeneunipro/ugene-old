@@ -20,7 +20,7 @@
  */
 
 #include "KalignDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTCheckBox.h"
 #include "api/GTDoubleSpinBox.h"
 

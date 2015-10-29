@@ -24,11 +24,12 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Type.h>
-
+#include <GTGlobals.h>
 
 class QTableView;
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsPcr {
 public:

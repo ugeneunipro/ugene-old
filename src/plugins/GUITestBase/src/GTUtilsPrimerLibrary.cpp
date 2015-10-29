@@ -23,14 +23,14 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsPrimerLibrary.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTMenu.h"
+#include "utils/GTKeyboardUtils.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTableView.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h"
 
 namespace U2 {

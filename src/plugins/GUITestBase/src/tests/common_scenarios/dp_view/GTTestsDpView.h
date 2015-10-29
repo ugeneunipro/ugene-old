@@ -24,7 +24,7 @@ k
 #define GTTESTS_DP_VIEW_H_
 
 #include <U2Test/GUITestBase.h>
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
 

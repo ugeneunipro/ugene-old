@@ -22,7 +22,7 @@
 #ifndef _U2_NCBI_SEARCH_DIALOG_FILLER_H_
 #define _U2_NCBI_SEARCH_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
 

@@ -21,7 +21,7 @@
 
 #include "PositionSelectorFiller.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "drivers/GTKeyboardDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

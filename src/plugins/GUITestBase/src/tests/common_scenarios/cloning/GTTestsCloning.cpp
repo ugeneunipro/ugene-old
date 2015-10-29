@@ -23,13 +23,13 @@
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"

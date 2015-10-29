@@ -27,6 +27,7 @@
 class QAbstractButton;
 namespace U2 {
 using namespace HI;
+
 class GTAction {
 public:
     // returns first QAbstractButton associated with an action with a given name

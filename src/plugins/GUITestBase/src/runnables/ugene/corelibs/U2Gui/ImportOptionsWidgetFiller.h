@@ -23,9 +23,10 @@
 #define _U2_IMPORT_OPTIONS_WIDGET_FILLER_H_
 
 #include <QtCore/QVariantMap>
+#include <GTGlobals.h>
 
 namespace U2 {
-
+using namespace HI;
 class ImportOptionsWidget;
 class U2OpStatus;
 

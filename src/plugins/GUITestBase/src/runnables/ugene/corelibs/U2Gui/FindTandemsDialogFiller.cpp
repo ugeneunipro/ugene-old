@@ -20,7 +20,7 @@
  */
 
 #include "FindTandemsDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTabWidget.h"
 #include "api/GTLineEdit.h"
 

@@ -24,11 +24,12 @@
 
 #include <QtCore/QPointer>
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 class QTreeWidgetItem;
 
 namespace U2 {
+using namespace HI;
 
 class ImportToDatabaseDialogFiller : public Filler {
 public:

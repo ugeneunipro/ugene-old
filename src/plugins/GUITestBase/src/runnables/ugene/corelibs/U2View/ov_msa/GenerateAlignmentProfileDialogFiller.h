@@ -23,9 +23,10 @@
 #ifndef GENERATEALIGNMENTPROFILEDIALOGFILLER_H
 #define GENERATEALIGNMENTPROFILEDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class GenerateAlignmentProfileDialogFiller : public Filler
 {

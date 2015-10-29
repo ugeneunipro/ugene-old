@@ -32,15 +32,15 @@
 #include <U2View/AssemblyModel.h>
 
 #include "GTUtilsAssemblyBrowser.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTGlobals.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTToolbar.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 
 namespace U2 {
 using namespace HI;

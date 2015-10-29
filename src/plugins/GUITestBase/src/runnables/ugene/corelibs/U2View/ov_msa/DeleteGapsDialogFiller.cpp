@@ -20,9 +20,9 @@
  */
 
 #include "DeleteGapsDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTRadioButton.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

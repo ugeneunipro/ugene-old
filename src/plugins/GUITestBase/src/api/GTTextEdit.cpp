@@ -20,9 +20,9 @@
  */
 
 #include "GTTextEdit.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 
 namespace U2 {
 using namespace HI;

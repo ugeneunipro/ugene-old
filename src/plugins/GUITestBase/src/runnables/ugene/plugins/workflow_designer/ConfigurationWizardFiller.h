@@ -22,9 +22,10 @@
 #ifndef CONFIGURATIONWIZARDFILLER_H
 #define CONFIGURATIONWIZARDFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class ConfigurationWizardFiller: public Filler
 {

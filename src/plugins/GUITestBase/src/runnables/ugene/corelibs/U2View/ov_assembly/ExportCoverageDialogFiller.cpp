@@ -32,9 +32,9 @@
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 namespace U2 {
 

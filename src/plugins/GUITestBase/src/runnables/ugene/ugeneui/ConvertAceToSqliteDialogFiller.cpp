@@ -29,9 +29,10 @@
 #include <QtWidgets/QDialogButtonBox>
 #endif
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "primitives/GTWidget.h"
+#include "base_dialogs/MessageBoxFiller.h"
 namespace U2{
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
 #define GT_METHOD_NAME "run"

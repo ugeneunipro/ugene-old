@@ -21,7 +21,7 @@
 
 #include "GTTabWidget.h"
 #include "GTTabBar.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"

@@ -22,10 +22,10 @@
 #ifndef _U2_ITEM_TO_IMPORT_EDIT_DIALOG_FILLER_H_
 #define _U2_ITEM_TO_IMPORT_EDIT_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
 class ItemToImportEditDialogFiller : public Filler {
 public:
     ItemToImportEditDialogFiller(U2OpStatus& os, const QVariantMap& data);

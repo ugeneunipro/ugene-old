@@ -22,7 +22,7 @@
 #include "UHMM3PhmmerDialogFiller.h"
 
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTabBar.h"
 
 #include <QApplication>

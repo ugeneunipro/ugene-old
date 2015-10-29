@@ -23,9 +23,9 @@
 #include <QWebElement>
 
 #include "api/GTWebView.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 
 #include "GTUtilsStartPage.h"
 

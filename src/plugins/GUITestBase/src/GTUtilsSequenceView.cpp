@@ -50,20 +50,20 @@
 #include <U2View/GSequenceGraphView.h>
 #include <U2View/Overview.h>
 
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 
-#include "api/GTClipboard.h"
+#include "system/GTClipboard.h"
 #include "GTGlobals.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTMenu.h"
+#include "utils/GTKeyboardUtils.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTToolbar.h"
 
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 
 namespace U2 {

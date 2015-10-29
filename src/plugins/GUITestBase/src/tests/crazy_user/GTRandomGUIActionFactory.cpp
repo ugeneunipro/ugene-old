@@ -20,7 +20,7 @@
  */
 
 #include "GTRandomGUIActionFactory.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include <U2Test/GUITest.h>
 #if (QT_VERSION < 0x050000) //Qt 5

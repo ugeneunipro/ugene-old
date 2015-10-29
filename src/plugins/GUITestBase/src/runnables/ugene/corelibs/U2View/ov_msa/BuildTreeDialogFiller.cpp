@@ -35,9 +35,9 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTTabWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreementDialogFiller.h"
 
 namespace U2 {

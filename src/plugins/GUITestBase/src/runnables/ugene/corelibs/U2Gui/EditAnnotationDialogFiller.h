@@ -22,10 +22,10 @@
 #ifndef _U2_GT_RUNNABLES_EDIT_ANNOTATIONS_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_EDIT_ANNOTATIONS_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
     class EditAnnotationFiller : public Filler {
     public:
         EditAnnotationFiller(U2OpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false)

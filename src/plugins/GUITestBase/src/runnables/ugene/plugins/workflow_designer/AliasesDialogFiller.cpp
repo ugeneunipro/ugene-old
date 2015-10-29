@@ -30,7 +30,7 @@
 #include <QtWidgets/QTableWidget>
 #endif
 
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTableView.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"

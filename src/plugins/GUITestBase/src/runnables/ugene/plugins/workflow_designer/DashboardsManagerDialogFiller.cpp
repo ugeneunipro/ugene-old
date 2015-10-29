@@ -24,7 +24,7 @@
 
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "DashboardsManagerDialogFiller.h"
 

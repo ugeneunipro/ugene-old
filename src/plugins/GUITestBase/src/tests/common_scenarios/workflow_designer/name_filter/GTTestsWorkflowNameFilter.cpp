@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMenu.h"
-#include "api/GTWidget.h"
+#include "primitives/GTMenu.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTTabWidget.h"

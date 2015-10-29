@@ -23,9 +23,10 @@
 #include <QDialogButtonBox>
 
 #include "CreateObjectRelationDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::FindRepeatsDialogFiller"
 #define GT_METHOD_NAME "run"

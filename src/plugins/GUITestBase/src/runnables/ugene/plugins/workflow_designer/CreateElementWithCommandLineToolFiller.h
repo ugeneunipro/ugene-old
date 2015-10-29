@@ -22,14 +22,14 @@
 #ifndef _U2_GT_CREATE_ELEMENT_WITH_COMMAND_LINE_TOOL_FILLER_H_
 #define _U2_GT_CREATE_ELEMENT_WITH_COMMAND_LINE_TOOL_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #include <api/GTComboBox.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <api/GTLineEdit.h>
 #include <drivers/GTMouseDriver.h>
 #include <api/GTTableView.h>
-#include <api/GTWidget.h>
+#include <primitives/GTWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

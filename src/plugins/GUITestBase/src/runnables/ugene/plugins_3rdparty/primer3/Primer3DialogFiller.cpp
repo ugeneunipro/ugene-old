@@ -23,11 +23,11 @@
 #include "api/GTCheckBox.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTTabWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 #include <QApplication>
 #include <QLineEdit>

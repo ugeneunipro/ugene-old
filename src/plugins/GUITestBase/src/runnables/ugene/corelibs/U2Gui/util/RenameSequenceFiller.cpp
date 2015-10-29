@@ -21,8 +21,8 @@
 
 #include "RenameSequenceFiller.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
-#include "api/GTClipboard.h"
+#include "primitives/GTWidget.h"
+#include "system/GTClipboard.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
 

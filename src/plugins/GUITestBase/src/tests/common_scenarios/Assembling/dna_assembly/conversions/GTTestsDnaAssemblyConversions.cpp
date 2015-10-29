@@ -19,17 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMenu.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "primitives/GTMenu.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
 #include <U2Core/U2IdTypes.h>
 #include "GTTestsDnaAssemblyConversions.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTFile.h"
+#include "system/GTFile.h"
 
 #include <U2Gui/ToolsMenu.h>
 

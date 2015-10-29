@@ -22,10 +22,11 @@
 #ifndef _U2_PRIMER_LIBRARY_SELECTOR_FILLER_H_
 #define _U2_PRIMER_LIBRARY_SELECTOR_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class PrimerLibrarySelectorFiller : public Filler {
 public:

@@ -20,7 +20,7 @@
  */
 
 #include "CreateNewProjectWidgetFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -36,7 +36,7 @@
 #endif
 
 namespace U2 {
-
+using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
 #define GT_METHOD_NAME "run"
 void SaveProjectAsDialogFiller::run() {

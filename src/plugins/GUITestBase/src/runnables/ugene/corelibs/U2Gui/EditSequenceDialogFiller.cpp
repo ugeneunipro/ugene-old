@@ -22,15 +22,15 @@
 #include "EditSequenceDialogFiller.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTPlainTextEdit.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 #include <QtCore/QDir>
 #include <QApplication>

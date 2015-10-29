@@ -22,9 +22,10 @@
 #ifndef _U2_GT_BUILD_INDEX_DIALOG_FILLER_H_
 #define _U2_GT_BUILD_INDEX_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class BuildIndexDialogFiller : public Filler {
 public:

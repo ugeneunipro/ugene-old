@@ -28,17 +28,17 @@
 #include "GTTestsMSAEditorReplaceCharacter.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTMenu.h"
+#include "utils/GTKeyboardUtils.h"
+#include "primitives/GTMenu.h"
 #include "GTGlobals.h"
-#include "api/GTClipboard.h"
-#include "GTUtilsDialog.h"
+#include "system/GTClipboard.h"
+#include "utils/GTUtilsDialog.h"
 #include "GTUtilsNotifications.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>

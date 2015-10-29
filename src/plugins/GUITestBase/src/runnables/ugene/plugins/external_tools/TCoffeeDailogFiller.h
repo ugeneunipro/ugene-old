@@ -22,10 +22,11 @@
 #ifndef _U2_TCOFFEE_DAILOG_FILLER_H_
 #define _U2_TCOFFEE_DAILOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include <limits.h>
 
 namespace U2{
+using namespace HI;
 
 class TCoffeeDailogFiller : public Filler {
 public:

@@ -40,9 +40,9 @@
 #include "api/GTLineEdit.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 #include "ReplaceSubsequenceDialogFiller.h"
 

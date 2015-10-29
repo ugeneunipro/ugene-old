@@ -22,9 +22,10 @@
 #ifndef DATASETNAMEEDITDIALOGFILLER_H
 #define DATASETNAMEEDITDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class DatasetNameEditDialogFiller : public Filler
 {

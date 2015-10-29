@@ -22,9 +22,10 @@
 #ifndef ALIASESDIALOGFILLER_H
 #define ALIASESDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2{
+using namespace HI;
 
 class AliasesDialogFiller : public Filler
 {

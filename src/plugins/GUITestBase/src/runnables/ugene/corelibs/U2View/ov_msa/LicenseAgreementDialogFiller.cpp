@@ -23,8 +23,8 @@
 #include <QApplication>
 
 #include "LicenseAgreementDialogFiller.h"
-#include "api/GTThread.h"
-#include "api/GTWidget.h"
+#include "utils/GTThread.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

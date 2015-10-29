@@ -21,7 +21,7 @@
 
 #include <U2Core/U2IdTypes.h>
 #include "GTRadioButton.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 

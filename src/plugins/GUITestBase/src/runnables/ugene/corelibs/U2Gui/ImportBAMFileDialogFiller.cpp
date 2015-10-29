@@ -20,8 +20,8 @@
  */
 
 #include "ImportBAMFileDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTFileDialog.h"

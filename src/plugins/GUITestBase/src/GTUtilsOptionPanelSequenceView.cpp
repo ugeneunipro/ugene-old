@@ -25,20 +25,20 @@
 #include <QTreeWidget>
 
 #include <U2Core/global.h>
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTCheckBox.h"
-#include "api/GTClipboard.h"
+#include "system/GTClipboard.h"
 #include "api/GTComboBox.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTTableView.h"
 #include "api/GTTextEdit.h"
-#include "api/GTThread.h"
-#include "api/GTWidget.h"
+#include "utils/GTThread.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

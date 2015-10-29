@@ -23,7 +23,7 @@
 #ifndef GTUTILSWIZARD_H
 #define GTUTILSWIZARD_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 //class QVariant;
 namespace U2 {
 

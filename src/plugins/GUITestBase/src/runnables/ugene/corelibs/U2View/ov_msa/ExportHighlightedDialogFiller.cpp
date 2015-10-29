@@ -24,7 +24,7 @@
 #include "ExportHighlightedDialogFiller.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

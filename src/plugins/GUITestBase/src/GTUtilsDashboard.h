@@ -30,6 +30,7 @@ class QWebElement;
 class QTabWidget;
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsDashboard
 {

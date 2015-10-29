@@ -20,7 +20,7 @@
  */
 
 #include "RangeSelectionDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 

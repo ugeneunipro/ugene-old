@@ -26,10 +26,10 @@
 #include <U2View/GraphicsButtonItem.h>
 #include <U2View/GraphicsRectangularBranchItem.h>
 
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsPhyTree.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

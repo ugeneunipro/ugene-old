@@ -20,8 +20,8 @@
  */
 
 #include "DotPlotDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTCheckBox.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

@@ -33,8 +33,8 @@
 #include <QtWidgets/QDialogButtonBox>
 #endif
 
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "runnables/qt/ColorDialogFiller.h"
 
 namespace U2{

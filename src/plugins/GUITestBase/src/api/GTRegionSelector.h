@@ -26,6 +26,7 @@
 #include <U2Gui/RegionSelector.h>
 
 namespace U2 {
+using namespace HI;
 
 class GTRegionSelector {
 public:

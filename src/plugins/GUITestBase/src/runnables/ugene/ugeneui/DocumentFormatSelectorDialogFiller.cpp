@@ -31,7 +31,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "DocumentFormatSelectorDialogFiller.h"
 

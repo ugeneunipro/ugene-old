@@ -21,8 +21,8 @@
 
 #include "ExtractSelectedAsMSADialogFiller.h"
 #include "api/GTComboBox.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTCheckBox.h"
 #include "drivers/GTMouseDriver.h"

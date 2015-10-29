@@ -21,8 +21,9 @@
 #ifndef DISTANCEMATRIXDIALOGFILLER_H
 #define DISTANCEMATRIXDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 namespace U2{
+using namespace HI;
 
 class DistanceMatrixDialogFiller : public Filler {
 public:

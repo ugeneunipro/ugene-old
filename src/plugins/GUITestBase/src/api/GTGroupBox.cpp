@@ -23,7 +23,7 @@
 #include <QStyleOption>
 
 #include "GTGroupBox.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

@@ -29,9 +29,9 @@
 #include <QtWidgets/QDialogButtonBox>
 #endif
 
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTCheckBox.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 
 namespace U2{
 

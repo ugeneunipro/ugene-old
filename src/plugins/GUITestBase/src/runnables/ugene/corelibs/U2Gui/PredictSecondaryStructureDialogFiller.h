@@ -22,9 +22,10 @@
 #ifndef _U2_GT_PREDICT_SECONDARY_STRUCTURE_DIALOG_FILLER_H_
 #define _U2_GT_PREDICT_SECONDARY_STRUCTURE_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class PredictSecondaryStructureDialogFiller : public Filler {
 public:

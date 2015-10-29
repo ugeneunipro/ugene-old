@@ -21,8 +21,8 @@
 
 #include "GTTestsDnaAssembly.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTMenu.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "primitives/GTMenu.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 

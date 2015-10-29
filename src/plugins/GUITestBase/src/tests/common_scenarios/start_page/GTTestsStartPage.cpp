@@ -21,18 +21,18 @@
 
 #include <QWebElement>
 
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsStartPage.h"
 
 #include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTWebView.h"
 
 #include "runnables/qt/DefaultDialogFiller.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include "GTTestsStartPage.h"

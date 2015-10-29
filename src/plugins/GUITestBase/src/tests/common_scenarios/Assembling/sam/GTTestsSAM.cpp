@@ -19,11 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "GTTestsSAM.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "api/GTAction.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "GTGlobals.h"
 #include "GTUtilsLog.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"

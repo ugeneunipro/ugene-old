@@ -30,9 +30,9 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTTabWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "GTUtilsWizard.h"
 

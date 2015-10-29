@@ -24,9 +24,10 @@
 
 #include <U2Core/U2Region.h>
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class ExportImage : public Filler {
 public:

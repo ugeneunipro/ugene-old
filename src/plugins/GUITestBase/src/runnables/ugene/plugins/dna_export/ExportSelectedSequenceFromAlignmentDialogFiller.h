@@ -22,9 +22,10 @@
 #ifndef EXPORT_SELECTED_SEQUENCE_FROM_ALIGNMENT_DIALOG_FILLER_H
 #define EXPORT_SELECTED_SEQUENCE_FROM_ALIGNMENT_DIALOG_FILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class ExportSelectedSequenceFromAlignment : public Filler {
 public:

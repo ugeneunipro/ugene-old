@@ -34,8 +34,8 @@
 #include "api/GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 #include "GTUtilsProjectTreeView.h"
 
 #include "GTUtilsTaskTreeView.h"

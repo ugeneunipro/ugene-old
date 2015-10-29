@@ -21,7 +21,7 @@
 
 #include "ExportProjectDialogFiller.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -36,6 +36,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogChecker"
 #define GT_METHOD_NAME "run"

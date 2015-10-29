@@ -29,6 +29,7 @@ class QWebView;
 class QWebElement;
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsStartPage
 {

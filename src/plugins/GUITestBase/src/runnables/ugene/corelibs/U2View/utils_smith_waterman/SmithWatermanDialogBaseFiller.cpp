@@ -20,7 +20,7 @@
  */
 
 #include "SmithWatermanDialogBaseFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
 

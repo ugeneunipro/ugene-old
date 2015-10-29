@@ -1,7 +1,7 @@
 #ifndef GTDOUBLESPINBOX_H
 #define GTDOUBLESPINBOX_H
 
-#include "GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "GTGlobals.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -11,6 +11,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 class GTDoubleSpinbox
 {

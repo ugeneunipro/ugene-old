@@ -22,10 +22,10 @@
 #ifndef _U2_GT_RUNNABLES_EDIT_QUALIFIER_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_EDIT_QUALIFIER_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
 class EditQualifierFiller : public Filler {
 public:
     EditQualifierFiller(U2OpStatus &_os, const QString &_qualifierName, const QString &_valueName, bool _noCheck = false, bool _closeErrorMessageBox = false)

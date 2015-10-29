@@ -24,15 +24,15 @@
 #include <U2Gui/ToolsMenu.h>
 
 #include "api/GTComboBox.h"
-#include "api/GTMenu.h"
-#include "api/GTFile.h"
-#include "api/GTWidget.h"
+#include "primitives/GTMenu.h"
+#include "system/GTFile.h"
+#include "primitives/GTWidget.h"
 
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
 
 #include "runnables/qt/DefaultDialogFiller.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 

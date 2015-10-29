@@ -23,8 +23,8 @@
 #include <QGroupBox>
 
 #include "api/GTDoubleSpinBox.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "runnables/qt/ColorDialogFiller.h"
 

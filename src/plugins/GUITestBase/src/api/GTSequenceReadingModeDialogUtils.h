@@ -22,7 +22,7 @@
 #ifndef GTSEQUENCEREADINGMODEDIALOGUTILS_H
 #define GTSEQUENCEREADINGMODEDIALOGUTILS_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSpinBox>
@@ -31,6 +31,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 class GTSequenceReadingModeDialogUtils : public Filler {
 public:

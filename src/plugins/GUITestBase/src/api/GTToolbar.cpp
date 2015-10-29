@@ -21,7 +21,7 @@
 
 #include <U2Core/U2IdTypes.h>
 #include "GTToolbar.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/GUIUtils.h>
 #if (QT_VERSION < 0x050000) //Qt 5

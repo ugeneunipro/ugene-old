@@ -15,8 +15,8 @@ SUBDIRS += \
           src/libs_3rdparty/gtest \
           src/libs_3rdparty/samtools \
           src/corelibs/U2Core \
-          src/libs_3rdparty/humimit \
           src/corelibs/U2Test \
+          src/libs_3rdparty/humimit \
           src/corelibs/U2Algorithm \
           src/corelibs/U2Formats \
           src/corelibs/U2Lang \

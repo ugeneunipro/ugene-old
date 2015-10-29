@@ -26,6 +26,7 @@
 #include <U2View/MSAEditorStatusBar.h>
 
 namespace U2 {
+using namespace HI;
 
 class GTMSAEditorStatusWidget {
 public:

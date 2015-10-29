@@ -27,16 +27,16 @@
 #include <U2View/MsaEditorSimilarityColumn.h>
 
 #include "GTUtilsMsaEditor.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTAction.h"
-#include "api/GTClipboard.h"
+#include "system/GTClipboard.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 
 namespace U2 {

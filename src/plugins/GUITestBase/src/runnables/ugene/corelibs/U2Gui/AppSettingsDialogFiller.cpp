@@ -21,7 +21,7 @@
 #include "AppSettingsDialogFiller.h"
 
 #include "runnables/qt/ColorDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTComboBox.h"

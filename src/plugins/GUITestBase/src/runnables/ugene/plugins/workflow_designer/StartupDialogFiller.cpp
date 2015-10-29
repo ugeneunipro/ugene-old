@@ -25,8 +25,8 @@
 
 #include "StartupDialogFiller.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "primitives/GTWidget.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 namespace U2 {
 

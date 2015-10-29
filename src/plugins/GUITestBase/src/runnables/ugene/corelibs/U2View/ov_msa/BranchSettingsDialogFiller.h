@@ -22,9 +22,10 @@
 #ifndef BRANCHSETTINGSDIALOGFILLER_H
 #define BRANCHSETTINGSDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2{
+using namespace HI;
 
 class BranchSettingsDialogFiller : public Filler
 {

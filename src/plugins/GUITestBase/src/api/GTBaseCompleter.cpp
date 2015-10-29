@@ -28,7 +28,7 @@
 
 #include "api/GTTreeWidget.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "GTBaseCompleter.h"
 

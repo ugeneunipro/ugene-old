@@ -28,15 +28,15 @@
 #include <U2View/AnnotHighlightTreeItem.h>
 
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 
 
 namespace U2 {

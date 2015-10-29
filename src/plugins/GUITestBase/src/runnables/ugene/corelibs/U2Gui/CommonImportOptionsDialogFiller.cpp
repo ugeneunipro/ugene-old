@@ -30,10 +30,10 @@
 
 #include "CommonImportOptionsDialogFiller.h"
 #include "ImportOptionsWidgetFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
-
+using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::CommonImportOptionsDialogFiller"
 
 CommonImportOptionsDialogFiller::CommonImportOptionsDialogFiller(U2OpStatus& os, const QVariantMap& data) :

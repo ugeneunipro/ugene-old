@@ -23,7 +23,7 @@
 #include "GTGlobals.h"
 #include "drivers/GTMouseDriver.h"
 #include "GTUtilsProject.h"
-#include "GTUtilsApp.h"
+#include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>

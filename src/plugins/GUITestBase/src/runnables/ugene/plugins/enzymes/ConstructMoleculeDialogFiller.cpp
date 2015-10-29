@@ -24,7 +24,7 @@
 
 #include "ConstructMoleculeDialogFiller.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

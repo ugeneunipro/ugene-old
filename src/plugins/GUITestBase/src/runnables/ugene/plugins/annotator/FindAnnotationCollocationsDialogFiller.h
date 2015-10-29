@@ -22,7 +22,7 @@
 #ifndef _U2_FIND_ANNOTATION_COLLOCATIONS_DIALOG_FILLER_H_
 #define _U2_FIND_ANNOTATION_COLLOCATIONS_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolButton>
@@ -31,6 +31,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 class FindAnnotationCollocationsDialogFiller : public Filler {
 public:

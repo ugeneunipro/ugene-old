@@ -23,7 +23,7 @@
 #define GTFILE_DIALOG_H
 
 #include "GTGlobals.h"
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
 using namespace HI;

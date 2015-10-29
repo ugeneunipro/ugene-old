@@ -23,8 +23,8 @@
 #include "PredictSecondaryStructureDialogFiller.h"
 
 #include "api/GTFileDialog.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 

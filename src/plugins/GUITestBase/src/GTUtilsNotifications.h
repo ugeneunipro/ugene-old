@@ -22,10 +22,11 @@
 #ifndef _U2_GT_UTILS_NOTIFICATIONS_H_
 #define _U2_GT_UTILS_NOTIFICATIONS_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "GTGlobals.h"
 
 namespace U2 {
+using namespace HI;
 
 class NotificationChecker : public QObject {
     Q_OBJECT

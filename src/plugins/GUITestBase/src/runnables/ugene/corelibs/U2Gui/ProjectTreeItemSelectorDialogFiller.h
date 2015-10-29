@@ -22,7 +22,7 @@
 #ifndef _U2_GT_RUNNABLES_PROJECT_TREE_ITEM_SELECTOR_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_PROJECT_TREE_ITEM_SELECTOR_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 
 namespace U2 {

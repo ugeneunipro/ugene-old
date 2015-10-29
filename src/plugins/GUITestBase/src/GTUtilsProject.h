@@ -23,7 +23,7 @@
 #define _U2_PROJECT_UTILS_H_
 
 #include "GTGlobals.h"
-#include "GTUtilsApp.h"
+#include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 
 #include <U2Core/GUrl.h>

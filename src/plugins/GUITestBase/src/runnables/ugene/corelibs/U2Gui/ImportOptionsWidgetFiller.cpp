@@ -38,13 +38,13 @@
 
 #include <U2Gui/ImportOptionsWidget.h>
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "ImportOptionsWidgetFiller.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

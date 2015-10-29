@@ -20,7 +20,7 @@
  */
 
 #include "SelectDocumentFormatDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -33,6 +33,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 SelectDocumentFormatDialogFiller::SelectDocumentFormatDialogFiller(U2OpStatus &_os, CustomScenario *scenario)
     : Filler(_os, "DocumentFormatSelectorDialog", scenario)

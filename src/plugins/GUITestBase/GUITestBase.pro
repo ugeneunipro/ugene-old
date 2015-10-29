@@ -11,8 +11,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/qt/DefaultDialogFiller.h \
             src/runnables/qt/EscapeClicker.h \
             src/runnables/qt/FontDialogFiller.h \
-            src/runnables/qt/MessageBoxFiller.h \
-            src/runnables/qt/PopupChooser.h \
+#            src/runnables/qt/MessageBoxFiller.h \
+#            src/runnables/qt/PopupChooser.h \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h \
@@ -145,17 +145,17 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTDatabaseConfig.h \
             src/GTUtilsAnnotationsHighlightingTreeView.h \
             src/GTUtilsAnnotationsTreeView.h \
-            src/GTUtilsApp.h \
+#            src/GTUtilsApp.h \
             src/GTUtilsAssemblyBrowser.h \
             src/GTUtilsBookmarksTreeView.h \
             src/GTUtilsCircularView.h \
             src/GTUtilsDashboard.h \
-            src/GTUtilsDialog.h \
+#            src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
             src/GTUtilsEscClicker.h \
             src/GTUtilsExternalTools.h \
             src/GTUtilsLog.h \
-            src/GTUtilsMdi.h \
+#            src/GTUtilsMdi.h \
             src/GTUtilsMsaEditor.h \
             src/GTUtilsMsaEditorSequenceArea.h \
             src/GTUtilsNotifications.h \
@@ -172,7 +172,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsSharedDatabaseDocument.h \
             src/GTUtilsTask.h \
             src/GTUtilsTaskTreeView.h \
-            src/GTUtilsToolTip.h \
+#            src/GTUtilsToolTip.h \
             src/GTUtilsWizard.h \
             src/GTUtilsWorkflowDesigner.h \
             src/GTUtilsStartPage.h \
@@ -249,39 +249,39 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Qt primitives
             src/api/GTAction.h \
             src/api/GTCheckBox.h \
-            src/api/GTClipboard.h \
+#            src/system/GTClipboard.h \
             src/api/GTComboBox.h \
             src/api/GTDoubleSpinBox.h \
-            src/api/GTFile.h \
+#            src/system/GTFile.h \
             src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
             src/api/GTGraphicsItem.h \
             src/api/GTGroupBox.h \
 #            src/drivers/GTKeyboardDriver.h \
-            src/api/GTKeyboardUtils.h \
+#            src/api/GTKeyboardUtils.h \
             src/api/GTLineEdit.h \
             src/api/GTListWidget.h \
-            src/api/GTMenu.h \
-            src/api/GTMenuBar.h \
-            src/api/GTMouse.h \
+#            src/api/GTMesnu.h \
+#            src/api/GTMenuBar.h \
+#            src/api/GTMouse.h \
 #            src/drivers/GTMouseDriver.h \
             src/api/GTPlainTextEdit.h \
             src/api/GTRadioButton.h \
             src/api/GTScrollBar.h \
             src/api/GTSlider.h \
-            src/api/GTSpinBox.h \
+#            src/primitives/GTSpinBox.h \
             src/api/GTSystem.h \
             src/api/GTTabBar.h \
             src/api/GTTabWidget.h \
             src/api/GTTableView.h  \
             src/api/GTTextEdit.h \
-            src/api/GTThread.h \
+#            src/api/GTThread.h \
             src/api/GTToolbar.h \
             src/api/GTTreeView.h \
             src/api/GTTreeWidget.h \
-            src/api/GTWebView.h \
-            src/api/GTWidget.h \
-            src/api/private/GTMenuPrivate.h
+            src/api/GTWebView.h #\
+#            src/primitives/GTWidget.h \
+#            src/api/private/GTMenuPrivate.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GTAbstractGUIAction.cpp \
@@ -293,8 +293,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/qt/DefaultDialogFiller.cpp \
             src/runnables/qt/EscapeClicker.cpp \
             src/runnables/qt/FontDialogFiller.cpp \
-            src/runnables/qt/MessageBoxFiller.cpp \
-            src/runnables/qt/PopupChooser.cpp \
+#            src/runnables/qt/MessageBoxFiller.cpp \
+#            src/runnables/qt/PopupChooser.cpp \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.cpp \
@@ -427,17 +427,17 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTDatabaseConfig.cpp \
             src/GTUtilsAnnotationsHighlightingTreeView.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \
-            src/GTUtilsApp.cpp \
+#            src/GTUtilsApp.cpp \
             src/GTUtilsAssemblyBrowser.cpp \
             src/GTUtilsBookmarksTreeView.cpp \
             src/GTUtilsCircularView.cpp \
             src/GTUtilsDashboard.cpp \
-            src/GTUtilsDialog.cpp \
+#            src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsEscClicker.cpp \
             src/GTUtilsExternalTools.cpp \
             src/GTUtilsLog.cpp \
-            src/GTUtilsMdi.cpp \
+#            src/GTUtilsMdi.cpp \
             src/GTUtilsMsaEditor.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
             src/GTUtilsNotifications.cpp \
@@ -454,7 +454,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsSharedDatabaseDocument.cpp \
             src/GTUtilsTask.cpp \
             src/GTUtilsTaskTreeView.cpp \
-            src/GTUtilsToolTip.cpp \
+#            src/GTUtilsToolTip.cpp \
             src/GTUtilsWizard.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
             src/GTUtilsStartPage.cpp \
@@ -531,10 +531,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Qt primitives
             src/api/GTAction.cpp \
             src/api/GTCheckBox.cpp \
-            src/api/GTClipboard.cpp \
+#            src/api/GTClipboard.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTDoubleSpinBox.cpp \
-            src/api/GTFile.cpp \
+#            src/api/GTFile.cpp \
             src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
             src/api/GTGraphicsItem.cpp \
@@ -543,12 +543,12 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTKeyboardDriverLinux.cpp \
 #            src/api/GTKeyboardDriverMac.cpp \
 #            src/api/GTKeyboardDriverWindows.cpp \
-            src/api/GTKeyboardUtils.cpp \
+#            src/api/GTKeyboardUtils.cpp \
             src/api/GTLineEdit.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTMenu.cpp \
-            src/api/GTMenuBar.cpp \
-            src/api/GTMouse.cpp \
+#            src/api/GTMenu.cpp \
+#            src/api/GTMenuBar.cpp \
+#            src/api/GTMouse.cpp \
 #            src/api/GTMouseDriver.cpp \
 #            src/api/GTMouseDriverLinux.cpp \
 #            src/api/GTMouseDriverMac.cpp \
@@ -557,21 +557,21 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTRadioButton.cpp \
             src/api/GTScrollBar.cpp \
             src/api/GTSlider.cpp \
-            src/api/GTSpinBox.cpp \
+#            src/api/GTSpinBox.cpp \
             src/api/GTSystem.cpp \
             src/api/GTTabBar.cpp \
             src/api/GTTabWidget.cpp \
             src/api/GTTableView.cpp \
             src/api/GTTextEdit.cpp \
-            src/api/GTThread.cpp \
+#            src/api/GTThread.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTTreeWidget.cpp \
-            src/api/GTWebView.cpp \
-            src/api/GTWidget.cpp \
-            src/api/private/GTMenuPrivate.cpp
+            src/api/GTWebView.cpp #\
+#            src/api/GTWidget.cpp \
+#            src/api/private/GTMenuPrivate.cpp
 
-macx {
-OBJECTIVE_HEADERS += src/api/private/GTMenuPrivateMac.h
-OBJECTIVE_SOURCES += src/api/private/GTMenuPrivateMac.mm
-}
+#macx {
+#OBJECTIVE_HEADERS += src/api/private/GTMenuPrivateMac.h
+#OBJECTIVE_SOURCES += src/api/private/GTMenuPrivateMac.mm
+#}

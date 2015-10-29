@@ -38,14 +38,14 @@
 #include "GTUtilsTaskTreeView.h"
 #include "SharedConnectionsDialogFiller.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 namespace U2 {
 using namespace HI;

@@ -21,7 +21,7 @@
 
 #include <QApplication>
 
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 
 #include "AddPrimerDialogFiller.h"

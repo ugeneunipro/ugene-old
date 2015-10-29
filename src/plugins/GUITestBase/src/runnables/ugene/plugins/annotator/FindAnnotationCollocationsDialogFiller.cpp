@@ -31,7 +31,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #endif
 
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

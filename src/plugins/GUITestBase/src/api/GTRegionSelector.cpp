@@ -20,7 +20,7 @@
  */
 
 #include "GTRegionSelector.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "GTLineEdit.h"
 
 namespace U2 {

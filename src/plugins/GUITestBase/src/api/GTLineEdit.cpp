@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTClipboard.h"
+#include "system/GTClipboard.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 #include "GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

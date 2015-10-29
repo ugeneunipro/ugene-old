@@ -32,7 +32,7 @@
 
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "GTUtilsTaskTreeView.h"
 

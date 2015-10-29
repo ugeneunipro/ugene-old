@@ -19,14 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMenu.h"
-#include "api/GTWidget.h"
+#include "primitives/GTMenu.h"
+#include "primitives/GTWidget.h"
 #include "api/GTAction.h"
 #include "drivers/GTMouseDriver.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsLog.h"
-#include "GTUtilsDialog.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "utils/GTUtilsDialog.h"
+#include "base_dialogs/MessageBoxFiller.h"
 
 #include "GTTestsWorkflowEstimating.h"
 

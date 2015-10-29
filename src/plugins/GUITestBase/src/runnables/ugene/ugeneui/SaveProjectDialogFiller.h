@@ -22,7 +22,7 @@
 #ifndef SAVEPROJECTDIALOGFILLER_H
 #define SAVEPROJECTDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
 #else
@@ -30,6 +30,8 @@
 #endif
 
 namespace U2{
+using namespace HI;
+
 class SaveProjectDialogFiller: public Filler{
 public:
     SaveProjectDialogFiller(U2OpStatus &os, QDialogButtonBox::StandardButton _b):

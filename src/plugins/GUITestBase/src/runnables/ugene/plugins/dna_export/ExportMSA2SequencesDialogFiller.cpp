@@ -20,7 +20,7 @@
  */
 
 #include "ExportMSA2SequencesDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTComboBox.h"

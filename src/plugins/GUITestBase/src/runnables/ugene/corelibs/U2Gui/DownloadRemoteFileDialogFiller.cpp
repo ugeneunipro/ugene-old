@@ -28,7 +28,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTLineEdit.h"
 #include "api/GTListWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

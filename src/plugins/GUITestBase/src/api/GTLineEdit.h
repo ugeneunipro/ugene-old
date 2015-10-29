@@ -23,8 +23,10 @@
 #define _U2_GT_LINEEDIT_H_
 
 #include <QLineEdit>
+#include <GTGlobals.h>
 
 namespace U2 {
+using namespace HI;
 
 class U2OpStatus;
 

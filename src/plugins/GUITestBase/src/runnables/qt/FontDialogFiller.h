@@ -22,7 +22,7 @@
 #ifndef _U2_GT_FONT_DIALOG_FILLER_H_
 #define _U2_GT_FONT_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
@@ -31,7 +31,7 @@
 #endif
 
 namespace U2 {
-
+using namespace HI;
     class FontDialogFiller : public Filler {
     public:
         FontDialogFiller(U2OpStatus &_os)

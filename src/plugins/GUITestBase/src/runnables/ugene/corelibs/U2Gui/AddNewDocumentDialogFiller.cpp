@@ -24,9 +24,10 @@
 #include "AddNewDocumentDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
 

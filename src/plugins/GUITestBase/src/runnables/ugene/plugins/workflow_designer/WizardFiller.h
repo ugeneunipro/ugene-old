@@ -22,7 +22,7 @@
 #ifndef _U2_GT_RUNNABLES_WIZARD_FILLER_H_
 #define _U2_GT_RUNNABLES_WIZARD_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
@@ -33,6 +33,7 @@
 #endif
 
 namespace U2 {
+using namespace HI;
 
 class WizardFiller : public Filler {
 public:

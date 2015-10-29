@@ -22,12 +22,12 @@
 #ifndef _U2_GT_RUNNABLES_FIND_REPEATS_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_FIND_REPEATS_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "api/GTRegionSelector.h"
 #include <U2Algorithm/SmithWatermanSettings.h>
 
 namespace U2 {
-
+using namespace HI;
 class FindRepeatsDialogFiller : public Filler {
 public:
     enum Button {Start, Cancel};

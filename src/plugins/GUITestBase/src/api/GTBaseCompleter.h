@@ -28,6 +28,7 @@
 class QTreeWidget;
 
 namespace U2 {
+using namespace HI;
 
 class GTBaseCompleter
 {

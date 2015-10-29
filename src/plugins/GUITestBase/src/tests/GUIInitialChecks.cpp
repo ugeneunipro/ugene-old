@@ -32,23 +32,23 @@
 
 #include <U2Gui/ObjectViewModel.h>
 
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GUIInitialChecks.h"
-#include "api/GTClipboard.h"
-#include "api/GTFile.h"
+#include "system/GTClipboard.h"
+#include "system/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "GTGlobals.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "runnables/qt/EscapeClicker.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 namespace U2 {

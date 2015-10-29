@@ -415,8 +415,8 @@ QString EventFilter::generateFillerSource() const{
     QString fillerName = dialog->objectName() + "Filler";
 
     result.append(QString("#include \"%1.h\"\n"
-              "#include \"api/GTWidget.h\"\n"
-              "#include \"api/GTSpinBox.h\"\n"
+              "#include \"primitives/GTWidget.h\"\n"
+              "#include \"primitives/GTSpinBox.h\"\n"
               "#include \"api/GTDoubleSpinBox.h\"\n"
               "#include \"api/GTCheckBox.h\"\n"
               "#include \"api/GTLineEdit.h\"\n"

@@ -22,8 +22,8 @@
 #include <QApplication>
 
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 #include "CreateRulerDialogFiller.h"
 

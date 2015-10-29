@@ -22,11 +22,12 @@
 #ifndef DOCUMENTFORMATSELECTORDIALOGFILLER_H
 #define DOCUMENTFORMATSELECTORDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 class QRadioButton;
 
 namespace U2{
+using namespace HI;
 
 class DocumentFormatSelectorDialogFiller : public Filler
 {

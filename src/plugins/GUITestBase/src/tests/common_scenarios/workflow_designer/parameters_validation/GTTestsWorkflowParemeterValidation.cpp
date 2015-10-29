@@ -20,18 +20,18 @@
  */
 
 #include "api/GTAction.h"
-#include "api/GTFile.h"
+#include "system/GTFile.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTableView.h"
-#include "api/GTWidget.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
+#include "primitives/GTWidget.h"
+#include "utils/GTUtilsDialog.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTTestsWorkflowParemeterValidation.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>

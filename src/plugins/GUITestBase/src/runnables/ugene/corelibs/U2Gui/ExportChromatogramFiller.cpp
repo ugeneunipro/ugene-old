@@ -20,7 +20,7 @@
  */
 
 #include "ExportChromatogramFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"

@@ -31,17 +31,17 @@
 #include "GTUtilsProject.h"
 #include "api/GTFileDialog.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "api/GTTreeWidget.h"
 
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTTestsSWDialog.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 
 #include "../../../runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
-#include "../../../runnables/qt/PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "../../../GTUtilsMsaEditorSequenceArea.h"
 
 namespace U2 {

@@ -22,9 +22,10 @@
 #ifndef CREATEELEMENTWITHSCRIPTDIALOGFILLER_H
 #define CREATEELEMENTWITHSCRIPTDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2{
+using namespace HI;
 
 class CreateElementWithScriptDialogFiller : public Filler
 {

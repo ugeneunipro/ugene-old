@@ -23,8 +23,8 @@
 #include "GTUtilsTaskTreeView.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 
 #include <U2Core/Task.h>
 #include <U2Gui/MainWindow.h>

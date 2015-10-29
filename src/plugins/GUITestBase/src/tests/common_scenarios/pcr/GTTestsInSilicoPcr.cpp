@@ -30,9 +30,9 @@
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 

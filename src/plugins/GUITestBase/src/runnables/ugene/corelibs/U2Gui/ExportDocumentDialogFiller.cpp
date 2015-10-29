@@ -20,7 +20,7 @@
  */
 
 #include "ExportDocumentDialogFiller.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"

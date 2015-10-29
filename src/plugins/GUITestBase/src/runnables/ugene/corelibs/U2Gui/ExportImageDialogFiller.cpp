@@ -33,8 +33,8 @@
 #include "api/GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
-#include "api/GTSpinBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 using namespace HI;

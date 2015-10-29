@@ -32,8 +32,8 @@
 #include <QtWidgets/QComboBox>
 #endif
 
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTWidget.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"

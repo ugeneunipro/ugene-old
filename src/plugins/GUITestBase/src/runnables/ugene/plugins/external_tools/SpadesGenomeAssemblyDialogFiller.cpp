@@ -25,7 +25,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "SpadesGenomeAssemblyDialogFiller.h"
 

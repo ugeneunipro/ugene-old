@@ -32,10 +32,10 @@
 #include "GTComboBox.h"
 #include "GTFileDialog.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "GTMenu.h"
+#include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 #include "GTGlobals.h"
 #include "api/GTLineEdit.h"
 

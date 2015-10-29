@@ -22,10 +22,10 @@
 #ifndef _U2_GT_RUNNABLES_CREATE_NEW_PROJECT_WIDGET_FILLER_H_
 #define _U2_GT_RUNNABLES_CREATE_NEW_PROJECT_WIDGET_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
     class SaveProjectAsDialogFiller : public Filler {
     public:
         SaveProjectAsDialogFiller(U2OpStatus &_os, const QString &_projectName, const QString &_projectFolder, const QString &_projectFile)

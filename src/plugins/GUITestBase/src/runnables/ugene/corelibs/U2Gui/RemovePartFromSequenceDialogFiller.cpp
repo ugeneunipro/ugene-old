@@ -30,7 +30,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "RemovePartFromSequenceDialogFiller.h"
 

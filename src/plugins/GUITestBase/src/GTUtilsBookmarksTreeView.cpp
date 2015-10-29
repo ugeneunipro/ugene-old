@@ -36,15 +36,15 @@
 #include <U2View/AnnotationsTreeView.h>
 
 #include "GTUtilsBookmarksTreeView.h"
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTWidget.h"
-#include "runnables/qt/PopupChooser.h"
+#include "primitives/GTWidget.h"
+#include "primitives/PopupChooser.h"
 
 namespace U2 {
 using namespace HI;

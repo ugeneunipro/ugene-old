@@ -20,7 +20,7 @@
  */
 
 #include "GTCheckBox.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

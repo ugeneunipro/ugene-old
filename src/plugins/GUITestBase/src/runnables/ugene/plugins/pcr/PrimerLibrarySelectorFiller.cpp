@@ -23,7 +23,7 @@
 
 #include "GTUtilsPrimerLibrary.h"
 #include "drivers/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "PrimerLibrarySelectorFiller.h"
 

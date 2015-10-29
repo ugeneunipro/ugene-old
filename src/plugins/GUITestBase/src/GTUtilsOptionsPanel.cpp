@@ -23,11 +23,11 @@
 #include "GTUtilsOptionsPanel.h"
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
+#include "utils/GTKeyboardUtils.h"
+#include "primitives/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsApp.h"
+#include "utils/GTUtilsApp.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Gui/MainWindow.h>

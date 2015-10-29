@@ -22,9 +22,9 @@
 #ifndef COLORDIALOGFILLER_H
 #define COLORDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 namespace U2{
-
+using namespace HI;
 class ColorDialogFiller : public Filler
 {
 public:

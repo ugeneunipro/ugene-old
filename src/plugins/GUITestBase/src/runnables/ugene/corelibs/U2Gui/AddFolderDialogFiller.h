@@ -22,7 +22,7 @@
 #ifndef _ADD_FOLDER_DIALOG_FILLER_H_
 #define _ADD_FOLDER_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
 
 namespace U2 {

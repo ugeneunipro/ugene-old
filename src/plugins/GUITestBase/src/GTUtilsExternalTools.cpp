@@ -23,9 +23,9 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "GTUtilsDialog.h"
-#include "api/GTMenu.h"
-#include "runnables/qt/PopupChooser.h"
+#include "utils/GTUtilsDialog.h"
+#include "primitives/GTMenu.h"
+#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 
 #include "GTUtilsExternalTools.h"

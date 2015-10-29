@@ -20,8 +20,8 @@
  */
 
 #include <drivers/GTKeyboardDriver.h>
-#include <api/GTSpinBox.h>
-#include "api/GTWidget.h"
+#include <primitives/GTSpinBox.h>
+#include "primitives/GTWidget.h"
 #include "ColorDialogFiller.h"
 #include <QColor>
 #include <QColorDialog>

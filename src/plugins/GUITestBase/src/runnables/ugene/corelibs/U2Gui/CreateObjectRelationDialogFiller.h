@@ -22,9 +22,10 @@
 #ifndef _U2_GT_RUNNABLES_CREATE_OBJECT_RELATION_DIALOG_H_
 #define _U2_GT_RUNNABLES_CREATE_OBJECT_RELATION_DIALOG_H_
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class CreateObjectRelationDialogFiller : public Filler {
 public:

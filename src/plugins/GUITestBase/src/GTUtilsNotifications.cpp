@@ -29,9 +29,9 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/Notification.h>
 
-#include "GTUtilsMdi.h"
+#include "utils/GTUtilsMdi.h"
 #include "GTUtilsNotifications.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

@@ -27,6 +27,7 @@
 class Task;
 
 namespace U2 {
+using namespace HI;
 
 class GTUtilsTask
 {

@@ -22,10 +22,11 @@
 #ifndef _U2_GUI_MAFFT_SUPPORT_RUN_DIALOG_FILLER_H_
 #define _U2_GUI_MAFFT_SUPPORT_RUN_DIALOG_FILLER_H_
  
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class MAFFTSupportRunDialogFiller : public Filler {
 public:

@@ -25,7 +25,6 @@
 #include "GTUtilsEscClicker.h"
 
 namespace U2 {
-using namespace HI;
 
 GTUtilsEscClicker::GTUtilsEscClicker( U2OpStatus &_os, const QString &menuObjectName, bool _mouse )
     : Filler( _os, GUIDialogWaiter::WaitSettings( menuObjectName, GUIDialogWaiter::Popup ) ),

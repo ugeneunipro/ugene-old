@@ -22,10 +22,10 @@
 #ifndef ESCAPECLICKER_H
 #define ESCAPECLICKER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
-
+using namespace HI;
 class EscapeClicker: public Filler
 {
 public:

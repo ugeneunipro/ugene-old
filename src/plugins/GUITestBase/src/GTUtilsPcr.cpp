@@ -25,11 +25,11 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 
-#include "api/GTFile.h"
+#include "system/GTFile.h"
 #include "api/GTLineEdit.h"
-#include "api/GTSpinBox.h"
+#include "primitives/GTSpinBox.h"
 #include "api/GTTableView.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "GTUtilsPcr.h"
 

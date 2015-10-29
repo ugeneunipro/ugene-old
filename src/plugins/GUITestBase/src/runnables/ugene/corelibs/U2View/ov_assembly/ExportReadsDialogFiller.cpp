@@ -36,7 +36,7 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 namespace U2 {
 

@@ -23,9 +23,10 @@
 #ifndef CONVERTACETOSQLITEDIALOGFILLER_H
 #define CONVERTACETOSQLITEDIALOGFILLER_H
 
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class ConvertAceToSqliteDialogFiller : public Filler
 {

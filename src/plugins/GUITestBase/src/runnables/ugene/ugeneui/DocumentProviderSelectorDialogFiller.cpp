@@ -22,7 +22,7 @@
 #include <QApplication>
 
 #include "api/GTRadioButton.h"
-#include "api/GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "DocumentProviderSelectorDialogFiller.h"
 

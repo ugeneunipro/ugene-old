@@ -20,11 +20,11 @@
  */
 
 #include "GTPlainTextEdit.h"
-#include "GTWidget.h"
+#include "primitives/GTWidget.h"
 
 #include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 #include <QDebug>
 namespace U2 {
 using namespace HI;

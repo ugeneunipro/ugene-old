@@ -23,11 +23,12 @@
 #define _U2_GT_ABSTRACT_GUI_ACTION_H_
 
 #include <U2Core/U2OpStatusUtils.h>
-#include "GTUtilsDialog.h"
+#include "utils/GTUtilsDialog.h"
 
 namespace U2 {
 
 namespace GUITest_crazy_user {
+using namespace HI;
 
 class GTAbstractGUIAction : public Runnable {
 public:
