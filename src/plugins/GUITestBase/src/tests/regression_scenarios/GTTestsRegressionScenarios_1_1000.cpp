@@ -682,6 +682,33 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
     CHECK_SET_ERR(annotationGroup != NULL, "annotation group not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0598) {
+    // 1. Open file '_common_data/fasta/Mycobacterium.fna'
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "Mycobacterium.fna");
+
+    QWidget *sequenceWidget = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    CHECK_SET_ERR(NULL != sequenceWidget, "sequenceWidget is not present");
+
+    GTWidget::click(os, sequenceWidget);
+
+    // 2. Show DNA Flexibility graph 
+    // Expected state: 'Calculate graph points' task is started
+    QWidget *graphAction = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget, false);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "DNA Flexibility");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, graphAction);
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is not started");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 3. Zoom graph
+    // Expected state: cached data is used and 'Calculate graph points' task is not started
+    GTWidget::click(os, GTAction::button(os, "action_zoom_in_gi|119866057|ref|NC_008705.1| Mycobacterium sp. KMS, complete genome"));
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is started, but cached data should be used");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0605) {
 //    Crash on a number of multisequence files opening in the merge mode
 
