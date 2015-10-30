@@ -48,8 +48,7 @@ void GTWidget::click(U2::U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton
         p = w->rect().center();
 
         // TODO: this is a fast fix
-        QWidget *adv = qobject_cast<U2::ADVSingleSequenceWidget*>(w);
-        if (adv) {
+        if (w->objectName().contains("ADV_single_sequence_widget")) {
             p += QPoint(0, 8);
         }
     }

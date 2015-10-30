@@ -27,8 +27,8 @@
 #import <AppKit/AppKit.h>
 #endif // __OBJC__
 
-#include "api/GTGlobals.h"
-#include "runnables/qt/PopupChooser.h"
+#include "GTGlobals.h"
+#include "primitives/PopupChooser.h"
 
 namespace U2 {
 
