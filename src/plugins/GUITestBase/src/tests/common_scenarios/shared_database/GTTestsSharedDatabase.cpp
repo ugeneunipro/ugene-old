@@ -259,6 +259,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0003) {
         QList<SharedConnectionsDialogFiller::Action> actions;
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, newConName);
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::DISCONNECT, newConName);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");

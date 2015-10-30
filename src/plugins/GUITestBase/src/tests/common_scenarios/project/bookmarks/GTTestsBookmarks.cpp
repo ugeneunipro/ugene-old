@@ -63,7 +63,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 //  3. Close project
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 }
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
@@ -85,7 +85,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     // 3. Close project
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 }
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
@@ -108,7 +108,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     // 3. Close project
     GTUtilsDialog::waitForDialog(os,new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 }
 } // namespace

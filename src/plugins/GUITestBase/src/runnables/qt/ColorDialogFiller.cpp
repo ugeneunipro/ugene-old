@@ -21,7 +21,9 @@
 
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTSpinBox.h>
-#include <primitives/GTWidget.h>
+#include "primitives/GTWidget.h"
+#include <utils/GTThread.h>
+
 #include "ColorDialogFiller.h"
 #include <QColor>
 #include <QColorDialog>
@@ -32,7 +34,8 @@
 #endif
 #include <QWidget>
 #include <QSpinBox>
-namespace HI{
+namespace U2{
+using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
 #define GT_METHOD_NAME "run"
@@ -45,6 +48,7 @@ void ColorDialogFiller::run(){
     GT_CHECK(dialog!=NULL, "dialog is NULL");
 
     if(setWithQt){
+
         class Scenario : public U2::CustomScenario {
         public:
             Scenario(QColorDialog* _d, QColor _c): d(_d), c(_c) {}

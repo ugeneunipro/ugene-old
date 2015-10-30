@@ -304,7 +304,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_4) {
                                                               false);
     settings.selectAll = true;
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Find qualifier"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
 
     QStringList qualValues;
@@ -345,7 +345,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
                                                               true,
                                                               false);
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Find qualifier"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
     GTGlobals::sleep();
 
@@ -380,7 +380,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_6) {
                                                               false,
                                                               true);
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Find qualifier"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
     GTGlobals::sleep();
 
@@ -553,7 +553,7 @@ GUI_TEST_CLASS_DEFINITION(test_0574) {
     //2. Select in menu Actions->Cloning->Create fragment...
     //3. Set any region, don`t include overhangs, click OK
     GTUtilsDialog::waitForDialog(os, new CreateFragmentDialogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Cloning" << "Create Fragment..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Cloning" << "Create Fragment"));
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -755,7 +755,7 @@ GUI_TEST_CLASS_DEFINITION(test_0610) {
 
 //    4.  Modify MSA: aligh with any algorithm
 //    Expected state: UGENE not crased
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with KAlign...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 
@@ -931,8 +931,8 @@ GUI_TEST_CLASS_DEFINITION(test_0663) {
     //3. Choose in the context menu - "Export"->"Selected sequence region"
     //4. In the export dialog check "Translate to amino alphabet", uncheck "Save all amino frames", click "Export"
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "1.fa", true, QString(), false));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Selected sequence region..."));
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "action_export_selected_sequence_region"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
     //5. The protein sequence "VRFTKVEMKEKMLRAA" appear.
     QString sequenceData;
@@ -940,8 +940,8 @@ GUI_TEST_CLASS_DEFINITION(test_0663) {
     CHECK_SET_ERR(sequenceData == "VRFTKVEMKEKMLRAA", "Unexpeced sequence content");
 
     //6. Click "Statistics" in the context menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Statistics"));
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Statistics"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(500);
 
     //7. It must be the same with the statistics below

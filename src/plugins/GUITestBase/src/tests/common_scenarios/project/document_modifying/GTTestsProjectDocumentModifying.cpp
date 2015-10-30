@@ -109,7 +109,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep();
 
 // 4. Close project. No questions must be asked
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
     GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
 
@@ -138,7 +138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Expected state: "Question?" dialog has appeared that proposes to save 1.gb file
 // 8. Click Yes button
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
 // 9. Load _common_data/scenarios/sandbox/proj2.uprj
