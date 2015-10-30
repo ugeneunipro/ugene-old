@@ -48,6 +48,7 @@
 #include <U2View/AnnotationsTreeView.h>
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/DetView.h>
+#include <U2View/GSequenceGraphView.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
@@ -128,6 +129,7 @@
 #include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/GraphSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PredictSecondaryStructureDialogFiller.h"
@@ -707,6 +709,20 @@ GUI_TEST_CLASS_DEFINITION(test_0598) {
     GTWidget::click(os, GTAction::button(os, "action_zoom_in_gi|119866057|ref|NC_008705.1| Mycobacterium sp. KMS, complete genome"));
     GTGlobals::sleep(500);
     CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is started, but cached data should be used");
+
+    // 4. Use context menu {Graph -> Graph settings...}
+    // Expected state: 'Graph Settings' dialog is appeared
+    // 5. Set parameters: window = 1000, step = 4
+    // 6. Press 'Ok'
+    // Expected state: 'Calculate graph points' task is started
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, 1000, 4));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
+        << "visual_properties_action"));
+    QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
+    GTWidget::click(os, graphView, Qt::RightButton);
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is not started");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0605) {
