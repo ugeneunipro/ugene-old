@@ -3272,6 +3272,94 @@ GUI_TEST_CLASS_DEFINITION(test_4674) {
     CHECK_SET_ERR(seqNumber != GTUtilsMsaEditor::getSequencesCount(os), "The sequence was not removed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4674_1) {
+    // 1. Open COI.aln
+    // 2. Align the sequence to alignment
+    // 3. Build the tree and synchronize it with the alignment
+    // 4. Click Undo
+    // Expected state: message box appears
+    // 4. Cancel message box
+    // Expected state: the undoing is undone and the tree is still connected with the alignment
+    // 5. Click Undo one more time
+    // Expected state: message box appears
+    // 6. Confirm the modification
+    // Expected state: the connection with the tree is broken, the aligned sequence is removed
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    QAbstractButton *align = GTAction::button( os, "Align sequence to this alignment" );
+    CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
+    GTWidget::click( os, align);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4674_1", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int seqNumber = GTUtilsMsaEditor::getSequencesCount(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["z"], Qt::CTRL);
+    GTGlobals::sleep();
+
+    MSAEditorTreeViewerUI* ui = qobject_cast<MSAEditorTreeViewerUI*>( GTUtilsPhyTree::getTreeViewerUi(os) );
+    CHECK_SET_ERR(ui != NULL, "Cannot find the tree");
+    CHECK_SET_ERR(ui->isCurTreeViewerSynchronized(), "The connection with the tree is lost");
+    CHECK_SET_ERR(seqNumber == GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["z"], Qt::CTRL);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!ui->isCurTreeViewerSynchronized(), "The connection with the tree is still there");
+    CHECK_SET_ERR(seqNumber != GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4674_2) {
+    // 1. Open COI.aln
+    // 2. Build the tree and synchronize it with the alignment
+    // 3. Insert a gap
+    // Expected state: message box appears
+    // 4. Cancel message box
+    // Expected state: the insertion is undone and the tree is still connected with the alignment
+    // 5. Insert a gap again
+    // Expected state: message box appears
+    // 6. Confirm the modification
+    // Expected state: the connection with the tree is broken, the gap is removed
+    // 7. Delete some character
+    // Expected state: no message box
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4674_2", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int alnLen = GTUtilsMSAEditorSequenceArea::getLength(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(10, 10));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Space"]);
+    GTGlobals::sleep();
+
+    MSAEditorTreeViewerUI* ui = qobject_cast<MSAEditorTreeViewerUI*>( GTUtilsPhyTree::getTreeViewerUi(os) );
+    CHECK_SET_ERR(ui != NULL, "Cannot find the tree");
+    CHECK_SET_ERR(ui->isCurTreeViewerSynchronized(), "The connection with the tree is lost");
+    CHECK_SET_ERR(alnLen == GTUtilsMSAEditorSequenceArea::getLength(os), "Undo was not undone");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(10, 10));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Space"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!ui->isCurTreeViewerSynchronized(), "The connection with the tree is still there");
+    CHECK_SET_ERR(alnLen != GTUtilsMSAEditorSequenceArea::getLength(os), "Undo was not undone");
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(10, 10));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4687) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -3869,7 +3957,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     GTUtilsDialog::waitForDialog(os, ob);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    
+
     //check not empty overview color
     pixmap = QPixmap::grabWidget(simple, simple->rect());
     img = pixmap.toImage();
