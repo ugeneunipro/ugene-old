@@ -255,7 +255,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #            src/system/GTFile.h \
 #            src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
-            src/api/GTGraphicsItem.h \
+            src/api/GTGraphicsItem.h #\
 #            src/api/GTGroupBox.h \
 #            src/drivers/GTKeyboardDriver.h \
 #            src/api/GTKeyboardUtils.h \
@@ -270,7 +270,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #            src/api/GTScrollBar.h \
 #            src/api/GTSlider.h \
 #            src/primitives/GTSpinBox.h \
-            src/api/GTSystem.h #\
 #            src/api/GTTabBar.h \
 #            src/api/GTTabWidget.h \
 #            src/api/GTTableView.h  \
@@ -537,7 +536,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTFile.cpp \
 #            src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
-            src/api/GTGraphicsItem.cpp \
+            src/api/GTGraphicsItem.cpp #\
 #            src/api/GTGroupBox.cpp \
 #            src/api/GTKeyboardDriver.cpp \
 #            src/api/GTKeyboardDriverLinux.cpp \
@@ -558,7 +557,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTScrollBar.cpp \
 #            src/api/GTSlider.cpp \
 #            src/api/GTSpinBox.cpp \
-            src/api/GTSystem.cpp #\
 #            src/api/GTTabBar.cpp \
 #            src/api/GTTabWidget.cpp \
 #            src/api/GTTableView.cpp \
