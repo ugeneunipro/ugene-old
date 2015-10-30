@@ -82,6 +82,11 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
         connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     }
 
+    connect(this,   SIGNAL(si_startMsaChanging()),
+            ui,     SIGNAL(si_startMsaChanging()));
+    connect(this,   SIGNAL(si_stopMsaChanging(bool)),
+            ui,     SIGNAL(si_stopMsaChanging(bool)));
+
     if (ui->seqArea) {
         connect(ui->seqArea, SIGNAL(si_startChanged(const QPoint &, const QPoint &)), SLOT(sl_startChanged(const QPoint &, const QPoint &)));
         connect(ui->seqArea, SIGNAL(si_selectionChanged(const MSAEditorSelection &, const MSAEditorSelection &)),
@@ -298,7 +303,7 @@ void MSAEditorNameList::keyPressEvent(QKeyEvent *e) {
     static int newSeq = 0;
     switch(key) {
     case Qt::Key_Delete:
-        ui->seqArea->deleteCurrentSelection();
+        ui->seqArea->sl_delCurrentSelection();
         break;
     case Qt::Key_Up:
         if (0 != (Qt::ShiftModifier & e->modifiers()) && ui->seqArea->isSeqInRange(newSeq - 1)) {

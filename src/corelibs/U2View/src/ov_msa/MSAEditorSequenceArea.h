@@ -329,16 +329,16 @@ signals:
     void si_highlightingChanged();
     void si_visibleRangeChanged(QStringList visibleSequences, int reqHeight);
     void si_visibleRangeChanged();
-    void si_startMSAChanging();
-    void si_stopMSAChanging(bool msaUpdated);
+    void si_startMsaChanging();
+    void si_stopMsaChanging(bool msaUpdated);
     void si_copyFormattedChanging(bool enabled);
-    void si_alignmentUpdated();
     void si_highlightingAndColorActionsChanged();
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
     void sl_doUseDots();
     void sl_changeCopyFormat(const QString& alg);
+    void sl_delCurrentSelection();
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -364,7 +364,6 @@ private slots:
     void sl_addSeqFromProject();
 
     void sl_replaceSelectedCharacter();
-    void sl_delCurrentSelection();
     void sl_copyCurrentSelection();
     void sl_copyFormattedSelection();
     void sl_fillCurrentSelectionWithGaps();

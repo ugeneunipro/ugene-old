@@ -114,12 +114,15 @@ bool MSAEditorTreeViewer::sync() {
     MSAEditorTreeViewerUI* treeViewerUI = qobject_cast<MSAEditorTreeViewerUI*>(ui);
     CHECK(treeViewerUI != NULL, false);
     if (treeViewerUI->canSynchronizeWithMSA(msa)) {
-        if (isSynchronized()) {
-            // already synchronized
-            return true;
-        }
         syncMode = FullSynchronization;
         treeViewerUI->setSynchronizeMode(syncMode);
+
+        CHECK(msa != NULL, false);
+        MSAEditorUI* msaUI = msa->getUI();
+        connect(msaUI->editor->getMSAObject(),  SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
+                this,                           SLOT(sl_alignmentChanged(MAlignment,MAlignmentModInfo)));
+        connect(msaUI,                          SIGNAL(si_stopMsaChanging(bool)),
+                this,                           SLOT(sl_startTracking(bool)));
 
         connectSignals();
         sortSeqAction->setEnabled(true);
@@ -157,8 +160,8 @@ void MSAEditorTreeViewer::connectSignals() {
     MSAEditorTreeViewerUI* treeViewerUI = qobject_cast<MSAEditorTreeViewerUI*>(ui);
     CHECK(treeViewerUI != NULL, );
 
-    connect(msaUI->getSequenceArea(), SIGNAL(si_alignmentUpdated()),
-            this,                      SLOT(sl_alignmentUpdated()));
+    connect(msaUI,                      SIGNAL(si_startMsaChanging()),
+            this,                       SLOT(sl_stopTracking()));
 
     connect(treeViewerUI,               SIGNAL(si_seqOrderChanged(const QStringList&)),
             msa,                        SLOT(sl_onSeqOrderChanged(const QStringList&)));
@@ -188,8 +191,8 @@ void MSAEditorTreeViewer::disconnectSignals() {
     MSAEditorTreeViewerUI* treeViewerUI = qobject_cast<MSAEditorTreeViewerUI*>(ui);
     CHECK(treeViewerUI != NULL, );
 
-    disconnect(msaUI->getSequenceArea(), SIGNAL(si_alignmentUpdated()),
-             this,                      SLOT(sl_alignmentUpdated()));
+    disconnect(msaUI,                       SIGNAL(si_startMsaChanging()),
+               this,                        SLOT(sl_stopTracking()));
 
     disconnect(treeViewerUI,                SIGNAL(si_seqOrderChanged(const QStringList&)),
             msa,                            SLOT(sl_onSeqOrderChanged(const QStringList&)));
@@ -210,31 +213,70 @@ void MSAEditorTreeViewer::disconnectSignals() {
     slotsAreConnected = false;
 }
 
-void MSAEditorTreeViewer::sl_alignmentUpdated() {
-    if (sync() == false) {
+void MSAEditorTreeViewer::sl_startTracking(bool changed) {
+    CHECK(msa != NULL, );
+    MSAEditorUI* msaUI = msa->getUI();
+    disconnect(msaUI,   SIGNAL(si_stopMsaChanging(bool)),
+               this,    SLOT(sl_startTracking(bool)));
+
+    if (changed) {
         QObjectScopedPointer<QMessageBox> desyncQuestion = new QMessageBox( QMessageBox::Question,
                                                                             tr("Alignment Modification Confirmation"),
-                                                                            tr("The list of sequences has been modified.\n\n"
+                                                                            tr("The alignment has been modified.\n\n"
                                                                                "All phylogenetic tree(s), opened in the same view, "
                                                                                "will be no more synchronized with the alignment."));
         desyncQuestion->setInformativeText(tr("Do you want to confirm the modification?"));
-
         desyncQuestion->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         desyncQuestion->button(QMessageBox::No)->setText(tr("Cancel"));
         desyncQuestion->button(QMessageBox::Yes)->setText(tr("Confirm"));
         desyncQuestion->setDefaultButton(QMessageBox::No);
+        desyncQuestion->setModal(true);
 
         int res = desyncQuestion->exec();
         if (res == QMessageBox::No) {
-            CHECK(msa != NULL, );
-            MSAEditorUI* msaUI = msa->getUI();
-            msaUI->getUndoAction()->trigger();
+            // undo the change and synchronize
+            disconnect(msaUI->editor->getMSAObject(),   SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
+                       this,                            SLOT(sl_alignmentChanged(MAlignment,MAlignmentModInfo)));
+
+            if (cachedModification.type != MAlignmentModType_Undo) {
+                SAFE_POINT_EXT(msaUI->getUndoAction()->isEnabled(), "Processing the alignment change, but undo-redo stack is empty!", desync());
+                msaUI->getUndoAction()->trigger();
+            } else {
+                SAFE_POINT_EXT(msaUI->getRedoAction()->isEnabled(), "Processing the alignment change, but undo-redo stack is empty!", desync());
+                msaUI->getRedoAction()->trigger();
+            }
+            bool ok = sync();
+            SAFE_POINT_EXT(ok, "Cannot synchronize the tree with the alignment", desync());
         } else {
+            // break the connection completely
             desync();
         }
+
+    } else {
+        // alignment wasn't changed, the synchronization can remain
+        bool ok = sync();
+        SAFE_POINT_EXT(ok, "Cannot synchronize the tree with the alignment", desync());
     }
 }
 
+void MSAEditorTreeViewer::sl_stopTracking() {
+    disconnectSignals();
+}
+
+void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment &/*ma*/, const MAlignmentModInfo &modInfo) {
+    cachedModification = modInfo;
+
+    bool connectionIsNotBrokenOnAlignmentChange = slotsAreConnected && (modInfo.sequenceContentChanged || modInfo.sequenceListChanged || modInfo.alignmentLengthChanged);
+    if (connectionIsNotBrokenOnAlignmentChange) {
+        // alignment was modified by undo-redo or outside of current msa editor
+        disconnectSignals();
+        sl_startTracking(true);
+    }
+}
+
+//---------------------------------------------
+// MSAEditorTreeViewerUI
+//---------------------------------------------
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
     : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), curLayoutIsRectangular(true),
     curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization), hasMinSize(false), hasMaxSize(false)

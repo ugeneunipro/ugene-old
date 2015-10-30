@@ -203,6 +203,11 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     connect(editor->getMSAObject(), SIGNAL(si_rowsRemoved(const QList<qint64> &)), SLOT(sl_updateCollapsingMode()));
 
+    connect(this,   SIGNAL(si_startMsaChanging()),
+            ui,     SIGNAL(si_startMsaChanging()));
+    connect(this,   SIGNAL(si_stopMsaChanging(bool)),
+            ui,     SIGNAL(si_stopMsaChanging(bool)));
+
     connect(editor, SIGNAL(si_buildStaticMenu(GObjectView*, QMenu*)), SLOT(sl_buildStaticMenu(GObjectView*, QMenu*)));
     connect(editor, SIGNAL(si_buildStaticToolbar(GObjectView*, QToolBar*)), SLOT(sl_buildStaticToolbar(GObjectView*, QToolBar*)));
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
@@ -1302,7 +1307,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e) {
     newCurPos.setY(yPosWithValidations);
 
     if (shifting) {
-        emit si_stopMSAChanging(true);
+        emit si_stopMsaChanging(true);
     } else if (Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
         updateSelection(newCurPos);
     }
@@ -1340,7 +1345,7 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
                 changeTracker.startTracking(os);
                 CHECK_OP(os, );
                 editor->getMSAObject()->saveState();
-                emit si_startMSAChanging();
+                emit si_startMsaChanging();
             }
         }
 
@@ -1556,8 +1561,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (shift) {
                     sl_delCol();
                 } else {
+                    emit si_startMsaChanging();
                     deleteCurrentSelection();
-                    emit si_startMSAChanging();
                 }
             }
             break;
@@ -1568,8 +1573,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_Space:
             // We can't use Command+Space on Mac OS X - it is reserved
             if(!isAlignmentLocked()) {
+                emit si_startMsaChanging();
                 insertGapsBeforeSelection(genuineCtrl ? 1 : -1);
-                emit si_startMSAChanging();
             }
             break;
         case Qt::Key_Shift:
@@ -1587,7 +1592,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
 
 void MSAEditorSequenceArea::keyReleaseEvent(QKeyEvent *ke) {
     if ((ke->key() == Qt::Key_Space || ke->key() == Qt::Key_Delete) && !isAlignmentLocked() && !ke->isAutoRepeat()) {
-        emit si_stopMSAChanging(true);
+        emit si_stopMsaChanging(true);
     }
 
     QWidget::keyPressEvent(ke);
@@ -1870,7 +1875,6 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
         // we don't emit "selection changed" signal to avoid redrawing
         setSelection(newSelection);
     }
-    emit si_alignmentUpdated();
 
     updateHScrollBar();
     updateVScrollBar();
@@ -2080,9 +2084,9 @@ void MSAEditorSequenceArea::sl_delCol() {
 
 void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
     if(!isAlignmentLocked()) {
-        emit si_startMSAChanging();
+        emit si_startMsaChanging();
         insertGapsBeforeSelection();
-        emit si_stopMSAChanging(true);
+        emit si_stopMsaChanging(true);
     }
 }
 
@@ -2352,7 +2356,9 @@ void MSAEditorSequenceArea::sl_replaceSelectedCharacter() {
 
 void MSAEditorSequenceArea::sl_delCurrentSelection()
 {
+    emit si_startMsaChanging();
     deleteCurrentSelection();
+    emit si_stopMsaChanging(true);
 }
 
 U2Region MSAEditorSequenceArea::getSelectedRows() const {

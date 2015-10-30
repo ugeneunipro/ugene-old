@@ -61,18 +61,16 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
         displaySettings->orientation = (MSAGraphOverviewDisplaySettings::OrientationMode)s->getValue(MSA_GRAPH_OVERVIEW_ORIENTAION_KEY).toInt();
     }
 
-    connect(&graphCalculationTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
-    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
-            SLOT(sl_drawGraph()));
+    connect(&graphCalculationTaskRunner,    SIGNAL(si_finished()),
+                                            SLOT(sl_redraw()));
 
-    connect(ui->getEditorNameList(), SIGNAL(si_startMsaChanging()),
-            SLOT(sl_blockRendering()));
-    connect(ui->getEditorNameList(), SIGNAL(si_stopMsaChanging(bool)),
-            SLOT(sl_unblockRendering(bool)));
-    connect(sequenceArea, SIGNAL(si_startMSAChanging()),
-             SLOT(sl_blockRendering()));
-    connect(sequenceArea, SIGNAL(si_stopMSAChanging(bool)),
-            SLOT(sl_unblockRendering(bool)));
+    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
+                                    SLOT(sl_drawGraph()));
+
+    connect(ui, SIGNAL(si_startMsaChanging()),
+                SLOT(sl_blockRendering()));
+    connect(ui, SIGNAL(si_stopMsaChanging(bool)),
+                SLOT(sl_unblockRendering(bool)));
 
     sl_drawGraph();
 }

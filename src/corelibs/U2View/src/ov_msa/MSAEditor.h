@@ -352,6 +352,9 @@ signals:
     void si_showTreeOP();
     void si_hideTreeOP();
 
+    void si_startMsaChanging();
+    void si_stopMsaChanging(bool modifyed = false);
+
 private:
     MSAEditor*                         editor;
     MSAEditorNameList*                 nameList;
