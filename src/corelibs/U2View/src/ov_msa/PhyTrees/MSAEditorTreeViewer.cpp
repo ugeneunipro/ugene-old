@@ -216,6 +216,7 @@ void MSAEditorTreeViewer::disconnectSignals() {
 void MSAEditorTreeViewer::sl_startTracking(bool changed) {
     CHECK(msa != NULL, );
     MSAEditorUI* msaUI = msa->getUI();
+    CHECK(msaUI != NULL, );
     disconnect(msaUI,   SIGNAL(si_stopMsaChanging(bool)),
                this,    SLOT(sl_startTracking(bool)));
 
@@ -239,14 +240,23 @@ void MSAEditorTreeViewer::sl_startTracking(bool changed) {
                        this,                            SLOT(sl_alignmentChanged(MAlignment,MAlignmentModInfo)));
 
             if (cachedModification.type != MAlignmentModType_Undo) {
-                SAFE_POINT_EXT(msaUI->getUndoAction()->isEnabled(), "Processing the alignment change, but undo-redo stack is empty!", desync());
+                if (!msaUI->getUndoAction()->isEnabled()) {
+                    desync();
+                    FAIL("Processing the alignment change, but undo-redo stack is empty!", );
+                }
                 msaUI->getUndoAction()->trigger();
             } else {
-                SAFE_POINT_EXT(msaUI->getRedoAction()->isEnabled(), "Processing the alignment change, but undo-redo stack is empty!", desync());
+                if (!msaUI->getRedoAction()->isEnabled()) {
+                    desync();
+                    FAIL("Processing the alignment change, but undo-redo stack is empty!", );
+                }
                 msaUI->getRedoAction()->trigger();
             }
             bool ok = sync();
-            SAFE_POINT_EXT(ok, "Cannot synchronize the tree with the alignment", desync());
+            if (!ok) {
+                desync();
+            }
+            SAFE_POINT(ok, "Cannot synchronize the tree with the alignment", );
         } else {
             // break the connection completely
             desync();
@@ -255,7 +265,10 @@ void MSAEditorTreeViewer::sl_startTracking(bool changed) {
     } else {
         // alignment wasn't changed, the synchronization can remain
         bool ok = sync();
-        SAFE_POINT_EXT(ok, "Cannot synchronize the tree with the alignment", desync());
+        if (!ok) {
+            desync();
+        }
+        SAFE_POINT(ok, "Cannot synchronize the tree with the alignment", );
     }
 }
 
@@ -269,8 +282,27 @@ void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment &/*ma*/, const MA
     bool connectionIsNotBrokenOnAlignmentChange = slotsAreConnected && (modInfo.sequenceContentChanged || modInfo.sequenceListChanged || modInfo.alignmentLengthChanged);
     if (connectionIsNotBrokenOnAlignmentChange) {
         // alignment was modified by undo-redo or outside of current msa editor
-        disconnectSignals();
-        sl_startTracking(true);
+        MWMDIManager* mdiManager = AppContext::getMainWindow()->getMDIManager();
+        SAFE_POINT(mdiManager != NULL, "MWMDIManager is NULL", );
+        GObjectViewWindow* win = qobject_cast<GObjectViewWindow*>(mdiManager->getActiveWindow());
+        if (win != NULL) {
+            if (win->getObjectView() == msa) {
+                // undo-redo at the same window
+                disconnectSignals();
+                sl_startTracking(true);
+                return;
+            }
+        }
+
+        // the change outside the current msa editor detected -- desync the tree
+        CHECK(msa != NULL, );
+        MSAEditorUI* msaUI = msa->getUI();
+        CHECK(msaUI != NULL, );
+        disconnect(msaUI->editor->getMSAObject(),   SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
+                   this,                            SLOT(sl_alignmentChanged(MAlignment,MAlignmentModInfo)));
+        disconnect(msaUI,                          SIGNAL(si_stopMsaChanging(bool)),
+                   this,                           SLOT(sl_startTracking(bool)));
+        desync();
     }
 }
 
