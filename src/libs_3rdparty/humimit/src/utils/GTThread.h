@@ -28,8 +28,6 @@
 
 namespace HI {
 
-class U2::U2OpStatus;
-
 class HI_EXPORT ThreadWaiter : public QObject {
     Q_OBJECT
 public:
@@ -55,4 +53,4 @@ public:
 
 }   // namespace U2
 
-#endif // _U2_GT_THREAD_H_
+#endif // _HI_GT_THREAD_H_

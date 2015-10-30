@@ -18,18 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "GTTestsAnnotationsImport.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
-#include "primitives/GTWidget.h"
-#include "api/GTPlainTextEdit.h"
-#include "api/GTLineEdit.h"
-#include "api/GTAction.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTPlainTextEdit.h>
+#include <primitives/GTLineEdit.h>
+#include "primitives/GTAction.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProject.h"

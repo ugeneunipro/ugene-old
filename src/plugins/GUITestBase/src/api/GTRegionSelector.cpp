@@ -20,10 +20,11 @@
  */
 
 #include "GTRegionSelector.h"
-#include "primitives/GTWidget.h"
-#include "GTLineEdit.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
 
 namespace U2 {
+using namespace HI;
 
 #define GT_CLASS_NAME "GTRegionSelector"
 

@@ -20,13 +20,13 @@
  */
 
 #include "primitives/GTMenu.h"
-#include "primitives/GTWidget.h"
-#include "api/GTAction.h"
-#include "drivers/GTMouseDriver.h"
+#include <primitives/GTWidget.h>
+#include "primitives/GTAction.h"
+#include <drivers/GTMouseDriver.h>
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsLog.h"
 #include "utils/GTUtilsDialog.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include "GTTestsWorkflowEstimating.h"
 

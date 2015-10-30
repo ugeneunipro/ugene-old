@@ -20,10 +20,10 @@
  */
 
 #include "BuildDotPlotDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
 
 #include "GTUtilsTaskTreeView.h"
 

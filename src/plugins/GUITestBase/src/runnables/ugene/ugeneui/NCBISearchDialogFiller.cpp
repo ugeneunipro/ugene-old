@@ -24,20 +24,19 @@
 #include <QDialogButtonBox>
 #include <QTreeWidget>
 
-#include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTextEdit.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTextEdit.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 #include "GTUtilsTaskTreeView.h"
 #include "NCBISearchDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "NcbiSearchDialogFiller"
 

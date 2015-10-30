@@ -26,9 +26,9 @@
 #include <QtWidgets/QTreeWidget>
 #endif
 
-#include "api/GTTreeWidget.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTTreeWidget.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 
 #include "GTBaseCompleter.h"
 

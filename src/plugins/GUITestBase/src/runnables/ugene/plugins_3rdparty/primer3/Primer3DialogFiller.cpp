@@ -20,14 +20,14 @@
  */
 
 #include "Primer3DialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTabWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTWidget.h>
 
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include <QApplication>
 #include <QLineEdit>

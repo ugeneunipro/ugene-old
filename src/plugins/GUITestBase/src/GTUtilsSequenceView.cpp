@@ -57,11 +57,11 @@
 
 #include "system/GTClipboard.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTToolbar.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTToolbar.h>
 
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"

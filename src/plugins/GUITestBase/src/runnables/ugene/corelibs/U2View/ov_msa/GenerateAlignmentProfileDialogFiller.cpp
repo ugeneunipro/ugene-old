@@ -20,10 +20,10 @@
  */
 
 #include "GenerateAlignmentProfileDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTCheckBox.h"
-#include "api/GTRadioButton.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTRadioButton.h>
 
 
 

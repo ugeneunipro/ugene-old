@@ -28,9 +28,9 @@
 #include "GTUtilsPrimerLibrary.h"
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTTableView.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTWidget.h>
 #include "runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h"
 
 namespace U2 {

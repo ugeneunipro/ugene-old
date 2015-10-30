@@ -21,7 +21,7 @@
 
 #include <U2Core/Task.h>
 
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "GTUtilsTaskTreeView.h"
 
 #include "GTUtilsTask.h"

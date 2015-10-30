@@ -26,12 +26,12 @@
 #include "GTTestsProjectSequenceExporting.h"
 #include "GTGlobals.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTComboBox.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTComboBox.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "system/GTFile.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
@@ -44,7 +44,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "primitives/PopupChooser.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"

@@ -31,9 +31,9 @@
 #include "primitives/GTMenu.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsAnnotationsTreeView.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "GTUtilsProjectTreeView.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsMdi.h"
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"

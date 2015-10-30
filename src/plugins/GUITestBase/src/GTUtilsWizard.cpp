@@ -26,13 +26,13 @@
 #include <QToolButton>
 #include <QWizard>
 
-#include "api/GTComboBox.h"
-#include "api/GTDoubleSpinBox.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTDoubleSpinBox.h>
 #include "api/GTFileDialog.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTabWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTWidget.h>
 
 #include "GTUtilsWizard.h"
 

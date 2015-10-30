@@ -26,10 +26,10 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "system/GTFile.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTableView.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTWidget.h>
 
 #include "GTUtilsPcr.h"
 

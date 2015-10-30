@@ -21,7 +21,7 @@
 
 #include "GTTestsProjectMultipleDocs.h"
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
 #include "GTUtilsProject.h"

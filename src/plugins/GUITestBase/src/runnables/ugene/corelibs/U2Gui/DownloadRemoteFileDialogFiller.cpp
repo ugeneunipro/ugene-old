@@ -23,12 +23,12 @@
 #include <QtCore/QFileInfo>
 
 #include "DownloadRemoteFileDialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
 #include "api/GTFileDialog.h"
-#include "api/GTLineEdit.h"
-#include "api/GTListWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTListWidget.h>
+#include <primitives/GTWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

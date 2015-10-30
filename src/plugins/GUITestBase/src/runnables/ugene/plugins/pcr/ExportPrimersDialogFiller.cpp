@@ -26,9 +26,9 @@
 
 #include "ExportPrimersDialogFiller.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 
 namespace U2 {

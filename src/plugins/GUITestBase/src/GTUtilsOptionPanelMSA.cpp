@@ -29,10 +29,10 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "api/GTBaseCompleter.h"
-#include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

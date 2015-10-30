@@ -22,8 +22,8 @@
 #include <QApplication>
 
 #include "GTUtilsPrimerLibrary.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 
 #include "PrimerLibrarySelectorFiller.h"
 

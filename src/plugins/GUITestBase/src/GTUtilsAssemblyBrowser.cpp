@@ -37,9 +37,9 @@
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTToolbar.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
 
 namespace U2 {

@@ -20,15 +20,15 @@
  */
 
 #include "EditQualifierDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTTextEdit.h"
-#include "api/GTRadioButton.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTTextEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5

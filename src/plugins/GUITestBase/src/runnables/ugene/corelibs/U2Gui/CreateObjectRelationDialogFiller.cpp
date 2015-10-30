@@ -23,7 +23,7 @@
 #include <QDialogButtonBox>
 
 #include "CreateObjectRelationDialogFiller.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

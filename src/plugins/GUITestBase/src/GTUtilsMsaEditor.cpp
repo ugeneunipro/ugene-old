@@ -31,10 +31,10 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
 #include "api/GTMSAEditorStatusWidget.h"
-#include "api/GTToolbar.h"
+#include <primitives/GTToolbar.h>
 #include "primitives/PopupChooser.h"
 
 namespace U2 {

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 
 #include "EscapeClicker.h"
 

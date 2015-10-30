@@ -28,13 +28,13 @@
 #include <QSpinBox>
 
 #include "ExportCoverageDialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
 #include "api/GTFileDialog.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2 {
 

@@ -40,11 +40,11 @@
 
 #include "utils/GTUtilsDialog.h"
 #include "ImportOptionsWidgetFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

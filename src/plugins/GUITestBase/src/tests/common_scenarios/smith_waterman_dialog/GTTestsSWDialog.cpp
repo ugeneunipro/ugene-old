@@ -30,9 +30,9 @@
 
 #include "GTUtilsProject.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsAnnotationsTreeView.h"

@@ -29,16 +29,16 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTCheckBox.h"
+#include <primitives/GTCheckBox.h>
 #include "system/GTClipboard.h"
-#include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTableView.h"
-#include "api/GTTextEdit.h"
+#include <primitives/GTComboBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTTextEdit.h>
 #include "utils/GTThread.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

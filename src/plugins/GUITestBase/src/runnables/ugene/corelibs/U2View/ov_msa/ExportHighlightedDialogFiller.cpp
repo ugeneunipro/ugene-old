@@ -22,9 +22,9 @@
 #include <QApplication>
 
 #include "ExportHighlightedDialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

@@ -20,15 +20,15 @@
  */
 #include "GTTestsDpView.h"
 #include "../../../GTUtilsEscClicker.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
@@ -38,7 +38,7 @@
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include <U2Gui/ToolsMenu.h>
 

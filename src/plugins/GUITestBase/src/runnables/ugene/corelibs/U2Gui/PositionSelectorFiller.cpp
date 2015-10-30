@@ -20,9 +20,9 @@
  */
 
 #include "PositionSelectorFiller.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
+#include <drivers/GTKeyboardDriver.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

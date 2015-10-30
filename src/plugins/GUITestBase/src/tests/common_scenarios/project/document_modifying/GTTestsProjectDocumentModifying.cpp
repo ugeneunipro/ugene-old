@@ -22,9 +22,9 @@
 #include "GTTestsProjectDocumentModifying.h"
 #include "primitives/GTMenu.h"
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "GTUtilsProject.h"
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
@@ -32,7 +32,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsToolTip.h"
 #include "primitives/PopupChooser.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
 

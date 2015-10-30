@@ -20,9 +20,9 @@
  */
 
 #include "KalignDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTCheckBox.h"
-#include "api/GTDoubleSpinBox.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTDoubleSpinBox.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

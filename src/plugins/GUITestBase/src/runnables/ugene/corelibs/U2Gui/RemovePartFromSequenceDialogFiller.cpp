@@ -26,11 +26,11 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTWidget.h>
 
 #include "RemovePartFromSequenceDialogFiller.h"
 

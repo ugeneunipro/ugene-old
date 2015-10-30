@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 
 #include "GTUtilsEscClicker.h"
 

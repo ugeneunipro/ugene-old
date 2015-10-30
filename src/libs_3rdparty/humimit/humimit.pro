@@ -16,28 +16,28 @@ HEADERS += \
 #           src/core/U2SafePoints.h \
            src/drivers/GTKeyboardDriver.h \
            src/drivers/GTMouseDriver.h \
-#           src/primitives/GTAction.h \
-#           src/primitives/GTCheckBox.h \
-#           src/primitives/GTComboBox.h \
-#           src/primitives/GTDoubleSpinBox.h \
-#           src/primitives/GTGroupBox.h \
-#           src/primitives/GTLineEdit.h \
-#           src/primitives/GTListWidget.h \
+           src/primitives/GTAction.h \
+           src/primitives/GTCheckBox.h \
+           src/primitives/GTComboBox.h \
+           src/primitives/GTDoubleSpinBox.h \
+           src/primitives/GTGroupBox.h \
+           src/primitives/GTLineEdit.h \
+           src/primitives/GTListWidget.h \
            src/primitives/GTMenu.h \
            src/primitives/GTMenuBar.h \
-#           src/primitives/GTPlainTextEdit.h \
-#           src/primitives/GTRadioButton.h \
-#           src/primitives/GTScrollBar.h \
-#           src/primitives/GTSlider.h \
+           src/primitives/GTPlainTextEdit.h \
+           src/primitives/GTRadioButton.h \
+           src/primitives/GTScrollBar.h \
+           src/primitives/GTSlider.h \
            src/primitives/GTSpinBox.h \
-#           src/primitives/GTTabBar.h \
-#           src/primitives/GTTableView.h \
-#           src/primitives/GTTabWidget.h \
-#           src/primitives/GTTextEdit.h \
-#           src/primitives/GTToolbar.h \
-#           src/primitives/GTTreeView.h \
-#           src/primitives/GTTreeWidget.h \
-#           src/primitives/GTWebView.h \
+           src/primitives/GTTabBar.h \
+           src/primitives/GTTableView.h \
+           src/primitives/GTTabWidget.h \
+           src/primitives/GTTextEdit.h \
+           src/primitives/GTToolbar.h \
+           src/primitives/GTTreeView.h \
+           src/primitives/GTTreeWidget.h \
+           src/primitives/GTWebView.h \
            src/primitives/GTWidget.h \
            src/primitives/PopupChooser.h \
            src/primitives/private/GTMenuPrivate.h \
@@ -68,28 +68,28 @@ SOURCES += \
            src/drivers/GTMouseDriverLinux.cpp \
            src/drivers/GTMouseDriverMac.cpp \
            src/drivers/GTMouseDriverWindows.cpp \
-#           src/primitives/GTAction.cpp \
-#           src/primitives/GTCheckBox.cpp \
-#           src/primitives/GTComboBox.cpp \
-#           src/primitives/GTDoubleSpinBox.cpp \
-#           src/primitives/GTGroupBox.cpp \
-#           src/primitives/GTLineEdit.cpp \
-#           src/primitives/GTListWidget.cpp \
+           src/primitives/GTAction.cpp \
+           src/primitives/GTCheckBox.cpp \
+           src/primitives/GTComboBox.cpp \
+           src/primitives/GTDoubleSpinBox.cpp \
+           src/primitives/GTGroupBox.cpp \
+           src/primitives/GTLineEdit.cpp \
+           src/primitives/GTListWidget.cpp \
            src/primitives/GTMenu.cpp \
            src/primitives/GTMenuBar.cpp \
-#           src/primitives/GTPlainTextEdit.cpp \
-#           src/primitives/GTRadioButton.cpp \
-#           src/primitives/GTScrollBar.cpp \
-#           src/primitives/GTSlider.cpp \
+           src/primitives/GTPlainTextEdit.cpp \
+           src/primitives/GTRadioButton.cpp \
+           src/primitives/GTScrollBar.cpp \
+           src/primitives/GTSlider.cpp \
            src/primitives/GTSpinBox.cpp \
-#           src/primitives/GTTabBar.cpp \
-#           src/primitives/GTTableView.cpp \
-#           src/primitives/GTTabWidget.cpp \
-#           src/primitives/GTTextEdit.cpp \
-#           src/primitives/GTToolbar.cpp \
-#           src/primitives/GTTreeView.cpp \
-#           src/primitives/GTTreeWidget.cpp \
-#           src/primitives/GTWebView.cpp \
+           src/primitives/GTTabBar.cpp \
+           src/primitives/GTTableView.cpp \
+           src/primitives/GTTabWidget.cpp \
+           src/primitives/GTTextEdit.cpp \
+           src/primitives/GTToolbar.cpp \
+           src/primitives/GTTreeView.cpp \
+           src/primitives/GTTreeWidget.cpp \
+           src/primitives/GTWebView.cpp \
            src/primitives/GTWidget.cpp \
            src/primitives/PopupChooser.cpp \
            src/primitives/private/GTMenuPrivate.cpp \

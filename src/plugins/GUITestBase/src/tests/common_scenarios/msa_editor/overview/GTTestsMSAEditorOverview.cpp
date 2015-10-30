@@ -27,13 +27,13 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTAction.h"
-#include "api/GTComboBox.h"
+#include "primitives/GTAction.h"
+#include <primitives/GTComboBox.h>
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 #include "runnables/qt/ColorDialogFiller.h"
 #include "primitives/PopupChooser.h"
 

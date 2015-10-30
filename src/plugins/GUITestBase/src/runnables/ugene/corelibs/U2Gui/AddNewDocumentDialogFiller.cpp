@@ -22,9 +22,9 @@
 #include <QApplication>
 
 #include "AddNewDocumentDialogFiller.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

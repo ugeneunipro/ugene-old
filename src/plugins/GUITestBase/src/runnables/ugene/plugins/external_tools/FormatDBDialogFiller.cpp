@@ -32,13 +32,13 @@
 #include <QtWidgets/QComboBox>
 #endif
 
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTDoubleSpinBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTDoubleSpinBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTRadioButton.h>
 
 #include "FormatDBDialogFiller.h"
 

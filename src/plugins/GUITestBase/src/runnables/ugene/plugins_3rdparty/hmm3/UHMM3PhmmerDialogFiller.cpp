@@ -21,9 +21,9 @@
 
 #include "UHMM3PhmmerDialogFiller.h"
 
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
-#include "api/GTTabBar.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
+#include <primitives/GTTabBar.h>
 
 #include <QApplication>
 #include <QTabWidget>

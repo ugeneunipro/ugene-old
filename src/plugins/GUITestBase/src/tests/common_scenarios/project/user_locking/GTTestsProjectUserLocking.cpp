@@ -21,11 +21,11 @@
 
 #include "GTTestsProjectUserLocking.h"
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "api/GTFileDialog.h"
-#include "primitives/GTWidget.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTTreeWidget.h>
 #include "system/GTFile.h"
 #include "primitives/GTMenu.h"
 #include "GTUtilsProject.h"

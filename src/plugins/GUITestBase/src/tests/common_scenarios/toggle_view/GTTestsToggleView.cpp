@@ -21,12 +21,12 @@
 
 #include "GTTestsToggleView.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "api/GTFileDialog.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"

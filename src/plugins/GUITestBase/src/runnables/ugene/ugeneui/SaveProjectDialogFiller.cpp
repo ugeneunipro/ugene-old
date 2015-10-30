@@ -28,7 +28,7 @@
 #include <QtWidgets/QPushButton>
 #endif
 
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2{
 void SaveProjectDialogFiller::run(){

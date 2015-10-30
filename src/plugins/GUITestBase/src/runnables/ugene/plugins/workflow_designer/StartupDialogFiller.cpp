@@ -24,9 +24,9 @@
 #include <QPushButton>
 
 #include "StartupDialogFiller.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2 {
 

@@ -20,10 +20,10 @@
  */
 
 #include "ExportDocumentDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
 
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5

@@ -21,13 +21,13 @@
 #include "AppSettingsDialogFiller.h"
 
 #include "runnables/qt/ColorDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTTreeWidget.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTListWidget.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTTreeWidget.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTListWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

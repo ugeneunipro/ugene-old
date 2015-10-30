@@ -21,12 +21,12 @@
 
 #include "GTTestsFromProjectView.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
@@ -44,7 +44,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>

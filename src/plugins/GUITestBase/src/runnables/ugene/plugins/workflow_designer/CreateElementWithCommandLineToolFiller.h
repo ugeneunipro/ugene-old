@@ -24,11 +24,11 @@
 
 #include "utils/GTUtilsDialog.h"
 
-#include <api/GTComboBox.h>
+#include <primitives/GTComboBox.h>
 #include <drivers/GTKeyboardDriver.h>
-#include <api/GTLineEdit.h>
+#include <primitives/GTLineEdit.h>
 #include <drivers/GTMouseDriver.h>
-#include <api/GTTableView.h>
+#include <primitives/GTTableView.h>
 #include <primitives/GTWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5

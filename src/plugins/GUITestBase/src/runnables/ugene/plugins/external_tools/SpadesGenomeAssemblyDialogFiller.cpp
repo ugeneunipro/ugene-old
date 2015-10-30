@@ -22,10 +22,10 @@
 #include <QApplication>
 #include <QDir>
 
-#include "api/GTComboBox.h"
+#include <primitives/GTComboBox.h>
 #include "api/GTFileDialog.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
 #include "SpadesGenomeAssemblyDialogFiller.h"
 

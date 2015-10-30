@@ -31,7 +31,7 @@
 
 #include "GTUtilsMdi.h"
 #include "GTUtilsNotifications.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

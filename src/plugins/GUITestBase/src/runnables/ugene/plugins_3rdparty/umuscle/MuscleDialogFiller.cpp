@@ -20,9 +20,9 @@
  */
 
 #include "MuscleDialogFiller.h"
-#include "api/GTComboBox.h"
-#include "primitives/GTWidget.h"
-#include "api/GTCheckBox.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTWidget.h>
+#include <primitives/GTCheckBox.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

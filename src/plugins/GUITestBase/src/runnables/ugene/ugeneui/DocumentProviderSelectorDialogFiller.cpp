@@ -21,8 +21,8 @@
 
 #include <QApplication>
 
-#include "api/GTRadioButton.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTWidget.h>
 
 #include "DocumentProviderSelectorDialogFiller.h"
 

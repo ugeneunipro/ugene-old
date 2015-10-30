@@ -28,10 +28,10 @@
 #include <QtWidgets/QLabel>
 #endif
 
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTRadioButton.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 
 #include "DocumentFormatSelectorDialogFiller.h"
 

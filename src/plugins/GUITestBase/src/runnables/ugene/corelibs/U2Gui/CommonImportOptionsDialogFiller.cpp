@@ -30,7 +30,7 @@
 
 #include "CommonImportOptionsDialogFiller.h"
 #include "ImportOptionsWidgetFiller.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

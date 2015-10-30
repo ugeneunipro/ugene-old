@@ -20,13 +20,13 @@
  */
 
 #include "GTTestsAnnotationsEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"

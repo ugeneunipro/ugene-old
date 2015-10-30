@@ -34,20 +34,19 @@
 #include <QtWidgets/QGroupBox>
 #endif
 
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "api/GTPlainTextEdit.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTPlainTextEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTWidget.h>
 
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include "ReplaceSubsequenceDialogFiller.h"
 
 namespace U2 {
-using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::replaceSubsequenceDialogFiller"
 ReplaceSubsequenceDialogFiller::ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool recalculateQuals)

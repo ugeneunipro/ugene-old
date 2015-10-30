@@ -20,16 +20,16 @@
  */
 
 #include "GTTestsUndoRedo.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTAction.h"
-#include "api/GTTreeWidget.h"
+#include "primitives/GTAction.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTGlobals.h"
 #include "system/GTClipboard.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"

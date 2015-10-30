@@ -22,10 +22,10 @@
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTSequenceReadingModeDialog.h"
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
@@ -39,7 +39,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #endif
-#include "api/GTRadioButton.h"
+#include <primitives/GTRadioButton.h>
 
 #define SEPARATE_MODE "separateMode"
 #define MERGE_MODE "mergeMode"

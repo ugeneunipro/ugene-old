@@ -20,18 +20,18 @@
  */
 
 #include "WizardFiller.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTDoubleSpinBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "drivers/GTMouseDriver.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTDoubleSpinBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTComboBox.h>
+#include <drivers/GTMouseDriver.h>
 #include "api/GTFileDialog.h"
-#include "api/GTRadioButton.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTRadioButton.h>
+#include <base_dialogs/MessageBoxFiller.h>
 #include "../../src/corelibs/U2Designer/src/wizard/WDWizardPage.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

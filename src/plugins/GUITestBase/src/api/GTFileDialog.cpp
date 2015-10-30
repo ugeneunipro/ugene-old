@@ -29,15 +29,15 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "GTComboBox.h"
+#include <primitives/GTComboBox.h>
 #include "GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "GTUtilsTaskTreeView.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "GTGlobals.h"
-#include "api/GTLineEdit.h"
+#include <primitives/GTLineEdit.h>
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"

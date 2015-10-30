@@ -20,19 +20,19 @@
  */
 
 #include "GTTestsMsaEditor.h"
-#include "api/GTAction.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "primitives/GTAction.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "system/GTClipboard.h"
-#include "api/GTToolbar.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTRadioButton.h"
+#include <primitives/GTToolbar.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTRadioButton.h>
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
@@ -46,7 +46,7 @@
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/ColorDialogFiller.h"
 #include "primitives/PopupChooser.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/qt/FontDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"

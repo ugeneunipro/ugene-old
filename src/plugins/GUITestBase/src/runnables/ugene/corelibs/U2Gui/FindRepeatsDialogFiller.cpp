@@ -20,9 +20,9 @@
  */
 
 #include "FindRepeatsDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTabWidget.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

@@ -21,32 +21,32 @@
 
 #include "GTTestsRegressionScenarios_1001_2000.h"
 
-#include "api/GTRadioButton.h"
-#include "api/GTAction.h"
-#include "api/GTCheckBox.h"
+#include <primitives/GTRadioButton.h>
+#include "primitives/GTAction.h"
+#include <primitives/GTCheckBox.h>
 #include "system/GTClipboard.h"
-#include "api/GTComboBox.h"
+#include <primitives/GTComboBox.h>
 #include "api/GTGraphicsItem.h"
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "api/GTLineEdit.h"
-#include "api/GTListWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTListWidget.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTSlider.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTabWidget.h"
-#include "api/GTTableView.h"
-#include "api/GTTextEdit.h"
-#include "api/GTToolbar.h"
-#include "api/GTTreeWidget.h"
-#include "api/GTWebView.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTSlider.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTTextEdit.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWebView.h>
+#include <primitives/GTWidget.h>
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
@@ -79,7 +79,7 @@
 
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"

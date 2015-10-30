@@ -30,21 +30,21 @@
 
 #include "GTTestsOptionPanelSequenceView.h"
 
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "api/GTBaseCompleter.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTDoubleSpinBox.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTDoubleSpinBox.h>
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTRadioButton.h"
-#include "api/GTSlider.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSlider.h>
+#include <primitives/GTWidget.h>
 
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/qt/ColorDialogFiller.h"
 
 #include "GTUtilsAnnotationsTreeView.h"

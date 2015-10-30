@@ -36,11 +36,11 @@
 #include "GTUtilsWorkflowDesigner.h"
 #include "api/GTFileDialog.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 

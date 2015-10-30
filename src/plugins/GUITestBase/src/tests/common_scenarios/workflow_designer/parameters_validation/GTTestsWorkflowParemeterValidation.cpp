@@ -19,19 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "system/GTFile.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTTableView.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTWidget.h>
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTTestsWorkflowParemeterValidation.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>

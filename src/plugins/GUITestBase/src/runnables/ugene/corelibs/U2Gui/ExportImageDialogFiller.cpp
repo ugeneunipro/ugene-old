@@ -28,13 +28,13 @@
 #include <QTableWidget>
 
 #include "ExportImageDialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 using namespace HI;

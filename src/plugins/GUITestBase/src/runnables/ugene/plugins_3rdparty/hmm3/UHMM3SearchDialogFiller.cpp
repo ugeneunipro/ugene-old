@@ -21,8 +21,8 @@
 
 #include <QApplication>
 
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
 #include "UHMM3SearchDialogFiller.h"
 namespace U2 {

@@ -21,12 +21,12 @@
 
 #include "GTUtilsDocument.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
 #include "primitives/PopupChooser.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/AppContext.h>

@@ -22,9 +22,9 @@
 #include <QApplication>
 #include <QTreeWidget>
 
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 
 #include "DashboardsManagerDialogFiller.h"
 

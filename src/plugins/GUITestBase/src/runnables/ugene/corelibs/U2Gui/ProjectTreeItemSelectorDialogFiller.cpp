@@ -22,9 +22,9 @@
 #include <U2Core/U2IdTypes.h>
 #include "GTUtilsProjectTreeView.h"
 #include "ProjectTreeItemSelectorDialogFiller.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

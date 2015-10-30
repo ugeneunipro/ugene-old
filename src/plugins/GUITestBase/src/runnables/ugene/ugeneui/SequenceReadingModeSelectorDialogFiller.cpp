@@ -20,9 +20,9 @@
  */
 
 #include "SequenceReadingModeSelectorDialogFiller.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

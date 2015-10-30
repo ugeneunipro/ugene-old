@@ -31,9 +31,9 @@
 #include "GTUtilsMdi.h"
 #include "GTGlobals.h"
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "utils/GTThread.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2 {
 using namespace HI;

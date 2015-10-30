@@ -31,10 +31,10 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectViewModel.h>
 
-#include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
 #include "GTUtilsProjectTreeView.h"
 

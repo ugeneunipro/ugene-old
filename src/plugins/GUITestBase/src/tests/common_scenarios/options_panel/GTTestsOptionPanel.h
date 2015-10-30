@@ -28,8 +28,8 @@ k
 #include <U2Test/GUITestBase.h>
 
 #include "utils/GTUtilsDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

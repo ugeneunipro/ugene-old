@@ -21,7 +21,7 @@
 
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTSpinBox.h>
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "ColorDialogFiller.h"
 #include <QColor>
 #include <QColorDialog>

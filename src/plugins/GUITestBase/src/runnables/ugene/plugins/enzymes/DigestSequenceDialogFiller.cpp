@@ -23,7 +23,7 @@
 #include <QTreeWidget>
 
 #include "DigestSequenceDialogFiller.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

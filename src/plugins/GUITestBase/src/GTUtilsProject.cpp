@@ -40,13 +40,13 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 

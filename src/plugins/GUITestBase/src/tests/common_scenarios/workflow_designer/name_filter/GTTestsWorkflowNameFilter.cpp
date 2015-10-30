@@ -20,10 +20,10 @@
  */
 
 #include "primitives/GTMenu.h"
-#include "primitives/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTTabWidget.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTTabWidget.h>
 
 #include "GTUtilsWorkflowDesigner.h"
 

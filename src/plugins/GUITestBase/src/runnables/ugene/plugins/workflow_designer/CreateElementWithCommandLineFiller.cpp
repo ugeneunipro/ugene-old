@@ -21,7 +21,7 @@
 
 #include "CreateElementWithCommandLineToolFiller.h"
 
-#include <api/GTTextEdit.h>
+#include <primitives/GTTextEdit.h>
 
 namespace U2 {
 

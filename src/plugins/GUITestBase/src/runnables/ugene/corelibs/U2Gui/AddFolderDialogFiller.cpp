@@ -26,9 +26,9 @@
 #include <QtWidgets/QApplication>
 #endif
 
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
 #include "AddFolderDialogFiller.h"
 

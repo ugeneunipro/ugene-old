@@ -35,11 +35,11 @@
 #include "GTUtilsTaskTreeView.h"
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"

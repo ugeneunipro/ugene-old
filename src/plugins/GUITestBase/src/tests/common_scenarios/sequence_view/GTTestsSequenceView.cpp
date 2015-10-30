@@ -21,19 +21,19 @@
 
 #include "GTTestsSequenceView.h"
 #include "system/GTClipboard.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "drivers/GTMouseDriver.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <drivers/GTMouseDriver.h>
 #include "GTGlobals.h"
-#include "primitives/GTWidget.h"
-#include "api/GTAction.h"
+#include <primitives/GTWidget.h>
+#include "primitives/GTAction.h"
 #include "primitives/GTMenu.h"
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTSequenceReadingModeDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTRadioButton.h"
-#include "api/GTTreeWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -61,7 +61,7 @@
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>

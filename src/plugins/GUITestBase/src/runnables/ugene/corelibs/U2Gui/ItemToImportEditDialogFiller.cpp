@@ -30,7 +30,7 @@
 
 #include "ImportOptionsWidgetFiller.h"
 #include "ItemToImportEditDialogFiller.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

@@ -25,6 +25,7 @@
 #include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class NcbiSearchDialogFiller : public Filler {
 public:

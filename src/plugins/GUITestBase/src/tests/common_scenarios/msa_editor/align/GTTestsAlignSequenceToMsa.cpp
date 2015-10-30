@@ -19,22 +19,22 @@
  * MA 02110-1301, USA.
  */
 #include "GTTestsAlignSequenceToMsa.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTSpinBox.h"
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTSpinBox.h>
 #include "GTGlobals.h"
 #include "system/GTClipboard.h"
-#include "api/GTAction.h"
-#include "api/GTTreeWidget.h"
-#include "api/GTToolbar.h"
-#include "api/GTComboBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTCheckBox.h"
+#include "primitives/GTAction.h"
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTCheckBox.h>
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"

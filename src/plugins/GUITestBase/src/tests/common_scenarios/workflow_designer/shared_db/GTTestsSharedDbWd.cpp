@@ -22,12 +22,12 @@
 #include <QListWidget>
 
 #include <U2Core/global.h>
-#include "api/GTAction.h"
-#include "drivers/GTKeyboardDriver.h"
+#include "primitives/GTAction.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"

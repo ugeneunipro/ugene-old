@@ -27,11 +27,11 @@
 #include <QRadioButton>
 
 #include "CreateAnnotationWidgetFiller.h"
-#include "api/GTComboBox.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTComboBox.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

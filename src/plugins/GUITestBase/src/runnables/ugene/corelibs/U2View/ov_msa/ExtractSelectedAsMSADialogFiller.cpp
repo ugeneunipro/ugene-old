@@ -20,13 +20,13 @@
  */
 
 #include "ExtractSelectedAsMSADialogFiller.h"
-#include "api/GTComboBox.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTCheckBox.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTCheckBox.h>
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 
 
 #if (QT_VERSION < 0x050000) //Qt 5

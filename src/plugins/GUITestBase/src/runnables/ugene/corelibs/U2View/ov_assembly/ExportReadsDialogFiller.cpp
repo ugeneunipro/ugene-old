@@ -33,10 +33,10 @@
 #include <QtWidgets/QCheckBox>
 #endif
 
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

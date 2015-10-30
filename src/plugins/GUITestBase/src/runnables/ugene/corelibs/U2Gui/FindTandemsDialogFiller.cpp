@@ -20,9 +20,9 @@
  */
 
 #include "FindTandemsDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTTabWidget.h"
-#include "api/GTLineEdit.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTLineEdit.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

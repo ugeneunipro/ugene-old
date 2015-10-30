@@ -27,9 +27,9 @@
 
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTToolbar.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTToolbar.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"

@@ -27,14 +27,14 @@
 #include <QPushButton>
 
 #include "AlignShortReadsDialogFiller.h"
-#include "api/GTCheckBox.h"
-#include "api/GTComboBox.h"
-#include "api/GTDoubleSpinBox.h"
-#include "api/GTGroupBox.h"
-#include "api/GTLineEdit.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTDoubleSpinBox.h>
+#include <primitives/GTGroupBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2 {
 

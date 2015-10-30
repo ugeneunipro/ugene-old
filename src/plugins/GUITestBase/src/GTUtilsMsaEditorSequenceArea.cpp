@@ -29,13 +29,13 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "system/GTClipboard.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include "api/GTMSAEditorStatusWidget.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 

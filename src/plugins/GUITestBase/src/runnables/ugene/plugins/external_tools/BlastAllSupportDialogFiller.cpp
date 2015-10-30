@@ -30,9 +30,9 @@
 
 #include <U2Test/GUITest.h>
 
-#include "api/GTComboBox.h"
+#include <primitives/GTComboBox.h>
 #include "api/GTFileDialog.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 #include "GTUtilsTaskTreeView.h"
 

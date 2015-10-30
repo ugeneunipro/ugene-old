@@ -247,39 +247,39 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTSequenceReadingModeDialog.h \
             src/api/GTSequenceReadingModeDialogUtils.h \
 #   Qt primitives
-            src/api/GTAction.h \
-            src/api/GTCheckBox.h \
+#            src/primitives/GTAction.h \
+#            src/api/GTCheckBox.h \
 #            src/system/GTClipboard.h \
-            src/api/GTComboBox.h \
-            src/api/GTDoubleSpinBox.h \
+#            src/primitives/GTComboBox.h \
+#            src/api/GTDoubleSpinBox.h \
 #            src/system/GTFile.h \
             src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
             src/api/GTGraphicsItem.h \
-            src/api/GTGroupBox.h \
+#            src/api/GTGroupBox.h \
 #            src/drivers/GTKeyboardDriver.h \
 #            src/api/GTKeyboardUtils.h \
-            src/api/GTLineEdit.h \
-            src/api/GTListWidget.h \
+#            src/primitives/GTLineEdit.h \
+#            src/api/GTListWidget.h \
 #            src/api/GTMesnu.h \
 #            src/api/GTMenuBar.h \
 #            src/api/GTMouse.h \
 #            src/drivers/GTMouseDriver.h \
-            src/api/GTPlainTextEdit.h \
-            src/api/GTRadioButton.h \
-            src/api/GTScrollBar.h \
-            src/api/GTSlider.h \
+#            src/api/GTPlainTextEdit.h \
+#            src/api/GTRadioButton.h \
+#            src/api/GTScrollBar.h \
+#            src/api/GTSlider.h \
 #            src/primitives/GTSpinBox.h \
-            src/api/GTSystem.h \
-            src/api/GTTabBar.h \
-            src/api/GTTabWidget.h \
-            src/api/GTTableView.h  \
-            src/api/GTTextEdit.h \
+            src/api/GTSystem.h #\
+#            src/api/GTTabBar.h \
+#            src/api/GTTabWidget.h \
+#            src/api/GTTableView.h  \
+#            src/api/GTTextEdit.h \
 #            src/api/GTThread.h \
-            src/api/GTToolbar.h \
-            src/api/GTTreeView.h \
-            src/api/GTTreeWidget.h \
-            src/api/GTWebView.h #\
+#            src/api/GTToolbar.h \
+#            src/api/GTTreeView.h \
+#            src/api/GTTreeWidget.h \
+#            src/api/GTWebView.h #\
 #            src/primitives/GTWidget.h \
 #            src/api/private/GTMenuPrivate.h
 
@@ -529,23 +529,23 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \
 #   Qt primitives
-            src/api/GTAction.cpp \
-            src/api/GTCheckBox.cpp \
+#            src/api/GTAction.cpp \
+#            src/api/GTCheckBox.cpp \
 #            src/api/GTClipboard.cpp \
-            src/api/GTComboBox.cpp \
-            src/api/GTDoubleSpinBox.cpp \
+#            src/api/GTComboBox.cpp \
+#            src/api/GTDoubleSpinBox.cpp \
 #            src/api/GTFile.cpp \
             src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
             src/api/GTGraphicsItem.cpp \
-            src/api/GTGroupBox.cpp \
+#            src/api/GTGroupBox.cpp \
 #            src/api/GTKeyboardDriver.cpp \
 #            src/api/GTKeyboardDriverLinux.cpp \
 #            src/api/GTKeyboardDriverMac.cpp \
 #            src/api/GTKeyboardDriverWindows.cpp \
 #            src/api/GTKeyboardUtils.cpp \
-            src/api/GTLineEdit.cpp \
-            src/api/GTListWidget.cpp \
+#            src/api/GTLineEdit.cpp \
+#            src/api/GTListWidget.cpp \
 #            src/api/GTMenu.cpp \
 #            src/api/GTMenuBar.cpp \
 #            src/api/GTMouse.cpp \
@@ -553,21 +553,21 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTMouseDriverLinux.cpp \
 #            src/api/GTMouseDriverMac.cpp \
 #            src/api/GTMouseDriverWindows.cpp \
-            src/api/GTPlainTextEdit.cpp \
-            src/api/GTRadioButton.cpp \
-            src/api/GTScrollBar.cpp \
-            src/api/GTSlider.cpp \
+#            src/api/GTPlainTextEdit.cpp \
+#            src/api/GTRadioButton.cpp \
+#            src/api/GTScrollBar.cpp \
+#            src/api/GTSlider.cpp \
 #            src/api/GTSpinBox.cpp \
-            src/api/GTSystem.cpp \
-            src/api/GTTabBar.cpp \
-            src/api/GTTabWidget.cpp \
-            src/api/GTTableView.cpp \
-            src/api/GTTextEdit.cpp \
+            src/api/GTSystem.cpp #\
+#            src/api/GTTabBar.cpp \
+#            src/api/GTTabWidget.cpp \
+#            src/api/GTTableView.cpp \
+#            src/api/GTTextEdit.cpp \
 #            src/api/GTThread.cpp \
-            src/api/GTToolbar.cpp \
-            src/api/GTTreeView.cpp \
-            src/api/GTTreeWidget.cpp \
-            src/api/GTWebView.cpp #\
+#            src/api/GTToolbar.cpp \
+#            src/api/GTTreeView.cpp \
+#            src/api/GTTreeWidget.cpp \
+#            src/api/GTWebView.cpp #\
 #            src/api/GTWidget.cpp \
 #            src/api/private/GTMenuPrivate.cpp
 

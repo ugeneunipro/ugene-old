@@ -21,15 +21,15 @@
 
 #include "GTTestsNiaidPipelines.h"
 
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
 #include "GTGlobals.h"
-#include "api/GTTreeWidget.h"
-#include "api/GTAction.h"
+#include <primitives/GTTreeWidget.h>
+#include "primitives/GTAction.h"
 #include "system/GTFile.h"
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"

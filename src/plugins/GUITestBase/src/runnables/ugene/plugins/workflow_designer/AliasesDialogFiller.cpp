@@ -30,10 +30,10 @@
 #include <QtWidgets/QTableWidget>
 #endif
 
-#include "primitives/GTWidget.h"
-#include "api/GTTableView.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTTableView.h>
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 
 namespace U2{
 using namespace HI;

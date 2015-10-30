@@ -1,6 +1,6 @@
 #include "GTUtilsCircularView.h"
 
-#include <api/GTAction.h>
+#include <primitives/GTAction.h>
 #include <GTGlobals.h>
 #include <primitives/GTWidget.h>
 

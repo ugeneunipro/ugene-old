@@ -25,10 +25,10 @@
 #include <QTextEdit>
 
 #include "CreateElementWithScriptDialogFiller.h"
-#include "api/GTLineEdit.h"
-#include "api/GTTextEdit.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTTextEdit.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2{
 

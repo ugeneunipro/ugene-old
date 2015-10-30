@@ -21,7 +21,7 @@
 
 #include "GTTestsProjectRelations.h"
 #include "GTGlobals.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTMouseDriver.h>
 #include "GTUtilsProject.h"
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"

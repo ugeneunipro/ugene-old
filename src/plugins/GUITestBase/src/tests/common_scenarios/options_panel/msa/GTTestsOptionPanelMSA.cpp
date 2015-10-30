@@ -30,20 +30,20 @@
 
 #include "GTTestsOptionPanelMSA.h"
 
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "api/GTBaseCompleter.h"
-#include "api/GTComboBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTDoubleSpinBox.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTDoubleSpinBox.h>
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "api/GTSlider.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSlider.h>
+#include <primitives/GTWidget.h>
 
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/qt/ColorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"

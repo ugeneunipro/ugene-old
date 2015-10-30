@@ -22,12 +22,12 @@
 #include <QTreeWidget>
 
 #include "GTTestsAnnotations.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "utils/GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -35,7 +35,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "primitives/PopupChooser.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"

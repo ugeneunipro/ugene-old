@@ -20,9 +20,9 @@
  */
 
 #include "primitives/GTMenu.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
 #include <U2Core/U2IdTypes.h>

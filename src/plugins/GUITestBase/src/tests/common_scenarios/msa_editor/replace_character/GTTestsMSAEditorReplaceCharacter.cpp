@@ -26,8 +26,8 @@
 #include <QTableWidget>
 
 #include "GTTestsMSAEditorReplaceCharacter.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"
 #include "GTGlobals.h"

@@ -20,10 +20,10 @@
  */
 
 #include "ExportMSA2MSADialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "api/GTComboBox.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTComboBox.h>
 
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5

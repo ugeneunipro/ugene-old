@@ -22,9 +22,9 @@
 #include <QApplication>
 #include <QGroupBox>
 
-#include "api/GTDoubleSpinBox.h"
-#include "primitives/GTSpinBox.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTDoubleSpinBox.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
 #include "runnables/qt/ColorDialogFiller.h"
 

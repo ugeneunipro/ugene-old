@@ -7,7 +7,7 @@
 
 
 namespace U2{
-
+using namespace HI;
 class ADVSingleSequenceWidget;
 
 class GTUtilsCv

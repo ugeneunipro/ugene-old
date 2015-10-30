@@ -23,10 +23,10 @@
 #include "GTUtilsQueryDesigner.h"
 #include "api/GTGraphicsItem.h"
 #include "primitives/GTMenu.h"
-#include "primitives/GTWidget.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTWidget.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsMdi.h"
 
 #include <U2View/MSAEditor.h>

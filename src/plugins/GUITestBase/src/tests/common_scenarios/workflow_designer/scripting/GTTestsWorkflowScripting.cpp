@@ -26,20 +26,20 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
 
-#include "api/GTAction.h"
+#include "primitives/GTAction.h"
 #include "system/GTFile.h"
 #include "GTGlobals.h"
 #include "api/GTFileDialog.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTTableView.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"

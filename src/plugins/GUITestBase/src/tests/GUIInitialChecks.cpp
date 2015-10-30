@@ -42,13 +42,13 @@
 #include "system/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
+#include <primitives/GTWidget.h>
 #include "runnables/qt/EscapeClicker.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 namespace U2 {

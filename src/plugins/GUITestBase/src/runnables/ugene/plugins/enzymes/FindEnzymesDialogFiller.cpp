@@ -29,8 +29,8 @@
 #endif
 
 #include "FindEnzymesDialogFiller.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

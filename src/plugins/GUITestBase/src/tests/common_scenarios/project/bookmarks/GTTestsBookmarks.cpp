@@ -21,8 +21,8 @@
 
 #include "GTTestsBookmarks.h"
 #include "GTGlobals.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "GTUtilsProject.h"
@@ -30,13 +30,13 @@
 #include "GTUtilsLog.h"
 #include "utils/GTUtilsApp.h"
 #include "utils/GTUtilsToolTip.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include "GTUtilsMdi.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
-#include "api/GTTreeWidget.h"
+#include <primitives/GTTreeWidget.h>
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>

@@ -22,8 +22,8 @@
 #include "utils/GTUtilsDialog.h"
 #include "GTTestsSAM.h"
 #include "primitives/GTMenu.h"
-#include "api/GTAction.h"
-#include "primitives/GTWidget.h"
+#include "primitives/GTAction.h"
+#include <primitives/GTWidget.h>
 #include "GTGlobals.h"
 #include "GTUtilsLog.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"

@@ -21,9 +21,9 @@
 
 #include <U2Core/global.h>
 #include "GTUtilsTaskTreeView.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
-#include "primitives/GTWidget.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
 
 #include <U2Core/Task.h>

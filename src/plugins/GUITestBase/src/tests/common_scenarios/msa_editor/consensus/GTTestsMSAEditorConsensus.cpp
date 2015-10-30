@@ -19,16 +19,16 @@
  * MA 02110-1301, USA.
  */
 #include "GTTestsMSAEditorConsensus.h"
-#include "drivers/GTMouseDriver.h"
-#include "drivers/GTKeyboardDriver.h"
+#include <drivers/GTMouseDriver.h>
+#include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "api/GTTreeWidget.h"
-#include "primitives/GTSpinBox.h"
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTSpinBox.h>
 #include "GTGlobals.h"
-#include "api/GTComboBox.h"
+#include <primitives/GTComboBox.h>
 #include "utils/GTUtilsApp.h"
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"

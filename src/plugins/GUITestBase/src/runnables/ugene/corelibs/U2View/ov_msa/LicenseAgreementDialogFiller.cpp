@@ -24,7 +24,7 @@
 
 #include "LicenseAgreementDialogFiller.h"
 #include "utils/GTThread.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

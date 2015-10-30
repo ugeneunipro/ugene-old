@@ -20,7 +20,7 @@
  */
 
 #include "GTMSAEditorStatusWidget.h"
-#include "primitives/GTWidget.h"
+#include <primitives/GTWidget.h>
 
 namespace U2 {
 

@@ -24,10 +24,10 @@
 #include <QPushButton>
 
 #include "FindQualifierDialogFiller.h"
-#include "api/GTLineEdit.h"
-#include "api/GTRadioButton.h"
-#include "primitives/GTWidget.h"
-#include "base_dialogs/MessageBoxFiller.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTWidget.h>
+#include <base_dialogs/MessageBoxFiller.h>
 
 namespace U2 {
 

@@ -28,8 +28,8 @@
 
 #include "api/GTFileDialog.h"
 #include "primitives/GTMenu.h"
-#include "drivers/GTKeyboardDriver.h"
-#include "api/GTWebView.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWebView.h>
 
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "primitives/PopupChooser.h"

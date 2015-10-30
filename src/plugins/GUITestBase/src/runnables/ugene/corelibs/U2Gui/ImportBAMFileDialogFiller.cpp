@@ -20,10 +20,10 @@
  */
 
 #include "ImportBAMFileDialogFiller.h"
-#include "primitives/GTWidget.h"
-#include "primitives/GTSpinBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTLineEdit.h>
 #include "api/GTFileDialog.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
