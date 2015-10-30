@@ -29,7 +29,7 @@
 #include <QtCore/QFlags>
 
 #include "utils/GTUtilsDialog.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2 {
 

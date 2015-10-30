@@ -32,8 +32,7 @@
 #endif
 #include <QWidget>
 #include <QSpinBox>
-namespace U2{
-using namespace HI;
+namespace HI{
 
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
 #define GT_METHOD_NAME "run"

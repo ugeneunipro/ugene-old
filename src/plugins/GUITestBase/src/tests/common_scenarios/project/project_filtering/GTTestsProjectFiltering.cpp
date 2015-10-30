@@ -22,13 +22,13 @@
 #include <QTreeView>
 
 #include <U2Core/U2IdTypes.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTLineEdit.h>
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
-#include "runnables/qt/DefaultDialogFiller.h"
+#include <base_dialogs/DefaultDialogFiller.h>
 #include "runnables/qt/EscapeClicker.h"
 #include "primitives/PopupChooser.h"
 #include "GTUtilsMdi.h"

@@ -24,7 +24,7 @@
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTLineEdit.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

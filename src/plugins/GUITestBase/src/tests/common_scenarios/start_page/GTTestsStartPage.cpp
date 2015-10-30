@@ -26,12 +26,12 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsStartPage.h"
 
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "primitives/GTMenu.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTWebView.h>
 
-#include "runnables/qt/DefaultDialogFiller.h"
+#include <base_dialogs/DefaultDialogFiller.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 

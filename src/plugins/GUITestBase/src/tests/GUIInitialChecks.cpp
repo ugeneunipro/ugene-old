@@ -40,7 +40,7 @@
 #include "GUIInitialChecks.h"
 #include "system/GTClipboard.h"
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "GTGlobals.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"

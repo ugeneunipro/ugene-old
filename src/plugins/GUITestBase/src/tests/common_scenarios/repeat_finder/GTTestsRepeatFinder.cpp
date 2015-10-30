@@ -27,7 +27,7 @@
 #endif
 
 #include "GTTestsRepeatFinder.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "primitives/GTMenu.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsAnnotationsTreeView.h"

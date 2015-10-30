@@ -23,7 +23,7 @@
 #include <drivers/GTMouseDriver.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTWidget.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTWidget.h>
 #include <primitives/GTPlainTextEdit.h>
 #include <primitives/GTLineEdit.h>

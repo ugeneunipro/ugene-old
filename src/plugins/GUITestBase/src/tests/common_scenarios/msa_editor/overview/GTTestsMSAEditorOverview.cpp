@@ -29,12 +29,12 @@
 #include "GTUtilsTaskTreeView.h"
 #include "primitives/GTAction.h"
 #include <primitives/GTComboBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 #include "primitives/PopupChooser.h"
 
 namespace U2 {

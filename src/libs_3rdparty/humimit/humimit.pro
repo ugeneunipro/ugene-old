@@ -3,10 +3,10 @@ include (humimit.pri)
 # Input
 HEADERS += \
             src/GTGlobals.h \
-#           src/base_dialogs/ColorDialogFiller.h \
-#           src/base_dialogs/DefaultDialogFiller.h \
-#           src/base_dialogs/FontDialogFiller.h \
-#           src/base_dialogs/GTFileDialog.h \
+           src/base_dialogs/ColorDialogFiller.h \
+           src/base_dialogs/DefaultDialogFiller.h \
+           src/base_dialogs/FontDialogFiller.h \
+           src/base_dialogs/GTFileDialog.h \
 #           src/base_dialogs/GTUtilsEscClicker.h \
            src/base_dialogs/MessageBoxFiller.h \
 #           src/core/global.h \
@@ -52,10 +52,10 @@ HEADERS += \
            src/utils/GTUtilsToolTip.h
 SOURCES += \
            src/GTGlobals.cpp \
-#           src/base_dialogs/ColorDialogFiller.cpp \
-#           src/base_dialogs/DefaultDialogFiller.cpp \
-#           src/base_dialogs/FontDialogFiller.cpp \
-#           src/base_dialogs/GTFileDialog.cpp \
+           src/base_dialogs/ColorDialogFiller.cpp \
+           src/base_dialogs/DefaultDialogFiller.cpp \
+           src/base_dialogs/FontDialogFiller.cpp \
+           src/base_dialogs/GTFileDialog.cpp \
 #           src/base_dialogs/GTUtilsEscClicker.cpp \
            src/base_dialogs/MessageBoxFiller.cpp \
 #           src/core/CustomScenario.cpp \

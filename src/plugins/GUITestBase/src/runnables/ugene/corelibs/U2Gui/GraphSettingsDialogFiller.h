@@ -26,6 +26,7 @@
 #include "utils/GTUtilsDialog.h"
 
 namespace U2 {
+using namespace HI;
 
 class GraphSettingsDialogFiller: public Filler
 {

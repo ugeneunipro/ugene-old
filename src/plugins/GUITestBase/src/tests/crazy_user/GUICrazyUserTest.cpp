@@ -23,7 +23,7 @@
 #include "GTRandomGUIActionFactory.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTWidget.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "GTRandomGUIActionFactory.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

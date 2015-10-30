@@ -29,7 +29,7 @@
 #include <U2View/ADVConstants.h>
 
 #include "GTUtilsProject.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
 #include <primitives/GTTreeWidget.h>

@@ -380,7 +380,7 @@ QString EventFilter::generateFillerHeader(){
     QString fillerName = dialog->objectName() + "Filler";
 
     result.append("#include \"GTUtilsDialog.h\"\n"
-              "#include \"api/GTFileDialog.h\"\n\n");
+              "#include \"base_dialogs/GTFileDialog.h\"\n\n");
     result.append(QString("namespace U2 {\n"
                   "\n"
                   "class %1 : public Filler {\n"

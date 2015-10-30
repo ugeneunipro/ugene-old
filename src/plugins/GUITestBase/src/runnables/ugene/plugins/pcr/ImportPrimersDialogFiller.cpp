@@ -28,7 +28,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "ImportPrimersDialogFiller.h"
 #include <primitives/GTComboBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTWidget.h>
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"

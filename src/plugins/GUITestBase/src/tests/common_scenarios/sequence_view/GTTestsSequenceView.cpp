@@ -29,7 +29,7 @@
 #include "primitives/GTAction.h"
 #include "primitives/GTMenu.h"
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "api/GTSequenceReadingModeDialog.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTRadioButton.h>
@@ -43,8 +43,8 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "utils/GTUtilsToolTip.h"
-#include "runnables/qt/ColorDialogFiller.h"
-#include "runnables/qt/DefaultDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
+#include <base_dialogs/DefaultDialogFiller.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h"

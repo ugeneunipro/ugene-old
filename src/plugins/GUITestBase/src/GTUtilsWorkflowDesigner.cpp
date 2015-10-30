@@ -42,7 +42,7 @@
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTDoubleSpinBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "api/GTGraphicsItem.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTLineEdit.h>

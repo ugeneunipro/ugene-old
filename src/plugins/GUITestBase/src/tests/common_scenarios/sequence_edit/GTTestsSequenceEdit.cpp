@@ -31,7 +31,7 @@
 #include "utils/GTKeyboardUtils.h"
 #include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTTreeWidget.h>
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"

@@ -36,7 +36,7 @@
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTDoubleSpinBox.h>
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTLineEdit.h>
 #include <drivers/GTMouseDriver.h>
@@ -45,7 +45,7 @@
 #include <primitives/GTWidget.h>
 
 #include <base_dialogs/MessageBoxFiller.h>
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsLog.h"

@@ -33,7 +33,7 @@
 #endif
 
 #include "ImportToDatabaseDialogFiller.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include <drivers/GTMouseDriver.h>

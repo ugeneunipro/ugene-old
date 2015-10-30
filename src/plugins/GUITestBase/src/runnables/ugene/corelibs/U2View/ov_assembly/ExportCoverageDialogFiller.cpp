@@ -30,7 +30,7 @@
 #include "ExportCoverageDialogFiller.h"
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTComboBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTWidget.h>

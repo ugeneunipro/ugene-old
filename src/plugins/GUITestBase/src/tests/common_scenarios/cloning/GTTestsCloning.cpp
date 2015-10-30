@@ -25,7 +25,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "utils/GTUtilsDialog.h"
 
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "primitives/GTMenu.h"
 #include <primitives/GTToolbar.h>
 #include <primitives/GTTreeWidget.h>

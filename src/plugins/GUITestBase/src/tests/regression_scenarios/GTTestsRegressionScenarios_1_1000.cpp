@@ -87,7 +87,7 @@
 #include "system/GTClipboard.h"
 #include <primitives/GTComboBox.h>
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "GTGlobals.h"
 #include <primitives/GTGroupBox.h>
 #include <drivers/GTKeyboardDriver.h>
@@ -108,7 +108,7 @@
 #include <primitives/GTToolbar.h>
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWidget.h>
-#include "runnables/qt/DefaultDialogFiller.h"
+#include <base_dialogs/DefaultDialogFiller.h>
 #include "runnables/qt/EscapeClicker.h"
 #include <base_dialogs/MessageBoxFiller.h>
 #include "primitives/PopupChooser.h"

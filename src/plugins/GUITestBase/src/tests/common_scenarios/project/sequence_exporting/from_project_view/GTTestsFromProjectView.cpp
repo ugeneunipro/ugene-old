@@ -27,7 +27,7 @@
 #include "primitives/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include <primitives/GTTreeWidget.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"

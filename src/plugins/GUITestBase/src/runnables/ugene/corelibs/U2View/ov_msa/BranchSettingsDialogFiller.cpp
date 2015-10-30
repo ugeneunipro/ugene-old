@@ -35,7 +35,7 @@
 
 #include <primitives/GTWidget.h>
 #include <primitives/GTSpinBox.h>
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 
 namespace U2{
 

@@ -1,6 +1,6 @@
 #include "BuildIndexDialogFiller.h"
 
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTWidget.h>
 #include <primitives/GTLineEdit.h>

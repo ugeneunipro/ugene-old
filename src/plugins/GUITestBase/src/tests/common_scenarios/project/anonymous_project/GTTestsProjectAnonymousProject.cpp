@@ -22,7 +22,7 @@
 #include "GTTestsProjectAnonymousProject.h"
 #include "GTGlobals.h"
 #include <drivers/GTMouseDriver.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "primitives/GTMenu.h"
 #include "GTUtilsProject.h"
 #include "utils/GTUtilsApp.h"

@@ -25,18 +25,17 @@
 #include "GTGlobals.h"
 #include "utils/GTUtilsDialog.h"
 
-namespace U2 {
-using namespace HI;
+namespace HI {
 
-class GTFileDialogUtils : public Filler {
+class HI_EXPORT GTFileDialogUtils : public Filler {
 friend class GTFileDialogUtils_list;
 public:
     enum Button {Open, Cancel, Save, Choose};
     enum ViewMode {List, Detail};
 
-    GTFileDialogUtils(U2OpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
-    GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Button b = Open);
-    GTFileDialogUtils(U2OpStatus &os, CustomScenario *customScenario);
+    GTFileDialogUtils(U2::U2OpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    GTFileDialogUtils(U2::U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Button b = Open);
+    GTFileDialogUtils(U2::U2OpStatus &os, U2::CustomScenario *customScenario);
     void openFileDialog();
     void commonScenario();
 
@@ -53,12 +52,12 @@ private:
     Button button;
     GTGlobals::UseMethod method;
 };
-class GTFileDialogUtils_list : public GTFileDialogUtils{
+class HI_EXPORT GTFileDialogUtils_list : public GTFileDialogUtils{
 public:
-    GTFileDialogUtils_list(U2OpStatus &os, const QString &folderPath, const QStringList &fileNames);
-    GTFileDialogUtils_list(U2OpStatus &os, const QStringList &filePaths);
+    GTFileDialogUtils_list(U2::U2OpStatus &os, const QString &folderPath, const QStringList &fileNames);
+    GTFileDialogUtils_list(U2::U2OpStatus &os, const QStringList &filePaths);
 
-    void setNameList(U2OpStatus &os, const QStringList &filePaths);
+    void setNameList(U2::U2OpStatus &os, const QStringList &filePaths);
     void commonScenario();
 
 private:
@@ -69,14 +68,14 @@ private:
     QStringList filePaths;
 };
 
-class GTFileDialog {
+class HI_EXPORT GTFileDialog {
 public:
     enum Button {Open, Cancel};
-    static void openFile(U2OpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
-    static void openFile(U2OpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
+    static void openFile(U2::U2OpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
+    static void openFile(U2::U2OpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
 
-    static void openFileList(U2OpStatus &, const QString &, const QStringList &);
-    static void openFileList(U2OpStatus &os, const QStringList &filePaths);
+    static void openFileList(U2::U2OpStatus &, const QString &, const QStringList &);
+    static void openFileList(U2::U2OpStatus &os, const QStringList &filePaths);
 };
 
 } // namespace

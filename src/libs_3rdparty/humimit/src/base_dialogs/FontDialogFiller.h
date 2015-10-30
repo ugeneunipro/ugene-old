@@ -19,24 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DEFAULT_DIALOG_FILLER_H_
-#define _U2_DEFAULT_DIALOG_FILLER_H_
+#ifndef _HI_GT_FONT_DIALOG_FILLER_H_
+#define _HI_GT_FONT_DIALOG_FILLER_H_
 
 #include "utils/GTUtilsDialog.h"
 
-namespace U2 {
-using namespace HI;
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
-class DefaultDialogFiller: public Filler
-{
-public:
-    DefaultDialogFiller(U2OpStatus &os, const QString &name = "", QDialogButtonBox::StandardButton _b =
-            QDialogButtonBox::Ok, CustomScenario *scenario = NULL);
-    void commonScenario();
-private:
-    QDialogButtonBox::StandardButton b;
-};
+namespace HI {
 
+class HI_EXPORT FontDialogFiller : public Filler {
+    public:
+        FontDialogFiller(U2::U2OpStatus &_os)
+            :Filler(_os, ""){}
+        virtual void run();
+    };
 }
-
-#endif // DEFAULTDIALOGFILLER_H
+#endif //_HI_GT_FONT_DIALOG_FILLER_H_

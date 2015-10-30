@@ -21,7 +21,7 @@
 
 #include <QApplication>
 
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTWidget.h>
 
 #include "CAP3SupportDialogFiller.h"

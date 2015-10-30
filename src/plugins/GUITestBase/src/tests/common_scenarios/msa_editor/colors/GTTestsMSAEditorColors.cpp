@@ -23,7 +23,7 @@
 #include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include <primitives/GTWidget.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "primitives/GTMenu.h"
 #include <primitives/GTTreeWidget.h>
 #include "GTGlobals.h"

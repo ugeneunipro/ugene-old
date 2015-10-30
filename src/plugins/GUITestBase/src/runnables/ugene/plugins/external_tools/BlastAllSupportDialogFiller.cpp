@@ -31,7 +31,7 @@
 #include <U2Test/GUITest.h>
 
 #include <primitives/GTComboBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTWidget.h>
 
 #include "GTUtilsTaskTreeView.h"

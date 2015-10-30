@@ -19,15 +19,23 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _HI_DEFAULT_DIALOG_FILLER_H_
+#define _HI_DEFAULT_DIALOG_FILLER_H_
 
-#include "DefaultDialogFiller.h"
-#include "U2Core/global.h"
+#include "utils/GTUtilsDialog.h"
 
-namespace U2 {
+namespace HI {
 
-DefaultDialogFiller::DefaultDialogFiller(U2OpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, CustomScenario *scenario):
-    Filler(os, name, scenario),b(_b) {}
-void DefaultDialogFiller::commonScenario(){
-    GTUtilsDialog::clickButtonBox(os, b);
+class HI_EXPORT DefaultDialogFiller: public Filler
+{
+public:
+    DefaultDialogFiller(U2::U2OpStatus &os, const QString &name = "", QDialogButtonBox::StandardButton _b =
+            QDialogButtonBox::Ok, U2::CustomScenario *scenario = NULL);
+    void commonScenario();
+private:
+    QDialogButtonBox::StandardButton b;
+};
+
 }
-}
+
+#endif // _HI_DEFAULT_DIALOG_FILLER_H_

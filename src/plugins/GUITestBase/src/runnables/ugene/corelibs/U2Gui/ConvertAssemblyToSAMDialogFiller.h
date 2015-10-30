@@ -23,9 +23,10 @@
 #define _U2_GT_CONVERT_ASSEMBLY_TO_SAM_DIALOG_FILLER_H
 
 #include "utils/GTUtilsDialog.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2 {
+using namespace HI;
 
     class ConvertAssemblyToSAMDialogFiller : public Filler {
     public:

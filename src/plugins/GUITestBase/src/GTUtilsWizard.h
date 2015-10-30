@@ -26,6 +26,7 @@
 #include "utils/GTUtilsDialog.h"
 //class QVariant;
 namespace U2 {
+using namespace HI;
 
 class GTUtilsWizard{
 public:

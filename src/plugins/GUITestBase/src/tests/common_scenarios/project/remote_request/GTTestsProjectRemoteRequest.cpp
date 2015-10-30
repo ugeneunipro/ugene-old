@@ -34,7 +34,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "utils/GTUtilsToolTip.h"
 #include "GTUtilsWorkflowDesigner.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "GTGlobals.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"

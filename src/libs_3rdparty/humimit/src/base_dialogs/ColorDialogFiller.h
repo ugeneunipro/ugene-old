@@ -19,24 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_FONT_DIALOG_FILLER_H_
-#define _U2_GT_FONT_DIALOG_FILLER_H_
+#ifndef COLORDIALOGFILLER_H
+#define COLORDIALOGFILLER_H
 
 #include "utils/GTUtilsDialog.h"
+namespace HI{
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+class HI_EXPORT ColorDialogFiller : public Filler
+{
+public:
+    ColorDialogFiller(U2::U2OpStatus &os,int _r, int _g, int _b, bool _setWithQt = false) : Filler(os, ""),
+        r(_r),g(_g),b(_b),setWithQt(_setWithQt){}
+    virtual void run();
+private:
+    int r,g,b;
+    bool setWithQt;
+};
 
-namespace U2 {
-using namespace HI;
-    class FontDialogFiller : public Filler {
-    public:
-        FontDialogFiller(U2OpStatus &_os)
-            :Filler(_os, ""){}
-        virtual void run();
-    };
 }
-#endif //_U2_GT_FONT_DIALOG_FILLER_H_
+#endif // COLORDIALOGFILLER_H

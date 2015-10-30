@@ -40,7 +40,7 @@
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
-#include <api/GTFileDialog.h>
+#include <base_dialogs/GTFileDialog.h>
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"

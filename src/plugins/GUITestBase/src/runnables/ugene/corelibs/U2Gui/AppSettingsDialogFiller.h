@@ -21,9 +21,10 @@
 #ifndef APPSETTINGSDIALOGFILLER_H
 #define APPSETTINGSDIALOGFILLER_H
 
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2{
+using namespace HI;
 
 class AppSettingsDialogFiller: public Filler
 {

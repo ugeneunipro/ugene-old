@@ -7,10 +7,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/crazy_user/GUICrazyUserTest.h \
 #   Runnables
 #   Runnables / Qt
-            src/runnables/qt/ColorDialogFiller.h \
-            src/runnables/qt/DefaultDialogFiller.h \
+#            src/runnables/qt/ColorDialogFiller.h \
+#            src/runnables/qt/DefaultDialogFiller.h \
             src/runnables/qt/EscapeClicker.h \
-            src/runnables/qt/FontDialogFiller.h \
+#            src/runnables/qt/FontDialogFiller.h \
 #            src/runnables/qt/MessageBoxFiller.h \
 #            src/runnables/qt/PopupChooser.h \
 #   Runnables / UGENE
@@ -253,7 +253,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #            src/primitives/GTComboBox.h \
 #            src/api/GTDoubleSpinBox.h \
 #            src/system/GTFile.h \
-            src/api/GTFileDialog.h \
+#            src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
             src/api/GTGraphicsItem.h \
 #            src/api/GTGroupBox.h \
@@ -289,10 +289,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
 #   Runnables
 #   Runnables / Qt
-            src/runnables/qt/ColorDialogFiller.cpp \
-            src/runnables/qt/DefaultDialogFiller.cpp \
+#            src/runnables/qt/ColorDialogFiller.cpp \
+#            src/runnables/qt/DefaultDialogFiller.cpp \
             src/runnables/qt/EscapeClicker.cpp \
-            src/runnables/qt/FontDialogFiller.cpp \
+#            src/runnables/qt/FontDialogFiller.cpp \
 #            src/runnables/qt/MessageBoxFiller.cpp \
 #            src/runnables/qt/PopupChooser.cpp \
 #   Runnables / UGENE
@@ -535,7 +535,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTComboBox.cpp \
 #            src/api/GTDoubleSpinBox.cpp \
 #            src/api/GTFile.cpp \
-            src/api/GTFileDialog.cpp \
+#            src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
             src/api/GTGraphicsItem.cpp \
 #            src/api/GTGroupBox.cpp \

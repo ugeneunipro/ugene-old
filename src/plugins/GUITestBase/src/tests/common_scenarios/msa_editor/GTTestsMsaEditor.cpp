@@ -27,7 +27,7 @@
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include "system/GTClipboard.h"
 #include <primitives/GTToolbar.h>
 #include <primitives/GTLineEdit.h>
@@ -43,11 +43,11 @@
 #include "GTUtilsProject.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include "runnables/qt/DefaultDialogFiller.h"
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/DefaultDialogFiller.h>
+#include <base_dialogs/ColorDialogFiller.h>
 #include "primitives/PopupChooser.h"
 #include <base_dialogs/MessageBoxFiller.h>
-#include "runnables/qt/FontDialogFiller.h"
+#include <base_dialogs/FontDialogFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"

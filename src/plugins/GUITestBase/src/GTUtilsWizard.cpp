@@ -28,7 +28,7 @@
 
 #include <primitives/GTComboBox.h>
 #include <primitives/GTDoubleSpinBox.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTTabWidget.h>

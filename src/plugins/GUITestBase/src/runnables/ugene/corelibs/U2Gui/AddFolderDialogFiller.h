@@ -23,9 +23,10 @@
 #define _ADD_FOLDER_DIALOG_FILLER_H_
 
 #include "utils/GTUtilsDialog.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2 {
+using namespace HI;
 
 class AddFolderDialogFiller : public Filler {
 public:

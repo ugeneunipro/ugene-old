@@ -32,8 +32,7 @@
 #endif
 
 
-namespace U2 {
-using namespace HI;
+namespace HI {
 
 #define GT_CLASS_NAME "GTUtilsDialog::FontDialogFiller"
 #define GT_METHOD_NAME "run"

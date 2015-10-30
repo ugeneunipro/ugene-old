@@ -26,7 +26,7 @@
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTWidget.h>
 
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 
 #include "GraphSettingsDialogFiller.h"
 

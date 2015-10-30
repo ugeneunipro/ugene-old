@@ -19,22 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef COLORDIALOGFILLER_H
-#define COLORDIALOGFILLER_H
 
-#include "utils/GTUtilsDialog.h"
-namespace U2{
-using namespace HI;
-class ColorDialogFiller : public Filler
-{
-public:
-    ColorDialogFiller(U2OpStatus &os,int _r, int _g, int _b, bool _setWithQt = false) : Filler(os, ""),
-        r(_r),g(_g),b(_b),setWithQt(_setWithQt){}
-    virtual void run();
-private:
-    int r,g,b;
-    bool setWithQt;
-};
+#include "DefaultDialogFiller.h"
 
+namespace HI {
+
+DefaultDialogFiller::DefaultDialogFiller(U2::U2OpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, U2::CustomScenario *scenario):
+    Filler(os, name, scenario),b(_b) {}
+void DefaultDialogFiller::commonScenario(){
+    GTUtilsDialog::clickButtonBox(os, b);
 }
-#endif // COLORDIALOGFILLER_H
+}

@@ -20,7 +20,7 @@
  */
 #include "AppSettingsDialogFiller.h"
 
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 #include <primitives/GTWidget.h>
 #include <primitives/GTTreeWidget.h>
 #include <drivers/GTMouseDriver.h>

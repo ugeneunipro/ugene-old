@@ -31,7 +31,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
 
-#include "runnables/qt/DefaultDialogFiller.h"
+#include <base_dialogs/DefaultDialogFiller.h>
 #include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"

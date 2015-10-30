@@ -36,7 +36,7 @@
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTDoubleSpinBox.h>
 #include "system/GTFile.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTRadioButton.h>
@@ -44,7 +44,7 @@
 #include <primitives/GTWidget.h>
 
 #include <base_dialogs/MessageBoxFiller.h>
-#include "runnables/qt/ColorDialogFiller.h"
+#include <base_dialogs/ColorDialogFiller.h>
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 

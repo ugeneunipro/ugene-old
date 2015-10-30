@@ -29,7 +29,7 @@
 #include "primitives/GTAction.h"
 #include "system/GTFile.h"
 #include "GTGlobals.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
 #include "primitives/GTMenu.h"

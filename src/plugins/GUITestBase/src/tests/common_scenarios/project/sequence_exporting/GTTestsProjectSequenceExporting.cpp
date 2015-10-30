@@ -25,7 +25,7 @@
 
 #include "GTTestsProjectSequenceExporting.h"
 #include "GTGlobals.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTComboBox.h>
 #include "primitives/GTMenu.h"

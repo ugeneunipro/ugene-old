@@ -28,13 +28,15 @@
 #include <QTreeView>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/Task.h>
 
 #include <primitives/GTComboBox.h>
 #include "GTFileDialog.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include <drivers/GTMouseDriver.h>
-#include "GTUtilsTaskTreeView.h"
+//#include "GTUtilsTaskTreeView.h"
 #include <primitives/GTWidget.h>
 #include "GTGlobals.h"
 #include <primitives/GTLineEdit.h>
@@ -42,11 +44,10 @@
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"
 
-namespace U2 {
-using namespace HI;
+namespace HI {
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
-GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
+GTFileDialogUtils::GTFileDialogUtils(U2::U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      Button _button, GTGlobals::UseMethod _method) :
     Filler(_os, "QFileDialog"),
     fileName(_fileName),
@@ -59,7 +60,7 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     }
 }
 
-GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b) :
+GTFileDialogUtils::GTFileDialogUtils(U2::U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b) :
     Filler(os, "QFileDialog"),
     button(b),
     method(method)
@@ -73,7 +74,7 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GT
     }
 }
 
-GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, CustomScenario *customScenario)
+GTFileDialogUtils::GTFileDialogUtils(U2::U2OpStatus &os, U2::CustomScenario *customScenario)
     : Filler(os, "QFileDialog", customScenario),
       fileDialog(NULL),
       button(Open),
@@ -124,7 +125,7 @@ void GTFileDialogUtils::commonScenario()
 }
 #undef GT_METHOD_NAME
 
-GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &_os, const QString &_path, const QStringList &fileNames) :
+GTFileDialogUtils_list::GTFileDialogUtils_list(U2::U2OpStatus &_os, const QString &_path, const QStringList &fileNames) :
     GTFileDialogUtils(_os,_path, "", Open, GTGlobals::UseMouse),
     fileNamesList(fileNames)
 {
@@ -137,7 +138,7 @@ GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &_os, const QString &_
     }
 }
 
-GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &os, const QStringList &filePaths) :
+GTFileDialogUtils_list::GTFileDialogUtils_list(U2::U2OpStatus &os, const QStringList &filePaths) :
     GTFileDialogUtils(os, "", "", Open, GTGlobals::UseMouse),
     filePaths(filePaths)
 {
@@ -157,7 +158,7 @@ void GTFileDialogUtils_list::commonScenario() {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setNameList"
-void GTFileDialogUtils_list::setNameList(U2OpStatus &os, const QStringList &nameList) {
+void GTFileDialogUtils_list::setNameList(U2::U2OpStatus &os, const QStringList &nameList) {
     QString str;
     foreach (QString name, nameList){
         if (QFileInfo(name).isRelative()) {
@@ -330,7 +331,21 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 }
 #undef GT_METHOD_NAME
 
-void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
+namespace {
+void waitTaskFinished(U2::U2OpStatus &os) {
+    GTGlobals::sleep(500);
+    U2::TaskScheduler* scheduller = U2::AppContext::getTaskScheduler();
+    int i = 0;
+    while(!scheduller->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep(1000);
+       i++;
+    }
+}
+
+
+}
+
+void GTFileDialog::openFile(U2::U2OpStatus &os, const QString &path, const QString &fileName,
                             Button button, GTGlobals::UseMethod m, bool waitForFinished)
 {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, (GTFileDialogUtils::Button)button, m);
@@ -338,14 +353,14 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
 
     ob->openFileDialog();
     if(waitForFinished){
-        GTUtilsTaskTreeView::waitTaskFinished(os);
+        waitTaskFinished(os);
     }else{
         GTGlobals::sleep(1000);
     }
 }
 
 #define GT_METHOD_NAME "openFile"
-void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m, bool wainForFinished){
+void GTFileDialog::openFile(U2::U2OpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m, bool wainForFinished){
     int num = filePath.lastIndexOf('/');
     if (num == -1){
         num = filePath.lastIndexOf('\\');
@@ -358,7 +373,7 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button butt
 }
 #undef GT_METHOD_NAME
 
-void GTFileDialog::openFileList(U2OpStatus &os, const QString &path, const QStringList &fileNameList)
+void GTFileDialog::openFileList(U2::U2OpStatus &os, const QString &path, const QStringList &fileNameList)
 {
     GTFileDialogUtils_list *ob = new GTFileDialogUtils_list(os, path, fileNameList);
     GTUtilsDialog::waitForDialog(os, ob);
@@ -368,7 +383,7 @@ void GTFileDialog::openFileList(U2OpStatus &os, const QString &path, const QStri
     GTGlobals::sleep();
 }
 
-void GTFileDialog::openFileList(U2OpStatus &os, const QStringList &filePaths) {
+void GTFileDialog::openFileList(U2::U2OpStatus &os, const QStringList &filePaths) {
     GTFileDialogUtils_list *openFileDialogFiller = new GTFileDialogUtils_list(os, filePaths);
     GTUtilsDialog::waitForDialog(os, openFileDialogFiller);
     openFileDialogFiller->openFileDialog();

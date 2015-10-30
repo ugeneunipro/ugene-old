@@ -23,9 +23,10 @@
 #define _U2_GT_ALIGN_SHORT_READS_DIALOG_FILLER_H_
 
 #include "utils/GTUtilsDialog.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2 {
+using namespace HI;
 
 // Copy file with reference sequence into sandbox: test can create an index for it in the same dir.
 // Also, result file will be created in the same dir.

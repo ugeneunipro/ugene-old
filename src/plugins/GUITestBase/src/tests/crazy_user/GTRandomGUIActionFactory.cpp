@@ -21,7 +21,7 @@
 
 #include "GTRandomGUIActionFactory.h"
 #include <primitives/GTWidget.h>
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 #include <U2Test/GUITest.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>

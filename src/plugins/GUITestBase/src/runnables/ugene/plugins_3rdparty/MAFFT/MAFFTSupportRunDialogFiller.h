@@ -23,7 +23,7 @@
 #define _U2_GUI_MAFFT_SUPPORT_RUN_DIALOG_FILLER_H_
  
 #include "utils/GTUtilsDialog.h"
-#include "api/GTFileDialog.h"
+#include <base_dialogs/GTFileDialog.h>
 
 namespace U2 {
 using namespace HI;
