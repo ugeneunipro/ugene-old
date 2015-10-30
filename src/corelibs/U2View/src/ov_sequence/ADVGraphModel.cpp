@@ -799,18 +799,18 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
         return;
     }
     CalculatePointsTask *calculationTask = NULL;
+    bool useIntervals = nSteps > numPoints;
     if (winStepNotChanged) {
         bool isCacheValid = vr.length == d->cachedLen && vr.startPos == d->cachedFrom;
         bool isWindowCorrect = alignedLast != alignedFirst && alignedFirst + wdata.window <= seqLen;
         if ((!isCacheValid || d->cachedData.firstPoints.size() != numPoints) && isWindowCorrect) {
             U2OpStatusImpl os;
-            GraphPointsUpdater graphUpdater(d, numPoints, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr, os);
+            GraphPointsUpdater graphUpdater(d, numPoints, alignedFirst, alignedLast, !useIntervals, wdata, view->getSequenceObject(), vr, os);
             graphUpdater.updateGraphData();
         }
 
         points = d->cachedData;
-    } else if (nSteps > numPoints) {
-        points.useIntervals = true;
+    } else if (useIntervals) {
         int stepsPerPoint = nSteps / points.firstPoints.size();
         int basesPerPoint = stepsPerPoint * step;
 
@@ -824,7 +824,6 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
             calculationTask = new CalculatePointsTask(d, numPoints, alignedFirst, alignedLast, false, wdata, view->getSequenceObject(), vr);
         }
     } else {
-        points.useIntervals = false;
         if(vr.startPos + win2 <= seqLen){
             calculationTask = new CalculatePointsTask(d, numPoints, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr);
         }
