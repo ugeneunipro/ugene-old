@@ -312,12 +312,14 @@ QString PrimerGrouperTask::createRow(const QString& groupName, const QString& fo
 }
 
 QString PrimerGrouperTask::createCell(const QString& value, bool center, const QString &attrs) {
-    QString align = center ? "center" : "left";
-    return QString("<td align=\"%1\" %2>%3</td>").arg(align).arg(attrs).arg(value);
+    const QString align = center ? "center" : "left";
+    const QString attrsString = attrs.isEmpty() ? "" : " " + attrs;
+    return QString("<td align=\"%1\"%2>%3</td>").arg(align).arg(attrsString).arg(value);
 }
 
 QString PrimerGrouperTask::createColumn(const QString& name, const QString &attrs) {
-    return QString("<th %1 /><p align=\"left\"><strong>%2</strong></p></th>").arg(attrs).arg(name);
+    const QString attrsString = attrs.isEmpty() ? "" : " " + attrs;
+    return QString("<th%1/><p align=\"left\"><strong>%2</strong></p></th>").arg(attrsString).arg(name);
 }
 
 } //U2 namespace
