@@ -56,9 +56,6 @@
       <string>Export to file</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
@@ -120,7 +117,7 @@
           <property name="minimumSize">
            <size>
             <width>70</width>
-            <height>0</height>
+            <height>29</height>
            </size>
           </property>
           <property name="text">
