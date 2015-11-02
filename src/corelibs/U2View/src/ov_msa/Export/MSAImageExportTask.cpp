@@ -30,9 +30,6 @@
 #include "ui_MSAExportSettings.h"
 #include "../MSASelectSubalignmentDialog.h"
 
-//400000 characters convert to 200 mb file in SVG format
-#define MAX_SVG_CHARACTERS 400000
-
 namespace U2 {
 
 MSAImageExportTask::MSAImageExportTask(MSAEditorUI *ui,
@@ -278,11 +275,22 @@ void MSAImageExportController::checkRegionToExport() {
     emit si_showMessage( disableMessage );
 }
 
+namespace {
+//400000 characters convert to 200 mb file in SVG format
+const qint64 MaxSvgCharacters = 400000;
+//SVG renderer can crash on regions large than 40000000
+const qint64 MaxSvgImageSize = 40000000;
+}
+
 bool MSAImageExportController::fitsInLimits() const {
     MSAEditor* editor = ui->getEditor();
     SAFE_POINT(editor != NULL, L10N::nullPointerError("MSAEditor"), false);
-    if ((msaSettings.exportAll ? editor->getAlignmentLen() : msaSettings.region.length) * editor->getColumnWidth() > IMAGE_SIZE_LIMIT
-            || (msaSettings.exportAll ? editor->getNumSequences() : msaSettings.seqIdx.size()) * editor->getRowHeight() > IMAGE_SIZE_LIMIT) {
+    qint64 imageWidth = (msaSettings.exportAll ? editor->getAlignmentLen() : msaSettings.region.length) * editor->getColumnWidth();
+    qint64 imageHeight = (msaSettings.exportAll ? editor->getNumSequences() : msaSettings.seqIdx.size()) * editor->getRowHeight();
+    if (imageWidth > IMAGE_SIZE_LIMIT || imageHeight > IMAGE_SIZE_LIMIT) {
+        return false;
+    } 
+    if (format.contains("svg", Qt::CaseInsensitive) && imageWidth * imageHeight > MaxSvgImageSize) {
         return false;
     }
     return true;
@@ -292,7 +300,7 @@ bool MSAImageExportController::canExportToSvg() const {
     MSAEditor* editor = ui->getEditor();
     SAFE_POINT(editor != NULL, L10N::nullPointerError("MSAEditor"), false);
     int charactersNumber = msaSettings.exportAll ? (editor->getNumSequences() * editor->getAlignmentLen()) : (msaSettings.region.length * msaSettings.seqIdx.size());
-    return charactersNumber < MAX_SVG_CHARACTERS;
+    return charactersNumber < MaxSvgCharacters;
 }
 
 } // namespace
