@@ -1824,7 +1824,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
     const QModelIndex sequenceDocIndex = GTUtilsProjectTreeView::findIndex(os, "illumina.fa");
     const QModelIndex sequenceObjIndex = sequenceDocIndex.child(0, 0);
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsNotifications::waitForNotification(os, true, "It seems that sequence");
     GTUtilsProjectTreeView::dragAndDrop(os, sequenceObjIndex, GTWidget::findWidget(os, "assembly_reads_area"));
 
     // Expected state: sequence object and document are highlighted in the Project view
