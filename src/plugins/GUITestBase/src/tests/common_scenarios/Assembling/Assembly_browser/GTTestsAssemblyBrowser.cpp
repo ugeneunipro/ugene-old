@@ -514,8 +514,25 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
     GTWidget::click(os, GTWidget::findWidget(os, "Assembly reference sequence area"), Qt::RightButton);
 }
 
+namespace {
+    void prepareBigFasta(const QString &url, U2OpStatus &os) {
+        QFile file(url);
+        bool opened = file.open(QIODevice::WriteOnly);
+        if (!opened) {
+            os.setError("Can't open a file: " + url);
+            return;
+        }
+        file.write(">assembly_test_0018\n");
+        for (int i=0; i<1000000; i++) {
+            file.write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            file.write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+        }
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0018) {
     QFile::copy(testDir + "_common_data/ugenedb/chrM.sorted.bam.ugenedb", sandBoxDir + "assembly_test_0018.ugenedb");
+    prepareBigFasta(sandBoxDir + "assembly_test_0018.fa", os);
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
@@ -534,7 +551,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     //6. Click "Set reference sequence".
     //7. Choose the file "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq".
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/chr6.fa"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir + "assembly_test_0018.fa"));
     GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
 
     //8. Right click on the reference area while the file is loading.
