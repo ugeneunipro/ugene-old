@@ -42,7 +42,7 @@
 #elif defined(Q_OS_UNIX)
 #define NUMBER_OF_TESTS_IN_SUITE 550
 #elif defined(Q_OS_WIN)
-#define NUMBER_OF_TESTS_IN_SUITE 1050
+#define NUMBER_OF_TESTS_IN_SUITE 700
 #endif
 
 #define GUITESTING_REPORT_PREFIX "GUITesting"

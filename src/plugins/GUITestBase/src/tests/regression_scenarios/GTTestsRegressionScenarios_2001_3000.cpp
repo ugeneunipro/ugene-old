@@ -1234,7 +1234,7 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
 
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, dataDir + "samples/FASTA/", "human_T1.fa"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Convert UGENE assembly database to SAM");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Convert UGENE assembly database to SAM...");
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
@@ -1892,6 +1892,7 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
+    GTGlobals::sleep();
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
     GTMouseDriver::click(os);
@@ -2866,9 +2867,9 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     const QString projectFile = "test_2379";
 
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New project...");
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all");
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&New project...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
 //    1. Press "Create new project" button
 //    2. Specify the path to an existing project
@@ -2877,7 +2878,7 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "Project file already exists"));
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New project...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&New project...");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2382 ) {
@@ -4148,6 +4149,7 @@ GUI_TEST_CLASS_DEFINITION( test_2569 ){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Add the Call Variants sample.
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
+    GTGlobals::sleep();
 //    3. Set valid input data.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
     GTMouseDriver::click(os);
@@ -5248,7 +5250,7 @@ GUI_TEST_CLASS_DEFINITION(test_2762) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     GTGlobals::sleep(1000);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
     GTUtilsProject::checkProject(os);
 }
@@ -6306,7 +6308,7 @@ GUI_TEST_CLASS_DEFINITION(test_2962_1) {
     CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project", GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project", GTGlobals::UseMouse);
 
     seqWidget = GTUtilsProject::openFileExpectSequence(os,
                                                        testDir + "_common_data/scenarios/_regression/2924",

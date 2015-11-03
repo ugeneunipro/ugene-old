@@ -1446,14 +1446,14 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 //The short reads can't be mapped to the reference sequence!
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1107) { //commit GUIInitionalChecks
+GUI_TEST_CLASS_DEFINITION(test_1107) {
 //1) Open an MSA file (e.g. _common_data\scenarios\msa\ma2_gapped.aln)
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/msa/", "ma2_gapped.aln");
 
 //2) Menu File->Close Project
 //3) Press No in the Save current project dialog
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
 //Expected state: UGENE not crashes
     GTGlobals::sleep();
@@ -3639,7 +3639,7 @@ GUI_TEST_CLASS_DEFINITION( test_1337 ) {
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
 
     //4) Close the project and repeat these steps.
     //Current state: the warning does not appear.
@@ -3868,12 +3868,12 @@ GUI_TEST_CLASS_DEFINITION(test_1365){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all", GTGlobals::UseKey);
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all", GTGlobals::UseKey);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1368){
@@ -4982,7 +4982,7 @@ GUI_TEST_CLASS_DEFINITION(test_1499) {
 
     const QStringList msaSequences1 = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(msaSequences1 != msaSequences0, "MSA is not changed");
-
+GTGlobals::sleep(5000);
     QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
                                                           GTWidget::findWidget(os, "COI [m] COI"), GTGlobals::FindOptions(false));
     if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){

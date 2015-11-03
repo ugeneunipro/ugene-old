@@ -2359,7 +2359,7 @@ GUI_TEST_CLASS_DEFINITION(test_0861_2) {
     //2. Open the "Annotations Highlighting" bar of the Options Panel
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
     QTreeWidget *highlightTree = GTWidget::findExactWidget<QTreeWidget *>(os, "OP_ANNOT_HIGHLIGHT_TREE");
-    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 8, "Unexpected number of annotations");
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 8, QString("Unexpected number of annotations: %1").arg(highlightTree->topLevelItemCount()));
 
     //3. Switch on ORFs auto annotation
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Show ORFs"));
@@ -2367,7 +2367,7 @@ GUI_TEST_CLASS_DEFINITION(test_0861_2) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //Expected : "ORF" annotation appeared in the "Annotation type" window
-    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 9, "Unexpected number of annotations");
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 9, QString("Unexpected number of annotations: %1").arg(highlightTree->topLevelItemCount()));
     CHECK_SET_ERR(highlightTree->topLevelItem(7)->text(0) == "orf", QString("Unexpected annotation name at row %1").arg(7));
 }
 
@@ -3117,7 +3117,7 @@ GUI_TEST_CLASS_DEFINITION(test_0958) {
                                                                             ImportAnnotationsToCsvFiller::Genbank, true, true, ",", 1, "#",
                                                                             false, true, "misc_feature", r);
     GTUtilsDialog::waitForDialog(os, filler);
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export/Import" << "Import Annotations from CSV file"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action" << "import_annotations_from_CSV_file"));
     GTUtilsProjectTreeView::click(os, "human_T1.fa", Qt::RightButton);
     GTGlobals::sleep();
 

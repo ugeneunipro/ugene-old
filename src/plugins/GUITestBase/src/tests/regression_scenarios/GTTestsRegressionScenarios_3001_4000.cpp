@@ -1050,6 +1050,7 @@ GUI_TEST_CLASS_DEFINITION(test_3165){
     //PermissionsSetter::setPermissions(sandBoxDir + "ma.aln"
 //    2. Open it with UGENE.
     GTFileDialog::openFile(os, sandBoxDir, "ma.aln");
+    GTGlobals::sleep(500);
 //    3. Change the alignment (e.g. insert a gap).
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(1,1));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
@@ -1057,7 +1058,7 @@ GUI_TEST_CLASS_DEFINITION(test_3165){
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialog(os, new test_3165_messageBoxDialogFiller(os, QMessageBox::Yes));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir, "test_3165_out.aln", GTFileDialogUtils::Save));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
     //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save));
 //    Expected state: you are offered to save the project.
@@ -1070,6 +1071,7 @@ GUI_TEST_CLASS_DEFINITION(test_3165){
     //TODO: add this check after UGENE-3200 fix
     //GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
     CHECK_SET_ERR(GTFile::check(os, sandBoxDir + "test_3165_out.aln"), "file not saved");
+    GTGlobals::sleep();
 //    Current state: file is successfully saved, then UGENE crashes.
 }
 
@@ -3911,9 +3913,10 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
     GTUtilsDialog::waitForDialog(os,
                                  new ImportBAMFileFiller(os, sandBoxDir + "test_3613.bam.ugenedb"));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
+    GTGlobals::sleep();
     GTUtilsAssemblyBrowser::zoomToMax(os);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Current Read"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Current read"));
     GTUtilsDialog::waitForDialog(os, new ExportReadsDialogFiller(os, sandBoxDir + "test_3613.fa"));
     QWidget* readsArea = GTWidget::findWidget(os, "assembly_reads_area");
     CHECK_SET_ERR(readsArea != NULL, "Assembly reads area not found");
