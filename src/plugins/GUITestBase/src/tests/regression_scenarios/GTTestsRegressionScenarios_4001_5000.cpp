@@ -4125,6 +4125,91 @@ GUI_TEST_CLASS_DEFINITION(test_4795) {
     GTComboBox::checkCurrentValue(os, highlightingScheme, "No highlighting");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4803_1) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Build tree, display it with msa.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Call context menu on tree tab.Press "Close tab" menu item
+    //bug state : tab is colsed, but tree view is empty, and tree settings on options panel still present.Any change of tree settings causes crash
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Close tab"));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions::FindOptions(false)), "Msa editor tree tab widget is not closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4803_2) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Build tree, display it with msa.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Call context menu on tree tab. Check that there are not items "Add horizontal splitter" or "Add vertical splitter"
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add horizontal splitter", PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add vertical splitter", PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+    //3. Call context menu on tree tab. Check that "Close other tabs" is disabled
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Close other tabs", PopupChecker::CheckOptions(PopupChecker::IsDisabled)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4803_3) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Build tree, display it with msa.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Build tree, display it with msa.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Call context menu on tree tab.Press "Close other tabs" menu item
+    //bug state : UGENE hangs up
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Close other tabs"));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+
+    //5. Call context menu on tree tab. Check that "Close other tabs" item is disabled.
+    //Bug state : both tabs are closed
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Close other tabs", PopupChecker::CheckOptions(PopupChecker::IsDisabled)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+
+    //6. Call context menu on tree tab. Press "Close tab".
+    //Expected state: tree tab widget is closed 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Close tab"));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions::FindOptions(false)), "Msa editor tree tab widget is not closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4803_4) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Build tree, display it with msa.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Call context menu on tree tab. Check that there are not items "Refresh tab" and "Refresh all tabs"
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Refresh tab", PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Refresh all tabs", PopupChecker::CheckOptions(PopupChecker::NotExists)));
+    GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

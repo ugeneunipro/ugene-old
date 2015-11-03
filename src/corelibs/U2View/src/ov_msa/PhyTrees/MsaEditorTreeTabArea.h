@@ -38,31 +38,27 @@ class MsaEditorTreeTab : public QTabWidget {
     Q_OBJECT
 public:
     MsaEditorTreeTab(MSAEditor* msa, QWidget* parent);
-    virtual ~MsaEditorTreeTab() {}
-    int addTab(QWidget *page, const QString &label);
-    void deleteTab(QWidget *page);
+
+    void addTab(QWidget *page, const QString &label);
+    void deleteTree(int index);
     QWidget* getCurrentWidget() const {return currentWidget();}
     void addExistingTree();
 public slots:
     void sl_addTabTriggered();
 private slots:
     void sl_onTabCloseRequested(int index);
-    void updateActionsState(int count);
+    void sl_onCloseOtherTabs();
+    void sl_onCloseAllTabs();
+    void sl_onCloseTab();
+    void sl_onCountChanged(int count);
+    void sl_onContextMenuRequested(const QPoint &pos);
 signals:
-    void si_onTabCloseRequested(QWidget*);
     void si_tabsCountChanged(int curTabsNumber);
 private:
-    void buildMenu();
-    bool eventFilter(QObject *target, QEvent *event);
-
     void processMenuAction(QAction* triggeredAction);
-    void closeOtherTabsTriggered();
-    void closeAllTabsTriggered();
-    void closeTabTriggered();
 
     MSAEditor*          msa;
     QPushButton*        addTabButton;
-    QMenu*              tabsMenu;
     QPoint              menuPos;
     QAction*            closeOtherTabs;
     QAction*            closeAllTabs;
@@ -83,9 +79,7 @@ protected:
     void paintEvent(QPaintEvent *);
     virtual MsaEditorTreeTab* createTabWidget();
     void initialize();
-    
-private slots:
-    void sl_onTabCloseRequested(QWidget* page);
+
 signals:
     void si_tabsCountChanged(int curTabsNumber);
 private:
