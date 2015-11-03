@@ -4082,6 +4082,30 @@ GUI_TEST_CLASS_DEFINITION(test_4784_4) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4785) {
+    //1. Open "COI.aln"
+    //Expected state : a file browser appeared
+    GTFile::copy(os, testDir + "_common_data/clustal/1000_sequences.aln", sandBoxDir + "test_4785.aln");
+    GTFileDialog::openFile(os, sandBoxDir, "test_4785.aln");
+    GTGlobals::sleep();
+
+    //2. Use context menu { Align->Align profile to profile with MUSCLE }
+    //3. Select any alignment and press "Ok"
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW", "COI.aln"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep(500);
+
+    //4. Delete "test_4785.aln"
+    //Expected result : An error notification appears :
+    //A problem occurred during aligning profile to profile with MUSCLE.The original alignment is no more available.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "was removed from"));
+    GTUtilsNotifications::waitForNotification(os, true, "A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available.");
+    QFile::remove(sandBoxDir + "test_4785.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_4795) {
     //    1. Open "_common_data/clustal/amino_ext.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/amino_ext.fa");

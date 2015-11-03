@@ -29,6 +29,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/StateLockableDataModel.h>
+#include <U2Core/TaskWatchdog.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -400,6 +401,8 @@ void MuscleGObjectTask::prepare() {
         stateInfo.setError("object_is_state_locked");
         return;
     }
+
+    TaskWatchdog::trackResourceExistence(obj, this, tr("A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available."));
 
     lock = new StateLock(MUSCLE_LOCK_REASON);
     obj->lockState(lock);
