@@ -39,7 +39,7 @@ public:
     // io - opened IO adapter. before and after the call pos in file the same
     static QByteArray readFileHeader( IOAdapter* io, int size = 65536 );
 
-    static IOAdapter* open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode = IOAdapterMode_Read);
+    static IOAdapter* open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode = IOAdapterMode_Read, IOAdapterFactory* iof = NULL);
 
 
     static IOAdapterFactory* get(const IOAdapterId&);

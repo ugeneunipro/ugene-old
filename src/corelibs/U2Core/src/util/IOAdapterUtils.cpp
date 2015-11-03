@@ -87,9 +87,12 @@ QByteArray IOAdapterUtils::readFileHeader( IOAdapter* io, int sz ) {
     return data;
 }
 
-IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode) {
-    IOAdapterId  ioId = IOAdapterUtils::url2io(url);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
+IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode, IOAdapterFactory* _iof) {
+    IOAdapterFactory* iof = _iof;
+    if (NULL == iof) {
+        IOAdapterId  ioId = IOAdapterUtils::url2io(url);
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
+    }
     if (iof == NULL) {
         os.setError(L10N::tr("Failed to detect IO adapter for %1").arg(url.getURLString()));
         return NULL;

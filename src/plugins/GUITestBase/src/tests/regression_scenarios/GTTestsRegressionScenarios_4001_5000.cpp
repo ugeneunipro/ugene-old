@@ -2716,6 +2716,8 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
 //    Expected state: "Save document" dialog appeared
 //    4. Press "Yes"
 //    Expected state: UGENE does not crash
+//    5. Load the document again
+//    Expected state: the document is succesfully loaded
 
     GTFile::copy(os, testDir + "_common_data/genbank/gbbct131.gb.gz", sandBoxDir + "/test_4463.gb.gz");
 
@@ -2728,10 +2730,11 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsMdi::closeWindow(os, "test_4463.gb.gz");
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList("Unload selected document")));
-    GTUtilsProjectTreeView::click(os, "test_4463.gb.gz", Qt::RightButton);
+    GTUtilsDocument::unloadDocument(os, "test_4463.gb.gz", true);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::loadDocument(os, "test_4463.gb.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(NULL != GTUtilsSequenceView::getSeqWidgetByNumber(os), "Can't find sequence view widget");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4486) {
