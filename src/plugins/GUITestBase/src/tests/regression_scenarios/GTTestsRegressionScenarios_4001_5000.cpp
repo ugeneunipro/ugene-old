@@ -4139,7 +4139,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Close tab"));
     GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
     GTGlobals::sleep();
-    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions::FindOptions(false)), "Msa editor tree tab widget is not closed");
+    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions(false)), "Msa editor tree tab widget is not closed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4803_2) {
@@ -4191,7 +4191,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_3) {
     GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions::FindOptions(false)), "Msa editor tree tab widget is not closed");
+    CHECK_SET_ERR(NULL == GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab", NULL, GTGlobals::FindOptions(false)), "Msa editor tree tab widget is not closed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4803_4) {
