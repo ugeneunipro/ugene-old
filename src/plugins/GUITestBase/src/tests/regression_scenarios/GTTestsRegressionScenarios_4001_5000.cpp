@@ -344,6 +344,7 @@ GUI_TEST_CLASS_DEFINITION(test_4026) {
 
     //3. Double click the sequence in the project.
     GTUtilsProjectTreeView::doubleClickItem(os, "NC_004718");
+    GTGlobals::sleep(1000);
 
     //Expected: there is the same amount of annotations in the panoramic and details views.
     //Actual: annotations are now shown in the views. Their locations and qualifier names are deleted.
@@ -891,7 +892,7 @@ GUI_TEST_CLASS_DEFINITION(test_4100) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
 
     GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Add" << "Import to the database"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__add_menu" << "action_project__import_to_database"));
     GTUtilsProjectTreeView::click(os, "ugene_gui_test", Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(5000);
@@ -2298,7 +2299,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
     QLabel *errorLabel = GTWidget::findExactWidget<QLabel *>(os, "lblMessage");
     CHECK_SET_ERR(NULL != errorLabel, "Error label is NULL");
     CHECK_SET_ERR(errorLabel->isVisible(), "Error label is invisible");
-    CHECK_SET_ERR(errorLabel->text().contains("Current alphabet does not correspond the requirements."),
+    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"All symbols\" alphabet."),
                   QString("An unexpected error message: '%1'").arg(errorLabel->text()));
 }
 
@@ -3169,7 +3170,7 @@ GUI_TEST_CLASS_DEFINITION(test_4620) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new s"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new sequence"));
     GTUtilsDialog::waitForDialog(os, new AddNewDocumentDialogFiller(os, new Scenario));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
@@ -3208,7 +3209,7 @@ GUI_TEST_CLASS_DEFINITION(test_4624) {
     //1. Open assembly with DNA extended alphabet
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "extended_dna.ace.ugenedb");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Open view" << "Open new view: Assembly" ));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Open view" << "Open new view: Assembly Browser" ));
     GTUtilsProjectTreeView::click(os, "extended_dna.ace.ugenedb", Qt::RightButton);
 
     QList<ExportCoverageDialogFiller::Action> actions;
