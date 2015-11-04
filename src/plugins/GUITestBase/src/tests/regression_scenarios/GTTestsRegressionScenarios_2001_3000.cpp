@@ -5273,13 +5273,12 @@ GUI_TEST_CLASS_DEFINITION(test_2770) {
         CreateDocumentFiller::FASTA,
         "result", true
         );
-    GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, filler);
-    GTGlobals::sleep();
 
-    GTGlobals::sleep();
+
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New document from text...", GTGlobals::UseKey);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
 

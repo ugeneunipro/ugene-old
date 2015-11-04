@@ -72,6 +72,7 @@
 #include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
 #include "utils/GTUtilsToolTip.h"
+#include "utils/GTThread.h"
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
@@ -3348,6 +3349,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
     };
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new AllEnzymesSearchScenario()));
     GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+    GTThread::waitForMainThread(os);
 
     GTUtilsTaskTreeView::openView(os);
     GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
@@ -4227,12 +4229,14 @@ GUI_TEST_CLASS_DEFINITION(test_3656) {
     GTLogTracer lt;
     GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
     CHECK_OP(os, );
+    GTGlobals::sleep(5000);
 
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
     QModelIndex prnt = GTUtilsProjectTreeView::findIndex(os, "Human (hg19)");
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "chr2", prnt);
+    GTThread::waitForMainThread(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, idx));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
@@ -4647,7 +4651,7 @@ GUI_TEST_CLASS_DEFINITION(test_3738) {
     GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList()<<testDir + "_common_data/scf/Sequence A.scf"
                                                                  <<testDir + "_common_data/scf/Sequence B.scf",
                                                                  sandBoxDir + "test_3738.ace"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Sanger data analysis" << "Contig assembly with CAP3");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Sanger data analysis" << "Contig assembly with CAP3...");
 
 //    menu item in the main menu.
 //    Set sequences "_common_data/scf/Sequence A.scf" and "_common_data/scf/Sequence B.scf" as input, set any valid output path and run the task.
@@ -5129,7 +5133,7 @@ GUI_TEST_CLASS_DEFINITION(test_3813) {
         void run(U2OpStatus &os) {
             //3. Press "Select by length"
             //4. Input "7" and press "Ok"
-            GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 7));
+            GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 6));
             GTWidget::click(os, GTWidget::findWidget(os, "selectByLengthButton"));
 
             //5. Run search

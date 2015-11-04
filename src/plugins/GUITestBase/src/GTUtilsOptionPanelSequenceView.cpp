@@ -457,7 +457,7 @@ const QString GTUtilsOptionPanelSequenceView::getHintText(U2OpStatus &os) {
 void GTUtilsOptionPanelSequenceView::setMatchPercentage( U2OpStatus &os, int percentage ){
     QSpinBox *spinMatchBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
 
-    GTSpinBox::setValue(os, spinMatchBox, percentage);
+    GTSpinBox::setValue(os, spinMatchBox, percentage, GTGlobals::UseKeyBoard);
     GTGlobals::sleep(2500);
 }
 #undef GT_METHOD_NAME

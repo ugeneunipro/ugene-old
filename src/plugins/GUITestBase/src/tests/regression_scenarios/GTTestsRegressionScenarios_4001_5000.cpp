@@ -2878,6 +2878,7 @@ GUI_TEST_CLASS_DEFINITION(test_4508) {
 //    5. Accept the dialog.
 
     GTUtilsMsaEditor::removeColumn(os, 1);
+    GTThread::waitForMainThread(os);
 
     class Scenario2 : public CustomScenario {
         void run(U2OpStatus &os) {
