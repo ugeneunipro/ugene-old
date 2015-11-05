@@ -443,7 +443,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::Cancel));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
     GTUtilsLog::check(os, logTracer);

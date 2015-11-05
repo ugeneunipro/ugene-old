@@ -247,7 +247,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     const QModelIndexList groupIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, "Object name");
     CHECK_SET_ERR(1 == groupIndexes.size(), "'Object name' group is not found");
     const QModelIndexList objectIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, "/import_test_0003", groupIndexes.first());
-    CHECK_SET_ERR(1 == objectIndexes.size(), "Unexpected filtered object count");
+    CHECK_SET_ERR(1 == objectIndexes.size(), QString("Unexpected filtered object count: %1").arg(objectIndexes.size()));
 
     // 5. Double click it
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, objectIndexes.first()));

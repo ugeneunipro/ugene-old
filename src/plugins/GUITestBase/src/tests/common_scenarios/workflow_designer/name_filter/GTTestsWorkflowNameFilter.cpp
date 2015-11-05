@@ -58,6 +58,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
     //hack. GTLineEdit can not set focus on widget. Don't know why
     GTWidget::click(os, nameFilter);
     GTKeyboardDriver::keySequence(os,"HMM");
+    GTGlobals::sleep();
     // 4. Write "HMM".
 
     // Expected: There are two samples after filtering.
@@ -155,7 +156,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //hack. GTLineEdit can not set focus on widget. Don't know why
     GTWidget::click(os,nameFilter);
     GTKeyboardDriver::keySequence(os, "NGS");
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
 
     // Expected: There are two samples after filtering.
     QTreeWidget *samples;
