@@ -27,8 +27,10 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsProjectTreeView.h"
 #include "primitives/GTAction.h"
 #include <primitives/GTComboBox.h>
+#include <primitives/GTToolbar.h>
 #include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
@@ -514,6 +516,84 @@ GUI_TEST_CLASS_DEFINITION(test_0019){
     CHECK_SET_ERR(img!=img2, "overview not changed");
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0020){
+/* 1. Open "_common_data/clustal/test_1393.aln".
+ * 2. Show simple overview.
+ * 3. Select whole alignment.
+ * Expected state: whole simple overview is filled with a selection rect.
+ * 4. Click "Align sequence to this alignment" button on the tool bar and select "data/samples/fastq/eas.fastq".
+ * Expected state: sequences are added, two of five sequences are selected both in the sequence area and simple overview.
+ * Current state: sequences are added, two of five sequences are selected in the sequence area, but the simple overview if filled with a selection rect like whole alignment is selected.
+ */
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-5,2));
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTGlobals::sleep();
+    QWidget* overviewSimple = GTWidget::findWidget(os, "msa_overview_area_simple");
+    QColor color = GTWidget::getColor(os,overviewSimple,overviewSimple->geometry().topRight()-QPoint(5,-5));
+    CHECK_SET_ERR(color.name() == "#ededed", "graph overview has wrong color. Expected: #ededed, Found: " + color.name());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0021){
+/* 1. Open "_common_data/clustal/test_1393.aln".
+ * 2. Select whole alignment.
+ * 3. Show simple overview.
+ * Expected state: whole simple overview is filled with a selection rect.
+ * Current state: selection not showed.
+ */
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-5,2));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+
+    GTGlobals::sleep();
+    QWidget* overviewSimple = GTWidget::findWidget(os, "msa_overview_area_simple");
+    QColor color = GTWidget::getColor(os,overviewSimple,overviewSimple->geometry().topRight()-QPoint(5,-5));
+    CHECK_SET_ERR(color.name() == "#7eaecc", "graph overview has wrong color. Expected: #7eaecc, Found: " + color.name());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0022){
+/* 1. Open "_common_data/clustal/test_1393.aln".
+ * 2. Open ProjectView if it closed
+ * 3. Select whole alignment.
+ * 4. Show simple overview.
+ * Expected state: whole simple overview is filled with a selection rect.
+ * 5. Close ProjectView
+ * Expected state: whole simple overview is filled with a selection rect.
+ * Current state: selection is not full.
+ */
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+
+    GTUtilsProjectTreeView::openView(os);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-5,2));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+
+    GTUtilsProjectTreeView::toggleView(os);
+
+    GTGlobals::sleep();
+
+    QWidget* overviewSimple = GTWidget::findWidget(os, "msa_overview_area_simple");
+    QColor color = GTWidget::getColor(os,overviewSimple,overviewSimple->geometry().topRight()-QPoint(5,-5));
+    CHECK_SET_ERR(color.name() == "#7eaecc", "graph overview has wrong color. Expected: #7eaecc, Found: " + color.name());
+}
+
 
 }//namespace GUITest_common_scenarios_msa_editor
 

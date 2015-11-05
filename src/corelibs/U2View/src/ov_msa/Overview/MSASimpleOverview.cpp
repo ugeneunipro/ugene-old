@@ -130,6 +130,7 @@ void MSASimpleOverview::paintEvent(QPaintEvent *e) {
 
 void MSASimpleOverview::resizeEvent(QResizeEvent *e) {
     redrawMSAOverview = true;
+    redrawSelection = true;
     QWidget::resizeEvent(e);
 }
 

@@ -1854,6 +1854,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0015);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0019);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0020);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0021);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0022);
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
