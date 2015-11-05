@@ -57,6 +57,7 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
         " FOREIGN KEY(sequence) REFERENCES Sequence(object) ON DELETE CASCADE)", db, os).execute();
     SQLiteQuery("CREATE INDEX MsaRow_msa_rowId ON MsaRow(msa, rowId)", db, os).execute();
     SQLiteQuery("CREATE INDEX MsaRow_length ON MsaRow(length)", db, os).execute();
+    SQLiteQuery("CREATE INDEX MsaRow_sequence ON MsaRow(sequence)", db, os).execute();
 
      // Gap info for a MSA row:
      //   msa       - msa object id
