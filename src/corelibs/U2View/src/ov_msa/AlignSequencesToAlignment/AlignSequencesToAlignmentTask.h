@@ -64,6 +64,8 @@ public:
 
     const QList<Document*>& getUsedDocuments() const;
 
+    const DNAAlphabet* resultingAlphabet() const;
+
 private:
     void checkAlphabet(const DNAAlphabet* alphabet, const QString& objectName);
 
@@ -115,6 +117,8 @@ private:
     qint64 sequencesMaxLength;
     AlignSequencesToAlignmentTaskSettings settings;
     QList<Document*> usedDocuments;
+    const DNAAlphabet *initialMAlignmentAlphabet;
+    SequenceObjectsExtractor extr;
 };
 
 class LoadSequencesAndAlignToAlignmentTask : public Task {

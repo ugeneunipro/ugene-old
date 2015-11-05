@@ -399,6 +399,8 @@ private slots:
     void sl_useDots();
     void sl_fontChanged(QFont font);
 
+    void sl_alphabetChanged(const MAlignmentModInfo &mi);
+
     void sl_changeSelectionColor();
 
 

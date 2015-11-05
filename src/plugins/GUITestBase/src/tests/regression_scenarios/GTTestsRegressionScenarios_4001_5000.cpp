@@ -4213,6 +4213,118 @@ GUI_TEST_CLASS_DEFINITION(test_4803_4) {
     GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4804_1) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_dna.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_dna.aln");
+
+    //    2. Add dna extended sequence throu context menu {Add->Sequence from file}
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"Extended DNA\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_dna.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+
+    //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_rna.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4804_2) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_rna.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_rna.aln");
+
+    //    2. Add rna extended sequence throu menu {Actions->Add->Sequence from file}
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_rna.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"Extended RNA\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from file...");
+    GTGlobals::sleep();
+
+    //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/standard_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from file...");
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4804_3) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_amino.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_amino.aln");
+
+    //    2. Add  extended amino sequence by drag and drop
+    QModelIndex toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_amino_seq");
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"Extended Amino\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTGlobals::sleep();
+
+    //    3. Add  extended DNA sequence by drag and drop
+    toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_dna_seq");
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4804_4) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_dna.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_dna.aln");
+    //    2. Check what MAFFT tool is set up 
+    //    3. Use 'Align sequence to this alignment' toolbar button to align Extended rna sequence to alignment
+    //Expected state: corresponding notification message has appeared
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_rna.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+
+    QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
+    CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
+    GTWidget::click(os, align);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4804_5) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_rna.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_rna.aln");
+    //    2. Check what MAFFT tool is not set up 
+    GTUtilsExternalTools::removeTool(os, "MAFFT");
+    //    3. Use 'Align sequence to this alignment' toolbar button to align Extended rna sequence to alignment
+    //Expected state: corresponding notification message has appeared
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+
+    QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
+    CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
+    GTWidget::click(os, align);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4804_6) {
+    //    1. Open _common_data/scenarios/_regression/4804/standart_dna.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standart_dna.aln");
+
+    //    2. Add amino extended sequence throu context menu {Add->Sequence from file}
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_amino.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+
+    //   4. Undo changes
+    GTUtilsMsaEditor::undo(os);
+    GTThread::waitForMainThread(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    
+    //   5. Redo changes and check appearing notifications
+    GTUtilsNotifications::waitForNotification(os, true, "A sequence of another alphabet has been added to the alignment.The alignment alphabet has been changed to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsMsaEditor::redo(os);
+    GTThread::waitForMainThread(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

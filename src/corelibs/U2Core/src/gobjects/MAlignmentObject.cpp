@@ -103,6 +103,7 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
             const DNAAlphabet* newAlphabet = U2AlphabetUtils::getById(alphabet);
             cachedMAlignment.setAlphabet(newAlphabet);
         }
+        si_alphabetChanged(mi);
     }
 
      if (mi.modifiedRowIds.isEmpty() && removedRowIds.isEmpty()) { // suppose that in this case all the alignment has changed
@@ -149,6 +150,9 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
     }
     if (!removedRowIds.isEmpty()) {
         emit si_rowsRemoved(removedRowIds);
+    }
+    if (!mi.alphabetChanged && cachedMAlignment.getAlphabet()->getId() != maBefore.getAlphabet()->getId()) {
+        si_alphabetChanged(mi);
     }
 }
 

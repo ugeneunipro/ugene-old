@@ -56,7 +56,7 @@ const int LoadSequencesTask::maxErrorListSize = 5;
 /************************************************************************/
 /* SequencesExtractor */
 /************************************************************************/
-SequenceObjectsExtractor::SequenceObjectsExtractor() : sequenceNames(NULL), extractFromMsa(false), sequencesMaxLength(0) {}
+SequenceObjectsExtractor::SequenceObjectsExtractor() : extractFromMsa(false), sequencesMaxLength(0) {}
 
 void SequenceObjectsExtractor::setAlphabet(const DNAAlphabet* newAlphabet) {
     seqsAlphabet = newAlphabet;
@@ -222,7 +222,8 @@ const SequenceObjectsExtractor& LoadSequencesTask::getExtractor() const {
 /* AlignSequencesToAlignmentTask */
 /************************************************************************/
 AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* obj, const SequenceObjectsExtractor& extractor)
-: Task(tr("Align sequences to alignment task"), TaskFlags_NR_FOSE_COSC), maObj(obj), stateLock(NULL), docStateLock(NULL), sequencesMaxLength(extractor.getMaxSequencesLength())
+    : Task(tr("Align sequences to alignment task"), TaskFlags_NR_FOSE_COSC), maObj(obj), stateLock(NULL), docStateLock(NULL), 
+    sequencesMaxLength(extractor.getMaxSequencesLength()), extr(extractor)
 {
     fillSettingsByDefault();
     settings.addedSequencesRefs = extractor.getSequenceRefs();
@@ -230,6 +231,7 @@ AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* o
     settings.maxSequenceLength = extractor.getMaxSequencesLength();
     settings.alphabet = extractor.getAlphabet()->getId();
     usedDocuments = extractor.getUsedDocuments();
+    initialMAlignmentAlphabet = obj->getAlphabet();
 }
 
 void AlignSequencesToAlignmentTask::prepare()
@@ -290,9 +292,11 @@ Task::ReportResult AlignSequencesToAlignmentTask::report() {
 
         delete docStateLock;
     }
-
+    MAlignmentModInfo mi;
+    mi.alphabetChanged = extr.getAlphabet()->getId() != initialMAlignmentAlphabet->getId();
+    mi.sequenceListChanged = true;
     if(!hasError() && !isCanceled()) {
-        maObj->updateCachedMAlignment();
+        maObj->updateCachedMAlignment(mi);
     }
 
     return ReportResult_Finished;

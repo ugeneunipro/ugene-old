@@ -60,6 +60,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/Notification.h>
 #include <U2Gui/OPWidgetFactory.h>
 #include <U2Gui/OPWidgetFactory.h>
 #include <U2Gui/OptionsPanel.h>
@@ -230,7 +231,9 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     useDotsAction->setCheckable(true);
     useDotsAction->setChecked(false);
     connect(useDotsAction, SIGNAL(triggered()), SLOT(sl_useDots()));
+    connect(editor->getMSAObject(), SIGNAL(si_alphabetChanged(const MAlignmentModInfo &)), SLOT(sl_alphabetChanged(const MAlignmentModInfo &)));
 
+    updateColorAndHighlightSchemes();
     updateActions();
 }
 
@@ -644,7 +647,6 @@ void MSAEditorSequenceArea::updateActions() {
     addSeqFromFileAction->setEnabled(!readOnly);
     sortByNameAction->setEnabled(!readOnly && !isAlignmentEmpty());
     collapseModeSwitchAction->setEnabled(!readOnly && !isAlignmentEmpty());
-    updateColorAndHighlightSchemes();
 
 //Update actions of "Edit" group
     bool canEditAlignment = !readOnly && !isAlignmentEmpty();
@@ -2030,6 +2032,23 @@ void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
     Q_UNUSED(font);
     completeRedraw = true;
     repaint();
+}
+
+void MSAEditorSequenceArea::sl_alphabetChanged(const MAlignmentModInfo &mi) {
+    updateColorAndHighlightSchemes();
+
+    QString message;
+    if (mi.sequenceListChanged && (mi.alphabetChanged || mi.type == MAlignmentModType_Redo)) {
+        message = tr("A sequence of another alphabet has been added to the alignment. The alignment alphabet has been changed to \"%1\". Use \"Undo\", if you'd like to restore the original alignment.").arg(
+            editor->getMSAObject()->getAlphabet()->getName());
+    }
+
+    if (message.isEmpty()) {
+        return;
+    }
+    const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
+    CHECK(notificationStack != NULL, );
+    notificationStack->addNotification(message, Info_Not);
 }
 
 void MSAEditorSequenceArea::sl_delCol() {

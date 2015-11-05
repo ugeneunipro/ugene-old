@@ -103,6 +103,7 @@ qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
 void AddSequenceObjectsToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     // Create user mod step
+    MAlignmentModInfo mi;
     U2UseCommonUserModStep modStep(entityRef, stateInfo);
     CHECK_OP(stateInfo, );
     U2MsaDbi *dbi = modStep.getDbi()->getMsaDbi();
@@ -121,10 +122,11 @@ void AddSequenceObjectsToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 le
         SAFE_POINT(NULL != msaAlphabet, "NULL result alphabet", );
         dbi->updateMsaAlphabet(entityRef.entityId, msaAlphabet->getId(), stateInfo);
         CHECK_OP(stateInfo, );
+        mi.alphabetChanged = true;
     }
 
     // Update object
-    maObj->updateCachedMAlignment();
+    maObj->updateCachedMAlignment(mi);
 }
 
 void AddSequenceObjectsToAlignmentTask::setupError() {
