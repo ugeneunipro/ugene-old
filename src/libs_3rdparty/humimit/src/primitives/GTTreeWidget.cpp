@@ -28,9 +28,7 @@
 #include <QtWidgets/QTreeWidget>
 #endif
 
-#include <U2Core/U2IdTypes.h>
 #include "GTTreeWidget.h"
-//#include "GTUtilsProjectTreeView.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>

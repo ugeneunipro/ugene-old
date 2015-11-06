@@ -27,7 +27,6 @@
 #include <QPushButton>
 #include <QTreeView>
 
-#include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 
@@ -36,7 +35,6 @@
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"
 #include <drivers/GTMouseDriver.h>
-//#include "GTUtilsTaskTreeView.h"
 #include <primitives/GTWidget.h>
 #include "GTGlobals.h"
 #include <primitives/GTLineEdit.h>

@@ -19,11 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2IdTypes.h>
 #include "GTToolbar.h"
 #include <primitives/GTWidget.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/GUIUtils.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include "QtGui/QToolBar"
 #include "QtGui/QAction"
@@ -69,7 +66,13 @@ namespace HI {
     QWidget* GTToolbar::getWidgetForActionTooltip(U2::U2OpStatus &os, const QToolBar *toolbar, const QString &tooltip) {
         QString toolbarTypeCheck = "QToolBar";
         GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
-        QAction *action = U2::GUIUtils::findActionByTooltip(toolbar->actions(), tooltip);
+        QAction *action = NULL;
+        foreach (QAction* a, toolbar->actions()) {
+            if (a->toolTip() == tooltip) {
+                action = a;
+                break;
+            }
+        }
         GT_CHECK_RESULT(action != NULL, "No action with such tooltip: " + tooltip, NULL);
         return GTToolbar::getWidgetForAction(os, toolbar, action);
     }
@@ -85,7 +88,13 @@ void GTToolbar::clickButtonByTooltipOnToolbar(U2::U2OpStatus &os, const QString 
     QAction* GTToolbar::getToolbarAction(U2::U2OpStatus &os, const QString &actionName, const QToolBar *toolbar) {
         QString toolbarTypeCheck = "QToolBar";
         GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
-        QAction *action = U2::GUIUtils::findAction(toolbar->actions(), actionName);
+        QAction *action = NULL;
+        foreach(QAction* a, toolbar->actions()) {
+            const QString& aname =  a->objectName();
+            if (aname == actionName) {
+                action = a;
+            }
+        }
         return action;
     }
 #undef GT_METHOD_NAME

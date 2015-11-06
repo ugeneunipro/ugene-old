@@ -26,7 +26,6 @@
 #include "primitives/GTWidget.h"
 #include "primitives/private/GTMenuPrivate.h"
 
-#include <U2Core/U2IdTypes.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
