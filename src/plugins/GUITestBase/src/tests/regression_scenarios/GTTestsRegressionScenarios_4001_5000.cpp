@@ -2384,6 +2384,21 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4334) {
+    //1. Open "_common_data/fasta/empty.fa" as msa.
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTLogTracer lt;
+    //    2. Add human_t1.fa sequence throu context menu {Add->Sequence from file}
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+    QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
+    CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
+    GTWidget::click(os, align);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(!lt.hasError(), "log should not contain errors");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4345) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Close active view", GTGlobals::UseKey);
