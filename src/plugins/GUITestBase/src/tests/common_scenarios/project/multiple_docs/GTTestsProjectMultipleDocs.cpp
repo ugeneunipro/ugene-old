@@ -66,7 +66,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsDocument::checkDocument(os, "1.gb");
 
 // 6. Close project
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
     GTGlobals::sleep();
 
 // 7. Open project from the location used in item 3

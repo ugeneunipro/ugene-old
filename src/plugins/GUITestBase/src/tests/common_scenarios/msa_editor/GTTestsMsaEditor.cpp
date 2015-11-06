@@ -2920,7 +2920,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031){//TODO: check statistic result
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1500);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
@@ -2937,7 +2937,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_1){//DIFFERENCE: Percentage is used
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1500);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
@@ -2954,7 +2954,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_2){//TODO: check statistic result
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,false,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1500);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
@@ -2971,7 +2971,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){//TODO: check statistic result
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,true,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1500);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
@@ -2988,7 +2988,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_4){//TODO: check statistic result
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,false,true));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(1500);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
