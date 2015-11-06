@@ -176,6 +176,7 @@ bool ReportSender::send(const QString &additionalInfo, const QString &dumpUrl) {
 
         dumpPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
         dumpPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"dump\"; filename=\"" + file->fileName() + "\""));
+        dumpPart.setHeader(QNetworkRequest::UserAgentHeader, QVariant("Unipro UGENE Crash Reporter"));
 
         multiPart->append(dumpPart);
     }
