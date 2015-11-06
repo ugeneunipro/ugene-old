@@ -715,7 +715,7 @@ GUI_TEST_CLASS_DEFINITION(test_0598) {
     // 5. Set parameters: window = 1000, step = 4
     // 6. Press 'Ok'
     // Expected state: 'Calculate graph points' task is started
-    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, 1000, 4));
+    GTUtilsDialog::waitForDialog(os, new GraphSettingsDialogFiller(os, 100, 25));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph"
         << "visual_properties_action"));
     QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
@@ -723,6 +723,7 @@ GUI_TEST_CLASS_DEFINITION(test_0598) {
     GTGlobals::sleep(500);
 
     CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is not started");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0605) {
