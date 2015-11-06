@@ -2526,16 +2526,17 @@ void MSAEditorSequenceArea::processCharacterInEditMode(QKeyEvent *e) {
 
     QString text = e->text().toUpper();
     if (1 == text.length()) {
-        QRegExp latinCharacterOrGap("([A-Z]| |-|–)");
+        QChar emDash = QString::fromLatin1("\x0097").at(0);
+        QRegExp latinCharacterOrGap(QString("([A-Z]| |-|%1)").arg(emDash));
         if (latinCharacterOrGap.exactMatch(text)) {
-            char newChar = text.toLatin1().at(0);
-            newChar = (newChar == '-' || newChar == '–' || newChar == ' ') ? MAlignment_GapChar : newChar;
-            replaceSelectedCharacter(newChar);
+            QChar newChar = text.at(0);
+            newChar = (newChar == '-' || newChar == emDash || newChar == ' ') ? MAlignment_GapChar : newChar;
+            replaceSelectedCharacter(newChar.toLatin1());
         }
         else {
             MainWindow *mainWindow = AppContext::getMainWindow();
-            const QString message = tr("It is not possible to insert the character into the alignment.\
-                                        Please use a character from set A-Z (upper-case or lower-case) or the gap character ('Space' or '-').");
+            const QString message = tr("It is not possible to insert the character into the alignment."
+                                       "Please use a character from set A-Z (upper-case or lower-case) or the gap character ('Space', '-' or '%1').").arg(emDash);
             mainWindow->addNotification(message, Error_Not);
             exitFromEditCharacterMode();
         }
