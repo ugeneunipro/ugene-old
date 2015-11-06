@@ -198,7 +198,7 @@ signals:
     void si_completeStateChanged(bool complete);
     void si_rowsRemoved(const QList<qint64> &rowIds);
     void si_invalidateAlignmentObject();
-    void si_alphabetChanged(const MAlignmentModInfo &mi);
+    void si_alphabetChanged(const MAlignmentModInfo &mi, const DNAAlphabet *prevAlphabet);
 
 protected:
     void loadDataCore(U2OpStatus &os);

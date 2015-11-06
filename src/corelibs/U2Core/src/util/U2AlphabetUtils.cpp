@@ -227,21 +227,23 @@ const DNAAlphabet* U2AlphabetUtils::deriveCommonAlphabet(const DNAAlphabet* al1,
         return al1;
     }
     SAFE_POINT(al1 != NULL && al2 != NULL, "Alphabet is NULL", NULL);
-
-    // DNA extended alphabet is a subset of AMINO alphabet
-    if ( ( BaseDNAAlphabetIds::NUCL_DNA_EXTENDED( ) == al1->getId( )
-        && BaseDNAAlphabetIds::AMINO_DEFAULT( ) == al2->getId( ) )
-        || ( BaseDNAAlphabetIds::AMINO_DEFAULT( ) == al1->getId( )
-        && BaseDNAAlphabetIds::NUCL_DNA_EXTENDED( ) == al2->getId( ) ) )
-    {
-        return getById( BaseDNAAlphabetIds::AMINO_DEFAULT( ) );
+    const DNAAlphabet *raw = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
+    if (al1->getId() == BaseDNAAlphabetIds::RAW() || al2->getId() == BaseDNAAlphabetIds::RAW()) {
+        return raw;
     }
     if (al1->getType() != al2->getType()) {
-        return getById(BaseDNAAlphabetIds::RAW());
+        return raw;
     }
-
-    const DNAAlphabet* resAl = al1->getNumAlphabetChars() >= al2->getNumAlphabetChars() ? al1 : al2;
-    return resAl;
+    //al1 and al2 same types below, DNA and RNA are SAME TYPE
+    QByteArray al1Chars = al1->getAlphabetChars();
+    QByteArray al2Chars = al2->getAlphabetChars();
+    if (al1->containsAll(al2Chars, al2Chars.length())) {
+        return al1;
+    } else if (al2->containsAll(al1Chars, al1Chars.length())) {
+        return al2;
+    } else {
+        return raw;
+    }
 }
 
 

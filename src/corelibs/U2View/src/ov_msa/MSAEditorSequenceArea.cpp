@@ -231,7 +231,8 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     useDotsAction->setCheckable(true);
     useDotsAction->setChecked(false);
     connect(useDotsAction, SIGNAL(triggered()), SLOT(sl_useDots()));
-    connect(editor->getMSAObject(), SIGNAL(si_alphabetChanged(const MAlignmentModInfo &)), SLOT(sl_alphabetChanged(const MAlignmentModInfo &)));
+    connect(editor->getMSAObject(), SIGNAL(si_alphabetChanged(const MAlignmentModInfo &, const DNAAlphabet*)), 
+        SLOT(sl_alphabetChanged(const MAlignmentModInfo &, const DNAAlphabet*)));
 
     updateColorAndHighlightSchemes();
     updateActions();
@@ -2034,13 +2035,13 @@ void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
     repaint();
 }
 
-void MSAEditorSequenceArea::sl_alphabetChanged(const MAlignmentModInfo &mi) {
+void MSAEditorSequenceArea::sl_alphabetChanged(const MAlignmentModInfo &mi, const DNAAlphabet *prevAlphabet) {
     updateColorAndHighlightSchemes();
 
     QString message;
     if (mi.sequenceListChanged && (mi.alphabetChanged || mi.type == MAlignmentModType_Redo)) {
-        message = tr("A sequence of another alphabet has been added to the alignment. The alignment alphabet has been changed to \"%1\". Use \"Undo\", if you'd like to restore the original alignment.").arg(
-            editor->getMSAObject()->getAlphabet()->getName());
+        message = tr("A sequence of another alphabet has been added to the alignment. The alignment alphabet has been changed from \"%1\" to \"%2\". Use \"Undo\", if you'd like to restore the original alignment.")
+            .arg(prevAlphabet->getName()).arg(editor->getMSAObject()->getAlphabet()->getName());
     }
 
     if (message.isEmpty()) {
