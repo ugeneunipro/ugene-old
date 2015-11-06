@@ -435,7 +435,7 @@ void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequence
 
             }
         }
-    } else {
+    } else if(!calculationTaskRunner.isIdle()) {
         p.fillRect(rect, Qt::gray);
         p.drawText(rect, Qt::AlignCenter, tr("Graph is rendering..."));
     }
@@ -802,8 +802,7 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
     bool useIntervals = nSteps > numPoints;
     if (winStepNotChanged) {
         bool isCacheValid = vr.length == d->cachedLen && vr.startPos == d->cachedFrom;
-        bool isWindowCorrect = alignedLast != alignedFirst && alignedFirst + wdata.window <= seqLen;
-        if ((!isCacheValid || d->cachedData.firstPoints.size() != numPoints) && isWindowCorrect) {
+        if (!isCacheValid || d->cachedData.firstPoints.size() != numPoints) {
             U2OpStatusImpl os;
             GraphPointsUpdater graphUpdater(d, numPoints, alignedFirst, alignedLast, !useIntervals, wdata, view->getSequenceObject(), vr, os);
             graphUpdater.updateGraphData();
