@@ -24,6 +24,7 @@
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTRadioButton.h>
+#include <primitives/GTGroupBox.h>
 
 
 
@@ -64,7 +65,7 @@ void GenerateAlignmentProfileDialogFiller::run() {
 
     if (format != NONE) {
         QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
-        saveBox->setChecked(true);
+        GTGroupBox::setChecked(os, saveBox, true);
         GTGlobals::sleep(500);
 
         QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");

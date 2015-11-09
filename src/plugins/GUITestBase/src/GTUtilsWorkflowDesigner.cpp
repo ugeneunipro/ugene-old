@@ -60,6 +60,7 @@
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
+#include "utils/GTThread.h"
 
 namespace U2 {
 using namespace HI;
@@ -992,8 +993,26 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter,
         }
     }
     GT_CHECK_RESULT(row != -1, "parameter " + parameter + " not found","");
+    QModelIndex idx = model->index(row, 1);
 
-    QVariant var = model->data(model->index(row,1));
+    QVariant var;
+
+    class Scenario : public U2::CustomScenario {
+    public:
+        Scenario(QAbstractItemModel* _model, QModelIndex _idx, QVariant &_result) :
+            model(_model), idx(_idx), result(_result){}
+        void run(U2::U2OpStatus &os) {
+            Q_UNUSED(os);
+            result = model->data(idx);
+            GTGlobals::sleep(100);
+        }
+    private:
+        QAbstractItemModel* model;
+        QModelIndex idx;
+        QVariant &result;
+    };
+
+    GTThread::runInMainThread(os, new Scenario(model, idx, var));
     return var.toString();
 }
 #undef GT_METHOD_NAME

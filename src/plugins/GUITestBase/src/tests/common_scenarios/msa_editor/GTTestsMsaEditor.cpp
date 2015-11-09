@@ -68,6 +68,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "utils/GTThread.h"
 
 #include <U2Gui/ToolsMenu.h>
 
@@ -2831,6 +2832,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
         GTUtilsDialog::waitForDialog(os, r);
 
         GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+        GTGlobals::sleep();
         //GTMouseDriver::click(os,Qt::RightButton);
 
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
@@ -2838,11 +2840,14 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
         GTGlobals::sleep();
 
         GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,42,44));
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
         GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+        GTGlobals::sleep();
 
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseMouse));
+
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence"));
         GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+        GTGlobals::sleep();
 
         QString clipboardText = GTClipboard::text(os);
         CHECK_SET_ERR(clipboardText == "---", "Expected: TAGTTTATTAA, Found: " + clipboardText);
@@ -4712,15 +4717,15 @@ GUI_TEST_CLASS_DEFINITION(test_0072){
 //    shift + arrows
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
-    GTGlobals::sleep(300);
+    GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(5,4), QPoint(5,5)));
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"]);
-    GTGlobals::sleep(300);
+    GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,4), QPoint(5,5)));
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-    GTGlobals::sleep(300);
+    GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(4,5), QPoint(5,5)));
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
