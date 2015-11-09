@@ -32,6 +32,7 @@
 #include "GTGlobals.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
+#include "utils/GTThread.h"
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTListWidget.h>
 #include "primitives/GTMenu.h"
@@ -447,9 +448,10 @@ GUI_TEST_CLASS_DEFINITION(test_1020) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate grid profile", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
 
-    CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Alignment profile for COI", "Unexpected active window name");
+    CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Alignment profile for COI", "Unexpected active window name: " + GTUtilsMdi::activeWindow(os)->windowTitle());
 
     GTUtilsMdi::activateWindow(os, "COI [m] COI");
 
@@ -2763,6 +2765,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
 //    2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
     GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature");

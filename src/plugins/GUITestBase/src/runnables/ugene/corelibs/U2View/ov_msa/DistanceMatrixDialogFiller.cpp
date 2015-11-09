@@ -25,6 +25,7 @@
 #include <primitives/GTRadioButton.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTCheckBox.h>
+#include <primitives/GTGroupBox.h>
 #include "GTGlobals.h"
 
 #include <QtCore/QDir>
@@ -95,7 +96,7 @@ void DistanceMatrixDialogFiller::commonScenario(){
 
     if(saveToFile){
         QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
-        saveBox->setChecked(true);
+        GTGroupBox::setChecked(os, saveBox, true);
 
         QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");
         GTLineEdit::setText(os, fileEdit,path);

@@ -40,7 +40,7 @@ LicenseAgreemntDialogFiller::LicenseAgreemntDialogFiller(U2OpStatus &os) :
 void LicenseAgreemntDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
 
     QPushButton* accept = dialog->findChild<QPushButton*>("acceptButton");
     GTWidget::click(os, accept);
