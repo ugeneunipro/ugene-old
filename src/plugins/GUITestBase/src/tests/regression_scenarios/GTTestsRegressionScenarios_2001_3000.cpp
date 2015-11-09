@@ -3658,6 +3658,7 @@ GUI_TEST_CLASS_DEFINITION( test_2498 ) {
     //
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "empty.fa");
+    GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
 
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows",

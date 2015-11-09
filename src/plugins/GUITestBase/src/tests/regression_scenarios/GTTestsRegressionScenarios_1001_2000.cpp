@@ -7958,8 +7958,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
         workflowOutputDir.absolutePath( ) ) );
 
     //1. Open WD
-    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Workflow Designer...");
-    GTGlobals::sleep( 500 );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     //2. Select "Align sequences with MUSCLE"
     GTUtilsWorkflowDesigner::addSample( os, "Align sequences with MUSCLE" );
