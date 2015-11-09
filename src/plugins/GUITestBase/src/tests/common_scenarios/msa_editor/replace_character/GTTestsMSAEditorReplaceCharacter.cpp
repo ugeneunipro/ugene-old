@@ -63,6 +63,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     //4. Press a key on the keyboard with another character of the same alphabet(e.g C key).
     //Expected result : the original character of the alignment was replaced with the new one(e.g 'A' was replaced with 'C').Selection is in normal mode.
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -88,6 +89,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     //5. Press a key on the keyboard with another character of the same alphabet(e.g C key).
     //Expected result : the original character of the alignment was replaced with the new one(e.g 'A' was replaced with 'C').Selection is in normal mode.
     GTKeyboardDriver::keyClick(os, 'a');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -113,6 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     //5. Press a key on the keyboard with another character of the same alphabet(e.g C key).
     //Expected result : the original character of the alignment was replaced with the new one(e.g 'A' was replaced with 'C').Selection is in normal mode.
     GTKeyboardDriver::keyClick(os, 'g');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -135,11 +138,128 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    //Gui test will be added after commit UGENE-4804
+    //1. Open an alignment in the Alignment Editor.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Select one character.
+    //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 9), QPoint(9, 9));
+
+    //3. Press Shift + R keys on the keyboard.
+    //Expected result : the character is selected in the replacement mode(i.e.the border of the character are drawn using another color and / or bold).
+    GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
+
+    //4. Press a key on the keyboard with another character of the same alphabet(e.g C key).
+    //Expected result :
+    //The original character was replaced by the new one. The alphabet of the alignment has been changed.
+    //A warning notification appears : Alphabet of the character, inserted into the alignment, differs from the alignment alphabet.The alignment alphabet has been set to
+    //"%1".Use "Undo", if you'd like to restore the original alignment.
+    //Here "%1" is one of the values : "Standard DNA", "Extended DNA", "Standard RNA", "Extended RNA", "Standard amino acid", "Extended amino acid", "Raw".
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+    GTKeyboardDriver::keyClick(os, 'r');
+    GTGlobals::sleep(200);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(selectionContent == "R", QString("Incorrect selection content: expected - %1, received - %2").arg("R").arg(selectionContent));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1){
+    //1. Open an alignment in the Alignment Editor.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    //2. Select one character.
+    //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 9), QPoint(9, 9));
+
+    //3. Press Shift + R keys on the keyboard.
+    //Expected result : the character is selected in the replacement mode(i.e.the border of the character are drawn using another color and / or bold).
+    GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
+
+    //4. Press a key on the keyboard with another character of the same alphabet(e.g C key).
+    //Expected result :
+    //The original character was replaced by the new one. The alphabet of the alignment has been changed.
+    //A warning notification appears : Alphabet of the character, inserted into the alignment, differs from the alignment alphabet.The alignment alphabet has been set to
+    //"%1".Use "Undo", if you'd like to restore the original alignment.
+    //Here "%1" is one of the values : "Standard DNA", "Extended DNA", "Standard RNA", "Extended RNA", "Standard amino acid", "Extended amino acid", "Raw".
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+    GTKeyboardDriver::keyClick(os, 'r');
+    GTGlobals::sleep();
+
+    //5. Click "Undo".
+    //Expected state : There is NO notifications.
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep();
+
+    //6. Click "Redo".
+    //Expected state : The warning notification appears again.
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+    GTUtilsMsaEditor::redo(os);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(selectionContent == "R", QString("Incorrect selection content: expected - %1, received - %2").arg("R").arg(selectionContent));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
-    //Gui test will be added after commit UGENE-4804
+    //1. Open an alignment in the Alignment Editor.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+
+    //2. Select one character.
+    //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 1), QPoint(9, 1));
+
+    //3. Press Shift + R keys on the keyboard.
+    //Expected result : the character is selected in the replacement mode(i.e.the border of the character are drawn using another color and / or bold).
+    GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
+
+    //4. Press a key on the keyboard with another character of the same alphabet(e.g C key).
+    //Expected result :
+    //The original character was replaced by the new one. The alphabet of the alignment has been changed.
+    //There is NO notifications.
+    GTKeyboardDriver::keyClick(os, 'a');
+    GTGlobals::sleep(200);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(selectionContent == "A", QString("Incorrect selection content: expected - %1, received - %2").arg("A").arg(selectionContent));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006_1){
+    //1. Open an alignment in the Alignment Editor.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+
+    //2. Select one character.
+    //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 1), QPoint(9, 1));
+
+    //3. Press Shift + R keys on the keyboard.
+    //Expected result : the character is selected in the replacement mode(i.e.the border of the character are drawn using another color and / or bold).
+    GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
+
+    //4. Press a key on the keyboard with another character of the same alphabet(e.g C key).
+    //Expected result :
+    //The original character was replaced by the new one. The alphabet of the alignment has been changed.
+    //There is NO notifications.
+    GTKeyboardDriver::keyClick(os, 'a');
+    GTGlobals::sleep(200);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    const QString selectionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(selectionContent == "A", QString("Incorrect selection content: expected - %1, received - %2").arg("A").arg(selectionContent));
+
+    //5. Click "Undo".
+    //Expected state : There is NO notifications.
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep();
+
+    //6. Click "Redo".
+    //Expected state : There is NO notifications.
+    GTUtilsMsaEditor::redo(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
@@ -156,6 +276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 8), QPoint(9, 8));
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -175,6 +296,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -193,6 +315,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -211,6 +334,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -236,6 +360,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
     GTGlobals::sleep(1000);
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -257,6 +382,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -275,6 +401,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -294,6 +421,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -318,6 +446,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -343,6 +472,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -357,6 +487,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
     GTKeyboardDriver::keyClick(os, '-');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -377,6 +508,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
 
     GTUtilsNotifications::waitForNotification(os, false, "It is not possible to insert the character into the alignment");
     GTKeyboardDriver::keyClick(os, ']');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
@@ -398,6 +530,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 
     GTKeyboardDriver::keyClick(os, 'c');
+    GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);

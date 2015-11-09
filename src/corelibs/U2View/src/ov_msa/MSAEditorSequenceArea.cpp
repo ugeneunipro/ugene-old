@@ -2039,8 +2039,8 @@ void MSAEditorSequenceArea::sl_alphabetChanged(const MAlignmentModInfo &mi, cons
     updateColorAndHighlightSchemes();
 
     QString message;
-    if (mi.sequenceListChanged && (mi.alphabetChanged || mi.type == MAlignmentModType_Redo)) {
-        message = tr("A sequence of another alphabet has been added to the alignment. The alignment alphabet has been changed from \"%1\" to \"%2\". Use \"Undo\", if you'd like to restore the original alignment.")
+    if (mi.alphabetChanged || mi.type == MAlignmentModType_Redo) {
+        message = tr("The alignment has been modified, so that its alphabet has been switched from \"%1\" to \"%2\". Use \"Undo\", if you'd like to restore the original alignment.")
             .arg(prevAlphabet->getName()).arg(editor->getMSAObject()->getAlphabet()->getName());
     }
 
