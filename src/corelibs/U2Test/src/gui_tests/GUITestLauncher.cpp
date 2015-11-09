@@ -195,7 +195,13 @@ QString GUITestLauncher::testOutFile(const QString &testName) {
 
 QString GUITestLauncher::getTestOutDir(){
     QString date = QDate::currentDate().toString("dd.MM.yyyy");
-    QString initPath = QDir::homePath() + "/gui_testing_output/" + date;
+    QString guiTestOutputDirectory = qgetenv("GUI_TESTING_OUTPUT");
+    QString initPath;
+    if(guiTestOutputDirectory.isEmpty()){
+        initPath = QDir::homePath() + "/gui_testing_output/" + date;
+    }else{
+        initPath = guiTestOutputDirectory + "/gui_testing_output/" + date;
+    }
     QDir d(initPath);
     int i = 1;
     while(d.exists()){

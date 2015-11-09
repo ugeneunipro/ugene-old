@@ -49,16 +49,27 @@ QString getDataDir(){
 #endif
 }
 
+QString getScreenshotDir(){
+    QString result;
 #ifdef Q_OS_MAC
-const QString GUITest::screenshotDir = "../../../../../../screenshotFol/";
+    result = "../../../../../../screenshotFol/";
 #else
-const QString GUITest::screenshotDir = QDir::homePath() + "/gui_testing_output/" +
-        QDate::currentDate().toString("dd.MM.yyyy") + "/screenshots/";
+    QString guiTestOutputDirectory = qgetenv("GUI_TESTING_OUTPUT");
+    if(guiTestOutputDirectory.isEmpty()){
+        result = QDir::homePath() + "/gui_testing_output/" +
+                QDate::currentDate().toString("dd.MM.yyyy") + "/screenshots/";
+    }else{
+        result = guiTestOutputDirectory + "/gui_testing_output/" +
+                QDate::currentDate().toString("dd.MM.yyyy") + "/screenshots/";
+    }
+    return result;
 #endif
+}
 
 const QString GUITest::testDir = getTestDir();
 const QString GUITest::dataDir = getDataDir();
 const QString GUITest::sandBoxDir = testDir + "_common_data/scenarios/sandbox/";
+const QString GUITest::screenshotDir = getScreenshotDir();
 
 void GUITest::sl_fail(){
 #if (QT_VERSION < 0x050000) // deprecated method

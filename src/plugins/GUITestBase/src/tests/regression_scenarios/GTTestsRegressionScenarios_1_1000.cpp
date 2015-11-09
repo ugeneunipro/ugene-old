@@ -1488,7 +1488,7 @@ GUI_TEST_CLASS_DEFINITION(test_0775){
 //    3. Press 'Go' button
 //    Expected state: this regions are selected on the view
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<<"Copy sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(500);
     QString text = GTClipboard::text(os);
     CHECK_SET_ERR(text == "TTCAGATTAAAGTT", "unexpected selection: " + text);

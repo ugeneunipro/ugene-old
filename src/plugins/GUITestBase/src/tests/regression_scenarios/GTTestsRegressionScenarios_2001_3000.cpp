@@ -912,6 +912,7 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Workflow Designer...");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2100_1 ){

@@ -99,7 +99,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004){
@@ -188,7 +187,6 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
 
     PermissionsSetter::setReadWrite(os, sandBoxDir);
     GTGlobals::sleep();

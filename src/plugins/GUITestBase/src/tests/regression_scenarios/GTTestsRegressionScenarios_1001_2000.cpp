@@ -5202,7 +5202,7 @@ GUI_TEST_CLASS_DEFINITION(test_1527) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1527_1) {
@@ -5215,6 +5215,7 @@ GUI_TEST_CLASS_DEFINITION(test_1527_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1528){
@@ -7972,7 +7973,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     //4. Store the scheme to some file using "Save scheme as" button
     GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
         workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Save workflow", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "&Save workflow", GTGlobals::UseKey);
 
     //5. Close WD
     GTUtilsMdi::click( os, GTGlobals::Close );
@@ -8008,7 +8009,7 @@ GUI_TEST_CLASS_DEFINITION(test_1831) {
     QDir workflowOutputDir(workflowOutputDirPath);
 
     GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, workflowOutputDir.absolutePath() + "/" + "test.uwl", "Workflow"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Save workflow", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "&Save workflow", GTGlobals::UseKey);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);
