@@ -21,7 +21,7 @@
 
 #include "GTMenuPrivateMac.h"
 
-namespace U2 {
+namespace HI {
 
 #ifdef __OBJC__
 
@@ -44,7 +44,7 @@ U2CocoaAutoReleasePool::~U2CocoaAutoReleasePool() {
 }
 
 #define GT_METHOD_NAME "clickMainMenuItem"
-void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag) {
+void GTMenuPrivateMac::clickMainMenuItem(U2::U2OpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag) {
     U2CocoaAutoReleasePool pool;
     Q_UNUSED(pool);
 
@@ -57,7 +57,7 @@ void GTMenuPrivateMac::clickMainMenuItem(U2OpStatus &os, const QStringList &item
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkMainMenuItemState"
-void GTMenuPrivateMac::checkMainMenuItemState(U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
+void GTMenuPrivateMac::checkMainMenuItemState(U2::U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
     U2CocoaAutoReleasePool pool;
     Q_UNUSED(pool);
 
@@ -73,7 +73,7 @@ void GTMenuPrivateMac::checkMainMenuItemState(U2OpStatus &os, const QStringList 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickMenuItem"
-NSMenu * GTMenuPrivateMac::clickMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
+NSMenu * GTMenuPrivateMac::clickMenuItem(U2::U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
     NSMenuItem *item = getMenuItem(os, menu, itemTitle, matchFlag);
     if (NULL == item) {
         QStringList items;
@@ -90,7 +90,7 @@ NSMenu * GTMenuPrivateMac::clickMenuItem(U2OpStatus &os, NSMenu *menu, const QSt
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMenuItem"
-NSMenuItem *GTMenuPrivateMac::getMenuItem(U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
+NSMenuItem *GTMenuPrivateMac::getMenuItem(U2::U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
     switch (matchFlag) {
     case Qt::MatchExactly:
         return [menu itemWithTitle:(itemTitle.toNSString())];
@@ -112,7 +112,7 @@ NSMenuItem *GTMenuPrivateMac::getMenuItem(U2OpStatus &os, NSMenu *menu, const QS
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMenuItem"
-void GTMenuPrivateMac::checkMenuItemState(U2OpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState) {
+void GTMenuPrivateMac::checkMenuItemState(U2::U2OpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState) {
     switch (expectedState) {
     case PopupChecker::NotExists: {
         NSMenuItem *menuItem = getMenuItem(os, containerMenu, itemTitle, Qt::MatchExactly);
