@@ -74,7 +74,6 @@ void OpenAssemblyBrowserTask::open() {
                     break;
                 }
             }
-            GObject* obj = doc->findGObjectByName(unloadedObjRef.objName);
             if (obj!=NULL && obj->getGObjectType() == GObjectTypes::ASSEMBLY) {
                 selectedObjects.append(qobject_cast<AssemblyObject*>(obj));
             }
@@ -157,7 +156,14 @@ void OpenSavedAssemblyBrowserTask::open() {
     if (doc->isDatabaseConnection() && ref.entityRef.isValid()) {
         obj = doc->getObjectById(ref.entityRef.entityId);
     } else {
-        obj = doc->findGObjectByName(ref.objName);
+        //To do: replace the object finding to "GObject* obj = doc->findGObjectByName(unloadedObjRef.objName);" after fixing of UGENE-4904
+        QList<GObject*> objs = doc->findGObjectByType(ref.objType);
+        foreach(GObject* curObj, objs) {
+            if (curObj->getGObjectName() == ref.objName) {
+                obj = curObj;
+                break;
+            }
+        }
     }
     if (obj == NULL || obj->getGObjectType() != GObjectTypes::ASSEMBLY) {
         stateIsIllegal = true;
