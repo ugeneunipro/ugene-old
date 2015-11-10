@@ -52,7 +52,6 @@ bool AnnotatedDNAViewFactory::canCreateView(const MultiGSelection& multiSelectio
     //1. selection has loaded of unloaded DNA sequence object
     //2. selection has any object with SEQUENCE relation to DNA sequence object that is in the project
     //3. selection has document that have sequence object or object assosiated with sequence
-    //4. parent document of the object is not loaded and contains sequence object
 
     //1.
     QList<GObject*> selectedObjects = SelectionUtils::findObjects("", &multiSelection, UOF_LoadedAndUnloaded);
@@ -68,24 +67,17 @@ bool AnnotatedDNAViewFactory::canCreateView(const MultiGSelection& multiSelectio
         return true;
     }
 
-    //3 & 4.
+    //3.
     const DocumentSelection* ds = qobject_cast<const DocumentSelection*>(multiSelection.findSelectionByType(GSelectionTypes::DOCUMENTS));
-    QList<Document*> docs;
-    if (ds != NULL) {
-        docs << ds->getSelectedDocuments();
+    if (ds == NULL) {
+        return false;
     }
-    foreach (GObject* o, selectedObjects) {
-        docs << o->getDocument();
-    }
-    foreach(Document* doc, docs) {
-        if (doc->isDatabaseConnection()) {
-            continue;
-        }
+    foreach(Document* doc, ds->getSelectedDocuments()) {
         if (!doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
             return true;
         }
         objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(doc->getObjects(),
-                                                                         GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
+            GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
         if (!objectsWithSeqRelation.isEmpty()) {
             return true;
@@ -111,26 +103,18 @@ Task* AnnotatedDNAViewFactory::createViewTask(const MultiGSelection& multiSelect
     }
 
     const DocumentSelection* ds = qobject_cast<const DocumentSelection*>(multiSelection.findSelectionByType(GSelectionTypes::DOCUMENTS));
-    QList<Document*> docs;
     if (ds != NULL) {
-        docs << ds->getSelectedDocuments();
-    }
-    foreach (GObject* o, selectedObjects) {
-        docs << o->getDocument();
-    }
-    foreach(Document* doc, docs) {
-        if (doc->isDatabaseConnection()) {
-            continue;
-        }
-        foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded)) {
-            if(!objectsToOpen.contains(obj)) {
-                objectsToOpen.append(obj);
+        foreach(Document* doc, ds->getSelectedDocuments()) {
+            foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded)) {
+                if(!objectsToOpen.contains(obj)) {
+                    objectsToOpen.append(obj);
+                }
             }
-        }
-        foreach(GObject* obj, GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE,
-                                                                      ObjectRole_Sequence, UOF_LoadedAndUnloaded, true)) {
-            if(!objectsToOpen.contains(obj)) {
-                objectsToOpen.append(obj);
+            foreach(GObject* obj, GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE,
+                ObjectRole_Sequence, UOF_LoadedAndUnloaded, true)) {
+                if(!objectsToOpen.contains(obj)) {
+                    objectsToOpen.append(obj);
+                }
             }
         }
     }
