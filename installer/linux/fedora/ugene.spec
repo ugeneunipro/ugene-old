@@ -1,6 +1,6 @@
 Name:    ugene
 Summary: Integrated bioinformatics toolkit
-Version: 1.16.0
+Version: 1.19.0
 Release: 1%{?dist}
 #The entire source code is GPLv2+ except:
 #file src/libs_3rdparty/qtbindings_core/src/qtscriptconcurrent.h which is GPLv2
@@ -10,9 +10,10 @@ Group:   Applications/Engineering
 URL:     http://ugene.unipro.ru
 Source0: http://ugene.unipro.ru/downloads/%{name}-%{version}.tar.gz
 
-BuildRequires: qt4-devel pkgconfig(QtWebKit) zlib-devel desktop-file-utils procps-devel qt-mysql
+BuildRequires: qt5-qtbase-devel qt5-qttools-devel qt5-qtsvg-devel qt5-qtquick1-devel qt5-qtscript-devel qt5-qtwebkit-devel qt5-qtsensors-devel qt5-qtmultimedia-devel qt5-qtwebchannel-devel qt5-qtxmlpatterns-devel zlib-devel desktop-file-utils procps-devel mesa-libGLU-devel qt5-qtbase-mysql
+BuildConflicts: qt-devel
 #We need strict versions of qt for correct work of src/libs_3rdparty/qtbindings_*
-%{?_qt4_version:Requires: qt4%{?_isa} >= %{_qt4_version}}
+%{?_qt5_version:Requires: qt5%{?_isa} >= %{_qt5_version}}
 Provides: bundled(sqlite)
 Provides: bundled(samtools)
 ExclusiveArch: %{ix86} x86_64
@@ -28,7 +29,7 @@ is a designer for custom bioinformatics workflows.
 %setup -q
 
 %build
-%_bindir/qmake-qt4 -r -spec linux-g++ \
+%_bindir/qmake-qt5 -r -spec linux-g++ \
         INSTALL_BINDIR=%{_bindir} \
         INSTALL_LIBDIR=%{_libdir} \
         INSTALL_DATADIR=%{_datadir} \
@@ -57,6 +58,30 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 %doc COPYRIGHT LICENSE LICENSE.3rd_party 
 
 %changelog
+* Mon Nov 9 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.19.0-1
+- New upstream version
+
+* Tue Sep 8 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.18.0-1
+- New upstream version
+
+* Wed Jul 8 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.17.0-1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.16.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Mon May 25 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.16.2-1
+- New upstream version
+
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1.16.1-2
+- Rebuilt for GCC 5 C++11 ABI change
+
+* Sat Mar 21 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.16.1-1
+- New upstream version
+
+* Wed Feb 25 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.16.0-2
+- Minor fix
+
 * Wed Feb 25 2015 Yuliya Algaer <yalgaer@unipro.ru> - 1.16.0-1
 - New upstream version
 

@@ -21,7 +21,7 @@ build: build-arch build-indep
 
 build-arch: build-arch-stamp
 build-arch-stamp:
-	qmake-qt4 -r UGENE_EXCLUDE_LIST_ENABLED=1 DEFINES+='UGENE_VERSION_SUFFIX=\\\"-ppa\\\"'
+	qmake -r UGENE_EXCLUDE_LIST_ENABLED=1 UGENE_USE_BUNDLED_ZLIB=1 DEFINES+='UGENE_VERSION_SUFFIX=\\\"-ppa\\\"'
 	$(MAKE) -j 8	
 	touch $@
 
@@ -99,6 +99,8 @@ install-arch:
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/hmm3.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/kalign.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/kalign.plugin
+	rm debian/ugene-non-free/usr/lib/ugene/plugins/linkdata_support.license
+	rm debian/ugene-non-free/usr/lib/ugene/plugins/linkdata_support.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/opencl_support.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/opencl_support.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/orf_marker.license
@@ -123,6 +125,8 @@ install-arch:
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/smith_waterman.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/umuscle.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/umuscle.plugin
+	rm debian/ugene-non-free/usr/lib/ugene/plugins/variants.license
+	rm debian/ugene-non-free/usr/lib/ugene/plugins/variants.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/weight_matrix.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/weight_matrix.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/workflow_designer.license

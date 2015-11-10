@@ -3,13 +3,13 @@ Section: science
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Ivan Efremov <iefremov@unipro.ru>
-Build-Depends: libqt4-dev (>= 4.7.0), libqtwebkit-dev, libqt4-opengl-dev (>= 4.7.0), libqt4-sql-mysql, zlib1g-dev, debhelper (>=5.0.38)
+Build-Depends: qt5-default, qttools5-dev-tools, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-mysql, qtscript5-dev, libqt5svg5-dev, zlib1g-dev, libprocps3-dev, debhelper (>=5.0.38)
 Standards-Version: 3.9.3
 Homepage: http://ugene.unipro.ru
 
 Package: ugene
 Architecture: any
-Depends: ${shlibs:Depends}, libqt4-gui (>=4.7.0), libqt4-core (>=4.7.0), libqt4-sql-mysql, ugene-data, ${misc:Depends}
+Depends: ${shlibs:Depends}, libqt5core5a, libqt5dbus5, libqt5gui5, libqt5multimedia5, libqt5network5, libqt5opengl5, libqt5positioning5, libqt5printsupport5, libqt5qml5, libqt5quick5, libqt5script5, libqt5scripttools5, libqt5sensors5, libqt5sql5, libqt5svg5, libqt5webkit5, libqt5widgets5, libqt5xml5, libqt5sql5-mysql, ugene-data, ${misc:Depends}
 Recommends: bowtie, bwa, clustalw, mafft, mrbayes, ncbi-blast+, t-coffee
 Description: integrated bioinformatics toolkit
  Unipro UGENE is a cross-platform visual environment for DNA and protein 
@@ -29,7 +29,7 @@ Description: required data for UGENE - integrated bioinformatics toolkit
 
 Package: ugene-non-free
 Architecture: any
-Depends: ${shlibs:Depends}, libqt4-gui (>=4.7.0), libqt4-core (>=4.7.0), ugene, ${misc:Depends}
+Depends: ${shlibs:Depends}, libqt5core5a, libqt5dbus5, libqt5gui5, libqt5multimedia5, libqt5network5, libqt5opengl5, libqt5positioning5, libqt5printsupport5, libqt5qml5, libqt5quick5, libqt5script5, libqt5scripttools5, libqt5sensors5, libqt5sql5, libqt5svg5, libqt5webkit5, libqt5widgets5, libqt5xml5, libqt5sql5-mysql, ugene, ${misc:Depends}
 Description: non-free plugins for UGENE - integrated bioinformatics toolkit
  Unipro UGENE is a cross-platform visual environment for DNA and protein 
  sequence analysis. 

@@ -123,12 +123,12 @@ unix : UGENE_DEV_NULL = /dev/null
 
 UGENE_LRELEASE =
 UGENE_LUPDATE = 
-system(lrelease -version > $$UGENE_DEV_NULL 2> $$UGENE_DEV_NULL) {
+system(lrelease-qt5 -version > $$UGENE_DEV_NULL 2> $$UGENE_DEV_NULL) {
+    UGENE_LRELEASE = lrelease-qt5
+    UGENE_LUPDATE = lupdate-qt5
+} else : system(lrelease -version > $$UGENE_DEV_NULL 2> $$UGENE_DEV_NULL) {
     UGENE_LRELEASE = lrelease
     UGENE_LUPDATE = lupdate
-} else : system(lrelease-qt4 -version > $$UGENE_DEV_NULL 2> $$UGENE_DEV_NULL) {
-    UGENE_LRELEASE = lrelease-qt4
-    UGENE_LUPDATE = lupdate-qt4
 }
 
 #foreach 'language'
