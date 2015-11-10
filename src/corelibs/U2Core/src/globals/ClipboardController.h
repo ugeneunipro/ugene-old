@@ -35,8 +35,8 @@ class U2CORE_EXPORT PasteTask : public Task{
 public:
     PasteTask();
 
-    virtual QList<GUrl> getUrls() = 0;
-    virtual QList<Document*> getDocuments() = 0;
+    virtual QList<GUrl> getUrls() const = 0;
+    virtual QList<Document*> getDocuments() const = 0;
 protected:
    virtual void processDocument(Document* doc){}
 };
@@ -46,8 +46,15 @@ class U2CORE_EXPORT PasteFactory : public QObject {
 public:
     PasteFactory(QObject *parent=0);
 
-    virtual PasteTask* pasteTask(bool addToProject) = 0;
+    virtual PasteTask* pasteTask(bool useInSequenceWidget) = 0;
 };
+
+class U2CORE_EXPORT PasteUtils : public QObject {
+    Q_OBJECT
+public:
+    static QList<DNASequence> getSequences(const QList<Document*>& docs, U2OpStatus& os);
+};
+
 
 } // U2
 

@@ -30,8 +30,10 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/ClipboardController.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DocumentModel.h>
@@ -46,10 +48,15 @@
 #include <U2Core/RemoveAnnotationsTask.h>
 #include <U2Core/ReverseSequenceTask.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/SequenceUtils.h>
 #include <U2Core/Task.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/CreateObjectRelationDialogController.h>
 #include <U2Gui/DialogUtils.h>
@@ -222,6 +229,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrollArea->setWidget(scrolledWidget);
 
     clipb = new ADVClipboard(this);
+    connect(clipb->getPasteSequenceAction(), SIGNAL(triggered()), this, SLOT(sl_paste()));
 
     mainSplitter->installEventFilter(this);
     mainSplitter->setAcceptDrops(true);
@@ -467,6 +475,7 @@ void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(clipb->getCopyComplementTranslationAction());
     tb->addAction(clipb->getCopyAnnotationSequenceAction());
     tb->addAction(clipb->getCopyAnnotationSequenceTranslationAction());
+    tb->addAction(clipb->getPasteSequenceAction());
     tb->addSeparator();
 
     if (posSelector == NULL && !seqContexts.isEmpty()) {
@@ -1304,6 +1313,69 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged() {
         updateMultiViewActions();
         emit si_sequenceModified(seqCtx);
     }
+}
+
+void AnnotatedDNAView::sl_paste(){
+    PasteFactory* pasteFactory = AppContext::getPasteFactory();
+    SAFE_POINT(pasteFactory != NULL, "adFactory is null", );
+
+    bool focus = false;
+    ADVSingleSequenceWidget *wgt = qobject_cast<ADVSingleSequenceWidget*> (focusedWidget);
+    if (wgt != NULL) {
+        QList<GSequenceLineView*> views = wgt->getLineViews();
+        foreach (GSequenceLineView* v, views) {
+            if (v->hasFocus()) {
+                focus = true;
+                break;
+            }
+        }
+    }
+    bool pasteToWidget = focus;
+    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
+    if (pasteToWidget){
+        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
+
+void AnnotatedDNAView::sl_pasteFinished(Task* _pasteTask){
+    ADVSequenceObjectContext *seqCtx = getSequenceInFocus();
+    if (seqCtx == NULL){
+        return;
+    }
+
+    U2SequenceObject* obj = seqCtx->getSequenceObject();
+    if (obj->isStateLocked()) {
+        return;
+    }
+
+    PasteTask* pasteTask = qobject_cast<PasteTask*>(_pasteTask);
+    if(NULL == pasteTask || pasteTask->isCanceled()) {
+        return;
+    }
+    const QList<Document*>& docs = pasteTask->getDocuments();
+    if (docs.length() == 0){
+        return;
+    }
+
+    U2OpStatusImpl os;
+    const QList<DNASequence>& sequences = PasteUtils::getSequences(docs, os);
+    DNASequence seq;
+    foreach(const DNASequence& dnaObj, sequences) {
+        if (seq.alphabet == NULL){
+            seq.alphabet = dnaObj.alphabet;
+        }
+        const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj.alphabet, seq.alphabet);
+        if (newAlphabet != NULL) {
+            seq.alphabet = newAlphabet;
+            seq.seq.append(dnaObj.seq);
+        }
+    }
+
+    Task *t = new ModifySequenceContentTask(BaseDocumentFormats::FASTA, obj, U2Region(obj->getSequenceLength(), 0), seq);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    seqCtx->getSequenceSelection()->clear();
 }
 
 void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {

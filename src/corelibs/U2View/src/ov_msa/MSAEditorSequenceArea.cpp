@@ -31,6 +31,7 @@
 #include <U2Algorithm/MSAColorScheme.h>
 #include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/ClipboardController.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
@@ -48,6 +49,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -124,6 +126,9 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 
     connect(ui->getCopyFormattedSelectionAction(), SIGNAL(triggered()), SLOT(sl_copyFormattedSelection()));
     addAction(ui->getCopyFormattedSelectionAction());
+
+    connect(ui->getPasteAction(), SIGNAL(triggered()), SLOT(sl_paste()));
+    addAction(ui->getPasteAction());
 
     delColAction = new QAction(QIcon(":core/images/msaed_remove_columns_with_gaps.png"), tr("Remove columns of gaps..."), this);
     delColAction->setObjectName("remove_columns_of_gaps");
@@ -1986,6 +1991,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     copyMenu->addAction(ui->getCopySelectionAction());
     ui->getCopyFormattedSelectionAction()->setDisabled(selection.isNull());
     copyMenu->addAction(ui->getCopyFormattedSelectionAction());
+    copyMenu->addAction(ui->getPasteAction());
 
     QMenu* viewMenu = GUIUtils::findSubMenu(m, MSAE_MENU_VIEW);
     SAFE_POINT(viewMenu != NULL, "viewMenu", );
@@ -2438,6 +2444,40 @@ void MSAEditorSequenceArea::sl_copyFormattedSelection(){
     AppContext::getTaskScheduler()->registerTopLevelTask(clipboardTask);
 }
 
+void MSAEditorSequenceArea::sl_paste(){
+    MAlignmentObject* msaObject = editor->getMSAObject();
+    if (msaObject->isStateLocked()) {
+        return;
+    }
+    PasteFactory* pasteFactory = AppContext::getPasteFactory();
+    SAFE_POINT(pasteFactory != NULL, "PasteFactory is null", );
+
+    bool pasteToWidget = hasFocus();
+    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
+
+    if (pasteToWidget){
+        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
+
+void MSAEditorSequenceArea::sl_pasteFinished(Task* _pasteTask){
+    MAlignmentObject* msaObject = editor->getMSAObject();
+    if (msaObject->isStateLocked()) {
+        return;
+    }
+
+    PasteTask* pasteTask = qobject_cast<PasteTask*>(_pasteTask);
+    if(NULL == pasteTask || pasteTask->isCanceled()) {
+        return;
+    }
+    const QList<Document*>& docs = pasteTask->getDocuments();
+
+    cancelSelection();
+    AddSequencesFromDocumentsToAlignmentTask *task = new AddSequencesFromDocumentsToAlignmentTask(msaObject, docs);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
 
 bool MSAEditorSequenceArea::shiftSelectedRegion(int shift) {
     if (0 == shift) {

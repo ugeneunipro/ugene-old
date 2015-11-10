@@ -366,6 +366,8 @@ private slots:
     void sl_replaceSelectedCharacter();
     void sl_copyCurrentSelection();
     void sl_copyFormattedSelection();
+    void sl_paste();
+    void sl_pasteFinished(Task* pasteTask);
     void sl_fillCurrentSelectionWithGaps();
     void sl_delCol();
     void sl_goto();

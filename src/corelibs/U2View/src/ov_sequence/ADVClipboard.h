@@ -48,6 +48,8 @@ public:
     QAction* getCopyAnnotationSequenceAction() const {return copyAnnotationSequenceAction;}
     QAction* getCopyAnnotationSequenceTranslationAction() const {return copyAnnotationSequenceTranslationAction;}
 
+    QAction* getPasteSequenceAction() const {return pasteSequenceAction;}
+
     void addCopyMenu(QMenu* m);
 
 public slots:
@@ -78,6 +80,7 @@ private:
     QAction* copyComplementTranslationAction;
     QAction* copyAnnotationSequenceAction;
     QAction* copyAnnotationSequenceTranslationAction;
+    QAction* pasteSequenceAction;
 
     static const QString COPY_FAILED_MESSAGE;
     static const qint64 MAX_COPY_SIZE_FOR_X86;

@@ -208,6 +208,9 @@ private slots:
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
 
+    void sl_paste();
+    void sl_pasteFinished(Task* pasteTask);
+
     void sl_reverseComplementSequence();
     void sl_reverseSequence();
     void sl_complementSequence();

@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/ClipboardController.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
@@ -37,7 +38,7 @@ namespace U2 {
 
 const int AddSequenceObjectsToAlignmentTask::maxErrorListSize = 5;
 
-AddSequenceObjectsToAlignmentTask::AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<U2SequenceObject*>& seqList)
+AddSequenceObjectsToAlignmentTask::AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList)
     : Task("Add sequences to alignment task", TaskFlags(TaskFlags_NR_FOSE_COSC)), seqList(seqList), maObj(obj), stateLock(NULL), msaAlphabet(maObj->getAlphabet()) {}
 
 void AddSequenceObjectsToAlignmentTask::prepare() {
@@ -57,15 +58,17 @@ void AddSequenceObjectsToAlignmentTask::prepare() {
 }
 
 void AddSequenceObjectsToAlignmentTask::processObjectsAndSetResultingAlphabet() {
-    foreach(U2SequenceObject* dnaObj, seqList) {
-        const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), msaAlphabet);
+    QList<DNASequence>    newSeqList;
+    foreach(const DNASequence& dnaObj, seqList) {
+        const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj.alphabet, msaAlphabet);
         if (newAlphabet != NULL) {
             msaAlphabet = newAlphabet;
+            newSeqList.append(dnaObj);
         } else {
-            errorList << dnaObj->getGObjectName();
-            seqList.removeAll(dnaObj);
+            errorList << dnaObj.getName();
         }
     }
+    seqList = newSeqList;
 }
 
 Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
@@ -89,11 +92,11 @@ Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
 qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     qint64 maxLen = 0;
-    foreach (U2SequenceObject *seqObj, seqList) {
+    foreach (const DNASequence& seqObj, seqList) {
         U2MsaRow row = MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
         if (0 < row.gend) {
             rows << row;
-            maxLen = qMax(maxLen, seqObj->getSequenceLength());
+            maxLen = qMax(maxLen, (qint64)seqObj.length());
         }
         CHECK_OP(stateInfo, 0);
     }
@@ -152,7 +155,7 @@ void AddSequenceObjectsToAlignmentTask::releaseLock(){
 }
 
 AddSequencesFromFilesToAlignmentTask::AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls)
-    : AddSequenceObjectsToAlignmentTask(obj, QList<U2SequenceObject*>()), urlList(urls), loadTask(NULL) {}
+    : AddSequenceObjectsToAlignmentTask(obj, QList<DNASequence>()), urlList(urls), loadTask(NULL) {}
 
 void AddSequencesFromFilesToAlignmentTask::prepare() {
     AddSequenceObjectsToAlignmentTask::prepare();
@@ -183,10 +186,29 @@ QList<Task*> AddSequencesFromFilesToAlignmentTask::onSubTaskFinished(Task* subTa
     foreach(GObject *seqObj, doc->findGObjectByType(GObjectTypes::SEQUENCE)) {
         U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(seqObj);
         SAFE_POINT(casted != NULL, "Cast to U2SequenceObject failed", subTasks);
-        seqList.append(casted);
+        DNASequence seq = casted->getWholeSequence(stateInfo);
+        CHECK(stateInfo.isCoR(), subTasks);
+        seq.alphabet = casted->getAlphabet();
+        seqList.append(seq);
     }
     processObjectsAndSetResultingAlphabet();
     return subTasks;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+//AddSequencesFromDocumentsToAlignmentTask
+AddSequencesFromDocumentsToAlignmentTask::AddSequencesFromDocumentsToAlignmentTask(MAlignmentObject* obj, const QList<Document*>& docs)
+    : AddSequenceObjectsToAlignmentTask(obj, QList<DNASequence>()), docs(docs) {}
+
+void AddSequencesFromDocumentsToAlignmentTask::prepare() {
+    AddSequenceObjectsToAlignmentTask::prepare();
+    seqList = PasteUtils::getSequences(docs, stateInfo);
+    processObjectsAndSetResultingAlphabet();
 }
+
+}
+
+
+
+

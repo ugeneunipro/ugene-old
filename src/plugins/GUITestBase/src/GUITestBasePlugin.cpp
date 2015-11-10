@@ -1232,31 +1232,45 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0038);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0038_1, "UGENE-4434");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0039);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0040, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0041, "UGENE-4595");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0040, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0041, "UGENE-4900");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0042);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0043);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0044);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0045);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0046);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0047, "UGENE-4595");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0047, "UGENE-4900");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0048);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0049, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0050, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0051, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0052, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0053, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0054, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0055, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0056, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0057, "UGENE-4595");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0058, "UGENE-4595");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0049, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0050, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0051, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0052, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0053, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0054, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0055, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0056, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0057, "UGENE-4900");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0058, "UGENE-4900");
 
     REGISTER_TEST(GUITest_common_scenarios_project::test_0059);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0060);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0061);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0062);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0063);
+
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0064);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0065);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0066);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0067);
+
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0068);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0069);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0070);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0071);
+
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0072);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0073);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0074);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/

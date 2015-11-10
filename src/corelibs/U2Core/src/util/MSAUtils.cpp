@@ -345,10 +345,16 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
 U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef &dstDbi, U2OpStatus &os) {
     U2MsaRow row;
     CHECK_EXT(NULL != seqObj, os.setError("NULL sequence object"), row);
-    row.rowId = -1; // set the ID automatically
 
     DNASequence dnaSeq = seqObj->getWholeSequence(os);
     CHECK_OP(os, row);
+
+    return copyRowFromSequence(dnaSeq, dstDbi, os);
+}
+
+U2MsaRow MSAUtils::copyRowFromSequence(DNASequence dnaSeq, const U2DbiRef &dstDbi, U2OpStatus &os) {
+    U2MsaRow row;
+    row.rowId = -1; // set the ID automatically
 
     QByteArray oldSeqData = dnaSeq.seq;
     int tailGapsIndex = QRegExp(MAlignment_TailedGapsPattern).indexIn(oldSeqData);
@@ -367,6 +373,7 @@ U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef 
     row.length = MsaRowUtils::getRowLengthWithoutTrailing(dnaSeq.seq, row.gaps);
     return row;
 }
+
 
 void MSAUtils::copyRowFromSequence(MAlignmentObject *msaObj, U2SequenceObject *seqObj, U2OpStatus &os) {
     CHECK_EXT(NULL != msaObj, os.setError("NULL msa object"), );

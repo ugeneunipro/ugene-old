@@ -28,6 +28,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AssemblyBrowserFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -37,6 +38,7 @@
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -1050,6 +1052,152 @@ GUI_TEST_CLASS_DEFINITION(test_0063) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0064) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "No pasted sequences");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0065) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T1", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0066) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T1", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0067) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+}
+
+//seq
+GUI_TEST_CLASS_DEFINITION(test_0068) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int len = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(len > 199950, "No sequences pasted");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0069) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
+    GTClipboard::setText(os, ">human_T1\r\nACGTACGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int len = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(len > 199950, "No sequences pasted");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0070) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
+    GTClipboard::setText(os, ">human_T1\r\nACGTACGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Paste sequence",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int len = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(len > 199950, "No sequences pasted");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0071) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/Genbank/sars.gb");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "NC_004718");
+}
+
+//ann
+GUI_TEST_CLASS_DEFINITION(test_0072) {
+    //Ctrl+Shift+V в GUI-test?
+    //UGENE-4907
+    /*
+    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/murine.gb");
+    //select annotations
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/Genbank/sars.gb");
+    //Ctrl+Shift+V в GUI-test?
+    //GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"] + GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    */
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0073) {
+    //Ctrl+Shift+V в GUI-test?
+    /*
+    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    */
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0074) {
+    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/Genbank/sars.gb");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::findIndex(os, "NC_004718");
+}
+
 
 }
 

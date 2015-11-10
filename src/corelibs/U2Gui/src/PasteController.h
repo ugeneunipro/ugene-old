@@ -39,8 +39,8 @@ public:
     PasteTaskImpl(bool addToProject);
     void run();
 
-    QList<GUrl>getUrls() {return urls;}
-    QList<Document*> getDocuments() {return documents;}
+    QList<GUrl>getUrls() const {return urls;}
+    QList<Document*> getDocuments() const {return documents;}
 
 protected:
    QList<GUrl> urls;
@@ -56,7 +56,7 @@ class U2GUI_EXPORT PasteFactoryImpl : public PasteFactory {
 public:
     PasteFactoryImpl(QObject *parent=0);
 
-    PasteTask* pasteTask(bool addToProject);
+    PasteTask* pasteTask(bool useInSequenceWidget);
 
 protected:
     void connectExclude(PasteTask* task);

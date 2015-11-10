@@ -153,6 +153,7 @@ void MSAEditorNameList::updateActions() {
         removeCurrentSequenceAction->setEnabled(!maObj->isStateLocked() && maObj->getNumRows() > 1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
         addAction(ui->getCopySelectionAction());
+        addAction(ui->getPasteAction());
     }
 }
 

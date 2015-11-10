@@ -96,6 +96,7 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI *_ui)
     consensusCache = QSharedPointer<MSAEditorConsensusCache>(new MSAEditorConsensusCache(NULL, editor->getMSAObject(), algo));
     connect(consensusCache->getConsensusAlgorithm(), SIGNAL(si_thresholdChanged(int)), SLOT(sl_onConsensusThresholdChanged(int)));
     addAction(ui->getCopySelectionAction());
+    addAction(ui->getPasteAction());
     restoreLastUsedConsensusThreshold();
 
     setObjectName("consArea");

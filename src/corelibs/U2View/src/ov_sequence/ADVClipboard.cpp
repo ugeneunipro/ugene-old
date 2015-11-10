@@ -87,6 +87,11 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     copyAnnotationSequenceTranslationAction = new QAction(QIcon(":/core/images/copy_annotation_translation.png"), tr("Copy annotation sequence translation"), this);
     copyAnnotationSequenceTranslationAction->setObjectName("Copy annotation sequence translation");
 
+    pasteSequenceAction = new QAction(QIcon(":/core/images/paste.png"), tr("Paste sequence"), this);
+    pasteSequenceAction->setObjectName("Paste sequence");
+    pasteSequenceAction->setShortcut(QKeySequence::Paste);
+    pasteSequenceAction->setShortcutContext(Qt::WidgetShortcut);
+
     connect(copySequenceAction, SIGNAL(triggered()), SLOT(sl_copySequence()));
     connect(copyTranslationAction, SIGNAL(triggered()), SLOT(sl_copyTranslation()));
     connect(copyComplementSequenceAction, SIGNAL(triggered()), SLOT(sl_copyComplementSequence()));
@@ -299,7 +304,7 @@ void ADVClipboard::updateActions() {
 
 
 void ADVClipboard::addCopyMenu(QMenu* m) {
-    QMenu* copyMenu = new QMenu(tr("Copy"), m);
+    QMenu* copyMenu = new QMenu(tr("Copy/Paste"), m);
     copyMenu->menuAction()->setObjectName(ADV_MENU_COPY);
 
     copyMenu->addAction(copySequenceAction);
@@ -308,6 +313,7 @@ void ADVClipboard::addCopyMenu(QMenu* m) {
     copyMenu->addAction(copyComplementTranslationAction);
     copyMenu->addAction(copyAnnotationSequenceAction);
     copyMenu->addAction(copyAnnotationSequenceTranslationAction);
+    copyMenu->addAction(pasteSequenceAction);
 
     m->addMenu(copyMenu);
 }

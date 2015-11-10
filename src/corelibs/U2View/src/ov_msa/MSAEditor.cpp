@@ -426,7 +426,7 @@ void MSAEditor::buildStaticMenu(QMenu* m) {
 
 
 void MSAEditor::addCopyMenu(QMenu* m) {
-    QMenu* cm = m->addMenu(tr("Copy"));
+    QMenu* cm = m->addMenu(tr("Copy/Paste"));
     cm->menuAction()->setObjectName(MSAE_MENU_COPY);
 }
 
@@ -703,8 +703,11 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
                 } else {
+                    U2OpStatusImpl os;
+                    DNASequence seq = dnaObj->getWholeSequence(os);
+                    seq.alphabet = dnaObj->getAlphabet();
                     AppContext::getTaskScheduler()->registerTopLevelTask(
-                        new AddSequenceObjectsToAlignmentTask(msaObject, QList<U2SequenceObject*>() << dnaObj));
+                        new AddSequenceObjectsToAlignmentTask(msaObject, QList<DNASequence>() << seq));
                 }
             }
         }
@@ -923,6 +926,15 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
         .arg(copyFormattedSelectionAction->shortcut().toString()));
 
     addAction(copyFormattedSelectionAction);
+
+    pasteAction = new QAction(tr("Paste"), this);
+    pasteAction->setObjectName("paste");
+    pasteAction->setShortcut(QKeySequence::Paste);
+    pasteAction->setShortcutContext(Qt::WidgetShortcut);
+    pasteAction->setToolTip(QString("%1 (%2)").arg(pasteAction->text())
+        .arg(pasteAction->shortcut().toString()));
+
+    addAction(pasteAction);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMinimumSize(300, 200);

@@ -94,6 +94,8 @@ public:
     static const int COLUMN_VALUE;
 
 private slots:
+    void sl_paste();
+    void sl_pasteFinished(Task* pasteTask);
 
     void sl_onAnnotationObjectAdded(AnnotationTableObject *obj);
     void sl_onAnnotationObjectRemoved(AnnotationTableObject *obj);
@@ -175,6 +177,7 @@ private:
     AnnotationsTreeWidget* tree;
 
     AnnotatedDNAView*   ctx;
+    QAction*            pasteAction;
     QAction*            addAnnotationObjectAction;
     QAction*            removeObjectsFromViewAction;
     QAction*            removeAnnsAndQsAction;

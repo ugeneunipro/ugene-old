@@ -315,6 +315,7 @@ public:
     QAction* getRedoAction() const;
     QAction* getCopySelectionAction() const {return copySelectionAction;}
     QAction* getCopyFormattedSelectionAction() const {return copyFormattedSelectionAction;}
+    QAction* getPasteAction() const {return pasteAction;}
 
     bool isCollapsibleMode() const { return collapsibleMode; }
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
@@ -384,6 +385,7 @@ private:
 
     QAction                         *copySelectionAction;
     QAction                         *copyFormattedSelectionAction;
+    QAction                         *pasteAction;
 };
 
 class MSAWidget : public QWidget {

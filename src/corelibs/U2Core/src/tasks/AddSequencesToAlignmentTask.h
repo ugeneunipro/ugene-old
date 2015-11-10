@@ -31,19 +31,19 @@ namespace U2 {
 
 class StateLock;
 class LoadDocumentTask;
-class U2SequenceObject;
+class DNASequence;
 
 class U2CORE_EXPORT AddSequenceObjectsToAlignmentTask : public Task {
     Q_OBJECT
 public:
-    AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<U2SequenceObject*>& seqList);
+    AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList);
     virtual void prepare();
 
     ReportResult report();
 protected:
     void processObjectsAndSetResultingAlphabet();
 
-    QList<U2SequenceObject*>    seqList;
+    QList<DNASequence>    seqList;
     QPointer<MAlignmentObject>  maObj;
 private:
     StateLock*                  stateLock;
@@ -68,6 +68,16 @@ public:
 private:
     QStringList         urlList;
     LoadDocumentTask*   loadTask;
+};
+
+class U2CORE_EXPORT AddSequencesFromDocumentsToAlignmentTask : public AddSequenceObjectsToAlignmentTask {
+    Q_OBJECT
+public:
+    AddSequencesFromDocumentsToAlignmentTask(MAlignmentObject* obj, const QList<Document*>& docs);
+
+    virtual void prepare();
+private:
+    QList<Document*> docs;
 };
 
 }// namespace

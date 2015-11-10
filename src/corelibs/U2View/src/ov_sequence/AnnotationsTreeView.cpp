@@ -37,11 +37,13 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/ClipboardController.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -160,6 +162,13 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
 
     addColumnIcon = QIcon(":core/images/add_column.png");
     removeColumnIcon = QIcon(":core/images/remove_column.png");
+
+    pasteAction = new QAction(QIcon(":/core/images/paste.png"), tr("Paste annotations"), this);
+    pasteAction->setObjectName("Paste annotations");
+    pasteAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_V | Qt::ControlModifier));
+    pasteAction->setShortcutContext(Qt::WidgetShortcut);
+    connect(pasteAction, SIGNAL(triggered()), SLOT(sl_paste()));
+    tree->addAction(pasteAction);
 
     addAnnotationObjectAction = new QAction(tr("Objects with annotations..."), this);
     connect(addAnnotationObjectAction, SIGNAL(triggered()), SLOT(sl_onAddAnnotationObjectToView()));
@@ -872,6 +881,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     m->insertAction(first, searchQualifierAction);
     m->insertAction(first, invertAnnotationSelectionAction);
     m->insertAction(first, renameAction);
+    m->insertAction(first, pasteAction);
 
     m->insertSeparator(first);
     foreach(QAction* a, contextActions) {
@@ -895,6 +905,39 @@ void AnnotationsTreeView::adjustMenu(QMenu* m) const {
     SAFE_POINT(removeMenu != NULL, "removeMenu",);
     removeMenu->addAction(removeObjectsFromViewAction);
     removeMenu->addAction(removeAnnsAndQsAction);
+}
+
+void AnnotationsTreeView::sl_paste(){
+    PasteFactory* pasteFactory = AppContext::getPasteFactory();
+    SAFE_POINT(pasteFactory != NULL, "adFactory is null", );
+
+
+    bool pasteToWidget = tree && tree->hasFocus();
+    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
+    if (pasteToWidget){
+        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
+
+void AnnotationsTreeView::sl_pasteFinished(Task* _pasteTask){
+    if (!tree || !tree->hasFocus()){
+        return;
+    }
+
+    PasteTask* pasteTask = qobject_cast<PasteTask*>(_pasteTask);
+    if(NULL == pasteTask || pasteTask->isCanceled()) {
+        return;
+    }
+    const QList<Document*>& docs = pasteTask->getDocuments();
+    if (docs.length() == 0){
+        return;
+    }
+    foreach (Document* doc, docs){
+        foreach(GObject *annObj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE)) {
+            ctx->tryAddObject(annObj);
+        }
+    }
 }
 
 void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {
