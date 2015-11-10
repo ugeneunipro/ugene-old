@@ -35,7 +35,6 @@
 #endif
 
 namespace HI {
-using namespace U2;
 #define GT_CLASS_NAME "PopupChooser"
 
 #define GT_METHOD_NAME "run"
@@ -61,7 +60,6 @@ void PopupChooser::run() {
 void PopupChooser::clickEsc() {
     U2::U2OpStatus2Log opStatus;
     GTKeyboardDriver::keyClick(opStatus, GTKeyboardDriver::key["esc"]);
-    SAFE_POINT_OP(opStatus, );
 }
 #undef GT_METHOD_NAME
 

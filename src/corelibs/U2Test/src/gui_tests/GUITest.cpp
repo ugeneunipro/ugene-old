@@ -62,8 +62,8 @@ QString getScreenshotDir(){
         result = guiTestOutputDirectory + "/gui_testing_output/" +
                 QDate::currentDate().toString("dd.MM.yyyy") + "/screenshots/";
     }
-    return result;
 #endif
+    return result;
 }
 
 const QString GUITest::testDir = getTestDir();
