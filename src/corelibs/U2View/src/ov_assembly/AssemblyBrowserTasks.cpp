@@ -65,6 +65,15 @@ void OpenAssemblyBrowserTask::open() {
         Document* doc = documentsToLoad.first();
         QList<GObject*> objects;
         if (unloadedObjRef.isValid()) {
+            //To do: replace the object finding to "GObject* obj = doc->findGObjectByName(unloadedObjRef.objName);" after fixing of UGENE-4904
+            QList<GObject*> objs = doc->findGObjectByType(unloadedObjRef.objType);
+            GObject* obj = NULL;
+            foreach(GObject* curObj, objs) {
+                if (curObj->getGObjectName() == unloadedObjRef.objName) {
+                    obj = curObj;
+                    break;
+                }
+            }
             GObject* obj = doc->findGObjectByName(unloadedObjRef.objName);
             if (obj!=NULL && obj->getGObjectType() == GObjectTypes::ASSEMBLY) {
                 selectedObjects.append(qobject_cast<AssemblyObject*>(obj));
