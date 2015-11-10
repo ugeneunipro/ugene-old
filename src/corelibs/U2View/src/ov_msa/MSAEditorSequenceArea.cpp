@@ -2527,7 +2527,7 @@ void MSAEditorSequenceArea::processCharacterInEditMode(QKeyEvent *e) {
 
     QString text = e->text().toUpper();
     if (1 == text.length()) {
-        QChar emDash = QString::fromLatin1("\x0097").at(0);
+        QChar emDash(0x2015);
         QRegExp latinCharacterOrGap(QString("([A-Z]| |-|%1)").arg(emDash));
         if (latinCharacterOrGap.exactMatch(text)) {
             QChar newChar = text.at(0);
