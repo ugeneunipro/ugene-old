@@ -506,7 +506,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     //Expected result : the error notification appeared.
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["shift"]);
 
-    GTUtilsNotifications::waitForNotification(os, false, "It is not possible to insert the character into the alignment");
+    GTUtilsNotifications::waitForNotification(os, true, "It is not possible to insert the character into the alignment.");
     GTKeyboardDriver::keyClick(os, ']');
     GTGlobals::sleep(200);
 
