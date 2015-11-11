@@ -1042,7 +1042,7 @@ void GraphPointsUpdater::calculateCutoffPoints(){
     if (alignedFirst + wdata.window > o->getSequenceLength()) {
         return;
     }
-    d->cachedData.cutoffPoints = GraphPointsUpdater::getCutoffRegion(alignedFirst, alignedLast);
+    result.cutoffPoints = GraphPointsUpdater::getCutoffRegion(alignedFirst, alignedLast);
 }
 
 void GraphPointsUpdater::setChahedDataParametrs() {
