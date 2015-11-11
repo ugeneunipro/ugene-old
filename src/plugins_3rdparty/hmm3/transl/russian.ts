@@ -164,7 +164,7 @@
     <message>
         <location filename="../src/workers/HMM3BuildWorker.cpp" line="77"/>
         <source>HMM3 Build</source>
-        <translation>Построить профиль с помощью HMMER3</translation>
+        <translation>Построение профиля с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3BuildWorker.cpp" line="77"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="80"/>
         <source>HMMER3 Tools</source>
-        <translation>HMMER3 (Скрытые Модели Маркова)</translation>
+        <translation>Инструменты HMMER3 (скрытые марковские модели)</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="142"/>
@@ -213,7 +213,7 @@
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="153"/>
         <source>Write HMM3 Profile</source>
-        <translation>Записать HMM3 профиль</translation>
+        <translation>Запись профиля HMM3</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="153"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="166"/>
         <source>Read HMM3 Profile</source>
-        <translation>Прочитать HMM3 профиль</translation>
+        <translation>Чтение профиля HMM3</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="166"/>
@@ -345,7 +345,7 @@
     <message>
         <location filename="../src/workers/HMM3SearchWorker.cpp" line="100"/>
         <source>HMM3 Search</source>
-        <translation>Поиск HMM3</translation>
+        <translation>Поиск с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/workers/HMM3SearchWorker.cpp" line="101"/>
@@ -1639,7 +1639,7 @@
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="20"/>
         <source>HMM3 Build</source>
-        <translation type="unfinished">Построить профиль с помощью HMMER3</translation>
+        <translation>Построить профиль с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/build/ui/UHMM3BuildDialog.ui" line="49"/>
@@ -2000,7 +2000,7 @@
     <message>
         <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="20"/>
         <source>HMM3 Search</source>
-        <translation>Поиск HMM3</translation>
+        <translation>Поиск с помощью HMMER3</translation>
     </message>
     <message>
         <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="180"/>

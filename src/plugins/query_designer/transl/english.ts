@@ -315,44 +315,44 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QDDialog</name>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="294"/>
+        <location filename="../src/QDRunDialog.cpp" line="296"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="295"/>
+        <location filename="../src/QDRunDialog.cpp" line="297"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="335"/>
+        <location filename="../src/QDRunDialog.cpp" line="337"/>
         <source>Select query</source>
         <translation>Select query</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="351"/>
-        <location filename="../src/QDRunDialog.cpp" line="358"/>
+        <location filename="../src/QDRunDialog.cpp" line="353"/>
+        <location filename="../src/QDRunDialog.cpp" line="360"/>
         <source>Can not load %1</source>
         <translation>Can not load %1</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="388"/>
+        <location filename="../src/QDRunDialog.cpp" line="390"/>
         <source>File with query is not selected!</source>
         <translation>File with query is not selected!</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="393"/>
+        <location filename="../src/QDRunDialog.cpp" line="395"/>
         <source>Error in schema!</source>
         <translation>Error in schema!</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="399"/>
-        <location filename="../src/QDRunDialog.cpp" line="411"/>
+        <location filename="../src/QDRunDialog.cpp" line="401"/>
+        <location filename="../src/QDRunDialog.cpp" line="413"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="411"/>
+        <location filename="../src/QDRunDialog.cpp" line="413"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>

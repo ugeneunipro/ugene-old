@@ -717,26 +717,45 @@
     </message>
 </context>
 <context>
-    <name>U2::AddSequencesToAlignmentTask</name>
+    <name>U2::AddSequenceObjectsToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="52"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="45"/>
         <source>Object is empty.</source>
         <translation>Объект пуст.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="57"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="50"/>
         <source>Object is locked for modifications.</source>
         <translation>Объект заблокирован для редактирования.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="168"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="136"/>
         <source>Some sequences have wrong alphabet: </source>
         <translation>Некоторые последовательности имеют неправильный алфавит: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="171"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="139"/>
         <source> and others</source>
         <translation> и другие</translation>
+    </message>
+</context>
+<context>
+    <name>U2::AddSequencesToAlignmentTask</name>
+    <message>
+        <source>Object is empty.</source>
+        <translation type="vanished">Объект пуст.</translation>
+    </message>
+    <message>
+        <source>Object is locked for modifications.</source>
+        <translation type="vanished">Объект заблокирован для редактирования.</translation>
+    </message>
+    <message>
+        <source>Some sequences have wrong alphabet: </source>
+        <translation type="vanished">Некоторые последовательности имеют неправильный алфавит: </translation>
+    </message>
+    <message>
+        <source> and others</source>
+        <translation type="vanished"> и другие</translation>
     </message>
 </context>
 <context>
@@ -1403,55 +1422,55 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::DatatypeSerializers</name>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="306"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="310"/>
         <source>Incorrect tree parsing state</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect tree parsing state</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="309"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="313"/>
         <source>Unexpected weight: %1</source>
         <translation>Неожиданный вес: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="313"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="317"/>
         <source>Error parsing weight: %1</source>
         <translation>Ошибка парсинга веса: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="320"/>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="341"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="324"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="345"/>
         <source>Tree node stack is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Tree node stack is empty</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="332"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="336"/>
         <source>Error parsing nodeValue: %1</source>
         <translation>Error parsing nodeValue: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="342"/>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="360"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="346"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="364"/>
         <source>Branch node stack is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Branch node stack is empty</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="344"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="348"/>
         <source>Unexpected new sibling %1</source>
         <translation>Неожиданный новый родственник %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="357"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="361"/>
         <source>Unexpected closing bracket :%1</source>
         <translation>Неожиданные закрывающие скобки: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="365"/>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="387"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="369"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="391"/>
         <source>Unexpected end of file</source>
         <translation>Неожиданный конец файла</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="399"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="403"/>
         <source>Empty file</source>
         <translation>Пустой файл</translation>
     </message>
@@ -1488,27 +1507,27 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::Document</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="540"/>
+        <location filename="../src/models/DocumentModel.cpp" line="542"/>
         <source>Document is not loaded</source>
         <translation>Документ не загружен</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="553"/>
+        <location filename="../src/models/DocumentModel.cpp" line="555"/>
         <source>IO adapter does not support write operation</source>
         <translation>Адаптер ввода/вывода не поддерживает запись</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="559"/>
+        <location filename="../src/models/DocumentModel.cpp" line="561"/>
         <source>No write support for document format</source>
         <translation>Запись для данного формата не поддерживается</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="629"/>
+        <location filename="../src/models/DocumentModel.cpp" line="631"/>
         <source>Locked by user</source>
         <translation>Заблокирован пользователем</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="653"/>
+        <location filename="../src/models/DocumentModel.cpp" line="655"/>
         <source>Lock is NULL</source>
         <translation>Lock is NULL</translation>
     </message>
@@ -1561,12 +1580,17 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation>Невозможно запустить %1 инструмент. Возможно путь до инструмента &apos;%2&apos; указан неверно?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="131"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="125"/>
+        <source>Tool %1 is cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="133"/>
         <source>%1 tool exited with code %2</source>
         <translation>%1 инструмент завершил работу с кодом %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="133"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="135"/>
         <source>Tool %1 finished successfully</source>
         <translation>Инструмент %1 завершил работу корректно</translation>
     </message>
@@ -1574,47 +1598,47 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::ExternalToolSupportUtils</name>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="327"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="329"/>
         <source>Can not remove temporary directory: path is empty.</source>
         <translation>Невозможно удалить временную директорию: пустой путь.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="333"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="335"/>
         <source>Can not remove files from temporary directory.</source>
         <translation>Невозможно удалить файлы из временной директории.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="338"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="340"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Невозможно удалить директорию для временных файлов.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="351"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="353"/>
         <source>Can not create directory for temporary files: %1</source>
         <translation>Невозможно создать директорию для временных файлов: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="382"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="384"/>
         <source>Can&apos;t run an executable file &quot;%1&quot; as it is. Try to run it as a cmd line command: &quot;%2&quot;</source>
         <translation>Невозможно запустить исполняемый файл &quot;%1&quot;. Попробуйте запустить его из командной строки: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="398"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="400"/>
         <source>Undefined tool: &apos;%1&apos;</source>
         <translation>Неопределенный инструмент: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="402"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="404"/>
         <source>Path for &apos;%1&apos; tool not set</source>
         <translation>Путь до инструмента &apos;%1&apos; не установлен</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="443"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="448"/>
         <source>Working directory is &quot;%1&quot;</source>
         <translation>Рабочая директория &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="452"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="457"/>
         <source>Launching %1 tool: %2 %3</source>
         <translation>Запуск инструмента %1: %2 %3</translation>
     </message>
@@ -1640,97 +1664,97 @@ A между остатком 3 и 125 и B между остатком 5 and 12
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation type="unfinished">Неизвестный тип</translation>
+        <translation>Неизвестный тип</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation type="unfinished">Не загруженный</translation>
+        <translation>Не загруженный</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
         <source>Text</source>
-        <translation type="unfinished">Текст</translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation type="unfinished">Последовательность</translation>
+        <translation>Последовательность</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation type="unfinished">Последовательности</translation>
+        <translation>Последовательности</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation type="unfinished">Аннотация</translation>
+        <translation>Аннотация</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotations</source>
-        <translation type="unfinished">Аннотации</translation>
+        <translation>Аннотации</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Variation</source>
-        <translation type="unfinished">Вариация</translation>
+        <translation>Вариация</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Variations</source>
-        <translation type="unfinished">Вариации</translation>
+        <translation>Вариации</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Chromatogram</source>
-        <translation type="unfinished">Хроматограмма</translation>
+        <translation>Хроматограмма</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Chromatograms</source>
-        <translation type="unfinished">Хроматограммы</translation>
+        <translation>Хроматограммы</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Alignment</source>
-        <translation type="unfinished">Выравнивание</translation>
+        <translation>Выравнивание</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Alignments</source>
-        <translation type="unfinished">Выравнивания</translation>
+        <translation>Выравнивания</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>Tree</source>
-        <translation type="unfinished">Дерево</translation>
+        <translation>Дерево</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>Trees</source>
-        <translation type="unfinished">Деревья</translation>
+        <translation>Деревья</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>3D model</source>
-        <translation type="unfinished">3D модель</translation>
+        <translation>3D модель</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>3D models</source>
-        <translation type="unfinished">3D модели</translation>
+        <translation>3D модели</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
         <source>Assembly</source>
-        <translation type="unfinished">Сборка</translation>
+        <translation>Сборка</translation>
     </message>
     <message>
         <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
         <source>Assemblies</source>
-        <translation type="unfinished">Сборки</translation>
+        <translation>Сборки</translation>
     </message>
 </context>
 <context>
@@ -2178,10 +2202,10 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation>Внутренняя ошибка! Неверный аргумент: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="94"/>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="102"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="97"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="105"/>
         <source>Failed to detect IO adapter for %1</source>
-        <translation type="unfinished">Невозможно определить IO адаптер для %1</translation>
+        <translation>Невозможно определить IO адаптер для %1</translation>
     </message>
 </context>
 <context>
@@ -2275,27 +2299,27 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation>IO адаптер NULL!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="436"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="444"/>
         <source>Document not found %1</source>
         <translation>Документ не найден: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="456"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="464"/>
         <source>Not enough memory to load document %1</source>
         <translation>Недостаточно памяти для загрузки документа %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="472"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="480"/>
         <source>Maximum number of objects per document limit reached for %1. Try different options for opening the document!</source>
         <translation>Максимальное количество объектов в документе достигнуто для %1. Попробуйте другие способы для открытия документа!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="502"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="510"/>
         <source>Object not found: %1</source>
         <translation>Объект не найден: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="509"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="517"/>
         <source>Can&apos;t add object. Document format constraints check failed: %1</source>
         <translation>Невозможно добавить объект. Проверка ограничений формата завершилась неудачно: %1</translation>
     </message>
@@ -2364,32 +2388,32 @@ A между остатком 3 и 125 и B между остатком 5 and 12
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="77"/>
         <source>Unexpected gap start</source>
-        <translation type="unfinished">Unexpected gap start</translation>
+        <translation>Unexpected gap start</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="86"/>
         <source>Unexpected gap start (too small)</source>
-        <translation type="unfinished">Unexpected gap start (too small)</translation>
+        <translation>Unexpected gap start (too small)</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="87"/>
         <source>Unexpected gap start (too big)</source>
-        <translation type="unfinished">Unexpected gap start (too big)</translation>
+        <translation>Unexpected gap start (too big)</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="101"/>
         <source> Incorrect gap splitting</source>
-        <translation type="unfinished"> Incorrect gap splitting</translation>
+        <translation> Incorrect gap splitting</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="136"/>
         <source> Alignment walker is ended</source>
-        <translation type="unfinished"> Alignment walker is ended</translation>
+        <translation> Alignment walker is ended</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="137"/>
         <source> Alignment changed</source>
-        <translation type="unfinished"> Alignment changed</translation>
+        <translation> Alignment changed</translation>
     </message>
 </context>
 <context>
@@ -2472,18 +2496,18 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::MsaDbiUtils</name>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="756"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="865"/>
         <source>Can&apos;t rename an alignment to an empty name!</source>
         <translation>Невозможно переименовать выравнивание, т.к. имя пустое!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="785"/>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="792"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="894"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="901"/>
         <source>Failed to insert gaps into an alignment!</source>
         <translation>Не удалось вставить пробелы в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="930"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1070"/>
         <source>Failed to crop an alignment!</source>
         <translation>Не удалось обрезать выравнивание!</translation>
     </message>
@@ -2492,30 +2516,38 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation type="obsolete">Не удалось добавить строку в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1055"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1195"/>
         <source>Can&apos;t rename a row to an empty name!</source>
         <translation>Не удалось переименовать строку, т.к. имя пустое!</translation>
     </message>
 </context>
 <context>
+    <name>U2::PasteTask</name>
+    <message>
+        <location filename="../src/globals/ClipboardController.cpp" line="36"/>
+        <source>Paste data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="349"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="348"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>Перемещение документа %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="356"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="355"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="359"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="369"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="368"/>
         <source>Only unloaded objects can be relocated</source>
         <translation>Можно перемещать только выгруженные документы</translation>
     </message>
@@ -2601,22 +2633,22 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="309"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="308"/>
         <source>Save a copy %1</source>
         <translation>Сохранение копии %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="327"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="326"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="328"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="327"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="331"/>
         <source>Document is already added to the project %1</source>
         <translation>Документ уже добавлен в проект: %1</translation>
     </message>
@@ -2670,12 +2702,12 @@ A между остатком 3 и 125 и B между остатком 5 and 12
         <translation>Невозможно переименовать сохраненный временный файл в оригинальный</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="183"/>
         <source>Document &apos;%1&apos; can&apos;t be unloaded: </source>
         <translation>Документ &apos;%1&apos; не может быть выгружен: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="183"/>
         <source>unexpected error</source>
         <translation>неожиданная ошибка</translation>
     </message>
@@ -2683,34 +2715,34 @@ A между остатком 3 и 125 и B между остатком 5 and 12
 <context>
     <name>U2::SaveMultipleDocuments</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="202"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="201"/>
         <source>Save multiple documents</source>
         <translation>Сохранение нескольких документов</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="213"/>
         <source>Question?</source>
         <translation>Вопрос?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="214"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="213"/>
         <source>Save document: %1</source>
         <translation>Сохранить документ: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="265"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="264"/>
         <source>You have no permission to write to &apos;%1&apos; file.
 UGENE contains unsaved modifications.</source>
         <translation>У вас недостаточно прав для записи в &apos;%1&apos; файл.
 UGENE содержит несохраненные изменения.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="266"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="265"/>
         <source>Do you want to save changes to another file?</source>
         <translation>Хотите сохранить изменения в другой файл?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="287"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="286"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>

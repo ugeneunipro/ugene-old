@@ -804,7 +804,7 @@
         <translation type="obsolete">Export settings</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="59"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="56"/>
         <source>Export to file</source>
         <translation>Export to file</translation>
     </message>
@@ -814,33 +814,33 @@
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="221"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="237"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="264"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="316"/>
         <source>Width</source>
         <translation>Width</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="292"/>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="352"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="296"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="344"/>
         <source>px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="372"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="397"/>
         <source>Hint</source>
         <translation>Hint</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="321"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="268"/>
         <source>Height</source>
         <translation>Height</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="155"/>
+        <location filename="../src/util/ui/ExportImageDialog.ui" line="158"/>
         <source>Quality</source>
         <translation>Quality</translation>
     </message>
@@ -1666,54 +1666,50 @@ complement(5..15)</translation>
 <context>
     <name>U2::CreateDocumentFromTextDialogController</name>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="88"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="71"/>
         <source>Select file to save...</source>
         <translation>Select file to save...</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="107"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="90"/>
         <source>No path specified</source>
         <translation>No path specified</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="120"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="103"/>
         <source>Sequence name is empty</source>
         <translation>Sequence name is empty</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="102"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="85"/>
         <source>Filename is empty</source>
         <translation>File name is empty</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="73"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="56"/>
         <source>Create</source>
         <translation>Create</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="74"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="57"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="141"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation type="vanished">Error</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="141"/>
         <source>The project cannot be created</source>
-        <translation>The project cannot be created</translation>
+        <translation type="vanished">The project cannot be created</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="159"/>
         <source>warning</source>
-        <translation>warning</translation>
+        <translation type="vanished">warning</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="159"/>
         <source>The document already in the project</source>
-        <translation>The document already in the project</translation>
+        <translation type="vanished">The document already in the project</translation>
     </message>
 </context>
 <context>
@@ -1727,6 +1723,19 @@ complement(5..15)</translation>
         <location filename="../src/util/CreateObjectRelationDialogController.cpp" line="73"/>
         <source>Found annotations that are out of the sequence range, continue?</source>
         <translation>Found annotations that are out of the sequence range, continue?</translation>
+    </message>
+</context>
+<context>
+    <name>U2::CreateSequenceFromTextAndOpenViewTask</name>
+    <message>
+        <location filename="../src/util/CreateSequenceFromTextAndOpenViewTask.cpp" line="40"/>
+        <source>Create sequence from raw data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateSequenceFromTextAndOpenViewTask.cpp" line="55"/>
+        <source>Can&apos;t create a project</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2078,24 +2087,24 @@ complement(5..15)</translation>
 <context>
     <name>U2::GUIUtils</name>
     <message>
+        <location filename="../src/util/GUIUtils.cpp" line="148"/>
         <location filename="../src/util/GUIUtils.cpp" line="158"/>
-        <location filename="../src/util/GUIUtils.cpp" line="168"/>
-        <location filename="../src/util/GUIUtils.cpp" line="186"/>
+        <location filename="../src/util/GUIUtils.cpp" line="176"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="158"/>
+        <location filename="../src/util/GUIUtils.cpp" line="148"/>
         <source>Document URL is empty!</source>
         <translation>Document URL is empty!</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="168"/>
+        <location filename="../src/util/GUIUtils.cpp" line="158"/>
         <source>Unable to launch default web browser.</source>
         <translation>Unable to launch default web browser.</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="186"/>
+        <location filename="../src/util/GUIUtils.cpp" line="176"/>
         <source>Please specify the browser executable</source>
         <translation>Please specify the browser executable</translation>
     </message>
@@ -2150,6 +2159,14 @@ complement(5..15)</translation>
         <location filename="../src/util/imageExport/ImageExportTask.h" line="62"/>
         <source>Image export task</source>
         <translation>Image export task</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ImportSequenceFromRawDataTask</name>
+    <message>
+        <location filename="../src/util/ImportSequenceFromRawDataTask.cpp" line="31"/>
+        <source>Import sequence from raw data</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2479,6 +2496,35 @@ complement(5..15)</translation>
     </message>
 </context>
 <context>
+    <name>U2::PasteFactory</name>
+    <message>
+        <location filename="../src/PasteController.cpp" line="73"/>
+        <source>Unable to handle so huge data in clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PasteController.cpp" line="77"/>
+        <source>UGENE can not recognize current clipboard content as one of supported formats.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PasteTextTask</name>
+    <message>
+        <location filename="../src/PasteController.cpp" line="205"/>
+        <source>Cannot detect file format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PasteUrlsTask</name>
+    <message>
+        <location filename="../src/PasteController.cpp" line="179"/>
+        <source>Pasting of directories is not supported:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::PositionSelector</name>
     <message>
         <location filename="../src/util/PositionSelector.cpp" line="51"/>
@@ -2724,13 +2770,13 @@ complement(5..15)</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="305"/>
-        <location filename="../src/util/RegionSelector.cpp" line="322"/>
+        <location filename="../src/util/RegionSelector.cpp" line="326"/>
         <source>Region</source>
         <translation>Region</translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="310"/>
-        <location filename="../src/util/RegionSelector.cpp" line="328"/>
+        <location filename="../src/util/RegionSelector.cpp" line="313"/>
+        <location filename="../src/util/RegionSelector.cpp" line="332"/>
         <source>-</source>
         <translation>-</translation>
     </message>

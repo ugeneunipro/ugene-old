@@ -22,17 +22,6 @@
         <translation>Создать элемент при помощи инструмента командной строки</translation>
     </message>
     <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="36"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name and description for new workflow element.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Status:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="49"/>
         <source>Element description</source>
         <translation>Описание элемента</translation>
@@ -55,24 +44,6 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="105"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Input and output data for external tool. Name is a command line parameter for input/output data in external tool. Set data type and format in which external tool reads/writes input/output data. You also can set description for workflow designer. Each input data will be represented as port in workflow designer. Each output data will be represented as slot of single slot.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="228"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Another parameters for external tool. You must set name for parameter and its type. You also can set description for workflow designer. Each parameter will be represented as parameter of workflow element.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -106,6 +77,26 @@ p, li { white-space: pre-wrap; }
           &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Входные и выходные данные для внешнего инструмента. Имя это параметр командной строки для входных/выходных данных во внешнем инструменте. Установите тип и формат данных в которых внешний инструмент будет читать/писать входные/выходные данные. Вы также можете задать описание для дизайнера вычислительных схем. Каждые входные данные будут представлены как порт в дизайнере вычислительных схем. Каждые выходные данныебудут представлены как слот простого слота.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="36"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Name and description for new workflow element.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Status:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="105"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Input and output data for external tool. Name is a command line parameter for input/output data in external tool. Set data type and format in which external tool reads/writes input/output data. You also can set description for workflow designer. Each input data will be represented as port in workflow designer. Each output data will be represented as slot of single slot.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="116"/>
         <source>Input data</source>
         <translation>Входные данные</translation>
@@ -131,6 +122,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="202"/>
         <source>Add output</source>
         <translation>Добавить выходные данные</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="228"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Another parameters for external tool. You must set name for parameter and its type. You also can set description for workflow designer. Each parameter will be represented as parameter of workflow element.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="300"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Execution string and element&apos;s description. To substitute input, output data or parameter, use it&apos;s name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters substitution with prefix $. If file paths in the execution string contain spaces, they must be enclosed with quotes.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -168,15 +177,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="274"/>
         <source>Add attribute</source>
         <translation>Добавить атрибут</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="300"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Execution string and element&apos;s description. To substitute input, output data or parameter, use it&apos;s name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters substitution with prefix $. If file paths in the execution string contain spaces, they must be enclosed with quotes.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/ExternalProcessWorkerDialog.ui" line="311"/>
@@ -1184,7 +1184,7 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/library/AlignToReferenceWorker.cpp" line="213"/>
         <source>Align to reference</source>
-        <translation>Выровнять на референс</translation>
+        <translation>Выравнивание на референс</translation>
     </message>
 </context>
 <context>
@@ -1192,7 +1192,7 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/library/AlignToReferenceWorker.cpp" line="100"/>
         <source>Align to Reference</source>
-        <translation>Выровнять на референс</translation>
+        <translation>Выравнивание на референс</translation>
     </message>
     <message>
         <location filename="../src/library/AlignToReferenceWorker.cpp" line="101"/>
@@ -1268,7 +1268,7 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/library/MSA2SequenceWorker.cpp" line="117"/>
         <source>Split Alignment into Sequences</source>
-        <translation>Разделение выравнивание на последовательности</translation>
+        <translation>Разделение выравнивания на последовательности</translation>
     </message>
     <message>
         <location filename="../src/library/MSA2SequenceWorker.cpp" line="118"/>
@@ -1388,7 +1388,7 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="165"/>
         <source>Split Assembly into Sequences</source>
-        <translation>Разделить сборку на последовательности</translation>
+        <translation>Разделение сборки на последовательности</translation>
     </message>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="166"/>
@@ -1957,7 +1957,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/DASAnnotationWorker.cpp" line="106"/>
         <source>Annotate with DAS</source>
-        <translation>Аннотирование при помощи DAS</translation>
+        <translation>Аннотирование с помощью DAS</translation>
     </message>
     <message>
         <location filename="../src/library/DASAnnotationWorker.cpp" line="107"/>
@@ -2176,7 +2176,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/StatisticWorkers.cpp" line="81"/>
         <source>DNA Statistics</source>
-        <translation>ДНК статистика</translation>
+        <translation>Статистики для последовательности ДНК</translation>
     </message>
     <message>
         <location filename="../src/library/StatisticWorkers.cpp" line="82"/>
@@ -2342,7 +2342,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="263"/>
         <source>Extract Consensus from Alignment as Sequence</source>
-        <translation>Извлечь консенсус выравнивания как последовательность</translation>
+        <translation>Извлечение консенсуса выравнивания как последовательности</translation>
     </message>
     <message>
         <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="264"/>
@@ -2396,7 +2396,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="348"/>
         <source>Extract Consensus from Alignment as Text</source>
-        <translation>Извлечь консенсус выравнивания как текст</translation>
+        <translation>Извлечение консенсуса выравнивания как текста</translation>
     </message>
     <message>
         <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="349"/>
@@ -2740,7 +2740,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FilterBamWorker.cpp" line="120"/>
         <source>Filter BAM/SAM files</source>
-        <translation>Фильтрация BAM/SAM файлов</translation>
+        <translation>Фильтрация BAM/SAM-файлов</translation>
     </message>
     <message>
         <location filename="../src/library/FilterBamWorker.cpp" line="121"/>
@@ -3418,7 +3418,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MergeBamWorker.cpp" line="81"/>
         <source>Merge BAM files</source>
-        <translation>Соединить BAM файлы</translation>
+        <translation>Соединение BAM-файлов</translation>
     </message>
     <message>
         <location filename="../src/library/MergeBamWorker.cpp" line="82"/>
@@ -3519,7 +3519,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="421"/>
         <source>FASTQ Merger</source>
-        <translation>FASTQ сшивка</translation>
+        <translation>Слияние файлов FASTQ</translation>
     </message>
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="422"/>
@@ -3595,17 +3595,17 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::MultiplexerPrompter</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="308"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="331"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="321"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="344"/>
         <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</source>
         <translation>Принимает по одному сообщению от каждого из элементов &lt;u&gt;%1&lt;/u&gt; и &lt;u&gt;%2&lt;/u&gt;, объединяет эти сообщения в одно и передает его дальше. Процедура повторяется до тех пор, пока в обоих входных портах имеются сообщения.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="325"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="348"/>
         <source>Gets one message from &lt;u&gt;%1&lt;/u&gt;, joins it with each message from &lt;u&gt;%2&lt;/u&gt;, and transfers the joined messages to the output. Repeats this for each message from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Принимает сообщение от элемента &lt;u&gt;%1&lt;/u&gt;, объединяет его по очереди с каждым сообщением от элемента &lt;u&gt;%2&lt;/u&gt; и отправляет полученные сообщения дальше. Процедура повторяется до тех пор, пока имеются сообщения от &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
@@ -3613,62 +3613,67 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::MultiplexerWorker</name>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="256"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="279"/>
         <source>Multiplexing rule</source>
         <translation>Правило мультиплексирования</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="238"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="261"/>
         <source>First input port</source>
         <translation>Первый входной порт</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="238"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="244"/>
+        <source>The number of messages, received from &quot;%1&quot; (%2), does not correspond to the number of messages, received from &quot;%3&quot; (%4). Redundant messages were skipped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="261"/>
         <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from this port is concatenated with messages from the other port.</source>
         <translation>Один из входных портов &lt;i&gt;Мультиплексера&lt;/i&gt;. В случае, если задано правило мультиплексирования &quot;1 to many&quot;, сообщения из этого порта объединяются с каждым сообщением из другого порта.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="241"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="264"/>
         <source>Second input port</source>
         <translation>Второй входной порт</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="241"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="264"/>
         <source>One of the two input ports of the &lt;i&gt;Multiplexer&lt;/i&gt; element. When rule &quot;1 to many&quot; is set up, each message from the other port is concatenated with messages from this port.</source>
         <translation>Один из входных портов &lt;i&gt;Мультиплексера&lt;/i&gt;. В случае, если задано правило мультиплексирования &quot;1 to many&quot;, сообщения из другого порта объединяются с каждым сообщением из этого порта.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="248"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="271"/>
         <source>Multiplexed output</source>
         <translation>Мультиплексированные сообщения</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="249"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="272"/>
         <source>The port outputs multiplexed messages.</source>
         <translation>Сообщения, полученные в результате объединения двух потоков сообщений.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="257"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="280"/>
         <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
         <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;Подробнее см. документацию.</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="273"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="296"/>
         <source>1 to many</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="274"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="297"/>
         <source>1 to 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="280"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="303"/>
         <source>Multiplexer</source>
         <translation>Мультиплексер</translation>
     </message>
     <message>
-        <location filename="../src/library/MultiplexerWorker.cpp" line="281"/>
+        <location filename="../src/library/MultiplexerWorker.cpp" line="304"/>
         <source>The element allows one to join two data flows into a single data flow, i.e. to join messages from two input ports into concatenated messages and send them to the output. The concatenation approach is determined by the &lt;i&gt;Multiplexing rule&lt;/i&gt; parameter.</source>
         <translation>Данный элемент позволяет объединять данные из двух различных источников, а именно объединять сообщения, пришедшие во входные порты, в комплексные мультиплексированные сообщения. Способ объединения сообщений задается с помощью параметра &lt;i&gt;Правило мультиплексирования&lt;/i&gt;.</translation>
     </message>
@@ -3760,7 +3765,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="226"/>
         <source>FASTQ Quality Trimmer</source>
-        <translation>Подрезание FASTQ качества</translation>
+        <translation>Обрезание последовательностей в файле FASTQ с учетом качества прочтения</translation>
     </message>
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="227"/>
@@ -3898,7 +3903,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="53"/>
         <source>Reverse Complement</source>
-        <translation>Обратная комплементарность</translation>
+        <translation>Создание обратно-комплементарной последовательности</translation>
     </message>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="54"/>
@@ -4364,7 +4369,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/RmdupBamWorker.cpp" line="83"/>
         <source>Remove Duplicates in BAM Files</source>
-        <translation>Удаление дубликатов в BAM файлах</translation>
+        <translation>Удаление дубликатов в BAM-файлах</translation>
     </message>
     <message>
         <location filename="../src/library/RmdupBamWorker.cpp" line="84"/>
@@ -4806,7 +4811,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/SortBamWorker.cpp" line="81"/>
         <source>Sort BAM Files</source>
-        <translation>Сортировка BAM файлов</translation>
+        <translation>Сортировка BAM-файлов</translation>
     </message>
     <message>
         <location filename="../src/library/SortBamWorker.cpp" line="82"/>
@@ -6097,22 +6102,22 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>Закрыть панель</translation>
     </message>
     <message>
-        <location filename="../src/WorkflowTabView.cpp" line="153"/>
+        <location filename="../src/WorkflowTabView.cpp" line="171"/>
         <source>Rename Dashboard</source>
         <translation>Переименовать панель</translation>
     </message>
     <message>
-        <location filename="../src/WorkflowTabView.cpp" line="154"/>
+        <location filename="../src/WorkflowTabView.cpp" line="172"/>
         <source>New dashboard name:</source>
         <translation>Имя новой панели:</translation>
     </message>
     <message>
-        <location filename="../src/WorkflowTabView.cpp" line="184"/>
+        <location filename="../src/WorkflowTabView.cpp" line="202"/>
         <source>Run</source>
         <translation>Запуск</translation>
     </message>
     <message>
-        <location filename="../src/WorkflowTabView.cpp" line="206"/>
+        <location filename="../src/WorkflowTabView.cpp" line="224"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>

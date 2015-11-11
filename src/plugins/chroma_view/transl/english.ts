@@ -82,7 +82,7 @@
         <translation>Chromatogram view (zoom in to see base calls)</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="733"/>
+        <location filename="../src/ChromatogramView.cpp" line="735"/>
         <source>original sequence</source>
         <translation>original sequence</translation>
     </message>

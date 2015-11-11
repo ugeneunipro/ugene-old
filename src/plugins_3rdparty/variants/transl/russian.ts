@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru" sourcelanguage="en">
-<context>
-    <name>IntegralBusPort</name>
-    <message>
-        <location filename="../src/SamtoolMpileupWorker.cpp" line="131"/>
-        <source>Empty input slot: %1</source>
-        <translation>Входной слот пуст: %1</translation>
-    </message>
-</context>
+<TS version="2.1" language="ru" sourcelanguage="en">
 <context>
     <name>U2::LocalWorkflow::CallVariantsPrompter</name>
     <message>
@@ -83,6 +75,11 @@
 <context>
     <name>U2::LocalWorkflow::CallVariantsWorker</name>
     <message>
+        <location filename="../src/SamtoolMpileupWorker.cpp" line="131"/>
+        <source>Empty input slot: %1</source>
+        <translation>Входной слот пуст: %1</translation>
+    </message>
+    <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="151"/>
         <source>Input sequences</source>
         <translation>Входные последовательности</translation>
@@ -115,7 +112,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="173"/>
         <source>Call Variants with SAMtools</source>
-        <translation>Вызов вариаций при помощи SAMtools</translation>
+        <translation>Поиск вариабельных позиций с помощью SAMtools</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="174"/>
@@ -429,8 +426,12 @@
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="314"/>
+        <source>Enable pair/trio calling. For trio calling, option -s is usually needed to be applied to configure the trio members and their ordering. In the file supplied to the option -s, the first sample must be the child, the second the father and the third the mother. The valid values of STR are &apos;pair&apos;, &apos;trioauto&apos;, &apos;trioxd&apos; and &apos;trioxs&apos;, where &apos;pair&apos; calls differences between two input samples, and &apos;trioxd&apos; (&apos;trioxs&apos;)specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable pair/trio calling. For trio calling, option -s is usually needed to be applied to configure the trio members and their ordering. In the file supplied to the option -s, the first sample must be the child, the second the father and the third the mother. The valid values of STR are &apos;ÂpairÂ&apos;, &apos;ÂtrioautoÂ&apos;, &apos;ÂtrioxdÂ&apos; and &apos;ÂtrioxsÂ&apos;, where &apos;ÂpairÂ&apos; calls differences between two input samples, and &apos;ÂtrioxdÂ&apos; (&apos;ÂtrioxsÂ&apos;)specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T).</source>
-        <translation>Позволен двойной/тройной вызов (-T).</translation>
+        <translation type="vanished">Позволен двойной/тройной вызов (-T).</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="321"/>

@@ -1076,8 +1076,8 @@ The default is instead to generate sequences with a variety of different lengths
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="122"/>
-        <source>HMM Build</source>
-        <translation>Построить HMM</translation>
+        <source>HMM2 Build</source>
+        <translation>Построение профиля с помощью HMMER2</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="65"/>
@@ -1140,6 +1140,10 @@ The default is instead to generate sequences with a variety of different lengths
         <translation>Затравка</translation>
     </message>
     <message>
+        <source>HMM Build</source>
+        <translation type="obsolete">Построение HMM профайла</translation>
+    </message>
+    <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="156"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
@@ -1191,7 +1195,7 @@ The default is instead to generate sequences with a variety of different lengths
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="70"/>
         <source>HMMER2 Tools</source>
-        <translation>Программы HMMER2</translation>
+        <translation>Инструменты HMMER2 (скрытые марковские модели)</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="62"/>
@@ -1211,13 +1215,13 @@ The default is instead to generate sequences with a variety of different lengths
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="156"/>
-        <source>Read HMM Profile</source>
-        <translation>Читать HMM профайл</translation>
+        <source>Read HMM2 Profile</source>
+        <translation>Чтение профиля HMM2</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="143"/>
-        <source>Write HMM Profile</source>
-        <translation>Сохранить HMM профайл</translation>
+        <source>Write HMM2 Profile</source>
+        <translation>Запись профиля HMM2</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="132"/>
@@ -1338,8 +1342,8 @@ The default is instead to generate sequences with a variety of different lengths
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="85"/>
-        <source>HMM Search</source>
-        <translation>Поиск HMM</translation>
+        <source>HMM2 Search</source>
+        <translation>Поиск с помощью HMMER2</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="158"/>

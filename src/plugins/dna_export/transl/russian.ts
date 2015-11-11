@@ -1839,7 +1839,7 @@ var %2; //parsed line number</translation>
     <message>
         <location filename="../src/GenerateDNAWorker.cpp" line="177"/>
         <source>Generates random DNA sequences with given nucleotide content that can be specified manually or evaluated from the reference file.</source>
-        <translation>Генерирует случаюную ДНК последовательность с заданным составом, который может быть указан вручную или оценен из референсного файла.</translation>
+        <translation>Генерирует случайную ДНК последовательность с заданным составом, который может быть указан вручную или оценен из референсного файла.</translation>
     </message>
     <message>
         <location filename="../src/GenerateDNAWorker.cpp" line="216"/>

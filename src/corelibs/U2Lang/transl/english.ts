@@ -1091,7 +1091,7 @@
     <message>
         <location filename="../src/support/serialize/HRVisualSerializer.cpp" line="180"/>
         <source>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</source>
-        <translation type="unfinished">Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
+        <translation>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
     </message>
 </context>
 <context>
@@ -1530,8 +1530,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="59"/>
-        <source>NGS: Basic</source>
-        <translation>NGS: Basic</translation>
+        <source>NGS: Basic Functions</source>
+        <translation>NGS: Basic Functions</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="63"/>
@@ -1555,8 +1555,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="75"/>
-        <source>Transcription Factor</source>
-        <translation>Transcription Factor</translation>
+        <source>Transcription Factor Binding Sites</source>
+        <translation>Transcription Factor Binding Sites</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="79"/>
@@ -2159,17 +2159,17 @@
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="122"/>
         <source>Required parameter has no datasets specified: %1</source>
-        <translation type="unfinished">Required parameter has no datasets specified: %1</translation>
+        <translation>Required parameter has no datasets specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="129"/>
         <source>Required parameter has no input urls specified: %1</source>
-        <translation type="unfinished">Required parameter has no input urls specified: %1</translation>
+        <translation>Required parameter has no input urls specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="134"/>
         <source>Required parameter %1 has empty dataset: %2</source>
-        <translation type="unfinished">Required parameter %1 has empty dataset: %2</translation>
+        <translation>Required parameter %1 has empty dataset: %2</translation>
     </message>
 </context>
 <context>

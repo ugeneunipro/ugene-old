@@ -41,7 +41,7 @@
     <message>
         <location filename="../src/UgeneContextWrapper.cpp" line="171"/>
         <source>UGENE script environment initialization started</source>
-        <translation type="unfinished">UGENE script environment initialization started</translation>
+        <translation>UGENE script environment initialization started</translation>
     </message>
 </context>
 </TS>

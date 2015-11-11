@@ -90,7 +90,7 @@ QString SnpEffPrompter::composeRichDoc() {
 ////////////////////////////////////////
 //SnpEffFactory
 void SnpEffFactory::init() {
-    Descriptor desc( ACTOR_ID, SnpEffWorker::tr("SnpEff annotation and filtration"),
+    Descriptor desc( ACTOR_ID, SnpEffWorker::tr("SnpEff Annotation and Filtration"),
         SnpEffWorker::tr("Annotates and filters variations with SnpEff.") );
 
     QList<PortDescriptor*> p;

@@ -348,7 +348,7 @@
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="190"/>
         <source>Build Frequency Matrix</source>
-        <translation>Построить частотную матрицу</translation>
+        <translation>Построение частотной матрицы</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="191"/>
@@ -399,12 +399,12 @@
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="285"/>
         <source>Convert Frequency Matrix</source>
-        <translation>Конвертировать частотную матрицу</translation>
+        <translation>Преобразование частотной матрицы</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="286"/>
         <source>Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</source>
-        <translation>Конвертация частотной матрицы в весовую. Весовые матрицы используются для вероятностного распознавания сайтов связывания транскрипционных факторов.</translation>
+        <translation>Преобразование частотной матрицы в весовую. Весовые матрицы используются для вероятностного распознавания сайтов связывания транскрипционных факторов.</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="301"/>
@@ -507,7 +507,7 @@
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="91"/>
         <source>Build Weight Matrix</source>
-        <translation>Построить весовую матрицу</translation>
+        <translation>Построение весовой матрицы</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="92"/>
@@ -619,7 +619,7 @@
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="92"/>
         <source>Search for TFBS with Weight Matrix</source>
-        <translation>Весовые матрицы: искать сайты связывания ТФ</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью весовой матрицы</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="93"/>
@@ -1310,7 +1310,7 @@ Maybe model data are not enough for selected algorithm</translation>
     <message>
         <location filename="../src/WeightMatrixPlugin.cpp" line="55"/>
         <source>Search for TFBS with weight matrices</source>
-        <translation>Весовые матрицы: искать сайты связывания ТФ</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью весовой матрицы</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixPlugin.cpp" line="61"/>

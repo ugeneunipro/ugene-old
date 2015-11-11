@@ -2462,17 +2462,17 @@ Uncheck to get the maximum likelihood estimate.</translation>
 <context>
     <name>U2::BlastAllSupportMultiTask</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="655"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="660"/>
         <source>Source file</source>
         <translation>Source file</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="656"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="661"/>
         <source>Used databse</source>
         <translation>Used database</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="658"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="663"/>
         <source>No any results found</source>
         <translation>No any results found</translation>
     </message>
@@ -2506,112 +2506,117 @@ Uncheck to get the maximum likelihood estimate.</translation>
 <context>
     <name>U2::BlastAllSupportTask</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="76"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="61"/>
+        <source>A problem occurred during doing BLAST. The sequence is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="81"/>
         <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
         <translation>Subdirectory for temporary files exists. Can not remove this directory.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="81"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="86"/>
         <source>Can not create directory for temporary files.</source>
         <translation>Can not create directory for temporary files.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="94"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="99"/>
         <source>Can not create fake NCBI ini file</source>
         <translation>Can not create fake NCBI ini file</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="205"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="210"/>
         <source>Output file not found</source>
         <translation>Output file not found</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="207"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="212"/>
         <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="253"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="258"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Can not remove directory for temporary files.</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="288"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="293"/>
         <source>Incorrect number of fields in line: %1</source>
         <translation>Incorrect number of fields in line: %1</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="293"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="298"/>
         <source>Can&apos;t get location. Start position is absent in [%1]</source>
         <translation>Can&apos;t get location. Start position is absent in [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="298"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="303"/>
         <source>Can&apos;t get location. End position is absent in [%1]</source>
         <translation>Can&apos;t get location. End position is absent in [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="317"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="322"/>
         <source>Can&apos;t get hit start location from [%1]</source>
         <translation>Can&apos;t get hit start location from [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="322"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="327"/>
         <source>Can&apos;t get hit end location from [%1]</source>
         <translation>Can&apos;t get hit end location from [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="352"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="357"/>
         <source>Can&apos;t get align length from [%1]</source>
         <translation>Can&apos;t get align length from [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="357"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="362"/>
         <source>Can&apos;t get gaps from [%1]</source>
         <translation>Can&apos;t get gaps from [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="362"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="367"/>
         <source>Can&apos;t get identity from [%1]</source>
         <translation>Can&apos;t get identity from [%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="391"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="396"/>
         <source>Can&apos;t open output file</source>
         <translation>Can&apos;t open output file</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="453"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="458"/>
         <source>Can&apos;t get Hsp_query-from element</source>
         <translation>Can&apos;t get Hsp_query-from element</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="460"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="465"/>
         <source>Can&apos;t get Hsp_query-to element</source>
         <translation>Can&apos;t get Hsp_query-to element</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="483"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="488"/>
         <source>Can&apos;t get location. Hsp_query-frame[%1]</source>
         <translation>Can&apos;t get location. Hsp_query-frame[%1]</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="493"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="498"/>
         <source>Can&apos;t get identity</source>
         <translation>Can&apos;t get identity</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="501"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="506"/>
         <source>Can&apos;t get gaps</source>
         <translation>Can&apos;t get gaps</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="509"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="514"/>
         <source>Can&apos;t get align length</source>
         <translation>Can&apos;t get align length</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="522"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="527"/>
         <source>Can&apos;t evaluate location</source>
         <translation>Can&apos;t evaluate location</translation>
     </message>
@@ -2648,7 +2653,7 @@ Uncheck to get the maximum likelihood estimate.</translation>
         <translation>Wrong input file</translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="299"/>
+        <location filename="../src/blast/BlastAllSupportRunDialog.cpp" line="300"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Wrong parameters for creating annotations</translation>
     </message>
@@ -2693,7 +2698,7 @@ Uncheck to get the maximum likelihood estimate.</translation>
         <translation type="unfinished">Select a database file</translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="110"/>
+        <location filename="../src/utils/BlastDBSelectorWidgetController.cpp" line="108"/>
         <source>No alias or index file found for selected database.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2732,96 +2737,101 @@ Uncheck to get the maximum likelihood estimate.</translation>
 <context>
     <name>U2::BlastPlusSupportCommonTask</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="89"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="69"/>
+        <source>A problem occurred during doing BLAST+. The sequence is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="93"/>
         <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
         <translation>Subdirectory for temporary files exists. Can not remove this directory.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="94"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="98"/>
         <source>Can not create directory for temporary files.</source>
         <translation>Can not create directory for temporary files.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="107"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="111"/>
         <source>Can not create fake NCBI ini file</source>
         <translation>Can not create fake NCBI ini file</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="151"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="155"/>
         <source>Output file not found</source>
         <translation>Output file not found</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="153"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="157"/>
         <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="182"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="207"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="186"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="211"/>
         <source>There were no hits found for your BLAST search.</source>
         <translation>There were no hits found for your BLAST search.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="199"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="203"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Can not remove directory for temporary files.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="240"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="244"/>
         <source>Incorrect number of fields in line: %1</source>
         <translation>Incorrect number of fields in line: %1</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="245"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="250"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="405"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="412"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="429"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="249"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="254"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="409"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="416"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="433"/>
         <source>Can&apos;t get location</source>
         <translation>Can&apos;t get location</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="262"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="266"/>
         <source>Can&apos;t evaluate location</source>
         <translation>Can&apos;t evaluate location</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="268"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="273"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="272"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="277"/>
         <source>Can&apos;t get hit location</source>
         <translation>Can&apos;t get hit location</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="289"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="293"/>
         <source>Can&apos;t evaluate hit location</source>
         <translation>Can&apos;t evaluate hit location</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="303"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="455"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="307"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="459"/>
         <source>Can&apos;t get align length</source>
         <translation>Can&apos;t get align length</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="308"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="447"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="312"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="451"/>
         <source>Can&apos;t get gaps</source>
         <translation>Can&apos;t get gaps</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="313"/>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="439"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="317"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="443"/>
         <source>Can&apos;t get identity</source>
         <translation>Can&apos;t get identity</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="342"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="346"/>
         <source>Can&apos;t open output file</source>
         <translation>Can&apos;t open output file</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="346"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="350"/>
         <source>Can&apos;t read output file</source>
         <translation>Can&apos;t read output file</translation>
     </message>
@@ -2855,7 +2865,7 @@ Uncheck to get the maximum likelihood estimate.</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="313"/>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="397"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="398"/>
         <source>Do you want to select it now?</source>
         <translation>Do you want to select it now?</translation>
     </message>
@@ -2865,7 +2875,7 @@ Uncheck to get the maximum likelihood estimate.</translation>
         <translation>Sequence object is NULL</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="396"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="397"/>
         <source>Path for BLAST+ %1 tool not selected.</source>
         <translation>Path for BLAST+ %1 tool not selected.</translation>
     </message>
@@ -2873,17 +2883,17 @@ Uncheck to get the maximum likelihood estimate.</translation>
 <context>
     <name>U2::BlastPlusSupportMultiTask</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="609"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="613"/>
         <source>Source file</source>
         <translation>Source file</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="610"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="614"/>
         <source>Used databse</source>
         <translation>Used database</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="612"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="616"/>
         <source>No any results found</source>
         <translation>No any results found</translation>
     </message>
@@ -2956,17 +2966,17 @@ Uncheck to get the maximum likelihood estimate.</translation>
         <translation>This file does not contain sequences.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="379"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="380"/>
         <source>Do you want to select it now?</source>
         <translation>Do you want to select it now?</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="414"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="415"/>
         <source>Path for &lt;i&gt;BLAST+ %1&lt;/i&gt; tool not selected.</source>
         <translation>Path for &lt;i&gt;BLAST+ %1&lt;/i&gt; tool not selected.</translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="448"/>
+        <location filename="../src/blast_plus/BlastPlusSupportRunDialog.cpp" line="449"/>
         <source>Wrong parameters for creating annotations</source>
         <translation>Wrong parameters for creating annotations</translation>
     </message>
@@ -3333,12 +3343,12 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
         <translation>Align with ClustalO...</translation>
     </message>
     <message>
-        <location filename="../src/clustalo/ClustalOSupport.cpp" line="157"/>
+        <location filename="../src/clustalo/ClustalOSupport.cpp" line="158"/>
         <source>Path for %1 tool not selected.</source>
         <translation>Path for %1 tool not selected.</translation>
     </message>
     <message>
-        <location filename="../src/clustalo/ClustalOSupport.cpp" line="158"/>
+        <location filename="../src/clustalo/ClustalOSupport.cpp" line="159"/>
         <source>Do you want to select it now?</source>
         <translation>Do you want to select it now?</translation>
     </message>
@@ -8314,8 +8324,8 @@ Default: 64.</translation>
     <name>U2::LocalWorkflow::SlopbedWorker</name>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="89"/>
-        <source>Slopbed</source>
-        <translation>Slopbed</translation>
+        <source>slopBed</source>
+        <translation>slopBed</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="90"/>
@@ -8497,8 +8507,8 @@ Default: 64.</translation>
     <name>U2::LocalWorkflow::SnpEffWorker</name>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="93"/>
-        <source>SnpEff annotation and filtration</source>
-        <translation>SnpEff annotation and filtration</translation>
+        <source>SnpEff Annotation and Filtration</source>
+        <translation>SnpEff Annotation and Filtration</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="94"/>
@@ -9342,8 +9352,8 @@ Set it empty if you want to run Tophat once for all input reads</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="155"/>
-        <source>Create VCF consensus</source>
-        <translation>Create VCF consensus</translation>
+        <source>Create VCF Consensus</source>
+        <translation>Create VCF Consensus</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="156"/>
@@ -9985,7 +9995,7 @@ Set it empty if you want to run Tophat once for all input reads</translation>
 <context>
     <name>U2::SnpEffSupport</name>
     <message>
-        <location filename="../src/snpeff/SnpEffSupport.cpp" line="48"/>
+        <location filename="../src/snpeff/SnpEffSupport.cpp" line="49"/>
         <source>&lt;i&gt;SnpEff&lt;/i&gt;: Genetic variant annotation and effect prediction toolbox.</source>
         <translation>&lt;i&gt;SnpEff&lt;/i&gt;: Genetic variant annotation and effect prediction toolbox.</translation>
     </message>

@@ -128,7 +128,7 @@ public:
             //assert(!slotName.isEmpty());
             if (it.value().isEmpty()) {
                 if (screenedSlot == slot) {
-                    problemList.append(Problem(IntegralBusPort::tr("Empty input slot: %1").arg(slotName)));
+                    problemList.append(Problem(CallVariantsWorker::tr("Empty input slot: %1").arg(slotName)));
                     return false;
                 }
             }

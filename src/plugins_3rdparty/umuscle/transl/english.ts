@@ -315,27 +315,27 @@
 <context>
     <name>U2::MuscleAddSequencesToProfileTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="267"/>
+        <location filename="../src/MuscleTask.cpp" line="268"/>
         <source>MUSCLE align profiles &apos;%1&apos; vs &apos;%2&apos;</source>
         <translation>MUSCLE align profiles &apos;%1&apos; vs &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="269"/>
+        <location filename="../src/MuscleTask.cpp" line="270"/>
         <source>MUSCLE align &apos;%2&apos; by profile &apos;%1&apos;</source>
         <translation>MUSCLE align &apos;%2&apos; by profile &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="310"/>
+        <location filename="../src/MuscleTask.cpp" line="311"/>
         <source>Sequences in file have different alphabets %1</source>
         <translation>Sequences in file have different alphabets %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="331"/>
+        <location filename="../src/MuscleTask.cpp" line="332"/>
         <source>No sequences found in file %1</source>
         <translation>No sequences found in file %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="333"/>
+        <location filename="../src/MuscleTask.cpp" line="334"/>
         <source>No alignment found in file %1</source>
         <translation>No alignment found in file %1</translation>
     </message>
@@ -460,17 +460,17 @@
 <context>
     <name>U2::MuscleGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="603"/>
+        <location filename="../src/MuscleTask.cpp" line="606"/>
         <source>Workflow wrapper &apos;%1&apos;</source>
         <translation>Workflow wrapper &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="616"/>
+        <location filename="../src/MuscleTask.cpp" line="619"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation>MUSCLE align &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="619"/>
+        <location filename="../src/MuscleTask.cpp" line="622"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation>MUSCLE refine &apos;%1&apos;</translation>
     </message>
@@ -478,27 +478,32 @@
 <context>
     <name>U2::MuscleGObjectTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="363"/>
+        <location filename="../src/MuscleTask.cpp" line="364"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation>MUSCLE align &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="366"/>
+        <location filename="../src/MuscleTask.cpp" line="367"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation>MUSCLE refine &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="369"/>
+        <location filename="../src/MuscleTask.cpp" line="370"/>
         <source>MUSCLE add to profile &apos;%1&apos;</source>
         <translation>MUSCLE add to profile &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="372"/>
+        <location filename="../src/MuscleTask.cpp" line="373"/>
         <source>MUSCLE align profiles</source>
         <translation>MUSCLE align profiles</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="418"/>
+        <location filename="../src/MuscleTask.cpp" line="405"/>
+        <source>A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="421"/>
         <source>MAlignment object has been changed</source>
         <translation>MAlignment object has been changed</translation>
     </message>
@@ -590,37 +595,37 @@
 <context>
     <name>U2::MuscleTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="74"/>
+        <location filename="../src/MuscleTask.cpp" line="75"/>
         <source>MUSCLE alignment</source>
         <translation>MUSCLE alignment</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="82"/>
+        <location filename="../src/MuscleTask.cpp" line="83"/>
         <source>MUSCLE alignment started</source>
         <translation>MUSCLE alignment started</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="103"/>
+        <location filename="../src/MuscleTask.cpp" line="104"/>
         <source>Incorrect region to align</source>
         <translation>Incorrect region to align</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="105"/>
+        <location filename="../src/MuscleTask.cpp" line="106"/>
         <source>Stopping MUSCLE task, because of error in MAlignment::mid function</source>
         <translation>Stopping MUSCLE task, because of error in MAlignment::mid function</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="130"/>
+        <location filename="../src/MuscleTask.cpp" line="131"/>
         <source>Performing MUSCLE alignment...</source>
         <translation>Performing MUSCLE alignment...</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="153"/>
+        <location filename="../src/MuscleTask.cpp" line="154"/>
         <source>MUSCLE alignment successfully finished</source>
         <translation>MUSCLE alignment successfully finished</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="207"/>
+        <location filename="../src/MuscleTask.cpp" line="208"/>
         <source>Unexpected number of rows in the result multiple alignment!</source>
         <translation>Unexpected number of rows in the result multiple alignment!</translation>
     </message>

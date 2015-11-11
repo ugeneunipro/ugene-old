@@ -450,9 +450,9 @@
 <context>
     <name>U2::InSilicoPcrOPWidgetFactory</name>
     <message>
-        <location filename="../src/InSilicoPcrOPWidgetFactory.cpp" line="48"/>
+        <location filename="../src/InSilicoPcrOPWidgetFactory.cpp" line="50"/>
         <source>In Silico PCR</source>
-        <translation>In Silico PCR</translation>
+        <translation>ПЦР in silico</translation>
     </message>
 </context>
 <context>
@@ -510,7 +510,7 @@
     <message>
         <location filename="../src/InSilicoPcrOptionPanelWidget.cpp" line="207"/>
         <source>Extract In Silico PCR products</source>
-        <translation>Извлечь продукты In Silico PCR</translation>
+        <translation>Извлечь продукты ПЦР in silico</translation>
     </message>
 </context>
 <context>
@@ -761,7 +761,7 @@
     <message>
         <location filename="../src/InSilicoPcrWorker.cpp" line="139"/>
         <source>In Silico PCR</source>
-        <translation>In Silico PCR</translation>
+        <translation>ПЦР in silico</translation>
     </message>
     <message>
         <location filename="../src/InSilicoPcrWorker.cpp" line="140"/>

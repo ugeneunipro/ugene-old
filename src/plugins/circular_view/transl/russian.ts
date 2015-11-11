@@ -108,12 +108,12 @@
         <translation>Круговой вид</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="174"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="175"/>
         <source>Include position marker</source>
         <translation>Включить позицию</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="175"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="176"/>
         <source>Include selection</source>
         <translation>Включить выделение</translation>
     </message>
@@ -185,17 +185,17 @@
         <translation>Список круговых видов пуст!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="153"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="155"/>
         <source>Sequence</source>
         <translation>Последовательность</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="156"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="158"/>
         <source>Sequence context is NULL!</source>
         <translation>Sequence context is NULL!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="157"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="159"/>
         <source>Sequece Gobject is NULL</source>
         <translation>Sequece Gobject is NULL</translation>
     </message>

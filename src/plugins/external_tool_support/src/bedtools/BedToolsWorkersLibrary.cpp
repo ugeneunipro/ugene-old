@@ -86,7 +86,7 @@ void SlopbedWorkerFactory::init() {
             dataPath = dp;
         }
     }
-    Descriptor desc( ACTOR_ID, SlopbedWorker::tr("Slopbed"),
+    Descriptor desc( ACTOR_ID, SlopbedWorker::tr("slopBed"),
         SlopbedWorker::tr("Increases the size of each feature in files using bedtools slop.") );
 
     QList<PortDescriptor*> p;

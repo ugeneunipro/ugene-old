@@ -8,4 +8,6 @@ HEADERS += src/SamtoolMpileupWorker.h \
 SOURCES += src/SamtoolMpileupWorker.cpp \
 		   src/AssemblySamtoolsMpileup.cpp \
 		   src/SamtoolsPlugin.cpp 
+
+TRANSLATIONS += transl/english.ts transl/russian.ts
   

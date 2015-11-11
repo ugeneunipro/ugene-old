@@ -450,7 +450,7 @@
 <context>
     <name>U2::InSilicoPcrOPWidgetFactory</name>
     <message>
-        <location filename="../src/InSilicoPcrOPWidgetFactory.cpp" line="48"/>
+        <location filename="../src/InSilicoPcrOPWidgetFactory.cpp" line="50"/>
         <source>In Silico PCR</source>
         <translation>In Silico PCR</translation>
     </message>

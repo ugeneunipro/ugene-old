@@ -1091,7 +1091,7 @@
     <message>
         <location filename="../src/support/serialize/HRVisualSerializer.cpp" line="180"/>
         <source>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</source>
-        <translation type="unfinished">Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
+        <translation>Undefined data-flow link: &apos;%1&apos;. Define it in actor-bindings</translation>
     </message>
 </context>
 <context>
@@ -1506,7 +1506,7 @@
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="39"/>
         <source>Data Converters</source>
-        <translation>Конвертация данных</translation>
+        <translation>Преобразование данных</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="43"/>
@@ -1526,42 +1526,42 @@
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="55"/>
         <source>DNA Assembly</source>
-        <translation>Сборка ДНК</translation>
+        <translation>Сборка последовательностей ДНК</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="59"/>
-        <source>NGS: Basic</source>
-        <translation>NGS: Базовые</translation>
+        <source>NGS: Basic Functions</source>
+        <translation>NGS: основные функции</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="63"/>
         <source>NGS: Align Short Reads</source>
-        <translation>NGS: Выравнивание коротких ридов</translation>
+        <translation>NGS: выравнивание коротких прочтений</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="67"/>
         <source>NGS: RNA-Seq Analysis</source>
-        <translation>NGS: Анализ RNA-Seq</translation>
+        <translation>NGS: анализ данных RNA-Seq</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="71"/>
         <source>NGS: Variant Analysis</source>
-        <translation>NGS: Анализ вариаций</translation>
+        <translation>NGS: анализ вариабельных позиций</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="100"/>
         <source>NGS: ChIP-Seq Analysis</source>
-        <translation>NGS: Анализ ChIP-Seq</translation>
+        <translation>NGS: анализ данных ChIP-Seq</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="75"/>
-        <source>Transcription Factor</source>
-        <translation>Фактор транскрипции</translation>
+        <source>Transcription Factor Binding Sites</source>
+        <translation>Сайты связывания транскрипционных факторов</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="79"/>
         <source>Custom Elements with Script</source>
-        <translation>Элементы пользователя со скриптами</translation>
+        <translation>Пользовательские элементы</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="83"/>
@@ -1576,7 +1576,7 @@
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="91"/>
         <source>Includes</source>
-        <translation>Включения</translation>
+        <translation>Дополнительные инструменты</translation>
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="96"/>
@@ -2159,17 +2159,17 @@
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="122"/>
         <source>Required parameter has no datasets specified: %1</source>
-        <translation type="unfinished">Required parameter has no datasets specified: %1</translation>
+        <translation>Required parameter has no datasets specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="129"/>
         <source>Required parameter has no input urls specified: %1</source>
-        <translation type="unfinished">Required parameter has no input urls specified: %1</translation>
+        <translation>Required parameter has no input urls specified: %1</translation>
     </message>
     <message>
         <location filename="../src/model/url_attribute/URLAttribute.cpp" line="134"/>
         <source>Required parameter %1 has empty dataset: %2</source>
-        <translation type="unfinished">Required parameter %1 has empty dataset: %2</translation>
+        <translation>Required parameter %1 has empty dataset: %2</translation>
     </message>
 </context>
 <context>

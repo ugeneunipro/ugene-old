@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QDWorker.cpp" line="100"/>
         <source>Annotate with UQL</source>
-        <translation>Аннотирование при помощи UQL</translation>
+        <translation>Аннотирование с помощью UQL</translation>
     </message>
     <message>
         <location filename="../src/QDWorker.cpp" line="101"/>
@@ -315,44 +315,44 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QDDialog</name>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="294"/>
+        <location filename="../src/QDRunDialog.cpp" line="296"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="295"/>
+        <location filename="../src/QDRunDialog.cpp" line="297"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="335"/>
+        <location filename="../src/QDRunDialog.cpp" line="337"/>
         <source>Select query</source>
         <translation>Выбор схемы запроса</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="351"/>
-        <location filename="../src/QDRunDialog.cpp" line="358"/>
+        <location filename="../src/QDRunDialog.cpp" line="353"/>
+        <location filename="../src/QDRunDialog.cpp" line="360"/>
         <source>Can not load %1</source>
         <translation>Не удаётся загрузить схему %1</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="388"/>
+        <location filename="../src/QDRunDialog.cpp" line="390"/>
         <source>File with query is not selected!</source>
         <translation>Не выбран файл схемы!</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="393"/>
+        <location filename="../src/QDRunDialog.cpp" line="395"/>
         <source>Error in schema!</source>
         <translation>Ошибка в схеме!</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="399"/>
-        <location filename="../src/QDRunDialog.cpp" line="411"/>
+        <location filename="../src/QDRunDialog.cpp" line="401"/>
+        <location filename="../src/QDRunDialog.cpp" line="413"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/QDRunDialog.cpp" line="411"/>
+        <location filename="../src/QDRunDialog.cpp" line="413"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>

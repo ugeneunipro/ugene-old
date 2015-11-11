@@ -247,65 +247,66 @@
 <context>
     <name>U2::MSAColorSchemeRegistry</name>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1003"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1018"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1011"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1026"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1067"/>
         <source>No colors</source>
         <translation>No colors</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1011"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1019"/>
         <source>Jalview</source>
         <translation>Jalview</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1013"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1052"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1021"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1060"/>
         <source>Percentage Identity</source>
         <translation>Percentage Identity</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1014"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1053"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1022"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1061"/>
         <source>Percentage Identity (gray)</source>
         <translation>Percentage Identity (gray)</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1026"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1034"/>
         <source>Zappo</source>
         <translation>Zappo</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1030"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1038"/>
         <source>Tailor</source>
         <translation>Tailor</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1034"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1042"/>
         <source>Hydrophobicity</source>
         <translation>Hydrophobicity</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1038"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1046"/>
         <source>Helix propensity</source>
         <translation>Helix propensity</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1042"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1050"/>
         <source>Strand propensity</source>
         <translation>Strand propensity</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1046"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1054"/>
         <source>Turn propensity</source>
         <translation>Turn propensity</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1050"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1058"/>
         <source>Buried index</source>
         <translation>Buried index</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1055"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1063"/>
         <source>Clustal X</source>
         <translation>Clustal X</translation>
     </message>
@@ -422,42 +423,44 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::MSAHighlightingSchemeRegistry</name>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1062"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1063"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1074"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1075"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1076"/>
         <source>No highlighting</source>
         <translation>No highlighting</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1065"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1066"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1078"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1079"/>
         <source>Agreements</source>
         <translation>Agreements</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1068"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1069"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1081"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1082"/>
         <source>Disagreements</source>
         <translation>Disagreements</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1071"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1072"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1084"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1085"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1086"/>
         <source>Gaps</source>
         <translation>Gaps</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1074"/>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1075"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1088"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1089"/>
         <source>Conservation level</source>
         <translation>Conservation level</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1077"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1091"/>
         <source>Transitions</source>
         <translation>Transitions</translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1078"/>
+        <location filename="../src/util_msaedit/MSAColorScheme.cpp" line="1092"/>
         <source>Transversions</source>
         <translation>Transversions</translation>
     </message>

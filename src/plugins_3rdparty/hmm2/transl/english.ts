@@ -1086,8 +1086,8 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="122"/>
-        <source>HMM Build</source>
-        <translation>HMM Build</translation>
+        <source>HMM2 Build</source>
+        <translation>HMM2 Build</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="65"/>
@@ -1148,6 +1148,10 @@ You can use this option to generate reproducible results for different hmmcalibr
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="100"/>
         <source>Random seed</source>
         <translation>Random seed</translation>
+    </message>
+    <message>
+        <source>HMM Build</source>
+        <translation type="obsolete">HMM Build</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="156"/>
@@ -1216,13 +1220,13 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="156"/>
-        <source>Read HMM Profile</source>
-        <translation>Read HMM Profile</translation>
+        <source>Read HMM2 Profile</source>
+        <translation>Read HMM2 Profile</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="143"/>
-        <source>Write HMM Profile</source>
-        <translation>Write HMM Profile</translation>
+        <source>Write HMM2 Profile</source>
+        <translation>Write HMM2 Profile</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="70"/>
@@ -1348,8 +1352,8 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="85"/>
-        <source>HMM Search</source>
-        <translation>HMM Search</translation>
+        <source>HMM2 Search</source>
+        <translation>HMM2 Search</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="158"/>
@@ -1385,6 +1389,10 @@ You can use this option to generate reproducible results for different hmmcalibr
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="74"/>
         <source>A name of the result annotations.</source>
         <translation>A name of the result annotations.</translation>
+    </message>
+    <message>
+        <source>HMM Search</source>
+        <translation type="obsolete">HMM Search</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="86"/>

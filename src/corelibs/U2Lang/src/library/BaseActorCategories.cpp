@@ -56,7 +56,7 @@ const Descriptor BaseActorCategories::CATEGORY_ASSEMBLY() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_NGS_BASIC() {
-    return Descriptor("ngs_base", tr("NGS: Basic"), "");
+    return Descriptor("ngs_base", tr("NGS: Basic Functions"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS() {
@@ -72,7 +72,7 @@ const Descriptor BaseActorCategories::CATEGORY_VARIATION_ANALYSIS() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {
-    return Descriptor("tr", tr("Transcription Factor"), "");
+    return Descriptor("tr", tr("Transcription Factor Binding Sites"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_SCRIPT() {

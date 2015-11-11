@@ -660,12 +660,12 @@ bowtie index file</translation>
     <message>
         <location filename="../src/PropertyWidget.cpp" line="178"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>False</translation>
     </message>
     <message>
         <location filename="../src/PropertyWidget.cpp" line="179"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>True</translation>
     </message>
 </context>
 <context>
@@ -692,43 +692,43 @@ bowtie index file</translation>
 <context>
     <name>U2::Dashboard</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="162"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="170"/>
         <source>Output Files</source>
         <translation>Output Files</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="163"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="171"/>
         <source>Workflow Task</source>
         <translation>Workflow Task</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="164"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="172"/>
         <source>Common Statistics</source>
         <translation>Common Statistics</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="171"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="179"/>
         <source>Parameters</source>
         <translation>Parameters</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="248"/>
         <location filename="../src/dashboard/Dashboard.cpp" line="256"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="264"/>
         <source>External Tools</source>
         <translation>External Tools</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="188"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="196"/>
         <source>Problems</source>
         <translation>Problems</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="198"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="206"/>
         <source>Can not create a directory: </source>
         <translation>Can not create a directory: </translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="213"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="221"/>
         <source>Can not open a file for writing: </source>
         <translation>Can not open a file for writing: </translation>
     </message>
@@ -881,22 +881,22 @@ bowtie index file</translation>
 <context>
     <name>U2::GroupBox</name>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="880"/>
+        <location filename="../src/wizard/WizardController.cpp" line="881"/>
         <source>Show</source>
         <translation>Show</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="885"/>
+        <location filename="../src/wizard/WizardController.cpp" line="886"/>
         <source>Hide</source>
         <translation>Hide</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="905"/>
+        <location filename="../src/wizard/WizardController.cpp" line="906"/>
         <source>additional</source>
         <translation>additional</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="909"/>
+        <location filename="../src/wizard/WizardController.cpp" line="910"/>
         <source> parameters</source>
         <translation> parameters</translation>
     </message>
@@ -940,12 +940,12 @@ bowtie index file</translation>
 <context>
     <name>U2::JavascriptAgent</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="384"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="396"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="384"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="396"/>
         <source>The file does not exist</source>
         <translation>The file does not exist</translation>
     </message>
@@ -1003,7 +1003,7 @@ bowtie index file</translation>
 <context>
     <name>U2::OutputDirectoryWidget</name>
     <message>
-        <location filename="../src/support/OutputDirectoryWidget.cpp" line="79"/>
+        <location filename="../src/support/OutputDirectoryWidget.cpp" line="80"/>
         <source>Select a directory</source>
         <translation>Select a directory</translation>
     </message>
@@ -1062,17 +1062,22 @@ bowtie index file</translation>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="62"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="118"/>
         <source>Element</source>
         <translation>Element</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="118"/>
         <source>Message</source>
         <translation>Message</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="118"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
@@ -1150,7 +1155,7 @@ bowtie index file</translation>
 <context>
     <name>U2::RemoveDashboardsTask</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="459"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="471"/>
         <source>Remove dashboards</source>
         <translation>Remove dashboards</translation>
     </message>
@@ -1196,7 +1201,7 @@ bowtie index file</translation>
 <context>
     <name>U2::ScanDashboardsDirTask</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="413"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="425"/>
         <source>Scan dashboards directory</source>
         <translation>Scan dashboards directory</translation>
     </message>
@@ -1400,7 +1405,7 @@ bowtie index file</translation>
     <message>
         <location filename="../src/DesignerUtils.cpp" line="35"/>
         <source>UGENE workflow documents</source>
-        <translation type="unfinished">UGENE workflow documents</translation>
+        <translation>UGENE workflow documents</translation>
     </message>
 </context>
 <context>

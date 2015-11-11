@@ -320,25 +320,25 @@ By default, loglevel=&quot;ERROR&quot;.</translation>
     <name>U2::TaskSchedulerImpl</name>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="656"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="658"/>
         <source>New</source>
         <translation>New</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="658"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="660"/>
         <source>Prepared</source>
         <translation>Prepared</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="660"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="662"/>
         <source>Running</source>
         <translation>Running</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="662"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="664"/>
         <source>Finished</source>
         <translation>Finished</translation>
     </message>
@@ -353,32 +353,32 @@ By default, loglevel=&quot;ERROR&quot;.</translation>
         <translation>Subtask {%1} is failed: %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="363"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="365"/>
         <source>Waiting for resource &apos;%1&apos;, count: %2</source>
         <translation>Waiting for resource &apos;%1&apos;, count: %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="378"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="380"/>
         <source>No required resources for the task, resource id: &apos;%1&apos;</source>
         <translation>No required resources for the task, resource id: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="379"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="381"/>
         <source>Unable to run test because required resource not found</source>
         <translation>Unable to run test because required resource not found</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="386"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="388"/>
         <source>Not enough resources for the task, resource name: &apos;%1&apos; max: %2%3 requested: %4%5</source>
         <translation>Not enough resources for the task, resource name: &apos;%1&apos; max: %2%3 requested: %4%5</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="389"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="391"/>
         <source>Waiting for resource &apos;%1&apos;, count: %2%3</source>
         <translation>Waiting for resource &apos;%1&apos;, count: %2%3</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="522"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="524"/>
         <source>Registering new task: %1</source>
         <translation>Registering new task: %1</translation>
     </message>
@@ -388,47 +388,47 @@ By default, loglevel=&quot;ERROR&quot;.</translation>
         <translation>Subtask {%1} is canceled %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="580"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="582"/>
         <source>Unregistering task: %1</source>
         <translation>Unregistering task: %1</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="665"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="667"/>
         <source>Invalid name</source>
         <translation>Invalid name</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="739"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="741"/>
         <source>Promoting task {%1} to &apos;%2&apos;</source>
         <translation>Promoting task {%1} to &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="741"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="743"/>
         <source>Promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</source>
         <translation>Promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="751"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="753"/>
         <source>Starting {%1} task</source>
         <translation>Starting {%1} task</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="779"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="781"/>
         <source>Task {%1} finished with error: %2</source>
         <translation>Task {%1} finished with error: %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="783"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="785"/>
         <source>Task {%1} canceled</source>
         <translation>Task {%1} canceled</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="786"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="788"/>
         <source>Task {%1} finished</source>
         <translation>Task {%1} finished</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="889"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="891"/>
         <source>Deleting task: %1</source>
         <translation>Deleting task: %1</translation>
     </message>

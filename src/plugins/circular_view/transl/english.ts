@@ -108,12 +108,12 @@
         <translation>Circular view</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="174"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="175"/>
         <source>Include position marker</source>
         <translation>Include position marker</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="175"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="176"/>
         <source>Include selection</source>
         <translation>Include selection</translation>
     </message>
@@ -185,17 +185,17 @@
         <translation>List of Circular Views is empty!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="153"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="155"/>
         <source>Sequence</source>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="156"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="158"/>
         <source>Sequence context is NULL!</source>
         <translation>Sequence context is NULL!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="157"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="159"/>
         <source>Sequece Gobject is NULL</source>
         <translation>Sequece Gobject is NULL</translation>
     </message>

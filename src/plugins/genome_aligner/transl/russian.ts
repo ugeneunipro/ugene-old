@@ -856,7 +856,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
     <message>
         <location filename="../src/GenomeAlignerWorker.cpp" line="350"/>
         <source>Align Reads with UGENE Genome Aligner</source>
-        <translation>Выровнять риды при помощи модуля сборки контигов UGENE</translation>
+        <translation>Выравнивание с помощью модуля сборки контигов UGENE</translation>
     </message>
     <message>
         <location filename="../src/GenomeAlignerWorker.cpp" line="329"/>

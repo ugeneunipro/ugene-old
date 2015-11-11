@@ -152,7 +152,7 @@ void VcfConsensusWorkerFactory::init() {
     }
 
     Descriptor desc(ACTOR_ID,
-                    VcfConsensusWorker::tr("Create VCF consensus"),
+                    VcfConsensusWorker::tr("Create VCF Consensus"),
                     VcfConsensusWorker::tr("Apply VCF variants to a fasta file to create consensus sequence."));
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, ports, attrs);
     proto->setPrompter(new VcfConsensusPrompter());

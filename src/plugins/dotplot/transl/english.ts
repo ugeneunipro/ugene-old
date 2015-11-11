@@ -343,12 +343,12 @@ Select valid file to build dotplot</source>
         <translation>DotPlot</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotImageExportTask.cpp" line="76"/>
+        <location filename="../src/DotPlotImageExportTask.cpp" line="78"/>
         <source>Include area selection</source>
         <translation>Include area selection</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotImageExportTask.cpp" line="77"/>
+        <location filename="../src/DotPlotImageExportTask.cpp" line="79"/>
         <source>Include repeat selection</source>
         <translation>Include repeat selection</translation>
     </message>

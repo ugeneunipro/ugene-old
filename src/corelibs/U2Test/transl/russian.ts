@@ -6,47 +6,47 @@
     <message>
         <location filename="../GUITestingWindow.ui" line="14"/>
         <source>GUI testing window</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI testing window</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="22"/>
         <source>get parent info</source>
-        <translation type="unfinished"></translation>
+        <translation>get parent info</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="29"/>
         <source>switch off code generation</source>
-        <translation type="unfinished"></translation>
+        <translation>switch off code generation</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="36"/>
         <source>generate filler</source>
-        <translation type="unfinished"></translation>
+        <translation>generate filler</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="87"/>
         <source>Class name</source>
-        <translation type="unfinished"></translation>
+        <translation>Class name</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="92"/>
         <source>Object name</source>
-        <translation type="unfinished"></translation>
+        <translation>Object name</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="97"/>
         <source>Action name</source>
-        <translation type="unfinished"></translation>
+        <translation>Action name</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="102"/>
         <source>Action text</source>
-        <translation type="unfinished"></translation>
+        <translation>Action text</translation>
     </message>
     <message>
         <location filename="../GUITestingWindow.ui" line="107"/>
         <source>value</source>
-        <translation type="unfinished"></translation>
+        <translation>value</translation>
     </message>
 </context>
 <context>
@@ -99,37 +99,37 @@
 <context>
     <name>U2::GUITestLauncher</name>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="127"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="133"/>
         <source>No tests to run</source>
         <translation>No tests to run</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="137"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="143"/>
         <source>Invalid suite number: %1. There are %2 suites</source>
         <translation>Invalid suite number: %1. There are %2 suites</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="226"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="238"/>
         <source>An error occurred while starting UGENE: </source>
         <translation>An error occurred while starting UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="243"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="255"/>
         <source>An error occurred while finishing UGENE: </source>
         <translation>An error occurred while finishing UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="245"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="257"/>
         <source>Test fails because of timeout.</source>
         <translation>Test fails because of timeout.</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="277"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="289"/>
         <source>Test name</source>
         <translation>Test name</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="277"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="289"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
@@ -137,22 +137,22 @@
 <context>
     <name>U2::GUITestService</name>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="76"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="73"/>
         <source>GUI test viewer</source>
         <translation>GUI test viewer</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="76"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="73"/>
         <source>Service to support UGENE GUI testing</source>
         <translation>Service to support UGENE GUI testing</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="249"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="259"/>
         <source>Can&apos;t connect external tool manager signal</source>
         <translation>Can&apos;t connect external tool manager signal</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="408"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="382"/>
         <source>GUI testing</source>
         <translation>GUI testing</translation>
     </message>

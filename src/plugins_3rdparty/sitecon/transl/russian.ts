@@ -129,7 +129,7 @@
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="14"/>
         <source>SITECON Search</source>
-        <translation>Поиск сайтов связывания ТФ по модели SITECON</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью SITECON</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="22"/>
@@ -249,17 +249,17 @@
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="84"/>
         <source>Build SITECON model</source>
-        <translation>Построить SITECON</translation>
+        <translation>Построение модели SITECON</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="107"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>None</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="108"/>
         <source>Algorithm2</source>
-        <translation type="unfinished"></translation>
+        <translation>Algorithm2</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="138"/>
@@ -446,7 +446,7 @@
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="102"/>
         <source>Search for TFBS with SITECON</source>
-        <translation>Поиск сайтов связывания ТФ по модели SITECON</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью SITECON</translation>
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="205"/>
@@ -1097,7 +1097,7 @@
     <message>
         <location filename="../src/SiteconSearchTask.cpp" line="28"/>
         <source>SITECON search</source>
-        <translation>Поиск сайтов связывания ТФ по модели SITECON</translation>
+        <translation>Поиск сайтов связывания ТФ с помощью SITECON</translation>
     </message>
     <message>
         <location filename="../src/SiteconSearchTask.cpp" line="45"/>
