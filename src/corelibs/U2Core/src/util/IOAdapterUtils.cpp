@@ -92,7 +92,7 @@ IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode m
 
     if (NULL == iof || (iof->getAdapterId() != BaseIOAdapters::LOCAL_FILE && iof->getAdapterId() != BaseIOAdapters::GZIPPED_LOCAL_FILE)) {
         IOAdapterId  ioId = IOAdapterUtils::url2io(url);
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
+        iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     }
     if (iof == NULL) {
         os.setError(L10N::tr("Failed to detect IO adapter for %1").arg(url.getURLString()));
