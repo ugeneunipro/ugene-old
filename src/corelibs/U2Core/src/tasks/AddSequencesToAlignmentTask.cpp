@@ -39,7 +39,8 @@ namespace U2 {
 const int AddSequenceObjectsToAlignmentTask::maxErrorListSize = 5;
 
 AddSequenceObjectsToAlignmentTask::AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList)
-    : Task("Add sequences to alignment task", TaskFlags(TaskFlags_NR_FOSE_COSC)), seqList(seqList), maObj(obj), stateLock(NULL), msaAlphabet(maObj->getAlphabet()) {}
+    : Task("Add sequences to alignment task", TaskFlags(TaskFlags_NR_FOSE_COSC)), seqList(seqList), maObj(obj), 
+    stateLock(NULL), msaAlphabet(maObj->getAlphabet()) {}
 
 void AddSequenceObjectsToAlignmentTask::prepare() {
     if (maObj.isNull()) {
@@ -155,7 +156,9 @@ void AddSequenceObjectsToAlignmentTask::releaseLock(){
 }
 
 AddSequencesFromFilesToAlignmentTask::AddSequencesFromFilesToAlignmentTask(MAlignmentObject* obj, const QStringList& urls)
-    : AddSequenceObjectsToAlignmentTask(obj, QList<DNASequence>()), urlList(urls), loadTask(NULL) {}
+    : AddSequenceObjectsToAlignmentTask(obj, QList<DNASequence>()), urlList(urls), loadTask(NULL) {
+    connect(maObj, SIGNAL(si_invalidateAlignmentObject()), SLOT(sl_onCancel()));
+}
 
 void AddSequencesFromFilesToAlignmentTask::prepare() {
     AddSequenceObjectsToAlignmentTask::prepare();
@@ -180,9 +183,9 @@ QList<Task*> AddSequencesFromFilesToAlignmentTask::onSubTaskFinished(Task* subTa
         return subTasks;
     }
 
-    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(subTask);
-    SAFE_POINT(loadTask != NULL, "loadTask is NULL", subTasks);
-    Document* doc = loadTask->getDocument();
+    LoadDocumentTask* loadDocumentSubTask = qobject_cast<LoadDocumentTask*>(subTask);
+    SAFE_POINT(loadDocumentSubTask != NULL, "loadTask is NULL", subTasks);
+    Document* doc = loadDocumentSubTask->getDocument();
     foreach(GObject *seqObj, doc->findGObjectByType(GObjectTypes::SEQUENCE)) {
         U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(seqObj);
         SAFE_POINT(casted != NULL, "Cast to U2SequenceObject failed", subTasks);
@@ -207,8 +210,12 @@ void AddSequencesFromDocumentsToAlignmentTask::prepare() {
     processObjectsAndSetResultingAlphabet();
 }
 
+void AddSequencesFromFilesToAlignmentTask::sl_onCancel() {
+    if (loadTask != NULL && !loadTask->isFinished() && !loadTask->isCanceled()) {
+        loadTask->cancel();
+    }
+    releaseLock();
 }
 
-
-
+}
 

@@ -37,25 +37,26 @@ class U2CORE_EXPORT AddSequenceObjectsToAlignmentTask : public Task {
     Q_OBJECT
 public:
     AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList);
-    virtual void prepare();
 
+    virtual void prepare();
     ReportResult report();
 protected:
     void processObjectsAndSetResultingAlphabet();
 
     QList<DNASequence>    seqList;
     QPointer<MAlignmentObject>  maObj;
+protected:
+    void releaseLock();
 private:
     StateLock*                  stateLock;
     const DNAAlphabet*          msaAlphabet;
-    QStringList                 errorList;
+    QStringList                 errorList;    
 
     static const int maxErrorListSize;
     /** Returns the max length of the rows including trailing gaps */
     qint64 createRows(QList<U2MsaRow>& rows);
     void addRows(QList<U2MsaRow> &rows, qint64 len);
     void setupError();
-    void releaseLock();
 };
 
 class U2CORE_EXPORT AddSequencesFromFilesToAlignmentTask : public AddSequenceObjectsToAlignmentTask {
@@ -65,6 +66,8 @@ public:
 
     virtual void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
+private slots:
+    void sl_onCancel();
 private:
     QStringList         urlList;
     LoadDocumentTask*   loadTask;
