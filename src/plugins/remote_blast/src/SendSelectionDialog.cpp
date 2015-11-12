@@ -285,7 +285,7 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
 
             wordSizeComboBox->clear();
             wordSizeComboBox->addItems(ParametersLists::blastp_wordSize);
-            wordSizeComboBox->setCurrentIndex(1);
+            wordSizeComboBox->setCurrentIndex(2); //The default value is "6".
 
             costsComboBox->clear();
             costsComboBox->addItems(ParametersLists::blastp_gapCost);

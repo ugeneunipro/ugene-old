@@ -24,7 +24,7 @@
 namespace U2 {
 
 const QStringList ParametersLists::blastn_wordSize = QStringList() << "7" << "11" << "15";
-const QStringList ParametersLists::blastp_wordSize = QStringList() << "2" << "3";
+const QStringList ParametersLists::blastp_wordSize = QStringList() << "2" << "3" << "6";
 const QStringList ParametersLists::megablast_wordSize = QStringList() << "16" << "20" << "24"
                                                                 << "28" << "32" << "48" << "64";
 const QStringList ParametersLists::blastn_gapCost = QStringList() << "4 4" << "2 4" << "0 4"
