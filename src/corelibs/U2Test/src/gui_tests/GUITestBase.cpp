@@ -43,13 +43,13 @@ QString GUITestBase::nameUnnamedTest(GUITest* test, TestType testType) {
 
 bool GUITestBase::isNewTest(GUITest *test, TestType testType) {
 
-    return test && !findTest(test->getName(), testType);
+    return test && !findTest(test->getFullName(), testType);
 }
 
 void GUITestBase::addTest(GUITest *test, TestType testType) {
 
     if (test) {
-        getMap(testType).insert(test->getName(), test);
+        getMap(testType).insert(test->getFullName(), test);
     }
 }
 
@@ -64,9 +64,9 @@ GUITest *GUITestBase::findTest(const QString &name, TestType testType) {
     return map.value(name);
 }
 
-GUITest *GUITestBase::getTest(const QString &name, TestType testType) {
+GUITest *GUITestBase::getTest(const QString &suite, const QString &name, TestType testType) {
 
-    return getMap(testType).take(name);
+    return getMap(testType).take(suite + ":" + name);
 }
 
 GUITestMap& GUITestBase::getMap(TestType testType) {

@@ -28,8 +28,8 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_regression_scenarios"
 
 GUI_TEST_CLASS_DECLARATION(test_1001)
 GUI_TEST_CLASS_DECLARATION(test_1001_1)
@@ -342,7 +342,7 @@ GUI_TEST_CLASS_DECLARATION(test_1946)
 GUI_TEST_CLASS_DECLARATION(test_1984)
 GUI_TEST_CLASS_DECLARATION(test_1986)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 
 }   // namespace GUITest_regression_scenarios
 

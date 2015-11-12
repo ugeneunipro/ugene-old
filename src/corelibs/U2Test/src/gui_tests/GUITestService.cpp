@@ -275,15 +275,16 @@ void GUITestService::runAllGUITests() {
         if (!t) {
             continue;
         }
-        QString testName = t->getName();
+        QString testName = t->getFullName();
+        QString testNameForTeamCity = t->getSuite() +"_"+ t->getName();
 
         if (t->isIgnored()) {
-            GUITestTeamcityLogger::testIgnored(testName, t->getIgnoreMessage());
+            GUITestTeamcityLogger::testIgnored(testNameForTeamCity, t->getIgnoreMessage());
             continue;
         }
 
         qint64 startTime = GTimer::currentTimeMicros();
-        GUITestTeamcityLogger::testStarted(testName);
+        GUITestTeamcityLogger::testStarted(testNameForTeamCity);
 
         TaskStateInfo os;
         log.trace("GTRUNNER - runAllGUITests - going to run initial checks before " + testName);
@@ -314,7 +315,7 @@ void GUITestService::runAllGUITests() {
         QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
 
         qint64 finishTime = GTimer::currentTimeMicros();
-        GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
+        GUITestTeamcityLogger::teamCityLogResult(testNameForTeamCity, testResult, GTimer::millisBetween(startTime, finishTime));
     }
 
     log.trace("GTRUNNER - runAllGUITests - shutting down UGENE");
@@ -330,7 +331,7 @@ void GUITestService::runGUITest() {
 
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",);
-    GUITest *t = tb->getTest(testName);
+    GUITest *t = tb->getTest(testName.split(":").first(), testName.split(":").last());
 
     runGUITest(t);
 }
@@ -338,7 +339,7 @@ void GUITestService::runGUITest() {
 void GUITestService::runGUICrazyUserTest() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(tb,"",);
-    GUITest *t = tb->getTest("simple_crazy_user");
+    GUITest *t = tb->getTest("","simple_crazy_user");
 
     runGUITest(t);
 }

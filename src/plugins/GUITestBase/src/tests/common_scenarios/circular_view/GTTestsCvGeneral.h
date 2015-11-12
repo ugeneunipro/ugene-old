@@ -27,8 +27,8 @@
 namespace U2 {
 namespace GUITest_common_scenarios_circular_view {
 
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_circular_view_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_common_scenarios_circular_view"
 
 GUI_TEST_CLASS_DECLARATION(general_avail_1)
 GUI_TEST_CLASS_DECLARATION(general_avail_2)
@@ -39,7 +39,7 @@ GUI_TEST_CLASS_DECLARATION(general_avail_6)
 GUI_TEST_CLASS_DECLARATION(general_avail_7)
 GUI_TEST_CLASS_DECLARATION(general_avail_8)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 
 } // namespace GUITest_common_scenarios_circular_view
 } // namespace U2

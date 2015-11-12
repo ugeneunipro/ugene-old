@@ -28,8 +28,8 @@ k
 namespace U2 {
 
 namespace GUITest_Assembly_browser {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Assembly_browser_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_Assembly_browser"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
@@ -50,7 +50,7 @@ GUI_TEST_CLASS_DECLARATION(test_0023)
 GUI_TEST_CLASS_DECLARATION(test_0024)
 GUI_TEST_CLASS_DECLARATION(test_0025)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 } // namespace U2
 
 } //namespace

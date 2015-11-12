@@ -49,10 +49,12 @@ private:
 class U2TEST_EXPORT GUITest: public QObject, public GUITestIgnorable {
     Q_OBJECT
 public:
-    GUITest(const QString &_name = "", int _timeout=240000) : name(_name), timeout(_timeout) {}
+    GUITest(const QString &_name = "", const QString &_suite = "", int _timeout=240000) : name(_name), suite(_suite), timeout(_timeout) {}
     virtual ~GUITest(){}
 
     QString getName() const { return name; }
+    QString getSuite() const { return suite; }
+    QString getFullName() const { return suite + ":" + name; }
     int getTimeout() const { return timeout; }
     void setName(const QString &n) { name = n; }
     void setTimeout(int _timeout) { timeout = _timeout; }
@@ -68,6 +70,7 @@ private:
     GUITest& operator=(const GUITest&);
 
     QString name;
+    QString suite;
     int timeout;
 public slots:
     void sl_fail();

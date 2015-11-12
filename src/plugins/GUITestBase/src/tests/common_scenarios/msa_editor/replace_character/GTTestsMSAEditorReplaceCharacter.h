@@ -28,8 +28,8 @@ k
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_replace_character {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_msa_editor_replace_character_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_common_scenarios_msa_editor_replace_character"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
@@ -52,7 +52,7 @@ GUI_TEST_CLASS_DECLARATION(test_0016)
 GUI_TEST_CLASS_DECLARATION(test_0017)
 GUI_TEST_CLASS_DECLARATION(test_0018)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 } // namespace U2
 
 } //namespace

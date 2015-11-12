@@ -171,7 +171,7 @@ void GUITestThread::saveScreenshot() {
 
         void run(U2OpStatus &) {
             const QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-            originalPixmap.save(GUITest::screenshotDir + test->getName() + ".jpg");
+            originalPixmap.save(GUITest::screenshotDir + test->getFullName() + ".jpg");
         }
 
     private:

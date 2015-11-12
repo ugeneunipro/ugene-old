@@ -27,8 +27,8 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_annotations_edit {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_annotations_edit_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_common_scenarios_annotations_edit"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0001_1)
@@ -55,7 +55,7 @@ GUI_TEST_CLASS_DECLARATION(test_0006_1)
 GUI_TEST_CLASS_DECLARATION(test_0006_2)
 
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 } // namespace U2
 
 } //namespace

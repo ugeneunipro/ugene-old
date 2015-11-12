@@ -92,14 +92,15 @@ void GUITestLauncher::run() {
 
         Q_ASSERT(t);
         if (t) {
-            QString testName = t->getName();
+            QString testName = t->getFullName();
+            QString testNameForTeamCity = t->getSuite() +"_"+ t->getName();
             results[testName] = "";
 
             firstTestRunCheck(testName);
 
             if (!t->isIgnored()) {
                 qint64 startTime = GTimer::currentTimeMicros();
-                GUITestTeamcityLogger::testStarted(testName);
+                GUITestTeamcityLogger::testStarted(testNameForTeamCity);
 
                 QString testResult = performTest(testName);
                 results[testName] = testResult;
@@ -108,10 +109,10 @@ void GUITestLauncher::run() {
                 }
 
                 qint64 finishTime = GTimer::currentTimeMicros();
-                GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
+                GUITestTeamcityLogger::teamCityLogResult(testNameForTeamCity, testResult, GTimer::millisBetween(startTime, finishTime));
             }
             else if(t->getReason() == GUITest::Bug){
-                GUITestTeamcityLogger::testIgnored(testName, t->getIgnoreMessage());
+                GUITestTeamcityLogger::testIgnored(testNameForTeamCity, t->getIgnoreMessage());
             }
         }
 
@@ -157,7 +158,7 @@ bool GUITestLauncher::initGUITestBase() {
                 testName.remove(' ');
                 bool added = false;
                 foreach (GUITest* t, list) {
-                    if(t->getName() == testName){
+                    if((t->getFullName()) == testName){
                         tests<<t;
                         added = true;
                         break;

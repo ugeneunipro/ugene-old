@@ -26,8 +26,8 @@
 
 namespace U2 {
 namespace GUITest_common_scenarios_in_silico_pcr {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_in_silico_pcr_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_common_scenarios_in_silico_pcr"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)

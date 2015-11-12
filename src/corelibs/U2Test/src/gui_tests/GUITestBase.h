@@ -15,7 +15,8 @@
 
 namespace U2 {
 
-#define TESTNAME(className) QString(GUI_TEST_PREFIX) + #className
+#define TESTNAME(className) #className
+#define SUITENAME(className) QString(GUI_TEST_SUITE)
 
 #define DIALOG_FILLER_DECLARATION(className, DialogName) \
     class className : public Filler { \
@@ -30,7 +31,7 @@ namespace U2 {
 #define GUI_TEST_CLASS_DECLARATION(className) \
     class className : public GUITest { \
     public: \
-        className () : GUITest(TESTNAME(className)){} \
+        className () : GUITest(TESTNAME(className), SUITENAME(className)){} \
     protected: \
         virtual void run(U2OpStatus &os); \
     };
@@ -38,7 +39,7 @@ namespace U2 {
 #define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
     class className : public GUITest { \
     public: \
-        className () : GUITest(TESTNAME(className), timeout){} \
+        className () : GUITest(TESTNAME(className), SUITENAME(className), timeout){} \
     protected: \
         virtual void run(U2OpStatus &os); \
     };
@@ -55,7 +56,7 @@ public:
     virtual ~GUITestBase();
 
     bool registerTest(GUITest *test, TestType testType = Normal);
-    GUITest *getTest(const QString &name, TestType testType = Normal); // removes item from GUITestBase
+    GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
 
     GUITests getTests(TestType testType = Normal);
 

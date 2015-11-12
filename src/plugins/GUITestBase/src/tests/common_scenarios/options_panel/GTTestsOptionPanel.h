@@ -35,8 +35,8 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_options_panel {
 
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_options_panel_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_common_scenarios_options_panel"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0001_1)
@@ -70,7 +70,7 @@ GUI_TEST_CLASS_DECLARATION(test_0018)
 GUI_TEST_CLASS_DECLARATION(test_0019)
 GUI_TEST_CLASS_DECLARATION(test_0020)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 } // namespace U2
 
 } //namespace

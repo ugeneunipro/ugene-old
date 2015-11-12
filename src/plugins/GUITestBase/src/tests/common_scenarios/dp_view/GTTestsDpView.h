@@ -29,8 +29,8 @@ k
 namespace U2 {
 
 namespace GUITest_Common_scenarios_dp_view {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Common_scenarios_dp_view_"
+#undef GUI_TEST_SUITE
+#define GUI_TEST_SUITE "GUITest_Common_scenarios_dp_view"
 
 GUI_TEST_CLASS_DECLARATION(test_0011)
 GUI_TEST_CLASS_DECLARATION(test_0011_1)
@@ -45,7 +45,7 @@ GUI_TEST_CLASS_DECLARATION(test_0014_2)
 GUI_TEST_CLASS_DECLARATION(test_0020)
 GUI_TEST_CLASS_DECLARATION(test_0025)
 
-#undef GUI_TEST_PREFIX
+#undef GUI_TEST_SUITE
 } // namespace U2
 
 } //namespace
