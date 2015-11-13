@@ -527,17 +527,18 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVari
     QList<GObject*> objects;
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     const QString seqObjName = dna.getName().isEmpty() ? "Sequence" : dna.getName() + " sequence";
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, seqObjName, objects, dna, os);
-    CHECK_OP(os, NULL);
-    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-
     QVariantMap hints;
     hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(dbiRef, seqObjName, dna.constSequence(), dna.circular, hints, os);
+    CHECK_OP(os, NULL);
+    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
 
     const QString chromaObjName = dna.getName().isEmpty() ? "Chromatogram" : dna.getName() + " chromatogram";
     DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, chromaObjName, dbiRef, os, hints);
     CHECK_OP(os, NULL);
+
     objects.append(chromObj);
+    objects.append(seqObj);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), ObjectRole_Sequence));
