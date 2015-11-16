@@ -7955,11 +7955,10 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );
 
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os,
-        workflowOutputDir.absolutePath( ) ) );
-
     //1. Open WD
-    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os, workflowOutputDir.absolutePath()));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Workflow Designer...");
+    GTUtilsMdi::waitWindowOpened(os, "Workflow Designer");
 
     //2. Select "Align sequences with MUSCLE"
     GTUtilsWorkflowDesigner::addSample( os, "Align sequences with MUSCLE" );
