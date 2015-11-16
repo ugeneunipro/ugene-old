@@ -552,10 +552,16 @@ Task::ReportResult GTest_DocumentObjectNames::report() {
         stateInfo.setError(QString("number of objects in document not matched: %1, expected %2").arg(objs.size()).arg(names.size()));
         return ReportResult_Finished;
     }
+    QStringList objNames;
+    foreach(GObject *ob, objs) {
+        objNames.append(ob->getGObjectName());
+    }
+    qSort(objNames);
+    qSort(names);
     for(int i=0; i<names.size(); i++) {
         QString name = names[i];
-        QString objName = objs[i]->getGObjectName();
-        if (name!=objName) {
+        QString objName = objNames[i];
+        if (name != objName) {
             stateInfo.setError(QString("name of the objects not matched: %1, expected %2").arg(objName).arg(name));
             return ReportResult_Finished;
         }
@@ -596,10 +602,16 @@ Task::ReportResult GTest_DocumentObjectTypes::report() {
         stateInfo.setError(QString("number of objects in document not matched: %1, expected %2").arg(objs.size()).arg(types.size()));
         return ReportResult_Finished;
     }
+    QStringList objTypes;
+    foreach(GObject *ob, objs) {
+        objTypes.append(ob->getGObjectType());
+    }
+    qSort(objTypes);
+    qSort(types);
     for(int i=0; i<types.size(); i++) {
         GObjectType type = types[i];
-        GObjectType objType = objs[i]->getGObjectType();
-        if (type!=objType) {
+        GObjectType objType = objTypes[i];
+        if (type != objType) {
             stateInfo.setError(QString("types of the objects not matched: %1, expected %2").arg(objType).arg(type));
             return ReportResult_Finished;
         }
