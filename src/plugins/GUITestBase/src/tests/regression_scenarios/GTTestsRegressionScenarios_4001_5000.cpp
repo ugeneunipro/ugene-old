@@ -121,6 +121,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -2299,7 +2300,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
     QLabel *errorLabel = GTWidget::findExactWidget<QLabel *>(os, "lblMessage");
     CHECK_SET_ERR(NULL != errorLabel, "Error label is NULL");
     CHECK_SET_ERR(errorLabel->isVisible(), "Error label is invisible");
-    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"All symbols\" alphabet."),
+    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"Raw\" alphabet."),
                   QString("An unexpected error message: '%1'").arg(errorLabel->text()));
 }
 
@@ -4240,7 +4241,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_1) {
     GTGlobals::sleep();
 
     //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended DNA\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended DNA\" to \"Raw\"");
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_rna.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
@@ -4259,7 +4260,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_2) {
 
     //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/standard_amino.fa"));
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended RNA\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended RNA\" to \"Raw\"");
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from file...");
     GTGlobals::sleep();
 }
@@ -4272,13 +4273,13 @@ GUI_TEST_CLASS_DEFINITION(test_4804_3) {
 
     //    2. Add  extended amino sequence by drag and drop
     QModelIndex toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_amino_seq");
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino\" to \"Extended amino\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino\"");
     GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     GTGlobals::sleep();
 
     //    3. Add  extended DNA sequence by drag and drop
     toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_dna_seq");
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino acid\" to \"Raw\"");
     GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     GTGlobals::sleep();
 }
@@ -4292,7 +4293,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_4) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_rna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\"");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
@@ -4310,7 +4311,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_5) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"Raw\". Use \"Undo\", if you'd like to restore the original alignment.");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
@@ -4334,10 +4335,29 @@ GUI_TEST_CLASS_DEFINITION(test_4804_6) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     
     //   5. Redo changes and check appearing notifications
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\". Use \"Undo\", if you'd like to restore the original alignment.");
     GTUtilsMsaEditor::redo(os);
     GTThread::waitForMainThread(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_4886) {
+    GTFileDialog::openFile(os, dataDir + "samples/SCF/", "90-JRI-07.scf");
+    GTLogTracer lt;
+    QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
+    CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "90-JRI-07.scf"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
+    GTUtilsDialog::waitForDialog(os, new ExportChromatogramFiller(os, testDir + "_common_data/scenarios/sandbox/", "90-JRI-07.scf",
+        ExportChromatogramFiller::SCF, false, false, true));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(5000);
+
+    GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    CHECK_OP(os, );
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
 } // namespace GUITest_regression_scenarios
