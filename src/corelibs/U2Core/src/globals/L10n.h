@@ -79,10 +79,14 @@ public:
     static QString errorColorTextFieldStr() { return "rgb(255, 152, 142)"; }
     static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
     static QString errorColorLabelHtmlStr() { return "#A6392E"; }   // the same as errorColorLabelStr()
-    static QColor successColor() { return QColor("green"); }
+
     static QColor infoHintColor() { return QColor("green"); }
+    static QString infoHintStyleSheet() { return QString("color: %1; font: bold").arg(infoHintColor().name()); }
+
+    static QColor successColor() { return QColor("green"); }
     static QString successColorLabelHtmlStr() { return successColor().name(); }
     static QString successColorLabelStr() { return QString("rgb(%1, %2, %3)").arg(successColor().red()).arg(successColor().green()).arg(successColor().blue()); }
+
     static QString linkColorLabelStr() {
 #ifdef Q_OS_MAC
         return "gray";

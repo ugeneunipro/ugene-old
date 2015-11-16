@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>149</height>
+    <width>448</width>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,14 +28,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: green;</string>
      </property>
      <property name="text">
       <string>Note: you can change this option in the UGENE Application Settings

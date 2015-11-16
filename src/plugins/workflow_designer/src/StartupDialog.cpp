@@ -19,21 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "StartupDialog.h"
+#include <QDir>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
-#include <QtCore/QDir>
+#include <U2Core/L10n.h>
 
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QVBoxLayout>
-#endif
 
+#include "StartupDialog.h"
 
 namespace U2 {
 
@@ -42,6 +37,8 @@ StartupDialog::StartupDialog(QWidget *parent)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "16126253");
+
+    label->setStyleSheet(L10N::infoHintStyleSheet());
 
     outDirWidget = new OutputDirectoryWidget(this, false /*don't commitOnHide*/);
     QVBoxLayout *l = new QVBoxLayout(box);
