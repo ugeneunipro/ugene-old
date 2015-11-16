@@ -62,10 +62,9 @@ QString HttpRequestBLAST::runHttpRequest(QString request){
 void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     QString request = host;
     request.append(params);
-    request.append("&OLD_VIEW=true");
-    request.append("&TOOL=ugene&EMAIL=ugene-ncbi-blast@unipro.ru");
-    request.append(RemoteRequestConfig::HTTP_BODY_SEPARATOR);
+    request.append("&TOOL=ugene&EMAIL=ugene-ncbi-blast@unipro.ru&");
     request.append(ReqParams::sequence + "=" + query);
+    taskLog.trace(QString("NCBI BLAST http request: %1").arg(request));
     QString response = runHttpRequest(request);
     if(response.indexOf("301 Moved Permanently") != -1) {
         int start = response.indexOf("href=") + 6;
@@ -96,6 +95,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
         error = QObject::tr("Cannot get the request ID");
         return;
     }
+    taskLog.trace(QString("NCBI BLAST Request ID: %1").arg(requestID));
     QString roe = buf.readLine().split('=')[1];
     bool isOk;
     int rtoe = roe.toInt(&isOk);
@@ -104,13 +104,15 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
         error = QObject::tr("Cannot get the waiting time");
         return;
     }
+    taskLog.trace(QString("NCBI BLAST Request Time of Execution in seconds: %1").arg(rtoe));
+    taskLog.trace(QString("NCBI BLAST to view results in web browser: %1").arg(host + "CMD=Get&RID="+requestID));
     request = host + "CMD=Get&FORMAT_TYPE=XML&RID=";
     request.append(requestID);
     buf.close();
     RemoteBlastHttpRequestTask *rTask = qobject_cast<RemoteBlastHttpRequestTask*>(task);
     int progr,timeout;
     progr = 50;
-    timeout = (rtoe + 5) * 10;
+    timeout = (rtoe + 5) * 20;// REAL timeout = 50*(rtoe + 5) * 20 = 1000*(rtoe + 5) msec
     int slowdown = 1;
     rTask->resetProgress();
 

@@ -353,8 +353,10 @@ void SendSelectionDialog::sl_OK() {
         }
 
         addParametr(requestParameters,ReqParams::gapCost,costsComboBox->currentText());
-        addParametr(requestParameters,ReqParams::matchScore,scoresComboBox->currentText().split(" ").first());
-        addParametr(requestParameters,ReqParams::mismatchScore,scoresComboBox->currentText().split(" ").last());
+        if(db == "blastn"){
+            addParametr(requestParameters,ReqParams::matchScore,scoresComboBox->currentText().split(" ").first());
+            addParametr(requestParameters,ReqParams::mismatchScore,scoresComboBox->currentText().split(" ").last());
+        }
 
         if(shortSequenceCheckBox->isChecked()) {
             QString wordSize = wordSizeComboBox->currentText().toInt()>7 ? "7" : wordSizeComboBox->currentText();
