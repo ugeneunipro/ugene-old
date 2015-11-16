@@ -112,6 +112,7 @@
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
@@ -4341,7 +4342,6 @@ GUI_TEST_CLASS_DEFINITION(test_4804_6) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
-
 GUI_TEST_CLASS_DEFINITION(test_4886) {
     GTFileDialog::openFile(os, dataDir + "samples/SCF/", "90-JRI-07.scf");
     GTLogTracer lt;
@@ -4358,6 +4358,45 @@ GUI_TEST_CLASS_DEFINITION(test_4886) {
     GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
     CHECK_OP(os, );
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4913) {
+/* 1. Open an amino acid sequence: data/samples/Swiss-Prot/P16152.txt
+ * 2. Open the NCBI BLAST dialog.
+ *   Expected result: the "blastp" tool is set up.
+ * 3. Open the "Advanced options" tab.
+ *   Expected result: The "Word size" parameter is set to "6".
+ * 4. Press "Esc" button.
+*/
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P16152.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    class CheckWordSizeScenario : public CustomScenario {
+    public:
+        CheckWordSizeScenario() {}
+        void run(U2OpStatus &os) {
+            QComboBox* comboAlg = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "dataBase"));
+            CHECK_SET_ERR(comboAlg != NULL, "dataBase not found!");
+            CHECK_SET_ERR(comboAlg->currentText() == "blastp", QString("Value of dataBase not equal blastp, it has other default value: %1!").arg(comboAlg->currentText()));
+
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab"), 1);
+            GTGlobals::sleep(200);
+            QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "wordSizeComboBox"));
+            CHECK_SET_ERR(combo != NULL, "wordSizeComboBox not found!");
+            CHECK_SET_ERR(combo->currentText() == "6", QString("Value of wordSizeComboBox not equal 6, it has other default value: %1!").arg(combo->currentText()));
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    CheckWordSizeScenario *scenario = new CheckWordSizeScenario();
+    RemoteBLASTDialogFiller *filler = new RemoteBLASTDialogFiller(os, scenario);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
+                                                      << "Query NCBI BLAST database"));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 }
 
 } // namespace GUITest_regression_scenarios
