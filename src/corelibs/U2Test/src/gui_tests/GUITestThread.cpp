@@ -57,7 +57,6 @@ void GUITestThread::run() {
 
     const QString error = launchTest(tests);
 
-    saveScreenshot();
     cleanup();
 
     QString testResult = error.isEmpty() ? GUITestTeamcityLogger::successResult : error;

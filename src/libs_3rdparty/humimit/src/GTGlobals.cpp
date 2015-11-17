@@ -68,11 +68,8 @@ void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
 }
 
 void GTGlobals::takeScreenShot(QString path) {
-    //Very fast fix was needed. Temporary screenshots are not taken
-    U2::uiLog.trace("Very fast fix was needed. Temporary screenshots are not taken");
-    Q_UNUSED(path)
-    //QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-    //originalPixmap.save(path);
+    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+    originalPixmap.save(path);
 }
 
 GTGlobals::FindOptions::FindOptions(bool fail) :

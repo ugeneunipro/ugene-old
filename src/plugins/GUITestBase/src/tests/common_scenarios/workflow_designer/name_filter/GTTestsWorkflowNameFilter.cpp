@@ -87,7 +87,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Open the samples tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "samples"));
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::samples);
 
     // 3. Press Ctrl+F.
     //Expected: the "Name filter" line edit has the focus
@@ -96,7 +96,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     // 4. Write "align muscle".
     //Expected: There is the muscle alignment sample after filtering.
     GTKeyboardDriver::keySequence(os, "align muscle");
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(500);
 
     // Expected: There are two samples after filtering.
     QTreeWidget *samples;
@@ -116,7 +116,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
             }
         }
     }
-    CHECK_SET_ERR(count == 1, "Wrong number of visible items in sample tree with 'align muscle' filter");
+    CHECK_SET_ERR(count == 1, QString("Wrong number of visible items in sample tree with 'align muscle' filter: %1").arg(count));
 
     //5. Press Esc.
     //Expected: the name filter is clear, all samples are shown.

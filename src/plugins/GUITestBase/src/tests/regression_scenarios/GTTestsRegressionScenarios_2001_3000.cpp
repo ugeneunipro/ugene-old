@@ -4761,6 +4761,7 @@ GUI_TEST_CLASS_DEFINITION( test_2662 ){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Open Call Variants sample.
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
+    GTGlobals::sleep(1000);
 //    3. Set valid input data.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
     GTMouseDriver::click(os);

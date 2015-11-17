@@ -4266,11 +4266,11 @@ GUI_TEST_CLASS_DEFINITION(test_1426) {
     //Expected state: there is no "add" button in property editor.
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM profile");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM2 profile");
 
     CHECK_SET_ERR(GTWidget::findWidget(os, "addButton", NULL, GTGlobals::FindOptions(false)) == NULL, "addButton is shown");
 
-    GTUtilsWorkflowDesigner::click(os, "Read HMM Profile");
+    GTUtilsWorkflowDesigner::click(os, "Read HMM2 Profile");
     GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", dataDir + "samples/FASTA/HMM/aligment15900.hmm", GTUtilsWorkflowDesigner::textValue);
 #ifdef Q_OS_MAC
     GTGlobals::sleep();
@@ -4282,8 +4282,8 @@ GUI_TEST_CLASS_DEFINITION(test_1426) {
     GTUtilsMdi::click(os, GTGlobals::Close);
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM Profile");
-    GTUtilsWorkflowDesigner::click(os, "Read HMM Profile");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM2 Profile");
+    GTUtilsWorkflowDesigner::click(os, "Read HMM2 Profile");
 
     CHECK_SET_ERR(GTWidget::findWidget(os, "addButton", NULL, GTGlobals::FindOptions(false)) == NULL, "addButton is shown");
 }
