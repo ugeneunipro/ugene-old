@@ -115,6 +115,7 @@ private:
     bool redrawGraph;
     bool isRendering;
     bool isBlocked;
+    int lastDrawnVersion;
 
     BackgroundTaskRunner<QPolygonF>     graphCalculationTaskRunner;
 

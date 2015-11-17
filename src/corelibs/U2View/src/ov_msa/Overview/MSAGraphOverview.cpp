@@ -19,20 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAGraphOverview.h"
-#include "MSAGraphCalculationTask.h"
+#include <QMouseEvent>
+#include <QPainter>
+
+#include <U2Algorithm/MSAColorScheme.h>
 
 #include <U2Core/Settings.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorConsensusCache.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
-#include <U2Algorithm/MSAColorScheme.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
-
+#include "MSAGraphCalculationTask.h"
+#include "MSAGraphOverview.h"
 
 namespace U2 {
 
@@ -40,6 +41,7 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     : MSAOverview(ui),
       redrawGraph(true),
       isBlocked(false),
+      lastDrawnVersion(-1),
       method(Strict),
       graphCalculationTask(NULL)
 {
@@ -126,6 +128,7 @@ void MSAGraphOverview::paintEvent(QPaintEvent *e) {
     drawVisibleRange(pVisibleRange);
 
     p.drawPixmap(0, 0, cachedView);
+    lastDrawnVersion = editor->getMSAObject()->getModificationVersion();
 
     QWidget::paintEvent(e);
 }
@@ -260,10 +263,7 @@ void MSAGraphOverview::sl_stopRendering() {
 }
 
 void MSAGraphOverview::sl_blockRendering() {
-    graphCalculationTaskRunner.cancel();
-
     disconnect(editor->getMSAObject(), 0, this, 0);
-
     isBlocked = true;
 }
 
@@ -272,7 +272,8 @@ void MSAGraphOverview::sl_unblockRendering(bool update) {
         return;
     }
     isBlocked = false;
-    if (update) {
+
+    if (update && lastDrawnVersion != editor->getMSAObject()->getModificationVersion()) {
         sl_drawGraph();
     } else {
         this->update();

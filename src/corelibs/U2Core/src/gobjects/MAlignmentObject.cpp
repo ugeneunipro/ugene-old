@@ -195,14 +195,15 @@ void MAlignmentObject::saveState(){
     memento->setState(msa);
 }
 
-void MAlignmentObject::releaseState(){
+void MAlignmentObject::releaseState() {
     if(!isStateLocked()) {
         emit si_completeStateChanged(true);
 
         MAlignment maBefore = memento->getState();
+        CHECK(maBefore != getMAlignment(), );
         setModified(true);
-        MAlignmentModInfo mi;
 
+        MAlignmentModInfo mi;
         emit si_alignmentChanged(maBefore, mi);
 
         if (cachedMAlignment.isEmpty() && !maBefore.isEmpty()) {
@@ -212,7 +213,6 @@ void MAlignmentObject::releaseState(){
         }
     }
 }
-
 
 GObject* MAlignmentObject::clone(const U2DbiRef& dstDbiRef, U2OpStatus& os, const QVariantMap &hints) const {
     DbiOperationsBlock opBlock(dstDbiRef, os);
