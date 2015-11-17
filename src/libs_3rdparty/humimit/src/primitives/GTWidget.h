@@ -60,7 +60,7 @@ public:
     static void showMaximized(U2::U2OpStatus &os, QWidget *widget);
     static void showNormal(U2::U2OpStatus &os, QWidget *widget);
 
-    static void clickLabelLink(U2::U2OpStatus &os, QWidget* label, int step = 10);
+    static void clickLabelLink(U2::U2OpStatus &os, QWidget* label, int step = 10, int indent = 0);
     static void clickWindowTitle(U2::U2OpStatus &os, QWidget *window);
     static void moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &point);
     static void resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &size);

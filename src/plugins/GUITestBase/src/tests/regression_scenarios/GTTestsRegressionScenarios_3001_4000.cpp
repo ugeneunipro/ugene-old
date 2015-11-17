@@ -1642,6 +1642,12 @@ GUI_TEST_CLASS_DEFINITION(test_3253_2) {
     QSplitterHandle *splitterHandle = qobject_cast<QSplitterHandle*>(GTWidget::findWidget(os, "qt_splithandle_chromatogram_view_A1#berezikov"));
     CHECK_SET_ERR( NULL != splitterHandle, "splitterHandle is not present" );
 
+    QWidget *annotationTreeWidget = GTWidget::findWidget(os, "annotations_tree_widget");
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x() + 100, annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x() + 100, annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y() + annotationTreeWidget->height() / 2));
+    GTMouseDriver::release(os);
+
     QWidget *graphView = GTWidget::findWidget( os, "GSequenceGraphViewRenderArea");
     QSize startSize=graphView->size();
     GTWidget::click(os, GTWidget::findWidget(os, "CHROMA_ACTION"));

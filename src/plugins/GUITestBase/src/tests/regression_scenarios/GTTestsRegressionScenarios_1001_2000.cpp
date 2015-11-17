@@ -6426,7 +6426,7 @@ GUI_TEST_CLASS_DEFINITION( test_1651 ){
 
             QLabel* hintLabel = GTWidget::findExactWidget<QLabel*>(os, "hintLabel", dialog);
             //    2. There are sample IDs in the hints
-            GTWidget::clickLabelLink(os, hintLabel, 20);
+            GTWidget::clickLabelLink(os, hintLabel, 20, 6);
 
             //    3. Clicking on a sample ID must out in in the LineEdit automatically
             QLineEdit* idLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "idLineEdit", dialog);
@@ -7864,7 +7864,7 @@ GUI_TEST_CLASS_DEFINITION(test_1798){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1798", "1.4k.aln");
     //2. Start MAFFT with default values.
     GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, new MAFFTSupportRunDialogFiller::Parameters()));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with MAFFT", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with MAFFT"));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep(3000);
 

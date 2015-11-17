@@ -278,13 +278,13 @@ QImage GTWidget::getImage(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickLabelLink"
-void GTWidget::clickLabelLink(U2::U2OpStatus &os, QWidget *label, int step){
+void GTWidget::clickLabelLink(U2::U2OpStatus &os, QWidget *label, int step, int indent){
 
     QRect r = label->rect();
 
     int left = r.left();
     int right = r.right();
-    int top = r.top();
+    int top = r.top() + indent;
     int bottom = r.bottom();
     for(int i = left; i < right; i+=step){
         for(int j = top; j < bottom; j+=step){
