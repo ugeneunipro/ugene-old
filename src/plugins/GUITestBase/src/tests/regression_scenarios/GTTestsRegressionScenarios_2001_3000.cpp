@@ -5108,6 +5108,7 @@ GUI_TEST_CLASS_DEFINITION(test_2737) {
     GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name1", "1..10");
     GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name2", "11..20", false);
     GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name3", "21..30", false);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Open Annotation Highlighting tab.
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
@@ -5126,6 +5127,8 @@ GUI_TEST_CLASS_DEFINITION(test_2737_1) {
     GTLogTracer l;
     //1. Open "murine.gb";
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    //1.1. Open Annotation Highlighting tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
 
     //2. Delete all annotations in random order;
     QTreeWidgetItem *annotation = NULL;
