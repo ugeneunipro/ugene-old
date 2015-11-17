@@ -88,7 +88,6 @@ class WorkflowScriptRegistry;
 class AppFileStorage;
 class U2DataPathRegistry;
 class AlignmentAlgorithmsRegistry;
-class DASSourceRegistry;
 class ScriptingToolRegistry;
 class CredentialsAsker;
 class PasswordStorage;
@@ -242,8 +241,6 @@ public:
 
     static AlignmentAlgorithmsRegistry* getAlignmentAlgorithmsRegistry() { return getInstance()->_getAlignmentAlgorithmsRegistry(); }
 
-    static DASSourceRegistry* getDASSourceRegistry() { return getInstance()->_getDASSourceRegistry(); }
-
     static ScriptingToolRegistry* getScriptingToolRegistry() { return getInstance()->_getScriptingToolRegistry(); }
 
     static ConvertFactoryRegistry* getConvertFactoryRegistry() { return getInstance()->_getConvertFactoryRegistry(); }
@@ -324,7 +321,6 @@ protected:
     virtual AppFileStorage *_getAppFileStorage() const = 0;
     virtual AlignmentAlgorithmsRegistry* _getAlignmentAlgorithmsRegistry() const = 0;
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0;
-    virtual DASSourceRegistry* _getDASSourceRegistry() const = 0;
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
     virtual CredentialsAsker* _getCredentialsAsker() const = 0;
     virtual PasswordStorage* _getPasswordStorage() const = 0;

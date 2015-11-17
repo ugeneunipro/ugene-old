@@ -36,14 +36,12 @@ public:
         SelectSaveToDirectoryPath,              // QString with path
         SetOutputFormat,                        // QString with format
         SetForceSequenceDownload,               // bool value
-        SetDasFeatures,                         // QStringList with items to be checked
         CheckDatabase,                          // QString with expected database name
         CheckDatabasesCount,                    // int with expected databases count
         CheckOutputFormatVisibility,            // bool expected state (is visible)
         CheckOutputFormat,                      // QString with expected format name
         CheckForceSequenceDownloadVisibility,   // bool expected state (is visible)
         CheckForceSequenceDownload,             // bool expected state (is checked)
-        CheckDasFeaturesVisibility,             // bool expected state (is visible)
         ClickOk,                                // ignored
         ClickCancel                             // ignored
     };
@@ -62,14 +60,12 @@ private:
     void selectSaveToDirectoryPath(const QVariant &actionData);
     void setOutputFormat(const QVariant &actionData);
     void setForceSequenceDownload(const QVariant &actionData);
-    void setDasFeatures(const QVariant &actionData);
     void checkDatabase(const QVariant &actionData);
     void checkDatabasesCount(const QVariant &actionData);
     void checkOutputFormatVisibility(const QVariant &actionData);
     void checkOutputFormat(const QVariant &actionData);
     void checkForceSequenceDownloadVisibility(const QVariant &actionData);
     void checkForceSequenceDownload(const QVariant &actionData);
-    void checkDasFeaturesVisibility(const QVariant &actionData);
     void clickOk();
     void clickCancel();
 

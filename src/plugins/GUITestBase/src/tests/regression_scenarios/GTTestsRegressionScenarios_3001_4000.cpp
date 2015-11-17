@@ -5459,36 +5459,6 @@ GUI_TEST_CLASS_DEFINITION(test_3886) {
     GTGlobals::sleep();
 }
 
-GUI_TEST_CLASS_DEFINITION(test_3891) {
-//    1. Open "_common_data/fasta/AMINO.fa".
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "AMINO.fa");
-
-//    2. Open DAS options panel tab.
-    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Das);
-
-//    3. Find IDs.
-    QWidget *fetchAnnotationsButton = GTWidget::findButtonByText(os, "Fetch annotations");
-    CHECK_SET_ERR(NULL != fetchAnnotationsButton, "Fetch annotations button is NULL");
-    CHECK_SET_ERR(!fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly enabled");
-
-    GTUtilsOptionPanelSequenceView::fetchDasIds(os);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    const int originIdsCount = GTUtilsOptionPanelSequenceView::getDasIdsCount(os);
-    CHECK_SET_ERR(originIdsCount > 0, "");
-    CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
-
-//    4. Close the tab, then open it again.
-//    Expected state: table stores found IDs, "annotate" button is active.
-    GTUtilsOptionPanelSequenceView::closeTab(os, GTUtilsOptionPanelSequenceView::Das);
-    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Das);
-
-    const int savedIdsCount = GTUtilsOptionPanelSequenceView::getDasIdsCount(os);
-    CHECK_SET_ERR(savedIdsCount == originIdsCount, QString("Incorrect DAS IDs count after widget state restoration: expect %1, got %2").arg(originIdsCount).arg(savedIdsCount));
-    fetchAnnotationsButton = GTWidget::findButtonByText(os, "Fetch annotations");
-    CHECK_SET_ERR(NULL != fetchAnnotationsButton, "Fetch annotations button is NULL");
-    CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_3895) {
     //1. Open '_common_data/genbank/pBR322.gb' (file contains circular marker)
     GTGlobals::sleep();

@@ -16,7 +16,6 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/FindAlgorithmTests.h \
            src/FormatDetectionTests.h \
            src/GUrlTests.h \
-           src/LoadDASDocumentTests.h \
            src/LoadRemoteDocumentTests.h \
            src/PWMatrixTests.h \
            src/PhyTreeObjectTests.h \
@@ -42,7 +41,6 @@ SOURCES += src/AnnotationTableObjectTest.cpp \
            src/FindAlgorithmTests.cpp \
            src/FormatDetectionTests.cpp \
            src/GUrlTests.cpp \
-           src/LoadDASDocumentTests.cpp \
            src/LoadRemoteDocumentTests.cpp \
            src/PWMatrixTests.cpp \
            src/PhyTreeObjectTests.cpp \

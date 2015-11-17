@@ -92,7 +92,6 @@ public:
         alignmentAlgorithmsRegistry = NULL;
         dpr = NULL;
         workingDirectoryPath = "";
-        dsr = NULL;
         str = NULL;
         credentialsAsker = NULL;
         passwordStorage = NULL;
@@ -171,8 +170,6 @@ public:
     void setRecentlyDownloadedCache( RecentlyDownloadedCache* _rdc) { assert( rdc == NULL || _rdc == NULL ); rdc = _rdc;}
 
     void setDataPathRegistry( U2DataPathRegistry* _dpr) { assert( dpr == NULL || _dpr == NULL ); dpr = _dpr;}
-
-    void setDASSourceRegistry( DASSourceRegistry* _dsr) { assert( dsr == NULL || _dsr == NULL ); dsr = _dsr;}
 
     void setScriptingToolRegistry( ScriptingToolRegistry* _str) { assert( str == NULL || _str == NULL ); str = _str;}
 
@@ -406,7 +403,6 @@ protected:
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
     virtual AlignmentAlgorithmsRegistry*      _getAlignmentAlgorithmsRegistry() const { return alignmentAlgorithmsRegistry; }
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
-    virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
     virtual CredentialsAsker*               _getCredentialsAsker() const { return credentialsAsker; }
     virtual PasswordStorage*                _getPasswordStorage() const { return passwordStorage; }
@@ -485,7 +481,6 @@ private:
     AppFileStorage *appFileStorage;
     AlignmentAlgorithmsRegistry* alignmentAlgorithmsRegistry;
     U2DataPathRegistry *dpr;
-    DASSourceRegistry *dsr;
     ScriptingToolRegistry *str;
     CredentialsAsker* credentialsAsker;
     PasswordStorage* passwordStorage;

@@ -82,9 +82,6 @@ void DownloadRemoteFileDialogFiller::commonScenario() {
         case SetForceSequenceDownload:
             setForceSequenceDownload(action.second);
             break;
-        case SetDasFeatures:
-            setDasFeatures(action.second);
-            break;
         case CheckDatabase:
             checkDatabase(action.second);
             break;
@@ -102,9 +99,6 @@ void DownloadRemoteFileDialogFiller::commonScenario() {
             break;
         case CheckForceSequenceDownload:
             checkForceSequenceDownload(action.second);
-            break;
-        case CheckDasFeaturesVisibility:
-            checkDasFeaturesVisibility(action.second);
             break;
         case ClickOk:
             clickOk();
@@ -172,18 +166,6 @@ void DownloadRemoteFileDialogFiller::setForceSequenceDownload(const QVariant &ac
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "setDasFeatures"
-void DownloadRemoteFileDialogFiller::setDasFeatures(const QVariant &actionData) {
-    CHECK_OP(os, );
-    GT_CHECK(actionData.canConvert<QStringList>(), "Can't get DAS features sources from the action data");
-    const QStringList dasFeaturesSources = actionData.toStringList();
-    QListWidget *dasFeaturesWidget = GTWidget::findExactWidget<QListWidget *>(os, "dasfeaturesWidget", dialog);
-    GT_CHECK(NULL != dasFeaturesWidget, "DAS features sources widget wasn't found");
-    GT_CHECK(dasFeaturesWidget->isVisible(), "DAS features sources widget is invisible");
-    GTListWidget::checkOnlyItems(os, dasFeaturesWidget, dasFeaturesSources);
-}
-#undef GT_METHOD_NAME
-
 #define GT_METHOD_NAME "checkDatabase"
 void DownloadRemoteFileDialogFiller::checkDatabase(const QVariant &actionData) {
     CHECK_OP(os, );
@@ -242,16 +224,6 @@ void DownloadRemoteFileDialogFiller::checkForceSequenceDownload(const QVariant &
     QCheckBox *chbForceDownloadSequence = GTWidget::findExactWidget<QCheckBox *>(os, "chbForceDownloadSequence", dialog);
     GT_CHECK(NULL != chbForceDownloadSequence, "Force download sequence checkbox was not found");
     GT_CHECK(actionData.toBool() == chbForceDownloadSequence->isChecked(), "Force download sequence checkbox has incorrect state");
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "checkDasFeaturesVisibility"
-void DownloadRemoteFileDialogFiller::checkDasFeaturesVisibility(const QVariant &actionData) {
-    CHECK_OP(os, );
-    GT_CHECK(actionData.canConvert<bool>(), "Can't get expected visibility state from the action data");
-    QListWidget *dasFeaturesWidget = GTWidget::findExactWidget<QListWidget *>(os, "dasfeaturesWidget", dialog);
-    GT_CHECK(NULL != dasFeaturesWidget, "DAS features sources widget wasn't found");
-    GT_CHECK(actionData.toBool() == dasFeaturesWidget->isVisible(), "DAS features sources widget has incorrect visibility state");
 }
 #undef GT_METHOD_NAME
 

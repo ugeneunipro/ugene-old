@@ -50,7 +50,6 @@ QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceVi
     result.insert(Statistics, "OP_SEQ_INFO");
     result.insert(InSilicoPcr, "OP_IN_SILICO_PCR");
     result.insert(CircularView, "OP_CV_SETTINGS");
-    result.insert(Das, "OP_DAS");
     return result;
 }
 
@@ -61,7 +60,6 @@ QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceVi
     result.insert(Statistics, "SequenceInfo");
     result.insert(InSilicoPcr, "InSilicoPcrOptionPanelWidget");
     result.insert(CircularView, "CircularViewSettingsWidget");
-    result.insert(Das, "DasOptionsPanelWidget");
     return result;
 }
 
@@ -199,20 +197,6 @@ void GTUtilsOptionPanelSequenceView::setTitleFontSize(U2OpStatus &os, int fontSi
 #define GT_METHOD_NAME "getTitleFontSize"
 int GTUtilsOptionPanelSequenceView::getTitleFontSize(U2OpStatus &os) {
     return GTSpinBox::getValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "fontSizeSpinBox", GTUtilsMdi::activeWindow(os)));
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "fetchDasIds"
-void GTUtilsOptionPanelSequenceView::fetchDasIds(U2OpStatus &os) {
-    openTab(os, Das);
-    GTWidget::click(os, GTWidget::findWidget(os, "searchIdsButton"));
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "getDasIdsCount"
-int GTUtilsOptionPanelSequenceView::getDasIdsCount(U2OpStatus &os) {
-    openTab(os, Das);
-    return GTTableView::rowCount(os, GTWidget::findExactWidget<QTableView *>(os, "idList"));
 }
 #undef GT_METHOD_NAME
 

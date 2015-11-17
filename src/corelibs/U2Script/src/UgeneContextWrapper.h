@@ -29,7 +29,6 @@ namespace U2 {
 class Task;
 class AppContextImpl;
 class CMDLineRegistry;
-class DASSourceRegistry;
 class SettingsImpl;
 class AppSettings;
 class UserAppsSettings;
@@ -93,7 +92,6 @@ private:
 
     AppContextImpl *                        appContext;
     CMDLineRegistry *                       cmdLineRegistry;
-    DASSourceRegistry *                     dsr;
     SettingsImpl *                          globalSettings;
     SettingsImpl *                          settings;
     AppSettings *                           appSettings;

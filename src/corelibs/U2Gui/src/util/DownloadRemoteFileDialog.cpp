@@ -32,7 +32,6 @@
 #endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
@@ -62,8 +61,6 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "16126571");
 
-    ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
-    ui->dasBox->hide();
     ui->formatBox->hide();
     ui->formatLabel->hide();
     adjustSize();
@@ -72,14 +69,6 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     const QList<QString> dataBases = registry.getDBs(); 
     foreach(const QString& dbName, dataBases) {
         ui->databasesBox->addItem(dbName, dbName);
-    }
-
-    DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-    if (dasRegistry){
-        const QList<DASSource>& dasSources = dasRegistry->getReferenceSources();
-        foreach(const DASSource& s, dasSources){
-            ui->databasesBox->addItem(s.getName(), s.getId());
-        }
     }
 
     if (!defaultDB.isEmpty()) {
@@ -107,8 +96,6 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QSt
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "16126584");
 
-    ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
-    ui->dasBox->hide();
     ui->formatBox->addItem(GENBANK_FORMAT);
     ui->formatBox->addItem(FASTA_FORMAT);
     connect(ui->formatBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
@@ -199,47 +186,19 @@ void DownloadRemoteFileDialog::accept()
     QStringList resIds = resourceId.split(QRegExp("[\\s,;]+"));
     QList<Task*> tasks;
 
-    if (isDefaultDb(dbId)) {
-        QString fileFormat;
-        if (ui->formatBox->count() > 0) {
-            fileFormat = ui->formatBox->currentText();
-        }
-
-        QVariantMap hints;
-        hints.insert(FORCE_DOWNLOAD_SEQUENCE_HINT, ui->chbForceDownloadSequence->isVisible() && ui->chbForceDownloadSequence->isChecked());
-
-        foreach (const QString &resId, resIds) {
-            tasks.append(new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat, hints));
-        }
-
-        AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask(tr("Download remote documents"), tasks));
-    } else { //DAS ID
-        DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-        if (dasRegistry){
-            //get features
-            QList<DASSource> featureSources;
-            for(int i = 0; i < ui->dasfeaturesWidget->count(); i++){
-                QListWidgetItem* item = ui->dasfeaturesWidget->item(i);
-                if (item->checkState() == Qt::Checked){
-                    QString featureId = item->data(Qt::UserRole).toString();
-                    DASSource fSource = dasRegistry->findById(featureId);
-                    if (fSource.isValid()){
-                        featureSources.append(fSource);
-                    }
-                }
-            }
-            //get sequence
-            DASSource refSource = dasRegistry->findById(dbId);
-            if (refSource.isValid()) {
-                foreach (const QString &resId, resIds) {
-                    tasks.append(new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
-                }
-                TaskFlags multiTaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported);
-                Task *multiTask = new MultiTask("Load DAS Documents", tasks, false, multiTaskFlags);
-                AppContext::getTaskScheduler()->registerTopLevelTask(multiTask);
-            }
-        }
+    QString fileFormat;
+    if (ui->formatBox->count() > 0) {
+        fileFormat = ui->formatBox->currentText();
     }
+
+    QVariantMap hints;
+    hints.insert(FORCE_DOWNLOAD_SEQUENCE_HINT, ui->chbForceDownloadSequence->isVisible() && ui->chbForceDownloadSequence->isChecked());
+
+    foreach (const QString &resId, resIds) {
+        tasks.append(new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat, hints));
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask(tr("Download remote documents"), tasks));
 
     QDialog::accept();
 }
@@ -247,12 +206,6 @@ void DownloadRemoteFileDialog::accept()
 DownloadRemoteFileDialog::~DownloadRemoteFileDialog() {
     AppContext::getSettings()->setValue(SAVE_DIR, ui->saveFilenameLineEdit->text());
     delete ui;
-}
-
-bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
-    RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
-
-    return registry.hasDbId(dbId);
 }
 
 bool DownloadRemoteFileDialog::isNcbiDb(const QString &dbId) const {
@@ -266,32 +219,8 @@ void DownloadRemoteFileDialog::sl_onDbChanged(){
 
     ui->chbForceDownloadSequence->setVisible(isNcbiDb(dbId));
 
-    if (isDefaultDb(dbId)) {
-        RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
-        hint = description = registry.getHint(dbId);
-        ui->dasBox->hide();
-        adjustSize();
-    } else {
-        DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-        if (dasRegistry){
-            const DASSource& dasSource = dasRegistry->findById(dbId);
-            if (dasSource.isValid()){
-                description = dasSource.getDescription();
-                hint = dasSource.getHint();
-
-                ui->dasfeaturesWidget->clear();
-                const QList<DASSource>& featureSources = dasRegistry->getFeatureSourcesByType(dasSource.getReferenceType());
-                foreach(const DASSource& s, featureSources){
-                    QListWidgetItem* item = new QListWidgetItem(s.getName());
-                    item->setData(Qt::UserRole, s.getId());
-                    item->setToolTip(s.getHint());
-                    item->setCheckState(Qt::Checked);
-                    ui->dasfeaturesWidget->addItem(item);
-                }
-            }
-        }
-        ui->dasBox->show();
-    }
+    RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
+    hint = description = registry.getHint(dbId);
 
     setupHintText( hint );
     ui->idLineEdit->setToolTip(description);

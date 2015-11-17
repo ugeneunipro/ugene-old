@@ -12,7 +12,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/AnnotationSettings.h \
            src/datatype/AnnotationTableObjectConstraints.h \
            src/datatype/BioStruct3D.h \
-           src/datatype/DASSource.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
@@ -179,12 +178,10 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/ExternalToolRunTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
-           src/tasks/LoadDASDocumentTask.h \
            src/tasks/LoadDocumentTask.h \
            src/tasks/LoadRemoteDocumentTask.h \
            src/tasks/ModifySequenceObjectTask.h \
            src/tasks/MultiTask.h \
-           src/tasks/PicrApiTask.h \
            src/tasks/RemoveAnnotationsTask.h \
            src/tasks/RemoveDocumentTask.h \
            src/tasks/ReverseSequenceTask.h \
@@ -197,7 +194,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/tasks/TmpDirChecker.h \
-           src/tasks/UniprotBlastTask.h \
            src/tasks/shared_db/ImportDirToDatabaseTask.h \
            src/tasks/shared_db/ImportDocumentToDatabaseTask.h \
            src/tasks/shared_db/ImportFileToDatabaseTask.h \
@@ -252,7 +248,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/BaseAlphabets.cpp \
            src/datatype/BaseTranslations.cpp \
            src/datatype/BioStruct3D.cpp \
-           src/datatype/DASSource.cpp \
            src/datatype/DNAAlphabet.cpp \
            src/datatype/DNAAlphabetRegistryImpl.cpp \
            src/datatype/DNAInfo.cpp \
@@ -378,12 +373,10 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExternalToolRunTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
-           src/tasks/LoadDASDocumentTask.cpp \
            src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
            src/tasks/ModifySequenceObjectTask.cpp \
            src/tasks/MultiTask.cpp \
-           src/tasks/PicrApiTask.cpp \
            src/tasks/RemoveAnnotationsTask.cpp \
            src/tasks/RemoveDocumentTask.cpp \
            src/tasks/ReverseSequenceTask.cpp \
@@ -396,7 +389,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/tasks/TmpDirChecker.cpp \
-           src/tasks/UniprotBlastTask.cpp \
            src/tasks/shared_db/ImportDirToDatabaseTask.cpp \
            src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp \
            src/tasks/shared_db/ImportFileToDatabaseTask.cpp \

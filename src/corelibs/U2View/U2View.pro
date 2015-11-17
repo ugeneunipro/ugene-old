@@ -121,9 +121,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/AnnotationsTreeView.h \
            src/ov_sequence/AutoAnnotationUtils.h \
            src/ov_sequence/CreateRulerDialogController.h \
-           src/ov_sequence/Das/DasOptionsPanelSavableTab.h \
-           src/ov_sequence/Das/DasOptionsPanelWidget.h \
-           src/ov_sequence/Das/DasWidgetFactory.h \
            src/ov_sequence/DetView.h \
            src/ov_sequence/EditAnnotationDialogController.h \
            src/ov_sequence/GSequenceGraphView.h \
@@ -201,8 +198,6 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/SequenceSelectorWidget.ui \
          src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
-         src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui \
-         src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/image_export/SequenceImageExportSettingsWidget.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
@@ -338,9 +333,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/AnnotationsTreeView.cpp \
            src/ov_sequence/AutoAnnotationUtils.cpp \
            src/ov_sequence/CreateRulerDialogController.cpp \
-           src/ov_sequence/Das/DasOptionsPanelSavableTab.cpp \
-           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
-           src/ov_sequence/Das/DasWidgetFactory.cpp \
            src/ov_sequence/DetView.cpp \
            src/ov_sequence/EditAnnotationDialogController.cpp \
            src/ov_sequence/GraphLabelModel.cpp \

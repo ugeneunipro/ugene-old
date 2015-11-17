@@ -49,7 +49,6 @@
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/ConsoleShutdownTask.h>
 #include <U2Core/Counter.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>
 #include <U2Core/DNATranslation.h>
@@ -438,9 +437,6 @@ int main(int argc, char **argv)
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
 
-    DASSourceRegistry* dsr = new DASSourceRegistry();
-    appContext->setDASSourceRegistry(dsr);
-
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
 
     // show help if need
@@ -498,9 +494,6 @@ int main(int argc, char **argv)
 
     appContext->setPasswordStorage(NULL);
     delete passwordStorage;
-
-    appContext->setDASSourceRegistry(NULL);
-    delete dsr;
 
     appContext->setDataPathRegistry(NULL);
     delete dpr;

@@ -1009,7 +1009,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3869);
     REGISTER_TEST(GUITest_regression_scenarios::test_3870);
     REGISTER_TEST(GUITest_regression_scenarios::test_3886);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3891);
     REGISTER_TEST(GUITest_regression_scenarios::test_3895);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3901, "https://ugene.unipro.ru/tracker/browse/UGENE-3955");
@@ -2547,7 +2546,6 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0010);
-    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0011);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/workflow_designer/shared_db

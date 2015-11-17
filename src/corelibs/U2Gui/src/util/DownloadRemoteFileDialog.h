@@ -66,7 +66,6 @@ public:
 
 private:
     void setSaveFilename();
-    bool isDefaultDb(const QString& dbId);
     bool isNcbiDb(const QString& dbId) const;
     void setupHintText( const QString &sampleText = QString( ) );
 

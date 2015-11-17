@@ -54,7 +54,6 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/Counter.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>
 #include <U2Core/DNATranslation.h>
@@ -113,7 +112,6 @@
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/AssemblySettingsWidget.h>
 #include <U2View/ColorSchemaSettingsController.h>
-#include <U2View/DasWidgetFactory.h>
 #include <U2View/DnaAssemblyUtils.h>
 #include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/MSAExportConsensusTabFactory.h>
@@ -224,8 +222,6 @@ static void initOptionsPanels() {
     opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AnnotHighlightWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
-
-    opWidgetFactoryRegistry->registerFactory(new DasWidgetFactory());
 
     // Assembly Browser groups
     opWidgetFactoryRegistry->registerFactory(new AssemblyNavigationWidgetFactory());
@@ -609,9 +605,6 @@ int main(int argc, char **argv)
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
 
-    DASSourceRegistry* dsr = new DASSourceRegistry();
-    appContext->setDASSourceRegistry(dsr);
-
     CredentialsAsker* credentialsAsker = new CredentialsAskerGui();
     appContext->setCredentialsAsker(credentialsAsker);
 
@@ -769,9 +762,6 @@ int main(int argc, char **argv)
 
     appContext->setPasswordStorage(NULL);
     delete passwordStorage;
-
-    appContext->setDASSourceRegistry( NULL );
-    delete dsr;
 
     appContext->setDataPathRegistry( NULL );
     delete dpr;

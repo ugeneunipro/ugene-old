@@ -72,8 +72,6 @@
 #include "library/AminoTranslationWorker.h"
 #include "library/AssemblyToSequenceWorker.h"
 #include "library/ConvertFilesFormatWorker.h"
-#include "library/DASAnnotationWorker.h"
-#include "library/DASFetchWorker.h"
 #include "library/ExtractAssemblyCoverageWorker.h"
 #include "library/ExtractConsensusWorker.h"
 #include "library/ExtractMSAConsensusWorker.h"
@@ -291,8 +289,6 @@ void CoreLib::init() {
     CASAVAFilterWorkerFactory::init();
     CDSearchWorkerFactory::init();
     ConvertFilesFormatWorkerFactory::init();
-    DASAnnotationWorkerFactory::init();
-    DASFetcherFactory::init();
     DNAStatWorkerFactory::init();
     DataWorkerFactory::init();
     ExtractAssemblyCoverageWorkerFactory::init();

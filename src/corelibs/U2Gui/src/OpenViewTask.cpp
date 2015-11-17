@@ -26,7 +26,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Log.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/ResourceTracker.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectReference.h>
@@ -41,7 +40,6 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
-#include <U2Core/LoadDASDocumentTask.h>
 
 #include <U2Gui/ObjectViewModel.h>
 
@@ -346,93 +344,6 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished(Task* t) {
         res << new LoadUnloadedDocumentAndOpenViewTask(doc);
     }
     return res;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-//LoadDASDocumentsAndOpenViewTask
-LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources, bool _convertId )
-: Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSE_COSC | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)
-,accNumber(accId)
-,fullpath(_fullPath)
-,referenceSource(_referenceSource)
-,featureSources(_featureSources)
-,loadDasDocumentTask(NULL)
-,convertId(_convertId)
-{
-
-}
-
-void LoadDASDocumentsAndOpenViewTask::prepare(){
-    loadDasDocumentTask = new ConvertIdAndLoadDasDocumentTask(accNumber, fullpath, referenceSource, featureSources, convertId);
-
-    addSubTask(loadDasDocumentTask);
-}
-
-QString LoadDASDocumentsAndOpenViewTask::generateReport() const {
-    QString result = tr("Resource ID: %1").arg(accNumber);
-    result += "<br>";
-
-    if (NULL != loadDasDocumentTask) {
-        const QString convertedAccessionNumber = loadDasDocumentTask->getConvertedAccessionNumber();
-        if (!convertedAccessionNumber.isEmpty()) {
-            result += tr("Converted resource ID: %2").arg(convertedAccessionNumber);
-            result += "<br>";
-        }
-    }
-
-    result += tr("Resolution: ");
-    if (isCanceled()) {
-        result += tr("<font color=\'%1\'>cancelled</font>").arg(L10N::errorColorLabelHtmlStr());
-    } else if (hasError()) {
-        result += tr("<font color=\'%1\'>error</font>").arg(L10N::errorColorLabelHtmlStr());
-        result += "<br>";
-        result += getError();
-    } else {
-        result += tr("<font color=\'%1\'>success</font>").arg(L10N::successColorLabelHtmlStr());
-    }
-
-    return result;
-}
-
-QList<Task*> LoadDASDocumentsAndOpenViewTask::onSubTaskFinished( Task* subTask ){
-    QList<Task*> subTasks;
-
-    if (subTask->hasError() || subTask->isCanceled()) {
-        return subTasks;
-    }
-
-    if (subTask == loadDasDocumentTask ) {
-        QString fullPath = loadDasDocumentTask->getLocalUrl();
-        Project* proj = AppContext::getProject();
-        if (proj == NULL) {
-            Task* openWithProjectTask = AppContext::getProjectLoader()->openWithProjectTask(fullPath);
-            if (openWithProjectTask != NULL) {
-                subTasks.append(openWithProjectTask);
-            }
-        } else {
-            Document* doc = loadDasDocumentTask->getDocument();
-            SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
-            QString url = doc->getURLString();
-            Document* loadedDoc = proj->findDocumentByURL(url);
-            if (loadedDoc != NULL){
-                if (loadedDoc->isLoaded()) {
-                    subTasks.append(new OpenViewTask(loadedDoc));
-                } else {
-                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(loadedDoc));
-                }
-            } else {
-                // Add document to project
-                doc = loadDasDocumentTask->takeDocument();
-                SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
-                subTasks.append(new AddDocumentTask(doc));
-                subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            }
-
-        }
-    }
-
-    return subTasks;
 }
 
 }//namespace

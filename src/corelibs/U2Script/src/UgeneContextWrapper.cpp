@@ -47,7 +47,6 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/ConsoleShutdownTask.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>
 #include <U2Core/DNATranslation.h>
@@ -306,9 +305,6 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
     dpr = new U2DataPathRegistry( );
     appContext->setDataPathRegistry( dpr );
 
-    dsr = new DASSourceRegistry( );
-    appContext->setDASSourceRegistry( dsr );
-
     GReportableCounter launchCounter( "U2Script is ready", "", 1 );
     ++launchCounter.totalCount;
 
@@ -330,9 +326,6 @@ UgeneContextWrapper::~UgeneContextWrapper( ) {
 
     delete vfsReg;
     appContext->setVirtualFileSystemRegistry( NULL );
-
-    delete dsr;
-    appContext->setDASSourceRegistry( NULL );
 
     delete rdc;
     appContext->setRecentlyDownloadedCache( NULL );

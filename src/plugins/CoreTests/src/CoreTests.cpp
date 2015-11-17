@@ -42,7 +42,6 @@
 #include "FindAlgorithmTests.h"
 #include "FormatDetectionTests.h"
 #include "GUrlTests.h"
-#include "LoadDASDocumentTests.h"
 #include "LoadRemoteDocumentTests.h"
 #include "PWMatrixTests.h"
 #include "PhyTreeObjectTests.h"
@@ -131,8 +130,6 @@ void CoreTests::registerFactories() {
     registerFactory<CreateSubalignimentTests>(xmlTestFormat);
 
     registerFactory<LoadRemoteDocumentTests>(xmlTestFormat);
-
-    registerFactory<LoadDASDocumentTests>(xmlTestFormat);
 
     // PWMatrix tests
     registerFactory<PWMatrixTests>(xmlTestFormat);

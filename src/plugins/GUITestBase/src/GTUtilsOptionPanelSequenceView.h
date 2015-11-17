@@ -38,8 +38,7 @@ public:
         AnnotationsHighlighting,
         Statistics,
         InSilicoPcr,
-        CircularView,
-        Das
+        CircularView
     };
 
     enum AddRefMethod {
@@ -93,10 +92,6 @@ public:
     static void toggleCircularView(U2OpStatus &os);
     static void setTitleFontSize(U2OpStatus &os, int fontSize);
     static int getTitleFontSize(U2OpStatus &os);
-
-    // DAS options panel tab
-    static void fetchDasIds(U2OpStatus &os);
-    static int getDasIdsCount(U2OpStatus &os);
 
     // In Silico PCR tab
     static void setForwardPrimer(U2OpStatus &os, const QString &primer);
