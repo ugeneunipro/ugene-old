@@ -4360,6 +4360,20 @@ GUI_TEST_CLASS_DEFINITION(test_4886) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4908) {
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0));
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 1));
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int len = GTUtilsSequenceView::getSequenceAsString(os, 0).length();
+    CHECK_SET_ERR(len > 199950, "No sequences pasted");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_4913) {
 /* 1. Open an amino acid sequence: data/samples/Swiss-Prot/P16152.txt
  * 2. Open the NCBI BLAST dialog.

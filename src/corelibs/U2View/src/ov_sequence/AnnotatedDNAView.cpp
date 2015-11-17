@@ -1335,11 +1335,16 @@ void AnnotatedDNAView::sl_paste(){
     if (pasteToWidget){
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
     }
+    ADVSequenceObjectContext *seqCtx = getSequenceInFocus();
+    SAFE_POINT(seqCtx != NULL, tr("No sequence in focus"), );
+    pasteQueue.insert(task, seqCtx);
+
+
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
 void AnnotatedDNAView::sl_pasteFinished(Task* _pasteTask){
-    ADVSequenceObjectContext *seqCtx = getSequenceInFocus();
+    ADVSequenceObjectContext *seqCtx = pasteQueue.take(_pasteTask);
     if (seqCtx == NULL){
         return;
     }

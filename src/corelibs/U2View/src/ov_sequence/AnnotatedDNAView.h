@@ -283,6 +283,8 @@ private:
     ADVSequenceWidget*          replacedSeqWidget;     // not NULL when any sequence widget is dragging to the new place.
 
     int                         timerId;
+
+    QMap<Task*, ADVSequenceObjectContext*> pasteQueue;
 };
 
 } // namespace U2
