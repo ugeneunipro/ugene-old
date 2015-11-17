@@ -4399,6 +4399,21 @@ GUI_TEST_CLASS_DEFINITION(test_4913) {
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4918) {
+    //1. Open "COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep();
+
+    //2. Select "Align->Align profile to profile with MUSCLE" in the MSAEditor context menu
+    //Expected state : "Select file with alignment" dialog is appeared
+    //3. Select file "_common_data\clustal\1000_sequences.aln"
+    //Current state : UGENE crashes
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/clustal", "1000_sequences.aln"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

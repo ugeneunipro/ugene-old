@@ -4,6 +4,7 @@
 #include "profile.h"
 #include <limits.h>
 #include <time.h>
+#include <QVector>
 
 class MuscleException {
 public:
@@ -19,6 +20,8 @@ public:
     MuscleContext(int nTHreads ); 
     ~MuscleContext();
 
+    void fillUidsVectors(int rowsCount);
+
     int nThreads;
     
     int *cancelFlag;
@@ -33,9 +36,9 @@ public:
     static const unsigned NULL_NEIGHBOR = UINT_MAX;
     unsigned m_uIdCount;
 
-    unsigned *input_uIds;
-    unsigned *tmp_uIds;
-    unsigned *output_uIds;
+    QVector<unsigned> input_uIds;
+    QVector<unsigned> tmp_uIds;
+    QVector<unsigned> output_uIds;
 
     struct intmath_struct {
         bool bInit;

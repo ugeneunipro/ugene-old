@@ -100,6 +100,7 @@ void setupAlphaAndScore(const DNAAlphabet* al, TaskStateInfo& ti) {
 
 void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) {    
     MuscleContext *ctx = getMuscleContext();
+    ctx->fillUidsVectors(ma.getNumRows());
     for (int i=0, n = ma.getNumRows(); i<n; i++) {
         const MAlignmentRow& row = ma.getRow(i);
         
@@ -124,7 +125,10 @@ void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) 
 
 void convertMAlignment2SecVect(SeqVect& sv, const MAlignment& ma, bool fixAlpha) {
     sv.Clear();
+
     MuscleContext *ctx = getMuscleContext();
+    ctx->fillUidsVectors(ma.getNumRows());
+
     unsigned i=0;
     unsigned seq_count = 0;
     foreach(const MAlignmentRow& row, ma.getRows()) {
@@ -150,9 +154,8 @@ void convertMSA2MAlignment(MSA& msa, const DNAAlphabet* al, MAlignment& res) {
     assert(res.isEmpty());
     MuscleContext *ctx = getMuscleContext();
     res.setAlphabet(al);
-    delete[] ctx->output_uIds;
-    ctx->output_uIds = new unsigned[msa.GetSeqCount()];
-    
+    ctx->output_uIds.clear();
+
     for(int i=0, n = msa.GetSeqCount(); i < n; i++) {
         QString name = msa.GetSeqName(i);
         QByteArray seq;
@@ -161,7 +164,7 @@ void convertMSA2MAlignment(MSA& msa, const DNAAlphabet* al, MAlignment& res) {
             char c = msa.GetChar(i, j);
             seq.append(c);
         }
-        ctx->output_uIds[i] = ctx->tmp_uIds[msa.GetSeqId(i)];
+        ctx->output_uIds.append(ctx->tmp_uIds[msa.GetSeqId(i)]);
         U2OpStatus2Log os;
         res.addRow(name, seq, os);
     }

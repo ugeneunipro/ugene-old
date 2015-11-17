@@ -106,12 +106,6 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
         CHECK_EXT(inputSubMA != MAlignment(), setError(tr("Stopping MUSCLE task, because of error in MAlignment::mid function")), );
     }
 
-    ctx->input_uIds = new unsigned[inputSubMA.getNumRows()];
-    ctx->tmp_uIds = new unsigned[inputSubMA.getNumRows()];
-    for(unsigned i=0, n = inputSubMA.getNumRows(); i<n; i++) {
-        ctx->input_uIds[i] = i;
-    }
-
     if (config.nThreads == 1 || (config.op != MuscleTaskOp_Align)) {
         tpm = Task::Progress_Manual;
     } else {
@@ -174,17 +168,17 @@ void MuscleTask::doAlign(bool refine) {
         resultMA.setAlphabet(inputMA.getAlphabet());
         QByteArray emptySeq;
         const int nSeq = inputMA.getNumRows();
-        int *ids = new int[nSeq];
 
         const int resNSeq = resultSubMA.getNumRows();
-        bool *existID = new bool[nSeq];
-        memset(existID,0,sizeof(bool)*nSeq);
-        for(int i=0, n = resNSeq; i < n; i++) {
-            ids[i] = ctx->output_uIds ? ctx->output_uIds[i] : i;
+        const int maxSeq = qMax(nSeq, resNSeq);
+        QVector<unsigned int> ids(maxSeq, 0);
+        QVector<bool> existID(maxSeq, false);
+        for (int i = 0; i < resNSeq; i++) {
+            ids[i] = ctx->output_uIds.length() > i ? ctx->output_uIds[i] : i;
             existID[ids[i]] = true;
         }
         if(config.stableMode) {
-            for(int i = 0; i<nSeq;i++) {
+            for(int i = 0; i < nSeq;i++) {
                 ids[i] = i;
             }
         }
@@ -202,7 +196,6 @@ void MuscleTask::doAlign(bool refine) {
                 j++;
             }
         }
-        delete[] existID;
 
         SAFE_POINT_EXT(resultSubMA.getNumRows() == inputMA.getNumRows(),
             stateInfo.setError(tr("Unexpected number of rows in the result multiple alignment!")), );
@@ -230,7 +223,6 @@ void MuscleTask::doAlign(bool refine) {
                     resultMA.appendChars(i, resultLen, inputRow.toByteArray(subLen, os).constData(), subLen);
                 }
             }
-            delete[] ids;
             //TODO: check if there are GAP columns on borders and remove them
         } else {
             resultMA = resultSubMA;

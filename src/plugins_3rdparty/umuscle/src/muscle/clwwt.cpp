@@ -165,10 +165,9 @@ void CalcClustalWWeights(const Tree &tree, WEIGHT Weights[])
 
 void MSA::SetClustalWWeights(const Tree &tree)
 	{
-	const unsigned uSeqCount = GetSeqCount();
 	const unsigned uLeafCount = tree.GetLeafCount();
 
-	WEIGHT *Weights = new WEIGHT[uSeqCount];
+    WEIGHT *Weights = new WEIGHT[uLeafCount];
 
 	CalcClustalWWeights(tree, Weights);
 

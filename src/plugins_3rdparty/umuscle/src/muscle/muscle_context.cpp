@@ -21,17 +21,49 @@ bool MuscleContext::glbalndimer_stuct::InitializePPTerm()
 
 MuscleContext::MuscleContext(int _nThreads) 
 {
-    unsigned contextSize = sizeof(*this); 
-    memset(this,0,contextSize); //safe operation only if not inherited
+    memset(&intmath, 0, sizeof(intmath));
+    memset(&params, 0, sizeof(params));
+    memset(&alpha, 0, sizeof(alpha));
+    memset(&muscle, 0, sizeof(muscle));
+    memset(&nwdasimple, 0, sizeof(nwdasimple));
+    memset(&ppscore, 0, sizeof(ppscore));
+    memset(&scoredist, 0, sizeof(scoredist));
+    memset(&objscore2, 0, sizeof(objscore2));
+    memset(&nwsmalls, 0, sizeof(nwsmalls));
+    memset(&fastdistnuc, 0, sizeof(fastdistnuc));
+    memset(&fastdistmafft, 0, sizeof(fastdistmafft));
+    memset(&glbalignsp, 0, sizeof(glbalignsp));
+    memset(&glbalignspn, 0, sizeof(glbalignspn));
+    memset(&glbalignss, 0, sizeof(glbalignss));
+    memset(&glbalignle, 0, sizeof(glbalignle));
+    memset(&setnewhandler, 0, sizeof(setnewhandler));
+    memset(&options, 0, sizeof(options));
+    memset(&globals, 0, sizeof(globals));
+    memset(&progress, 0, sizeof(progress));
+    memset(&scoregaps, 0, sizeof(scoregaps));
+    memset(&glbaligndiag, 0, sizeof(glbaligndiag));
+    memset(&upgma2, 0, sizeof(upgma2));
+    memset(&msa2, 0, sizeof(msa2));
+    memset(&validateids, 0, sizeof(validateids));
+    memset(&refinehoriz, 0, sizeof(refinehoriz));
+    memset(&spfast, 0, sizeof(spfast));
+    memset(&readmx, 0, sizeof(readmx));
+    memset(&mhack, 0, sizeof(mhack));
+    memset(&glbalndimer, 0, sizeof(glbalndimer));
+    memset(&subfams, 0, sizeof(subfams));
+    memset(&savebest, 0, sizeof(savebest));
+    memset(&enumtostr, 0, sizeof(enumtostr));
+    memset(&finddiags, 0, sizeof(finddiags));
+    memset(&finddiagsn, 0, sizeof(finddiagsn));
+    memset(&globalswin32, 0, sizeof(globalswin32));
+
     nThreads = _nThreads;
+    progressStub = 0;
     progressPercent = &progressStub;
+    cancelStub = 0;
     cancelFlag = &cancelStub;
 
     m_uIdCount = 0;
-    
-    input_uIds = NULL;
-    tmp_uIds = NULL;
-    output_uIds = NULL;
 
     //intmath.cpp
     intmath.bInit = false;
@@ -367,6 +399,17 @@ MuscleContext::MuscleContext(int _nThreads)
     spfast.bGapScoreMatrixInit = false;
 } 
 
+void MuscleContext::fillUidsVectors(int rowsCount) {
+    tmp_uIds.clear();
+    input_uIds.clear();
+    tmp_uIds.reserve(rowsCount);
+    input_uIds.reserve(rowsCount);
+    for (unsigned i = 0, n = rowsCount; i < n; i++) {
+        input_uIds.append(i);
+        tmp_uIds.append(i);
+    }
+}
+
 extern void FreeDPMemSPN();  
 
 MuscleContext::~MuscleContext() {
@@ -374,11 +417,6 @@ MuscleContext::~MuscleContext() {
 
     delete ppscore.g_ptrPPScoreMSA1;
     delete ppscore.g_ptrPPScoreMSA2;
-
-    delete[] input_uIds;
-    delete[] output_uIds;
-    delete[] tmp_uIds;
-    
     //glbalignsp.cpp
     if (glbalignsp.DPM.uLength > 0) {
         for (unsigned i = 0; i < glbalignsp.DPM.uLength; ++i) {
