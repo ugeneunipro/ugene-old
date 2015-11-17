@@ -4099,7 +4099,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_4) {
     //Expected result: An error notification appears - "A problem occurred during doing BLAST. The sequence is no more available".
     GTUtilsNotifications::waitForNotification(os, true, "The sequence is no more available");
     GTUtilsDocument::removeDocument(os, "regression_test_4784_4.fa");
-    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4785) {
