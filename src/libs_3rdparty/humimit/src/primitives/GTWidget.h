@@ -62,6 +62,7 @@ public:
 
     static void clickLabelLink(U2::U2OpStatus &os, QWidget* label, int step = 10);
     static void clickWindowTitle(U2::U2OpStatus &os, QWidget *window);
+    static void moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &point);
     static void resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &size);
     static QPoint getWidgetGlobalTopLeftPoint(U2::U2OpStatus &os, QWidget *widget);
 

@@ -3053,6 +3053,7 @@ GUI_TEST_CLASS_DEFINITION(test_2403) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa" );
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    GTWidget::showNormal(os, mw);
     GTWidget::resizeWidget(os, mw, QSize(300, mw->size().height()));
 
     QWidget *toolbarWidget = GTWidget::findWidget(os, "mwtoolbar_activemdi");
@@ -3084,6 +3085,7 @@ GUI_TEST_CLASS_DEFINITION( test_2404 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    GTWidget::showNormal(os, mw);
     GTWidget::resizeWidget(os, mw, QSize(800, 800));
     GTGlobals::sleep();
     QScrollArea* sa = qobject_cast<QScrollArea*>(GTWidget::findWidget( os, "OP_SCROLL_AREA" ));

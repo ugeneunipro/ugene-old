@@ -312,13 +312,31 @@ void GTWidget::clickWindowTitle(U2::U2OpStatus &os, QWidget *window) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "moveWidgetTo"
+void GTWidget::moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &point){
+    //QPoint(window->width()/2,3) - is hack
+    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3));
+    const QPoint p0 = getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3);
+    const QPoint p1 = point + QPoint(window->width()/2,3);
+    GTMouseDriver::dragAndDrop(os, p0, p1);
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "resizeWidget"
 void GTWidget::resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &size) {
     GT_CHECK(NULL != widget, "Widget is NULL");
-    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, widget));
-    const QPoint bottomRightPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1);
-    const QPoint newBottomRightPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(size.width(), size.height());
-    GTMouseDriver::dragAndDrop(os, bottomRightPos, newBottomRightPos);
+    QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget);
+    for (int i=0; i<5; i++){
+        GTMouseDriver::moveTo(os, topLeftPos);
+        if (widget->cursor().shape() == Qt::SizeFDiagCursor){
+            break;
+        }else{
+            topLeftPos += QPoint(1,0);
+        }
+    }
+    QPoint newTopLeftPos = topLeftPos + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1) - QPoint(size.width(), size.height());
+    GTMouseDriver::dragAndDrop(os, topLeftPos, newTopLeftPos);
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
