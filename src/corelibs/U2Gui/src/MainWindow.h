@@ -77,6 +77,7 @@ class QMainWindow;
 #define ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB         "action_projectsupport__access_remote_db"
 #define ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB         "action_projectsupport__access_shared_db"
 #define ACTION_PROJECTSUPPORT__SEARCH_GENBANK           "action_projectsupport__search_genbank"
+#define ACTION_PROJECTSUPPORT__NEW_SECTION_SEPARATOR    "action_projectsupport__new_section_separator"
 
 #define ACTION_PROJECT__ADD_MENU                    "action_project__add_menu"
 #define ACTION_PROJECT__ADD_OBJECT                  "action_project__add_object"

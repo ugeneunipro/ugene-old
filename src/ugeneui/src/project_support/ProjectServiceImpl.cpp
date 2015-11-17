@@ -50,6 +50,7 @@ ProjectServiceImpl::ProjectServiceImpl(Project* _pr)
     saveAction = NULL;
     saveAsAction = NULL;
     closeProjectAction = NULL;
+    projectActionsSeparator = NULL;
     exportProjectAction = NULL;
 
     pr = _pr;
@@ -168,9 +169,13 @@ Task::ReportResult ProjectServiceEnableTask::report() {
     psi->exportProjectAction->setObjectName(ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     connect(psi->exportProjectAction, SIGNAL(triggered()), psi, SLOT(sl_exportProject()));
 
+    psi->projectActionsSeparator = new QAction("", psi);
+    psi->projectActionsSeparator->setSeparator(true);
+
     MainWindow* mw = AppContext::getMainWindow();
     QMenu* fileMenu = mw->getTopLevelMenu(MWMENU_FILE);
-    QAction* beforeAction= GUIUtils::findActionAfter(fileMenu->actions(), ACTION_PROJECTSUPPORT__OPEN_AS);
+    QAction* beforeAction = GUIUtils::findActionAfter(fileMenu->actions(), ACTION_PROJECTSUPPORT__RECENT_PROJECTS_MENU);
+    fileMenu->insertAction(beforeAction,  psi->projectActionsSeparator);
     fileMenu->insertAction(beforeAction,  psi->saveAction);
     fileMenu->insertAction(beforeAction,  psi->saveAsAction);
     fileMenu->insertAction(beforeAction,  psi->exportProjectAction);
@@ -198,6 +203,9 @@ Task::ReportResult ProjectServiceDisableTask::report() {
     
     delete psi->closeProjectAction;
     psi->closeProjectAction = NULL;
+
+    delete psi->projectActionsSeparator;
+    psi->projectActionsSeparator = NULL;
 
     return ReportResult_Finished;
 }

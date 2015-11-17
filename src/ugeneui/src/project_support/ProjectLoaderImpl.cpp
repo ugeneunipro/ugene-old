@@ -73,7 +73,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 
 ProjectLoaderImpl::ProjectLoaderImpl() {
-    pasteAction = openProjectAction = newProjectAction = separatorAction1 = separatorAction2 = NULL;
+    pasteAction = openProjectAction = newProjectAction = NULL;
     recentProjectsMenu = NULL;
 
     assert(AppContext::getProject() == NULL);
@@ -99,7 +99,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     newDocumentFromtext->setShortcutContext(Qt::WindowShortcut);
     connect(newDocumentFromtext, SIGNAL(triggered()), SLOT(sl_newDocumentFromText()));
 
-    pasteAction = new QAction(QIcon(":ugene/images/paste.png"), tr("Paste"), this);
+    pasteAction = new QAction(QIcon(":ugene/images/paste.png"), tr("Open from clipboard..."), this);
     pasteAction->setObjectName(ACTION_PROJECTSUPPORT__PASTE);
     pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -116,7 +116,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     downloadRemoteFileAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(downloadRemoteFileAction, SIGNAL(triggered()), SLOT(sl_downloadRemoteFile()));
 
-    accessSharedDatabaseAction = new QAction(tr("Connect to shared database..."), this);
+    accessSharedDatabaseAction = new QAction(tr("Connect to UGENE shared database..."), this);
     accessSharedDatabaseAction->setObjectName(ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
     accessSharedDatabaseAction->setIcon(QIcon(":core/images/db/database_go.png"));
     accessSharedDatabaseAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
@@ -126,13 +126,6 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
     searchGenbankEntryAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(searchGenbankEntryAction, SIGNAL(triggered()), SLOT(sl_searchGenbankEntry()));
-
-
-    separatorAction1  = new QAction("", this);
-    separatorAction1->setSeparator(true);
-
-    separatorAction2 = new QAction("", this);
-    separatorAction2->setSeparator(true);
 
     //add load/close actions to menu and toolbar
     MainWindow* mw = AppContext::getMainWindow();
@@ -146,19 +139,34 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     recentItemsMenu->menuAction()->setObjectName("recent_docs_menu_action");
     updateRecentItemsMenu();
 
+    QAction* newSectionSeparator = new QAction("", this);
+    newSectionSeparator->setSeparator(true);
+    searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__NEW_SECTION_SEPARATOR);
+
+    QAction* openSectionSeparator = new QAction("", this);
+    openSectionSeparator->setSeparator(true);
+
+    QAction* remoteSectionSeparator = new QAction("", this);
+    remoteSectionSeparator->setSeparator(true);
+
+    QAction* recentSectionSeparator = new QAction("", this);
+    recentSectionSeparator->setSeparator(true);
+
     QList<QAction*> actions;
     actions << newProjectAction
             << newDocumentFromtext
-            << downloadRemoteFileAction
-            << accessSharedDatabaseAction
-            << searchGenbankEntryAction
+            << newSectionSeparator
             << openProjectAction
             << addExistingDocumentAction
             << pasteAction
-            << separatorAction1
-            <<  recentItemsMenu->menuAction()
+            << openSectionSeparator
+            << downloadRemoteFileAction
+            << searchGenbankEntryAction
+            << accessSharedDatabaseAction
+            << remoteSectionSeparator
+            << recentItemsMenu->menuAction()
             << recentProjectsMenu->menuAction()
-            << separatorAction2;
+            << recentSectionSeparator;
 
     fileMenu->insertActions(fileMenu->actions().first(), actions);
 

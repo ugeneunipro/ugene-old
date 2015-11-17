@@ -64,6 +64,7 @@ private:
 	QAction* saveAction;
     QAction* saveAsAction;
 	QAction* closeProjectAction;
+    QAction* projectActionsSeparator;
 	QAction* exportProjectAction;
 
 	Project* pr;

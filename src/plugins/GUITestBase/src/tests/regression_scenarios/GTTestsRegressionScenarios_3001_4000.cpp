@@ -302,7 +302,7 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
     // import, remove, drag'n'drop, empty recycle bin, restore from recycle bin. is prohibited
     GTUtilsProjectTreeView::click(os, "Recycle bin", Qt::RightButton);
     CHECK_SET_ERR(QApplication::activePopupWidget()==NULL, "popup menu unexpectidly presents on recyble bin");
@@ -590,7 +590,7 @@ GUI_TEST_CLASS_DEFINITION(test_3101){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3102) {
-    //1. Go to 'File->Connect to shared database...'
+    //1. Go to 'File->Connect to UGENE shared database...'
     //    Expected state: Showed dialog 'Shared Databases Connections'
     //    In list of connections showed 'UGENE public database'
     GTLogTracer logTracer;
@@ -600,7 +600,7 @@ GUI_TEST_CLASS_DEFINITION(test_3102) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3103) {
-    //1. Go to 'File->Connect to shared database...'
+    //1. Go to 'File->Connect to UGENE shared database...'
     //Expected state: Showed dialog 'Shared Databases Connections'
     //2. Click on 'Add' button
     //Expected state: Showed dailog 'Connection Settings' and 'Port' field filled with port 3306
@@ -615,7 +615,7 @@ GUI_TEST_CLASS_DEFINITION(test_3103) {
         params.accept = false;
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
     }
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3112) {
@@ -761,7 +761,7 @@ GUI_TEST_CLASS_DEFINITION(test_3130) {
 
     GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
     GTGlobals::sleep();
 }
 
@@ -4393,7 +4393,7 @@ GUI_TEST_CLASS_DEFINITION(test_3697){
     params1.password = "password";
     GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params1, EditConnectionDialogFiller::MANUAL));
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
     GTGlobals::sleep();
 
     QString conName2 = "test_3697: ugene_gui_test II";
@@ -4410,7 +4410,7 @@ GUI_TEST_CLASS_DEFINITION(test_3697){
     EditConnectionDialogFiller::Parameters params2 = params1;
     params2.connectionName = conName2;
     GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params2, EditConnectionDialogFiller::MANUAL));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, "Ok"));
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

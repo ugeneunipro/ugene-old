@@ -283,7 +283,7 @@ void WorkflowDesignerService::initNewWorkflowAction() {
     QMenu *fileMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_FILE);
     QAction *beforeAction = NULL;
     foreach (QAction *action, fileMenu->actions()) {
-        if (action->objectName() == ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB) {
+        if (action->objectName() == ACTION_PROJECTSUPPORT__NEW_SECTION_SEPARATOR) {
             beforeAction = action;
             break;
         }

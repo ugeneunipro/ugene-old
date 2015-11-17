@@ -109,8 +109,6 @@ private:
     QAction* accessSharedDatabaseAction;
     QAction* searchGenbankEntryAction;
     QAction* newDocumentFromtext;
-    QAction* separatorAction1;
-    QAction* separatorAction2;
 
     QMenu* recentProjectsMenu;
     QMenu* recentItemsMenu;

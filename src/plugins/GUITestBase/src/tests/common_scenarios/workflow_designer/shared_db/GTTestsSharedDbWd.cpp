@@ -374,7 +374,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_neg_test_0012) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
     createTestConnection(os);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
@@ -399,7 +399,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
     createTestConnection(os);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
@@ -427,7 +427,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0002) {
     createTestConnection(os);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
@@ -463,7 +463,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, connectionName);
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, connectionName);
     GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 }
 
 GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0001) {
@@ -491,7 +491,7 @@ GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0001) {
     GTLogTracer l;
 
     createTestConnection(os);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to shared database...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Variations");
