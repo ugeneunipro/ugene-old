@@ -648,7 +648,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     GTComboBox::setIndexWithText(os, fontComboBox, "Serif", false);
 #ifndef Q_OS_MAC
-    GTComboBox::setIndexWithText(os, fontComboBox, "Sans Serif");
+    GTComboBox::setIndexWithText(os, fontComboBox, "Sans Serif", false);
 #else
     GTComboBox::setIndexWithText(os, fontComboBox, "Microsoft Sans Serif");
 #endif

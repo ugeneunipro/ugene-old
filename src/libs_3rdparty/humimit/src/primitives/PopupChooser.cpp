@@ -38,7 +38,7 @@ namespace HI {
 #define GT_CLASS_NAME "PopupChooser"
 
 #define GT_METHOD_NAME "run"
-void PopupChooser::run() {
+void PopupChooser::commonScenario() {
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
@@ -65,7 +65,7 @@ void PopupChooser::clickEsc() {
 
 #undef GT_CLASS_NAME
 
-void PopupChooserByText::run()
+void PopupChooserByText::commonScenario()
 {
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);

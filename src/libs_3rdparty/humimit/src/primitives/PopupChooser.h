@@ -32,7 +32,7 @@ class HI_EXPORT PopupChooser : public Filler {
     public:
         PopupChooser(U2::U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
             :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
-        virtual void run();
+        virtual void commonScenario();
     protected:
         QStringList namePath;
         GTGlobals::UseMethod useMethod;
@@ -45,7 +45,7 @@ class HI_EXPORT PopupChooserByText : public Filler {
     public:
         PopupChooserByText(U2::U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey, Qt::MatchFlag _matchFlag = Qt::MatchExactly) //UseKey need for Ubuntu
             :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod), matchFlag(_matchFlag){}
-        virtual void run();
+        virtual void commonScenario();
     protected:
         QStringList namePath;
         GTGlobals::UseMethod useMethod;

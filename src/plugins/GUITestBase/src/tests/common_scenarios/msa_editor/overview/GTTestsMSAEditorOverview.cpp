@@ -554,7 +554,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021){
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
 
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-5,2));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-4,2));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
@@ -580,7 +580,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022){
 
     GTUtilsProjectTreeView::openView(os);
 
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-5,2));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,0), QPoint(-4,2));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));

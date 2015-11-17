@@ -739,6 +739,7 @@ void test_13(U2OpStatus &os, int comboVal, int SpinVal, QString ExpectedCons){
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"MSAE_MENU_COPY" << "Copy consensus",GTGlobals::UseMouse));
     GTMenu::showContextMenu(os,seq);
+    GTGlobals::sleep(1000);
 
     QString clipboardText=GTClipboard::text(os);
     GTGlobals::sleep(500);
