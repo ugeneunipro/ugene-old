@@ -90,13 +90,12 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
-    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED, method);
-
     switch (method) {
     case GTGlobals::UseMouse:
     {
+        Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED, method);
         GTUtilsDialog::waitForDialog(os, popupChooser);
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
 
         GTMouseDriver::click(os, Qt::RightButton);
         break;
@@ -104,7 +103,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
 
     default:
     case GTGlobals::UseKey:
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
         GTMouseDriver::click(os);
 
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -144,7 +143,7 @@ void GTUtilsDocument::saveDocument(U2OpStatus &os, const QString &documentName) 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__SAVE_DOCUMENT, GTGlobals::UseMouse);
 
     GTUtilsDialog::waitForDialog(os, popupChooser);
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep(500);
@@ -163,7 +162,7 @@ void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName
     }
 
     GTUtilsDialog::waitForDialog(os, popupChooser);
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep(500);
@@ -174,7 +173,7 @@ void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName
 void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) {
     GT_CHECK_RESULT( !isDocumentLoaded(os, documentName), "Document is loaded", );
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
     GTMouseDriver::doubleClick(os);
 
     GTGlobals::sleep(500);
