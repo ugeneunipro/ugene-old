@@ -1455,7 +1455,7 @@ GUI_TEST_CLASS_DEFINITION(test_1107) {
 //2) Menu File->Close Project
 //3) Press No in the Save current project dialog
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
 //Expected state: UGENE not crashes
     GTGlobals::sleep();

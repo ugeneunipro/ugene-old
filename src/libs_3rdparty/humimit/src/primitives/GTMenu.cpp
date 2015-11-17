@@ -120,7 +120,11 @@ QStringList fixMenuItemPath(const QStringList &itemPath) {
 #endif
     return fixedItemPath;
 }
-bool compare(QString s1, QString s2, Qt::MatchFlag mathcFlag){
+bool compare(QString s1, QString s2, Qt::MatchFlag mathcFlag, bool replaceSpecSymbol = true){
+    if(replaceSpecSymbol){
+        s1.remove('&');
+        s2.remove('&');
+    }
     switch (mathcFlag) {
     case Qt::MatchContains:
         return s1.contains(s2);
