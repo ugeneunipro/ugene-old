@@ -6226,6 +6226,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, bottomLeftToolBar);
     GTMouseDriver::release(os);
+    GTThread::waitForMainThread(os);
     GTGlobals::sleep();
     QPoint handlePosition = splitterHandler->pos();
 
@@ -6245,6 +6246,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, p + QPoint(0, 50));
     GTMouseDriver::release(os);
+    GTThread::waitForMainThread(os);
     GTGlobals::sleep();
 
     CHECK_SET_ERR(handlePosition == splitterHandler->pos(), QString("Handler was moved: expected: %1, actual: %2").arg(splitter->pos().y()).arg(handlePosition.y()));
