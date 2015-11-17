@@ -19,7 +19,7 @@ DEFINES += QT_DLL
 
     CONFIG(debug, debug|release) {
         TARGET = humimitd
-        DEFINES+=_DEBUG
+        DEFINES += _DEBUG
         CONFIG +=console
         DESTDIR=../../_debug/
         OBJECTS_DIR=_tmp/obj/debug

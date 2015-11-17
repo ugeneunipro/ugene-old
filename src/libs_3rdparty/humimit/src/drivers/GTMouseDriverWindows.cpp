@@ -110,7 +110,11 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
         }
     }
 
+#ifdef _DEBUG
     GTGlobals::sleep(500);
+#else
+    GTGlobals::sleep(100); //May be not needed
+#endif
 }
 #undef GT_METHOD_NAME
 

@@ -38,6 +38,7 @@
 #include <primitives/GTWidget.h>
 #include "GTGlobals.h"
 #include <primitives/GTLineEdit.h>
+#include <utils/GTThread.h>
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"
@@ -353,7 +354,7 @@ void GTFileDialog::openFile(U2::U2OpStatus &os, const QString &path, const QStri
     if(waitForFinished){
         waitTaskFinished(os);
     }else{
-        GTGlobals::sleep(1000);
+        GTThread::waitForMainThread(os);
     }
 }
 

@@ -21,6 +21,7 @@
 
 #include <QApplication>
 #include <QTimer>
+#include <utils/GTThread.h>
 
 #include "GTMouseDriver.h"
 
@@ -31,7 +32,11 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     press(os, button);
     release(os, button);
 
+#ifdef _DEBUG
     GTGlobals::sleep(500);
+#else
+    GTGlobals::sleep(100);
+#endif
 }
 
 namespace {
@@ -54,7 +59,7 @@ void GTMouseDriver::dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const Q
                                  QPoint(0, 0));
     GTMouseDriver::moveTo(os, farPoint);
 
-    GTGlobals::sleep(2000);
+    GTThread::waitForMainThread(os);
 }
 
 #ifndef Q_OS_MAC
@@ -90,7 +95,7 @@ void GTDragger::sl_execDrag(){
     GTMouseDriver::moveTo(os, to);
 #ifndef Q_OS_LINUX
     GTMouseDriver::release(os);
-    GTGlobals::sleep(6000);
+    GTThread::waitForMainThread(os);
 #else
     GTMouseDriver::click(os);
     GTGlobals::sleep();
