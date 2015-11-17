@@ -82,7 +82,7 @@ GTFileDialogUtils::GTFileDialogUtils(U2::U2OpStatus &os, U2::CustomScenario *cus
 
 }
 
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 void GTFileDialogUtils::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();

@@ -2528,7 +2528,7 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, point);
     GTMouseDriver::release(os);
-    GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
 
     QWidget* toolBar = GTWidget::findWidget(os, "circular_view_local_toolbar");
     CHECK_SET_ERR(toolBar != NULL, "Cannot find circular_view_local_toolbar");
