@@ -734,6 +734,7 @@ namespace {
         result += packMap<ResidueIndex, SharedResidue>(data.residueMap, ctx);
         result += packMap<int, Molecule3DModel>(data.models, ctx);
         result += pack(data.name);
+        result += data.chainId;
         result += packBool(data.engineered);
         return result;
     }
@@ -748,6 +749,8 @@ namespace {
         result->models = unpackMap<int, Molecule3DModel>(data, length, offset, os, ctx);
         CHECK_OP(os, result);
         result->name = unpack<QString>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result->chainId = unpack<char>(data, length, offset, os);
         CHECK_OP(os, result);
         result->engineered = unpackBool(data, length, offset, os);
         return result;

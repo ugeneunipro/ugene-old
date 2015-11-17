@@ -110,7 +110,7 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
 #define GT_METHOD_NAME "getQualifierValue"
 QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QString &qualifierName, QTreeWidgetItem *parentItem) {
     GTTreeWidget::getItemCenter(os, parentItem);
-    QTreeWidgetItem *qualifierItem = findItem(os, qualifierName);
+    QTreeWidgetItem *qualifierItem = findItem(os, qualifierName, parentItem);
     GT_CHECK_RESULT(NULL != qualifierItem, "Qualifier item not found", "");
     return qualifierItem->text(AnnotationsTreeView::COLUMN_VALUE);
 }

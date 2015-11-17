@@ -22,6 +22,7 @@
 #include "BioStruct3D.h"
 
 #include <U2Core/U2Region.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/Log.h>
 
 namespace U2 {
@@ -131,8 +132,12 @@ QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateChainAnnotations() 
         SharedAnnotationData sd( new AnnotationData);
         sd->location->regions << U2Region(0,length);
         sd->name = BioStruct3D::MoleculeAnnotationTag;
-        sd->qualifiers.append(U2Qualifier(ChainIdQualifierName, QString("%1").arg(iter.key()) ));
-        sd->qualifiers.append(U2Qualifier(molNameQualifier, (*iter)->name));
+        if ((*iter)->chainId > 0) {
+            sd->qualifiers.append(U2Qualifier(ChainIdQualifierName, QString("%1").arg((*iter)->chainId)));
+        } 
+        if (!(*iter)->name.isEmpty()) {
+            sd->qualifiers.append(U2Qualifier(molNameQualifier, (*iter)->name));
+        }
 
         result[iter.key()].append(sd);
         ++iter;
@@ -229,11 +234,10 @@ void BioStruct3D::generateSecStructureAnnotations(QMap<int, QList<SharedAnnotati
 
 }
 
-QByteArray BioStruct3D::getRawSequenceByChainId( int id ) const
-{
+QByteArray BioStruct3D::getRawSequenceByChainIndex(int id) const {
     QByteArray sequence("");
 
-    Q_ASSERT(moleculeMap.contains(id));
+    SAFE_POINT(moleculeMap.contains(id), QString("Can't find chain identifier for index: %1").arg(id), sequence);
     const SharedMolecule molecule = moleculeMap.value(id);
     foreach (const SharedResidue residue, molecule->residueMap) {
        QChar c = residue->acronym;
@@ -241,6 +245,12 @@ QByteArray BioStruct3D::getRawSequenceByChainId( int id ) const
     }
 
     return sequence;
+}
+
+char BioStruct3D::getChainIdByIndex(int index) const {
+    SAFE_POINT(moleculeMap.contains(index), QString("Can't find chain identifier for index: %1").arg(index), 0);
+    const SharedMolecule molecule = moleculeMap.value(index);
+    return moleculeMap.value(index)->chainId;
 }
 
 const QList<int> BioStruct3D::getModelsNames() const {

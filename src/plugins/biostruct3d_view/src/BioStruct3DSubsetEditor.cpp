@@ -63,8 +63,9 @@ void BioStruct3DSubsetEditor::fillChainCombo() {
     chainCombo->clear();
     chainCombo->addItem(ALL_CHAINS);
 
-    foreach (const int chainId, bso->getBioStruct3D().moleculeMap.keys()) {
-        chainCombo->addItem(QString::number(chainId), qVariantFromValue(chainId));
+    foreach (const int chainIndex, bso->getBioStruct3D().moleculeMap.keys()) {
+        char chainId = bso->getBioStruct3D().getChainIdByIndex(chainIndex);
+        chainCombo->addItem(QString(chainId), qVariantFromValue(chainIndex));
     }
 }
 

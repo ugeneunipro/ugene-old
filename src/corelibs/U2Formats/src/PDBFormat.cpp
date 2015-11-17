@@ -176,7 +176,7 @@ void PDBFormat::PDBParser::parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& 
     QByteArray readBuff(READ_BUF_SIZE+1, 0);
     char* buf = readBuff.data();
     qint64 len = 0;
-
+    bool firstCompndLine = true;
     while (!ti.isCoR()) {
 
         bool lineOk = true;
@@ -197,6 +197,12 @@ void PDBFormat::PDBParser::parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& 
 
         if (currentPDBLine.startsWith("HEADER")) {
             parseHeader(biostruct, ti);
+            continue;
+        }
+
+        if (currentPDBLine.startsWith("COMPND")) {
+            parseMacromolecularContent(firstCompndLine, ti);
+            firstCompndLine = false;
             continue;
         }
 
@@ -249,6 +255,42 @@ void PDBFormat::PDBParser::parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& 
 
     updateSecStructChainIndexes(biostruct);
 
+}
+
+
+namespace {
+const QString MOLECULE_TAG = "MOLECULE";
+const QString CHAIN_TAG = "CHAIN";
+}
+
+void PDBFormat::PDBParser::parseMacromolecularContent(bool firstCompndLine, U2OpStatus& ti) {
+    /*
+    Record Format
+    COLUMNS       DATA TYPE       FIELD         DEFINITION
+    ----------------------------------------------------------------------------------
+    1 -  6       Record name     "COMPND"
+    8 - 10       Continuation    continuation  Allows concatenation of multiple records.
+    11 - 80      Specification   compound      Description of the molecular components.
+    list
+    Details
+    */
+    if (!firstCompndLine) {
+        QString specification = currentPDBLine.mid(10, currentPDBLine.size() - 11).trimmed().toLatin1();
+        if (specification.startsWith(MOLECULE_TAG)) {
+            QRegExp end(";\\s*$");
+            int index = end.indexIn(specification);
+            index = (index > 0) ? index : specification.size();
+            currentMoleculeName = specification.mid(MOLECULE_TAG.size() + 1, index - MOLECULE_TAG.size() - 1).trimmed();
+        } else if (specification.startsWith(CHAIN_TAG)) {
+            QStringList idetifiers = specification.split(QRegExp(",|:|;"));
+            for (int i = 1; i < idetifiers.size(); i++) {
+                QString identifier = idetifiers.at(i).trimmed();
+                if (identifier.size() > 0 && !currentMoleculeName.isEmpty()) {
+                    chainToMoleculeMap[identifier] = currentMoleculeName;
+                }
+            }
+        }
+    }
 }
 
 void PDBFormat::PDBParser::parseHeader(BioStruct3D& biostruct, U2OpStatus&)
@@ -571,10 +613,12 @@ void PDBFormat::PDBParser::updateSecStructChainIndexes(BioStruct3D& biostruc)
     }
 }
 
-void PDBFormat::PDBParser::createMolecule(char chainIdentifier, BioStruct3D &biostruct, int chainIndex)
-{
+void PDBFormat::PDBParser::createMolecule(char chainIdentifier, BioStruct3D &biostruct, int chainIndex) {
     SharedMolecule newMol(new MoleculeData);
-    newMol->name = QString("chain %1").arg(chainIdentifier);
+    newMol->chainId = chainIdentifier;
+    if (chainToMoleculeMap.contains(QString(chainIdentifier))) {
+        newMol->name = chainToMoleculeMap[QString(chainIdentifier)];
+    }
     biostruct.moleculeMap.insert(chainIndex,newMol);
     chainIndexMap.insert(chainIdentifier, chainIndex);
 }
@@ -781,10 +825,16 @@ Document * PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef &dbiRef, BioS
     CHECK_OP(os, NULL);
     QMap<int, QList<SharedAnnotationData> > anns = bioStruct.generateAnnotations();
     TmpDbiObjects dbiObjects(dbiRef, os);
-    foreach (int key, bioStruct.moleculeMap.keys()) {
+    foreach(int key, bioStruct.moleculeMap.keys()) {
         // Create dna sequence object
-        QByteArray sequence = bioStruct.getRawSequenceByChainId(key);
-        QString sequenceName(QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(key));
+        QByteArray sequence = bioStruct.getRawSequenceByChainIndex(key);
+        char chainId = bioStruct.getChainIdByIndex(key);
+        QString sequenceName;
+        if (chainId > 0) {
+            sequenceName = QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(chainId);
+        } else {
+            sequenceName = QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(key);
+        }
         if (sequenceName.isEmpty()){
             sequenceName = "Sequence";
         }
@@ -804,7 +854,13 @@ Document * PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef &dbiRef, BioS
         }
 
         // create AnnnotationTableObject
-        AnnotationTableObject *aObj = new AnnotationTableObject(QString(bioStruct.pdbId) + QString(" chain %1 annotation").arg(key), dbiRef, hints);
+        QString annotationTableName;
+        if (chainId > 0) {
+            annotationTableName = QString(bioStruct.pdbId) + QString(" chain %1 annotation").arg(chainId);
+        } else {
+            annotationTableName = QString(bioStruct.pdbId) + QString(" chain %1 annotation").arg(key);
+        }
+        AnnotationTableObject *aObj = new AnnotationTableObject(annotationTableName, dbiRef, hints);
         aObj->addAnnotations(anns.value(key));
 
         objects.append(aObj);

@@ -1889,6 +1889,44 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0061_1) {
+    //1. Open "data/Samples/PDB/1CF7.PDB".
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    //2. Check that first sequence name is '1CF7 chain A sequence'
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7 chain A sequence"));
+    //3. Check that first annotation table name is '1CF7 chain A annotation'
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7 chain A annotation"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "1CF7 chain A annotation [1CF7.PDB]"));
+    //4. Check that there is 'molecule_name' qualifier with value 'PROTEIN (TRANSCRIPTION FACTOR E2F-4)'  in 'chain_info' annotation for chain A
+    QString moleculeName = GTUtilsAnnotationsTreeView::getQualifierValue(os, "molecule_name", GTUtilsAnnotationsTreeView::findItem(os, "chain_info"));
+    CHECK_SET_ERR(moleculeName == "PROTEIN (TRANSCRIPTION FACTOR E2F-4)", QString("Incorrect molecule name is detected for chain A: %1").arg(moleculeName));
+    QTreeWidgetItem* annotationsChainB = GTUtilsAnnotationsTreeView::findItem(os, "1CF7 chain B annotation [1CF7.PDB]");
+    //5. Check that there is 'molecule_name' qualifier with value 'PROTEIN (TRANSCRIPTION FACTOR DP-2)'  in 'chain_info' annotation for chain B
+    CHECK_SET_ERR(NULL != annotationsChainB, QString("Can't find '1CF7 chain B annotation [1CF7.PDB]' annotations document"));
+    QTreeWidgetItem* chainInfoGroup = GTUtilsAnnotationsTreeView::findItem(os, "chain_info  (0, 1)", annotationsChainB);
+    CHECK_SET_ERR(NULL != chainInfoGroup, QString("Can't find 'chain_info' annotation group for chain B"));
+    QTreeWidgetItem* chainInfo = GTUtilsAnnotationsTreeView::findItem(os, "chain_info", chainInfoGroup);
+    CHECK_SET_ERR(NULL != chainInfo, QString("Can't find 'chain_info' annotation for chain B"));
+    QString moleculeNameChainB = GTUtilsAnnotationsTreeView::getQualifierValue(os, "molecule_name", chainInfo);
+
+    CHECK_SET_ERR(moleculeNameChainB == "PROTEIN (TRANSCRIPTION FACTOR DP-2)", QString("Incorrect molecule name is detected for chain B: %1").arg(moleculeNameChainB));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0061_2) {
+    //1. Open "_common_data/pdb/1CRN_without_compnd_tag.PDB"
+    GTFileDialog::openFile(os, testDir + "_common_data/pdb", "1CRN_without_compnd_tag.PDB");
+    //2. Check that first annotation table name is '1CRN chain A sequence'
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CRN chain A annotation"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "1CRN chain A annotation [1CRN_without_compnd_tag.PDB]"));
+
+    //3. Check that there is 'chain_id' qualifier with value 'A'  in 'chain_info' annotation for chain A
+    QString chainId = GTUtilsAnnotationsTreeView::getQualifierValue(os, "chain_id" ,"chain_info");
+    CHECK_SET_ERR("A" == chainId, QString("Incorrect 'chain_info' qualifier value: %1").arg(chainId));
+    //4. Check that there is not 'molecule_name' qualifier
+    QTreeWidgetItem *moleculeName = GTUtilsAnnotationsTreeView::findItem(os, "molecule_name", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == moleculeName, QString("There is 'moleculeName' qualifier"));
+}
+
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2

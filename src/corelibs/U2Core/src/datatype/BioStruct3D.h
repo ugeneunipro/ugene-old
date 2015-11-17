@@ -159,6 +159,7 @@ public:
     QMap <int, Molecule3DModel> models;
 
     QString name;
+    char chainId;
     bool engineered;
 };
 
@@ -195,7 +196,8 @@ public:
     void setRadius(double value);
     void setCenter(const Vector3D &value);
 
-    QByteArray getRawSequenceByChainId(int id) const;
+    QByteArray getRawSequenceByChainIndex(int id) const;
+    char getChainIdByIndex(int id) const;
     int getNumberOfAtoms() const;
     QList<SharedAtom> getAllAtoms() const;
     int getNumberOfResidues() const;
