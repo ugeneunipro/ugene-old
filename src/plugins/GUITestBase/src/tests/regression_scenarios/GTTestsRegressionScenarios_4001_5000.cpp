@@ -3005,22 +3005,36 @@ GUI_TEST_CLASS_DEFINITION(test_4557){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4563) {
-    // 1. Open Workflow Designer.
+    // 1. Set memory limit to 200 mb.
+    class MemoryLimitSetScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+            GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "memBox", dialog), 200);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemoryLimitSetScenario));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
+    // 2. Open Workflow Designer.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    // 2. Open the "Align sequences with MUSCLE" sample scheme.
+    // 3. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
-    // 3. Set "_common_data/scenarios/_regression/4563/test_ma.fa" as the input file.
+    // 4. Set "_common_data/scenarios/_regression/4563/test_ma.fa" as the input file.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/4563", "test_ma.fa");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/4563", "test_ma_1.fa");
     GTLogTracer l;
-    // 4. Run the workflow.
+    // 5. Run the workflow.
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
     GTGlobals::sleep(5000);
 
-    // 5. check log message
+    // 6. check log message
     GTUtilsTaskTreeView::waitTaskFinished(os);
     l.checkMessage("Can't allocate enough memory");
 }
