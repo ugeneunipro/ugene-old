@@ -4034,7 +4034,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_1) {
     settings.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(settings, os));
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "BLAST" << "BLAST search...");
-
+    GTGlobals::sleep(3000);
     //5. Delete "chr6.fa" in file browser.
     //7. Click "No" in the appeared message box.
     //Expected result: An error notification appears - "A problem occurred during doing BLAST. The sequence is no more available".
