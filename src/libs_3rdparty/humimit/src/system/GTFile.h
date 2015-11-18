@@ -37,7 +37,7 @@ public:
     static void setReadWrite(U2::U2OpStatus &os, const QString& path);
     void setReadOnly(U2::U2OpStatus &os, const QString& path);
 
-
+    void setReadOnlyFlag(U2::U2OpStatus &os, const QString& path);
 private:
     bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true);
     bool setRecursive(const QString& path, QFile::Permissions perm);

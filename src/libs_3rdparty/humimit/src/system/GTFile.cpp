@@ -222,6 +222,16 @@ bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, b
 #endif
 }
 
+#define GT_METHOD_NAME "setReadOnlyFlag"
+void PermissionsSetter::setReadOnlyFlag(U2::U2OpStatus &os, const QString& path) {
+#ifdef Q_OS_WIN
+    GT_CHECK(SetFileAttributesW(reinterpret_cast<LPCWSTR>(path.utf16()), FILE_ATTRIBUTE_READONLY), 
+        "Read flag could not be set");
+#else
+    setReadOnly(os, path);
+#endif
+}
+#undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTFile"
@@ -428,7 +438,6 @@ QByteArray GTFile::readAll(U2::U2OpStatus &os, const QString &filePath) {
     return file.readAll();
 }
 #undef GT_METHOD_NAME
-
 #undef GT_CLASS_NAME
 
 } //namespace
