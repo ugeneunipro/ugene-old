@@ -2045,7 +2045,7 @@ void MSAEditorSequenceArea::sl_alphabetChanged(const MAlignmentModInfo &mi, cons
     updateColorAndHighlightSchemes();
 
     QString message;
-    if (mi.alphabetChanged || mi.type == MAlignmentModType_Redo) {
+    if (mi.alphabetChanged || mi.type != MAlignmentModType_Undo) {
         message = tr("The alignment has been modified, so that its alphabet has been switched from \"%1\" to \"%2\". Use \"Undo\", if you'd like to restore the original alignment.")
             .arg(prevAlphabet->getName()).arg(editor->getMSAObject()->getAlphabet()->getName());
     }
@@ -2655,22 +2655,21 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.insert(GObjectTypes::SEQUENCE);
-    QScopedPointer<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
-    seqConstraints->alphabetType = msaObject->getAlphabet()->getType();
-    settings.objectConstraints.insert(seqConstraints.data());
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
-
+    QList<DNASequence> objectsToAdd;
+    U2OpStatus2Log os;
     foreach(GObject* obj, objects) {
-        if (obj->isUnloaded()) {
-            continue;
-        }
         U2SequenceObject *seqObj = qobject_cast<U2SequenceObject*>(obj);
         if (seqObj) {
-            U2OpStatus2Log os;
-            editor->copyRowFromSequence(seqObj, os);
-            cancelSelection();
+            objectsToAdd.append(seqObj->getWholeSequence(os));
+            SAFE_POINT_OP(os, );
         }
+    }
+    if (objectsToAdd.size() > 0) {
+        AddSequenceObjectsToAlignmentTask *addSeqObjTask = new AddSequenceObjectsToAlignmentTask(editor->getMSAObject(), objectsToAdd);
+        AppContext::getTaskScheduler()->registerTopLevelTask(addSeqObjTask);
+        cancelSelection();
     }
 }
 
