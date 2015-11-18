@@ -20,19 +20,18 @@
  */
 
 #include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
+
+#include <QApplication>
 
 #include "StructuralAlignmentDialogFiller.h"
+#include <primitives/GTWidget.h>
+#include <primitives/GTComboBox.h>
 
 namespace U2 {
 
 #define GT_CLASS_NAME "StructuralAlignmentDialogFiller"
-StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(U2OpStatus &os) :
-    Filler(os, "StructuralAlignmentDialog")
+StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(U2OpStatus &os, const QStringList& chainIndexes) :
+    Filler(os, "StructuralAlignmentDialog"), chainIndexes(chainIndexes)
 {
 }
 
@@ -40,6 +39,15 @@ StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(U2OpStatus &os)
 void StructuralAlignmentDialogFiller::run() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
+
+    if (!chainIndexes.isEmpty()){
+        QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "chainCombo", dialog));
+        CHECK_SET_ERR(combo != NULL, "chainCombo not found!");
+        foreach(const QString& curString, chainIndexes) {
+            int index = combo->findText(curString, Qt::MatchContains);
+            GT_CHECK(index != -1, "Index '" + curString + "' was not found");
+        }
+    }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }

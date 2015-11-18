@@ -61,6 +61,7 @@
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
+#include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include <base_dialogs/MessageBoxFiller.h>
 #include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
@@ -1925,6 +1926,22 @@ GUI_TEST_CLASS_DEFINITION(test_0061_2) {
     //4. Check that there is not 'molecule_name' qualifier
     QTreeWidgetItem *moleculeName = GTUtilsAnnotationsTreeView::findItem(os, "molecule_name", GTGlobals::FindOptions(false));
     CHECK_SET_ERR(NULL == moleculeName, QString("There is 'moleculeName' qualifier"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0061_3) {
+    //1. Open "data/samples/PDB/1CF7.PDB".
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+
+    //2. Call context menu on the 3dview, select {Structural Alignment -> Align With...} menu item.
+    //3. Check that chain combobox contains identifiers: A, B, C, D.
+    //4. Accept the dialog.
+    QStringList chainIndexes;
+    chainIndexes << "A" << "B" << "C" << "D";
+    GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os, chainIndexes));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Structural Alignment" << "align_with"));
+    QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
+    CHECK_SET_ERR(NULL != widget3d, "3D widget was not found");
+    GTWidget::click(os, widget3d, Qt::RightButton);
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

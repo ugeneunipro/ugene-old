@@ -29,9 +29,11 @@ using namespace HI;
 
 class StructuralAlignmentDialogFiller : public Filler {
 public:
-    StructuralAlignmentDialogFiller(U2OpStatus &os);
+    StructuralAlignmentDialogFiller(U2OpStatus &os, const QStringList& chainIndex = QStringList());
 
     void run();
+private:
+    QStringList chainIndexes;
 };
 
 }   // namespace U2
