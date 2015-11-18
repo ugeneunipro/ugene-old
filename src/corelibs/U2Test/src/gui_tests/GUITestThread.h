@@ -33,9 +33,12 @@ typedef QList<GUITest *> GUITests;
 class GUITestThread : public QThread {
     Q_OBJECT
 public:
-    GUITestThread(GUITest *test, Logger &log);
+    GUITestThread(GUITest *test, Logger &log, bool needCleanup = true);
 
     void run();
+
+    GUITest* getTest(){ return test; }
+    QString getTestResult() { return testResult; }
 
 private slots:
     void sl_testTimeOut();
@@ -50,10 +53,12 @@ private:
     static void removeDir(const QString &dirName);
     void saveScreenshot();
     static void cleanup();
-    static void writeTestResult(const QString &result);
+    void writeTestResult();
 
     GUITest *test;
     Logger &log;
+    bool needCleanup;
+    QString testResult;
 };
 
 }   // namespace U2

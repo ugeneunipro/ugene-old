@@ -56,9 +56,15 @@ public:
     virtual ~GUITestBase();
 
     bool registerTest(GUITest *test, TestType testType = Normal);
-    GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
+    GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal);
+    GUITest *takeTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
 
     GUITests getTests(TestType testType = Normal);
+    GUITests takeTests(TestType testType = Normal); // removes items from GUITestBase
+
+    GUITests getTestsWithoutRemoving(TestType testType = Normal);
+
+    GUITest *findTest(const QString &name, TestType testType = Normal);
 
     static const QString unnamedTestsPrefix;
 
@@ -68,8 +74,6 @@ private:
     GUITestMap postAdditionalChecks;
     GUITestMap postAdditionalActions;
      // GUI checks additional to the launched checks
-
-    GUITest *findTest(const QString &name, TestType testType);
 
     GUITestMap &getMap(TestType testType);
 

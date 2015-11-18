@@ -88,9 +88,6 @@ private:
     void registerTestSuiteTask();
     void registerServiceTask();
 
-    void addServiceMenuItem();
-    void deleteServiceMenuItem();
-
     Task* createTestLauncherTask(int suiteNumber = 0, bool noIgnored = false) const;
     Task* createTestSuiteLauncherTask() const;
     static void writeTestResult(const QString &result);

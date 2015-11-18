@@ -105,6 +105,7 @@ public:
     static const QString EXPERT_DISCOVERY;
     static const QString QUERY_DESIGNER;
     static const QString WORKFLOW_DESIGNER;
+    static const QString GUI_TEST_RUNNER;
 
 private:
     static QMenu * getToolsMenu();

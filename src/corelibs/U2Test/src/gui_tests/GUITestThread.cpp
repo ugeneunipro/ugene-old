@@ -38,9 +38,11 @@
 
 namespace U2 {
 
-GUITestThread::GUITestThread(GUITest *test, Logger &log) :
+GUITestThread::GUITestThread(GUITest *test, Logger &log, bool _needCleanup) :
     test(test),
-    log(log)
+    log(log),
+    needCleanup(_needCleanup),
+    testResult("Not runned")
 {
     SAFE_POINT(NULL != test, "GUITest is NULL", );
 }
@@ -57,10 +59,12 @@ void GUITestThread::run() {
 
     const QString error = launchTest(tests);
 
-    cleanup();
+    if(needCleanup){
+        cleanup();
+    }
 
-    QString testResult = error.isEmpty() ? GUITestTeamcityLogger::successResult : error;
-    writeTestResult(testResult);
+    testResult = error.isEmpty() ? GUITestTeamcityLogger::successResult : error;
+    writeTestResult();
 
     exit();
 }
@@ -68,7 +72,8 @@ void GUITestThread::run() {
 void GUITestThread::sl_testTimeOut() {
     saveScreenshot();
     cleanup();
-    writeTestResult("test timed out");
+    testResult = QString("test timed out");
+    writeTestResult();
     exit();
 }
 
@@ -85,14 +90,29 @@ QString GUITestThread::launchTest(const GUITests &tests) {
     } catch(GUITestOpStatus *) {
 
     }
+    QString result = os.getError();
 
-    return os.getError();
+    //Run post checks if has error
+    if (!result.isEmpty()){
+        try {
+            foreach (GUITest *t, postChecks()) {
+                if (NULL != t) {
+                    t->run(os);
+                }
+            }
+        } catch(GUITestOpStatus *) {
+
+        }
+    }
+
+    return result;
 }
 
 GUITests GUITestThread::preChecks() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
+//    GUITests additionalChecks = tb->takeTests(GUITestBase::PreAdditional);
     GUITests additionalChecks = tb->getTests(GUITestBase::PreAdditional);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
@@ -103,6 +123,7 @@ GUITests GUITestThread::postChecks() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
+//    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalChecks);
     GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalChecks);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
@@ -113,6 +134,7 @@ GUITests GUITestThread::postActions() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
+//    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalActions);
     GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalActions);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
@@ -188,8 +210,8 @@ void GUITestThread::cleanup() {
     }
 }
 
-void GUITestThread::writeTestResult(const QString &result) {
-    printf("%s\n", (GUITestService::GUITESTING_REPORT_PREFIX + ": " + result).toUtf8().data());
+void GUITestThread::writeTestResult() {
+    printf("%s\n", (GUITestService::GUITESTING_REPORT_PREFIX + ": " + testResult).toUtf8().data());
 }
 
 }   // namespace U2

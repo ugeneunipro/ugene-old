@@ -98,6 +98,8 @@ const QString ToolsMenu::EXPERT_DISCOVERY = "EXPERT_DISCOVERY";
 const QString ToolsMenu::QUERY_DESIGNER = "QUERY_DESIGNER";
 const QString ToolsMenu::WORKFLOW_DESIGNER = "WORKFLOW_DESIGNER";
 
+const QString ToolsMenu::GUI_TEST_RUNNER = "GUI_TEST_RUNNER";
+
 QMap<QString, QString> ToolsMenu::actionText;
 QMap<QString, QString> ToolsMenu::actionIcon;
 QMap<QString, QStringList> ToolsMenu::subMenuAction;
@@ -208,6 +210,7 @@ void ToolsMenu::init() {
     subMenuAction[TOOLS] << EXPERT_DISCOVERY;
     subMenuAction[TOOLS] << QUERY_DESIGNER;
     subMenuAction[TOOLS] << WORKFLOW_DESIGNER;
+    subMenuAction[TOOLS] << GUI_TEST_RUNNER;
 }
 
 QMenu * ToolsMenu::getToolsMenu() {

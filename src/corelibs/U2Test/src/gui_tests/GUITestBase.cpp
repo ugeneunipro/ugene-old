@@ -66,6 +66,11 @@ GUITest *GUITestBase::findTest(const QString &name, TestType testType) {
 
 GUITest *GUITestBase::getTest(const QString &suite, const QString &name, TestType testType) {
 
+    return getMap(testType).value(suite + ":" + name);
+}
+
+GUITest *GUITestBase::takeTest(const QString &suite, const QString &name, TestType testType) {
+
     return getMap(testType).take(suite + ":" + name);
 }
 
@@ -87,9 +92,17 @@ GUITestMap& GUITestBase::getMap(TestType testType) {
 GUITests GUITestBase::getTests(TestType testType) {
 
     GUITests testList = getMap(testType).values();
+
+    return testList;
+}
+
+GUITests GUITestBase::takeTests(TestType testType) {
+
+    GUITests testList = getMap(testType).values();
     getMap(testType).clear();
 
     return testList;
 }
+
 
 } // namespace

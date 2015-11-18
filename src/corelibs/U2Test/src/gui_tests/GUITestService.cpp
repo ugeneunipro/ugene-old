@@ -226,7 +226,7 @@ GUITests GUITestService::preChecks() {
     GUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::PreAdditional);
+    GUITests additionalChecks = tb->takeTests(GUITestBase::PreAdditional);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -237,7 +237,7 @@ GUITests GUITestService::postChecks() {
     GUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalChecks);
+    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalChecks);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -248,7 +248,7 @@ GUITests GUITestService::postActions() {
     GUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalActions);
+    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalActions);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -267,7 +267,7 @@ void GUITestService::runAllGUITests() {
     GUITests postChecksTests = postChecks();
     GUITests postActiosTests = postActions();
 
-    GUITests tests = AppContext::getGUITestBase()->getTests();
+    GUITests tests = AppContext::getGUITestBase()->takeTests();
     SAFE_POINT(false == tests.isEmpty(),"",);
 
     foreach(GUITest* t, tests) {
@@ -331,7 +331,7 @@ void GUITestService::runGUITest() {
 
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",);
-    GUITest *t = tb->getTest(testName.split(":").first(), testName.split(":").last());
+    GUITest *t = tb->takeTest(testName.split(":").first(), testName.split(":").last());
 
     runGUITest(t);
 }
@@ -339,7 +339,7 @@ void GUITestService::runGUITest() {
 void GUITestService::runGUICrazyUserTest() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(tb,"",);
-    GUITest *t = tb->getTest("","simple_crazy_user");
+    GUITest *t = tb->takeTest("","simple_crazy_user");
 
     runGUITest(t);
 }
@@ -364,28 +364,6 @@ void GUITestService::serviceStateChangedCallback(ServiceState, bool enabledState
     if (!enabledStateChanged) {
         return;
     }
-
-    if (isEnabled()) {
-        addServiceMenuItem();
-    } else {
-        deleteServiceMenuItem();
-    }
-}
-
-void GUITestService::deleteServiceMenuItem() {
-
-    delete runTestsAction; runTestsAction = NULL;
-}
-
-void GUITestService::addServiceMenuItem() {
-
-    deleteServiceMenuItem();
-    runTestsAction = new QAction(tr("GUI testing"), this);
-    SAFE_POINT(NULL != runTestsAction,"",);
-    runTestsAction->setObjectName("action_guitest");
-
-    connect(runTestsAction, SIGNAL(triggered()), SLOT(sl_registerTestLauncherTask()));
-    AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(runTestsAction);
 }
 
 void GUITestService::sl_registerTestLauncherTask() {
