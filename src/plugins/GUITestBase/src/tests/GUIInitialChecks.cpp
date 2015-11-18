@@ -61,7 +61,7 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
-    GTUtilsDialog::cleanup(os);
+    GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
 #ifndef Q_OS_WIN
     GTMouseDriver::release(os, Qt::RightButton);
     GTMouseDriver::release(os);

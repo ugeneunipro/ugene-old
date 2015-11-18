@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/gui_test">
+        <file>images/open_gui_test_runner.png</file>
+    </qresource>
+</RCC>

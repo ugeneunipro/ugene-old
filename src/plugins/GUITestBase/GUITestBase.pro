@@ -255,7 +255,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #            src/system/GTFile.h \
 #            src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
-            src/api/GTGraphicsItem.h #\
+            src/api/GTGraphicsItem.h \ #\
+    src/test_runner/GUITestRunner.h
 #            src/api/GTGroupBox.h \
 #            src/drivers/GTKeyboardDriver.h \
 #            src/api/GTKeyboardUtils.h \
@@ -536,7 +537,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTFile.cpp \
 #            src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
-            src/api/GTGraphicsItem.cpp #\
+            src/api/GTGraphicsItem.cpp \ #\
+    src/test_runner/GUITestRunner.cpp
 #            src/api/GTGroupBox.cpp \
 #            src/api/GTKeyboardDriver.cpp \
 #            src/api/GTKeyboardDriverLinux.cpp \
@@ -573,3 +575,9 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #OBJECTIVE_HEADERS += src/api/private/GTMenuPrivateMac.h
 #OBJECTIVE_SOURCES += src/api/private/GTMenuPrivateMac.mm
 #}
+
+FORMS += \
+    src/test_runner/GUITestRunner.ui
+
+RESOURCES += \
+    GUITestBase.qrc

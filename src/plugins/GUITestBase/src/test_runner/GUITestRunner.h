@@ -19,31 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUITESTBASE_PLUGIN_H_
-#define _U2_GUITESTBASE_PLUGIN_H_
+#ifndef GUITESTRUNNER_H
+#define GUITESTRUNNER_H
 
-#include <U2Core/PluginModel.h>
-#include "test_runner/GUITestRunner.h"
-#include <QAction>
+#include <QWidget>
+#include "ui_GUITestRunner.h"
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-class GUITestBase;
-
-class GUITestBasePlugin : public Plugin {
+class GUITestRunner : public QWidget, public Ui_GUITestRunner
+{
     Q_OBJECT
-public:
-    GUITestBasePlugin();
-private slots:
-    void sl_showWindow();
-private:
-    void registerTests(GUITestBase *guiTestBase);
-    void registerAdditionalChecks(GUITestBase *guiTestBase);
 
-    QAction*        openGUITestRunnerAction;
-    GUITestRunner*  view;
+public:
+    explicit GUITestRunner(GUITestBase* guiTestBase, QWidget *parent = 0);
+    ~GUITestRunner();
+
+private slots:
+    void sl_runSelected();
+    void sl_runAllGUITests();
+    void sl_testFinished();
+    void sl_filterChanged(const QString &nameFilter);
+    void sl_filterCleared();
+
+private:
+    void revisible(const QString &nameFilter);
+
+    GUITestBase*    guiTestBase;
+    QAction*        delTextAction;
 };
 
-} //namespace
+}
 
-#endif
+#endif // GUITESTRUNNER_H

@@ -22,6 +22,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Test/GUITestBase.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include "GUITestBasePlugin.h"
 #include "tests/GUIInitialChecks.h"
@@ -135,6 +136,20 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
     registerTests(guiTestBase);
     registerAdditionalChecks(guiTestBase);
+
+    openGUITestRunnerAction = new QAction(tr("GUI Test runner"), this);
+    openGUITestRunnerAction->setObjectName("GUI_TEST_RUNNER");
+    openGUITestRunnerAction->setIcon(QIcon(QString(":gui_test/images/open_gui_test_runner.png")));
+    view = NULL;
+    connect(openGUITestRunnerAction, SIGNAL(triggered()), SLOT(sl_showWindow()));
+    ToolsMenu::addAction(ToolsMenu::TOOLS, openGUITestRunnerAction);
+}
+
+void GUITestBasePlugin::sl_showWindow() {
+    if (view == NULL) {
+        view = new GUITestRunner(AppContext::getGUITestBase());
+    }
+    view->show();
 }
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
