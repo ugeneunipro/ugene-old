@@ -6377,22 +6377,6 @@ GUI_TEST_CLASS_DEFINITION(test_1643) {
     GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
 }
 
-GUI_TEST_CLASS_DEFINITION( test_1644 ) {
-//    1) Run UGENE
-//    2) Choose File/Access remote database
-//    3) Choose UniProt (DAS) or Ensembl Human Genes (DAS) from combobox
-//    4) Enter Resourse Id
-//    State: if Ensembl Human Genes is choosen and example ID (ENSG00000139618) is entered then UGENE crashes
-//    trying to recognize .gb format ( failed to detect ...)
-    GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "ENSG00000139618", 7, true, false,
-                                                                        sandBoxDir));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...", GTGlobals::UseKey);
-    GTGlobals::sleep(5000);
-
-    GTUtilsLog::check(os, l);
-}
-
 GUI_TEST_CLASS_DEFINITION(test_1645) {
     //1. Open "_common_data/fasta/base_ext_nucl_all_symb.fa".
 
@@ -7839,17 +7823,6 @@ GUI_TEST_CLASS_DEFINITION(test_1784){
     //Expected state: The only selected sequence is the reference.
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1786){
-    // 1. Use menu {File->Access remote database...}
-    // 2. Select database UniProt(DAS)
-    // 3. Fill resource id: 1CRN. Press ok
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "1CRN", 7));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...", GTGlobals::UseKey);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    // Expected state: document P01542_das.gb appeared in project
-    GTUtilsProjectTreeView::findIndex(os, "P01542_das.gb");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_1797){
     // 1) Open _common_data\scenarios\formats\test_1797 file
     // 2) Choose "BED" format at appeared format dialog
@@ -7879,22 +7852,6 @@ GUI_TEST_CLASS_DEFINITION(test_1798){
     CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
     CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
     GTUtilsTaskTreeView::waitTaskFinished(os);
-}
-
-GUI_TEST_CLASS_DEFINITION(test_1807) {
-    //1. Open {data/samples/FASTA/human_T1.fa}
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-
-    //Expected state: there isn't the "DAS Annotations" tab on the options panel.
-    QWidget *dasButton = GTWidget::findWidget(os, "OP_DAS", NULL, GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(NULL == dasButton, "DAS Annotations button is shown for a nucleic sequence");
-
-    //2. Open {data/samples/Swiss-Prot/P01375.txt} as Swiss-Prot file.
-    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
-    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P01375.txt");
-
-    //Expected state: there is the "DAS Annotations' tab on the options panel.
-    dasButton = GTWidget::findWidget(os, "OP_DAS");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1808) {
@@ -7932,23 +7889,6 @@ GUI_TEST_CLASS_DEFINITION(test_1811_1) {
 
     GTGlobals::sleep(10000);//some time needed for request
     GTUtilsDocument::isDocumentLoaded(os, "A0N8V2.txt");
-}
-
-GUI_TEST_CLASS_DEFINITION( test_1813 )
-{
-    // 1) Select the menu {File->Access remote database}
-    // 2) Fill the "Fetch Data from Remote Database" dialog with the next values:
-    //      Resource ID: I7G8J3
-    //      Database: UniProt (DAS)
-    // 3) Press "OK"
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "I7G8J3", 7));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...", GTGlobals::UseMouse);
-
-    // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
-    GTGlobals::sleep(5000);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
-    GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1821 ) {

@@ -35,12 +35,37 @@
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/MSAGraphOverview.h>
 
+#include <base_dialogs/DefaultDialogFiller.h>
+#include <base_dialogs/GTFileDialog.h>
+#include <base_dialogs/MessageBoxFiller.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTListWidget.h>
+#include <primitives/GTMenu.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSlider.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTTextEdit.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <system/GTClipboard.h>
+#include <system/GTFile.h>
+#include <utils/GTThread.h>
+#include <utils/GTUtilsDialog.h>
+
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDashboard.h"
-#include "utils/GTUtilsDialog.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
@@ -63,36 +88,12 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
-#include "primitives/GTAction.h"
-#include <primitives/GTCheckBox.h>
-#include "system/GTClipboard.h"
-#include <primitives/GTComboBox.h>
-#include "system/GTFile.h"
-#include <base_dialogs/GTFileDialog.h>
-#include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTLineEdit.h>
-#include <primitives/GTListWidget.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
-#include <primitives/GTRadioButton.h>
-#include <primitives/GTSlider.h>
-#include <primitives/GTSpinBox.h>
-#include <primitives/GTTabWidget.h>
-#include <primitives/GTTableView.h>
-#include <primitives/GTTextEdit.h>
-#include "utils/GTThread.h"
-#include <primitives/GTToolbar.h>
-#include <primitives/GTTreeWidget.h>
-#include <primitives/GTWidget.h>
-
-#include <base_dialogs/DefaultDialogFiller.h>
-#include <base_dialogs/MessageBoxFiller.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddNewDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
@@ -122,11 +123,10 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 namespace U2 {
 
@@ -3771,26 +3771,24 @@ GUI_TEST_CLASS_DEFINITION(test_4714_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4718) {
-    //1. Open swiss-prot file
-    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
-    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P01375.txt");
+    GTLogTracer logTracer;
 
-    GTLogTracer lt;
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    // 2. Open the DAS widget on the options panel
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
-    GTGlobals::sleep(500);
-    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
-    CHECK_SET_ERR(NULL != dasPanel, "DasOptionsPanelWidget is NULL!");
-
-    // 2. Close the DAS widget on the options panel
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+//    2. Open "Search in Sequence" options panel tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTGlobals::sleep(500);
 
-    // 3. open the DAS widget on the options panel
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+//    3. Close the tab.
+    GTUtilsOptionPanelSequenceView::closeTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(lt.hasError() == false, "log shouldn't contain errors");
+
+//    4. Open the tab again.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+//    Expected state: log does not contain errors.
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4719_1) {

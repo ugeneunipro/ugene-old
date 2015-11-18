@@ -19,70 +19,71 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUITestBasePlugin.h"
 #include <U2Core/AppContext.h>
+
 #include <U2Test/GUITestBase.h>
 
+#include "GUITestBasePlugin.h"
 #include "tests/GUIInitialChecks.h"
-#include "tests/common_scenarios/cloning/GTTestsCloning.h"
-#include "tests/common_scenarios/pcr/GTTestsInSilicoPcr.h"
-#include "tests/common_scenarios/pcr/GTTestsPrimerLibrary.h"
-#include "tests/common_scenarios/project/GTTestsProject.h"
-#include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
-#include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
-#include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
-#include "tests/common_scenarios/sequence_view/GTTestsSequenceView.h"
-#include "tests/common_scenarios/toggle_view/GTTestsToggleView.h"
-#include "tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h"
-#include "tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.h"
-#include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
-#include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
-#include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
-#include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
-#include "tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h"
-#include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
-#include "tests/common_scenarios/project/project_filtering/GTTestsProjectFiltering.h"
-#include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
-#include "tests/common_scenarios/msa_editor/align/GTTestsAlignSequenceToMsa.h"
-#include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
-#include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
-#include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
-#include "tests/common_scenarios/msa_editor/replace_character/GTTestsMSAEditorReplaceCharacter.h"
-#include "tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h"
-#include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
-#include "tests/common_scenarios/annotations/GTTestsCreateAnnotationWidget.h"
-#include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
-#include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
-#include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
-#include "tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h"
-#include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
-#include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
-#include "tests/common_scenarios/options_panel/msa/GTTestsOptionPanelMSA.h"
-#include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/conversions/GTTestsDnaAssemblyConversions.h"
 #include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
+#include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
+#include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
+#include "tests/common_scenarios/annotations/GTTestsCreateAnnotationWidget.h"
+#include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
+#include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
+#include "tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h"
+#include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
+#include "tests/common_scenarios/cloning/GTTestsCloning.h"
+#include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
+#include "tests/common_scenarios/dp_view/GTTestsDpView.h"
+#include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
+#include "tests/common_scenarios/msa_editor/align/GTTestsAlignSequenceToMsa.h"
+#include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
+#include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
+#include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
+#include "tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h"
+#include "tests/common_scenarios/msa_editor/replace_character/GTTestsMSAEditorReplaceCharacter.h"
+#include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
+#include "tests/common_scenarios/options_panel/msa/GTTestsOptionPanelMSA.h"
+#include "tests/common_scenarios/options_panel/sequence_view/GTTestsOptionPanelSequenceView.h"
+#include "tests/common_scenarios/pcr/GTTestsInSilicoPcr.h"
+#include "tests/common_scenarios/pcr/GTTestsPrimerLibrary.h"
+#include "tests/common_scenarios/project/GTTestsProject.h"
+#include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
+#include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
+#include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
+#include "tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h"
+#include "tests/common_scenarios/project/project_filtering/GTTestsProjectFiltering.h"
+#include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
+#include "tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.h"
+#include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
+#include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
+#include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
+#include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
+#include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
+#include "tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h"
+#include "tests/common_scenarios/sequence_view/GTTestsSequenceView.h"
+#include "tests/common_scenarios/shared_database/GTTestsSharedDatabase.h"
+#include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
+#include "tests/common_scenarios/start_page/GTTestsStartPage.h"
+#include "tests/common_scenarios/toggle_view/GTTestsToggleView.h"
+#include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
+#include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h"
 #include "tests/common_scenarios/workflow_designer/name_filter/GTTestsWorkflowNameFilter.h"
 #include "tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h"
 #include "tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.h"
 #include "tests/common_scenarios/workflow_designer/shared_db/GTTestsSharedDbWd.h"
-#include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
-#include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
-#include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
-#include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
-#include "tests/common_scenarios/shared_database/GTTestsSharedDatabase.h"
-#include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
-#include "tests/common_scenarios/options_panel/sequence_view/GTTestsOptionPanelSequenceView.h"
-#include "tests/common_scenarios/start_page/GTTestsStartPage.h"
 #include "tests/crazy_user/GUICrazyUserTest.h"
-#include "tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_1001_2000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_2001_3000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.h"
@@ -497,7 +498,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1631);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1640);
     REGISTER_TEST(GUITest_regression_scenarios::test_1643);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1651);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
@@ -548,14 +548,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1764);
     REGISTER_TEST(GUITest_regression_scenarios::test_1771);
     REGISTER_TEST(GUITest_regression_scenarios::test_1784);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1786);
     REGISTER_TEST(GUITest_regression_scenarios::test_1797);
     REGISTER_TEST(GUITest_regression_scenarios::test_1798);
 
-    REGISTER_TEST(GUITest_regression_scenarios::test_1807);
     REGISTER_TEST(GUITest_regression_scenarios::test_1808);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811_1);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1813);
     REGISTER_TEST(GUITest_regression_scenarios::test_1821);
     REGISTER_TEST(GUITest_regression_scenarios::test_1831);
     REGISTER_TEST(GUITest_regression_scenarios::test_1834);
@@ -607,7 +604,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_3);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2122);
     REGISTER_TEST(GUITest_regression_scenarios::test_2124);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
@@ -619,15 +615,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2160, "UGENE-4528");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2163);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2164);
     REGISTER_TEST(GUITest_regression_scenarios::test_2165);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2167);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2169);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2171);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2172);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2174);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2186);
     REGISTER_TEST(GUITest_regression_scenarios::test_2187);
     REGISTER_TEST(GUITest_regression_scenarios::test_2188);
     REGISTER_TEST(GUITest_regression_scenarios::test_2192);
@@ -709,8 +697,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2544);
     REGISTER_TEST(GUITest_regression_scenarios::test_2545);
     REGISTER_TEST(GUITest_regression_scenarios::test_2549);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2562);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2562_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST(GUITest_regression_scenarios::test_2566);
     REGISTER_TEST(GUITest_regression_scenarios::test_2567);
@@ -843,7 +829,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3175);
     REGISTER_TEST(GUITest_regression_scenarios::test_3180);
     REGISTER_TEST(GUITest_regression_scenarios::test_3187);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3207);
     REGISTER_TEST(GUITest_regression_scenarios::test_3209_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3209_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3211);
@@ -934,7 +919,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3571_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3571_2);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3585);
     REGISTER_TEST(GUITest_regression_scenarios::test_3589);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3603, "UGENE-3830");

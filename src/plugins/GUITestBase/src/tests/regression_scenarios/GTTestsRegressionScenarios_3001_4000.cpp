@@ -1162,46 +1162,6 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     CHECK_SET_ERR(reportText.contains("Formatdb log file path:"), "report didn't contain expected text");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_3207){
-//    Steps to reproduce:
-//    1. Open "\samples\PDB\1CF7.PDB"
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
-//    2. Select region [30..31] in "1CF7 chain 1" sequence
-    GTUtilsSequenceView::selectSequenceRegion(os, 30,31);
-//    3. Open "DAS annotaions" OP
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
-//    Expected state:
-//    The options panel appeared, selected region in OP [30..31], there is warning, that region is too short
-    QLineEdit* start_edit_line = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line"));
-    CHECK_SET_ERR(start_edit_line != NULL, "start_edit_line not found");
-    QString start = start_edit_line->text();
-    CHECK_SET_ERR(start == "30", QString("unexpected start value: %1").arg(start));
-
-    QLineEdit* end_edit_line = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line"));
-    CHECK_SET_ERR(end_edit_line != NULL, "end_edit_line not found");
-    QString end = end_edit_line->text();
-    CHECK_SET_ERR(end == "31", QString("unexpected end value: %1").arg(end));
-
-    QLabel* hintLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "hintLabel"));
-    CHECK_SET_ERR(hintLabel != NULL, "hintLabel not found");
-    QString hint = hintLabel->text();
-    CHECK_SET_ERR(hint == "Warning: Selected region is too short. It should be from 4 to 1900 amino acids.",
-                  QString("unexpected hint: %1").arg(hint));
-//    4. Select region [20..40] in the sequence
-    GTUtilsSequenceView::selectSequenceRegion(os, 20, 40);
-//    Expected state:
-//    Selected region in OP is [20..40], warning is not shown
-    start = start_edit_line->text();
-    CHECK_SET_ERR(start == "20", QString("unexpected start value: %1").arg(start));
-
-    end = end_edit_line->text();
-    CHECK_SET_ERR(end == "40", QString("unexpected end value: %1").arg(end));
-
-    CHECK_SET_ERR(hintLabel->isHidden(), "hintLabel unexpectidly presents");
-//    Current state:
-//    Selected region in OP is [30..31], warning is shown
-}
-
 GUI_TEST_CLASS_DEFINITION(test_3209_1) {
     // BLAST+ from file
     BlastAllSupportDialogFiller::Parameters blastParams;
@@ -3689,19 +3649,6 @@ GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     GTGlobals::FindOptions widgetFindSafeOptions(false);
     charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence", NULL, widgetFindSafeOptions);
     CHECK_SET_ERR(!charOccurWidget->isVisible(), "Character Occurrence section is unexpectedly visible");
-}
-
-GUI_TEST_CLASS_DEFINITION(test_3585) {
-    GTLogTracer l;
-    // 1. Open "File -> Access Remote Database..." from the main menu.
-    // 2. Get something adequate from the Uniprot(DAS) database(e.g.use example ID : P05067).
-    // Expected state : "Download remote documents" task has been started
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...");
-    GTGlobals::sleep(500);
-    GTUtilsTaskTreeView::checkTask(os, "Load DAS Documents");
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3589) {
