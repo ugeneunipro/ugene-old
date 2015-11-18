@@ -149,6 +149,7 @@ void GTWidget::getAllWidgetsInfo(U2::U2OpStatus &os, QWidget *parent){
 
 #define GT_METHOD_NAME "close"
 void GTWidget::close(U2::U2OpStatus &os, QWidget *widget) {
+#ifndef Q_OS_MAC
     GT_CHECK(NULL != widget, "Widget is NULL");
 
     class Scenario : public U2::CustomScenario {
@@ -171,6 +172,12 @@ void GTWidget::close(U2::U2OpStatus &os, QWidget *widget) {
     };
 
     GTThread::runInMainThread(os, new Scenario(widget));
+#else
+    const QPoint closeButtonPos = GTWidget::getWidgetGlobalTopLeftPoint(os, widget) + QPoint(10, 5);
+    GTMouseDriver::moveTo(os, closeButtonPos);
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(100);
+#endif
 }
 #undef GT_METHOD_NAME
 
