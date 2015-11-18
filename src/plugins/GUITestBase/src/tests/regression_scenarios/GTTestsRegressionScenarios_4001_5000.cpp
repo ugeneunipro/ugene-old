@@ -4355,6 +4355,99 @@ GUI_TEST_CLASS_DEFINITION(test_4804_6) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4833_1) {
+    //Add sequence from curent project by main menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ext_dna.fa", "ext_dna_seq"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Raw\"");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from current project...");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_2) {
+    //Add sequence from curent project by context menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ext_amino.fa", "ext_amino_seq"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ" << "Sequence from current project"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_3) {
+    //align sequences to profile by MUSCLE by main menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_4) {
+    //align sequences to profile by MUSCLE by context menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_5) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    QAbstractButton* button = GTAction::button(os, "Align");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_6) {
+    //align sequences to profile by MUSCLE by main menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_7) {
+    //align sequences to profile by MUSCLE by context menu
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4833_8) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
+    QAbstractButton* button = GTAction::button(os, "Align");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4886) {
     GTFileDialog::openFile(os, dataDir + "samples/SCF/", "90-JRI-07.scf");
     GTLogTracer lt;
@@ -4388,13 +4481,13 @@ GUI_TEST_CLASS_DEFINITION(test_4908) {
 
 
 GUI_TEST_CLASS_DEFINITION(test_4913) {
-/* 1. Open an amino acid sequence: data/samples/Swiss-Prot/P16152.txt
- * 2. Open the NCBI BLAST dialog.
- *   Expected result: the "blastp" tool is set up.
- * 3. Open the "Advanced options" tab.
- *   Expected result: The "Word size" parameter is set to "6".
- * 4. Press "Esc" button.
-*/
+    /* 1. Open an amino acid sequence: data/samples/Swiss-Prot/P16152.txt
+    * 2. Open the NCBI BLAST dialog.
+    *   Expected result: the "blastp" tool is set up.
+    * 3. Open the "Advanced options" tab.
+    *   Expected result: The "Word size" parameter is set to "6".
+    * 4. Press "Esc" button.
+    */
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P16152.txt");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4422,7 +4515,7 @@ GUI_TEST_CLASS_DEFINITION(test_4913) {
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
-                                                      << "Query NCBI BLAST database"));
+        << "Query NCBI BLAST database"));
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 }
 
