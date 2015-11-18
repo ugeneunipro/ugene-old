@@ -4285,7 +4285,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
 
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle"));
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os, Qt::RightButton);
