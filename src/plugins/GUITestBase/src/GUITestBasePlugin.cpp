@@ -125,9 +125,11 @@
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
-
-    GUITestBasePlugin* plug = new GUITestBasePlugin();
-    return plug;
+    if (AppContext::getMainWindow()) {
+        GUITestBasePlugin* plug = new GUITestBasePlugin();
+        return plug;
+    }
+    return NULL;
 }
 
 GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test Base")) {
@@ -139,7 +141,7 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
     openGUITestRunnerAction = new QAction(tr("GUI Test runner"), this);
     openGUITestRunnerAction->setObjectName("GUI_TEST_RUNNER");
-    openGUITestRunnerAction->setIcon(QIcon(QString(":gui_test/images/open_gui_test_runner.png")));
+    openGUITestRunnerAction->setIcon(QIcon(":gui_test/images/open_gui_test_runner.png"));
     view = NULL;
     connect(openGUITestRunnerAction, SIGNAL(triggered()), SLOT(sl_showWindow()));
     ToolsMenu::addAction(ToolsMenu::TOOLS, openGUITestRunnerAction);
