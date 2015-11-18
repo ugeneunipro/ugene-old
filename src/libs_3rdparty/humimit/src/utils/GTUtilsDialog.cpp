@@ -242,11 +242,14 @@ void GTUtilsDialog::waitForDialog(U2::U2OpStatus &os, Runnable *r, const GUIDial
     pool.prepend(waiter);
 }
 
-void GTUtilsDialog::waitForDialog(U2::U2OpStatus &os, Runnable *r) {
+void GTUtilsDialog::waitForDialog(U2::U2OpStatus &os, Runnable *r, int timeout) {
     GUIDialogWaiter::WaitSettings settings;
     Filler* f = dynamic_cast<Filler*>(r);
     if (f) {
         settings = f->getSettings();
+        if (timeout > 0) {
+            settings.timeout = timeout;
+        }
     }
 
     waitForDialog(os, r, settings);

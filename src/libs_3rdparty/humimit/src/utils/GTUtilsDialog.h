@@ -137,7 +137,7 @@ public:
     // if objectName is not empty, waits for QWidget with a given name
     static void waitForDialog(U2::U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
 
-    static void waitForDialog(U2::U2OpStatus &os, Runnable *r);
+    static void waitForDialog(U2::U2OpStatus &os, Runnable *r, int timeout = 0);
 
     static void waitForDialogWhichMustNotBeRunned(U2::U2OpStatus &os, Runnable *r);
 

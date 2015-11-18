@@ -1243,9 +1243,10 @@ GUI_TEST_CLASS_DEFINITION(test_3211) {
     BlastAllSupportDialogFiller::Parameters parameters;
     parameters.test_3211 = true;
     parameters.inputPath = dataDir + "samples/FASTA/human_T1.fa";
-    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(parameters, os));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No), 480000);
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(parameters, os), 480000);
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "BLAST" << "BLAST search...");
+    GTGlobals::sleep();
     //Expected state: there is a "Request to Local BLAST Database" dialog without an annotation widget.
     //2. Set any input sequence.
     //Expected state: an annotation widget was added.
