@@ -2301,7 +2301,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
     QLabel *errorLabel = GTWidget::findExactWidget<QLabel *>(os, "lblMessage");
     CHECK_SET_ERR(NULL != errorLabel, "Error label is NULL");
     CHECK_SET_ERR(errorLabel->isVisible(), "Error label is invisible");
-    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"Raw\" alphabet."),
+    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"All symbols\" alphabet."),
                   QString("An unexpected error message: '%1'").arg(errorLabel->text()));
 }
 
@@ -3629,6 +3629,7 @@ GUI_TEST_CLASS_DEFINITION(test_4710){
 //    2) Run a workflow, e.g. I ran "Variation annotation with SnpEff" with the tutorial data.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
+    GTThread::waitForMainThread(os);
     GTUtilsWorkflowDesigner::click(os, "Input Variations File");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/vcf", "valid.vcf");
     GTUtilsWorkflowDesigner::runWorkflow(os);
@@ -4254,7 +4255,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_1) {
     GTGlobals::sleep();
 
     //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended DNA\" to \"Raw\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended DNA\" to \"All symbols\"");
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_rna.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
@@ -4273,7 +4274,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_2) {
 
     //    3. Add dna extended sequence throu context menu {Add->Sequence from file}
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/standard_amino.fa"));
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended RNA\" to \"Raw\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended RNA\" to \"All symbols\"");
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "Sequence from file...");
     GTGlobals::sleep();
 }
@@ -4292,7 +4293,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_3) {
 
     //    3. Add  extended DNA sequence by drag and drop
     toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_dna_seq");
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino acid\" to \"Raw\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino acid\" to \"All symbols\"");
     GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     GTGlobals::sleep();
 }
@@ -4306,7 +4307,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_4) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_rna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"All symbols\"");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
@@ -4324,7 +4325,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_5) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"Raw\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");

@@ -3871,12 +3871,12 @@ GUI_TEST_CLASS_DEFINITION(test_1365){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all", GTGlobals::UseKey);
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all", GTGlobals::UseKey);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1368){
@@ -7912,7 +7912,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     //4. Store the scheme to some file using "Save scheme as" button
     GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
         workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "&Save workflow", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Save workflow", GTGlobals::UseKey);
 
     //5. Close WD
     GTUtilsMdi::click( os, GTGlobals::Close );
@@ -7948,7 +7948,7 @@ GUI_TEST_CLASS_DEFINITION(test_1831) {
     QDir workflowOutputDir(workflowOutputDirPath);
 
     GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, workflowOutputDir.absolutePath() + "/" + "test.uwl", "Workflow"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "&Save workflow", GTGlobals::UseKey);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Save workflow", GTGlobals::UseKey);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);

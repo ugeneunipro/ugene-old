@@ -2592,8 +2592,8 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     const QString projectFile = "test_2379";
 
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&New project...");
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New project...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all");
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
 //    1. Press "Create new project" button
@@ -2603,7 +2603,7 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "Project file already exists"));
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&New project...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "New project...");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2382 ) {

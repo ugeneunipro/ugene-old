@@ -3161,7 +3161,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     CHECK_SET_ERR(treeView1 != NULL,"TreeView not found");
 
     GTUtilsDocument::removeDocument(os, "COI_3484_1.nwk");
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Save all");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all");
 
     GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
