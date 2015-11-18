@@ -165,7 +165,6 @@ void GTUtilsMdi::closeAllWindows(U2OpStatus &os) {
         GTMouseDriver::moveTo(os, closeButtonPos);
         GTMouseDriver::click(os);
         GTGlobals::sleep(100);
-        GTGlobals::sleep(3000);
     }
 #endif
 }

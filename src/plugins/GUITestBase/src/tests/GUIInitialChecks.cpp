@@ -167,11 +167,6 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
         GTGlobals::sleep();
     }
 
-    // close all Workflow Designer windows
-    GTGlobals::FindOptions options;
-    options.failIfNull = false;
-    options.matchPolicy = Qt::MatchContains;
-
     GTUtilsMdi::closeAllWindows(os);
 
     //cancel all tasks

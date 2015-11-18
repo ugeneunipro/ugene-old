@@ -1875,20 +1875,18 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTGlobals::sleep(1000);
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2292 ){
-    GTLogTracer l;
-
+GUI_TEST_CLASS_DEFINITION(test_2292) {
     QString destName = testDir + "_common_data/ugenedb/example-alignment.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, destName));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "There is opened view with destination file"));
-    GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
-    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
-                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
-    GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb/", "example-alignment.ugenedb");
 
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTFileDialog::openFile(os, dataDir + "samples/ACE", "K26.ace");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 
     GTGlobals::sleep();
-    //CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2298 ){
