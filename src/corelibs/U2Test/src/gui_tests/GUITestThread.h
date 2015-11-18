@@ -23,6 +23,8 @@
 #define _U2_GUI_TEST_THREAD_H_
 
 #include <QThread>
+#include <U2Core/global.h>
+
 
 namespace U2 {
 
@@ -30,7 +32,7 @@ class GUITest;
 class Logger;
 typedef QList<GUITest *> GUITests;
 
-class GUITestThread : public QThread {
+class U2TEST_EXPORT GUITestThread : public QThread {
     Q_OBJECT
 public:
     GUITestThread(GUITest *test, Logger &log, bool needCleanup = true);
