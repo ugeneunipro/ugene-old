@@ -3654,8 +3654,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="280"/>
-        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;Read the documentation for details.</source>
-        <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;Подробнее см. документацию.</translation>
+        <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;</source>
+        <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="296"/>
@@ -5145,8 +5145,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="396"/>
-        <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
-        <translation>Имя аннотаций: имя для сохранения аннотаций. Этот параметр доступен только для форматов, которые поддерживают сохранение имен аннотаций.</translation>
+        <source>Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
+        <translation>Имя для сохранения аннотаций. Этот параметр доступен только для форматов, которые поддерживают сохранение имен аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="401"/>
@@ -5155,7 +5155,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="402"/>
-        <source>Annotations name: Name of the saved annotation object.</source>
+        <source>Name of the saved annotation object.</source>
         <translation>Имя аннотаций: имя для сохранения объекта аннотации.</translation>
     </message>
     <message>

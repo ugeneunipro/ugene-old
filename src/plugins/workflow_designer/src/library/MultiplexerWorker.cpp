@@ -284,7 +284,7 @@ void MultiplexerWorkerFactory::init() {
                 " <li><b>1 to many</b> - the multiplexer gets one message from the first input port, joins it with each"
                 " message from the second input port, and transfers the joined messages to the output. This procedure"
                 " is repeated for each message from the first input port.</li>"
-                " <br/>Read the documentation for details."));
+                " <br/>"));
 
         attrs << new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
     }

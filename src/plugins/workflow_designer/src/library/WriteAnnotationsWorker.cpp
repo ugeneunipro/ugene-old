@@ -393,13 +393,13 @@ void WriteAnnotationsWorkerFactory::init() {
         fileModeAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << fileModeAttr;
         Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"),
-            WriteAnnotationsWorker::tr("Annotations name: Name of the saved"
+            WriteAnnotationsWorker::tr("Name of the saved"
             " annotations. This option is only available for document formats"
             " that support saving of annotations names."));
         Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, ANNOTATIONS_NAME_DEF_VAL);
         attrs << nameAttr;
         Descriptor annObjNameDesc(ANN_OBJ_NAME, WriteAnnotationsWorker::tr("Annotation object name"),
-            WriteAnnotationsWorker::tr("Annotations name: Name of the saved annotation object."));
+            WriteAnnotationsWorker::tr("Name of the saved annotation object."));
         Attribute *objNameAttr = new Attribute(annObjNameDesc, BaseTypes::STRING_TYPE(), false, ANNOTATIONS_NAME_DEF_VAL);
         attrs << objNameAttr;
         objNameAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));

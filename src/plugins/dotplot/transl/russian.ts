@@ -602,7 +602,7 @@ Select valid file to build dotplot</source>
     <message>
         <location filename="../src/DotPlotWidget.cpp" line="1056"/>
         <source> (min length %1, identity %2%)</source>
-        <translation>(мин. длинна %1, идентичность %2%)</translation>
+        <translation>(мин. длина %1, идентичность %2%)</translation>
     </message>
     <message>
         <location filename="../src/DotPlotWidget.cpp" line="215"/>
