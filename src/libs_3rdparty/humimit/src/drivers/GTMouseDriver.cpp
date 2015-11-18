@@ -32,11 +32,7 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     press(os, button);
     release(os, button);
 
-#ifdef _DEBUG
     GTGlobals::sleep(500);
-#else
-    GTGlobals::sleep(100);
-#endif
 }
 
 namespace {

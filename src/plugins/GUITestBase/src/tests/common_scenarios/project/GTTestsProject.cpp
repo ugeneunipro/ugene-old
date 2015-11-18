@@ -102,7 +102,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTGlobals::sleep();
 
 // 5. Use menu {File->Close project}
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
 // Expected state: project is unloaded and project view is closed
@@ -147,10 +147,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project &as...");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
     GTGlobals::sleep();
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
@@ -445,7 +445,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::Cancel));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
 
     GTUtilsLog::check(os, logTracer);
@@ -841,7 +841,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTGlobals::sleep(500);
 
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QFile savedFile(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/clipboard.fa");

@@ -234,7 +234,7 @@ void GTUtilsProject::closeProject(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new AppCloseMessageBoxDialogFiller(os));
     GTGlobals::sleep(500);
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 }
 
 GTUtilsProject::OpenFileSettings::OpenFileSettings() :

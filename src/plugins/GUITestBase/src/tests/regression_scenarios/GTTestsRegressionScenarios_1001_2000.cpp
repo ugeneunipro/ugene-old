@@ -3642,7 +3642,7 @@ GUI_TEST_CLASS_DEFINITION( test_1337 ) {
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "&Close project");
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
     //4) Close the project and repeat these steps.
     //Current state: the warning does not appear.
