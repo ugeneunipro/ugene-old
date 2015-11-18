@@ -1805,7 +1805,7 @@ GUI_TEST_CLASS_DEFINITION(test_3274) {
     CHECK_OP_SET_ERR(os, "Failed to open circular view!");
 
     GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, testDir + "_common_data/scenarios/sandbox/image.jpg", "", "seq3"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image"));
 
     GTWidget::click(os, circularView, Qt::RightButton);
 }
