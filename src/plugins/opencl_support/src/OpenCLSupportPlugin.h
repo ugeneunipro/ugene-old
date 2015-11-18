@@ -40,6 +40,7 @@ public:
     };
 
     OpenCLSupportPlugin();
+    ~OpenCLSupportPlugin();
 private:
     OpenCLSupportError obtainGpusInfo( QString & err );
     void loadGpusSettings();
@@ -50,6 +51,7 @@ private:
     static QString getSettingsErrorString( OpenCLSupportError err );
 
     QList<OpenCLGpuModel *> gpus;
+    OpenCLHelper openCLHelper;
 };
 
 }

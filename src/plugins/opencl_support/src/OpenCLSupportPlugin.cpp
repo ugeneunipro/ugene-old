@@ -45,6 +45,10 @@ const static char * RESOURCE_OPENCL_GPU_NAME = "OpenCLGpu";
 OpenCLSupportPlugin::OpenCLSupportPlugin() : Plugin(tr("OpenCL Support"),
                                                     tr("Plugin provides support for OpenCL-enabled GPUs.") ) {
     QString err_str;
+
+    OpenCLGpuRegistry* registry = AppContext::getOpenCLGpuRegistry();
+    registry->setOpenCLHelper(&openCLHelper);
+
     OpenCLSupportError err = obtainGpusInfo( err_str );
     if( err_str.isEmpty() && gpus.empty() ) {
         err_str = "No OpenCL-enabled GPUs found.";
@@ -68,6 +72,12 @@ OpenCLSupportPlugin::OpenCLSupportPlugin() : Plugin(tr("OpenCL Support"),
         AppResourcePool::instance()->registerResource( gpuResource );
     }
 }
+OpenCLSupportPlugin::~OpenCLSupportPlugin() {
+    OpenCLGpuRegistry* registry = AppContext::getOpenCLGpuRegistry();
+    CHECK(NULL != registry, );
+    registry->setOpenCLHelper(NULL);
+}
+
 
 QString OpenCLSupportPlugin::getSettingsErrorString( OpenCLSupportError err ) {
     switch(err) {
@@ -90,7 +100,6 @@ QString OpenCLSupportPlugin::getSettingsErrorString( OpenCLSupportError err ) {
 OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QString & errStr )
 {
     //load driver library
-    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         errStr = openCLHelper.getErrorString();
         return Error_BadDriverLib;

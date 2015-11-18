@@ -32,6 +32,9 @@
 
 namespace U2 {
 
+OpenCLGpuRegistry::OpenCLGpuRegistry() : openCLHelper(NULL){
+}
+
 OpenCLGpuRegistry::~OpenCLGpuRegistry() {
     saveGpusSettings();
     qDeleteAll( gpus.values() );

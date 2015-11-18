@@ -26,6 +26,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/GAutoDeleteList.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QString>
 #include <QtCore/QFile>
@@ -178,15 +179,16 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     cl_uint clNumDevices = 1;
     cl_device_id deviceId = (cl_device_id) AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getId();
 
-    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
-    if (!openCLHelper.isLoaded()) {
-        coreLog.error(openCLHelper.getErrorString());
+    const OpenCLHelper* openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
+    SAFE_POINT(NULL != openCLHelper, "OpenCL support plugin does not loaded", );
+    if (!openCLHelper->isLoaded()) {
+        coreLog.error(openCLHelper->getErrorString());
         return;
     }
 
     algoLog.trace("Creating a context");
 
-    clContext = openCLHelper.clCreateContext_p(0, clNumDevices, &deviceId, NULL, NULL, &err);
+    clContext = openCLHelper->clCreateContext_p(0, clNumDevices, &deviceId, NULL, NULL, &err);
     if (hasOPENCLError(err, "cl::Context() failed")) return;
 
     //*******************************
@@ -231,56 +233,56 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     memset(static_cast<void *>(g_HdataTmp), 0, sizeRow * sizeof(ScoreType));
     memset(static_cast<void *>(g_directionsRec), 0, sizeRow * sizeof(ScoreType));
 
-    queryProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+    queryProfBuf = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(cl_int) * profLen, queryProfile, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(cl_int) * profLen / B_TO_MB_FACTOR)))) return;
 
-    seqLibProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+    seqLibProfBuf = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(char) * (_searchSeq.length() + 1), searchSeq.data(), &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(char) * (_searchSeq.length() + 1) / B_TO_MB_FACTOR)))) return;
 
-    hDataMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    hDataMaxBuf = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
-    hDataUpBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    hDataUpBufTmp = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* hDataUpBuf = &hDataUpBufTmp;
 
-    hDataRecBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    hDataRecBufTmp = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* hDataRecBuf = &hDataRecBufTmp;
 
     cl_mem* hDataTmpBuf = NULL;
 
-    fDataUpBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    fDataUpBuf = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
-    directionsUpBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    directionsUpBufTmp = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* directionsUpBuf = &directionsUpBufTmp;
 
-    directionsRecBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    directionsRecBufTmp = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* directionsRecBuf = &directionsRecBufTmp;
 
-    directionsMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    directionsMaxBuf = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
     if(NULL != g_directionsMatrix) {
-        directionsMatrix = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        directionsMatrix = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             sizeof(int) * queryLength * searchLen, g_directionsMatrix, &err);
         if(hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(int) * queryLength * searchLen / B_TO_MB_FACTOR)))) return;
     }
 
     if(NULL != g_backtraceBegins) {
-        backtraceBegins = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        backtraceBegins = openCLHelper->clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             sizeof(int) * 2 * sizeRow, g_backtraceBegins, &err);
         if(hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(int) * sizeRow * 2 / B_TO_MB_FACTOR)))) return;
     }
@@ -290,10 +292,10 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     algoLog.trace(QString("queryLen %1 partQuerySize: %2 sizeRow: %3").arg(queryLength).arg(partQuerySize).arg(sizeRow));
 
     //open and read file contains OPENCL code
-    clProgram = OpenCLUtils::createProgramByResource(clContext, deviceId, ":src/sw_opencl.cl", openCLHelper, err);
+    clProgram = OpenCLUtils::createProgramByResource(clContext, deviceId, ":src/sw_opencl.cl", *openCLHelper, err);
     if (hasOPENCLError(err, "createProgramByResource() failed")) return;
 
-    clKernel = openCLHelper.clCreateKernel_p(clProgram, "calculateMatrix", &err);
+    clKernel = openCLHelper->clCreateKernel_p(clProgram, "calculateMatrix", &err);
     if (hasOPENCLError(err, "Kernel::Kernel() failed")) return;
 
     //************begin: set arguments****************
@@ -301,121 +303,121 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     int n = 0;
 
     //0: seqLib
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&seqLibProfBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&seqLibProfBuf);
 
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //1: queryProfile
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&queryProfBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&queryProfBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //2: g_HdataUp
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)hDataUpBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)hDataUpBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //3: g_HdataRec
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)hDataRecBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)hDataRecBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //4: g_HdataMax
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&hDataMaxBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&hDataMaxBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //5: g_FdataUp
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&fDataUpBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&fDataUpBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
 
     //6: g_directionsUp
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)directionsUpBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)directionsUpBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //7: g_directionsRec
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)directionsRecBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)directionsRecBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //8: g_directionsMax
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&directionsMaxBuf);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&directionsMaxBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //9: g_directionsMatrix
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != directionsMatrix) ? static_cast<void *>(&directionsMatrix) : NULL);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != directionsMatrix) ? static_cast<void *>(&directionsMatrix) : NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //10: g_patternSubseqs
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != backtraceBegins) ? static_cast<void *>(&backtraceBegins) : NULL);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != backtraceBegins) ? static_cast<void *>(&backtraceBegins) : NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //11: queryStartPos
     cl_int queryStartPos = 0;
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryStartPos);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryStartPos);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //12: partSeqSize
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partSeqSize);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partSeqSize);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //13: partsNumber
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partsNumber);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partsNumber);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //14: overlapLength
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&overlapLength);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&overlapLength);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //15: searchLen
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&searchLen);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&searchLen);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //16: queryLength
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryLength);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryLength);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //17: gapOpen
     cl_int clGapOpen = -1 * gapOpen;
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapOpen);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapOpen);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //18: gapExtension
     cl_int clGapExtension = -1 * gapExtension;
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapExtension);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapExtension);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //19: queryPartLength
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partQuerySize);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partQuerySize);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //20: LEFT symbol in directionsMatrix
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&LEFT);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&LEFT);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //21: DIAG symbol in directionsMatrix
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&DIAG);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&DIAG);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //22: UP symbol in directionsMatrix
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&UP);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&UP);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //23: STOP symbol in directionMatrix
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&STOP);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&STOP);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //24: shared_E
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //25: shared_direction
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //26: shared_direction
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
+    err = openCLHelper->clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
     //************end: set arguments****************
 
-    clCommandQueue = openCLHelper.clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err);
+    clCommandQueue = openCLHelper->clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err);
     if (hasOPENCLError(err, "cl::CommandQueue() failed ")) return;
 
     coreLog.details(QObject::tr("OPENCL: Running CL program"));
@@ -426,7 +428,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
 
 
     for (int i = 0; i < queryDevider; i++) {
-        err = openCLHelper.clEnqueueNDRangeKernel_p(
+        err = openCLHelper->clEnqueueNDRangeKernel_p(
             clCommandQueue,
             clKernel,
             1,
@@ -438,11 +440,11 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
             &clEvent);
         if (hasOPENCLError(err, "CommandQueue::enqueueNDRangeKernel() failed")) return;
 
-        err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+        err = openCLHelper->clWaitForEvents_p(1, &clEvent);
         if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
         if (clEvent) {
-            err = openCLHelper.clReleaseEvent_p (clEvent);
+            err = openCLHelper->clReleaseEvent_p(clEvent);
             if (hasOPENCLError(err, "clReleaseEvent 1 failed")) return;
         }
 
@@ -456,78 +458,78 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
         directionsUpBuf = hDataTmpBuf;
 
         //g_HdataUp
-        err = openCLHelper.clSetKernelArg_p(clKernel, 2, sizeof(cl_mem), (void*)hDataUpBuf);
+        err = openCLHelper->clSetKernelArg_p(clKernel, 2, sizeof(cl_mem), (void*)hDataUpBuf);
         if (hasOPENCLError(err, "Kernel::setArg(2) failed")) return;
 
         //g_HdataRec
-        err = openCLHelper.clSetKernelArg_p(clKernel, 3, sizeof(cl_mem), (void*)hDataRecBuf);
+        err = openCLHelper->clSetKernelArg_p(clKernel, 3, sizeof(cl_mem), (void*)hDataRecBuf);
         if (hasOPENCLError(err, "Kernel::setArg(3) failed")) return;
 
         //g_directionsUp
-        err = openCLHelper.clSetKernelArg_p(clKernel, 6, sizeof(cl_mem), (void*)directionsUpBuf);
+        err = openCLHelper->clSetKernelArg_p(clKernel, 6, sizeof(cl_mem), (void*)directionsUpBuf);
         if (hasOPENCLError(err, "Kernel::setArg(6) failed")) return;
 
         //g_directionsRec
-        err = openCLHelper.clSetKernelArg_p(clKernel, 7, sizeof(cl_mem), (void*)directionsRecBuf);
+        err = openCLHelper->clSetKernelArg_p(clKernel, 7, sizeof(cl_mem), (void*)directionsRecBuf);
         if (hasOPENCLError(err, "Kernel::setArg(7) failed")) return;
 
         //queryStartPos
         queryStartPos = (i+1) * partQuerySize;
-        err = openCLHelper.clSetKernelArg_p(clKernel, 11, sizeof(cl_int), (void*)&queryStartPos);
+        err = openCLHelper->clSetKernelArg_p(clKernel, 11, sizeof(cl_int), (void*)&queryStartPos);
         if (hasOPENCLError(err, "Kernel::setArg(9) failed")) return;
     }
 
 
     //copy from platform to host
-    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, hDataMaxBuf, CL_FALSE, 0, sizeof(cl_int) * (sizeRow), g_HdataTmp, 0, NULL, &clEvent);
+    err = openCLHelper->clEnqueueReadBuffer_p(clCommandQueue, hDataMaxBuf, CL_FALSE, 0, sizeof(cl_int) * (sizeRow), g_HdataTmp, 0, NULL, &clEvent);
     if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
 
-    err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+    err = openCLHelper->clWaitForEvents_p(1, &clEvent);
     if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
     if (clEvent) {
-        err = openCLHelper.clReleaseEvent_p (clEvent);
+        err = openCLHelper->clReleaseEvent_p (clEvent);
         if (hasOPENCLError(err, "clReleaseEvent 2 failed")) return;
     }
 
-    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, directionsMaxBuf, CL_FALSE, 0, sizeof(ScoreType) * (sizeRow), g_directionsRec, 0, NULL, &clEvent);
+    err = openCLHelper->clEnqueueReadBuffer_p(clCommandQueue, directionsMaxBuf, CL_FALSE, 0, sizeof(ScoreType) * (sizeRow), g_directionsRec, 0, NULL, &clEvent);
     if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
 
-    err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+    err = openCLHelper->clWaitForEvents_p(1, &clEvent);
     if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
     if (clEvent) {
-        err = openCLHelper.clReleaseEvent_p (clEvent);
+        err = openCLHelper->clReleaseEvent_p (clEvent);
         if (hasOPENCLError(err, "clReleaseEvent 3 failed")) return;
     }
     if(NULL != g_directionsMatrix) {
-        err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, directionsMatrix, CL_FALSE, 0, sizeof(int) * queryLength * searchLen,
+        err = openCLHelper->clEnqueueReadBuffer_p(clCommandQueue, directionsMatrix, CL_FALSE, 0, sizeof(int) * queryLength * searchLen,
                                                 g_directionsMatrix, 0, NULL, &clEvent);
         if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
 
-        err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+        err = openCLHelper->clWaitForEvents_p(1, &clEvent);
         if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
         if (clEvent) {
-            err = openCLHelper.clReleaseEvent_p (clEvent);
+            err = openCLHelper->clReleaseEvent_p (clEvent);
             if (hasOPENCLError(err, "clReleaseEvent 4 failed")) return;
         }
     }
     if(NULL != g_backtraceBegins) {
-        err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, backtraceBegins, CL_FALSE, 0, sizeof(int) * 2 * sizeRow,
+        err = openCLHelper->clEnqueueReadBuffer_p(clCommandQueue, backtraceBegins, CL_FALSE, 0, sizeof(int) * 2 * sizeRow,
             g_backtraceBegins, 0, NULL, &clEvent);
         if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
 
-        err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+        err = openCLHelper->clWaitForEvents_p(1, &clEvent);
         if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
         if (clEvent) {
-            err = openCLHelper.clReleaseEvent_p (clEvent);
+            err = openCLHelper->clReleaseEvent_p (clEvent);
             if (hasOPENCLError(err, "clReleaseEvent 5 failed")) return;
         }
     }
 
-    err = openCLHelper.clFinish_p(clCommandQueue);
+    err = openCLHelper->clFinish_p(clCommandQueue);
     if (hasOPENCLError(err, "clFinish failed")) return;
 
     //using namespace std;
@@ -606,69 +608,70 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
 SmithWatermanAlgorithmOPENCL::~SmithWatermanAlgorithmOPENCL() {
     algoLog.details(QObject::tr("Starting cleanup OpenCL resources"));
 
-    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
+    const OpenCLHelper* openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
+    SAFE_POINT(NULL != openCLHelper, "OpenCL support plugin does not loaded", );
 
     cl_int err = CL_SUCCESS;
 
     if (clKernel) {
-        err = openCLHelper.clReleaseKernel_p (clKernel);
+        err = openCLHelper->clReleaseKernel_p (clKernel);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (clProgram)  {
-        err = openCLHelper.clReleaseProgram_p(clProgram);
+        err = openCLHelper->clReleaseProgram_p(clProgram);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (clCommandQueue) {
-        err = openCLHelper.clReleaseCommandQueue_p (clCommandQueue);
+        err = openCLHelper->clReleaseCommandQueue_p (clCommandQueue);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (clContext) {
-        err = openCLHelper.clReleaseContext_p(clContext);
+        err = openCLHelper->clReleaseContext_p(clContext);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
 
     if (queryProfBuf) {
-        err = openCLHelper.clReleaseMemObject_p (queryProfBuf);
+        err = openCLHelper->clReleaseMemObject_p (queryProfBuf);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (seqLibProfBuf) {
-        err = openCLHelper.clReleaseMemObject_p (seqLibProfBuf);
+        err = openCLHelper->clReleaseMemObject_p (seqLibProfBuf);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (hDataMaxBuf) {
-        err = openCLHelper.clReleaseMemObject_p (hDataMaxBuf);
+        err = openCLHelper->clReleaseMemObject_p (hDataMaxBuf);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (hDataUpBufTmp) {
-        err = openCLHelper.clReleaseMemObject_p (hDataUpBufTmp);
+        err = openCLHelper->clReleaseMemObject_p (hDataUpBufTmp);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (hDataRecBufTmp) {
-        err = openCLHelper.clReleaseMemObject_p (hDataRecBufTmp);
+        err = openCLHelper->clReleaseMemObject_p (hDataRecBufTmp);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (fDataUpBuf) {
-        err = openCLHelper.clReleaseMemObject_p (fDataUpBuf);
+        err = openCLHelper->clReleaseMemObject_p (fDataUpBuf);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (directionsUpBufTmp) {
-        err = openCLHelper.clReleaseMemObject_p (directionsUpBufTmp);
+        err = openCLHelper->clReleaseMemObject_p (directionsUpBufTmp);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (directionsRecBufTmp) {
-        err = openCLHelper.clReleaseMemObject_p (directionsRecBufTmp);
+        err = openCLHelper->clReleaseMemObject_p (directionsRecBufTmp);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if (directionsMaxBuf) {
-        err = openCLHelper.clReleaseMemObject_p (directionsMaxBuf);
+        err = openCLHelper->clReleaseMemObject_p (directionsMaxBuf);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if(directionsMatrix) {
-        err = openCLHelper.clReleaseMemObject_p(directionsMatrix);
+        err = openCLHelper->clReleaseMemObject_p(directionsMatrix);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
     if(backtraceBegins) {
-        err = openCLHelper.clReleaseMemObject_p(backtraceBegins);
+        err = openCLHelper->clReleaseMemObject_p(backtraceBegins);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
 

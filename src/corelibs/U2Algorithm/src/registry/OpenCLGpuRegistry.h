@@ -101,6 +101,7 @@ private:
 
 class U2ALGORITHM_EXPORT OpenCLGpuRegistry {
 public:
+    OpenCLGpuRegistry();
     ~OpenCLGpuRegistry();
 
     void registerOpenCLGpu( OpenCLGpuModel * gpu );
@@ -114,12 +115,14 @@ public:
 
     bool empty() const { return gpus.empty(); }
 
-    const OpenCLHelper& getOpenCLHelper() {return openCLHelper;}
+    void setOpenCLHelper(OpenCLHelper * _openCLHelper) { openCLHelper = _openCLHelper; }
+
+    const OpenCLHelper* getOpenCLHelper() const {return openCLHelper;}
 
 private:
     void saveGpusSettings() const;
     QHash< OpenCLGpuId, OpenCLGpuModel * > gpus;
-    OpenCLHelper openCLHelper;
+    OpenCLHelper* openCLHelper;
 };
 
 } //namespace
