@@ -131,6 +131,7 @@ void GTUtilsMdi::closeWindow(U2OpStatus &os, const QString &windowName, const GT
 
 #define GT_METHOD_NAME "closeAllWindows"
 void GTUtilsMdi::closeAllWindows(U2OpStatus &os) {
+#ifndef Q_OS_MAC
     class Scenario : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
@@ -144,6 +145,29 @@ void GTUtilsMdi::closeAllWindows(U2OpStatus &os) {
     };
 
     GTThread::runInMainThread(os, new Scenario);
+#else
+    // GUI on Mac hangs because of bug in QCocoaEventDispatcher
+    // It looks like this issue: https://bugreports.qt.io/browse/QTBUG-45389
+    // This part can be removed after Qt bug will be fixed
+    // And now: some magic!
+
+    QWidget *prevWindow = NULL;
+    QWidget *mdiWindow = NULL;
+    GTGlobals::FindOptions options(false);
+
+    while (NULL != (mdiWindow = GTUtilsMdi::activeWindow(os, options))) {
+        GT_CHECK(prevWindow != mdiWindow, "Can't close MDI window");
+        prevWindow = mdiWindow;
+
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+
+        const QPoint closeButtonPos = GTWidget::getWidgetGlobalTopLeftPoint(os, mdiWindow) + QPoint(10, 5);
+        GTMouseDriver::moveTo(os, closeButtonPos);
+        GTMouseDriver::click(os);
+        GTGlobals::sleep(100);
+        GTGlobals::sleep(3000);
+    }
+#endif
 }
 #undef GT_METHOD_NAME
 
