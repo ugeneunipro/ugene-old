@@ -25,33 +25,34 @@
 #include <QCheckBox>
 #include <QTableWidget>
 
-#include "GTTestsMSAEditorEdit.h"
-#include <drivers/GTMouseDriver.h>
-#include <drivers/GTKeyboardDriver.h>
-#include "utils/GTKeyboardUtils.h"
-#include <primitives/GTWidget.h>
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorSequenceArea.h>
+
+#include <GTGlobals.h>
 #include <base_dialogs/GTFileDialog.h>
-#include "primitives/GTMenu.h"
-#include <primitives/GTTreeWidget.h>
-#include <primitives/GTSpinBox.h>
-#include "GTGlobals.h"
-#include "system/GTClipboard.h"
-#include "primitives/GTAction.h"
-#include <primitives/GTTreeWidget.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTCheckBox.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
-#include <primitives/GTCheckBox.h>
-#include "utils/GTUtilsDialog.h"
+#include <primitives/GTMenu.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <system/GTClipboard.h>
+#include <utils/GTKeyboardUtils.h>
+#include <utils/GTUtilsDialog.h>
+
+#include "GTTestsMSAEditorEdit.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
-#include "primitives/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
-
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorSequenceArea.h>
 
 namespace U2 {
 using namespace HI;
@@ -801,108 +802,84 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
 //Montana_montana TTATTAATTCG
 //Zychia_baranovi TTATTAATCCG
 }
-class SpecialExtractSelectedAsMSADialogFiller : public Filler {
-public:
-    SpecialExtractSelectedAsMSADialogFiller(U2OpStatus &os) : Filler(os, "CreateSubalignmentDialog"){}
-    virtual void run(){
-        QWidget* dialog = QApplication::activeModalWidget();
-        CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
-        QTableWidget *table=dialog->findChild<QTableWidget*>("sequencesTableWidget");
-        CHECK_SET_ERR(table!=NULL, "tableWidget is NULL");
-
-        for(int i=0; i<table->rowCount() ;i++){//check all selected
-            QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
-            CHECK_SET_ERR(box->isChecked(),"box" + box->text() + "is not checked");
-        }
-
-        QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");//clear button
-        CHECK_SET_ERR(noneButton!=NULL, "noneButton is NULL");
-        GTWidget::click(os,noneButton);
-
-        for(int i=0; i<table->rowCount() ;i++){//check all unselected
-            QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
-            CHECK_SET_ERR(!box->isChecked(),"box " + box->text() + " is checked");
-        }
-
-        QPoint p=table->geometry().topRight();
-        p.setX(p.x()-2);
-        p.setY(p.y()+2);
-        p=dialog->mapToGlobal(p);
-        GTMouseDriver::moveTo(os,p);
-        GTMouseDriver::doubleClick(os);
-
-        QStringList list;
-        list<<"Zychia_baranovi"<<"Montana_montana";//select these
-        for(int i=0; i<table->rowCount() ;i++){
-            GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
-            GTGlobals::sleep(100);
-            foreach(QString s, list){
-                QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
-                if (s==box->text()){
-                    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["space"]);
-                }
-            }
-        }
-
-        QWidget *invertButton = dialog->findChild<QWidget*>("invertButton");//click invert button
-        CHECK_SET_ERR(invertButton!=NULL, "invertButton is NULL");
-        GTWidget::click(os,invertButton);
-
-        for(int i=4; i<table->rowCount() ;i++){//check invertion result
-            bool nameFound=false;
-            QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
-
-            foreach(QString s, list){
-                if (s==box->text()){
-                    CHECK_SET_ERR(!box->isChecked(), "box "+box->text()+" is checked. It must be uncheked");
-                    nameFound=true;
-                }
-            }
-
-            if(!nameFound){
-                CHECK_SET_ERR(box->isChecked(), "box "+box->text()+" is unchecked. It must be cheked");
-            }
-        }
-
-        QWidget *allButton = dialog->findChild<QWidget*>("allButton");//click SelectAll button
-        CHECK_SET_ERR(allButton!=NULL, "allButton is NULL");
-        GTWidget::click(os,allButton);
-
-        for(int i=0; i<table->rowCount() ;i++){//check all selected
-            QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
-            CHECK_SET_ERR(box->isChecked(),"box " + box->text() + " is not checked");
-        }
-
-        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-        CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
-        QPushButton* button = box->button(QDialogButtonBox::Cancel);
-        CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
-        GTWidget::click(os, button);
-    }
-};
-GUI_TEST_CLASS_DEFINITION(test_0015){
+GUI_TEST_CLASS_DEFINITION(test_0015) {
 //Create subaligniment
-//1. Open document samples\CLUSTALW\COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//1. Open document "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
 //2. Right click on aligniment view. Open context menu {Export->save subalignment}
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
-    GTUtilsDialog::waitForDialog(os,new SpecialExtractSelectedAsMSADialogFiller(os));
-    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
 //Expected state: Create subaligniment dialog has appeared, all sequences are checked
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QTableWidget *table = GTWidget::findExactWidget<QTableWidget *>(os, "sequencesTableWidget", dialog);
+            CHECK_SET_ERR(NULL != table, "tableWidget is NULL");
+
+            for (int i = 0; i < table->rowCount(); i++){
+                QCheckBox *box = qobject_cast<QCheckBox *>(table->cellWidget(i, 0));
+                CHECK_SET_ERR(box->isChecked(), QString("box '%1' is not checked").arg(box->text()));
+            }
 
 //3. Click button Clean selection
+            GTWidget::click(os, GTWidget::findWidget(os, "noneButton"));
+
 //Expected result: all sequences unchecked
+            for (int i = 0; i < table->rowCount(); i++){
+                QCheckBox *box = qobject_cast<QCheckBox *>(table->cellWidget(i,0));
+                CHECK_SET_ERR(!box->isChecked(), QString("box '%1' is checked").arg(box->text()));
+            }
 
 //4. Check sequences Montana_montana, Zychia_baranovi
+            const QPoint p = dialog->mapToGlobal(table->geometry().topRight() + QPoint(-2, 2));
+            GTMouseDriver::moveTo(os,p);
+            GTMouseDriver::doubleClick(os);
+
+            const QStringList list = QStringList() << "Zychia_baranovi" << "Montana_montana";
+            for (int i = 0; i < table->rowCount(); i++) {
+                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+                GTGlobals::sleep(100);
+                QCheckBox *box = qobject_cast<QCheckBox *>(table->cellWidget(i, 0));
+                if (list.contains(box->text())) {
+                    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+                    GTGlobals::sleep(100);
+                }
+            }
 
 //5. Click button Invert selection
+            GTWidget::click(os, GTWidget::findWidget(os, "invertButton", dialog));
+
 //Expected result: all sequences except Montana_montana, Zychia_baranovi are checked
+            for (int i = 1; i < table->rowCount(); i++) {
+                QCheckBox *box = qobject_cast<QCheckBox *>(table->cellWidget(i, 0));
+                if (list.contains(box->text())) {
+                    CHECK_SET_ERR(!box->isChecked(), QString("box '%1' is checked. It must be unchecked").arg(box->text()));
+                } else {
+                    CHECK_SET_ERR(box->isChecked(), QString("box '%1' is unchecked. It must be cheked").arg(box->text()));
+                }
+            }
 
 //6. Click button Select all
+            GTWidget::click(os, GTWidget::findWidget(os, "allButton"));
+
 //Expected result: all sequences are checked
+            for (int i = 0; i < table->rowCount(); i++){
+                QCheckBox *box = qobject_cast<QCheckBox *>(table->cellWidget(i, 0));
+                CHECK_SET_ERR(box->isChecked(), QString("box '%1' is not checked").arg(box->text()));
+            }
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os, new Scenario));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
 }
 
 } // namespace
 } // namespace U2
-
