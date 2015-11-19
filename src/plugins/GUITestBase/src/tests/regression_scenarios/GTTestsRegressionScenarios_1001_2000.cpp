@@ -3753,6 +3753,8 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTTreeWidget::click(os, treeItem);
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(4000);
+
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
                                                       << "Custom Elements with CMD Tools" << settings.elementName,
                                                       PopupChecker::NotExists));
