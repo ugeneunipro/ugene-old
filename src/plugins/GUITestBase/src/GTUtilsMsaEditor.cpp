@@ -27,15 +27,17 @@
 #include <U2View/MSAGraphOverview.h>
 #include <U2View/MSASimpleOverview.h>
 
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/PopupChooser.h>
+
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include <drivers/GTKeyboardDriver.h>
-#include <drivers/GTMouseDriver.h>
 #include "api/GTMSAEditorStatusWidget.h"
-#include <primitives/GTToolbar.h>
-#include "primitives/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 
 namespace U2 {
 using namespace HI;
@@ -249,6 +251,13 @@ void GTUtilsMsaEditor::undo(U2OpStatus &os) {
 #define GT_METHOD_NAME "redo"
 void GTUtilsMsaEditor::redo(U2OpStatus &os) {
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "msa_action_redo"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "buildPhylogeneticTree"
+void GTUtilsMsaEditor::buildPhylogeneticTree(U2OpStatus &os, const QString &pathToSave) {
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, pathToSave, 0, 0, true));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Build Tree");
 }
 #undef GT_METHOD_NAME
 

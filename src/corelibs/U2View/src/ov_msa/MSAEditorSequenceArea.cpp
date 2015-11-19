@@ -93,7 +93,7 @@ namespace U2 {
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
     : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), editModeAnimationTimer(this), prevPressedButton(Qt::NoButton),
-    changeTracker(editor->getMSAObject()->getEntityRef()), useDotsAction(NULL), colorScheme(NULL), highlightingScheme(NULL)
+    changeTracker(editor->getMSAObject()->getEntityRef()), msaVersionBeforeShifting(-1), useDotsAction(NULL), colorScheme(NULL), highlightingScheme(NULL)
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -1315,12 +1315,13 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e) {
     newCurPos.setY(yPosWithValidations);
 
     if (shifting) {
-        emit si_stopMsaChanging(true);
+        emit si_stopMsaChanging(msaVersionBeforeShifting != editor->getMSAObject()->getModificationVersion());
     } else if (Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
         updateSelection(newCurPos);
     }
     shifting = false;
     selecting = false;
+    msaVersionBeforeShifting = -1;
 
     shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     svBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -1349,6 +1350,7 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             const MSAEditorSelection &s = ui->seqArea->getSelection();
             if (s.getRect().contains(cursorPos) && !isAlignmentLocked()) {
                 shifting = true;
+                msaVersionBeforeShifting = editor->getMSAObject()->getModificationVersion();
                 U2OpStatus2Log os;
                 changeTracker.startTracking(os);
                 CHECK_OP(os, );

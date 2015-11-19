@@ -19,8 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDir>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QFileInfo>
 #include <QHeaderView>
 #include <QMainWindow>
 #include <QTreeView>
@@ -34,19 +36,21 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 
+#include <base_dialogs/GTFileDialog.h>
+#include <base_dialogs/MessageBoxFiller.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTMenu.h>
+#include <primitives/GTWidget.h>
+
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
-#include <base_dialogs/GTFileDialog.h>
-#include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTLineEdit.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include <primitives/GTWidget.h>
-#include <base_dialogs/MessageBoxFiller.h>
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
@@ -226,6 +230,14 @@ void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QSt
 void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTFileDialog::openFile(os, filePath);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "saveProjectAs"
+void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &path) {
+    const QFileInfo info(path);
+    GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "New Project", info.dir().path(), info.fileName()));
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save project as...");
 }
 #undef GT_METHOD_NAME
 

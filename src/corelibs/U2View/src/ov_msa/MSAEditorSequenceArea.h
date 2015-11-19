@@ -495,6 +495,7 @@ private:
     MSAEditorSelection  baseSelection; // selection with rows indexes in absolute coordinates
     QList<int>          selectedRows;
     QStringList         selectedRowNames;
+    int                 msaVersionBeforeShifting;
 
     QAction*        copySelectionAction;
     QAction*        delSelectionAction;

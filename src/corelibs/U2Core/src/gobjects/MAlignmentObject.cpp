@@ -784,6 +784,7 @@ void MAlignmentObject::sortRowsByList(const QStringList& order) {
 
     MAlignment msa = getMAlignment();
     msa.sortRowsByList(order);
+    CHECK(msa.getRowsIds() != cachedMAlignment.getRowsIds(), );
 
     U2OpStatusImpl os;
     MsaDbiUtils::updateRowsOrder(entityRef, msa.getRowsIds(), os);

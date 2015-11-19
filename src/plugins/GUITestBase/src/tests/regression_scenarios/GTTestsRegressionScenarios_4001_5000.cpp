@@ -4448,6 +4448,69 @@ GUI_TEST_CLASS_DEFINITION(test_4833_8) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4885_1) {
+//    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
+
+//    2. Wait until overview finishes rendering.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Doubleclick the first symbol of the first sequence.
+//    Expected state: overview doesn't start recalculation.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::doubleClick(os);
+
+    QWidget *graphOverview = GTUtilsMsaEditor::getGraphOverview(os);
+    CHECK_SET_ERR(NULL != graphOverview, "Graph overview is NULL");
+    const QColor actualColor = GTUtilsMsaEditor::getGraphOverviewPixelColor(os, QPoint(graphOverview->width() / 2, 2));
+    CHECK_SET_ERR("white" == actualColor.name(), QString("Incorrect color of the graph overview ('%1'). Does it render now?").arg(actualColor.name()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4885_2) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Build a tree. The result tree should be synchronised with the msa.
+    GTUtilsMsaEditor::buildPhylogeneticTree(os, sandBoxDir + "test_4885_2.nwk");
+
+//    3. Doubleclick the first symbol of the first sequence.
+//    Expected state: UGENE doesn't ask about confirmation of the modification.
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "The alignment has been modified"));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::doubleClick(os);
+
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4885_3) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", sandBoxDir + "test_4885_3.aln");
+    GTFileDialog::openFile(os, sandBoxDir + "test_4885_3.aln");
+
+//    2. Build a tree. The result tree should be synchronised with the msa.
+    GTUtilsMsaEditor::buildPhylogeneticTree(os, sandBoxDir + "test_4885_3.nwk");
+
+//    3. Save the project.
+    GTUtilsProject::saveProjectAs(os, sandBoxDir + "test_4885_3.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    4. Close the project.
+    GTUtilsProject::closeProject(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    5. Open the saved project.
+//    Expected state: there are two unloaded documents in a project: COI.aln and its tree.
+    GTFileDialog::openFile(os, sandBoxDir + "test_4885_3.uprj");
+
+//    6. Doubleclick the COI.aln document.
+    GTUtilsProjectTreeView::doubleClickItem(os, "test_4885_3.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: MSA Editor opens, there is an attached tree in it. The msa object in the project view is not modified.
+    GTUtilsProjectTreeView::itemModificationCheck(os, "test_4885_3", false);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4886) {
     GTFileDialog::openFile(os, dataDir + "samples/SCF/", "90-JRI-07.scf");
     GTLogTracer lt;

@@ -22,16 +22,14 @@
 #ifndef _U2_PROJECT_UTILS_H_
 #define _U2_PROJECT_UTILS_H_
 
-#include "GTGlobals.h"
-#include "utils/GTUtilsApp.h"
-#include "GTUtilsDocument.h"
+#include <QMessageBox>
 
 #include <U2Core/GUrl.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+
+#include <GTGlobals.h>
+#include <utils/GTUtilsApp.h>
+
+#include "GTUtilsDocument.h"
 
 namespace U2 {
 
@@ -93,8 +91,8 @@ public:
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &dirPath, const QString &fileName);
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath);
 
+    static void saveProjectAs(U2OpStatus &os, const QString &path);
     static void closeProject(U2OpStatus &os);
-
 
 protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);

@@ -31,13 +31,13 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectViewModel.h>
 
-#include <primitives/GTLineEdit.h>
-#include <drivers/GTMouseDriver.h>
 #include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTLineEdit.h>
 #include <primitives/GTWidget.h>
-#include "primitives/PopupChooser.h"
-#include "GTUtilsProjectTreeView.h"
+#include <primitives/PopupChooser.h>
 
+#include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
@@ -477,6 +477,11 @@ QIcon GTUtilsProjectTreeView::getIcon(U2OpStatus &os, QModelIndex index){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "itemModificationCheck"
+void GTUtilsProjectTreeView::itemModificationCheck(U2OpStatus &os, const QString &itemName, bool modified) {
+    itemModificationCheck(os, findIndex(os, itemName), modified);
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "itemModificationCheck"
 void GTUtilsProjectTreeView::itemModificationCheck(U2OpStatus &os, QModelIndex index, bool modified ){

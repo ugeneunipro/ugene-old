@@ -22,9 +22,8 @@
 #ifndef _U2_GT_UTILS_MSA_EDITOR_H_
 #define _U2_GT_UTILS_MSA_EDITOR_H_
 
-#include <QtCore/QRect>
-
-#include <QtGui/QColor>
+#include <QColor>
+#include <QRect>
 
 namespace U2 {
 
@@ -73,6 +72,8 @@ public:
 
     static void undo(U2OpStatus &os);
     static void redo(U2OpStatus &os);
+
+    static void buildPhylogeneticTree(U2OpStatus &os, const QString &pathToSave);
 };
 
 }   // namespace U2

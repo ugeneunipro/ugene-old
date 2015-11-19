@@ -24,8 +24,9 @@
 
 #include <QAbstractItemModel>
 
-#include "GTGlobals.h"
 #include <U2Gui/ProjectTreeController.h>
+
+#include <GTGlobals.h>
 
 class QTreeView;
 class QTreeWidget;
@@ -94,6 +95,7 @@ public:
     static QFont getFont(U2OpStatus &os, QModelIndex index);
     static QIcon getIcon(U2OpStatus &os, QModelIndex index);
 
+    static void itemModificationCheck(U2OpStatus &os, const QString &itemName, bool modified = true);
     static void itemModificationCheck(U2OpStatus &os, QModelIndex index, bool modified = true);
 
     static void itemActiveCheck(U2OpStatus &os, QModelIndex index, bool active = true);
