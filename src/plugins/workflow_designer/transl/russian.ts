@@ -696,9 +696,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/StartupDialog.ui" line="41"/>
         <source>Note: you can change this option in the UGENE Application Settings
 (Settings &gt; Preferences &gt; Workflow Designer)</source>
-        <translation>
-          Замечание: вы можете изменить эти настройки в общих настройках UGENE
-          (Настройки &gt; Установки &gt; Дизайнер вычислительных схем)
+        <translation>Замечание: вы можете изменить эти настройки в общих настройках UGENE
+(Настройки &gt; Установки &gt; Дизайнер вычислительных схем)
         </translation>
     </message>
 </context>
