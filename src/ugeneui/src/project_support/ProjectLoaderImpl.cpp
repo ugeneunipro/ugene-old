@@ -141,7 +141,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
 
     QAction* newSectionSeparator = new QAction("", this);
     newSectionSeparator->setSeparator(true);
-    searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__NEW_SECTION_SEPARATOR);
+    newSectionSeparator->setObjectName(ACTION_PROJECTSUPPORT__NEW_SECTION_SEPARATOR);
 
     QAction* openSectionSeparator = new QAction("", this);
     openSectionSeparator->setSeparator(true);
