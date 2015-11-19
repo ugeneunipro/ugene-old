@@ -98,7 +98,7 @@ void GUIDialogWaiter::checkDialog() {
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
         timer->stop();
         U2::uiLog.trace("-------------------------");
-        U2::uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
+        U2::uiLog.trace(QString("GUIDialogWaiter::wait ID = %1, name = '%2' going to RUN").arg(waiterId).arg(settings.objectName));
         U2::uiLog.trace("-------------------------");
 
         try {
