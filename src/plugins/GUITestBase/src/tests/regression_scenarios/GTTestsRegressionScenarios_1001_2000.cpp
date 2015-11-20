@@ -1557,35 +1557,31 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1115) {
-//    1. Open file "Genbank\murine.gb"
-    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/pBR322.gb");
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/PBR322_blast_annotations.gb");
 
-//    2. Use menu {Analyze->Query NCBI BLAST database}
-//    3. Run Blast
-    GTUtilsSequenceView::selectSequenceRegion(os, 1, 100);
+//    2. Add BLAST annotations to the sequence view.
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    const QModelIndex table = GTUtilsProjectTreeView::findIndex(os, "SYNPBR322 features", GTUtilsProjectTreeView::findIndex(os, "PBR322_blast_annotations.gb"));
+    GTUtilsProjectTreeView::dragAndDrop(os, table, GTUtilsAnnotationsTreeView::getTreeWidget(os));
 
-    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os));
-    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Query NCBI BLAST database");
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-
+//    3. Select two or more BLAST annotations.
     QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
     CHECK_SET_ERR(2 <= blastResultItems.size(), "Not enough BLAST results");
 
     const QStringList expectedNames = QStringList() << GTUtilsAnnotationsTreeView::getQualifierValue(os, "accession", blastResultItems.first())
                                                     << GTUtilsAnnotationsTreeView::getQualifierValue(os, "accession", blastResultItems.last());
-
-//    4. Select two or more BLAST annotations
     GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem *>() << blastResultItems.first() << blastResultItems.last());
 
-//    5. Use menu {Export->Export blast result to alignment}
-//    6. Click "Export"
+//    4. Use menu {Export->Export blast result to alignment}.
+//    5. Click "Export".
     QDir().mkpath(sandBoxDir + "test_1115");
     GTUtilsDialog::waitForDialog(os, new ExportBlastResultDialogFiller(os, sandBoxDir + "test_1115/test_1115.aln"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export BLAST result to alignment"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, blastResultItems.first());
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-//    7. Check that annotations correctly exported
+//    6. Check that annotations are correctly exported.
     GTUtilsDocument::checkDocument(os, "test_1115.aln", MSAEditorFactory::ID);
 
     const QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
