@@ -83,7 +83,8 @@ void BlastAllSupportDialogFiller::commonScenario() {
         GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
         GTUtilsTaskTreeView::waitTaskFinished(os);
     }
-
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
