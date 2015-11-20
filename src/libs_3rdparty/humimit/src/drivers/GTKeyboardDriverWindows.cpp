@@ -362,6 +362,7 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
+    GTGlobals::sleep(10);
 }
 #undef GT_METHOD_NAME
 
