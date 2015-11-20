@@ -39,7 +39,9 @@
 #endif
 
 namespace HI {
-
+/*!
+ * \brief The class contains the most commonly used methods
+ */
 class HI_EXPORT GTGlobals {
 public:
     enum UseMethod {UseMouse, UseKey, UseKeyBoard};

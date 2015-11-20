@@ -29,7 +29,9 @@
 #include <QWidget>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QWidget primitive
+ */
 class HI_EXPORT GTWidget {
 public:
     // fails if widget is NULL, not visible or not enabled; if p isNull, clicks on the center of widget

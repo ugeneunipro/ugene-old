@@ -26,7 +26,9 @@
 #include "GTGlobals.h"
 
 namespace HI {
-
+/*!
+ * \brief The class contains the most commonly used keyboard hotkeys
+ */
 class HI_EXPORT GTKeyboardUtils {
 public:
     static void selectAll(U2::U2OpStatus&); // ctrl (or cmd on MacOS) + A

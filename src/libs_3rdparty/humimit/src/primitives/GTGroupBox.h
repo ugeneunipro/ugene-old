@@ -26,7 +26,9 @@
 #include <QGroupBox>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QGroupBox primitive
+ */
 class HI_EXPORT GTGroupBox {
 public:
     static void setChecked(U2::U2OpStatus &os, QGroupBox *groupBox, bool checked = true);

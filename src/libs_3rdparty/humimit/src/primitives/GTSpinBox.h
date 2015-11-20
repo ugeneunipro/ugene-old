@@ -26,7 +26,9 @@
 #include <QSpinBox>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QSpinBox primitive
+ */
 class HI_EXPORT GTSpinBox {
 public:
     static int getValue(U2::U2OpStatus &os, QSpinBox *spinBox);

@@ -32,7 +32,22 @@
 #define ADD_KEY(name, code) insert(name, code)
 
 namespace HI {
-
+/*!
+ * \brief The base class for keyboard's actions imitation
+ *
+ * Example:
+ * \code {.cpp}
+ * GTKeyboardDriver::keyClick(os, 'A'); // print 'a'
+ * GTKeyboardDriver::keyClick(os, 'a'); // print 'a'
+ *
+ * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["shift"]); // print 'A'
+ * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["SHIFT"]); // print 'A'
+ * //case in ["..."] does not matter
+ *
+ * GTKeyboardDriver::keySequence(os, "ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
+ * //i.e. case sensitive
+ * \endcode
+ */
 class HI_EXPORT GTKeyboardDriver {
 public:
     //
@@ -66,18 +81,7 @@ public:
 
     static keys key;
 
-    /**
-    * Example:
-    * GTKeyboardDriver::keyClick(os, 'A'); // print 'a'
-    * GTKeyboardDriver::keyClick(os, 'a'); // print 'a'
-    *
-    * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["shift"]); // print 'A'
-    * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["SHIFT"]); // print 'A'
-    * case in ["..."] does not matter
-    *
-    * GTKeyboardDriver::keySequence(os, "ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
-    * i.e. case sensitive
-    */
+
 };
 
 } //namespace

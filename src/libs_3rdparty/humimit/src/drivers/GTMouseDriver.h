@@ -26,7 +26,9 @@
 #include <QtCore/QPoint>
 
 namespace HI {
-
+/*!
+ * \brief The base class for mouse's actions imitation
+ */
 class HI_EXPORT GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect

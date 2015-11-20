@@ -26,7 +26,9 @@
 #include <QLineEdit>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QLineEdit primitive
+ */
 class HI_EXPORT GTLineEdit {
 public:
     enum PasteMethod {Shortcut, Mouse};

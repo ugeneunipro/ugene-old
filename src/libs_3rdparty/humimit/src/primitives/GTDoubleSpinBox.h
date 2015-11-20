@@ -7,7 +7,9 @@
 #include <QDoubleSpinBox>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QDoubleSpinBox primitive
+ */
 class HI_EXPORT GTDoubleSpinbox
 {
 public:

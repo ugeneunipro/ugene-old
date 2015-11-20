@@ -26,7 +26,9 @@
 #include <QComboBox>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QComboBox primitive
+ */
 class HI_EXPORT GTComboBox {
 public:
     // fails if the comboBox is NULL, index is not in a comboBox range

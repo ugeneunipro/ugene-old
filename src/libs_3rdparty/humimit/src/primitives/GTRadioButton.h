@@ -27,7 +27,9 @@
 #include <QRadioButton>
 
 namespace HI {
-
+/*!
+ * \brief The class for working with QRadioButton primitive
+ */
 class HI_EXPORT GTRadioButton {
 public:
     // fails if the radioButton is NULL or can't click
