@@ -66,7 +66,7 @@ int ugene_printf(FILE *f, const char *format, ...) {
     assert(n>=0 && n < 1024);
     Q_UNUSED(n);
 
-    FILEStub* s = (FILEStub*)f;
+    FILEStub* s = static_cast<FILEStub*>(f);
     s->tsi.setDescription(QString::fromLatin1(str));
     return 0;
 }
