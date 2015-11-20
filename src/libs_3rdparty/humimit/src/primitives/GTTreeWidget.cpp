@@ -19,19 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTreeWidget>
-#endif
 
-#include "GTTreeWidget.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
+#include "primitives/GTTreeWidget.h"
 #include <primitives/GTWidget.h>
+
+#include <QHeaderView>
 
 namespace HI {
 

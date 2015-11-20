@@ -23,6 +23,7 @@
 #define _HI_GUI_TOOLTIP_UTILS_H_
 
 #include "GTGlobals.h"
+#include <QToolTip>
 
 namespace HI {
 

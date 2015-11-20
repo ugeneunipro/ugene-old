@@ -19,17 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QListWidget>
-#else
-#include <QtWidgets/QListWidget>
-#endif
-
-#include "GTListWidget.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
+#include "primitives/GTListWidget.h"
 
 namespace HI{
 

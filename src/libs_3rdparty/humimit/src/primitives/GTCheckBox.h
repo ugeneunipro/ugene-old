@@ -23,11 +23,7 @@
 #define _HI_GT_CHECKBOX_H_
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QCheckBox>
-#else
-#include <QtWidgets/QCheckBox>
-#endif
+#include <QCheckBox>
 
 namespace HI {
 

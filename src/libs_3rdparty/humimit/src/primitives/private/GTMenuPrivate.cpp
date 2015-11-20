@@ -19,21 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMainWindow>
-#include <QMenuBar>
-
-#include <U2Core/AppContext.h>
-
-#include <U2Gui/MainWindow.h>
-
 #include "GTMenuPrivate.h"
 #ifdef Q_OS_MAC
 #include "GTMenuPrivateMac.h"
 #endif
-#include "utils/GTUtilsDialog.h"
-#include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTAction.h"
+#include "primitives/GTMainWindow.h"
 #include "primitives/PopupChooser.h"
+#include "utils/GTUtilsDialog.h"
+
+#include <QMainWindow>
+#include <QMenuBar>
 
 namespace HI {
 
@@ -73,12 +71,9 @@ void GTMenuPrivate::checkMainMenuItemState(U2::U2OpStatus &os, const QStringList
 
 #define GT_METHOD_NAME "showMainMenu"
 void GTMenuPrivate::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
-    U2::MainWindow *mw = U2::AppContext::getMainWindow();
-    GT_CHECK(mw != NULL, "MainWindow is NULL");
-    QMainWindow *mainWindow = mw->getQMainWindow();
-    GT_CHECK(mainWindow != NULL, "QMainWindow is NULL");
 
-    QList<QAction *> actions = mainWindow->findChildren<QAction *>();
+    QWidget* mainWindowWidget = GTMainWindow::getMainWindowAsWidget(os);
+    QList<QAction *> actions = mainWindowWidget->findChildren<QAction *>();
     QAction *menu = NULL;
     foreach (QAction* action, actions) {
         QString name = action->text().replace('&',"");
@@ -86,8 +81,8 @@ void GTMenuPrivate::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GT
             menu = action;
         }
     }
-
     GT_CHECK(menu != NULL, QString("menu \"%1\" not found").arg(menuName));
+    QMainWindow* mainWindow = GTMainWindow::getMainWindow(os);
 
     QPoint pos;
     QPoint gPos;

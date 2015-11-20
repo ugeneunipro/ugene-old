@@ -23,6 +23,7 @@ HEADERS += \
            src/primitives/GTGroupBox.h \
            src/primitives/GTLineEdit.h \
            src/primitives/GTListWidget.h \
+           src/primitives/GTMainWindow.h \
            src/primitives/GTMenu.h \
            src/primitives/GTMenuBar.h \
            src/primitives/GTPlainTextEdit.h \
@@ -44,12 +45,12 @@ HEADERS += \
            src/system/GTClipboard.h \
            src/system/GTFile.h \
            src/utils/GTKeyboardUtils.h \
-           src/utils/GTMouse.h \
            src/utils/GTThread.h \
            src/utils/GTUtilsApp.h \
            src/utils/GTUtilsDialog.h \
 #           src/utils/GTUtilsMdi.h \
-           src/utils/GTUtilsToolTip.h
+           src/utils/GTUtilsToolTip.h \
+    src/utils/GTMouseUtils.h
 SOURCES += \
            src/GTGlobals.cpp \
            src/base_dialogs/ColorDialogFiller.cpp \
@@ -75,6 +76,7 @@ SOURCES += \
            src/primitives/GTGroupBox.cpp \
            src/primitives/GTLineEdit.cpp \
            src/primitives/GTListWidget.cpp \
+           src/primitives/GTMainWindow.cpp \
            src/primitives/GTMenu.cpp \
            src/primitives/GTMenuBar.cpp \
            src/primitives/GTPlainTextEdit.cpp \
@@ -96,12 +98,12 @@ SOURCES += \
            src/system/GTClipboard.cpp \
            src/system/GTFile.cpp \
            src/utils/GTKeyboardUtils.cpp \
-           src/utils/GTMouse.cpp \
            src/utils/GTThread.cpp \
            src/utils/GTUtilsApp.cpp \
            src/utils/GTUtilsDialog.cpp \
 #           src/utils/GTUtilsMdi.cpp \
-           src/utils/GTUtilsToolTip.cpp
+           src/utils/GTUtilsToolTip.cpp \
+    src/utils/GTMouseUtils.cpp
 
 macx {
 OBJECTIVE_HEADERS += src/primitives/private/GTMenuPrivateMac.h

@@ -22,9 +22,8 @@
 #ifndef _HI_GT_SPINBOX_H_
 #define _HI_GT_SPINBOX_H_
 
-#include <QSpinBox>
-
 #include "GTGlobals.h"
+#include <QSpinBox>
 
 namespace HI {
 

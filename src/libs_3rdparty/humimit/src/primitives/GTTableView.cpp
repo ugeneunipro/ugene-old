@@ -19,9 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include "primitives/GTTableView.h"
 #include <primitives/GTWidget.h>
-
-#include "GTTableView.h"
 
 namespace HI{
 

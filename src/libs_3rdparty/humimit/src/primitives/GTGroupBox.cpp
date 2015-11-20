@@ -19,11 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+
+#include "primitives/GTGroupBox.h"
+#include "primitives/GTWidget.h"
+
 #include <QStyle>
 #include <QStyleOption>
-
-#include "GTGroupBox.h"
-#include "primitives/GTWidget.h"
 
 namespace HI {
 

@@ -19,20 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <QComboBox>
-#include <QMainWindow>
-#include <QWidget>
-#include <QStyle>
-
-#include <U2Core/AppContext.h>
-
-#include <U2Gui/MainWindow.h>
-
-#include <U2View/ADVSingleSequenceWidget.h>
 
 #include "drivers/GTMouseDriver.h"
+#include "primitives/GTMainWindow.h"
+#include "primitives/GTWidget.h"
 #include "utils/GTThread.h"
-#include "GTWidget.h"
+
+#include <QApplication>
+#include <QComboBox>
+#include <QMainWindow>
+#include <QStyle>
 
 namespace HI {
 #define GT_CLASS_NAME "GTWidget"
@@ -83,7 +79,7 @@ QWidget* GTWidget::findWidget(U2::U2OpStatus &os, const QString &widgetName, QWi
     Q_UNUSED(os);
 
     if (parentWidget == NULL) {
-        parentWidget = U2::AppContext::getMainWindow()->getQMainWindow();
+        parentWidget = GTMainWindow::getMainWindowAsWidget(os);
     }
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
@@ -106,7 +102,7 @@ QPoint GTWidget::getWidgetCenter(U2::U2OpStatus &os, QWidget *w){
 QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
 
     if (parentWidget == NULL) {
-        parentWidget = U2::AppContext::getMainWindow()->getQMainWindow();
+        parentWidget = GTMainWindow::getMainWindowAsWidget(os);
     }
     QList<QAbstractButton*> buttonList = parentWidget->findChildren<QAbstractButton*>();
     QList<QAbstractButton*> foundButtonList;
@@ -133,7 +129,7 @@ QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &t
 void GTWidget::getAllWidgetsInfo(U2::U2OpStatus &os, QWidget *parent){
 
     if(parent == NULL){
-        parent = qobject_cast<QWidget*>(U2::AppContext::getMainWindow()->getQMainWindow());
+        parent = GTMainWindow::getMainWindowAsWidget(os);
     }
 
     QList<QObject*> list= parent->findChildren<QObject*>();

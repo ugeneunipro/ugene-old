@@ -34,7 +34,6 @@
 #endif
 
 #include "GTGlobals.h"
-//#include <U2Core/AppContext.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

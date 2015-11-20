@@ -23,11 +23,7 @@
 #define _HI_GT_TABBAR_H_
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTabBar>
-#else
-#include <QtWidgets/QTabBar>
-#endif
+#include <QTabBar>
 
 namespace HI {
 

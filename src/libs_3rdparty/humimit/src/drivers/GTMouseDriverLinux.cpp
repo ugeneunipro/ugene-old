@@ -20,7 +20,6 @@
  */
 
 #include "GTMouseDriver.h"
-#include "GTGlobals.h"
 #include <QByteArray>
 
 #ifdef __linux__

@@ -20,35 +20,36 @@
  */
 
 #include "primitives/GTMainWindow.h"
-#include "utils/GTUtilsApp.h"
 
-#include <QMainWindow>
+#include <QApplication>
+#include <QWindow>
 
 namespace HI {
 
-#define GT_CLASS_NAME "GTUtilsApp"
+QWidget* GTMainWindow::mainWindowWidget = NULL;
 
-#define GT_METHOD_NAME "checkUGENETitle"
-void GTUtilsApp::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
+#define GT_CLASS_NAME "GTMainWindow"
 
-    QMainWindow* w = GTMainWindow::getMainWindow(os);
-    GT_CHECK(w, "main window is NULL");
-    QString ugeneTitle = w->windowTitle();
-    GT_CHECK(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
+#define GT_METHOD_NAME "getMainWindow"
+QMainWindow* GTMainWindow::getMainWindow(U2::U2OpStatus &os) {
+    QMainWindow* mainWindow = qobject_cast<QMainWindow*>(GTMainWindow::getMainWindowAsWidget(os));
+    GT_CHECK_RESULT(mainWindow != NULL, "QMainWindow is NULL", NULL);
+    return mainWindow;
 }
-
 #undef GT_METHOD_NAME
 
-#undef GT_CLASS_NAME
-
-#define GT_CLASS_NAME "GTUtilsApp"
-
-#define GT_METHOD_NAME "checkUGENETitleContains"
-void GTUtilsApp::checkUGENETitleContains(U2::U2OpStatus &os, const QString& string) {
-    QMainWindow* w = GTMainWindow::getMainWindow(os);
-    GT_CHECK(w, "main window is NULL");
-    QString ugeneTitle = w->windowTitle();
-    GT_CHECK(ugeneTitle.contains(string), "UGENE title is <" + ugeneTitle + ">, and it not contains <" + string + ">");
+#define GT_METHOD_NAME "getMainWindowAsWidget"
+QWidget* GTMainWindow::getMainWindowAsWidget(U2::U2OpStatus &os) {
+    if (mainWindowWidget == NULL){
+        foreach(QWidget *widget, qApp->topLevelWidgets()){
+            if(widget->inherits("QMainWindow")){
+                mainWindowWidget = widget;
+                break;
+            }
+        }
+    }
+    GT_CHECK_RESULT(mainWindowWidget!=NULL,"main window not found", NULL);
+    return mainWindowWidget;
 }
 #undef GT_METHOD_NAME
 

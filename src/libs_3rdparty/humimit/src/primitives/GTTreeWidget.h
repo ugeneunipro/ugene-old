@@ -24,8 +24,8 @@
 
 #include "GTGlobals.h"
 
-class QTreeWidget;
-class QTreeWidgetItem;
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 namespace HI {
 

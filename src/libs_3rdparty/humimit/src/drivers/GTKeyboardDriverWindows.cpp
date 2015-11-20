@@ -21,12 +21,6 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
 #include <QtGui/QClipboard>
 
 #ifdef _WIN32
@@ -388,7 +382,6 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers);
@@ -404,7 +397,6 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers, true);

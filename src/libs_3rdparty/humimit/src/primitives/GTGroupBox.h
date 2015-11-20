@@ -22,9 +22,8 @@
 #ifndef _HI_GT_GROUP_BOX_H_
 #define _HI_GT_GROUP_BOX_H_
 
-#include <QGroupBox>
-
 #include "GTGlobals.h"
+#include <QGroupBox>
 
 namespace HI {
 

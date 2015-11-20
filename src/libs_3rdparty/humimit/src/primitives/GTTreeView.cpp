@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTreeView.h"
+#include "primitives/GTTreeView.h"
 
 #include <QAbstractItemModel>
 

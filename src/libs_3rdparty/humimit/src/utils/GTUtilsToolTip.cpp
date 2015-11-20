@@ -21,12 +21,6 @@
 
 #include "GTUtilsToolTip.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QToolTip>
-#else
-#include <QtWidgets/QToolTip>
-#endif
-
 namespace HI {
 
 #define GT_CLASS_NAME "GTUtilsToolTip"

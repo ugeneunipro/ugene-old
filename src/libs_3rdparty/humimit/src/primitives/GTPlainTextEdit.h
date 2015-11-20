@@ -23,11 +23,7 @@
 #define _HI_GT_PLAINTEXTEDIT_H_
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPlainTextEdit>
-#else
-#include <QtWidgets/QPlainTextEdit>
-#endif
+#include <QPlainTextEdit>
 
 namespace HI {
 

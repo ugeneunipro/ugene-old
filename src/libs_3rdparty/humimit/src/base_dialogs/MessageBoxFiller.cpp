@@ -19,13 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QAbstractButton>
-#include <QApplication>
 
-#include "MessageBoxFiller.h"
+#include "base_dialogs/MessageBoxFiller.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "primitives/GTSpinBox.h"
 #include "primitives/GTWidget.h"
+
+#include <QAbstractButton>
+#include <QApplication>
 
 namespace HI {
 

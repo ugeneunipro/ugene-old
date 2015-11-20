@@ -19,45 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTMenu.h"
-#include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "GTGlobals.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTMainWindow.h"
+#include "primitives/GTMenu.h"
 #include "primitives/GTWidget.h"
 #include "primitives/private/GTMenuPrivate.h"
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Gui/MainWindow.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenuBar>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#endif
+#include <QApplication>
+#include <QMainWindow>
+#include <QMenuBar>
 
 namespace HI {
 
 #define GT_CLASS_NAME "GTMenu"
 
-const QString GTMenu::FILE = MWMENU_FILE;
-const QString GTMenu::ACTIONS = MWMENU_ACTIONS;
-const QString GTMenu::SETTINGS = MWMENU_SETTINGS;
-const QString GTMenu::TOOLS = MWMENU_TOOLS;
-const QString GTMenu::WINDOW = MWMENU_WINDOW;
-const QString GTMenu::HELP = MWMENU_HELP;
-
 #define GT_METHOD_NAME "showMainMenu"
 QMenu* GTMenu::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
-    assert(false);  // Use clickMainMenuItem instead
-    U2::MainWindow *mw = U2::AppContext::getMainWindow();
-    GT_CHECK_RESULT(mw != NULL, "MainWindow is NULL", NULL);
-    QMainWindow *mainWindow = mw->getQMainWindow();
-    GT_CHECK_RESULT(mainWindow != NULL, "QMainWindow is NULL", NULL);
+
+    QMainWindow* mainWindow = GTMainWindow::getMainWindow(os);
 
     QAction *menu = mainWindow->findChild<QAction*>(menuName);
 

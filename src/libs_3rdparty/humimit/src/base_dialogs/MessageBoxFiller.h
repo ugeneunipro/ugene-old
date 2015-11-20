@@ -22,9 +22,8 @@
 #ifndef _HI_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 #define _HI_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 
-#include <QMessageBox>
-
 #include "utils/GTUtilsDialog.h"
+#include <QMessageBox>
 
 namespace HI {
 

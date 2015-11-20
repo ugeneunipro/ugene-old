@@ -19,21 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTAction.h"
-#include <U2Core/global.h>
+#include "primitives/GTAction.h"
+#include "primitives/GTMainWindow.h"
+
+#include <QAbstractButton>
+#include <QApplication>
+#include <QMainWindow>
+#include <QToolButton>
+#include <QWidget>
+
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QAbstractButton>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QToolButton>
-#endif
 
 namespace HI {
 
@@ -97,11 +93,11 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QAction* a, QObject 
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getAction"
-QAction* GTAction::findAction(U2::U2OpStatus &/*os*/, const QString &actionName, QObject *parent) {
+#define GT_METHOD_NAME "findAction"
+QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent) {
 
     if (parent == NULL) {
-        parent = U2::AppContext::getMainWindow()->getQMainWindow();
+        parent = GTMainWindow::getMainWindowAsWidget(os);
     }
     QAction* a = parent->findChild<QAction*>(actionName);
 
@@ -110,16 +106,15 @@ QAction* GTAction::findAction(U2::U2OpStatus &/*os*/, const QString &actionName,
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findActionByText"
-QAction* GTAction::findActionByText(U2::U2OpStatus &os, const QString &text, QObject *parent) {
+QAction* GTAction::findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent) {
 
     if (parent == NULL) {
-        parent = U2::AppContext::getMainWindow()->getQMainWindow();
+        parent = GTMainWindow::getMainWindowAsWidget(os);
     }
     QList<QAction*> list = parent->findChildren<QAction*>();
     QList<QAction*> resultList;
-
     foreach(QAction* act, list){
-        if(act->text()==text){
+        if(act->text() == text){
             resultList<<act;
         }
     }

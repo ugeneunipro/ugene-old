@@ -22,6 +22,7 @@
 #ifndef _HI_GT_RUNNABLES_POPUP_CHOOSER_FILLER_H_
 #define _HI_GT_RUNNABLES_POPUP_CHOOSER_FILLER_H_
 
+#include "GTGlobals.h"
 #include "utils/GTUtilsDialog.h"
 
 namespace HI {
@@ -38,7 +39,7 @@ class HI_EXPORT PopupChooser : public Filler {
         GTGlobals::UseMethod useMethod;
 
     private:
-        static void clickEsc();
+        static void clickEsc(U2::U2OpStatus &_os);
     };
 
 class HI_EXPORT PopupChooserByText : public Filler {

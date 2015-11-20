@@ -23,6 +23,7 @@
 #define _HI_GUI_GTACTION_H_
 
 #include "GTGlobals.h"
+#include <QAction>
 
 class QAbstractButton;
 namespace HI {
@@ -36,7 +37,7 @@ public:
 
     static QAction* findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
 
-    static QAction* findActionByText(U2::U2OpStatus &os, const QString &text, QObject *parent = NULL);
+    static QAction* findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent = NULL);
 };
 
 } //namespace

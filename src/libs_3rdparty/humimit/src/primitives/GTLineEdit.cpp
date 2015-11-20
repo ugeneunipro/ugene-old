@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "system/GTClipboard.h"
 #include "drivers/GTKeyboardDriver.h"
-#include "utils/GTKeyboardUtils.h"
-#include "GTLineEdit.h"
 #include "drivers/GTMouseDriver.h"
+#include "primitives/GTLineEdit.h"
 #include "primitives/GTWidget.h"
+#include "system/GTClipboard.h"
+#include "utils/GTKeyboardUtils.h"
 
 namespace HI {
 #define GT_CLASS_NAME "GTLineEdit"

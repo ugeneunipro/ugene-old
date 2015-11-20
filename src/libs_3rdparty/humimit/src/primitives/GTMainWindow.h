@@ -19,26 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef HI_GUI_GTMOUSE_H_
-#define HI_GUI_GTMOUSE_H_
+#ifndef _HI_GT_MAIN_WINDOW_H_
+#define _HI_GT_MAIN_WINDOW_H_
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#else
-#include <QtWidgets/QWidget>
-#endif
 
+#include <QMainWindow>
+#include <QWidget>
 
 namespace HI {
 
-class HI_EXPORT GTMouse {
+class HI_EXPORT GTMainWindow {
 public:
+    static QMainWindow* getMainWindow(U2::U2OpStatus &os);
+    static QWidget* getMainWindowAsWidget(U2::U2OpStatus &os);
 
-    static void moveCursorToWidget(U2::U2OpStatus &os, QWidget *widget);
-    static void moveCursorOutOfWidget(U2::U2OpStatus &os, QWidget *widget);
+private:
+    static QWidget* mainWindowWidget;
 
 };
 
-}
-#endif // U2_GUI_GTMOUSE_H
+} // namespace
+
+#endif

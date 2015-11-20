@@ -19,15 +19,13 @@
 * MA 02110-1301, USA.
 */
 
-
-
 #ifndef GTWEBVIEW_H
 #define GTWEBVIEW_H
 
 #include "GTGlobals.h"
 
-class QWebView;
-class QWebElement;
+#include <QWebView>
+#include <QWebElement>
 
 namespace HI {
 

@@ -19,20 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTRadioButton.h"
-#include <primitives/GTWidget.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Core/AppContext.h>
+#include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTMainWindow.h"
+#include "primitives/GTRadioButton.h"
+#include "primitives/GTWidget.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMainWindow>
-#endif
-
-
-#include <drivers/GTMouseDriver.h>
-#include <drivers/GTKeyboardDriver.h>
+#include <QApplication>
+#include <QMainWindow>
 
 namespace HI {
 #define GT_CLASS_NAME "GTRadioButton"
@@ -55,7 +49,7 @@ void GTRadioButton::click(U2::U2OpStatus& os, QRadioButton *radioButton) {
 #define GT_METHOD_NAME "getRadioButtonByText"
 QRadioButton* GTRadioButton::getRadioButtonByText(U2::U2OpStatus &os, QString text, QWidget *parent){
     if(parent==NULL){
-        parent= U2::AppContext::getMainWindow()->getQMainWindow();
+        parent = GTMainWindow::getMainWindowAsWidget(os);
     }
     QList<QRadioButton*> radioList = getAllButtonsByText(os, text, parent);
     GT_CHECK_RESULT(radioList.size() > 1, "Several radioButtons contain this text", NULL);
@@ -70,7 +64,7 @@ QList<QRadioButton*> GTRadioButton::getAllButtonsByText(U2::U2OpStatus &os, QStr
     Q_UNUSED(os);
     QList<QRadioButton*> result;
     if(parent==NULL){
-        parent= U2::AppContext::getMainWindow()->getQMainWindow();
+        parent = GTMainWindow::getMainWindowAsWidget(os);
     }
     QList<QRadioButton*> radioList = parent->findChildren<QRadioButton*>();
     foreach(QRadioButton* but, radioList){

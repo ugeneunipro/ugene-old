@@ -21,12 +21,6 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
 
 #if defined __linux__
     #define XK_LATIN1      // for latin symbol
@@ -45,7 +39,6 @@ namespace HI {
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = 0");
-//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -114,7 +107,6 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = ");
-//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");

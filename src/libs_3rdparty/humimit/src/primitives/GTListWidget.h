@@ -24,8 +24,7 @@
 #define _HI_GT_LISTWIDGET_H_
 
 #include "GTGlobals.h"
-
-class QListWidget;
+#include <QListWidget>
 
 namespace HI{
 

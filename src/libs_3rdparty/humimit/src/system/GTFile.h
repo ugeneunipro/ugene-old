@@ -23,7 +23,7 @@
 #define _HI_GT_FILE_H_
 
 #include "GTGlobals.h"
-#include <QtCore/QFile>
+#include <QFile>
 
 namespace HI {
 

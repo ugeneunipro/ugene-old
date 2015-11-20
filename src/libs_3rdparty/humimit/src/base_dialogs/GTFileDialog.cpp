@@ -19,6 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/Task.h>
+
+#include "base_dialogs/GTFileDialog.h"
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include "GTGlobals.h"
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include "primitives/GTMenu.h"
+#include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
+
 #include <QApplication>
 #include <QComboBox>
 #include <QFileSystemModel>
@@ -26,19 +39,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTreeView>
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
-
-#include <primitives/GTComboBox.h>
-#include "GTFileDialog.h"
-#include <drivers/GTKeyboardDriver.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
-#include <primitives/GTWidget.h>
-#include "GTGlobals.h"
-#include <primitives/GTLineEdit.h>
-#include <utils/GTThread.h>
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 #define CURRENT_FODLER_COMBO_BOX "lookInCombo"

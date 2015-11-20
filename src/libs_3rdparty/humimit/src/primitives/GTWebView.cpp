@@ -19,14 +19,13 @@
 * MA 02110-1301, USA.
 */
 
-#include <QWebElement>
-#include <QWebFrame>
-#include <QWebView>
 
 #include <U2Test/MainThreadRunnable.h>
 
-#include "GTWebView.h"
 #include <drivers/GTMouseDriver.h>
+#include "primitives/GTWebView.h"
+
+#include <QWebFrame>
 
 namespace HI {
 namespace {

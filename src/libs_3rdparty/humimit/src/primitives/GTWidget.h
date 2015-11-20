@@ -24,13 +24,9 @@
 
 #include "GTGlobals.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAbstractButton>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QAbstractButton>
+#include <QPushButton>
+#include <QWidget>
 
 namespace HI {
 

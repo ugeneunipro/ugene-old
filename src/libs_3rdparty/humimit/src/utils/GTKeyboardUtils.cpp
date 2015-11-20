@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTKeyboardDriver.h"
-#include "GTKeyboardUtils.h"
+#include "utils/GTKeyboardUtils.h"
 
 namespace HI {
 

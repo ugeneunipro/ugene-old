@@ -19,25 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "FontDialogFiller.h"
-#include <primitives/GTWidget.h>
-#include <drivers/GTKeyboardDriver.h>
+#ifndef HI_GUI_GTMOUSE_H_
+#define HI_GUI_GTMOUSE_H_
 
-#include <QApplication>
-#include <QAbstractButton>
+#include "GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
+
 
 namespace HI {
 
-#define GT_CLASS_NAME "GTUtilsDialog::FontDialogFiller"
-#define GT_METHOD_NAME "run"
-void FontDialogFiller::run() {
+class HI_EXPORT GTMouseUtils {
+public:
 
-    QWidget* dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog != NULL, "dialog is NULL");
-    GTGlobals::sleep();
+    static void moveCursorToWidget(U2::U2OpStatus &os, QWidget *widget);
+    static void moveCursorOutOfWidget(U2::U2OpStatus &os, QWidget *widget);
 
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+};
+
 }
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
-}
+#endif // U2_GUI_GTMOUSE_H

@@ -23,11 +23,7 @@
 #define _HI_GT_COMBOBOX_H_
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QComboBox>
-#else
-#include <QtWidgets/QComboBox>
-#endif
+#include <QComboBox>
 
 namespace HI {
 

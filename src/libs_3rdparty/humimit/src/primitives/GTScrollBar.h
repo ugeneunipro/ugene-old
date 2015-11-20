@@ -22,17 +22,11 @@
 #ifndef _HI_GUI_GTSCROLLBAR_H_
 #define _HI_GUI_GTSCROLLBAR_H_
 
-#include <QtCore/QPoint>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QScrollBar>
-#include <QtGui/QStyleOptionSlider>
-#else
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QStyleOptionSlider>
-#endif
-#include <drivers/GTMouseDriver.h>
-#include <drivers/GTKeyboardDriver.h>
+#include "GTGlobals.h"
 
+#include <QPoint>
+#include <QScrollBar>
+#include <QStyleOptionSlider>
 
 namespace HI {
 

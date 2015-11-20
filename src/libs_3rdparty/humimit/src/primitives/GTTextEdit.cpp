@@ -19,9 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTextEdit.h"
-#include <primitives/GTWidget.h>
 #include <drivers/GTKeyboardDriver.h>
+#include "primitives/GTTextEdit.h"
+#include <primitives/GTWidget.h>
 #include "utils/GTKeyboardUtils.h"
 
 namespace HI {

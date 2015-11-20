@@ -19,20 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include "base_dialogs/ColorDialogFiller.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTWidget.h>
 #include <utils/GTThread.h>
-#include "ColorDialogFiller.h"
+
+#include <QApplication>
 #include <QColor>
 #include <QColorDialog>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
-#include <QWidget>
 #include <QSpinBox>
+#include <QWidget>
+
 namespace HI{
 
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"

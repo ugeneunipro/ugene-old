@@ -22,7 +22,7 @@
 #include "GTSlider.h"
 
 namespace HI{
-#define GT_CLASS_NAME "GTSpinBox"
+#define GT_CLASS_NAME "GTSlider"
 
 #define GT_METHOD_NAME "setValue"
 void GTSlider::setValue(U2::U2OpStatus &os, QSlider *slider, int value){

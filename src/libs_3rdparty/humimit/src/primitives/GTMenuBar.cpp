@@ -19,16 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTMenuBar.h"
 #include "drivers/GTMouseDriver.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenuBar>
-#else
-#include <QtWidgets/QMenuBar>
-#endif
+#include "primitives/GTMenuBar.h"
 
 namespace HI {
-using namespace U2;
 #define GT_CLASS_NAME "GTMenuBar"
 
 #define GT_METHOD_NAME "clickCornerMenu"
@@ -42,7 +36,7 @@ void GTMenuBar::clickCornerMenu(U2::U2OpStatus &os, QMenuBar* mBar, GTGlobals::W
     int num = (int)action;
     GT_CHECK(num>=0 && num<(int)GTGlobals::WindowActionCount, "action is not GTGlobals::WindowAction");
 
-    SAFE_POINT((int)GTGlobals::WindowActionCount != 0, "GTGlobals::WindowActionCount == 0", );
+    GT_CHECK((int)GTGlobals::WindowActionCount != 0, "GTGlobals::WindowActionCount == 0");
     int oneWidth = r.width()/(int)GTGlobals::WindowActionCount;
 
     QPoint need((num+1)*oneWidth - oneWidth/2, r.height()/2);

@@ -24,7 +24,6 @@
 
 #include <QMap>
 #include "GTGlobals.h"
-#include <U2Core/U2OpStatus.h>
 
 #ifdef _WIN32
 #include <windows.h>

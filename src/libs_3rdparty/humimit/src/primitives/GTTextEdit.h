@@ -23,12 +23,7 @@
 #define _HI_GT_TEXTEDIT_H_
 
 #include "GTGlobals.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTextEdit>
-#else
-#include <QtWidgets/QTextEdit>
-#endif
+#include <QTextEdit>
 
 namespace HI {
 

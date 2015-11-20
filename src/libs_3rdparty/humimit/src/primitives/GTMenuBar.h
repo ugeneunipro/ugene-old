@@ -23,8 +23,8 @@
 #define _HI_GT_MENU_BAR_H_
 
 #include "GTGlobals.h"
+#include <QMenuBar>
 
-class QMenuBar;
 namespace HI {
 
 class HI_EXPORT GTMenuBar {

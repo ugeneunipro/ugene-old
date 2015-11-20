@@ -19,13 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTPlainTextEdit.h"
-#include <primitives/GTWidget.h>
-
-#include <drivers/GTMouseDriver.h>
-#include <drivers/GTKeyboardDriver.h>
+#include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTPlainTextEdit.h"
+#include "primitives/GTWidget.h"
 #include "utils/GTKeyboardUtils.h"
-#include <QDebug>
+
 namespace HI {
 
 #define GT_CLASS_NAME "GTPlainTextEdit"
@@ -40,10 +39,8 @@ void GTPlainTextEdit::setPlainText(U2::U2OpStatus& os, QPlainTextEdit* plainText
 
     GTWidget::setFocus(os, plainTextEdit);
 
-    qDebug() << "Test in setPlainTest() = " << text;
     GTKeyboardDriver::keySequence(os, text);
     GTGlobals::sleep(500);
-
 
 }
 #undef GT_METHOD_NAME

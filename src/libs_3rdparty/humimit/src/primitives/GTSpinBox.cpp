@@ -19,11 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTSpinBox.h"
-#include "primitives/GTWidget.h"
-
-#include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTSpinBox.h"
+#include "primitives/GTWidget.h"
 
 namespace HI {
 

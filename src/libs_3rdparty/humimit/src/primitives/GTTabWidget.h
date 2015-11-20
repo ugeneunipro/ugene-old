@@ -23,12 +23,7 @@
 #define _HI_GT_TABWIDGET_H_
 
 #include "GTGlobals.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTabWidget>
-#else
-#include <QtWidgets/QTabWidget>
-#endif
+#include <QTabWidget>
 
 namespace HI {
 

@@ -19,18 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <QStandardItemModel>
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QListView>
-#else
-#include <QtWidgets/QListView>
-#endif
-
-#include "GTComboBox.h"
-#include "primitives/GTWidget.h"
-#include "drivers/GTMouseDriver.h"
 #include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTComboBox.h"
+#include "primitives/GTWidget.h"
+
+#include <QListView>
+#include <QStandardItemModel>
 
 namespace HI {
 

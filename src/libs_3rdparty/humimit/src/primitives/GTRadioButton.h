@@ -24,11 +24,7 @@
 
 #include "GTGlobals.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QRadioButton>
-#else
-#include <QtWidgets/QRadioButton>
-#endif
+#include <QRadioButton>
 
 namespace HI {
 

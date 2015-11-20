@@ -24,12 +24,6 @@
 
 #include "utils/GTUtilsDialog.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-
 namespace HI {
 
 class HI_EXPORT FontDialogFiller : public Filler {

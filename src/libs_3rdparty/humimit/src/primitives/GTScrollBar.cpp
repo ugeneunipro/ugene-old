@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTScrollBar.h"
-#include <primitives/GTWidget.h>
-
+#include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+#include "primitives/GTScrollBar.h"
+#include "primitives/GTWidget.h"
 
 namespace HI {
 #define GT_CLASS_NAME "GTScrollBar"

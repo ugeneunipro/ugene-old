@@ -22,23 +22,19 @@
 #define GTTABLEVIEW_H
 
 #include "GTGlobals.h"
-#include <QtCore/QPoint>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTableView>
-#else
-#include <QtWidgets/QTableView>
-#endif
+#include <QPoint>
+#include <QTableView>
 
 namespace HI{
 
-class HI_EXPORT GTTableView
-{
+class HI_EXPORT GTTableView {
 public:
     static QPoint getCellPosition(U2::U2OpStatus &os, QTableView *table, int column, int row);
     static QPoint getCellPoint(U2::U2OpStatus &os, QTableView *table, int row, int column);
     static int rowCount(U2::U2OpStatus &os, QTableView *table);
     static QString data(U2::U2OpStatus &os, QTableView *table, int row, int column);
 };
+
 }
 #endif // GTTABLEVIEW_H

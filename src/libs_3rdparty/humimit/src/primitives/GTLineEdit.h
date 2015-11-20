@@ -22,8 +22,8 @@
 #ifndef _HI_GT_LINEEDIT_H_
 #define _HI_GT_LINEEDIT_H_
 
+#include "GTGlobals.h"
 #include <QLineEdit>
-#include <GTGlobals.h>
 
 namespace HI {
 

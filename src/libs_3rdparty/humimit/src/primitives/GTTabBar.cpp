@@ -19,16 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTabBar.h"
-#include <primitives/GTWidget.h>
-#include <drivers/GTMouseDriver.h>
 #include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include "primitives/GTTabBar.h"
+#include <primitives/GTWidget.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QToolButton>
-#endif
+#include <QToolButton>
 
 namespace HI {
 #define GT_CLASS_NAME "GTTabBar"

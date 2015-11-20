@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTCheckBox.h"
+#include "primitives/GTCheckBox.h"
 #include "primitives/GTWidget.h"
 
 namespace HI {

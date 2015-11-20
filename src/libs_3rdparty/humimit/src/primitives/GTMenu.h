@@ -25,8 +25,8 @@
 #include "GTGlobals.h"
 #include "primitives/PopupChooser.h"
 
-class QMenu;
-class QAction;
+#include <QAction>
+#include <QMenu>
 
 namespace HI {
 

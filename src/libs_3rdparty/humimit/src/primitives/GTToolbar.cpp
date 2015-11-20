@@ -19,16 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTToolbar.h"
-#include <primitives/GTWidget.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include "QtGui/QToolBar"
-#include "QtGui/QAction"
-#else
-#include "QtWidgets/QToolBar"
-#include "QtWidgets/QAction"
-#endif
+#include "primitives/GTToolbar.h"
+#include "primitives/GTWidget.h"
 
+#include <QAction>
 
 namespace HI {
 #define GT_CLASS_NAME "GTToolbar"

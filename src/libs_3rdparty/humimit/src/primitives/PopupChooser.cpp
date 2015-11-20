@@ -19,20 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "PopupChooser.h"
+#include "primitives/PopupChooser.h"
 #include "drivers/GTKeyboardDriver.h"
 #include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 
-#include <U2Core/U2OpStatusUtils.h>
+//#include <U2Core/U2OpStatusUtils.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMenu>
-#endif
+#include <QApplication>
+#include <QMenu>
 
 namespace HI {
 #define GT_CLASS_NAME "PopupChooser"
@@ -47,19 +42,18 @@ void PopupChooser::commonScenario() {
     if (!namePath.isEmpty()) {
         GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
     } else {
-        clickEsc();
+        clickEsc(os);
     }
 
     if (os.hasError()) {
-        clickEsc();
+        clickEsc(os);
     }
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickEsc"
-void PopupChooser::clickEsc() {
-    U2::U2OpStatus2Log opStatus;
-    GTKeyboardDriver::keyClick(opStatus, GTKeyboardDriver::key["esc"]);
+void PopupChooser::clickEsc(U2::U2OpStatus &os) {
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 }
 #undef GT_METHOD_NAME
 
@@ -126,15 +120,15 @@ void PopupChecker::commonScenario() {
             U2::uiLog.trace("options.testFlag(IsChecked)");
         }
         for(int i = 0; i<escCount; i++){
-            PopupChooser::clickEsc();
+            PopupChooser::clickEsc(os);
             GTGlobals::sleep(300);
         }
     } else {
-        PopupChooser::clickEsc();
+        PopupChooser::clickEsc(os);
     }
 
     if (os.hasError()) {
-        PopupChooser::clickEsc();
+        PopupChooser::clickEsc(os);
     }
 }
 #undef GT_METHOD_NAME
@@ -182,7 +176,7 @@ void PopupCheckerByText::commonScenario() {
     QAction* act;
 
     if (textPaths.isEmpty() || textPaths.first().isEmpty()) {
-        PopupChooser::clickEsc();
+        PopupChooser::clickEsc(os);
         return;
     }
 
@@ -223,12 +217,12 @@ void PopupCheckerByText::commonScenario() {
             U2::uiLog.trace("options.testFlag(IsChecked)");
         }
         for (int i = 0; i < escCount - 1; i++) {
-            PopupChooser::clickEsc();
+            PopupChooser::clickEsc(os);
             GTGlobals::sleep(300);
         }
     }
 
-    PopupChooser::clickEsc();
+    PopupChooser::clickEsc(os);
 }
 #undef GT_METHOD_NAME
 

@@ -19,21 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTClipboard.h"
+#include "system/GTClipboard.h"
 #ifdef Q_OS_WIN
 #include "utils/GTThread.h"
 #endif
 
-#include <QtCore/QMimeData>
-#include <QtGui/QClipboard>
-#include <QtCore/QUrl>
-#include <QtCore/QFileInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
-
+#include <QApplication>
+#include <QClipboard>
+#include <QFileInfo>
+#include <QMimeData>
+#include <QUrl>
 
 namespace HI {
 

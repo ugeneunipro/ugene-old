@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTFile.h"
-#include <QtCore/QDir>
+#include "system/GTFile.h"
+#include <QDir>
 
 #ifdef Q_OS_WIN
 
