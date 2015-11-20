@@ -5871,7 +5871,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::moveTo(os, bottomLeftToolBar);
     GTMouseDriver::release(os);
     GTThread::waitForMainThread(os);
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
     QPoint handlePosition = splitterHandler->pos();
 
     QAbstractButton* cvButton = GTAction::button(os, "CircularViewAction");
@@ -5891,7 +5891,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::moveTo(os, p + QPoint(0, 50));
     GTMouseDriver::release(os);
     GTThread::waitForMainThread(os);
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
     CHECK_SET_ERR(handlePosition == splitterHandler->pos(), QString("Handler was moved: expected: %1, actual: %2").arg(splitter->pos().y()).arg(handlePosition.y()));
 }
