@@ -25,6 +25,7 @@
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTCheckBox.h>
+#include <primitives/GTGroupBox.h>
 
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -63,7 +64,7 @@ Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), al
     comboBoxAlphabetItems[ExtendedDNA] = "Extended DNA";
     comboBoxAlphabetItems[ExtendedRNA] = "Extended RNA";
     comboBoxAlphabetItems[StandardAmino] = "Standard amino";
-    comboBoxAlphabetItems[AllSymbols] = "All symbols";
+    comboBoxAlphabetItems[AllSymbols] = "Raw";
 }
 
 CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &os, CustomScenario *scenario)
@@ -84,7 +85,7 @@ void CreateDocumentFiller::commonScenario()
 
     if (customSettings){
         QGroupBox* customSettingsCheckBox = qobject_cast<QGroupBox*>(GTWidget::findWidget(os, "groupBox", dialog));
-        customSettingsCheckBox->setChecked(true);
+        GTGroupBox::setChecked(os, customSettingsCheckBox, true);
 
         QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "alphabetBox", dialog));
         GT_CHECK(alphabetComboBox != NULL, "ComboBox not found");

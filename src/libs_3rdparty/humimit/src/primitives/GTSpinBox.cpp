@@ -103,7 +103,7 @@ void GTSpinBox::setValue(U2::U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals
     }
 
     int currIndex = spinBox->value();
-    GT_CHECK(currIndex == v, "Can't set index");
+    GT_CHECK(currIndex == v, QString("Can't set index. Expected: %1 actual: %2").arg(v).arg(currIndex));
     GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME

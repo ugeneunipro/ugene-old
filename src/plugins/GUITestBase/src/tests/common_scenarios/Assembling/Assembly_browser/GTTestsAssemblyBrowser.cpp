@@ -442,6 +442,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTUtilsWorkflowDesigner::clickParameter(os, "Output file");
     URLWidget *urlWidget = qobject_cast<URLWidget *>(GTUtilsWorkflowDesigner::getParametersTable(os)->findChild<URLWidget *>());
     GTKeyboardDriver::keySequence(os, "aaa");
+    GTGlobals::sleep(1000);
     CHECK_SET_ERR(NULL != urlWidget, "Output file url widget was not found");
     QTreeWidget *completer = urlWidget->findChild<QTreeWidget *>();
     CHECK_SET_ERR(completer != NULL, "auto completer widget was not found");

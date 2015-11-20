@@ -963,19 +963,19 @@ GUI_TEST_CLASS_DEFINITION(test_0663) {
     //V	2	12.5
     QWebView *statisticsView = GTWidget::findExactWidget<QWebView *>(os, "DNAStatWebViewregion [3 50]|transl");
     const QString statisticsData = statisticsView->page()->mainFrame()->toHtml();
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Sequence length:</b></td><td>16</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecule Type:</b></td><td>Standard amino</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecular Weight:</b></td><td>1937.61</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Isoelectric Point (pI):</b></td><td>10.65</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>A</b></td><td>2</td><td>12.5</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>E</b></td><td>2</td><td>12.5</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>F</b></td><td>1</td><td>6.25</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>K</b></td><td>3</td><td>18.75</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>L</b></td><td>1</td><td>6.25</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>M</b></td><td>2</td><td>12.5</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>R</b></td><td>2</td><td>12.5</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>T</b></td><td>1</td><td>6.25</td></tr>"), "Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>V</b></td><td>2</td><td>12.5</td></tr>"), "Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Sequence length:</b></td><td>16</td></tr>"), "1 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecule Type:</b></td><td>Standard amino acid</td></tr>"), "2 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecular Weight:</b></td><td>1937.61</td></tr>"), "3 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Isoelectric Point (pI):</b></td><td>10.65</td></tr>"), "4 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>A</b></td><td>2</td><td>12.5</td></tr>"), "5 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>E</b></td><td>2</td><td>12.5</td></tr>"), "6 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>F</b></td><td>1</td><td>6.25</td></tr>"), "7 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>K</b></td><td>3</td><td>18.75</td></tr>"), "8 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>L</b></td><td>1</td><td>6.25</td></tr>"), "9 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>M</b></td><td>2</td><td>12.5</td></tr>"), "10 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>R</b></td><td>2</td><td>12.5</td></tr>"), "11 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>T</b></td><td>1</td><td>6.25</td></tr>"), "12 Unexpected statistics gathered");
+    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>V</b></td><td>2</td><td>12.5</td></tr>"), "13 Unexpected statistics gathered");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0666) {

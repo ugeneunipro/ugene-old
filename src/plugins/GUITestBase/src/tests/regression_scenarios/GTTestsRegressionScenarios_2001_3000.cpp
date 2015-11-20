@@ -757,20 +757,6 @@ GUI_TEST_CLASS_DEFINITION( test_2053 ){
 //    Expected state: dashboard view has opened, no hint has appeared
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2070 ){
-    GTLogTracer lt;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "Q9IGQ6", 7));
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Access remote database...", GTGlobals::UseKey);
-    GTGlobals::sleep();
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep();
-
-    GTUtilsDocument::isDocumentLoaded(os, "Q9IGQ6_das.gb");
-    GTUtilsDocument::checkDocument(os, "Q9IGQ6_das.gb", AnnotatedDNAViewFactory::ID);
-
-    GTUtilsLog::check(os, lt);
-}
-
 GUI_TEST_CLASS_DEFINITION( test_2076 ){
 //    1) Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
