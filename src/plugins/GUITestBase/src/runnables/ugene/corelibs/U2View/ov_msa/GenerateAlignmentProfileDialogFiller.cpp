@@ -64,8 +64,7 @@ void GenerateAlignmentProfileDialogFiller::run() {
     }
 
     if (format != NONE) {
-        QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
-        GTGroupBox::setChecked(os, saveBox, true);
+        GTGroupBox::setChecked(os, "saveBox", dialog);
         GTGlobals::sleep(500);
 
         QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");

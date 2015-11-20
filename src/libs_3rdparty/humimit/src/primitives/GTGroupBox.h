@@ -30,6 +30,8 @@ namespace HI {
 class HI_EXPORT GTGroupBox {
 public:
     static void setChecked(U2::U2OpStatus &os, QGroupBox *groupBox, bool checked = true);
+    static void setChecked(U2::U2OpStatus& os, const QString &groupBoxName, bool checked = true, QWidget *parent = NULL);
+    static void setChecked(U2::U2OpStatus& os, const QString &groupBoxName, QWidget *parent = NULL);
 
 private:
     static QRect getCheckBoxRect(QGroupBox *groupBox);

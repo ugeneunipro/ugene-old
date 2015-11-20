@@ -95,8 +95,7 @@ void DistanceMatrixDialogFiller::commonScenario(){
     }
 
     if(saveToFile){
-        QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
-        GTGroupBox::setChecked(os, saveBox, true);
+        GTGroupBox::setChecked(os, "saveBox", dialog);
 
         QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");
         GTLineEdit::setText(os, fileEdit,path);

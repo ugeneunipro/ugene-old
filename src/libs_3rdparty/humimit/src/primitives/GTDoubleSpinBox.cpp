@@ -28,6 +28,20 @@ namespace HI {
 
 #define GT_CLASS_NAME "GTSpinBox"
 
+#define GT_METHOD_NAME "getValue"
+int GTDoubleSpinbox::getValue(U2::U2OpStatus &os, QDoubleSpinBox *spinBox) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(spinBox != NULL, "spinBox is NULL", -1);
+    return spinBox->value();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getValue"
+int GTDoubleSpinbox::getValue(U2::U2OpStatus &os, const QString &spinBoxName, QWidget *parent) {
+    return GTDoubleSpinbox::getValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, spinBoxName, parent));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setValue"
 void GTDoubleSpinbox::setValue(U2::U2OpStatus& os, QDoubleSpinBox *spinBox, double v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
@@ -90,6 +104,18 @@ void GTDoubleSpinbox::setValue(U2::U2OpStatus& os, QDoubleSpinBox *spinBox, doub
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setValue"
+void GTDoubleSpinbox::setValue(U2::U2OpStatus &os, const QString &spinBoxName, int v, GTGlobals::UseMethod useMethod, QWidget *parent) {
+    GTDoubleSpinbox::setValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, spinBoxName, parent), v, useMethod);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setValue"
+void GTDoubleSpinbox::setValue(U2::U2OpStatus &os, const QString &spinBoxName, int v, QWidget *parent) {
+    GTDoubleSpinbox::setValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, spinBoxName, parent), v);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "checkLimits"
 void GTDoubleSpinbox::checkLimits(U2::U2OpStatus &os, QDoubleSpinBox *spinBox, double min, double max){
     GT_CHECK(spinBox != NULL, "spinbox is NULL");
@@ -97,6 +123,12 @@ void GTDoubleSpinbox::checkLimits(U2::U2OpStatus &os, QDoubleSpinBox *spinBox, d
     int actualMax = spinBox->maximum();
     GT_CHECK(actualMin == min, QString("wrong minimum. Expected: %1, actual: 2").arg(min).arg(actualMin));
     GT_CHECK(actualMax == max, QString("wrong maximum. Expected: %1, actual: 2").arg(max).arg(actualMax));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkLimits"
+void GTDoubleSpinbox::checkLimits(U2::U2OpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent){
+    GTDoubleSpinbox::checkLimits(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, spinBoxName, parent), min, max);
 }
 #undef GT_METHOD_NAME
 

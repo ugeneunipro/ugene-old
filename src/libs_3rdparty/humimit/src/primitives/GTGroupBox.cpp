@@ -47,6 +47,18 @@ void GTGroupBox::setChecked(U2::U2OpStatus &os, QGroupBox *groupBox, bool checke
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setChecked"
+void GTGroupBox::setChecked(U2::U2OpStatus& os, const QString &groupBoxName, bool checked, QWidget *parent) {
+    GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent), checked);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setChecked"
+void GTGroupBox::setChecked(U2::U2OpStatus& os, const QString &groupBoxName, QWidget *parent) {
+    GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent));
+}
+#undef GT_METHOD_NAME
+
 QRect GTGroupBox::getCheckBoxRect(QGroupBox *groupBox) {
     QStyleOptionGroupBox options;
     return groupBox->style()->subControlRect(QStyle::CC_GroupBox, &options, QStyle::SC_GroupBoxCheckBox);

@@ -45,6 +45,18 @@ void GTCheckBox::setChecked(U2::U2OpStatus& os, QCheckBox *checkBox, bool checke
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setChecked"
+void GTCheckBox::setChecked(U2::U2OpStatus& os, const QString &checkBoxName, bool checked, QWidget *parent) {
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, checkBoxName, parent), checked);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setChecked"
+void GTCheckBox::setChecked(U2::U2OpStatus& os, const QString &checkBoxName, QWidget *parent) {
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, checkBoxName, parent));
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

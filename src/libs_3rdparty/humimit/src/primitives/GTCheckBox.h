@@ -29,8 +29,11 @@ namespace HI {
 
 class HI_EXPORT GTCheckBox {
 public:
-    // fails if the comboBox is NULL or can't set checkbox i.e. it's not enabled
+     //fails if the comboBox is NULL or can't set checkbox i.e. it's not enabled
     static void setChecked(U2::U2OpStatus& os, QCheckBox *checkBox, bool checked = true);
+
+    static void setChecked(U2::U2OpStatus& os, const QString &checkBoxName, bool checked = true, QWidget *parent = NULL);
+    static void setChecked(U2::U2OpStatus& os, const QString &checkBoxName, QWidget *parent = NULL);
 };
 
 }

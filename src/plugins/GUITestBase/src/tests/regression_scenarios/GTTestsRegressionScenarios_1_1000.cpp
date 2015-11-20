@@ -1073,12 +1073,12 @@ GUI_TEST_CLASS_DEFINITION(test_0684) {
             GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "end_edit_line", dialog), "9000");
 
 //    4. Set left overhang "AATT", forward
-            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "leftEndBox", dialog));
+            GTGroupBox::setChecked(os, "leftEndBox", dialog);
             GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "lDirectButton", dialog));
             GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "lCustomOverhangEdit", dialog), "AATT");
 
 //       Set right overhang "AATT", reverse-complement
-            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "rightEndBox", dialog));
+            GTGroupBox::setChecked(os, "rightEndBox", dialog);
             GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rComplButton", dialog));
             GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "rCustomOverhangEdit", dialog), "AATT");
 
@@ -3377,7 +3377,7 @@ GUI_TEST_CLASS_DEFINITION(test_0999_1) {
 //        {Custom settings} - checked
 //        {Replace unknown symbols with} - z
             GTPlainTextEdit::setPlainText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), "AAAAAD");
-            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox", dialog), true);
+            GTGroupBox::setChecked(os, "groupBox", dialog);
             GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "replaceRB", dialog));
             GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "symbolToReplaceEdit", dialog), "z");
 
@@ -3410,7 +3410,7 @@ GUI_TEST_CLASS_DEFINITION(test_0999_2) {
 //        {Replace unknown symbols with} - T
 //        {Document Location} - %any valid filepath%
             GTPlainTextEdit::setPlainText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), "AAAZZZZZZAAA");
-            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox", dialog), true);
+            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox", dialog));
             GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "replaceRB", dialog));
             GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "symbolToReplaceEdit", dialog), "T");
             GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "filepathEdit", dialog), sandBoxDir + "test_0999_2.fa");

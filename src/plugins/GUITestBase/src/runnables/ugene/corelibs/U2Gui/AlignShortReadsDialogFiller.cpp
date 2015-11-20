@@ -260,7 +260,9 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
 
 #define GT_METHOD_NAME "setUgaAdditionalParameters"
 void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog) {
-    GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox_mismatches", dialog), ugaParameters->mismatchesAllowed);
+    if(ugaParameters->mismatchesAllowed){
+        GTGroupBox::setChecked(os, "groupBox_mismatches", dialog);
+    }
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "firstMatchBox", dialog), ugaParameters->useBestMode);
 }
 #undef GT_METHOD_NAME
