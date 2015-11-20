@@ -37,9 +37,18 @@ namespace HI {
 #define GT_METHOD_NAME "showMainMenu"
 QMenu* GTMenu::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
 
-    QMainWindow* mainWindow = GTMainWindow::getMainWindow(os);
+    QMainWindow* mainWindow = NULL;
+    QList<QAction*> list;
+    foreach(QWidget* window, GTMainWindow::getMainWindowsAsWidget(os)){
+        if(window->findChild<QAction*>(menuName) != NULL){
+            list.append(window->findChild<QAction*>(menuName));
+            mainWindow = qobject_cast<QMainWindow*>(window);
+        }
+    }
+    GT_CHECK_RESULT(list.count()!=0,"action not found", NULL);
+    GT_CHECK_RESULT(list.count()<2, QString("There are %1 actions with this text").arg(list.count()), NULL);
 
-    QAction *menu = mainWindow->findChild<QAction*>(menuName);
+    QAction *menu = list.takeFirst();
 
     GT_CHECK_RESULT(menu != NULL, QString("menu \"%1\" not found").arg(menuName), NULL);
 

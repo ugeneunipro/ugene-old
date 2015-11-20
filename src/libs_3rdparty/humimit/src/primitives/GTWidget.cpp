@@ -79,7 +79,15 @@ QWidget* GTWidget::findWidget(U2::U2OpStatus &os, const QString &widgetName, QWi
     Q_UNUSED(os);
 
     if (parentWidget == NULL) {
-        parentWidget = GTMainWindow::getMainWindowAsWidget(os);
+        QList<QWidget*> list;
+        foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+            if(parent->findChild<QWidget*>(widgetName) != NULL){
+                list.append(parent->findChild<QWidget*>(widgetName));
+            }
+        }
+        GT_CHECK_RESULT(list.count()!=0,"widget not found", NULL);
+        GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
+        return list.takeFirst();
     }
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
@@ -102,7 +110,18 @@ QPoint GTWidget::getWidgetCenter(U2::U2OpStatus &os, QWidget *w){
 QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
 
     if (parentWidget == NULL) {
-        parentWidget = GTMainWindow::getMainWindowAsWidget(os);
+        QList<QAbstractButton*> resultList;
+        foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+            QList<QAbstractButton*> list = parent->findChildren<QAbstractButton*>();
+            foreach(QAbstractButton* ab, list){
+                if(ab->text() == text){
+                    resultList.append(ab);
+                }
+            }
+        }
+        GT_CHECK_RESULT(resultList.count()!=0,"button not found", NULL);
+        GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 buttons with this text").arg(resultList.count()), NULL);
+        return resultList.takeFirst();
     }
     QList<QAbstractButton*> buttonList = parentWidget->findChildren<QAbstractButton*>();
     QList<QAbstractButton*> foundButtonList;
@@ -128,11 +147,14 @@ QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &t
 #define GT_METHOD_NAME "findWidget"
 void GTWidget::getAllWidgetsInfo(U2::U2OpStatus &os, QWidget *parent){
 
+    QList<QObject*> list;
     if(parent == NULL){
-        parent = GTMainWindow::getMainWindowAsWidget(os);
+        foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+            list.append(parent->findChildren<QObject*>());
+        }
+    }else{
+        list = parent->findChildren<QObject*>();
     }
-
-    QList<QObject*> list= parent->findChildren<QObject*>();
     QString actStr;
     actStr.append("Getting all info about widget\n");
 

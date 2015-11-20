@@ -96,8 +96,16 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QAction* a, QObject 
 #define GT_METHOD_NAME "findAction"
 QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent) {
 
-    if (parent == NULL) {
-        parent = GTMainWindow::getMainWindowAsWidget(os);
+    if (parent == NULL) { // If parent null, then searching for at QMainWindows
+        QList<QAction*> list;
+        foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+            if(parent->findChild<QAction*>(actionName) != NULL){
+                list.append(parent->findChild<QAction*>(actionName));
+            }
+        }
+        GT_CHECK_RESULT(list.count()!=0,"action not found", NULL);
+        GT_CHECK_RESULT(list.count()<2, QString("There are %1 actions with this text").arg(list.count()), NULL);
+        return list.takeFirst();
     }
     QAction* a = parent->findChild<QAction*>(actionName);
 
@@ -108,8 +116,19 @@ QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QOb
 #define GT_METHOD_NAME "findActionByText"
 QAction* GTAction::findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent) {
 
-    if (parent == NULL) {
-        parent = GTMainWindow::getMainWindowAsWidget(os);
+    if (parent == NULL) { // If parent null, then searching for at QMainWindows
+        QList<QAction*> resultList;
+        foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+            QList<QAction*> list = parent->findChildren<QAction*>();
+            foreach(QAction* act, list){
+                if(act->text() == text){
+                    resultList<<act;
+                }
+            }
+        }
+        GT_CHECK_RESULT(resultList.count()!=0,"action not found", NULL);
+        GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 actions with this text").arg(resultList.count()), NULL);
+        return resultList.takeFirst();
     }
     QList<QAction*> list = parent->findChildren<QAction*>();
     QList<QAction*> resultList;

@@ -31,10 +31,15 @@ namespace HI {
 #define GT_METHOD_NAME "checkUGENETitle"
 void GTUtilsApp::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
 
-    QMainWindow* w = GTMainWindow::getMainWindow(os);
-    GT_CHECK(w, "main window is NULL");
-    QString ugeneTitle = w->windowTitle();
-    GT_CHECK(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
+    bool isTitleGood = false;
+    foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){
+        QString ugeneTitle = w->windowTitle();
+        if(ugeneTitle == title){
+            isTitleGood = true;
+        }
+    }
+
+    GT_CHECK(isTitleGood, "UGENE title not <" + title + ">");
 }
 
 #undef GT_METHOD_NAME
@@ -45,10 +50,16 @@ void GTUtilsApp::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
 
 #define GT_METHOD_NAME "checkUGENETitleContains"
 void GTUtilsApp::checkUGENETitleContains(U2::U2OpStatus &os, const QString& string) {
-    QMainWindow* w = GTMainWindow::getMainWindow(os);
-    GT_CHECK(w, "main window is NULL");
-    QString ugeneTitle = w->windowTitle();
-    GT_CHECK(ugeneTitle.contains(string), "UGENE title is <" + ugeneTitle + ">, and it not contains <" + string + ">");
+
+    bool isTitleContains = false;
+    foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){
+        QString ugeneTitle = w->windowTitle();
+        if(ugeneTitle.contains(string)){
+            isTitleContains = true;
+        }
+    }
+
+    GT_CHECK(isTitleContains, "UGENE title not contains <" + string + ">");
 }
 #undef GT_METHOD_NAME
 

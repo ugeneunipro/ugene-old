@@ -72,17 +72,26 @@ void GTMenuPrivate::checkMainMenuItemState(U2::U2OpStatus &os, const QStringList
 #define GT_METHOD_NAME "showMainMenu"
 void GTMenuPrivate::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
 
-    QWidget* mainWindowWidget = GTMainWindow::getMainWindowAsWidget(os);
-    QList<QAction *> actions = mainWindowWidget->findChildren<QAction *>();
-    QAction *menu = NULL;
-    foreach (QAction* action, actions) {
-        QString name = action->text().replace('&',"");
-        if(menuName == name){
-            menu = action;
+    QMainWindow* mainWindow = NULL;
+    QList<QAction*> resultList;
+    foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
+        QList<QAction*> list = parent->findChildren<QAction*>();
+        bool isContainMenu = false;
+        foreach(QAction* act, list){
+            QString name = act->text().replace('&',"");
+            if(name == menuName){
+                resultList<<act;
+                isContainMenu = true;
+            }
+        }
+        if (isContainMenu){
+            mainWindow = qobject_cast<QMainWindow*>(parent);
         }
     }
-    GT_CHECK(menu != NULL, QString("menu \"%1\" not found").arg(menuName));
-    QMainWindow* mainWindow = GTMainWindow::getMainWindow(os);
+    GT_CHECK_RESULT(resultList.count()!=0,"action not found", );
+    GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 actions with this text").arg(resultList.count()), );
+
+    QAction *menu = resultList.takeFirst();
 
     QPoint pos;
     QPoint gPos;

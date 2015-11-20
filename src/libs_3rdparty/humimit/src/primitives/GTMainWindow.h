@@ -31,12 +31,8 @@ namespace HI {
 
 class HI_EXPORT GTMainWindow {
 public:
-    static QMainWindow* getMainWindow(U2::U2OpStatus &os);
-    static QWidget* getMainWindowAsWidget(U2::U2OpStatus &os);
-
-private:
-    static QWidget* mainWindowWidget;
-
+    static QList<QMainWindow *> getMainWindows(U2::U2OpStatus &os);
+    static QList<QWidget *> getMainWindowsAsWidget(U2::U2OpStatus &os);
 };
 
 } // namespace

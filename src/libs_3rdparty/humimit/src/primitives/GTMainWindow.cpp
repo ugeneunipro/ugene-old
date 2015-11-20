@@ -26,30 +26,33 @@
 
 namespace HI {
 
-QWidget* GTMainWindow::mainWindowWidget = NULL;
-
 #define GT_CLASS_NAME "GTMainWindow"
 
-#define GT_METHOD_NAME "getMainWindow"
-QMainWindow* GTMainWindow::getMainWindow(U2::U2OpStatus &os) {
-    QMainWindow* mainWindow = qobject_cast<QMainWindow*>(GTMainWindow::getMainWindowAsWidget(os));
-    GT_CHECK_RESULT(mainWindow != NULL, "QMainWindow is NULL", NULL);
-    return mainWindow;
+#define GT_METHOD_NAME "getMainWindows"
+QList<QMainWindow*> GTMainWindow::getMainWindows(U2::U2OpStatus &os) {
+    QList<QMainWindow*> list;
+    foreach(QWindow *window, qApp->topLevelWindows()){
+        if(window->inherits("QMainWindow")){
+            list.append(qobject_cast<QMainWindow*>(window));
+        }
+    }
+
+    GT_CHECK_RESULT(!list.isEmpty(),"No one main window found", list);
+    return list;
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getMainWindowAsWidget"
-QWidget* GTMainWindow::getMainWindowAsWidget(U2::U2OpStatus &os) {
-    if (mainWindowWidget == NULL){
-        foreach(QWidget *widget, qApp->topLevelWidgets()){
-            if(widget->inherits("QMainWindow")){
-                mainWindowWidget = widget;
-                break;
-            }
+#define GT_METHOD_NAME "getMainWindowsAsWidget"
+QList<QWidget*> GTMainWindow::getMainWindowsAsWidget(U2::U2OpStatus &os) {
+    QList<QWidget*> list;
+    foreach(QWidget *widget, qApp->topLevelWidgets()){
+        if(widget->inherits("QMainWindow")){
+            list.append(widget);
         }
     }
-    GT_CHECK_RESULT(mainWindowWidget!=NULL,"main window not found", NULL);
-    return mainWindowWidget;
+
+    GT_CHECK_RESULT(!list.isEmpty(),"No one main window widget found", list);
+    return list;
 }
 #undef GT_METHOD_NAME
 
