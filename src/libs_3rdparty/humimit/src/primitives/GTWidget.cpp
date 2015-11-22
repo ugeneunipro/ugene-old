@@ -85,9 +85,15 @@ QWidget* GTWidget::findWidget(U2::U2OpStatus &os, const QString &widgetName, QWi
                 list.append(parent->findChild<QWidget*>(widgetName));
             }
         }
-        GT_CHECK_RESULT(list.count()!=0,"widget not found", NULL);
+        if (options.failIfNull) {
+            GT_CHECK_RESULT(list.count()!=0,"widget not found", NULL);
+        }
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
-        return list.takeFirst();
+        if(list.count() == 0){
+            return NULL;
+        }else{
+            return list.takeFirst();
+        }
     }
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
@@ -119,9 +125,16 @@ QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &t
                 }
             }
         }
-        GT_CHECK_RESULT(resultList.count()!=0,"button not found", NULL);
+
+        if (options.failIfNull) {
+            GT_CHECK_RESULT(resultList.count()!=0,"button not found", NULL);
+        }
         GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 buttons with this text").arg(resultList.count()), NULL);
-        return resultList.takeFirst();
+        if(resultList.count() == 0){
+            return NULL;
+        }else{
+            return resultList.takeFirst();
+        }
     }
     QList<QAbstractButton*> buttonList = parentWidget->findChildren<QAbstractButton*>();
     QList<QAbstractButton*> foundButtonList;
