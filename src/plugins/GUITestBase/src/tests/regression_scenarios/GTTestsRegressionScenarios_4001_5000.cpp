@@ -4293,7 +4293,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_3) {
 
     //    3. Add  extended DNA sequence by drag and drop
     toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_dna_seq");
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino acid\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Extended amino acid\" to \"Raw\"");
     GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     GTGlobals::sleep();
 }
@@ -4307,7 +4307,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_4) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_rna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"All symbols\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\"");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
@@ -4325,7 +4325,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_5) {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
     GTUtilsDialog::waitForDialog(os, ob);
 
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"All symbols\". Use \"Undo\", if you'd like to restore the original alignment.");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard RNA\" to \"Raw\". Use \"Undo\", if you'd like to restore the original alignment.");
 
     QAbstractButton *align = GTAction::button(os, "Align sequence to this alignment");
     CHECK_SET_ERR(align != NULL, "MSA \"Align sequence to this alignment\" action not found");
