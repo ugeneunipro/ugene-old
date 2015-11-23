@@ -78,7 +78,7 @@ Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
-
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     return GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, conName);
 }
 #undef GT_METHOD_NAME
