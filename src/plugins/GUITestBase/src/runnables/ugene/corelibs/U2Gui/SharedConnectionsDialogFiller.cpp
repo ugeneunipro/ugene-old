@@ -216,6 +216,7 @@ void SharedConnectionsDialogFiller::commonScenario() {
         }
         CHECK_OP(os, );
     }
+    GTGlobals::sleep();
 }
 
 #undef GT_METHOD_NAME

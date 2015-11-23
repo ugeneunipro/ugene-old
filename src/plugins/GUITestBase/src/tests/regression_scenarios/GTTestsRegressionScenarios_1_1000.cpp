@@ -2279,9 +2279,9 @@ GUI_TEST_CLASS_DEFINITION(test_0846) {
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export annotations...", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(os, sandBoxDir + "test_0846.csv", ExportAnnotationsFiller::csv));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
-
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
+    GTGlobals::sleep();
 //    Expected state: Annotations with sequence names were saved
     const QString data = GTFile::readAll(os, sandBoxDir + "test_0846.csv");
     const QString expectedSubstring = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
