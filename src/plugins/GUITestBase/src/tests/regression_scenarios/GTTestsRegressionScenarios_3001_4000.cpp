@@ -1606,14 +1606,17 @@ GUI_TEST_CLASS_DEFINITION(test_3253_2) {
     QWidget *graphView = GTWidget::findWidget(os, "GSequenceGraphViewRenderArea");
     QSize startSize = graphView->size();
 
-    QWidget *annotationTreeWidget = GTWidget::findWidget(os, "annotations_tree_widget");
-    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x() + 100, annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()));
-    GTMouseDriver::press(os);
-    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x() + 100, annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y() + annotationTreeWidget->height() / 2));
-    GTMouseDriver::release(os);
-
     graphView = GTWidget::findWidget(os, "GSequenceGraphViewRenderArea");
     GTWidget::click(os, GTWidget::findWidget(os, "CHROMA_ACTION"));
+
+    GTMouseDriver::moveTo(os, QPoint(graphView->mapToGlobal(graphView->rect().bottomLeft()).x() + 100, graphView->mapToGlobal(graphView->rect().bottomLeft()).y() + 5));
+    GTGlobals::sleep(100);
+    GTMouseDriver::press(os);
+    GTGlobals::sleep(500);
+    GTMouseDriver::moveTo(os, QPoint(graphView->mapToGlobal(graphView->rect().bottomLeft()).x() + 100, graphView->mapToGlobal(graphView->rect().bottomLeft()).y() + graphView->height() / 2));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
     QSize endSize=graphView->size();
     CHECK_SET_ERR( startSize != endSize, "graphView is not resized" );
 }
