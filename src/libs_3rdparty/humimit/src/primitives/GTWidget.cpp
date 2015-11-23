@@ -120,7 +120,7 @@ QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &t
         foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
             QList<QAbstractButton*> list = parent->findChildren<QAbstractButton*>();
             foreach(QAbstractButton* ab, list){
-                if(ab->text() == text){
+                if(ab->text().contains(text, Qt::CaseInsensitive)){
                     resultList.append(ab);
                 }
             }
