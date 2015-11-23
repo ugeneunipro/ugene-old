@@ -1628,9 +1628,13 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
 
     GTWidget::click(os, GTAction::button(os, "complement_action"));
     GTGlobals::sleep(1000);
+    GTWidget::click(os, det);
+    GTGlobals::sleep(1000);
     QImage image2 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "complement_action"));
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, det);
     GTGlobals::sleep(1000);
     QImage image3 = GTWidget::getImage(os, det);
 
@@ -1644,21 +1648,20 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
 
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
     GTWidget::click(os, det);
+    GTGlobals::sleep(1000);
     QImage image1 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "translation_action"));
     GTGlobals::sleep(2000);
+    GTWidget::click(os, det);
+    GTGlobals::sleep(1000);
     QImage image2 = GTWidget::getImage(os, det);
 
     GTWidget::click(os, GTAction::button(os, "translation_action"));
     GTGlobals::sleep(2000);
+    GTWidget::click(os, det);
+    GTGlobals::sleep(1000);
     QImage image3 = GTWidget::getImage(os, det);
-
-    QImageWriter writer("1test.jpg");
-    writer.write(image1);
-
-    QImageWriter writer1("2test.jpg");
-    writer.write(image3);
 
     CHECK_SET_ERR(image1 != image2, "Image was not changed");
     CHECK_SET_ERR(image1 == image3, "Image was not restored");
