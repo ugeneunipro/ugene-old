@@ -87,6 +87,14 @@ void NotificationDialogFiller::commonScenario() {
 
     QWidget* ok = GTWidget::findButtonByText(os, "Ok", dialog);
     GTWidget::click(os, ok);
+#ifndef Q_OS_UNIX
+    dialog = QApplication::activeModalWidget();
+    if (dialog != NULL) {
+        ok = GTWidget::findButtonByText(os, "Ok", dialog);
+        GTWidget::click(os, ok);
+    }
+#endif // !Q_OS_UNIX
+
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

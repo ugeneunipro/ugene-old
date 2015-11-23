@@ -732,6 +732,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(10000);
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -745,7 +746,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
     //undo
     GTWidget::click(os,undo);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(3000);
     changedAln = GTClipboard::text(os);
 
     CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
@@ -753,7 +754,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
     //redo
     GTWidget::click(os,redo);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(3000);
     changedAln = GTClipboard::text(os);
 
     CHECK_SET_ERR(changedAln==expectedAln, "Undo works wrong\n" + changedAln);

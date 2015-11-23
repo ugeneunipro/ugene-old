@@ -3752,7 +3752,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTGlobals::sleep(4000);
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
-                                                      << "Custom Elements with CMD Tools" << settings.elementName,
+                                                      << "Custom Elements with CMD Tools",
                                                       PopupChecker::NotExists));
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
 }
