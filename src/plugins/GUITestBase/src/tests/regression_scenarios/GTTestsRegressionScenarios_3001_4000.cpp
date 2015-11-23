@@ -3294,11 +3294,12 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
                                                                    "CLOCK.sitecon.gz"));
             QWidget* modelButton = GTWidget::findWidget(os, "pbSelectModelFile", dialog);
             GTWidget::click(os, modelButton);
-            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-
-            CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 2, "Some task is still running");
-
             GTGlobals::sleep();
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTGlobals::sleep();
+
+            CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 2, QString("Incorrect top-level task counts: %1").arg(GTUtilsTaskTreeView::getTopLevelTasksCount(os)));
+            GTGlobals::sleep(500);
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
