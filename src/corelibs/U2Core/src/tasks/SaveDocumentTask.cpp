@@ -276,7 +276,7 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
             QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
             QWidget *activeWindow = qobject_cast<QWidget*>(QApplication::activeWindow());
             QFileDialog::Options options;
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) | defined(Q_OS_WIN)
             if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
                 options = QFileDialog::DontUseNativeDialog;
             }else {

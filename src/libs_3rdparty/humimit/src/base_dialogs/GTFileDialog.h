@@ -39,7 +39,7 @@ public:
     void openFileDialog();
     void commonScenario();
 
-private:
+protected:
 
     bool setPath();
     void setName();

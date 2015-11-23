@@ -3591,7 +3591,7 @@ GUI_TEST_CLASS_DEFINITION( test_2544 ){
 
 //    4. Change permissions to the file to read-only
     PermissionsSetter p;
-    p.setReadOnly(os, sandBoxDir + "test_2544.fa");
+    p.setReadOnlyFlag(os, sandBoxDir + "test_2544.fa");
 //    5. Use context menu on the document item in project view { Save selected documents }
 
     class innerMessageBoxFiller: public MessageBoxDialogFiller{
@@ -3606,8 +3606,10 @@ GUI_TEST_CLASS_DEFINITION( test_2544 ){
     public:
         customSaver(U2OpStatus &os): GTFileDialogUtils(os, sandBoxDir, "test_2544.fa", GTFileDialogUtils::Save){}
         void commonScenario(){
+            fileDialog = QApplication::activeModalWidget();
             GTUtilsDialog::waitForDialog(os, new innerMessageBoxFiller(os));
-            GTFileDialogUtils::commonScenario();
+            setName();
+            clickButton(button);
         }
     };
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_prpject__save_document"));
@@ -5097,7 +5099,7 @@ GUI_TEST_CLASS_DEFINITION(test_2796) {
 GUI_TEST_CLASS_DEFINITION( test_2801 ){
     //1. Open {_common_data/clustal/100_sequences.aln}.
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "3000_sequences.aln");
-    GTGlobals::sleep(30000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Start MAFFT with default values.
     GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, new MAFFTSupportRunDialogFiller::Parameters()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with MAFFT", GTGlobals::UseMouse));
