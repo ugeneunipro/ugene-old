@@ -1683,19 +1683,25 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     CHECK_SET_ERR(toolPath.exists(), "T-coffee tool is not set");
 
     QDir toolDir = toolPath.dir();
+    QString newToolPath = sandBoxDir + "GUITest_regression_scenarios_test_2268/t_coffee";
 #ifdef Q_OS_LINUX
     toolDir.cdUp();
+    newToolPath = sandBoxDir + "GUITest_regression_scenarios_test_2268/bin/t_coffee";
+#elif defined(Q_OS_WIN)
+    newToolPath = sandBoxDir + "GUITest_regression_scenarios_test_2268/t_coffee.bat";
 #endif
     QString s = toolDir.absolutePath();
     GTFile::copyDir(os, toolDir.absolutePath(), sandBoxDir + "GUITest_regression_scenarios_test_2268/");
 
     // Hack, it is better to set the tool path via the preferences dialog
-    toolPath.setFile(sandBoxDir + "GUITest_regression_scenarios_test_2268/bin/t_coffee");
+    toolPath.setFile(newToolPath);
     CHECK_SET_ERR(toolPath.exists(), "The copied T-coffee tool does not exist");
-    tCoffee->setPath(toolPath.absoluteFilePath());
+    tCoffee->setPath(QFileInfo(newToolPath).absoluteFilePath());
 
     toolDir = toolPath.dir();
+#ifdef Q_OS_LINUX
     toolDir.cdUp();
+#endif
 
 //    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
     // Permissions will be returned to the original state, if UGENE won't crash.
@@ -1709,7 +1715,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 //    4. Click the "Align" button.
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
 //    Expected: the t-coffee task started and finished well.
