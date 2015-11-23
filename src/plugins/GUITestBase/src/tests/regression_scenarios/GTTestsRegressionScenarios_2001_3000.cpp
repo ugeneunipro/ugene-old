@@ -1683,7 +1683,9 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     CHECK_SET_ERR(toolPath.exists(), "T-coffee tool is not set");
 
     QDir toolDir = toolPath.dir();
+#ifdef Q_OS_LINUX
     toolDir.cdUp();
+#endif
     QString s = toolDir.absolutePath();
     GTFile::copyDir(os, toolDir.absolutePath(), sandBoxDir + "GUITest_regression_scenarios_test_2268/");
 
