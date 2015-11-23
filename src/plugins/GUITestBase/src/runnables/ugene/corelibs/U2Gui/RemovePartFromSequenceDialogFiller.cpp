@@ -28,6 +28,7 @@
 
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTComboBox.h>
+#include <primitives/GTGroupBox.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTRadioButton.h>
 #include <primitives/GTWidget.h>
@@ -86,7 +87,7 @@ void RemovePartFromSequenceDialogFiller::run()
     GTGlobals::sleep(1000);
     if (saveNew) {
         QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
-        saveToAnotherBox->setChecked(true);
+        GTGroupBox::setChecked(os, saveToAnotherBox, true);
         QLineEdit *filepathEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("filepathEdit"));
         GT_CHECK(filepathEdit != NULL, "QLineEdit \"filepathEdit\" not found");
 

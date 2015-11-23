@@ -35,7 +35,7 @@ public:
 
     static QAbstractButton* button(U2::U2OpStatus &os, const QAction* a, QObject *parent = NULL);
 
-    static QAction* findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
+    static QAction* findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
     static QAction* findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent = NULL);
 };

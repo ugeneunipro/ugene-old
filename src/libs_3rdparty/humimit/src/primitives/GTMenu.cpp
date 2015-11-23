@@ -66,6 +66,7 @@ QMenu* GTMenu::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGloba
         GTMouseDriver::click(os);
         break;
 
+    case GTGlobals::UseKeyBoard:
     case GTGlobals::UseKey:
         menuText = menu->text();
         key_pos = menuText.indexOf('&');

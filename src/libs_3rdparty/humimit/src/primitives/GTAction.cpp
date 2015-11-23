@@ -40,7 +40,7 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QString &actionName,
 
     QAction* a = findAction(os, actionName, parent);
     if (!a) {
-        a = findAction(os, actionName);
+        a = findAction(os, actionName, NULL, GTGlobals::FindOptions(false));
     }
     if (options.failIfNull) {
         GT_CHECK_RESULT(NULL != a, "Action " + actionName + " is NULL!", NULL);
@@ -94,7 +94,7 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QAction* a, QObject 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findAction"
-QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent) {
+QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
 
     if (parent == NULL) { // If parent null, then searching for at QMainWindows
         QList<QAction*> list;
@@ -103,9 +103,12 @@ QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QOb
                 list.append(parent->findChild<QAction*>(actionName));
             }
         }
-        GT_CHECK_RESULT(list.count()!=0,"action not found", NULL);
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 actions with this text").arg(list.count()), NULL);
-        return list.takeFirst();
+        if(options.failIfNull){
+            GT_CHECK_RESULT(list.count()!=0,"action not found", NULL);
+            return list.takeFirst();
+        }
+        return NULL;
     }
     QAction* a = parent->findChild<QAction*>(actionName);
 
