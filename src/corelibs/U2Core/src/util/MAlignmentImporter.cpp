@@ -68,6 +68,7 @@ MAlignmentObject * MAlignmentImporter::createAlignment(const U2DbiRef &dbiRef, c
     if (alignedSeqs.isEmpty()) {
         sequences = importSequences(con, folder, al, os);
         gapModel = al.getGapModel();
+        CHECK_OP(os, NULL);
     } else {
         setChildRankForSequences(con, alignedSeqs, os);
         CHECK_OP(os, NULL);
