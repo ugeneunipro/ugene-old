@@ -997,7 +997,7 @@ QString GTUtilsWorkflowDesigner::getParameter(HI::GUITestOpStatus &os, QString p
 
     QVariant var;
 
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QAbstractItemModel* _model, QModelIndex _idx, QVariant &_result) :
             model(_model), idx(_idx), result(_result){}

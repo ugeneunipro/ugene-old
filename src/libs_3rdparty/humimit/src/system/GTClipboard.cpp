@@ -57,7 +57,7 @@ QString GTClipboard::text(GUITestOpStatus &os) {
 void GTClipboard::setText(GUITestOpStatus &os, QString text ){
 #ifdef Q_OS_WIN
 	//On windows clipboard actions should be done in main thread
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
 	public:
 		Scenario(const QString &_text) : text(_text){}
         void run(GUITestOpStatus &os) {
@@ -112,7 +112,7 @@ void GTClipboard::setUrls(GUITestOpStatus &os, const QList<QString>& urls ){
 void GTClipboard::clear(GUITestOpStatus &os){
 #ifdef Q_OS_WIN
     //On windows clipboard actions should be done in main thread
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(){}
         void run(GUITestOpStatus &os) {
