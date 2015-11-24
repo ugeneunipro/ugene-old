@@ -45,6 +45,7 @@
 #include <primitives/GTToolbar.h>
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsTreeView.h"
@@ -1575,6 +1576,8 @@ GUI_TEST_CLASS_DEFINITION(test_3253_1) {
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x()+100,annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()-detView->size().height()));
     GTMouseDriver::release(os);
+    GTThread::waitForMainThread(os);
+    GTGlobals::sleep(5000);
     QSize endSize=detView->size();
     CHECK_SET_ERR( startSize != endSize, "detView is not resized" );
 }
@@ -5159,6 +5162,7 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 
     GTKeyboardDriver::keySequence(os, "ACTGCT");
 

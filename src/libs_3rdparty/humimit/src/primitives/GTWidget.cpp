@@ -88,7 +88,7 @@ QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QW
             }
         }
         if (options.failIfNull) {
-            GT_CHECK_RESULT(list.count()!=0,"widget not found", NULL);
+            GT_CHECK_RESULT(list.count()!=0,"Widget " + widgetName + " not found", NULL);
         }
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
         if(list.count() == 0){

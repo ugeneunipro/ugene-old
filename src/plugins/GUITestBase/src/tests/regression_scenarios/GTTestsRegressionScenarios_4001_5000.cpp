@@ -2301,7 +2301,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
     QLabel *errorLabel = GTWidget::findExactWidget<QLabel *>(os, "lblMessage");
     CHECK_SET_ERR(NULL != errorLabel, "Error label is NULL");
     CHECK_SET_ERR(errorLabel->isVisible(), "Error label is invisible");
-    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"All symbols\" alphabet."),
+    CHECK_SET_ERR(errorLabel->text().contains("Pairwise alignment is not available for alignments with \"Raw\" alphabet."),
                   QString("An unexpected error message: '%1'").arg(errorLabel->text()));
 }
 
@@ -2529,6 +2529,7 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
     GTMouseDriver::moveTo(os, point);
     GTMouseDriver::release(os);
     GTThread::waitForMainThread(os);
+    GTGlobals::sleep(5000);//splitter is moved slowly on some versions of linux
 
     QWidget* toolBar = GTWidget::findWidget(os, "circular_view_local_toolbar");
     CHECK_SET_ERR(toolBar != NULL, "Cannot find circular_view_local_toolbar");

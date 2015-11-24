@@ -1245,16 +1245,18 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Read alignment"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW/", "ty3.aln.gz");
+    GTGlobals::sleep();
 
     // 4. Set some name to the result file.
-    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
-    CHECK_SET_ERR(table,"tableView not found");
+//    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+//    CHECK_SET_ERR(table,"tableView not found");
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write alignment"));
     GTMouseDriver::click(os);
-    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
-    GTMouseDriver::click(os);
+//    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
+//    GTMouseDriver::click(os);
     QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/").absoluteFilePath();
     GTKeyboardDriver::keySequence(os, s+"/2150_0001.sto");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", s+"/2150_0001.aln", GTUtilsWorkflowDesigner::textValue);
     GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
     // 5. Run the workflow.
@@ -1264,6 +1266,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
     GTUtilsTask::cancelSubTask(os, "MUSCLE alignment");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2152 ){
