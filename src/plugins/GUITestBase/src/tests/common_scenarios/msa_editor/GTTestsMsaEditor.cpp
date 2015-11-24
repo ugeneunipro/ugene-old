@@ -4736,7 +4736,7 @@ GUI_TEST_CLASS_DEFINITION(test_0072){
     QScrollBar* hbar = GTWidget::findExactWidget<QScrollBar*>(os, "horizontal_sequence_scroll");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
     GTGlobals::sleep(300);
-    CHECK_SET_ERR(hbar->value() > 1820, QString("end key scrollbar value: %1").arg(hbar->value()))
+    CHECK_SET_ERR(hbar->value() == hbar->maximum(), QString("end key scrollbar value: %1").arg(hbar->value()))
 //    home
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
     GTGlobals::sleep(300);
