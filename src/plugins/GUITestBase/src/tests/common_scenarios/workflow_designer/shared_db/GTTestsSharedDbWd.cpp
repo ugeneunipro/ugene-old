@@ -580,7 +580,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0002) {
         "Please fix issues listed in the error list (located under workflow)."));
 
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
-    GTGlobals::sleep();
+    GTGlobals::sleep(25000);
 
     GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
 }
