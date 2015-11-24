@@ -31,13 +31,13 @@ using namespace HI;
 class GTUtilsWizard{
 public:
     enum WizardButton{Next, Back, Apply, Run, Cancel, Defaults, Setup};
-    static void setInputFiles(U2OpStatus &os, QList<QStringList >  list);
-    static void setAllParameters(U2OpStatus &os, QMap<QString, QVariant> map);
-    static void setParameter(U2OpStatus &os, QString parName, QVariant parValue);
-    static QVariant getParameter(U2OpStatus &os, QString parName);
-    static void setValue(U2OpStatus &os, QWidget* w, QVariant value);
-    static void clickButton(U2OpStatus &os, WizardButton button);
-    static QString getPageTitle(U2OpStatus &os);
+    static void setInputFiles(HI::GUITestOpStatus &os, QList<QStringList >  list);
+    static void setAllParameters(HI::GUITestOpStatus &os, QMap<QString, QVariant> map);
+    static void setParameter(HI::GUITestOpStatus &os, QString parName, QVariant parValue);
+    static QVariant getParameter(HI::GUITestOpStatus &os, QString parName);
+    static void setValue(HI::GUITestOpStatus &os, QWidget* w, QVariant value);
+    static void clickButton(HI::GUITestOpStatus &os, WizardButton button);
+    static QString getPageTitle(HI::GUITestOpStatus &os);
 private:
     static const QMap<QString, WizardButton> buttonMap;
     static QMap<QString, WizardButton> initButtonMap();
@@ -45,8 +45,8 @@ private:
 
 class TuxedoWizardFiller: public Filler{
 public:
-    TuxedoWizardFiller(U2OpStatus &os):Filler(os, "Tuxedo Wizard"){}
-    TuxedoWizardFiller(U2OpStatus &os, CustomScenario* c):Filler(os, "Tuxedo Wizard", c){}
+    TuxedoWizardFiller(HI::GUITestOpStatus &os):Filler(os, "Tuxedo Wizard"){}
+    TuxedoWizardFiller(HI::GUITestOpStatus &os, CustomScenario* c):Filler(os, "Tuxedo Wizard", c){}
     void commonScenario();
 };
 

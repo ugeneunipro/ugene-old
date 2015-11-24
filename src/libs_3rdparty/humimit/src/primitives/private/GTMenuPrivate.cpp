@@ -38,7 +38,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTMenu"
 
 #define GT_METHOD_NAME "clickMainMenuItem"
-void GTMenuPrivate::clickMainMenuItem(U2::U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method, Qt::MatchFlag matchFlag) {
+void GTMenuPrivate::clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method, Qt::MatchFlag matchFlag) {
     GT_CHECK(itemPath.count() > 1, QString("Menu item path is too short: { %1 }").arg(itemPath.join(" -> ")));
 
 #ifdef Q_OS_MAC
@@ -54,7 +54,7 @@ void GTMenuPrivate::clickMainMenuItem(U2::U2OpStatus &os, const QStringList &ite
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkMainMenuItemState"
-void GTMenuPrivate::checkMainMenuItemState(U2::U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
+void GTMenuPrivate::checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
     GT_CHECK(itemPath.count() > 1, QString("Menu item path is too short: { %1 }").arg(itemPath.join(" -> ")));
 
 #ifdef Q_OS_MAC
@@ -70,7 +70,7 @@ void GTMenuPrivate::checkMainMenuItemState(U2::U2OpStatus &os, const QStringList
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "showMainMenu"
-void GTMenuPrivate::showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
+void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
 
     QMainWindow* mainWindow = NULL;
     QList<QAction*> resultList;

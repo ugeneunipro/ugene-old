@@ -19,30 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MAIN_THREAD_TIMER_H_
-#define _U2_MAIN_THREAD_TIMER_H_
+#ifndef _HI_CUSTOM_SCENARIO_H_
+#define _HI_CUSTOM_SCENARIO_H_
 
-#include <QTimer>
-#include <QMutex>
+#include <core/global.h>
+#include <core/GUITestOpStatus.h>
 
-namespace U2 {
+namespace HI {
 
-class MainThreadTimer : public QObject {
-    Q_OBJECT
+
+class HI_EXPORT CustomScenario {
 public:
-    MainThreadTimer(int interval, QObject *parent);
-
-    qint64 getCounter() const;
-
-private slots:
-    void sl_timerTick();
-
-private:
-    QTimer timer;
-    mutable QMutex guard;
-    qint64 counter;
+    virtual ~CustomScenario();
+    virtual void run(HI::GUITestOpStatus &os) = 0;
 };
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_MAIN_THREAD_TIMER_H_
+#endif // _HI_CUSTOM_SCENARIO_H_

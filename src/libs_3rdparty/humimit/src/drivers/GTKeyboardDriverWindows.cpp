@@ -34,7 +34,7 @@ namespace HI {
 
 #define GT_CLASS_NAME "GTKeyboardDriver Windows"
 
-void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
@@ -198,7 +198,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
     }
 }
 
-void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
@@ -356,7 +356,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
 }
 
 #define GT_METHOD_NAME "keyClick"
-void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
 
@@ -380,7 +380,7 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 }
 
 #define GT_METHOD_NAME "keyPress"
-void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers) {
 
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
@@ -395,7 +395,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
-void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
 

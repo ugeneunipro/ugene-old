@@ -30,7 +30,7 @@
 namespace U2 {
 using namespace HI;
 
-PrimerLibrarySelectorFiller::PrimerLibrarySelectorFiller(U2OpStatus &os, int number, bool doubleClick)
+PrimerLibrarySelectorFiller::PrimerLibrarySelectorFiller(HI::GUITestOpStatus &os, int number, bool doubleClick)
 : Filler(os, "PrimerLibrarySelector"), number(number), doubleClick(doubleClick)
 {
 

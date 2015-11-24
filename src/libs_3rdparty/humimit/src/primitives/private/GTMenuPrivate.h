@@ -29,11 +29,11 @@ namespace HI {
 
 class GTMenuPrivate {
 public:
-    static void clickMainMenuItem(U2::U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
-    static void checkMainMenuItemState(U2::U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
 
 private:
-    static void showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
 };
 

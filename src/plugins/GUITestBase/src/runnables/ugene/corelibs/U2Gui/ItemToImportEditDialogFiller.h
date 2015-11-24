@@ -28,7 +28,7 @@ namespace U2 {
 using namespace HI;
 class ItemToImportEditDialogFiller : public Filler {
 public:
-    ItemToImportEditDialogFiller(U2OpStatus& os, const QVariantMap& data);
+    ItemToImportEditDialogFiller(HI::GUITestOpStatus& os, const QVariantMap& data);
 
     void run();
 

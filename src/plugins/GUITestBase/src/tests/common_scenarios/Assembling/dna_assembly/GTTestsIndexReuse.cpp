@@ -50,7 +50,7 @@ public:
     QString message;
     QString reads;
     QMessageBox::StandardButton b;
-    void run(U2::U2OpStatus &os){
+    void run(HI::GUITestOpStatus &os){
         QWidget* dialog = QApplication::activeModalWidget();
         CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
         GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "methodNamesBox", dialog), aligner);

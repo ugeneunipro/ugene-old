@@ -38,7 +38,7 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
 #define GT_METHOD_NAME "run"
 
-TCoffeeDailogFiller::TCoffeeDailogFiller(U2OpStatus &os, int gapOpen, int gapExt, int numOfIters) :
+TCoffeeDailogFiller::TCoffeeDailogFiller(HI::GUITestOpStatus &os, int gapOpen, int gapExt, int numOfIters) :
     Filler(os, "TCoffeeSupportRunDialog"),
     gapOpen(gapOpen),
     gapExt(gapExt),

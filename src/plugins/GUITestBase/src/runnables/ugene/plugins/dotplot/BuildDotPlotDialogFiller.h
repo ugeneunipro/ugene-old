@@ -29,7 +29,7 @@ using namespace HI;
 
     class BuildDotPlotFiller : public Filler {
     public:
-        BuildDotPlotFiller(U2OpStatus &_os, const QString &_firstFileEdit,
+        BuildDotPlotFiller(HI::GUITestOpStatus &_os, const QString &_firstFileEdit,
                            const QString &_secondFileEdit="", bool _mergeFirstBoxChecked = false,
                            bool _oneSequenceBoxChecked=false, bool _mergeSecondBoxChecked=false,
                            int _gapFirstVal=5, int _gapSecondVal=5,

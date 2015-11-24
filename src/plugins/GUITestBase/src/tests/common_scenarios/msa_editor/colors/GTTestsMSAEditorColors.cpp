@@ -46,7 +46,7 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_colors {
 using namespace HI;
-void checkColor(U2OpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
+void checkColor(HI::GUITestOpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     CHECK_SET_ERR(seq!=NULL,"msa_editor_sequence_area widget is NULL")
 

@@ -37,7 +37,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/ToolsMenu.h>
@@ -514,7 +513,7 @@ GUI_TEST_CLASS_DEFINITION(test_0567) {
 
     class Test_0567 : public Filler {
     public:
-        Test_0567(U2OpStatus& os)
+        Test_0567(HI::GUITestOpStatus& os)
             : Filler(os, "DotPlotDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -563,7 +562,7 @@ GUI_TEST_CLASS_DEFINITION(test_0574) {
     //5. Select in menu Actions->Cloning->Construct molecule...
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //6. In dialog select your fragment in "Available fragments", click Add
             GTWidget::click(os, GTWidget::findWidget(os, "takeAllButton"));
 
@@ -602,7 +601,7 @@ GUI_TEST_CLASS_DEFINITION(test_0574) {
 GUI_TEST_CLASS_DEFINITION(test_0587){
     class CheckBowtie2Filler : public Filler {
     public:
-        CheckBowtie2Filler(U2OpStatus &os)
+        CheckBowtie2Filler(HI::GUITestOpStatus &os)
             : Filler (os, "BuildIndexFromRefDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -654,7 +653,7 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
 
     class SaveGraphCutoffsDialogFiller : public Filler {
     public:
-        SaveGraphCutoffsDialogFiller(U2OpStatus &os)
+        SaveGraphCutoffsDialogFiller(HI::GUITestOpStatus &os)
             : Filler (os, "SaveGraphCutoffsDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -795,7 +794,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
 
     class ToolTipsChecker : public Filler {
     public:
-        ToolTipsChecker(U2OpStatus &os)
+        ToolTipsChecker(HI::GUITestOpStatus &os)
             : Filler( os, "Primer3Dialog") {}
         virtual void run() {
             QDialog *dialog = qobject_cast<QDialog*>(QApplication::activeModalWidget());
@@ -1063,7 +1062,7 @@ GUI_TEST_CLASS_DEFINITION(test_0684) {
 
     class CreateFragmentScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal dialog is NULL");
 
@@ -1094,7 +1093,7 @@ GUI_TEST_CLASS_DEFINITION(test_0684) {
 
     class ConstructMoleculeScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal dialog is NULL");
 
@@ -1154,7 +1153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0688) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1185,7 +1184,7 @@ GUI_TEST_CLASS_DEFINITION(test_0700) {
 */
     class CancelScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             GTGlobals::sleep(500);
@@ -1347,7 +1346,7 @@ GUI_TEST_CLASS_DEFINITION(test_0750) {
 
     class Custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
@@ -1540,7 +1539,7 @@ GUI_TEST_CLASS_DEFINITION(test_0778) {
     public:
         CaseAnnotations(QString name = QString())
             : name(name) {}
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1606,7 +1605,7 @@ GUI_TEST_CLASS_DEFINITION(test_0782){
     init.save("/home/vmalin/init", "BMP");
     class custom: public CustomScenario{
     public:
-        void run(U2::U2OpStatus &os){
+        void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
             GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
@@ -1721,7 +1720,7 @@ GUI_TEST_CLASS_DEFINITION(test_0807) {
     //Expected state: the last page of the "Create Element with Command Line Tool" dialog appeared.
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QLineEdit *templateEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit"));
             GTLineEdit::setText(os, templateEdit, "testtest $in");
 
@@ -1739,7 +1738,7 @@ GUI_TEST_CLASS_DEFINITION(test_0807) {
         bool reset;
     public:
         Scenario2(bool reset) : reset(reset) {}
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTWidget::click(os, GTWidget::findWidget(os, "__qt__passive_wizardbutton0"));
 
             QWidget *addButton = GTWidget::findWidget(os, "addAttributeButton");
@@ -1857,7 +1856,7 @@ GUI_TEST_CLASS_DEFINITION(test_0814) {
     public:
         LogFile_1(QString name = QString())
             : name(name) {}
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1903,7 +1902,7 @@ GUI_TEST_CLASS_DEFINITION(test_0818) {
 
     class SpaceNameFiller: public Filler {
     public:
-        SpaceNameFiller(U2OpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
+        SpaceNameFiller(HI::GUITestOpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -1958,7 +1957,7 @@ GUI_TEST_CLASS_DEFINITION(test_0828) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -2113,7 +2112,7 @@ GUI_TEST_CLASS_DEFINITION(test_0840) {
 
     class DigestCircularSequenceScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
 
             QListWidget *availableEnzymeWidget = GTWidget::findExactWidget<QListWidget *>(os, "availableEnzymeWidget", dialog);
@@ -2128,7 +2127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0840) {
 
     class CreateAnnotationScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2241,7 +2240,7 @@ GUI_TEST_CLASS_DEFINITION(test_0844) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2624,7 +2623,7 @@ GUI_TEST_CLASS_DEFINITION(test_0889) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "CreateAnnotationDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "CreateAnnotationDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -2660,7 +2659,7 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -2720,7 +2719,7 @@ GUI_TEST_CLASS_DEFINITION(test_0899){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2822,7 +2821,7 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "ORFDialogBase"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -2854,7 +2853,7 @@ GUI_TEST_CLASS_DEFINITION(test_0930){
 //    1. Open any *.bam file (e.g. "_common_data/bam/scerevisiae.bam").
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3368,7 +3367,7 @@ GUI_TEST_CLASS_DEFINITION(test_0999_1) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3400,7 +3399,7 @@ GUI_TEST_CLASS_DEFINITION(test_0999_2) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3444,7 +3443,7 @@ GUI_TEST_CLASS_DEFINITION(test_1000) {
 
         }
 
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3474,7 +3473,7 @@ GUI_TEST_CLASS_DEFINITION(test_1000) {
 
         }
 
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 

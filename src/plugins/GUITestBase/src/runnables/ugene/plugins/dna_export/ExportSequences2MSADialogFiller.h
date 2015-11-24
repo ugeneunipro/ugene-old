@@ -31,9 +31,9 @@ using namespace HI;
     public:
         enum FormatToUse {Clustalw, Fasta, Msf, Mega, Nexus, Sam, Stockholm};
 
-        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name, ExportSequenceAsAlignmentFiller::FormatToUse _format,
+        ExportSequenceAsAlignmentFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name, ExportSequenceAsAlignmentFiller::FormatToUse _format,
             bool addDocumentToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, CustomScenario *scenario);
+        ExportSequenceAsAlignmentFiller(HI::GUITestOpStatus &_os, CustomScenario *scenario);
 
         void commonScenario();
 

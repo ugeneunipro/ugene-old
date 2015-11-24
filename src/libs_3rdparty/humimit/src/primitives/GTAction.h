@@ -31,13 +31,13 @@ namespace HI {
 class HI_EXPORT GTAction {
 public:
     // returns first QAbstractButton associated with an action with a given name
-    static QAbstractButton* button(U2::U2OpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QAbstractButton* button(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static QAbstractButton* button(U2::U2OpStatus &os, const QAction* a, QObject *parent = NULL);
+    static QAbstractButton* button(GUITestOpStatus &os, const QAction* a, QObject *parent = NULL);
 
-    static QAction* findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static QAction* findAction(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
-    static QAction* findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent = NULL);
+    static QAction* findActionByText(GUITestOpStatus &os, const QString &text, QWidget *parent = NULL);
 };
 
 } //namespace

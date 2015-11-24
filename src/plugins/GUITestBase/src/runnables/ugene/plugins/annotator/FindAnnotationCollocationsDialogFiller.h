@@ -35,7 +35,7 @@ using namespace HI;
 
 class FindAnnotationCollocationsDialogFiller : public Filler {
 public:
-    FindAnnotationCollocationsDialogFiller(U2OpStatus &os): Filler(os, "FindAnnotationCollocationsDialog"){}
+    FindAnnotationCollocationsDialogFiller(HI::GUITestOpStatus &os): Filler(os, "FindAnnotationCollocationsDialog"){}
     virtual void run();
     QToolButton* getPlusButton() const;
     QList<QToolButton*> getMinusButtons() const;

@@ -29,7 +29,7 @@ using namespace HI;
 
     class GoToDialogFiller : public Filler {
     public:
-        GoToDialogFiller(U2OpStatus &_os, int _goTo) : Filler(_os, ""), goTo(_goTo){}
+        GoToDialogFiller(HI::GUITestOpStatus &_os, int _goTo) : Filler(_os, ""), goTo(_goTo){}
         virtual void run();
     private:
         int goTo;

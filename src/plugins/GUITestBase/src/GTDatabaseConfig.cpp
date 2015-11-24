@@ -26,7 +26,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/U2DbiUtils.h>
 
-#include <U2Test/GUITest.h>
+#include <core/GUITest.h>
 
 #include "GTDatabaseConfig.h"
 
@@ -48,7 +48,7 @@ const QString READ_ONLY_LOGIN = "read_only_login";
 const QString PASSWORD = "password";
 
 QVariant getSetting(const QString &key) {
-    QSettings settings(GUITest::testDir +"_common_data/database.ini", QSettings::IniFormat);
+    QSettings settings(HI::GUITest::testDir +"_common_data/database.ini", QSettings::IniFormat);
     return settings.value(SETTINGS_ROOT + key);
 }
 

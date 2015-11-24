@@ -32,7 +32,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTComboBox"
 
 #define GT_METHOD_NAME "setCurrentIndex"
-void GTComboBox::setCurrentIndex(U2::U2OpStatus& os, QComboBox *comboBox, int index, bool checkVal, GTGlobals::UseMethod method) {
+void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int index, bool checkVal, GTGlobals::UseMethod method) {
 
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
@@ -88,7 +88,7 @@ void GTComboBox::setCurrentIndex(U2::U2OpStatus& os, QComboBox *comboBox, int in
 
 }
 
-void GTComboBox::setIndexWithText(U2::U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal, GTGlobals::UseMethod method) {
+void GTComboBox::setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal, GTGlobals::UseMethod method) {
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
     int index = comboBox->findText(text, Qt::MatchContains);
@@ -104,7 +104,7 @@ void GTComboBox::setIndexWithText(U2::U2OpStatus& os, QComboBox *comboBox, const
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getValues"
-QStringList GTComboBox::getValues(U2::U2OpStatus &os, QComboBox *comboBox) {
+QStringList GTComboBox::getValues(GUITestOpStatus &os, QComboBox *comboBox) {
     QStringList result;
     GT_CHECK_RESULT(NULL != comboBox, "Combobox is NULL", result);
     for (int i = 0; i < comboBox->count(); i++) {
@@ -116,7 +116,7 @@ QStringList GTComboBox::getValues(U2::U2OpStatus &os, QComboBox *comboBox) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkValues"
-void GTComboBox::checkValues(U2::U2OpStatus& os, QComboBox *comboBox, const QStringList &values) {
+void GTComboBox::checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QStringList &values) {
     GT_CHECK(NULL != comboBox, "comboBox is NULL");
 
     GTWidget::setFocus(os, comboBox);
@@ -159,7 +159,7 @@ void GTComboBox::checkValues(U2::U2OpStatus& os, QComboBox *comboBox, const QStr
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkValuesPresence"
-void GTComboBox::checkValuesPresence(U2::U2OpStatus &os, QComboBox *comboBox, const QStringList &values){
+void GTComboBox::checkValuesPresence(GUITestOpStatus &os, QComboBox *comboBox, const QStringList &values){
     Q_UNUSED(os)
     GT_CHECK(NULL != comboBox, "ComboBox is NULL");
 
@@ -171,7 +171,7 @@ void GTComboBox::checkValuesPresence(U2::U2OpStatus &os, QComboBox *comboBox, co
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkCurrentValue"
-void GTComboBox::checkCurrentValue(U2::U2OpStatus &os, QComboBox *comboBox, const QString &expectedValue) {
+void GTComboBox::checkCurrentValue(GUITestOpStatus &os, QComboBox *comboBox, const QString &expectedValue) {
     Q_UNUSED(os);
     GT_CHECK(NULL != comboBox, "ComboBox is NULL");
     GT_CHECK(expectedValue == comboBox->currentText(), QString("An unexpected value: expect '%1', got '%2'")

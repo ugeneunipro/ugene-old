@@ -29,14 +29,14 @@ using namespace HI;
 
 class CreateAnnotationWidgetFiller : public Filler {
 public:
-    CreateAnnotationWidgetFiller(U2OpStatus &os,
+    CreateAnnotationWidgetFiller(HI::GUITestOpStatus &os,
                                  bool newTableRB,
                                  const QString &groupName,
                                  const QString &annotationName,
                                  const QString &location,
                                  const QString &saveTo = "",
                                  const QString &description = "");
-    CreateAnnotationWidgetFiller(U2OpStatus &os, CustomScenario *scenario);
+    CreateAnnotationWidgetFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     virtual void commonScenario();
 

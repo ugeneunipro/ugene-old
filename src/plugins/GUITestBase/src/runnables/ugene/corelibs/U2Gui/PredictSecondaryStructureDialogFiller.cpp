@@ -40,7 +40,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::PredictSecondaryStructureDialogFiller"
 
-PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk) :
+PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(HI::GUITestOpStatus &os, int startPos, int endPos, bool onlyPressOk) :
     Filler(os, "SecStructDialog"),
     startPos(startPos),
     endPos(endPos),
@@ -49,7 +49,7 @@ PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(U2O
 
 }
 
-PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "SecStructDialog", scenario),
     startPos(0),
     endPos(0),
@@ -84,7 +84,7 @@ void PredictSecondaryStructureDialogFiller::commonScenario() {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 

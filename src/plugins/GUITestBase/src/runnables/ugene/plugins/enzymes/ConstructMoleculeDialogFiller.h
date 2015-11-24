@@ -36,8 +36,8 @@ public:
     };
     typedef QPair<ActionType, QVariant> Action;
 
-    ConstructMoleculeDialogFiller(U2OpStatus &os, const QList<Action> &actions);
-    ConstructMoleculeDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    ConstructMoleculeDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
+    ConstructMoleculeDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 

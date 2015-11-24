@@ -36,7 +36,7 @@ namespace U2 {
 using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::CommonImportOptionsDialogFiller"
 
-CommonImportOptionsDialogFiller::CommonImportOptionsDialogFiller(U2OpStatus& os, const QVariantMap& data) :
+CommonImportOptionsDialogFiller::CommonImportOptionsDialogFiller(HI::GUITestOpStatus& os, const QVariantMap& data) :
     Filler(os, "CommonImportOptionsDialog"),
     data(data)
 {

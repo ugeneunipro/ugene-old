@@ -30,8 +30,8 @@ using namespace HI;
 
 class RemoteBLASTDialogFiller : public Filler {
 public:
-    RemoteBLASTDialogFiller(U2OpStatus &os);
-    RemoteBLASTDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    RemoteBLASTDialogFiller(HI::GUITestOpStatus &os);
+    RemoteBLASTDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
 virtual void commonScenario();
 

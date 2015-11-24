@@ -30,11 +30,11 @@ using namespace HI;
 class DashboardsManagerDialogFiller: public Filler
 {
 public:
-    DashboardsManagerDialogFiller(U2OpStatus &os, CustomScenario* _c = NULL):
+    DashboardsManagerDialogFiller(HI::GUITestOpStatus &os, CustomScenario* _c = NULL):
         Filler(os, "DashboardsManagerDialog", _c){}
     virtual void commonScenario();
-    static void selectDashboards(U2OpStatus &os, QStringList names);
-    static bool isDashboardPresent(U2OpStatus &os, QString name);
+    static void selectDashboards(HI::GUITestOpStatus &os, QStringList names);
+    static bool isDashboardPresent(HI::GUITestOpStatus &os, QString name);
 
 };
 

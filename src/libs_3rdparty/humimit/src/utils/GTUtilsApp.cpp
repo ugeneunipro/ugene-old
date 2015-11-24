@@ -29,7 +29,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTUtilsApp"
 
 #define GT_METHOD_NAME "checkUGENETitle"
-void GTUtilsApp::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
+void GTUtilsApp::checkUGENETitle(GUITestOpStatus &os, const QString &title) {
 
     bool isTitleGood = false;
     foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){
@@ -49,7 +49,7 @@ void GTUtilsApp::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
 #define GT_CLASS_NAME "GTUtilsApp"
 
 #define GT_METHOD_NAME "checkUGENETitleContains"
-void GTUtilsApp::checkUGENETitleContains(U2::U2OpStatus &os, const QString& string) {
+void GTUtilsApp::checkUGENETitleContains(GUITestOpStatus &os, const QString& string) {
 
     bool isTitleContains = false;
     foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){

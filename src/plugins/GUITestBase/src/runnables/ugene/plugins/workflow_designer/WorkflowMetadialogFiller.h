@@ -30,7 +30,7 @@ using namespace HI;
 class WorkflowMetaDialogFiller : public Filler
 {
 public:
-    WorkflowMetaDialogFiller(U2OpStatus& os, QString _url, QString _name): Filler(os, "WorkflowMetaDialog"),
+    WorkflowMetaDialogFiller(HI::GUITestOpStatus& os, QString _url, QString _name): Filler(os, "WorkflowMetaDialog"),
         url(_url),
         name(_name){}
     virtual void run();

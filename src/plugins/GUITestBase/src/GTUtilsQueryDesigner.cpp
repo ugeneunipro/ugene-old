@@ -45,14 +45,14 @@ using namespace HI;
 #define GT_CLASS_NAME "GTUtilsQueryDesigner"
 
 #define GT_METHOD_NAME "findTreeItem"
-void GTUtilsQueryDesigner::openQueryDesigner(U2OpStatus &os) {
+void GTUtilsQueryDesigner::openQueryDesigner(HI::GUITestOpStatus &os) {
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Query Designer...");
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findTreeItem"
-QTreeWidgetItem* GTUtilsQueryDesigner::findAlgorithm(U2OpStatus &os,QString itemName){
+QTreeWidgetItem* GTUtilsQueryDesigner::findAlgorithm(HI::GUITestOpStatus &os,QString itemName){
     QTreeWidgetItem* foundItem = NULL;
     QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"palette"));
 
@@ -76,7 +76,7 @@ QTreeWidgetItem* GTUtilsQueryDesigner::findAlgorithm(U2OpStatus &os,QString item
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsQueryDesigner::addAlgorithm(U2OpStatus &os, QString algName){
+void GTUtilsQueryDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algName){
     QTreeWidgetItem *w = findAlgorithm(os, algName);
     GTGlobals::sleep(100);
     CHECK_SET_ERR(w!=NULL,"algorithm is NULL");
@@ -86,37 +86,37 @@ void GTUtilsQueryDesigner::addAlgorithm(U2OpStatus &os, QString algName){
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"));
 }
 
-QPoint GTUtilsQueryDesigner::getItemCenter(U2OpStatus &os,QString itemName){
+QPoint GTUtilsQueryDesigner::getItemCenter(HI::GUITestOpStatus &os,QString itemName){
     QRect r = getItemRect(os, itemName);
     QPoint p = r.center();
     return p;
 }
 
-int GTUtilsQueryDesigner::getItemLeft(U2OpStatus &os, QString itemName){
+int GTUtilsQueryDesigner::getItemLeft(HI::GUITestOpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
     int i = r.left();
     return i;
 }
 
-int GTUtilsQueryDesigner::getItemRight(U2OpStatus &os, QString itemName){
+int GTUtilsQueryDesigner::getItemRight(HI::GUITestOpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
     int i = r.right() - 1;
     return i;
 }
 
-int GTUtilsQueryDesigner::getItemTop(U2OpStatus &os, QString itemName){
+int GTUtilsQueryDesigner::getItemTop(HI::GUITestOpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
     int i = r.top();
     return i;
 }
 
-int GTUtilsQueryDesigner::getItemBottom(U2OpStatus &os, QString itemName){
+int GTUtilsQueryDesigner::getItemBottom(HI::GUITestOpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
     int i = r.bottom();
     return i;
 }
 
-QRect GTUtilsQueryDesigner::getItemRect(U2OpStatus &os,QString itemName){
+QRect GTUtilsQueryDesigner::getItemRect(HI::GUITestOpStatus &os,QString itemName){
 
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<QGraphicsItem *> items = sceneView->items();

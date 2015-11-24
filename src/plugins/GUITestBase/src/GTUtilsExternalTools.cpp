@@ -40,7 +40,7 @@ public:
 
     }
 
-    void run(U2OpStatus &os) {
+    void run(HI::GUITestOpStatus &os) {
         AppSettingsDialogFiller::clearToolPath(os, toolName);
 
         QWidget *dialog = QApplication::activeModalWidget();
@@ -60,7 +60,7 @@ public:
 
     }
 
-    void run(U2OpStatus &os) {
+    void run(HI::GUITestOpStatus &os) {
         AppSettingsDialogFiller::setExternalToolPath(os, toolName, url);
 
         QWidget *dialog = QApplication::activeModalWidget();
@@ -76,14 +76,14 @@ private:
 #define GT_CLASS_NAME "GTUtilsExternalTools"
 
 #define GT_METHOD_NAME "removeTool"
-void GTUtilsExternalTools::removeTool(U2OpStatus &os, const QString &toolName) {
+void GTUtilsExternalTools::removeTool(HI::GUITestOpStatus &os, const QString &toolName) {
     GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new RemoveToolScenario(toolName)));
     GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setToolUrl"
-void GTUtilsExternalTools::setToolUrl(U2OpStatus &os, const QString &toolName, const QString &url) {
+void GTUtilsExternalTools::setToolUrl(HI::GUITestOpStatus &os, const QString &toolName, const QString &url) {
     GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new SetToolUrlScenario(toolName, url)));
     GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
 }

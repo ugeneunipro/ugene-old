@@ -30,7 +30,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::GenerateAlignmentProfileDialogFiller"
 
-LicenseAgreemntDialogFiller::LicenseAgreemntDialogFiller(U2OpStatus &os) :
+LicenseAgreemntDialogFiller::LicenseAgreemntDialogFiller(HI::GUITestOpStatus &os) :
     Filler(os, "LicenseDialog")
 {
 

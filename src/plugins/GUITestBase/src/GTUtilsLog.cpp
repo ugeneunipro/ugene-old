@@ -65,7 +65,7 @@ bool GTLogTracer::checkMessage(QString s){
 
 #define GT_CLASS_NAME "GTUtilsLog"
 #define GT_METHOD_NAME "check"
-void GTUtilsLog::check(U2OpStatus &os, const GTLogTracer& logTracer) {
+void GTUtilsLog::check(HI::GUITestOpStatus &os, const GTLogTracer& logTracer) {
     Q_UNUSED(os);
     GTGlobals::sleep(500);
     GT_CHECK(!logTracer.hasError(), "There is an error in log: " + logTracer.getError());
@@ -73,7 +73,7 @@ void GTUtilsLog::check(U2OpStatus &os, const GTLogTracer& logTracer) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkContainsError"
-void GTUtilsLog::checkContainsError(U2OpStatus &os, const GTLogTracer &logTracer, const QString &messagePart) {
+void GTUtilsLog::checkContainsError(HI::GUITestOpStatus &os, const GTLogTracer &logTracer, const QString &messagePart) {
     Q_UNUSED(os);
     GTGlobals::sleep(500);
     GT_CHECK(logTracer.hasError(), "There is no errors in the log");
@@ -82,7 +82,7 @@ void GTUtilsLog::checkContainsError(U2OpStatus &os, const GTLogTracer &logTracer
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkContainsMessage"
-void GTUtilsLog::checkContainsMessage(U2OpStatus &os, const GTLogTracer &logTracer, bool expected) {
+void GTUtilsLog::checkContainsMessage(HI::GUITestOpStatus &os, const GTLogTracer &logTracer, bool expected) {
     Q_UNUSED(os);
     GT_CHECK(logTracer.getExpectedMessage() != "", "Expected message shoul be specyfied on creating GTLogtracer");
     GTGlobals::sleep(500);
@@ -95,7 +95,7 @@ void GTUtilsLog::checkContainsMessage(U2OpStatus &os, const GTLogTracer &logTrac
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getErrors"
-QStringList GTUtilsLog::getErrors(U2OpStatus &os, const GTLogTracer &logTracer) {
+QStringList GTUtilsLog::getErrors(HI::GUITestOpStatus &os, const GTLogTracer &logTracer) {
     QStringList result;
     foreach (LogMessage *message, logTracer.getMessages()) {
         if (LogLevel_ERROR == message->level) {

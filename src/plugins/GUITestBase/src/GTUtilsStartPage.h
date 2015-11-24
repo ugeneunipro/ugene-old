@@ -35,12 +35,12 @@ class GTUtilsStartPage
 {
 public:
     enum Buttons{OpenFile, CreateSequence, CreateWorkflow, QuickStartGuide};
-    static void openStartPage(U2OpStatus &os);
-    static QWebView* getStartPage(U2OpStatus &os);
-    static QWebElement getButton(U2OpStatus &os, Buttons button);
-    static void clickButton(U2OpStatus &os, Buttons button);
-    static void clickResentDocument(U2OpStatus &os, QString text);
-    static void clickResentProject(U2OpStatus &os, QString text);
+    static void openStartPage(HI::GUITestOpStatus &os);
+    static QWebView* getStartPage(HI::GUITestOpStatus &os);
+    static QWebElement getButton(HI::GUITestOpStatus &os, Buttons button);
+    static void clickButton(HI::GUITestOpStatus &os, Buttons button);
+    static void clickResentDocument(HI::GUITestOpStatus &os, QString text);
+    static void clickResentProject(HI::GUITestOpStatus &os, QString text);
 };
 
 }

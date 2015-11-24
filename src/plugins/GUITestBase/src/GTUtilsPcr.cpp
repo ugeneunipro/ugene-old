@@ -35,50 +35,50 @@
 
 namespace U2 {
 
-void GTUtilsPcr::setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer) {
+void GTUtilsPcr::setPrimer(HI::GUITestOpStatus &os, U2Strand::Direction direction, const QByteArray &primer) {
     QLineEdit *primerEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "primerEdit", primerBox(os, direction)));
     GTLineEdit::setText(os, primerEdit, primer, true);
 }
 
-void GTUtilsPcr::setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches) {
+void GTUtilsPcr::setMismatches(HI::GUITestOpStatus &os, U2Strand::Direction direction, int mismatches) {
     QSpinBox *mismatchesSpinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "mismatchesSpinBox", primerBox(os, direction)));
     GTSpinBox::setValue(os, mismatchesSpinBox, mismatches);
 }
 
-void GTUtilsPcr::setPerfectMatch(U2OpStatus &os, int number) {
+void GTUtilsPcr::setPerfectMatch(HI::GUITestOpStatus &os, int number) {
     QSpinBox *spinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "perfectSpinBox"));
     GTSpinBox::setValue(os, spinBox, number, GTGlobals::UseKeyBoard);
 }
 
-void GTUtilsPcr::setMaxProductSize(U2OpStatus &os, int number) {
+void GTUtilsPcr::setMaxProductSize(HI::GUITestOpStatus &os, int number) {
     QSpinBox *spinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "productSizeSpinBox"));
     GTSpinBox::setValue(os, spinBox, number, GTGlobals::UseKeyBoard);
 }
 
-QWidget * GTUtilsPcr::browseButton(U2OpStatus &os, U2Strand::Direction direction) {
+QWidget * GTUtilsPcr::browseButton(HI::GUITestOpStatus &os, U2Strand::Direction direction) {
     return GTWidget::findWidget(os, "browseButton", primerBox(os, direction));
 }
 
-int GTUtilsPcr::productsCount(U2OpStatus &os) {
+int GTUtilsPcr::productsCount(HI::GUITestOpStatus &os) {
     return GTTableView::rowCount(os, table(os));
 }
 
-QString GTUtilsPcr::getResultRegion(U2OpStatus &os, int number) {
+QString GTUtilsPcr::getResultRegion(HI::GUITestOpStatus &os, int number) {
     return GTTableView::data(os, table(os), number, 0);
 }
 
-QPoint GTUtilsPcr::getResultPoint(U2OpStatus &os, int number) {
+QPoint GTUtilsPcr::getResultPoint(HI::GUITestOpStatus &os, int number) {
     return GTTableView::getCellPoint(os, table(os), number, 0);
 }
 
-QPoint GTUtilsPcr::getDetailsPoint(U2OpStatus &os) {
+QPoint GTUtilsPcr::getDetailsPoint(HI::GUITestOpStatus &os) {
     QWidget *warning = GTWidget::findWidget(os, "detailsLinkLabel");
     QPoint result = warning->geometry().center();
     result.setX(result.x()/2);
     return warning->parentWidget()->mapToGlobal(result);
 }
 
-QWidget * GTUtilsPcr::primerBox(U2OpStatus &os, U2Strand::Direction direction) {
+QWidget * GTUtilsPcr::primerBox(HI::GUITestOpStatus &os, U2Strand::Direction direction) {
     QString boxName = "forwardPrimerBox";
     if (U2Strand::Complementary == direction) {
         boxName = "reversePrimerBox";
@@ -86,11 +86,11 @@ QWidget * GTUtilsPcr::primerBox(U2OpStatus &os, U2Strand::Direction direction) {
     return GTWidget::findWidget(os, boxName);
 }
 
-QTableView * GTUtilsPcr::table(U2OpStatus &os) {
+QTableView * GTUtilsPcr::table(HI::GUITestOpStatus &os) {
     return dynamic_cast<QTableView*>(GTWidget::findWidget(os, "productsTable"));
 }
 
-void GTUtilsPcr::clearPcrDir(U2OpStatus &os){
+void GTUtilsPcr::clearPcrDir(HI::GUITestOpStatus &os){
     Q_UNUSED(os);
     QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/pcr";
     GTFile::removeDir(path);

@@ -29,7 +29,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTTextEdit"
 
 #define GT_METHOD_NAME ""
-void GTTextEdit::setText(U2::U2OpStatus& os, QTextEdit* textEdit, const QString &text) {
+void GTTextEdit::setText(GUITestOpStatus& os, QTextEdit* textEdit, const QString &text) {
 
     GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
 
@@ -46,7 +46,7 @@ void GTTextEdit::setText(U2::U2OpStatus& os, QTextEdit* textEdit, const QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getText"
-QString GTTextEdit::getText(U2::U2OpStatus &os, QTextEdit *textEdit) {
+QString GTTextEdit::getText(GUITestOpStatus &os, QTextEdit *textEdit) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != textEdit, "Text edit is NULL", "");
     return textEdit->toPlainText();
@@ -54,14 +54,14 @@ QString GTTextEdit::getText(U2::U2OpStatus &os, QTextEdit *textEdit) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "containsString"
-bool GTTextEdit::containsString(U2::U2OpStatus &os, QTextEdit *textEdit, const QString &string) {
+bool GTTextEdit::containsString(GUITestOpStatus &os, QTextEdit *textEdit, const QString &string) {
     const QString text = getText(os, textEdit);
     return text.contains(string);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clear"
-void GTTextEdit::clear(U2::U2OpStatus& os, QTextEdit* textEdit) {
+void GTTextEdit::clear(GUITestOpStatus& os, QTextEdit* textEdit) {
 
     GT_CHECK(textEdit != NULL, "textEdit is NULL");
 

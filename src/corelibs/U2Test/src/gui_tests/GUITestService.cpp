@@ -34,9 +34,9 @@
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "MainThreadRunnable.h"
+#include <core/MainThreadRunnable.h>
 #include "GUITestBase.h"
-#include "GUITestOpStatus.h"
+#include <core/GUITestOpStatus.h>
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
 #include "GUITestThread.h"
@@ -72,8 +72,7 @@ const qint64 GUITestService::TIMER_INTERVAL = 100;
 GUITestService::GUITestService(QObject *) :
     Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
     runTestsAction(NULL),
-    testLauncher(NULL),
-    timer(TIMER_INTERVAL, this)
+    testLauncher(NULL)
 {
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_allStartUpPluginsLoaded()));
     setQtFileDialogView();
@@ -81,10 +80,6 @@ GUITestService::GUITestService(QObject *) :
 
 GUITestService::~GUITestService() {
     delete runTestsAction;
-}
-
-qint64 GUITestService::getMainThreadTimerValue() const {
-    return timer.getCounter();
 }
 
 GUITestService *GUITestService::getGuiTestService() {
@@ -270,7 +265,7 @@ void GUITestService::runAllGUITests() {
     GUITests tests = AppContext::getGUITestBase()->takeTests();
     SAFE_POINT(false == tests.isEmpty(),"",);
 
-    foreach(GUITest* t, tests) {
+    foreach(HI::GUITest* t, tests) {
         SAFE_POINT(NULL != t,"",);
         if (!t) {
             continue;
@@ -286,9 +281,9 @@ void GUITestService::runAllGUITests() {
         qint64 startTime = GTimer::currentTimeMicros();
         GUITestTeamcityLogger::testStarted(testNameForTeamCity);
 
-        TaskStateInfo os;
+        HI::GUITestOpStatus os;
         log.trace("GTRUNNER - runAllGUITests - going to run initial checks before " + testName);
-        foreach(GUITest* t, initTests) {
+        foreach(HI::GUITest* t, initTests) {
             if (t) {
                 t->run(os);
             }
@@ -299,14 +294,14 @@ void GUITestService::runAllGUITests() {
         t->run(os);
         log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);
 
-        foreach(GUITest* t, postChecksTests) {
+        foreach(HI::GUITest* t, postChecksTests) {
             if (t) {
                 t->run(os);
             }
         }
 
-        TaskStateInfo os2;
-        foreach(GUITest* t, postActiosTests) {
+        HI::GUITestOpStatus os2;
+        foreach(HI::GUITest* t, postActiosTests) {
             if (t) {
                 t->run(os2);
             }
@@ -331,7 +326,7 @@ void GUITestService::runGUITest() {
 
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",);
-    GUITest *t = tb->takeTest(testName.split(":").first(), testName.split(":").last());
+    HI::GUITest *t = tb->takeTest(testName.split(":").first(), testName.split(":").last());
 
     runGUITest(t);
 }
@@ -339,12 +334,12 @@ void GUITestService::runGUITest() {
 void GUITestService::runGUICrazyUserTest() {
     GUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(tb,"",);
-    GUITest *t = tb->takeTest("","simple_crazy_user");
+    HI::GUITest *t = tb->takeTest("","simple_crazy_user");
 
     runGUITest(t);
 }
 
-void GUITestService::runGUITest(GUITest *test) {
+void GUITestService::runGUITest(HI::GUITest *test) {
     SAFE_POINT(NULL != test, "GUITest is NULL", );
     GUITestThread *testThread = new GUITestThread(test, log);
     connect(testThread, SIGNAL(finished()), SLOT(sl_testThreadFinish()));
@@ -413,7 +408,7 @@ void GUITestService::clearSandbox()
 {
     log.trace("GUITestService __ clearSandbox");
 
-    QString pathToSandbox = GUITest::testDir + "_common_data/scenarios/sandbox/";
+    QString pathToSandbox = HI::GUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 
     foreach (QString fileName, sandbox.entryList()) {
@@ -454,10 +449,6 @@ void GUITestService::removeDir(QString dirName)
 void GUITestService::sl_testThreadFinish() {
     sender()->deleteLater();
     AppContext::getMainWindow()->getQMainWindow()->close();
-}
-
-void GUITestService::sl_requestAsked(MainThreadRunnable *runnable) {
-    runnable->run();
 }
 
 }

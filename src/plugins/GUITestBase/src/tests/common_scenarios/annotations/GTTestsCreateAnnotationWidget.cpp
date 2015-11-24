@@ -59,53 +59,53 @@ using namespace HI;
 
 namespace {
 
-void openFileAndCallCreateAnnotationDialog(U2OpStatus &os, const QString &filePath) {
+void openFileAndCallCreateAnnotationDialog(HI::GUITestOpStatus &os, const QString &filePath) {
     GTFileDialog::openFile(os, filePath);
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
 }
 
-void openFileAndCallSmithWatermanDialog(U2OpStatus &os, const QString &filePath) {
+void openFileAndCallSmithWatermanDialog(HI::GUITestOpStatus &os, const QString &filePath) {
     GTFileDialog::openFile(os, filePath);
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find pattern [Smith-Waterman]");
 }
 
-void setSmithWatermanPatternAndOpenLastTab(U2OpStatus &os, QWidget *dialog, const QString &pattern = "AGGAAAAAATGCTAAGGGCAGC") {
+void setSmithWatermanPatternAndOpenLastTab(HI::GUITestOpStatus &os, QWidget *dialog, const QString &pattern = "AGGAAAAAATGCTAAGGGCAGC") {
     GTTextEdit::setText(os, GTWidget::findExactWidget<QTextEdit *>(os, "teditPattern", dialog), pattern);
     GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
 }
 
-void openFileOpenSearchTabAndSetPattern(U2OpStatus &os, const QString &filePath, const QString &pattern = "GCCCATCAGACTAACAG") {
+void openFileOpenSearchTabAndSetPattern(HI::GUITestOpStatus &os, const QString &filePath, const QString &pattern = "GCCCATCAGACTAACAG") {
     GTFileDialog::openFile(os, filePath);
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTTextEdit::setText(os, GTWidget::findExactWidget<QTextEdit *>(os, "textPattern"), pattern);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
-QString getTypeFromFullWidget(U2OpStatus &os, QWidget *dialog) {
+QString getTypeFromFullWidget(HI::GUITestOpStatus &os, QWidget *dialog) {
     QListWidget *lwAnnotationType = GTWidget::findExactWidget<QListWidget *>(os, "lwAnnotationType", dialog);
     CHECK_SET_ERR_RESULT(NULL != lwAnnotationType, "lwAnnotationType is NULL", "");
     return lwAnnotationType->currentItem()->text();
 }
 
-void setTypeInFullWidget(U2OpStatus &os, const QString &type, QWidget *dialog) {
+void setTypeInFullWidget(HI::GUITestOpStatus &os, const QString &type, QWidget *dialog) {
     GTListWidget::click(os, GTWidget::findExactWidget<QListWidget *>(os, "lwAnnotationType", dialog), type);
 }
 
-bool checkTypePresenceInFullWidget(U2OpStatus &os, const QString &type, QWidget *dialog) {
+bool checkTypePresenceInFullWidget(HI::GUITestOpStatus &os, const QString &type, QWidget *dialog) {
     return GTListWidget::getItems(os, GTWidget::findExactWidget<QListWidget *>(os, "lwAnnotationType", dialog)).contains(type);
 }
 
-QString getTypeFromNormalWidget(U2OpStatus &os, QWidget *dialog) {
+QString getTypeFromNormalWidget(HI::GUITestOpStatus &os, QWidget *dialog) {
     QComboBox *cbAnnotationType = GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType", dialog);
     CHECK_SET_ERR_RESULT(NULL != cbAnnotationType, "cbAnnotationType is NULL", "");
     return cbAnnotationType->currentText();
 }
 
-void setTypeInNormalWidget(U2OpStatus &os, const QString &type, QWidget *dialog) {
+void setTypeInNormalWidget(HI::GUITestOpStatus &os, const QString &type, QWidget *dialog) {
     GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType", dialog), type, true, GTGlobals::UseMouse);
 }
 
-bool checkTypePresenceInNormalWidget(U2OpStatus &os, const QString &type, QWidget *dialog) {
+bool checkTypePresenceInNormalWidget(HI::GUITestOpStatus &os, const QString &type, QWidget *dialog) {
     QComboBox *cbAnnotationType = GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType", dialog);
     CHECK_SET_ERR_RESULT(NULL != cbAnnotationType, "cbAnnotationType is NULL", "");
     for (int i = 0; i < cbAnnotationType->count(); i++) {
@@ -116,19 +116,19 @@ bool checkTypePresenceInNormalWidget(U2OpStatus &os, const QString &type, QWidge
     return false;
 }
 
-QString getTypeFromOptionsPanelWidget(U2OpStatus &os) {
+QString getTypeFromOptionsPanelWidget(HI::GUITestOpStatus &os) {
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
     QComboBox *cbAnnotationType = GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType");
     CHECK_SET_ERR_RESULT(NULL != cbAnnotationType, "cbAnnotationType is NULL", "");
     return cbAnnotationType->currentText();
 }
 
-void setTypeInOptionsPanelWidget(U2OpStatus &os, const QString &type) {
+void setTypeInOptionsPanelWidget(HI::GUITestOpStatus &os, const QString &type) {
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
     GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType"), type, true, GTGlobals::UseMouse);
 }
 
-bool checkTypePresenceInOptionsPanelWidget(U2OpStatus &os, const QString &type) {
+bool checkTypePresenceInOptionsPanelWidget(HI::GUITestOpStatus &os, const QString &type) {
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
     QComboBox *cbAnnotationType = GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType");
     CHECK_SET_ERR_RESULT(NULL != cbAnnotationType, "cbAnnotationType is NULL", "");
@@ -140,42 +140,42 @@ bool checkTypePresenceInOptionsPanelWidget(U2OpStatus &os, const QString &type) 
     return false;
 }
 
-void setGroupName(U2OpStatus &os, const QString &name, QWidget *dialog = NULL) {
+void setGroupName(HI::GUITestOpStatus &os, const QString &name, QWidget *dialog = NULL) {
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leGroupName", dialog), name);
 }
 
-void checkGroupName(U2OpStatus &os, const QString &name, QWidget *dialog = NULL) {
+void checkGroupName(HI::GUITestOpStatus &os, const QString &name, QWidget *dialog = NULL) {
     GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leGroupName", dialog), name);
 }
 
-void clickSelectGroupButton(U2OpStatus &os, QWidget *dialog = NULL) {
+void clickSelectGroupButton(HI::GUITestOpStatus &os, QWidget *dialog = NULL) {
     GTWidget::click(os, GTWidget::findWidget(os, "tbSelectGroupName", dialog));
 }
 
-void setAnnotationName(U2OpStatus &os, const QString &name, QWidget *dialog = NULL) {
+void setAnnotationName(HI::GUITestOpStatus &os, const QString &name, QWidget *dialog = NULL) {
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leAnnotationName", dialog), name);
 }
 
-void setSimpleLocation(U2OpStatus &os, int startPos, int endPos, bool complement, QWidget *dialog) {
+void setSimpleLocation(HI::GUITestOpStatus &os, int startPos, int endPos, bool complement, QWidget *dialog) {
     GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rbSimpleFormat", dialog));
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leRegionStart", dialog), QString::number(startPos));
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leRegionEnd", dialog), QString::number(endPos));
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbComplement", dialog), complement);
 }
 
-void setGenbankLocation(U2OpStatus &os, const QString &locationString, QWidget *dialog) {
+void setGenbankLocation(HI::GUITestOpStatus &os, const QString &locationString, QWidget *dialog) {
     GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rbGenbankFormat", dialog));
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leLocation", dialog), locationString);
 }
 
-void setExistingTable(U2OpStatus &os, QWidget *dialog = NULL, const QString &tableName = "") {
+void setExistingTable(HI::GUITestOpStatus &os, QWidget *dialog = NULL, const QString &tableName = "") {
     GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rbExistingTable", dialog));
     if (!tableName.isEmpty()) {
         GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbExistingTable", dialog), tableName);
     }
 }
 
-void setNewTable(U2OpStatus &os, QWidget *dialog = NULL, const QString &tablePath = "") {
+void setNewTable(HI::GUITestOpStatus &os, QWidget *dialog = NULL, const QString &tablePath = "") {
     GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rbCreateNewTable", dialog));
     if (!tablePath.isEmpty()) {
         GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leNewTablePath", dialog), tablePath);
@@ -191,7 +191,7 @@ public:
 
     }
 
-    void run(U2OpStatus &os) {
+    void run(HI::GUITestOpStatus &os) {
         GTGlobals::sleep(1000);
         GTMouseDriver::release(os);
         QMenu* activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
@@ -227,7 +227,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -275,7 +275,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -362,7 +362,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -410,7 +410,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -497,7 +497,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     class CreateAnnotationDialogScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -521,7 +521,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     class SmithWatermanDialogScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -573,7 +573,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -617,7 +617,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -695,7 +695,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -730,7 +730,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -791,7 +791,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -836,7 +836,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -917,7 +917,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -956,7 +956,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1024,7 +1024,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1065,7 +1065,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1138,7 +1138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1175,7 +1175,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1213,7 +1213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     class Scenario3 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1251,7 +1251,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     class Scenario4 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1293,7 +1293,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1330,7 +1330,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1369,7 +1369,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     class Scenario3 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1408,7 +1408,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     class Scenario4 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1559,7 +1559,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1586,7 +1586,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1613,7 +1613,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 
     class Scenario3 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1640,7 +1640,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 
     class Scenario4 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1670,7 +1670,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1697,7 +1697,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1724,7 +1724,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
 
     class Scenario3 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1751,7 +1751,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
 
     class Scenario4 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1781,7 +1781,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1815,7 +1815,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028) {
 //    4. Call "Create new annotation" dialog.
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1852,7 +1852,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1888,7 +1888,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1979,7 +1979,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -1988,7 +1988,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
 
             class ProjectTreeItemsChecker : public CustomScenario {
             public:
-                void run(U2OpStatus &os) {
+                void run(HI::GUITestOpStatus &os) {
                     QWidget *dialog = QApplication::activeModalWidget();
                     CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2089,7 +2089,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2100,7 +2100,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
 
             class ProjectTreeItemsChecker : public CustomScenario {
             public:
-                void run(U2OpStatus &os) {
+                void run(HI::GUITestOpStatus &os) {
                     QWidget *dialog = QApplication::activeModalWidget();
                     CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2206,7 +2206,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 
     class ProjectTreeItemsChecker : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2299,7 +2299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2334,7 +2334,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2370,7 +2370,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2405,7 +2405,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2490,7 +2490,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2523,7 +2523,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2813,7 +2813,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2947,7 +2947,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3002,7 +3002,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3257,7 +3257,7 @@ GUI_TEST_CLASS_DEFINITION(test_0041) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3282,7 +3282,7 @@ GUI_TEST_CLASS_DEFINITION(test_0041) {
 //    5. Create an annotation with some description.
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3313,7 +3313,7 @@ GUI_TEST_CLASS_DEFINITION(test_0042) {
 
     class Scenario1 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3340,7 +3340,7 @@ GUI_TEST_CLASS_DEFINITION(test_0042) {
 
     class Scenario2 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 

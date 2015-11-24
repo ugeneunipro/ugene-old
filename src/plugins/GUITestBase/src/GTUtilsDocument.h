@@ -36,22 +36,22 @@ public:
     static const QString DocumentUnloaded;
 
     // checks if the document with a given name exists and loaded in a view with a given factory Id
-    static void checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
+    static void checkDocument(HI::GUITestOpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 
-    static void removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method = GTGlobals::UseKey);
+    static void removeDocument(HI::GUITestOpStatus &os, const QString &documentName, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
-    static Document* getDocument(U2OpStatus &os, const QString& documentName);
+    static Document* getDocument(HI::GUITestOpStatus &os, const QString& documentName);
 
-    static bool isDocumentLoaded(U2OpStatus &os, const QString& documentName);
+    static bool isDocumentLoaded(HI::GUITestOpStatus &os, const QString& documentName);
 
-    static void saveDocument(U2OpStatus &os, const QString& documentName);
-    static void unloadDocument(U2OpStatus &os, const QString& documentName, bool waitForMessageBox = true);
-    static void loadDocument(U2OpStatus &os, const QString& documentName);
+    static void saveDocument(HI::GUITestOpStatus &os, const QString& documentName);
+    static void unloadDocument(HI::GUITestOpStatus &os, const QString& documentName, bool waitForMessageBox = true);
+    static void loadDocument(HI::GUITestOpStatus &os, const QString& documentName);
 
-    static void lockDocument(U2OpStatus &os, const QString& documentName);
+    static void lockDocument(HI::GUITestOpStatus &os, const QString& documentName);
 
 protected:
-    static GObjectView* getDocumentGObjectView(U2OpStatus &os, Document* d);
+    static GObjectView* getDocumentGObjectView(HI::GUITestOpStatus &os, Document* d);
 
 private:
     static QList<GObjectView*> getAllGObjectViews();

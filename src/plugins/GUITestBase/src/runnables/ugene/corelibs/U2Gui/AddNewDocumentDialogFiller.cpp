@@ -31,7 +31,7 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
 
-AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(U2OpStatus &os, const QString &format, const QString &path) :
+AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(HI::GUITestOpStatus &os, const QString &format, const QString &path) :
     Filler(os, "AddNewDocumentDialog"),
     format(format),
     path(path)
@@ -39,7 +39,7 @@ AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(U2OpStatus &os, const QSt
 
 }
 
-AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+AddNewDocumentDialogFiller::AddNewDocumentDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "AddNewDocumentDialog", scenario)
 {
 

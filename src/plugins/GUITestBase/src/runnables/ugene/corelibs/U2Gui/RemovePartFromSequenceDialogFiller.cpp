@@ -38,14 +38,14 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range, bool recalculateQuals)
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(HI::GUITestOpStatus &_os, QString _range, bool recalculateQuals)
     : Filler(_os, "RemovePartFromSequenceDialog"), range(_range), removeType(Resize), format(FASTA), saveNew(false),
     recalculateQuals(recalculateQuals)
 {
 
 }
 
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew,
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(HI::GUITestOpStatus &_os,RemoveType _removeType, bool _saveNew,
     const QString &_saveToFile, FormatToUse _format)
     : Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(_format), saveNew(_saveNew), recalculateQuals(false)
 {
@@ -55,7 +55,7 @@ RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatu
     comboBoxItems[Genbank] = "Genbank";
 }
 
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType)
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(HI::GUITestOpStatus &_os, RemoveType _removeType)
     : Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(FASTA), recalculateQuals(false)
 {
 

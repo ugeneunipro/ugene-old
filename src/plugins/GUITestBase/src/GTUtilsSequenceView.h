@@ -27,7 +27,6 @@
 
 namespace U2 {
 
-class U2OpStatus;
 class ADVSingleSequenceWidget;
 class PanView;
 class U2Region;
@@ -37,36 +36,36 @@ class TextLabel;
 
 class GTUtilsSequenceView {
 public:
-    static void getSequenceAsString(U2OpStatus &os, QString &sequence);
-    static QString getSequenceAsString(U2OpStatus &os, int number = 0);
-    static QString getBeginOfSequenceAsString(U2OpStatus &os, int length);
-    static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
-    static int getLengthOfSequence(U2OpStatus &os);
-    static int getVisiableStart(U2OpStatus &os, int widgetNumber = 0);
-    static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
-    static void selectSequenceRegion(U2OpStatus &os, int from, int to);
+    static void getSequenceAsString(HI::GUITestOpStatus &os, QString &sequence);
+    static QString getSequenceAsString(HI::GUITestOpStatus &os, int number = 0);
+    static QString getBeginOfSequenceAsString(HI::GUITestOpStatus &os, int length);
+    static QString getEndOfSequenceAsString(HI::GUITestOpStatus &os, int length);
+    static int getLengthOfSequence(HI::GUITestOpStatus &os);
+    static int getVisiableStart(HI::GUITestOpStatus &os, int widgetNumber = 0);
+    static void checkSequence(HI::GUITestOpStatus &os, const QString &expectedSequence);
+    static void selectSequenceRegion(HI::GUITestOpStatus &os, int from, int to);
 
-  	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
-    static void addSequenceView(U2OpStatus &os, const QString &sequenceName);
+    static void openSequenceView(HI::GUITestOpStatus &os, const QString &sequenceName);
+    static void addSequenceView(HI::GUITestOpStatus &os, const QString &sequenceName);
 
-    static void goToPosition(U2OpStatus &os, int position);
+    static void goToPosition(HI::GUITestOpStatus &os, int position);
 
-    static ADVSingleSequenceWidget * getSeqWidgetByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static PanView * getPanViewByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static Overview* getOverviewByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static int getSeqWidgetsNumber(U2OpStatus &os);
-    static QVector<U2Region> getSelection(U2OpStatus &os, int number = 0);
-    static QString getSeqName(U2OpStatus &os, int number = 0);
-    static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget);
+    static ADVSingleSequenceWidget * getSeqWidgetByNumber(HI::GUITestOpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static PanView * getPanViewByNumber(HI::GUITestOpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static Overview* getOverviewByNumber(HI::GUITestOpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static int getSeqWidgetsNumber(HI::GUITestOpStatus &os);
+    static QVector<U2Region> getSelection(HI::GUITestOpStatus &os, int number = 0);
+    static QString getSeqName(HI::GUITestOpStatus &os, int number = 0);
+    static QString getSeqName(HI::GUITestOpStatus &os, ADVSingleSequenceWidget *seqWidget);
 
     //clicks on simple annotation on sequence view
-    static void clickAnnotationDet(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
-    static void clickAnnotationPan(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
+    static void clickAnnotationDet(HI::GUITestOpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
+    static void clickAnnotationPan(HI::GUITestOpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
 
-    static GSequenceGraphView* getGraphView(U2OpStatus &os);
-    static QList<QVariant> getLabelPositions(U2OpStatus &os, GSequenceGraphView* graph);
-    static QList<TextLabel*> getGraphLabels(U2OpStatus &os, GSequenceGraphView* graph);
-    static QColor getGraphColor(U2OpStatus &os, GSequenceGraphView* graph);
+    static GSequenceGraphView* getGraphView(HI::GUITestOpStatus &os);
+    static QList<QVariant> getLabelPositions(HI::GUITestOpStatus &os, GSequenceGraphView* graph);
+    static QList<TextLabel*> getGraphLabels(HI::GUITestOpStatus &os, GSequenceGraphView* graph);
+    static QColor getGraphColor(HI::GUITestOpStatus &os, GSequenceGraphView* graph);
 };
 
 } // namespace U2

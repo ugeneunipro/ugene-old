@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-DefaultWizardFiller::DefaultWizardFiller(U2OpStatus &os, const QString &wizardName) :
+DefaultWizardFiller::DefaultWizardFiller(HI::GUITestOpStatus &os, const QString &wizardName) :
     Filler(os, wizardName)
 {
 

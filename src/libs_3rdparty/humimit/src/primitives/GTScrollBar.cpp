@@ -28,7 +28,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTScrollBar"
 
 #define GT_METHOD_NAME "getScrollBar"
-QScrollBar* GTScrollBar::getScrollBar(U2::U2OpStatus &os, const QString &scrollBarSysName) {
+QScrollBar* GTScrollBar::getScrollBar(GUITestOpStatus &os, const QString &scrollBarSysName) {
     QString scrollBarTypeCheck = "QScrollBar";
     QScrollBar *scrollBar = static_cast<QScrollBar*>(GTWidget::findWidget(os, scrollBarSysName));
     GT_CHECK_RESULT(0 == scrollBarTypeCheck.compare(scrollBar->metaObject()->className()), "No such scrollbar: " + scrollBarSysName, NULL); //the found widget is not a qscrollbar
@@ -37,7 +37,7 @@ QScrollBar* GTScrollBar::getScrollBar(U2::U2OpStatus &os, const QString &scrollB
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "pageUp"
-void GTScrollBar::pageUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
+void GTScrollBar::pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
         case GTGlobals::UseMouse:
@@ -58,7 +58,7 @@ void GTScrollBar::pageUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::U
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "pageDown"
-void GTScrollBar::pageDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
+void GTScrollBar::pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
         case GTGlobals::UseMouse:
@@ -79,7 +79,7 @@ void GTScrollBar::pageDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals:
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "lineUp"
-void GTScrollBar::lineUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
+void GTScrollBar::lineUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
         case GTGlobals::UseMouse:
@@ -100,7 +100,7 @@ void GTScrollBar::lineUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::U
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "lineDown"
-void GTScrollBar::lineDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
+void GTScrollBar::lineDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
         case GTGlobals::UseMouse:
@@ -121,7 +121,7 @@ void GTScrollBar::lineDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals:
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "moveSliderWithMouseUp"
-void GTScrollBar::moveSliderWithMouseUp(U2::U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
+void GTScrollBar::moveSliderWithMouseUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
     QPoint newPosition;
@@ -138,7 +138,7 @@ void GTScrollBar::moveSliderWithMouseUp(U2::U2OpStatus &os, QScrollBar *scrollba
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "moveSliderWithMouseDown"
-void GTScrollBar::moveSliderWithMouseDown(U2::U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
+void GTScrollBar::moveSliderWithMouseDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
     GTMouseDriver::press(os);
@@ -154,20 +154,20 @@ void GTScrollBar::moveSliderWithMouseDown(U2::U2OpStatus &os, QScrollBar *scroll
 }
 #undef GT_METHOD_NAME
 
-void GTScrollBar::moveSliderWithMouseWheelUp(U2::U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
+void GTScrollBar::moveSliderWithMouseWheelUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls) {
     GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
     GTMouseDriver::click(os);
     GTMouseDriver::scroll(os, nScrolls);
 }
 
-void GTScrollBar::moveSliderWithMouseWheelDown(U2::U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
+void GTScrollBar::moveSliderWithMouseWheelDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls) {
     GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
     GTMouseDriver::click(os);
     GTMouseDriver::scroll(os, (-1 * nScrolls)); //since scrolling down means negative value for GTMouseDriver::scroll
 }
 
 #define GT_METHOD_NAME "getSliderPosition"
-QPoint GTScrollBar::getSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QPoint GTScrollBar::getSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect sliderRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarSlider);
@@ -176,7 +176,7 @@ QPoint GTScrollBar::getSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getUpArrowPosition"
-QPoint GTScrollBar::getUpArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QPoint GTScrollBar::getUpArrowPosition(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
@@ -196,7 +196,7 @@ QPoint GTScrollBar::getUpArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollbar
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getDownArrowPosition"
-QPoint GTScrollBar::getDownArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QPoint GTScrollBar::getDownArrowPosition(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
@@ -216,7 +216,7 @@ QPoint GTScrollBar::getDownArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollb
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getAreaUnderSliderPosition"
-QPoint GTScrollBar::getAreaUnderSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QPoint GTScrollBar::getAreaUnderSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
@@ -242,7 +242,7 @@ QPoint GTScrollBar::getAreaUnderSliderPosition(U2::U2OpStatus &os, QScrollBar *s
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getAreaOverSliderPosition"
-QPoint GTScrollBar::getAreaOverSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QPoint GTScrollBar::getAreaOverSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
@@ -268,7 +268,7 @@ QPoint GTScrollBar::getAreaOverSliderPosition(U2::U2OpStatus &os, QScrollBar *sc
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "initScrollbarOptions"
-QStyleOptionSlider GTScrollBar::initScrollbarOptions(U2::U2OpStatus &os, QScrollBar *scrollbar) {
+QStyleOptionSlider GTScrollBar::initScrollbarOptions(GUITestOpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QStyleOptionSlider());
     QStyleOptionSlider options;
     options.initFrom(scrollbar);

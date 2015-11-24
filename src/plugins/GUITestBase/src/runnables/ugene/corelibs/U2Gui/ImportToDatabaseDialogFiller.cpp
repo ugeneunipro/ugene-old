@@ -71,7 +71,7 @@ ImportToDatabaseDialogFiller::Action::Action(ImportToDatabaseDialogFiller::Actio
 {
 }
 
-ImportToDatabaseDialogFiller::ImportToDatabaseDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+ImportToDatabaseDialogFiller::ImportToDatabaseDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions) :
     Filler(os, "ImportToDatabaseDialog"),
     actions(actions)
 {

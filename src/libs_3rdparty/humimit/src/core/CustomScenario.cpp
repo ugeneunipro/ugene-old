@@ -19,35 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QApplication>
-#include <QThread>
+#include "CustomScenario.h"
 
-#include <U2Core/U2SafePoints.h>
+namespace HI {
 
-#include "MainThreadTimer.h"
+CustomScenario::~CustomScenario() {
 
-namespace U2 {
-
-MainThreadTimer::MainThreadTimer(int interval, QObject *parent) :
-    QObject(parent),
-    counter(0)
-{
-    SAFE_POINT(QThread::currentThread() == QApplication::instance()->thread(), "Timer is supposed to be created in the main thread", );
-    timer.setInterval(interval);
-    connect(&timer, SIGNAL(timeout()), SLOT(sl_timerTick()));
-    timer.start();
 }
 
-qint64 MainThreadTimer::getCounter() const {
-    QMutexLocker locker(&guard);
-    Q_UNUSED(locker);
-    return counter;
-}
-
-void MainThreadTimer::sl_timerTick() {
-    QMutexLocker locker(&guard);
-    Q_UNUSED(locker);
-    counter++;
-}
-
-}   // namespace U2
+}   // namespace

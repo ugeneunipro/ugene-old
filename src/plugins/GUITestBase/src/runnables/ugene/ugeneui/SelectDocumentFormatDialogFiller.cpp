@@ -35,7 +35,7 @@
 namespace U2 {
 using namespace HI;
 
-SelectDocumentFormatDialogFiller::SelectDocumentFormatDialogFiller(U2OpStatus &_os, CustomScenario *scenario)
+SelectDocumentFormatDialogFiller::SelectDocumentFormatDialogFiller(HI::GUITestOpStatus &_os, CustomScenario *scenario)
     : Filler(_os, "DocumentFormatSelectorDialog", scenario)
 {
 

@@ -31,7 +31,7 @@ using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::FindRepeatsDialogFiller"
 #define GT_METHOD_NAME "run"
 
-CreateObjectRelationDialogFiller::CreateObjectRelationDialogFiller(U2OpStatus& os) :
+CreateObjectRelationDialogFiller::CreateObjectRelationDialogFiller(HI::GUITestOpStatus& os) :
     Filler(os, "CreateObjectRelationDialog")
 {
 }

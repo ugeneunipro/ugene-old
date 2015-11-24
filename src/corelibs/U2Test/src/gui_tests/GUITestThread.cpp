@@ -27,18 +27,18 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Test/MainThreadRunnable.h>
+#include "core/MainThreadRunnable.h"
 
-#include "GUITest.h"
+#include <core/GUITest.h>
 #include "GUITestBase.h"
-#include "GUITestOpStatus.h"
+#include <core/GUITestOpStatus.h>
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
 #include "GUITestThread.h"
 
 namespace U2 {
 
-GUITestThread::GUITestThread(GUITest *test, Logger &log, bool _needCleanup) :
+GUITestThread::GUITestThread(HI::GUITest *test, Logger &log, bool _needCleanup) :
     test(test),
     log(log),
     needCleanup(_needCleanup),
@@ -80,14 +80,14 @@ void GUITestThread::sl_testTimeOut() {
 QString GUITestThread::launchTest(const GUITests &tests) {
     QTimer::singleShot(test->getTimeout(), this, SLOT(sl_testTimeOut()));
 
-    GUITestOpStatus os;
+    HI::GUITestOpStatus os;
     try {
-        foreach (GUITest *t, tests) {
+        foreach (HI::GUITest *t, tests) {
             if (NULL != t) {
                 t->run(os);
             }
         }
-    } catch(GUITestOpStatus *) {
+    } catch(HI::GUITestOpStatus *) {
 
     }
     QString result = os.getError();
@@ -95,12 +95,12 @@ QString GUITestThread::launchTest(const GUITests &tests) {
     //Run post checks if has error
     if (!result.isEmpty()){
         try {
-            foreach (GUITest *t, postChecks()) {
+            foreach (HI::GUITest *t, postChecks()) {
                 if (NULL != t) {
                     t->run(os);
                 }
             }
-        } catch(GUITestOpStatus *) {
+        } catch(HI::GUITestOpStatus *) {
 
         }
     }
@@ -144,7 +144,7 @@ GUITests GUITestThread::postActions() {
 void GUITestThread::clearSandbox() {
     log.trace("GUITestThread __ clearSandbox");
 
-    const QString pathToSandbox = GUITest::testDir + "_common_data/scenarios/sandbox/";
+    const QString pathToSandbox = HI::GUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 
     foreach (const QString &fileName, sandbox.entryList()) {
@@ -182,30 +182,30 @@ void GUITestThread::removeDir(const QString &dirName) {
 }
 
 void GUITestThread::saveScreenshot() {
-    class Scenario : public CustomScenario {
+    class Scenario : public HI::CustomScenario {
     public:
-        Scenario(GUITest *test) :
+        Scenario(HI::GUITest *test) :
             test(test)
         {
 
         }
 
-        void run(U2OpStatus &) {
+        void run(HI::GUITestOpStatus &) {
             const QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
-            originalPixmap.save(GUITest::screenshotDir + test->getFullName() + ".jpg");
+            originalPixmap.save(HI::GUITest::screenshotDir + test->getFullName() + ".jpg");
         }
 
     private:
-        GUITest *test;
+        HI::GUITest *test;
     };
 
-    U2OpStatusImpl os;
-    MainThreadRunnable::runInMainThread(os, new Scenario(test));
+    HI::GUITestOpStatus os;
+    HI::MainThreadRunnable::runInMainThread(os, new Scenario(test));
 }
 
 void GUITestThread::cleanup() {
-    foreach (GUITest *postAction, postActions()) {
-        TaskStateInfo os;
+    foreach (HI::GUITest *postAction, postActions()) {
+        HI::GUITestOpStatus os;
         postAction->run(os);
     }
 }

@@ -29,7 +29,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTMainWindow"
 
 #define GT_METHOD_NAME "getMainWindows"
-QList<QMainWindow*> GTMainWindow::getMainWindows(U2::U2OpStatus &os) {
+QList<QMainWindow*> GTMainWindow::getMainWindows(GUITestOpStatus &os) {
     QList<QMainWindow*> list;
     foreach(QWindow *window, qApp->topLevelWindows()){
         if(window->inherits("QMainWindow")){
@@ -43,7 +43,7 @@ QList<QMainWindow*> GTMainWindow::getMainWindows(U2::U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMainWindowsAsWidget"
-QList<QWidget*> GTMainWindow::getMainWindowsAsWidget(U2::U2OpStatus &os) {
+QList<QWidget*> GTMainWindow::getMainWindowsAsWidget(GUITestOpStatus &os) {
     QList<QWidget*> list;
     foreach(QWidget *widget, qApp->topLevelWidgets()){
         if(widget->inherits("QMainWindow")){

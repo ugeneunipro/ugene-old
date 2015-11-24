@@ -22,18 +22,11 @@
 #include <QApplication>
 #include <QThread>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/ServiceModel.h>
-#include <U2Core/ServiceTypes.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
-
-#include "GUITestService.h"
 #include "MainThreadRunnable.h"
 
-namespace U2 {
+namespace HI {
 
-MainThreadRunnable::MainThreadRunnable(U2OpStatus &os, CustomScenario *scenario) :
+MainThreadRunnable::MainThreadRunnable(GUITestOpStatus &os, CustomScenario *scenario) :
     QObject(NULL),
     os(os),
     scenario(scenario)
@@ -51,18 +44,19 @@ void MainThreadRunnable::doRequest() {
         return;
     }
 
-    QList<Service *> services = AppContext::getServiceRegistry()->findServices(Service_GUITesting);
-    SAFE_POINT_EXT(services.size() == 1, os.setError("Can't get a GUI testing service"), );
-    GUITestService *guiTestingService = qobject_cast<GUITestService *>(services.first());
-    SAFE_POINT_EXT(NULL != guiTestingService, os.setError("GUI testing service is NULL"), );
+    MainThreadRunnableObject obj;
+
+    obj.moveToThread(QApplication::instance()->thread());
 
     QMetaObject::Connection connection = connect(this,
                                                  SIGNAL(si_request(MainThreadRunnable *)),
-                                                 guiTestingService,
+                                                 &obj,
                                                  SLOT(sl_requestAsked(MainThreadRunnable *)),
                                                  Qt::BlockingQueuedConnection);
+
     emit si_request(this);
     disconnect(connection);
+
 }
 
 void MainThreadRunnable::run() {
@@ -70,10 +64,19 @@ void MainThreadRunnable::run() {
     scenario->run(os);
 }
 
-void MainThreadRunnable::runInMainThread(U2OpStatus &os, CustomScenario *scenario) {
+void MainThreadRunnable::runInMainThread(GUITestOpStatus &os, CustomScenario *scenario) {
     SAFE_POINT_EXT(NULL != scenario, os.setError("Custom scenario is NULL"), );
     MainThreadRunnable mainThreadRunnable(os, scenario);
     mainThreadRunnable.doRequest();
+}
+
+MainThreadRunnableObject::MainThreadRunnableObject() :
+    QObject(NULL)
+{
+}
+
+void MainThreadRunnableObject::sl_requestAsked(MainThreadRunnable *runnable){
+    runnable->run();
 }
 
 }   // namespace U2

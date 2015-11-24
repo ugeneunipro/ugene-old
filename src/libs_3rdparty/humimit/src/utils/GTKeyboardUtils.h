@@ -31,10 +31,10 @@ namespace HI {
  */
 class HI_EXPORT GTKeyboardUtils {
 public:
-    static void selectAll(U2::U2OpStatus&); // ctrl (or cmd on MacOS) + A
-    static void copy(U2::U2OpStatus&);      // ctrl (or cmd on MacOS) + C
-    static void paste(U2::U2OpStatus&);     // ctrl (or cmd on MacOS) + V
-    static void cut(U2::U2OpStatus&);       // ctrl (or cmd on MacOS) + X
+    static void selectAll(GUITestOpStatus&); // ctrl (or cmd on MacOS) + A
+    static void copy(GUITestOpStatus&);      // ctrl (or cmd on MacOS) + C
+    static void paste(GUITestOpStatus&);     // ctrl (or cmd on MacOS) + V
+    static void cut(GUITestOpStatus&);       // ctrl (or cmd on MacOS) + X
 };
 
 } // namespace U2

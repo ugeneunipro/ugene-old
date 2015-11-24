@@ -29,7 +29,7 @@ using namespace HI;
 
 class SelectDocumentFormatDialogFiller : public Filler {
 public:
-    SelectDocumentFormatDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
+    SelectDocumentFormatDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario = NULL);
 
     void commonScenario();
 };

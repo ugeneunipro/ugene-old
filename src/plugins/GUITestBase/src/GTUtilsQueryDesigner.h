@@ -32,17 +32,17 @@ namespace U2 {
 
 class GTUtilsQueryDesigner {
 public:
-    static void openQueryDesigner(U2OpStatus &os);
+    static void openQueryDesigner(HI::GUITestOpStatus &os);
 
-    static QTreeWidgetItem* findAlgorithm(U2OpStatus &os, QString itemName);
-    static void addAlgorithm(U2OpStatus &os, QString algName);
-    static QPoint getItemCenter(U2OpStatus &os,QString itemName);
-    static QRect getItemRect(U2OpStatus &os,QString itemName);
+    static QTreeWidgetItem* findAlgorithm(HI::GUITestOpStatus &os, QString itemName);
+    static void addAlgorithm(HI::GUITestOpStatus &os, QString algName);
+    static QPoint getItemCenter(HI::GUITestOpStatus &os,QString itemName);
+    static QRect getItemRect(HI::GUITestOpStatus &os,QString itemName);
 
-    static int getItemLeft(U2OpStatus &os, QString itemName);
-    static int getItemRight(U2OpStatus &os, QString itemName);
-    static int getItemTop(U2OpStatus &os, QString itemName);
-    static int getItemBottom(U2OpStatus &os, QString itemName);
+    static int getItemLeft(HI::GUITestOpStatus &os, QString itemName);
+    static int getItemRight(HI::GUITestOpStatus &os, QString itemName);
+    static int getItemTop(HI::GUITestOpStatus &os, QString itemName);
+    static int getItemBottom(HI::GUITestOpStatus &os, QString itemName);
 };
 
 } // namespace

@@ -33,11 +33,11 @@ public:
         Single, Separate, Continuous
     };
 
-    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QString &documentName, const QString &objectName,
+    ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, const QString &documentName, const QString &objectName,
         const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
-    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
+    ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
         const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
-    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     virtual void commonScenario();
 

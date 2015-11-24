@@ -19,39 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MAIN_THREAD_RUNNABLE_H_
-#define _U2_MAIN_THREAD_RUNNABLE_H_
+#ifndef _HI_MAIN_THREAD_TIMER_H_
+#define _HI_MAIN_THREAD_TIMER_H_
 
-#include <U2Core/global.h>
+#include <QTimer>
+#include <QMutex>
 
-#include "CustomScenario.h"
+namespace HI {
 
-namespace U2 {
-
-class U2OpStatus;
-
-/**
- * Class takes ownership over the scenario.
- */
-class U2TEST_EXPORT MainThreadRunnable : public QObject {
+class MainThreadTimer : public QObject {
     Q_OBJECT
 public:
-    MainThreadRunnable(U2OpStatus &os, CustomScenario *scenario);
-    ~MainThreadRunnable();
+    MainThreadTimer(int interval);
 
-    void doRequest();
-    void run();
+    qint64 getCounter() const;
 
-    static void runInMainThread(U2OpStatus &os, CustomScenario *scenario);
-
-signals:
-    void si_request(MainThreadRunnable *mainThreadRunnable);
+private slots:
+    void sl_timerTick();
 
 private:
-    U2OpStatus &os;
-    CustomScenario *scenario;
+    QTimer timer;
+    mutable QMutex guard;
+    qint64 counter;
 };
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_MAIN_THREAD_RUNNABLE_H_
+#endif // _U2_MAIN_THREAD_TIMER_H_

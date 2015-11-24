@@ -43,7 +43,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::MuscleDialogFiller"
 #define GT_METHOD_NAME "run"
 
-MuscleDialogFiller::MuscleDialogFiller(U2OpStatus &os, Mode _mode, bool _doNotReArr, bool translateToAmino)
+MuscleDialogFiller::MuscleDialogFiller(HI::GUITestOpStatus &os, Mode _mode, bool _doNotReArr, bool translateToAmino)
     : Filler(os, "MuscleAlignmentDialog"), mode(_mode), doNotReArr(_doNotReArr), translateToAmino(translateToAmino)
 {
 

@@ -33,14 +33,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::FindQualifierFiller"
 
-FindQualifierFiller::FindQualifierFiller(U2OpStatus &os, const FindQualifierFiller::FindQualifierFillerSettings &settings) :
+FindQualifierFiller::FindQualifierFiller(HI::GUITestOpStatus &os, const FindQualifierFiller::FindQualifierFillerSettings &settings) :
     Filler(os, "SearchQualifierDialog"),
     settings(settings)
 {
 
 }
 
-FindQualifierFiller::FindQualifierFiller(U2OpStatus &os, CustomScenario *scenario) :
+FindQualifierFiller::FindQualifierFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "SearchQualifierDialog", scenario)
 {
 

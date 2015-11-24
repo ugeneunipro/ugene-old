@@ -41,7 +41,7 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportImage"
 
-ExportImage::ExportImage(U2OpStatus &os, const QString &filePath, const QString &comboValue, int spinValue) :
+ExportImage::ExportImage(HI::GUITestOpStatus &os, const QString &filePath, const QString &comboValue, int spinValue) :
     Filler(os, "ImageExportForm"),
     filePath(filePath),
     comboValue(comboValue),
@@ -50,7 +50,7 @@ ExportImage::ExportImage(U2OpStatus &os, const QString &filePath, const QString 
 
 }
 
-ExportImage::ExportImage(U2OpStatus &os, CustomScenario *scenario) :
+ExportImage::ExportImage(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "ImageExportForm", scenario),
     spinValue(0)
 {
@@ -263,7 +263,7 @@ void SelectSubalignmentFiller::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-ImageExportFormFiller::ImageExportFormFiller(U2OpStatus &os, const Parameters &parameters)
+ImageExportFormFiller::ImageExportFormFiller(HI::GUITestOpStatus &os, const Parameters &parameters)
 : Filler(os, "ImageExportForm"), parameters(parameters)
 {
 

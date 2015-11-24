@@ -22,21 +22,13 @@
 #ifndef _HI_GT_GLOBALS_H_
 #define _HI_GT_GLOBALS_H_
 
-#include <U2Core/U2OpStatus.h>
+#include <core/GUITestOpStatus.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Log.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#else
-#include <QtWidgets/QAction>
-#endif
+#include <core/global.h>
 
-#ifdef BUILDING_HUMIMIT_DLL
-#   define HI_EXPORT Q_DECL_EXPORT
-#else
-#   define HI_EXPORT Q_DECL_IMPORT
-#endif
+#include <QAction>
 
 namespace HI {
 /*!

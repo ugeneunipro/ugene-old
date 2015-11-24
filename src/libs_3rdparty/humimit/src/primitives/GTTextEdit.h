@@ -31,12 +31,12 @@ class HI_EXPORT GTTextEdit {
 public:
     // fails if textEdit is NULL
     // or a set text differs from a given text
-    static void setText(U2::U2OpStatus& os, QTextEdit* textEdit, const QString &text);
-    static QString getText(U2::U2OpStatus &os, QTextEdit* textEdit);
+    static void setText(GUITestOpStatus& os, QTextEdit* textEdit, const QString &text);
+    static QString getText(GUITestOpStatus &os, QTextEdit* textEdit);
 
-    static bool containsString(U2::U2OpStatus &os, QTextEdit *textEdit, const QString &string);
+    static bool containsString(GUITestOpStatus &os, QTextEdit *textEdit, const QString &string);
 
-    static void clear(U2::U2OpStatus& os, QTextEdit* textEdit);
+    static void clear(GUITestOpStatus& os, QTextEdit* textEdit);
 };
 
 }

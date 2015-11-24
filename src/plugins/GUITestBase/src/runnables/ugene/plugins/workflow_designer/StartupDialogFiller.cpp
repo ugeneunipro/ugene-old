@@ -32,7 +32,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
 
-StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, const QString &path, bool isPathValid) :
+StartupDialogFiller::StartupDialogFiller(HI::GUITestOpStatus &os, const QString &path, bool isPathValid) :
     Filler(os, "StartupDialog"),
     path(path),
     isPathValid(isPathValid)

@@ -56,7 +56,7 @@ public:
 protected:
     Priority priority;
     QObject *obj;
-    U2OpStatus2Log os;
+    HI::GUITestOpStatus os;
 private:
     GTAbstractGUIAction& operator=(GTAbstractGUIAction&);
 };

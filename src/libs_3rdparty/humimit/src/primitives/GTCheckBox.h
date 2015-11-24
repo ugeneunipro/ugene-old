@@ -31,10 +31,10 @@ namespace HI {
  */
 class HI_EXPORT GTCheckBox {
 public:
-    static void setChecked(U2::U2OpStatus& os, QCheckBox *checkBox, bool checked = true);
+    static void setChecked(GUITestOpStatus& os, QCheckBox *checkBox, bool checked = true);
 
-    static void setChecked(U2::U2OpStatus& os, const QString &checkBoxName, bool checked = true, QWidget *parent = NULL);
-    static void setChecked(U2::U2OpStatus& os, const QString &checkBoxName, QWidget *parent = NULL);
+    static void setChecked(GUITestOpStatus& os, const QString &checkBoxName, bool checked = true, QWidget *parent = NULL);
+    static void setChecked(GUITestOpStatus& os, const QString &checkBoxName, QWidget *parent = NULL);
 };
 
 }

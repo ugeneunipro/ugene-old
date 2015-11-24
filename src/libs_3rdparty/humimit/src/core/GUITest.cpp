@@ -1,5 +1,5 @@
 #include "GUITest.h"
-#include "GUITestOpStatus.h"
+#include "core/GUITestOpStatus.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
@@ -11,7 +11,7 @@
 #endif
 #include "QDir"
 
-namespace U2 {
+namespace HI {
 
 QString getTestDir(){
     bool ok;
@@ -78,8 +78,8 @@ void GUITest::sl_fail(){
     QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
 #endif
     originalPixmap.save(GUITest::screenshotDir + name + ".jpg");
-    uiLog.error("GUItest timed out");
-    uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
+    U2::uiLog.error("GUItest timed out");
+    U2::uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
     GUITestOpStatus os;// = new GUITestOpStatus();
     os.setError("time out");
 }

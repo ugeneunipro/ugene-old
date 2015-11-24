@@ -48,7 +48,7 @@ using namespace HI;
 #define GT_CLASS_NAME "GTUtilsAssemblyBrowser"
 
 #define GT_METHOD_NAME "getView"
-AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(U2OpStatus& os, const QString &viewTitle) {
+AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(HI::GUITestOpStatus& os, const QString &viewTitle) {
     Q_UNUSED(os);
 
     const QString objectName = "assembly_browser_" + viewTitle;
@@ -59,14 +59,14 @@ AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(U2OpStatus& os, const QString
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsAssemblyBrowser::addRefFromProject(U2OpStatus &os, QString docName, QModelIndex parent){
+void GTUtilsAssemblyBrowser::addRefFromProject(HI::GUITestOpStatus &os, QString docName, QModelIndex parent){
     QWidget* renderArea = GTWidget::findWidget(os, "assembly_reads_area");
     QModelIndex ref = GTUtilsProjectTreeView::findIndex(os, docName, parent);
     GTUtilsProjectTreeView::dragAndDrop(os, ref, renderArea);
 }
 
 #define GT_METHOD_NAME "hasReference"
-bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, const QString &viewTitle) {
+bool GTUtilsAssemblyBrowser::hasReference(HI::GUITestOpStatus& os, const QString &viewTitle) {
     Q_UNUSED(os);
 
     AssemblyBrowserUi* view = getView(os, viewTitle);
@@ -77,7 +77,7 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, const QString &viewTit
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "hasReference"
-bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, QWidget* view) {
+bool GTUtilsAssemblyBrowser::hasReference(HI::GUITestOpStatus& os, QWidget* view) {
     Q_UNUSED(os);
 
     if (NULL == view) {
@@ -93,7 +93,7 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, QWidget* view) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "hasReference"
-bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser) {
+bool GTUtilsAssemblyBrowser::hasReference(HI::GUITestOpStatus &os, AssemblyBrowserUi *assemblyBrowser) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser is NULL", false);
 
@@ -105,7 +105,7 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus &os, AssemblyBrowserUi *ass
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getLength"
-qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os) {
+qint64 GTUtilsAssemblyBrowser::getLength(HI::GUITestOpStatus &os) {
     QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
     QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
@@ -130,7 +130,7 @@ qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getReadsCount"
-qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os) {
+qint64 GTUtilsAssemblyBrowser::getReadsCount(HI::GUITestOpStatus &os) {
     QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
     QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
@@ -154,7 +154,7 @@ qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isWelcomeScreenVisible"
-bool GTUtilsAssemblyBrowser::isWelcomeScreenVisible(U2OpStatus &os) {
+bool GTUtilsAssemblyBrowser::isWelcomeScreenVisible(HI::GUITestOpStatus &os) {
     QWidget *coveredRegionsLabel = GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os));
     GT_CHECK_RESULT(NULL != coveredRegionsLabel, "coveredRegionsLabel is NULL", false);
     return coveredRegionsLabel->isVisible();
@@ -162,13 +162,13 @@ bool GTUtilsAssemblyBrowser::isWelcomeScreenVisible(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "zoomIn"
-void GTUtilsAssemblyBrowser::zoomIn(U2OpStatus &os) {
+void GTUtilsAssemblyBrowser::zoomIn(HI::GUITestOpStatus &os) {
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Zoom in");
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "zoomToMax"
-void GTUtilsAssemblyBrowser::zoomToMax(U2OpStatus &os) {
+void GTUtilsAssemblyBrowser::zoomToMax(HI::GUITestOpStatus &os) {
     Q_UNUSED(os);
 
     QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
@@ -184,7 +184,7 @@ void GTUtilsAssemblyBrowser::zoomToMax(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "zoomToMin"
-void GTUtilsAssemblyBrowser::zoomToMin(U2OpStatus &os) {
+void GTUtilsAssemblyBrowser::zoomToMin(HI::GUITestOpStatus &os) {
     Q_UNUSED(os);
 
     QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
@@ -200,7 +200,7 @@ void GTUtilsAssemblyBrowser::zoomToMin(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "goToPosition"
-void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
+void GTUtilsAssemblyBrowser::goToPosition(HI::GUITestOpStatus &os, qint64 position) {
     Q_UNUSED(os);
 
     QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
@@ -216,7 +216,7 @@ void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callContextMenu"
-void GTUtilsAssemblyBrowser::callContextMenu(U2OpStatus &os, GTUtilsAssemblyBrowser::Area area) {
+void GTUtilsAssemblyBrowser::callContextMenu(HI::GUITestOpStatus &os, GTUtilsAssemblyBrowser::Area area) {
     QString widgetName;
     switch (area) {
     case Consensus:
@@ -238,7 +238,7 @@ void GTUtilsAssemblyBrowser::callContextMenu(U2OpStatus &os, GTUtilsAssemblyBrow
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callExportCoverageDialog"
-void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os, Area area) {
+void GTUtilsAssemblyBrowser::callExportCoverageDialog(HI::GUITestOpStatus &os, Area area) {
     Q_UNUSED(os);
 
     switch (area) {

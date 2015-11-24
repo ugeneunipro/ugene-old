@@ -71,7 +71,7 @@ QMap<AppSettingsDialogFiller::Tabs, QString> AppSettingsDialogFiller::initMap(){
 
 const QMap<AppSettingsDialogFiller::Tabs, QString> AppSettingsDialogFiller::tabMap = initMap();
 
-AppSettingsDialogFiller::AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario) :
+AppSettingsDialogFiller::AppSettingsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *customScenario) :
     Filler(os, "AppSettingsDialog", customScenario),
     itemStyle(none),
     r(-1),
@@ -112,7 +112,7 @@ void AppSettingsDialogFiller::commonScenario(){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setExternalToolPath"
-void AppSettingsDialogFiller::setExternalToolPath(U2OpStatus &os, const QString &toolName, const QString &toolPath){
+void AppSettingsDialogFiller::setExternalToolPath(HI::GUITestOpStatus &os, const QString &toolName, const QString &toolPath){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -136,7 +136,7 @@ void AppSettingsDialogFiller::setExternalToolPath(U2OpStatus &os, const QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getExternalToolPath"
-QString AppSettingsDialogFiller::getExternalToolPath(U2OpStatus &os, const QString &toolName){
+QString AppSettingsDialogFiller::getExternalToolPath(HI::GUITestOpStatus &os, const QString &toolName){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", "");
 
@@ -157,7 +157,7 @@ QString AppSettingsDialogFiller::getExternalToolPath(U2OpStatus &os, const QStri
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isExternalToolValid"
-bool AppSettingsDialogFiller::isExternalToolValid(U2OpStatus &os, const QString &toolName){
+bool AppSettingsDialogFiller::isExternalToolValid(HI::GUITestOpStatus &os, const QString &toolName){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", false);
 
@@ -178,7 +178,7 @@ bool AppSettingsDialogFiller::isExternalToolValid(U2OpStatus &os, const QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clearToolPath"
-void AppSettingsDialogFiller::clearToolPath(U2OpStatus &os, const QString &toolName) {
+void AppSettingsDialogFiller::clearToolPath(HI::GUITestOpStatus &os, const QString &toolName) {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -201,7 +201,7 @@ void AppSettingsDialogFiller::clearToolPath(U2OpStatus &os, const QString &toolN
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "OpenTab"
-void AppSettingsDialogFiller::openTab(U2OpStatus &os, Tabs tab){
+void AppSettingsDialogFiller::openTab(HI::GUITestOpStatus &os, Tabs tab){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -218,13 +218,13 @@ void AppSettingsDialogFiller::openTab(U2OpStatus &os, Tabs tab){
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-NewColorSchemeCreator::NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act, bool cancel)
+NewColorSchemeCreator::NewColorSchemeCreator(HI::GUITestOpStatus &_os, QString _schemeName, alphabet _al, Action _act, bool cancel)
     : Filler(_os, "AppSettingsDialog"), schemeName(_schemeName), al(_al), act(_act), cancel(cancel)
 {
 
 }
 
-NewColorSchemeCreator::NewColorSchemeCreator(U2OpStatus &os, CustomScenario *c): Filler(os, "AppSettingsDialog", c){}
+NewColorSchemeCreator::NewColorSchemeCreator(HI::GUITestOpStatus &os, CustomScenario *c): Filler(os, "AppSettingsDialog", c){}
 
 #define GT_CLASS_NAME "NewColorSchemeCreator"
 #define GT_METHOD_NAME "commonScenario"

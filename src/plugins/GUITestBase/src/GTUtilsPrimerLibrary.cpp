@@ -38,16 +38,16 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsPrimerLibrary"
 
-QWidget * GTUtilsPrimerLibrary::openLibrary(U2OpStatus &os) {
+QWidget * GTUtilsPrimerLibrary::openLibrary(HI::GUITestOpStatus &os) {
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Primer" << "Primer library");
     return GTUtilsMdi::activeWindow(os);
 }
 
-void GTUtilsPrimerLibrary::clickButton(U2OpStatus &os, Button button) {
+void GTUtilsPrimerLibrary::clickButton(HI::GUITestOpStatus &os, Button button) {
     GTWidget::click(os, getButton(os, button));
 }
 
-QAbstractButton * GTUtilsPrimerLibrary::getButton(U2OpStatus &os, Button button) {
+QAbstractButton * GTUtilsPrimerLibrary::getButton(HI::GUITestOpStatus &os, Button button) {
     QDialogButtonBox *box = GTUtilsDialog::buttonBox(os, GTWidget::findWidget(os, "PrimerLibraryWidget"));
     switch (button) {
         case Add:
@@ -67,16 +67,16 @@ QAbstractButton * GTUtilsPrimerLibrary::getButton(U2OpStatus &os, Button button)
     }
 }
 
-int GTUtilsPrimerLibrary::librarySize(U2OpStatus &os) {
+int GTUtilsPrimerLibrary::librarySize(HI::GUITestOpStatus &os) {
     return GTTableView::rowCount(os, table(os));
 }
 
-QString GTUtilsPrimerLibrary::getPrimerSequence(U2OpStatus &os, int number) {
+QString GTUtilsPrimerLibrary::getPrimerSequence(HI::GUITestOpStatus &os, int number) {
     return GTTableView::data(os, table(os), number, 4);
 }
 
 #define GT_METHOD_NAME "getPrimerSequence"
-QString GTUtilsPrimerLibrary::getPrimerSequence(U2OpStatus &os, const QString &name) {
+QString GTUtilsPrimerLibrary::getPrimerSequence(HI::GUITestOpStatus &os, const QString &name) {
     for (int i = 0; i < GTTableView::rowCount(os, table(os)); i++) {
         if (name == GTTableView::data(os, table(os), i, 0)) {
             return getPrimerSequence(os, i);
@@ -86,16 +86,16 @@ QString GTUtilsPrimerLibrary::getPrimerSequence(U2OpStatus &os, const QString &n
 }
 #undef GT_METHOD_NAME
 
-QPoint GTUtilsPrimerLibrary::getPrimerPoint(U2OpStatus &os, int number) {
+QPoint GTUtilsPrimerLibrary::getPrimerPoint(HI::GUITestOpStatus &os, int number) {
     return GTTableView::getCellPoint(os, table(os), number, 0);
 }
 
-void GTUtilsPrimerLibrary::clickPrimer(U2OpStatus &os, int number) {
+void GTUtilsPrimerLibrary::clickPrimer(HI::GUITestOpStatus &os, int number) {
     GTMouseDriver::moveTo(os, getPrimerPoint(os, number));
     GTMouseDriver::click(os);
 }
 
-void GTUtilsPrimerLibrary::clearLibrary(U2OpStatus &os) {
+void GTUtilsPrimerLibrary::clearLibrary(HI::GUITestOpStatus &os) {
     const int size = librarySize(os);
     CHECK(size > 0, );
     GTWidget::click(os, table(os));
@@ -103,7 +103,7 @@ void GTUtilsPrimerLibrary::clearLibrary(U2OpStatus &os) {
     clickButton(os, Remove);
 }
 
-void GTUtilsPrimerLibrary::addPrimer(U2OpStatus &os, const QString &name, const QString &data) {
+void GTUtilsPrimerLibrary::addPrimer(HI::GUITestOpStatus &os, const QString &name, const QString &data) {
     AddPrimerDialogFiller::Parameters parameters;
     parameters.name = name;
     parameters.primer = data;
@@ -113,7 +113,7 @@ void GTUtilsPrimerLibrary::addPrimer(U2OpStatus &os, const QString &name, const 
 }
 
 #define GT_METHOD_NAME "selectPrimers"
-void GTUtilsPrimerLibrary::selectPrimers(U2OpStatus &os, const QList<int> &numbers) {
+void GTUtilsPrimerLibrary::selectPrimers(HI::GUITestOpStatus &os, const QList<int> &numbers) {
     const int size = librarySize(os);
 
 #ifdef Q_OS_MAC
@@ -131,12 +131,12 @@ void GTUtilsPrimerLibrary::selectPrimers(U2OpStatus &os, const QList<int> &numbe
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsPrimerLibrary::selectAll(U2OpStatus &os) {
+void GTUtilsPrimerLibrary::selectAll(HI::GUITestOpStatus &os) {
     GTWidget::click(os, table(os));
     GTKeyboardUtils::selectAll(os);
 }
 
-QTableView * GTUtilsPrimerLibrary::table(U2OpStatus &os) {
+QTableView * GTUtilsPrimerLibrary::table(HI::GUITestOpStatus &os) {
     return dynamic_cast<QTableView*>(GTWidget::findWidget(os, "primerTable"));
 }
 

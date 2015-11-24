@@ -38,7 +38,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
 
-KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal, bool _toAmino) : Filler(_os, "KalignDialog"),
+KalignDialogFiller::KalignDialogFiller(HI::GUITestOpStatus &_os, int _gapOpenVal, bool _toAmino) : Filler(_os, "KalignDialog"),
     gapOpenVal(_gapOpenVal), toAmino(_toAmino) {}
 
 #define GT_METHOD_NAME "run"

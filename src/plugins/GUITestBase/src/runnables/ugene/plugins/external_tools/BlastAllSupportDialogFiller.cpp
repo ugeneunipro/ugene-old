@@ -28,7 +28,7 @@
 #include <QtWidgets/QComboBox>
 #endif
 
-#include <U2Test/GUITest.h>
+#include <core/GUITest.h>
 
 #include <primitives/GTComboBox.h>
 #include <base_dialogs/GTFileDialog.h>
@@ -42,13 +42,13 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::BlastAllSupportDialogFiller"
 
-BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os)
+BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(const Parameters &parameters, HI::GUITestOpStatus &os)
 : Filler(os, "BlastAllSupportDialog"), parameters(parameters), dialog(NULL)
 {
 
 }
 
-BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
     : Filler(os, "BlastAllSupportDialog", scenario), dialog(NULL)
 {
 
@@ -95,7 +95,7 @@ void BlastAllSupportDialogFiller::test_3211() {
     CHECK_SET_ERR(NULL == widget, "Annotations widget exists");
 
     //2. Set any input sequence.
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, GUITest::dataDir + "samples/FASTA/human_T1.fa"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, HI::GUITest::dataDir + "samples/FASTA/human_T1.fa"));
     GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -103,7 +103,7 @@ void BlastAllSupportDialogFiller::test_3211() {
     GTWidget::findWidget(os, "rbCreateNewTable");
 
     //3. Set any another input sequence.
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, GUITest::testDir + "_common_data/fasta/human_T1_cutted.fa"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, HI::GUITest::testDir + "_common_data/fasta/human_T1_cutted.fa"));
     GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //Expected state: there is a single annotation widget.

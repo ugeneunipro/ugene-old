@@ -345,7 +345,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     class AllActionsPopupChooser : public PopupChooser {
     public:
-        AllActionsPopupChooser(U2OpStatus &_os) : PopupChooser(_os, QStringList()) {}
+        AllActionsPopupChooser(HI::GUITestOpStatus &_os) : PopupChooser(_os, QStringList()) {}
         void run() {
             GTGlobals::sleep(100);
             QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
@@ -781,7 +781,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028) {
 
     class RegionChecker : public Filler {
     public:
-        RegionChecker(U2OpStatus& os)
+        RegionChecker(HI::GUITestOpStatus& os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -844,7 +844,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 
     class LimitsChecker : public Filler {
     public:
-        LimitsChecker(U2OpStatus& os)
+        LimitsChecker(HI::GUITestOpStatus& os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -914,7 +914,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 
     class SvgLimitsChecker : public Filler {
     public:
-        SvgLimitsChecker(U2OpStatus& os)
+        SvgLimitsChecker(HI::GUITestOpStatus& os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -1089,7 +1089,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTWidget::click(os, aminoToolbarButton);
 //    Check "Show direct only"
     class DirectPopupChecker : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GET_ACTIONS
 
             CHECK_SET_ERR(direct1->isChecked(), "check1: direct1 is not checked");
@@ -1113,7 +1113,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTWidget::click(os, aminoToolbarButton);
 
     class ComplPopupChecker : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GET_ACTIONS
 
             CHECK_SET_ERR(!direct1->isChecked(), "check2: direct1 is checked");
@@ -1137,7 +1137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTWidget::click(os, aminoToolbarButton);
 
     class AllPopupChecker : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GET_ACTIONS
 
             CHECK_SET_ERR(direct1->isChecked(), "check3: direct1 is checked");
@@ -1527,7 +1527,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048){
 GUI_TEST_CLASS_DEFINITION(test_0050){
     class WrongNameChecker : public CustomScenario {
     public:
-        virtual void run(U2OpStatus &os) {
+        virtual void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1541,7 +1541,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
 
     class WrongDistanceChecker : public CustomScenario {
     public:
-        virtual void run(U2OpStatus &os) {
+        virtual void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1576,7 +1576,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
 GUI_TEST_CLASS_DEFINITION(test_0050_1){
     class custom : public CustomScenario {
     public:
-        virtual void run(U2OpStatus &os) {
+        virtual void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1772,7 +1772,7 @@ GUI_TEST_CLASS_DEFINITION(test_0056){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 

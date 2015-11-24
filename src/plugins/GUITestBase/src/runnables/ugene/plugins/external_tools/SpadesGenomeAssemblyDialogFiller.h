@@ -30,7 +30,7 @@ using namespace HI;
 class SpadesGenomeAssemblyDialogFiller: public Filler
 {
 public:
-    SpadesGenomeAssemblyDialogFiller(U2OpStatus &os, QString _library, QStringList _leftReads, QStringList _rightReads, QString _output):
+    SpadesGenomeAssemblyDialogFiller(HI::GUITestOpStatus &os, QString _library, QStringList _leftReads, QStringList _rightReads, QString _output):
         Filler(os, "GenomeAssemblyDialog"),
         library(_library),
         leftReads(_leftReads),

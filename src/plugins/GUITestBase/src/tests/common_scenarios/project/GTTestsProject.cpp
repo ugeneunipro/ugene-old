@@ -920,7 +920,7 @@ GUI_TEST_CLASS_DEFINITION(test_0055){
     class CustomScenarioCancel: public CustomScenario {
     public:
         CustomScenarioCancel(){}
-        virtual void run(U2::U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -958,7 +958,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
     class CheckPathScenario: public CustomScenario {
     public:
         CheckPathScenario(){}
-        virtual void run(U2::U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 

@@ -31,17 +31,17 @@ class ImportPrimersDialogFiller : public Filler {
 public:
     enum ImportSource {LocalFiles, SharedDb};
 
-    ImportPrimersDialogFiller(U2OpStatus &os, const QStringList &fileList);
-    ImportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
+    ImportPrimersDialogFiller(HI::GUITestOpStatus &os, const QStringList &fileList);
+    ImportPrimersDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario = NULL);
 
     void commonScenario();
 
-    static void setImportTarget(U2OpStatus &os, ImportSource importSource);
-    static void addFile(U2OpStatus &os, const QString &filePath);
-    static void connectDatabase(U2OpStatus &os, const QString &databaseName);
-    static void addObjects(U2OpStatus &os, const QString &databaseName, const QStringList &objectNames);
-    static void addObjects(U2OpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames);
-    static QWidget * getDialog(U2OpStatus &os);
+    static void setImportTarget(HI::GUITestOpStatus &os, ImportSource importSource);
+    static void addFile(HI::GUITestOpStatus &os, const QString &filePath);
+    static void connectDatabase(HI::GUITestOpStatus &os, const QString &databaseName);
+    static void addObjects(HI::GUITestOpStatus &os, const QString &databaseName, const QStringList &objectNames);
+    static void addObjects(HI::GUITestOpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames);
+    static QWidget * getDialog(HI::GUITestOpStatus &os);
 
 private:
     const QStringList fileList;

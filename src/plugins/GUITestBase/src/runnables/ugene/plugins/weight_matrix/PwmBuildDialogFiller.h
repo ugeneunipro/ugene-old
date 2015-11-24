@@ -37,8 +37,8 @@ public:
     };
     typedef QPair<ActionType, QVariant> Action;
 
-    PwmBuildDialogFiller(U2OpStatus &os, const QList<Action> &actions);
-    PwmBuildDialogFiller(U2OpStatus &os, CustomScenario *c);
+    PwmBuildDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
+    PwmBuildDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c);
 
     void commonScenario();
 

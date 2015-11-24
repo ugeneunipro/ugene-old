@@ -1,11 +1,12 @@
 #ifndef _U2_GUI_TEST_H_
 #define _U2_GUI_TEST_H_
 
-#include <U2Core/global.h>
+//#include <U2Core/global.h>
 #include <QtCore/QTimer>
-#include <U2Core/Task.h>
+#include "GTGlobals.h"
+#include <core/GUITestOpStatus.h>
 
-namespace U2 {
+namespace HI {
 
 class GUITestIgnorable {
 public:
@@ -46,7 +47,7 @@ private:
     IgnoreReason ignoreReason;
 };
 
-class U2TEST_EXPORT GUITest: public QObject, public GUITestIgnorable {
+class HI_EXPORT GUITest: public QObject, public GUITestIgnorable {
     Q_OBJECT
 public:
     GUITest(const QString &_name = "", const QString &_suite = "", int _timeout=240000) : name(_name), suite(_suite), timeout(_timeout) {}
@@ -64,7 +65,7 @@ public:
     static const QString screenshotDir;
     static const QString sandBoxDir;
 
-    virtual void run(U2OpStatus &os) = 0;
+    virtual void run(GUITestOpStatus &os) = 0;
 private:
     GUITest(const GUITest&);
     GUITest& operator=(const GUITest&);
@@ -78,6 +79,6 @@ public slots:
 
 typedef QList<GUITest*> GUITests;
 
-} //U2
+} //HI
 
 #endif

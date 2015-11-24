@@ -57,7 +57,7 @@
 namespace U2 {
 using namespace HI;
 
-void test_1(U2OpStatus &os,int i, QString expectedSec, int j = 0) {
+void test_1(HI::GUITestOpStatus &os,int i, QString expectedSec, int j = 0) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(j,i));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
 
@@ -100,7 +100,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
 //Expected state: Conocephalus_percaudata TAGCT-TATTAA--, sequence length 14, right offset 14
 }
 
-void test_3(U2OpStatus &os, int i=0, QString expectedSec=""){
+void test_3(HI::GUITestOpStatus &os, int i=0, QString expectedSec=""){
 //2. Select 6th symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Insert gap}.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(13,i));
 
@@ -140,7 +140,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2){
 //Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---TA-A, sequence length 15, right offset 14
 }
 
-void test_4(U2OpStatus &os, int startPos, int endPos, QString expectedSeq, int i=0, int context=0){
+void test_4(HI::GUITestOpStatus &os, int startPos, int endPos, QString expectedSeq, int i=0, int context=0){
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(startPos,i), QPoint(endPos, i));
 
     if(context){
@@ -407,7 +407,7 @@ Hetrodes_pupus_EF540832            AAGCTTTTAA---
 }
 
 
-void test_9(U2OpStatus &os, int i=0){
+void test_9(HI::GUITestOpStatus &os, int i=0){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     QString gaps;
     QString expectedSeq;
@@ -724,7 +724,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
     CHECK_SET_ERR(clipboardTest=="TATTAA-","\n Expected: \nTATTAA-\nFound:\n"+clipboardTest);
 }
 
-void test_13(U2OpStatus &os, int comboVal, int SpinVal, QString ExpectedCons){
+void test_13(HI::GUITestOpStatus &os, int comboVal, int SpinVal, QString ExpectedCons){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
@@ -811,7 +811,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 //2. Right click on aligniment view. Open context menu {Export->save subalignment}
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
 //Expected state: Create subaligniment dialog has appeared, all sequences are checked
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");

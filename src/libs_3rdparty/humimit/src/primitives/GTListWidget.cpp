@@ -28,7 +28,7 @@ namespace HI{
 #define GT_CLASS_NAME "GTListWidget"
 
 #define GT_METHOD_NAME "click"
-void GTListWidget::click(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button){
+void GTListWidget::click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button){
     QList<QListWidgetItem*> list = listWidget->findItems(text, Qt::MatchExactly);
     GT_CHECK(!list.isEmpty(), QString("item %1 not found").arg(text));
 
@@ -46,7 +46,7 @@ void GTListWidget::click(U2::U2OpStatus &os, QListWidget *listWidget, const QStr
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isItemChecked"
-bool GTListWidget::isItemChecked(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text) {
+bool GTListWidget::isItemChecked(GUITestOpStatus &os, QListWidget *listWidget, const QString &text) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != listWidget, "List widget is NULL", false);
     QList<QListWidgetItem *> list = listWidget->findItems(text, Qt::MatchExactly);
@@ -57,7 +57,7 @@ bool GTListWidget::isItemChecked(U2::U2OpStatus &os, QListWidget *listWidget, co
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkItem"
-void GTListWidget::checkItem(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text, bool newState) {
+void GTListWidget::checkItem(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, bool newState) {
     Q_UNUSED(os);
     GT_CHECK(NULL != listWidget, "List widget is NULL");
     if (newState != isItemChecked(os, listWidget, text)) {
@@ -68,7 +68,7 @@ void GTListWidget::checkItem(U2::U2OpStatus &os, QListWidget *listWidget, const 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkAllItems"
-void GTListWidget::checkAllItems(U2::U2OpStatus &os, QListWidget *listWidget, bool newState) {
+void GTListWidget::checkAllItems(GUITestOpStatus &os, QListWidget *listWidget, bool newState) {
     Q_UNUSED(os);
     GT_CHECK(NULL != listWidget, "List widget is NULL");
 
@@ -80,7 +80,7 @@ void GTListWidget::checkAllItems(U2::U2OpStatus &os, QListWidget *listWidget, bo
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkOnlyItems"
-void GTListWidget::checkOnlyItems(U2::U2OpStatus &os, QListWidget *listWidget, const QStringList &itemTexts, bool newState) {
+void GTListWidget::checkOnlyItems(GUITestOpStatus &os, QListWidget *listWidget, const QStringList &itemTexts, bool newState) {
     Q_UNUSED(os);
     GT_CHECK(NULL != listWidget, "List widget is NULL");
 
@@ -99,7 +99,7 @@ void GTListWidget::checkOnlyItems(U2::U2OpStatus &os, QListWidget *listWidget, c
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItems"
-QStringList GTListWidget::getItems(U2::U2OpStatus &os, QListWidget *listWidget) {
+QStringList GTListWidget::getItems(GUITestOpStatus &os, QListWidget *listWidget) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != listWidget, "List widget is NULL", QStringList());
     QStringList itemTexts;

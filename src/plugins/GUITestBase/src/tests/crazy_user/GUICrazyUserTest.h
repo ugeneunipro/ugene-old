@@ -23,7 +23,7 @@
 #define _U2_GT_TESTS_CRAZY_USER_H_
 
 #include <U2Test/GUITestBase.h>
-#include <U2Core/U2OpStatusUtils.h>
+//#include <U2Core/U2OpStatus.h>
 #include "utils/GTUtilsDialog.h"
 
 namespace U2 {
@@ -57,11 +57,11 @@ private:
 };
 
 
-class simple_crazy_user : public GUITest {
+class simple_crazy_user : public HI::GUITest {
 public:
-    simple_crazy_user() : GUITest("simple_crazy_user"){}
+    simple_crazy_user() : HI::GUITest("simple_crazy_user"){}
 protected:
-    virtual void run(U2OpStatus &os);
+    virtual void run(HI::GUITestOpStatus &os);
 };
 
 }

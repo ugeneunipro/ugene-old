@@ -381,7 +381,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found");
 //Expected state: philogenetic tree appears
 }
-int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
+int getCoord(HI::GUITestOpStatus &os, QGraphicsSimpleTextItem *node){
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomLeft());
     QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());

@@ -42,7 +42,7 @@ GUITestRunner::GUITestRunner(GUITestBase* _guiTestBase, QWidget *parent) :
     tree->setColumnWidth(0,300);
 
     const GUITests tests = guiTestBase->getTests();
-    foreach(GUITest* t, tests) {
+    foreach(HI::GUITest* t, tests) {
         //addTestSuite(ts);
         QStringList list = QStringList();
         QString suiteName = t->getSuite();
@@ -91,7 +91,7 @@ void GUITestRunner::sl_runSelected(){
         if(item->childCount() == 0){ // single test, not suite
             QString suite = item->parent()->text(0);
             QString name = item->text(0);
-            GUITest* test = guiTestBase->getTest(suite, name);
+            HI::GUITest* test = guiTestBase->getTest(suite, name);
             GUITestThread *testThread = new GUITestThread(test, log, false);
             connect(testThread, SIGNAL(finished()), this, SLOT(sl_testFinished()));
             hide();
@@ -112,7 +112,7 @@ void GUITestRunner::sl_runAllGUITests(){
 void GUITestRunner::sl_testFinished(){
     GUITestThread *testThread = qobject_cast<GUITestThread *>(sender());
     //SAFE_POINT(NULL != testThread, "TestThread is null", );
-    GUITest* test = testThread->getTest();
+    HI::GUITest* test = testThread->getTest();
     QString result = testThread->getTestResult();
     for (int suiteIdx = 0; suiteIdx < tree->topLevelItemCount(); suiteIdx++) {
         QTreeWidgetItem *suite = tree->topLevelItem(suiteIdx);

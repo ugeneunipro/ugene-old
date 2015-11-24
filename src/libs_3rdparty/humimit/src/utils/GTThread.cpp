@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Test/GUITestService.h>
-#include <U2Test/MainThreadRunnable.h>
+#include <core/MainThreadRunnable.h>
+#include "core/MainThreadTimer.h"
 
 #include "GTGlobals.h"
 #include "utils/GTThread.h"
@@ -28,34 +28,23 @@
 namespace HI {
 
 #define GT_CLASS_NAME "ThreadWaiter"
+const qint64 TIMER_INTERVAL = 100;
 
-ThreadWaiter::ThreadWaiter(U2::U2OpStatus &os) :
+ThreadWaiter::ThreadWaiter(GUITestOpStatus &os) :
     os(os),
     startValue(0),
     endValue(0)
 {
-    timer.setInterval(U2::GUITestService::TIMER_INTERVAL);
-    connect(&timer, SIGNAL(timeout()), SLOT(sl_timeout()));
 }
 
 #define GT_METHOD_NAME "wait"
 void ThreadWaiter::wait() {
-    U2::GUITestService *guiTestService = U2::GUITestService::getGuiTestService();
-    GT_CHECK(NULL != guiTestService, "GUITestService is NULL");
-    startValue = guiTestService->getMainThreadTimerValue();
-    timer.start();
+    MainThreadTimer mainThreadTimer(TIMER_INTERVAL);
+    startValue = mainThreadTimer.getCounter();
     while (endValue <= startValue) {
-        GTGlobals::sleep(U2::GUITestService::TIMER_INTERVAL);
+        GTGlobals::sleep(TIMER_INTERVAL);
+        endValue = mainThreadTimer.getCounter();
     }
-    timer.stop();
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "sl_timeout"
-void ThreadWaiter::sl_timeout() {
-    U2::GUITestService *guiTestService = U2::GUITestService::getGuiTestService();
-    GT_CHECK_NO_MESSAGE(NULL != guiTestService, "GUITestService is NULL");
-    endValue = guiTestService->getMainThreadTimerValue();
 }
 #undef GT_METHOD_NAME
 
@@ -64,15 +53,15 @@ void ThreadWaiter::sl_timeout() {
 #define GT_CLASS_NAME "GTThread"
 
 #define GT_METHOD_NAME "waitForMainThread"
-void GTThread::waitForMainThread(U2::U2OpStatus &os) {
+void GTThread::waitForMainThread(GUITestOpStatus &os) {
     ThreadWaiter waiter(os);
     waiter.wait();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "runInMainThread"
-void GTThread::runInMainThread(U2::U2OpStatus &os, U2::CustomScenario *scenario) {
-    U2::MainThreadRunnable::runInMainThread(os, scenario);
+void GTThread::runInMainThread(GUITestOpStatus &os, CustomScenario *scenario) {
+    MainThreadRunnable::runInMainThread(os, scenario);
 }
 #undef GT_METHOD_NAME
 

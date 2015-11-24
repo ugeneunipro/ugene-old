@@ -35,39 +35,39 @@ namespace HI {
 class HI_EXPORT GTWidget {
 public:
     // fails if widget is NULL, not visible or not enabled; if p isNull, clicks on the center of widget
-    static void click(U2::U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton, QPoint p = QPoint(), bool safe = true);
+    static void click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton, QPoint p = QPoint(), bool safe = true);
 
     // fails if widget is NULL, GTWidget::click fails or widget hasn't got focus
-    static void setFocus(U2::U2OpStatus &os, QWidget *w);
+    static void setFocus(GUITestOpStatus &os, QWidget *w);
 
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
-    static QWidget *findWidget(U2::U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QPoint getWidgetCenter(U2::U2OpStatus &os, QWidget* w);
+    static QWidget *findWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QPoint getWidgetCenter(GUITestOpStatus &os, QWidget* w);
 
-    static QAbstractButton *findButtonByText(U2::U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QAbstractButton *findButtonByText(GUITestOpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     //returns color of point p in widget w coordinates
-    static QColor getColor(U2::U2OpStatus &os, QWidget *widget, const QPoint &point);
-    static QPixmap getPixmap(U2::U2OpStatus &os, QWidget *widget);
-    static QImage getImage(U2::U2OpStatus &os, QWidget *widget);
+    static QColor getColor(GUITestOpStatus &os, QWidget *widget, const QPoint &point);
+    static QPixmap getPixmap(GUITestOpStatus &os, QWidget *widget);
+    static QImage getImage(GUITestOpStatus &os, QWidget *widget);
 
     //this method writes info about all widgets to opStatus
-    static void getAllWidgetsInfo(U2::U2OpStatus &os, QWidget* parent=NULL);
+    static void getAllWidgetsInfo(GUITestOpStatus &os, QWidget* parent=NULL);
 
-    static void close(U2::U2OpStatus &os, QWidget *widget);
-    static void showMaximized(U2::U2OpStatus &os, QWidget *widget);
-    static void showNormal(U2::U2OpStatus &os, QWidget *widget);
+    static void close(GUITestOpStatus &os, QWidget *widget);
+    static void showMaximized(GUITestOpStatus &os, QWidget *widget);
+    static void showNormal(GUITestOpStatus &os, QWidget *widget);
 
-    static void clickLabelLink(U2::U2OpStatus &os, QWidget* label, int step = 10, int indent = 0);
-    static void clickWindowTitle(U2::U2OpStatus &os, QWidget *window);
-    static void moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &point);
-    static void resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &size);
-    static QPoint getWidgetGlobalTopLeftPoint(U2::U2OpStatus &os, QWidget *widget);
+    static void clickLabelLink(GUITestOpStatus &os, QWidget* label, int step = 10, int indent = 0);
+    static void clickWindowTitle(GUITestOpStatus &os, QWidget *window);
+    static void moveWidgetTo(GUITestOpStatus &os, QWidget *window, const QPoint &point);
+    static void resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &size);
+    static QPoint getWidgetGlobalTopLeftPoint(GUITestOpStatus &os, QWidget *widget);
 
     #define GT_CLASS_NAME "GTWidget"
     #define GT_METHOD_NAME "findWidget"
     template<class T>
-    static T findExactWidget(U2::U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
+    static T findExactWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
         T result = NULL;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
         result = qobject_cast<T>(w);

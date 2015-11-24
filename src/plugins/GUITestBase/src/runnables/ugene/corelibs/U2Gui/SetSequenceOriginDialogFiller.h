@@ -31,7 +31,7 @@ using namespace HI;
 class SetSequenceOriginDialogFiller: public Filler
 {
 public:
-    SetSequenceOriginDialogFiller(U2OpStatus &os, int _start): Filler(os, "SetSequenceOriginDialog"), start(_start){}
+    SetSequenceOriginDialogFiller(HI::GUITestOpStatus &os, int _start): Filler(os, "SetSequenceOriginDialog"), start(_start){}
     virtual void commonScenario();
 private:
     int start;

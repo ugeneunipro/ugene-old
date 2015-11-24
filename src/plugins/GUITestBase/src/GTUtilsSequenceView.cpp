@@ -73,7 +73,7 @@ using namespace HI;
 #define GT_METHOD_NAME "run"
 class GTSequenceReader : public Filler {
 public:
-    GTSequenceReader(U2OpStatus &_os, QString *_str):Filler(_os, "EditSequenceDialog"), str(_str){}
+    GTSequenceReader(HI::GUITestOpStatus &_os, QString *_str):Filler(_os, "EditSequenceDialog"), str(_str){}
     void run()
     {
         QWidget *widget = QApplication::activeModalWidget();
@@ -100,7 +100,7 @@ private:
 #define GT_CLASS_NAME "GTUtilsSequenceView"
 
 #define GT_METHOD_NAME "getSequenceAsString"
-void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
+void GTUtilsSequenceView::getSequenceAsString(HI::GUITestOpStatus &os, QString &sequence)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
@@ -126,7 +126,7 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSequenceAsString"
-QString GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, int number) {
+QString GTUtilsSequenceView::getSequenceAsString(HI::GUITestOpStatus &os, int number) {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", "");
 
@@ -144,7 +144,7 @@ QString GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, int number) {
 
 #define GT_METHOD_NAME "getBeginOfSequenceAsString"
 
-QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int length)
+QString GTUtilsSequenceView::getBeginOfSequenceAsString(HI::GUITestOpStatus &os, int length)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
@@ -172,7 +172,7 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getEndOfSequenceAsString"
-QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length)
+QString GTUtilsSequenceView::getEndOfSequenceAsString(HI::GUITestOpStatus &os, int length)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
@@ -201,7 +201,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getLengthOfSequence"
-int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
+int GTUtilsSequenceView::getLengthOfSequence(HI::GUITestOpStatus &os)
 {
     MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", 0);
@@ -223,12 +223,12 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
-int GTUtilsSequenceView::getVisiableStart(U2OpStatus &os, int widgetNumber){
+int GTUtilsSequenceView::getVisiableStart(HI::GUITestOpStatus &os, int widgetNumber){
     return getSeqWidgetByNumber(os, widgetNumber)->getDetView()->getVisibleRange().startPos;
 }
 
 #define GT_METHOD_NAME "checkSequence"
-void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedSequence)
+void GTUtilsSequenceView::checkSequence(HI::GUITestOpStatus &os, const QString &expectedSequence)
 {
     QString actualSequence;
     getSequenceAsString(os, actualSequence);
@@ -238,7 +238,7 @@ void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedS
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectSequenceRegion"
-void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
+void GTUtilsSequenceView::selectSequenceRegion(HI::GUITestOpStatus &os, int from, int to)
 {
     MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK(mw != NULL, "MainWindow == NULL");
@@ -257,7 +257,7 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openSequenceView"
-void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
+void GTUtilsSequenceView::openSequenceView(HI::GUITestOpStatus &os, const QString &sequenceName){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view", GTGlobals::UseMouse));
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
@@ -267,7 +267,7 @@ void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequen
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSequenceView"
-void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenceName){
+void GTUtilsSequenceView::addSequenceView(HI::GUITestOpStatus &os, const QString &sequenceName){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse));
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
@@ -277,7 +277,7 @@ void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenc
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "goToPosition"
-void GTUtilsSequenceView::goToPosition(U2OpStatus &os, int position) {
+void GTUtilsSequenceView::goToPosition(HI::GUITestOpStatus &os, int position) {
     QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
     GT_CHECK(NULL != toolbar, "Can't find the toolbar");
 
@@ -291,7 +291,7 @@ void GTUtilsSequenceView::goToPosition(U2OpStatus &os, int position) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSeqWidgetByNumber"
-ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(HI::GUITestOpStatus &os, int number, const GTGlobals::FindOptions &options){
     QWidget *widget = GTWidget::findWidget(os,
         QString("ADV_single_sequence_widget_%1").arg(number),
         GTUtilsMdi::activeWindow(os), options);
@@ -307,7 +307,7 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &o
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getPanViewByNumber"
-PanView* GTUtilsSequenceView::getPanViewByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+PanView* GTUtilsSequenceView::getPanViewByNumber(HI::GUITestOpStatus &os, int number, const GTGlobals::FindOptions &options){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
     if(options.failIfNull){
         GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
@@ -325,7 +325,7 @@ PanView* GTUtilsSequenceView::getPanViewByNumber(U2OpStatus &os, int number, con
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getOverViewByNumber"
-Overview* GTUtilsSequenceView::getOverviewByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+Overview* GTUtilsSequenceView::getOverviewByNumber(HI::GUITestOpStatus &os, int number, const GTGlobals::FindOptions &options){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
     if(options.failIfNull){
         GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
@@ -343,26 +343,26 @@ Overview* GTUtilsSequenceView::getOverviewByNumber(U2OpStatus &os, int number, c
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSeqWidgetsNumber"
-int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
+int GTUtilsSequenceView::getSeqWidgetsNumber(HI::GUITestOpStatus &os) {
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
     return seqWidgets.size();
 }
 #undef GT_METHOD_NAME
 
-QVector<U2Region> GTUtilsSequenceView::getSelection(U2OpStatus &os, int number){
+QVector<U2Region> GTUtilsSequenceView::getSelection(HI::GUITestOpStatus &os, int number){
     PanView* panView = getPanViewByNumber(os, number);
     QVector<U2Region> result = panView->getSequenceContext()->getSequenceSelection()->getSelectedRegions();
     return result;
 }
 
 #define GT_METHOD_NAME "getSeqName"
-QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, int number) {
+QString GTUtilsSequenceView::getSeqName(HI::GUITestOpStatus &os, int number) {
     return getSeqName(os, getSeqWidgetByNumber(os, number));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSeqName"
-QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget* seqWidget){
+QString GTUtilsSequenceView::getSeqName(HI::GUITestOpStatus &os, ADVSingleSequenceWidget* seqWidget){
     GT_CHECK_RESULT(NULL != seqWidget, "Sequence widget is NULL!", "");
     QLabel *nameLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "nameLabel", seqWidget));
     GT_CHECK_RESULT(NULL != nameLabel, "Name label is NULL!", "");
@@ -376,7 +376,7 @@ QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*
 #define MIN_ANNOTATION_WIDTH 5
 
 #define GT_METHOD_NAME "clickAnnotation"
-void GTUtilsSequenceView::clickAnnotationDet(U2OpStatus &os, QString name, int startpos, int number, Qt::MouseButton button){
+void GTUtilsSequenceView::clickAnnotationDet(HI::GUITestOpStatus &os, QString name, int startpos, int number, Qt::MouseButton button){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number);
     GSequenceLineViewRenderArea* area = seq->getDetView()->getRenderArea();
     DetViewRenderArea* det = dynamic_cast<DetViewRenderArea*>(area);
@@ -429,27 +429,27 @@ void GTUtilsSequenceView::clickAnnotationDet(U2OpStatus &os, QString name, int s
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getGraphView"
-GSequenceGraphView *GTUtilsSequenceView::getGraphView(U2OpStatus &os){
+GSequenceGraphView *GTUtilsSequenceView::getGraphView(HI::GUITestOpStatus &os){
     GSequenceGraphView* graph = getSeqWidgetByNumber(os)->findChild<GSequenceGraphView*>();
     GT_CHECK_RESULT(graph != NULL, "Graph view is NULL", NULL);
     return graph;
 }
 #undef GT_METHOD_NAME
 
-QList<QVariant> GTUtilsSequenceView::getLabelPositions(U2OpStatus &os, GSequenceGraphView *graph){
+QList<QVariant> GTUtilsSequenceView::getLabelPositions(HI::GUITestOpStatus &os, GSequenceGraphView *graph){
     Q_UNUSED(os);
     QList<QVariant> list;
     graph->getLabelPositions(list);
     return list;
 }
 
-QList<TextLabel *> GTUtilsSequenceView::getGraphLabels(U2OpStatus &os, GSequenceGraphView *graph){
+QList<TextLabel *> GTUtilsSequenceView::getGraphLabels(HI::GUITestOpStatus &os, GSequenceGraphView *graph){
     Q_UNUSED(os);
     QList<TextLabel*> result = graph->findChildren<TextLabel*>();
     return result;
 }
 
-QColor GTUtilsSequenceView::getGraphColor(U2OpStatus &os, GSequenceGraphView *graph){
+QColor GTUtilsSequenceView::getGraphColor(HI::GUITestOpStatus &os, GSequenceGraphView *graph){
     ColorMap map = graph->getGSequenceGraphDrawer()->getColors();
     QColor result = map.value("Default color");
     return result;

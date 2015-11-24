@@ -30,7 +30,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "StructuralAlignmentDialogFiller"
-StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(U2OpStatus &os, const QStringList& chainIndexes) :
+StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(HI::GUITestOpStatus &os, const QStringList& chainIndexes) :
     Filler(os, "StructuralAlignmentDialog"), chainIndexes(chainIndexes)
 {
 }

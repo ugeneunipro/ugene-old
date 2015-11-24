@@ -36,27 +36,27 @@ public:
     // fails if lineEdit is NULL, GTLineEdit::clear fails
     // or a set text differs from a given string
 #ifdef Q_OS_MAC
-    static void setText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = true);
+    static void setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = true);
 #else
-    static void setText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = false);
+    static void setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = false);
 #endif
-    static QString getText(U2::U2OpStatus &os, QLineEdit *lineEdit);
+    static QString getText(GUITestOpStatus &os, QLineEdit *lineEdit);
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
-    static void clear(U2::U2OpStatus& os, QLineEdit* lineEdit);
+    static void clear(GUITestOpStatus& os, QLineEdit* lineEdit);
 
     // fails if GTLineEdit::clear fails
-    static void pasteClipboard(U2::U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod = Shortcut);
+    static void pasteClipboard(GUITestOpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod = Shortcut);
 
     // fails if lineEdit is NULL or lineEdit text is not in lineEdit's rect
     // considering lineEdit's fontMetrics and textMargins
-    static void checkTextSize(U2::U2OpStatus& os, QLineEdit* lineEdit);
-    static void checkText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString &expectedText);
+    static void checkTextSize(GUITestOpStatus& os, QLineEdit* lineEdit);
+    static void checkText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &expectedText);
 
-    static QString copyText(U2::U2OpStatus& os, QLineEdit* lineEdit);
+    static QString copyText(GUITestOpStatus& os, QLineEdit* lineEdit);
 
     // fails if lineEdit is NULL
     // checks if str can be pasted in lineEdit
-    static bool tryToSetText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString& str);
+    static bool tryToSetText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString& str);
 };
 
 }   // namespace

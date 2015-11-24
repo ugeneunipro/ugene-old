@@ -30,11 +30,11 @@ using namespace HI;
     class selectSequenceRegionDialogFiller : public Filler {
     public:
         enum RangeType {Single, Multiple};
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len);
-        selectSequenceRegionDialogFiller(U2OpStatus &_os);
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal);
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range);
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _length, bool selectFromBegin = true);
+        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len);
+        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os);
+        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal);
+        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range);
+        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin = true);
 
         virtual void run();
     private:

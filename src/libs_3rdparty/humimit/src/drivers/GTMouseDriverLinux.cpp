@@ -34,7 +34,7 @@ namespace HI {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
 #define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
+void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
 {
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -113,7 +113,7 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "press"
-void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
+void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
 {
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -135,7 +135,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "release"
-void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
+void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
     QByteArray display_name = qgetenv("DISPLAY");
@@ -157,7 +157,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "scroll"
-void GTMouseDriver::scroll(U2::U2OpStatus &os, int value)
+void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
 {
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");

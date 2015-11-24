@@ -11,7 +11,7 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 
 #include <QtGui>
-#include "GUITest.h"
+#include <core/GUITest.h>
 
 namespace U2 {
 
@@ -21,7 +21,7 @@ namespace U2 {
 #define DIALOG_FILLER_DECLARATION(className, DialogName) \
     class className : public Filler { \
     public: \
-        className(U2OpStatus& os):Filler(os, DialogName){} \
+        className(HI::GUITestOpStatus& os):Filler(os, DialogName){} \
         virtual void run(); \
     }
 
@@ -29,25 +29,26 @@ namespace U2 {
     void className::run()
 
 #define GUI_TEST_CLASS_DECLARATION(className) \
-    class className : public GUITest { \
+    class className : public HI::GUITest { \
     public: \
-        className () : GUITest(TESTNAME(className), SUITENAME(className)){} \
+        className () : HI::GUITest(TESTNAME(className), SUITENAME(className)){} \
     protected: \
-        virtual void run(U2OpStatus &os); \
+        virtual void run(HI::GUITestOpStatus &os); \
     };
 
 #define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
-    class className : public GUITest { \
+    class className : public HI::GUITest { \
     public: \
-        className () : GUITest(TESTNAME(className), SUITENAME(className), timeout){} \
+        className () : HI::GUITest(TESTNAME(className), SUITENAME(className), timeout){} \
     protected: \
-        virtual void run(U2OpStatus &os); \
+        virtual void run(HI::GUITestOpStatus &os); \
     };
 
 #define GUI_TEST_CLASS_DEFINITION(className) \
-    void className::run(U2OpStatus &os)
+    void className::run(HI::GUITestOpStatus &os)
 
-typedef QMap<QString, GUITest*> GUITestMap;
+typedef QMap<QString, HI::GUITest*> GUITestMap;
+typedef QList<HI::GUITest*> GUITests;
 
 class U2TEST_EXPORT GUITestBase {
 public:
@@ -55,16 +56,16 @@ public:
 
     virtual ~GUITestBase();
 
-    bool registerTest(GUITest *test, TestType testType = Normal);
-    GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal);
-    GUITest *takeTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
+    bool registerTest(HI::GUITest *test, TestType testType = Normal);
+    HI::GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal);
+    HI::GUITest *takeTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
 
     GUITests getTests(TestType testType = Normal);
     GUITests takeTests(TestType testType = Normal); // removes items from GUITestBase
 
     GUITests getTestsWithoutRemoving(TestType testType = Normal);
 
-    GUITest *findTest(const QString &name, TestType testType = Normal);
+    HI::GUITest *findTest(const QString &name, TestType testType = Normal);
 
     static const QString unnamedTestsPrefix;
 
@@ -79,10 +80,10 @@ private:
 
     QString getNextTestName(TestType testType);
 
-    bool isNewTest(GUITest *test, TestType testType);
-    void addTest(GUITest *test, TestType testType);
+    bool isNewTest(HI::GUITest *test, TestType testType);
+    void addTest(HI::GUITest *test, TestType testType);
 
-    QString nameUnnamedTest(GUITest* test, TestType testType);
+    QString nameUnnamedTest(HI::GUITest* test, TestType testType);
 };
 
 }

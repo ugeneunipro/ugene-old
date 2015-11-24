@@ -23,7 +23,7 @@
 
 namespace HI {
 
-void GTKeyboardUtils::selectAll(U2::U2OpStatus &os)
+void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
     int modifiers = GTKeyboardDriver::key["ctrl"];
@@ -34,7 +34,7 @@ void GTKeyboardUtils::selectAll(U2::U2OpStatus &os)
     GTKeyboardDriver::keyClick(os, 'a', modifiers);
 }
 
-void GTKeyboardUtils::copy(U2::U2OpStatus &os)
+void GTKeyboardUtils::copy(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
     int modifiers = GTKeyboardDriver::key["ctrl"];
@@ -45,7 +45,7 @@ void GTKeyboardUtils::copy(U2::U2OpStatus &os)
     GTKeyboardDriver::keyClick(os, 'c', modifiers);
 }
 
-void GTKeyboardUtils::paste(U2::U2OpStatus &os)
+void GTKeyboardUtils::paste(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
     int modifiers = GTKeyboardDriver::key["ctrl"];
@@ -56,7 +56,7 @@ void GTKeyboardUtils::paste(U2::U2OpStatus &os)
     GTKeyboardDriver::keyClick(os, 'v', modifiers);
 }
 
-void GTKeyboardUtils::cut(U2::U2OpStatus &os)
+void GTKeyboardUtils::cut(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
     int modifiers = GTKeyboardDriver::key["ctrl"];

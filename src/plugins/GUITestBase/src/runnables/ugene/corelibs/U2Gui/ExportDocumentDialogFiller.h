@@ -30,7 +30,7 @@ using namespace HI;
     class ExportDocumentDialogFiller : public Filler {
     public:
         enum FormatToUse {Genbank, GFF, CLUSTALW, BAM, VCF, TEXT, NWK, FASTA, VectorNTI};
-        ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path = "", const QString &_name = "", 
+        ExportDocumentDialogFiller(HI::GUITestOpStatus &_os, const QString &_path = "", const QString &_name = "",
             ExportDocumentDialogFiller::FormatToUse _format = ExportDocumentDialogFiller::Genbank, bool compressFile = false,
                                  bool addToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();

@@ -35,51 +35,51 @@ class U2Region;
 
 class GTUtilsAnnotationsTreeView {
 public:
-    static QTreeWidget* getTreeWidget(U2OpStatus &os);
+    static QTreeWidget* getTreeWidget(HI::GUITestOpStatus &os);
 
-    static void addAnnotationsTableFromProject(U2OpStatus &os, const QString &tableName);
+    static void addAnnotationsTableFromProject(HI::GUITestOpStatus &os, const QString &tableName);
 
     // returns center or item's rect
     // fails if the item wasn't found
-    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
+    static QPoint getItemCenter(HI::GUITestOpStatus &os, const QString &itemName);
 
-    static QTreeWidgetItem * findFirstAnnotation(U2OpStatus &os, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
-    static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, QTreeWidgetItem* parentItem, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findFirstAnnotation(HI::GUITestOpStatus &os, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findItem(HI::GUITestOpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findItem(HI::GUITestOpStatus &os, const QString &itemName, QTreeWidgetItem* parentItem, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QList<QTreeWidgetItem*> findItems(HI::GUITestOpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static QStringList getGroupNames(U2OpStatus &os, const QString &annotationTableName = "");
+    static QStringList getGroupNames(HI::GUITestOpStatus &os, const QString &annotationTableName = "");
 
-    static QStringList getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName);
-    static QList<U2Region> getAnnotatedRegionsOfGroup(U2OpStatus &os, const QString &groupName);
-    static QList<U2Region> getAnnotatedRegionsOfGroup(U2OpStatus &os, const QString &groupName, const QString &parentName);
+    static QStringList getAnnotationNamesOfGroup(HI::GUITestOpStatus &os, const QString &groupName);
+    static QList<U2Region> getAnnotatedRegionsOfGroup(HI::GUITestOpStatus &os, const QString &groupName);
+    static QList<U2Region> getAnnotatedRegionsOfGroup(HI::GUITestOpStatus &os, const QString &groupName, const QString &parentName);
 
     // finds given region in annotation with a given name. U2Region: visible {begin, end} positions.
-    static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
+    static bool findRegion(HI::GUITestOpStatus &os, const QString &itemName, const U2Region& region);
 
-    static QString getSelectedItem(U2OpStatus &os);
-    static QList<QTreeWidgetItem*> getAllSelectedItems(U2OpStatus &os);
-    static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
-    static QString getQualifierValue(U2OpStatus &os, const QString &qualifierName, QTreeWidgetItem *parentItem);
-    static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);
-    static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
-    static QString getAnnotationRegionString(U2OpStatus &os, const QString &annotationName);
-    static QString getAnnotationType(U2OpStatus &os, const QString &annotationName);
+    static QString getSelectedItem(HI::GUITestOpStatus &os);
+    static QList<QTreeWidgetItem*> getAllSelectedItems(HI::GUITestOpStatus &os);
+    static QString getAVItemName(HI::GUITestOpStatus &os, AVItem* avItem);
+    static QString getQualifierValue(HI::GUITestOpStatus &os, const QString &qualifierName, QTreeWidgetItem *parentItem);
+    static QString getQualifierValue(HI::GUITestOpStatus &os, const QString &qualName, const QString &parentName);
+    static QList<U2Region> getAnnotatedRegions(HI::GUITestOpStatus &os);
+    static QString getAnnotationRegionString(HI::GUITestOpStatus &os, const QString &annotationName);
+    static QString getAnnotationType(HI::GUITestOpStatus &os, const QString &annotationName);
 
-    static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
+    static void createQualifier(HI::GUITestOpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
-    static void selectItems(U2OpStatus &os, const QStringList& items);
-    static void selectItems(U2OpStatus &os, const QList<QTreeWidgetItem *> &items);
+    static void selectItems(HI::GUITestOpStatus &os, const QStringList& items);
+    static void selectItems(HI::GUITestOpStatus &os, const QList<QTreeWidgetItem *> &items);
 
     // location string format: 1..51
-    static void createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location, bool createNewTable = true, const QString &saveTo = "");
+    static void createAnnotation(HI::GUITestOpStatus &os, const QString &groupName, const QString &annotationName, const QString &location, bool createNewTable = true, const QString &saveTo = "");
 
-    static void deleteItem(U2OpStatus &os, const QString &itemName);
-    static void deleteItem(U2OpStatus &os, QTreeWidgetItem *item);
+    static void deleteItem(HI::GUITestOpStatus &os, const QString &itemName);
+    static void deleteItem(HI::GUITestOpStatus &os, QTreeWidgetItem *item);
 
-    static void callContextMenuOnItem(U2OpStatus &os, QTreeWidgetItem *item);
-    static void callContextMenuOnItem(U2OpStatus &os, const QString &itemName);
-    static void callContextMenuOnQualifier(U2OpStatus &os, const QString &parentName, const QString &qualifierName);
+    static void callContextMenuOnItem(HI::GUITestOpStatus &os, QTreeWidgetItem *item);
+    static void callContextMenuOnItem(HI::GUITestOpStatus &os, const QString &itemName);
+    static void callContextMenuOnQualifier(HI::GUITestOpStatus &os, const QString &parentName, const QString &qualifierName);
 
     static const QString widgetName;
 };

@@ -35,7 +35,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTClipboard"
 
 #define GT_METHOD_NAME "text"
-QString GTClipboard::text(U2::U2OpStatus &os) {
+QString GTClipboard::text(GUITestOpStatus &os) {
     GTGlobals::sleep(300);
 // check that clipboard contains text
     QClipboard *clipboard = QApplication::clipboard();
@@ -54,13 +54,13 @@ QString GTClipboard::text(U2::U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setText"
-void GTClipboard::setText(U2::U2OpStatus &os, QString text ){
+void GTClipboard::setText(GUITestOpStatus &os, QString text ){
 #ifdef Q_OS_WIN
 	//On windows clipboard actions should be done in main thread
     class Scenario : public U2::CustomScenario {
 	public:
 		Scenario(const QString &_text) : text(_text){}
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
 			Q_UNUSED(os);
 			QClipboard *clipboard = QApplication::clipboard();
 			clipboard->clear();
@@ -84,7 +84,7 @@ void GTClipboard::setText(U2::U2OpStatus &os, QString text ){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setUrls"
-void GTClipboard::setUrls(U2::U2OpStatus &os, const QList<QString>& urls ){
+void GTClipboard::setUrls(GUITestOpStatus &os, const QList<QString>& urls ){
     Q_UNUSED(os);
     QList<QUrl> updated;
     foreach (QString url, urls){
@@ -109,13 +109,13 @@ void GTClipboard::setUrls(U2::U2OpStatus &os, const QList<QString>& urls ){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clear"
-void GTClipboard::clear(U2::U2OpStatus &os){
+void GTClipboard::clear(GUITestOpStatus &os){
 #ifdef Q_OS_WIN
     //On windows clipboard actions should be done in main thread
     class Scenario : public U2::CustomScenario {
     public:
         Scenario(){}
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QClipboard *clipboard = QApplication::clipboard();
             clipboard->clear();

@@ -25,7 +25,7 @@ namespace HI{
 #define GT_CLASS_NAME "GTSlider"
 
 #define GT_METHOD_NAME "setValue"
-void GTSlider::setValue(U2::U2OpStatus &os, QSlider *slider, int value){
+void GTSlider::setValue(GUITestOpStatus &os, QSlider *slider, int value){
     Q_UNUSED(os);
     GT_CHECK(slider != NULL, "slider not found");
     int min = slider->minimum();

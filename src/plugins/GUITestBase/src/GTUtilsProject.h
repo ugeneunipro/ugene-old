@@ -33,7 +33,6 @@
 
 namespace U2 {
 
-class GUITest;
 class Document;
 class ADVSingleSequenceWidget;
 
@@ -51,11 +50,11 @@ public:
     /*
         opens files using settings, checks if the document is loaded
     */
-    static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s = OpenFileSettings());
-    static void openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
+    static void openFiles(HI::GUITestOpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s = OpenFileSettings());
+    static void openFiles(HI::GUITestOpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
 
     enum CheckType {Exists, Empty, NotExists};
-    static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
+    static void checkProject(HI::GUITestOpStatus &os, CheckType checkType = Exists);
 
 
     /**
@@ -64,7 +63,7 @@ public:
      * Verifies that the sequence name is @seqName.
      * Returns the sequence widget.
      */
-    static ADVSingleSequenceWidget * openFileExpectSequence(U2OpStatus &os, const QString &path, const QString &fileName,
+    static ADVSingleSequenceWidget * openFileExpectSequence(HI::GUITestOpStatus &os, const QString &path, const QString &fileName,
         const QString &seqName);
 
      /**
@@ -73,7 +72,7 @@ public:
      * Verifies that the sequence name is @seqName.
      * Returns the sequence widget.
      */
-    static ADVSingleSequenceWidget * openFileExpectRawSequence(U2OpStatus &os, const QString &path, const QString &fileName,
+    static ADVSingleSequenceWidget * openFileExpectRawSequence(HI::GUITestOpStatus &os, const QString &path, const QString &fileName,
         const QString &seqName);
 
     /**
@@ -82,21 +81,21 @@ public:
      * the order specified in the list).
      * Returns the sequences widgets (in the same order).
      */
-    static QList<ADVSingleSequenceWidget *> openFileExpectSequences(U2OpStatus &os, const QString &path, const QString &fileName,
+    static QList<ADVSingleSequenceWidget *> openFileExpectSequences(HI::GUITestOpStatus &os, const QString &path, const QString &fileName,
         const QList<QString> &seqNames);
 
-    static void openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &path, const QString &fileName);
-    static void openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &filePath);
-    static void openMultiSequenceFileAsMergedSequence(U2OpStatus &os, const QString &filePath);
-    static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &dirPath, const QString &fileName);
-    static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath);
+    static void openMultiSequenceFileAsSequences(HI::GUITestOpStatus &os, const QString &path, const QString &fileName);
+    static void openMultiSequenceFileAsSequences(HI::GUITestOpStatus &os, const QString &filePath);
+    static void openMultiSequenceFileAsMergedSequence(HI::GUITestOpStatus &os, const QString &filePath);
+    static void openMultiSequenceFileAsMalignment(HI::GUITestOpStatus &os, const QString &dirPath, const QString &fileName);
+    static void openMultiSequenceFileAsMalignment(HI::GUITestOpStatus &os, const QString &filePath);
 
-    static void saveProjectAs(U2OpStatus &os, const QString &path);
-    static void closeProject(U2OpStatus &os);
+    static void saveProjectAs(HI::GUITestOpStatus &os, const QString &path);
+    static void closeProject(HI::GUITestOpStatus &os);
 
 protected:
-    static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
-    static void openFilesWithDialog(U2OpStatus &os, const QList<QUrl> &filePaths);
+    static void openFilesDrop(HI::GUITestOpStatus &os, const QList<QUrl>& urls);
+    static void openFilesWithDialog(HI::GUITestOpStatus &os, const QList<QUrl> &filePaths);
 };
 
 } // U2

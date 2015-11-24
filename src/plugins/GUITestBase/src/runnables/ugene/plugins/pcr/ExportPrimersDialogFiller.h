@@ -31,16 +31,16 @@ class ExportPrimersDialogFiller : public Filler {
 public:
     enum ExportTarget {LocalFile, SharedDb};
 
-    ExportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
+    ExportPrimersDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario = NULL);
 
     void commonScenario();
 
-    static QWidget *getDialog(U2OpStatus &os);
-    static void setExportTarget(U2OpStatus &os, ExportTarget exportTarget);
-    static void setFormat(U2OpStatus &os, const QString &format);
-    static void setFilePath(U2OpStatus &os, const QString &filePath);
-    static void setDatabase(U2OpStatus &os, const QString &database);
-    static void setFolder(U2OpStatus &os, const QString &folder);
+    static QWidget *getDialog(HI::GUITestOpStatus &os);
+    static void setExportTarget(HI::GUITestOpStatus &os, ExportTarget exportTarget);
+    static void setFormat(HI::GUITestOpStatus &os, const QString &format);
+    static void setFilePath(HI::GUITestOpStatus &os, const QString &filePath);
+    static void setDatabase(HI::GUITestOpStatus &os, const QString &database);
+    static void setFolder(HI::GUITestOpStatus &os, const QString &folder);
 };
 
 }   // namespace U2

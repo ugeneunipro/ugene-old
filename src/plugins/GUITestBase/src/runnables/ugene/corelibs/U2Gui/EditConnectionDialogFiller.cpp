@@ -23,7 +23,7 @@
 
 namespace U2 {
 
-EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, const Parameters &parameters, ConnectionType type)
+EditConnectionDialogFiller::EditConnectionDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters, ConnectionType type)
 : Filler(os, "EditConnectionDialog"), parameters(parameters)
 {
     if (FROM_SETTINGS == type) {
@@ -35,7 +35,7 @@ EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, const Par
     }
 }
 
-EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+EditConnectionDialogFiller::EditConnectionDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "EditConnectionDialog", scenario)
 {
 }
@@ -80,7 +80,7 @@ void EditConnectionDialogFiller::commonScenario() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-AuthenticationDialogFiller::AuthenticationDialogFiller(U2OpStatus &os, const QString &login, const QString &password)
+AuthenticationDialogFiller::AuthenticationDialogFiller(HI::GUITestOpStatus &os, const QString &login, const QString &password)
 : Filler(os, "AuthenticationDialog"), login(login), password(password)
 {
 

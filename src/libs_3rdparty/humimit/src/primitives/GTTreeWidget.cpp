@@ -32,7 +32,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTUtilsTreeView"
 
 #define GT_METHOD_NAME "expand"
-void GTTreeWidget::expand(U2::U2OpStatus &os, QTreeWidgetItem* item) {
+void GTTreeWidget::expand(GUITestOpStatus &os, QTreeWidgetItem* item) {
     if (item == NULL) {
         return;
     }
@@ -55,7 +55,7 @@ void GTTreeWidget::expand(U2::U2OpStatus &os, QTreeWidgetItem* item) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkItem"
-void GTTreeWidget::checkItem(U2::U2OpStatus &os, QTreeWidgetItem *item, int column, GTGlobals::UseMethod method) {
+void GTTreeWidget::checkItem(GUITestOpStatus &os, QTreeWidgetItem *item, int column, GTGlobals::UseMethod method) {
     Q_UNUSED(os);
     GT_CHECK(NULL != item, "treeWidgetItem is NULL");
     GT_CHECK(0 <= column, "The column number is invalid");
@@ -90,7 +90,7 @@ void GTTreeWidget::checkItem(U2::U2OpStatus &os, QTreeWidgetItem *item, int colu
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemRect"
-QRect GTTreeWidget::getItemRect(U2::U2OpStatus &os, QTreeWidgetItem* item) {
+QRect GTTreeWidget::getItemRect(GUITestOpStatus &os, QTreeWidgetItem* item) {
     GT_CHECK_RESULT(item != NULL, "treeWidgetItem is NULL", QRect());
 
     QTreeWidget *treeWidget = item->treeWidget();
@@ -106,7 +106,7 @@ QRect GTTreeWidget::getItemRect(U2::U2OpStatus &os, QTreeWidgetItem* item) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemCenter"
-QPoint GTTreeWidget::getItemCenter(U2::U2OpStatus &os, QTreeWidgetItem* item) {
+QPoint GTTreeWidget::getItemCenter(GUITestOpStatus &os, QTreeWidgetItem* item) {
 
     GT_CHECK_RESULT(item != NULL, "item is NULL", QPoint());
 
@@ -134,7 +134,7 @@ QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItems"
-QList<QTreeWidgetItem *> GTTreeWidget::getItems(U2::U2OpStatus &os, QTreeWidget *treeWidget) {
+QList<QTreeWidgetItem *> GTTreeWidget::getItems(GUITestOpStatus &os, QTreeWidget *treeWidget) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != treeWidget, "Tree widget is NULL", QList<QTreeWidgetItem *>());
     return getItems(treeWidget->invisibleRootItem());
@@ -142,7 +142,7 @@ QList<QTreeWidgetItem *> GTTreeWidget::getItems(U2::U2OpStatus &os, QTreeWidget 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemNames"
-QStringList GTTreeWidget::getItemNames(U2::U2OpStatus &os, QTreeWidget *treeWidget) {
+QStringList GTTreeWidget::getItemNames(GUITestOpStatus &os, QTreeWidget *treeWidget) {
     QStringList itemNames;
     QList<QTreeWidgetItem *> items = getItems(os, treeWidget);
     foreach (QTreeWidgetItem *item, items) {
@@ -153,7 +153,7 @@ QStringList GTTreeWidget::getItemNames(U2::U2OpStatus &os, QTreeWidget *treeWidg
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItemPrivate"
-QTreeWidgetItem * GTTreeWidget::findItemPrivate(U2::U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", NULL);
 
@@ -188,7 +188,7 @@ QTreeWidgetItem * GTTreeWidget::findItemPrivate(U2::U2OpStatus &os, QTreeWidget 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItem"
-QTreeWidgetItem * GTTreeWidget::findItem(U2::U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+QTreeWidgetItem * GTTreeWidget::findItem(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     QTreeWidgetItem* result = findItemPrivate(os, tree, text, parent, column, options);
     if(options.failIfNull){
         CHECK_SET_ERR_RESULT(result != NULL, QString("Item '%1' not found").arg(text), NULL);
@@ -198,7 +198,7 @@ QTreeWidgetItem * GTTreeWidget::findItem(U2::U2OpStatus &os, QTreeWidget *tree, 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItems"
-QList<QTreeWidgetItem *> GTTreeWidget::findItems(U2::U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+QList<QTreeWidgetItem *> GTTreeWidget::findItems(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     QList<QTreeWidgetItem *> items;
 
     GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", items);
@@ -232,7 +232,7 @@ QList<QTreeWidgetItem *> GTTreeWidget::findItems(U2::U2OpStatus &os, QTreeWidget
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "click"
-void GTTreeWidget::click(U2::U2OpStatus &os, QTreeWidgetItem *item, int column) {
+void GTTreeWidget::click(GUITestOpStatus &os, QTreeWidgetItem *item, int column) {
     GT_CHECK(item != NULL, "item is NULL");
     QTreeWidget* tree = item->treeWidget();
     tree->scrollToItem(item);
@@ -252,7 +252,7 @@ void GTTreeWidget::click(U2::U2OpStatus &os, QTreeWidgetItem *item, int column) 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemLevel"
-int GTTreeWidget::getItemLevel(U2::U2OpStatus &os, QTreeWidgetItem *item) {
+int GTTreeWidget::getItemLevel(GUITestOpStatus &os, QTreeWidgetItem *item) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(item != NULL, "item is NULL", -1);
 

@@ -47,19 +47,19 @@ private:
 
 class GTUtilsTaskTreeView {
 public:
-    static void waitTaskFinished(U2OpStatus &os, long timeout=180000);
-    static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
-    static void openView(U2OpStatus& os);
-    static void toggleView(U2OpStatus& os);
-    static void cancelTask(U2OpStatus& os, const QString &itemName);
-    static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, const QString &itemName, bool failOnNull = true);
-    static QTreeWidget* getTreeWidget(U2OpStatus &os);
-    static void moveToOpenedView(U2OpStatus& os, const QString &itemName);
-    static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
-    static void moveTo(U2OpStatus &os,const QString &itemName);
-    static int getTopLevelTasksCount(U2OpStatus &os);
-    static bool checkTask(U2OpStatus& os, const QString &itemName);
-    static int countTasks(U2OpStatus& os, const QString &itemName);
+    static void waitTaskFinished(HI::GUITestOpStatus &os, long timeout=180000);
+    static void click(HI::GUITestOpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
+    static void openView(HI::GUITestOpStatus& os);
+    static void toggleView(HI::GUITestOpStatus& os);
+    static void cancelTask(HI::GUITestOpStatus& os, const QString &itemName);
+    static QTreeWidgetItem* getTreeWidgetItem(HI::GUITestOpStatus &os, const QString &itemName, bool failOnNull = true);
+    static QTreeWidget* getTreeWidget(HI::GUITestOpStatus &os);
+    static void moveToOpenedView(HI::GUITestOpStatus& os, const QString &itemName);
+    static QPoint getTreeViewItemPosition(HI::GUITestOpStatus &os, const QString &itemName);
+    static void moveTo(HI::GUITestOpStatus &os,const QString &itemName);
+    static int getTopLevelTasksCount(HI::GUITestOpStatus &os);
+    static bool checkTask(HI::GUITestOpStatus& os, const QString &itemName);
+    static int countTasks(HI::GUITestOpStatus& os, const QString &itemName);
 
     static const QString widgetName;
 

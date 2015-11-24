@@ -33,17 +33,17 @@ class HI_EXPORT GTComboBox {
 public:
     // fails if the comboBox is NULL, index is not in a comboBox range
     // or a comboBox's index differs from a given index in the end of method's execution
-    static void setCurrentIndex(U2::U2OpStatus& os, QComboBox *comboBox, int index, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
+    static void setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int index, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
     // Fails if the comboBox is NULL, combobox doesn't contain an item with text
     // or a comboBox current item's text differs from a given text in the end of method's execution
-    static void setIndexWithText(U2::U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
+    static void setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
-    static QStringList getValues(U2::U2OpStatus &os, QComboBox *comboBox);
-    static void checkValues(U2::U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
+    static QStringList getValues(GUITestOpStatus &os, QComboBox *comboBox);
+    static void checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QStringList &values);
 
-    static void checkValuesPresence(U2::U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
-    static void checkCurrentValue(U2::U2OpStatus &os, QComboBox *comboBox, const QString &expectedValue);
+    static void checkValuesPresence(GUITestOpStatus& os, QComboBox *comboBox, const QStringList &values);
+    static void checkCurrentValue(GUITestOpStatus &os, QComboBox *comboBox, const QString &expectedValue);
 };
 
 }

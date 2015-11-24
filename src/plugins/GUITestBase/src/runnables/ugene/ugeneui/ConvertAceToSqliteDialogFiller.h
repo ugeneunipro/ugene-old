@@ -32,7 +32,7 @@ class ConvertAceToSqliteDialogFiller : public Filler
 {
 public:
     enum OutFileAction { NOT_SET, REPLACE, APPEND, CANCEL };
-    ConvertAceToSqliteDialogFiller(U2OpStatus& _os, QString _leDest, OutFileAction action = NOT_SET): Filler(_os, "AceImportDialog"),
+    ConvertAceToSqliteDialogFiller(HI::GUITestOpStatus& _os, QString _leDest, OutFileAction action = NOT_SET): Filler(_os, "AceImportDialog"),
         leDestUrl(_leDest), action(action) {}
     virtual void run();
 private:

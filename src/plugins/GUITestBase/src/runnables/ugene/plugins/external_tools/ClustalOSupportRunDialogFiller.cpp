@@ -26,7 +26,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ClustalOSupportRunDialogFiller"
-ClustalOSupportRunDialogFiller::ClustalOSupportRunDialogFiller(U2OpStatus &os) :
+ClustalOSupportRunDialogFiller::ClustalOSupportRunDialogFiller(HI::GUITestOpStatus &os) :
     Filler(os, "ClustalOSupportRunDialog")
 {
 }

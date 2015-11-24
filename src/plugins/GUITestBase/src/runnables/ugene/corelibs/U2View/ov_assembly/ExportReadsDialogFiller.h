@@ -29,7 +29,7 @@ using namespace HI;
 
 class ExportReadsDialogFiller : public Filler {
 public:
-    ExportReadsDialogFiller(U2OpStatus &os, const QString &filePath, const QString format = "fasta", bool addToProject = true);
+    ExportReadsDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, const QString format = "fasta", bool addToProject = true);
     virtual void run();
 private:
     QString filePath;

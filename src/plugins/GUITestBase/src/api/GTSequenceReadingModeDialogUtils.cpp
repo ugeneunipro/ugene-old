@@ -55,7 +55,7 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTSequenceReadingModeDialogUtils"
 
-GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "MultipleDocumentsReadingModeSelectorController", scenario), dialog(NULL)
+GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(HI::GUITestOpStatus &os, CustomScenario *scenario) : Filler(os, "MultipleDocumentsReadingModeSelectorController", scenario), dialog(NULL)
 {
 }
 

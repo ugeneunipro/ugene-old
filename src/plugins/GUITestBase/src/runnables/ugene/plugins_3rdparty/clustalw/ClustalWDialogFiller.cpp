@@ -38,7 +38,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ClustalWDialogFiller"
 
-ClustalWDialogFiller::ClustalWDialogFiller(U2OpStatus &_os, int _gapOpenVal) : Filler(_os, "ClustalWSupportRunDialog"),
+ClustalWDialogFiller::ClustalWDialogFiller(HI::GUITestOpStatus &_os, int _gapOpenVal) : Filler(_os, "ClustalWSupportRunDialog"),
     gapOpenVal(_gapOpenVal) {}
 
 #define GT_METHOD_NAME "run"

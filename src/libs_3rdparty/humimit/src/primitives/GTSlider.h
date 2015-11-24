@@ -29,7 +29,7 @@ namespace HI {
 
 class HI_EXPORT GTSlider {
 public:
-    static void setValue(U2::U2OpStatus &os, QSlider* slider, int value);
+    static void setValue(GUITestOpStatus &os, QSlider* slider, int value);
 };
 
 }

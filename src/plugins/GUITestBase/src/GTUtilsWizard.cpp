@@ -53,7 +53,7 @@ const QMap<QString, GTUtilsWizard::WizardButton> GTUtilsWizard::buttonMap = GTUt
 #define GT_CLASS_NAME "GTUtilsWizard"
 
 #define GT_METHOD_NAME "setInputFiles"
-void GTUtilsWizard::setInputFiles(U2OpStatus &os, QList<QStringList> inputFiles){
+void GTUtilsWizard::setInputFiles(HI::GUITestOpStatus &os, QList<QStringList> inputFiles){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "wizard not found");
     int i = 0;
@@ -80,7 +80,7 @@ void GTUtilsWizard::setInputFiles(U2OpStatus &os, QList<QStringList> inputFiles)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setAllParameters"
-void GTUtilsWizard::setAllParameters(U2OpStatus &os, QMap<QString, QVariant> map){
+void GTUtilsWizard::setAllParameters(HI::GUITestOpStatus &os, QMap<QString, QVariant> map){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     QWizard* wizard = qobject_cast<QWizard*>(dialog);
@@ -119,7 +119,7 @@ void GTUtilsWizard::setAllParameters(U2OpStatus &os, QMap<QString, QVariant> map
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setParameter"
-void GTUtilsWizard::setParameter(U2OpStatus &os, QString parName, QVariant parValue){
+void GTUtilsWizard::setParameter(HI::GUITestOpStatus &os, QString parName, QVariant parValue){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     QWizard* wizard = qobject_cast<QWizard*>(dialog);
@@ -142,7 +142,7 @@ void GTUtilsWizard::setParameter(U2OpStatus &os, QString parName, QVariant parVa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setParameter"
-QVariant GTUtilsWizard::getParameter(U2OpStatus &os, QString parName){
+QVariant GTUtilsWizard::getParameter(HI::GUITestOpStatus &os, QString parName){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", QVariant());
     QWizard* wizard = qobject_cast<QWizard*>(dialog);
@@ -177,7 +177,7 @@ QVariant GTUtilsWizard::getParameter(U2OpStatus &os, QString parName){
 
 
 #define GT_METHOD_NAME "setValue"
-void GTUtilsWizard::setValue(U2OpStatus &os, QWidget *w, QVariant value){
+void GTUtilsWizard::setValue(HI::GUITestOpStatus &os, QWidget *w, QVariant value){
     QComboBox* combo = qobject_cast<QComboBox*>(w);
     if(combo != NULL){
         GTComboBox::setIndexWithText(os, combo, value.toString());
@@ -209,7 +209,7 @@ void GTUtilsWizard::setValue(U2OpStatus &os, QWidget *w, QVariant value){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickButton"
-void GTUtilsWizard::clickButton(U2OpStatus &os, WizardButton button){
+void GTUtilsWizard::clickButton(HI::GUITestOpStatus &os, WizardButton button){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog!=NULL, "activeModalWidget is NULL");
 
@@ -221,7 +221,7 @@ void GTUtilsWizard::clickButton(U2OpStatus &os, WizardButton button){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getPageTitle"
-QString GTUtilsWizard::getPageTitle(U2OpStatus &os){
+QString GTUtilsWizard::getPageTitle(HI::GUITestOpStatus &os){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog!=NULL, "activeModalWidget is NULL", QString());
     QWizard* wizard = qobject_cast<QWizard*>(dialog);

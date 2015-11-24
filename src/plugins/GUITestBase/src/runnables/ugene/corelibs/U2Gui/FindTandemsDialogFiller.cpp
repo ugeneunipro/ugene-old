@@ -38,14 +38,14 @@
 
 namespace U2 {
 
-FindTandemsDialogFiller::FindTandemsDialogFiller( U2OpStatus &_os, const QString & _resultFilesPath)
+FindTandemsDialogFiller::FindTandemsDialogFiller( HI::GUITestOpStatus &_os, const QString & _resultFilesPath)
     : Filler(_os, "FindTandemsDialog"), button(Start), resultAnnotationFilesPath(_resultFilesPath){
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::FindTandemsDialogFiller"
 #define GT_METHOD_NAME "run"
 
-FindTandemsDialogFiller::FindTandemsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+FindTandemsDialogFiller::FindTandemsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "FindTandemsDialog", scenario),
     button(Start)
 {

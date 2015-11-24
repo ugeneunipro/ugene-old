@@ -30,7 +30,7 @@ using namespace HI;
 class AliasesDialogFiller : public Filler
 {
 public:
-    AliasesDialogFiller(U2OpStatus &_os, QMap<QPoint*,QString> _map):Filler(_os,"SchemaAliasesConfigurationDialog"),
+    AliasesDialogFiller(HI::GUITestOpStatus &_os, QMap<QPoint*,QString> _map):Filler(_os,"SchemaAliasesConfigurationDialog"),
         map(_map){}
     void run();
 private:

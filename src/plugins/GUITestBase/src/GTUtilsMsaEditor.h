@@ -24,6 +24,7 @@
 
 #include <QColor>
 #include <QRect>
+#include <GTGlobals.h>
 
 namespace U2 {
 
@@ -35,45 +36,44 @@ class MSAEditorTreeViewerUI;
 class MSAEditorUI;
 class MSAGraphOverview;
 class MSASimpleOverview;
-class U2OpStatus;
 
 // If you can't find an appropriate method check the GTUtilsMsaEditorSequenceArea class
 class GTUtilsMsaEditor {
 public:
-    static QColor getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point);
-    static QColor getSimpleOverviewPixelColor(U2OpStatus &os, const QPoint &point);
+    static QColor getGraphOverviewPixelColor(HI::GUITestOpStatus &os, const QPoint &point);
+    static QColor getSimpleOverviewPixelColor(HI::GUITestOpStatus &os, const QPoint &point);
 
-    static MSAEditor * getEditor(U2OpStatus &os);
-    static MSAEditorUI * getEditorUi(U2OpStatus &os);
-    static MSAGraphOverview * getGraphOverview(U2OpStatus &os);
-    static MSASimpleOverview * getSimpleOverview(U2OpStatus &os);
-    static MSAEditorTreeViewerUI * getTreeView(U2OpStatus &os);
-    static MSAEditorNameList * getNameListArea(U2OpStatus &os);
-    static MSAEditorConsensusArea * getConsensusArea(U2OpStatus &os);
-    static MSAEditorSequenceArea * getSequenceArea(U2OpStatus &os);
+    static MSAEditor * getEditor(HI::GUITestOpStatus &os);
+    static MSAEditorUI * getEditorUi(HI::GUITestOpStatus &os);
+    static MSAGraphOverview * getGraphOverview(HI::GUITestOpStatus &os);
+    static MSASimpleOverview * getSimpleOverview(HI::GUITestOpStatus &os);
+    static MSAEditorTreeViewerUI * getTreeView(HI::GUITestOpStatus &os);
+    static MSAEditorNameList * getNameListArea(HI::GUITestOpStatus &os);
+    static MSAEditorConsensusArea * getConsensusArea(HI::GUITestOpStatus &os);
+    static MSAEditorSequenceArea * getSequenceArea(HI::GUITestOpStatus &os);
 
-    static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);
-    static QRect getColumnHeaderRect(U2OpStatus &os, int column);
+    static QRect getSequenceNameRect(HI::GUITestOpStatus &os, const QString &sequenceName);
+    static QRect getColumnHeaderRect(HI::GUITestOpStatus &os, int column);
 
-    static void replaceSequence(U2OpStatus &os, const QString &sequenceToReplace, int targetPosition);
-    static void removeColumn(U2OpStatus &os, int column);
+    static void replaceSequence(HI::GUITestOpStatus &os, const QString &sequenceToReplace, int targetPosition);
+    static void removeColumn(HI::GUITestOpStatus &os, int column);
 
-    static void clickSequenceName(U2OpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton = Qt::LeftButton);
-    static void clickColumn(U2OpStatus &os, int column, Qt::MouseButton mouseButton = Qt::LeftButton);
+    static void clickSequenceName(HI::GUITestOpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton = Qt::LeftButton);
+    static void clickColumn(HI::GUITestOpStatus &os, int column, Qt::MouseButton mouseButton = Qt::LeftButton);
 
-    static QString getReferenceSequenceName(U2OpStatus &os);
-    static void setReference(U2OpStatus &os, const QString &sequenceName);
+    static QString getReferenceSequenceName(HI::GUITestOpStatus &os);
+    static void setReference(HI::GUITestOpStatus &os, const QString &sequenceName);
 
-    static void toggleCollapsingMode(U2OpStatus &os);
-    static void toggleCollapsingGroup(U2OpStatus &os, const QString &groupName);
-    static bool isSequenceCollapsed(U2OpStatus &os, const QString &seqName);
+    static void toggleCollapsingMode(HI::GUITestOpStatus &os);
+    static void toggleCollapsingGroup(HI::GUITestOpStatus &os, const QString &groupName);
+    static bool isSequenceCollapsed(HI::GUITestOpStatus &os, const QString &seqName);
 
-    static int getSequencesCount(U2OpStatus &os);
+    static int getSequencesCount(HI::GUITestOpStatus &os);
 
-    static void undo(U2OpStatus &os);
-    static void redo(U2OpStatus &os);
+    static void undo(HI::GUITestOpStatus &os);
+    static void redo(HI::GUITestOpStatus &os);
 
-    static void buildPhylogeneticTree(U2OpStatus &os, const QString &pathToSave);
+    static void buildPhylogeneticTree(HI::GUITestOpStatus &os, const QString &pathToSave);
 };
 
 }   // namespace U2

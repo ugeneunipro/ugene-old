@@ -32,17 +32,17 @@ using namespace HI;
 
 class GTUtilsBookmarksTreeView {
 public:
-    static QTreeWidget* getTreeWidget(U2OpStatus &os);
+    static QTreeWidget* getTreeWidget(HI::GUITestOpStatus &os);
 
     // returns center or item's rect
     // fails if the item wasn't found
-    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
+    static QPoint getItemCenter(HI::GUITestOpStatus &os, const QString &itemName);
 
-    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QString getSelectedItem(U2OpStatus &os);
-//	static QString getBookmarkItemName(U2OpStatus &os, AVItem* avItem);
+    static QTreeWidgetItem* findItem(HI::GUITestOpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QString getSelectedItem(HI::GUITestOpStatus &os);
+//	static QString getBookmarkItemName(HI::GUITestOpStatus &os, AVItem* avItem);
 
-    static void addBookmark(U2OpStatus &os, const QString &viewName, const QString &bookmarkName);
+    static void addBookmark(HI::GUITestOpStatus &os, const QString &viewName, const QString &bookmarkName);
 
     static const QString widgetName;
 };

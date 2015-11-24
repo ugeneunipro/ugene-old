@@ -39,7 +39,7 @@ namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
-Primer3DialogFiller::Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings)
+Primer3DialogFiller::Primer3DialogFiller(HI::GUITestOpStatus &os, const Primer3Settings &settings)
     : Filler(os, "Primer3Dialog"),
       settings(settings)
 {}

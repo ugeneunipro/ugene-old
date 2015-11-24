@@ -52,7 +52,7 @@ void PopupChooser::commonScenario() {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickEsc"
-void PopupChooser::clickEsc(U2::U2OpStatus &os) {
+void PopupChooser::clickEsc(GUITestOpStatus &os) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 }
 #undef GT_METHOD_NAME
@@ -71,7 +71,7 @@ void PopupChooserByText::commonScenario()
 #define GT_CLASS_NAME "PopupChecker"
 
 #define GT_METHOD_NAME "run"
-PopupChecker::PopupChecker(U2::U2OpStatus &os, U2::CustomScenario *scenario) :
+PopupChecker::PopupChecker(GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
 {
 }
@@ -138,12 +138,12 @@ void PopupChecker::commonScenario() {
 #define GT_CLASS_NAME "PopupCheckerByText"
 
 #define GT_METHOD_NAME "run"
-PopupCheckerByText::PopupCheckerByText(U2::U2OpStatus &os, U2::CustomScenario *scenario) :
+PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
 {
 }
 
-PopupCheckerByText::PopupCheckerByText(U2::U2OpStatus &os,
+PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
                                        const QStringList &namePath,
                                        PopupChecker::CheckOptions options,
                                        GTGlobals::UseMethod useMethod) :
@@ -155,7 +155,7 @@ PopupCheckerByText::PopupCheckerByText(U2::U2OpStatus &os,
 
 }
 
-PopupCheckerByText::PopupCheckerByText(U2::U2OpStatus &os,
+PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
                                        const QList<QStringList> &namePaths,
                                        PopupChecker::CheckOptions options,
                                        GTGlobals::UseMethod useMethod) :

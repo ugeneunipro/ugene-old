@@ -48,7 +48,7 @@ const QString GTUtilsDocument::DocumentUnloaded = "Unloaded";
 #define GT_CLASS_NAME "GTUtilsDocument"
 
 #define GT_METHOD_NAME "getDocument"
-Document* GTUtilsDocument::getDocument(U2OpStatus &os, const QString& documentName) {
+Document* GTUtilsDocument::getDocument(HI::GUITestOpStatus &os, const QString& documentName) {
 
     Project* p = AppContext::getProject();
     GT_CHECK_RESULT(p != NULL, "Project does not exist", NULL);
@@ -65,7 +65,7 @@ Document* GTUtilsDocument::getDocument(U2OpStatus &os, const QString& documentNa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkDocument"
-void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
+void GTUtilsDocument::checkDocument(HI::GUITestOpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
 
     GTGlobals::sleep(1000);
 
@@ -88,7 +88,7 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
+void GTUtilsDocument::removeDocument(HI::GUITestOpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
     switch (method) {
     case GTGlobals::UseMouse:
@@ -114,7 +114,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
 }
 
 #define GT_METHOD_NAME "getDocumentGObjectView"
-GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d) {
+GObjectView* GTUtilsDocument::getDocumentGObjectView(HI::GUITestOpStatus &os, Document* d) {
 
     GT_CHECK_RESULT(d != NULL, "Document* is NULL", NULL);
 
@@ -130,7 +130,7 @@ GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isDocumentLoaded"
-bool GTUtilsDocument::isDocumentLoaded(U2OpStatus &os, const QString& documentName)
+bool GTUtilsDocument::isDocumentLoaded(HI::GUITestOpStatus &os, const QString& documentName)
 {
     QModelIndex index = GTUtilsProjectTreeView::findIndex(os, GTUtilsProjectTreeView::getTreeView(os), documentName);
     QString s = index.data().toString();
@@ -139,7 +139,7 @@ bool GTUtilsDocument::isDocumentLoaded(U2OpStatus &os, const QString& documentNa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "saveDocument"
-void GTUtilsDocument::saveDocument(U2OpStatus &os, const QString &documentName) {
+void GTUtilsDocument::saveDocument(HI::GUITestOpStatus &os, const QString &documentName) {
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__SAVE_DOCUMENT, GTGlobals::UseMouse);
 
     GTUtilsDialog::waitForDialog(os, popupChooser);
@@ -151,7 +151,7 @@ void GTUtilsDocument::saveDocument(U2OpStatus &os, const QString &documentName) 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "unloadDocument"
-void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName, bool waitForMessageBox) {
+void GTUtilsDocument::unloadDocument(HI::GUITestOpStatus &os, const QString &documentName, bool waitForMessageBox) {
     GT_CHECK_RESULT( isDocumentLoaded(os, documentName), "Document is not loaded", );
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__UNLOAD_SELECTED, GTGlobals::UseMouse);
@@ -170,7 +170,7 @@ void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "loadDocument"
-void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) {
+void GTUtilsDocument::loadDocument(HI::GUITestOpStatus &os, const QString &documentName) {
     GT_CHECK_RESULT( !isDocumentLoaded(os, documentName), "Document is loaded", );
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName) + QPoint(1,0));//dirty hack
@@ -181,7 +181,7 @@ void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "lockDocument"
-void GTUtilsDocument::lockDocument(U2OpStatus &os, const QString &documentName) {
+void GTUtilsDocument::lockDocument(HI::GUITestOpStatus &os, const QString &documentName) {
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Lock document for editing"));
     GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
 }

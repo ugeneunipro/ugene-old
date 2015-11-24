@@ -36,7 +36,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "FindEnzymesDialogFiller"
 
-FindEnzymesDialogFiller::FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario) :
+FindEnzymesDialogFiller::FindEnzymesDialogFiller(HI::GUITestOpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario) :
     Filler(os, "FindEnzymesDialog", scenario),
     enzymesToFind(enzymesToFind)
 {

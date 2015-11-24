@@ -30,10 +30,10 @@ namespace HI{
 
 class HI_EXPORT GTTableView {
 public:
-    static QPoint getCellPosition(U2::U2OpStatus &os, QTableView *table, int column, int row);
-    static QPoint getCellPoint(U2::U2OpStatus &os, QTableView *table, int row, int column);
-    static int rowCount(U2::U2OpStatus &os, QTableView *table);
-    static QString data(U2::U2OpStatus &os, QTableView *table, int row, int column);
+    static QPoint getCellPosition(GUITestOpStatus &os, QTableView *table, int column, int row);
+    static QPoint getCellPoint(GUITestOpStatus &os, QTableView *table, int row, int column);
+    static int rowCount(GUITestOpStatus &os, QTableView *table);
+    static QString data(GUITestOpStatus &os, QTableView *table, int row, int column);
 };
 
 }

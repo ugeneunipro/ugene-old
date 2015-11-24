@@ -32,15 +32,15 @@ using namespace HI;
 class GTUtilsTask
 {
 public:
-    static QList<Task*> getTopLevelTasks(U2OpStatus &os);
-    static Task* getTaskByName(U2OpStatus &os, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
-    static Task* getSubTaskByName(U2OpStatus &os, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
-    static Task* getSubTaskByName(U2OpStatus &os, Task* parent, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
-    static void checkTask(U2OpStatus &os, QString taskName);
-    static void checkNoTask(U2OpStatus &os, QString taskName);
-    static void cancelTask(U2OpStatus &os, QString taskName);
-    static void cancelSubTask(U2OpStatus &os, QString taskName);
-    static void waitTaskStart(U2OpStatus &os, QString taskName, int timeOut = 180000);
+    static QList<Task*> getTopLevelTasks(HI::GUITestOpStatus &os);
+    static Task* getTaskByName(HI::GUITestOpStatus &os, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
+    static Task* getSubTaskByName(HI::GUITestOpStatus &os, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
+    static Task* getSubTaskByName(HI::GUITestOpStatus &os, Task* parent, QString taskName, GTGlobals::FindOptions options = GTGlobals::FindOptions(true));
+    static void checkTask(HI::GUITestOpStatus &os, QString taskName);
+    static void checkNoTask(HI::GUITestOpStatus &os, QString taskName);
+    static void cancelTask(HI::GUITestOpStatus &os, QString taskName);
+    static void cancelSubTask(HI::GUITestOpStatus &os, QString taskName);
+    static void waitTaskStart(HI::GUITestOpStatus &os, QString taskName, int timeOut = 180000);
 
 };
 

@@ -31,11 +31,11 @@ using namespace HI;
 class GraphSettingsDialogFiller: public Filler
 {
 public:
-    GraphSettingsDialogFiller(U2OpStatus &os, int _window = -1, int _steps = -1, double _cutoff_min = 0, double _cutoff_max = 0,
+    GraphSettingsDialogFiller(HI::GUITestOpStatus &os, int _window = -1, int _steps = -1, double _cutoff_min = 0, double _cutoff_max = 0,
                               int _r = -1, int _g = -1, int _b = -1)
         : Filler(os, "GraphSettingsDialog"), window(_window), steps(_steps), cutoff_min(_cutoff_min), cutoff_max(_cutoff_max),
     r(_r), g(_g), b(_b){}
-    GraphSettingsDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "GraphSettingsDialog", c){}
+    GraphSettingsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c): Filler(os, "GraphSettingsDialog", c){}
     virtual void commonScenario();
 private:
     int window;

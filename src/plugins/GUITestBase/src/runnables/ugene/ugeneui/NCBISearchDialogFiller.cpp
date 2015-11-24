@@ -40,7 +40,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "NcbiSearchDialogFiller"
 
-NcbiSearchDialogFiller::NcbiSearchDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+NcbiSearchDialogFiller::NcbiSearchDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions) :
     Filler(os, "SearchGenbankSequenceDialog"),
     dialog(NULL),
     actions(actions)

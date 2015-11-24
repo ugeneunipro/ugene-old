@@ -32,7 +32,7 @@ namespace HI {
 
 #define GT_CLASS_NAME "GTUtilsDialog::MessageBoxDialogFiller"
 
-MessageBoxDialogFiller::MessageBoxDialogFiller(U2::U2OpStatus &os, QMessageBox::StandardButton b, const QString &message, const QString &objectName) :
+MessageBoxDialogFiller::MessageBoxDialogFiller(GUITestOpStatus &os, QMessageBox::StandardButton b, const QString &message, const QString &objectName) :
     Filler(os, objectName),
     b(b),
     message(message)
@@ -40,7 +40,7 @@ MessageBoxDialogFiller::MessageBoxDialogFiller(U2::U2OpStatus &os, QMessageBox::
 
 }
 
-MessageBoxDialogFiller::MessageBoxDialogFiller(U2::U2OpStatus &os, const QString &buttonText, const QString &message) :
+MessageBoxDialogFiller::MessageBoxDialogFiller(GUITestOpStatus &os, const QString &buttonText, const QString &message) :
     Filler(os, ""),
     b(QMessageBox::NoButton),
     buttonText(buttonText),
@@ -83,7 +83,7 @@ void MessageBoxDialogFiller::commonScenario() {
 
 #define GT_CLASS_NAME "GTUtilsDialog::AppCloseMessageBoxDialogFiller"
 
-AppCloseMessageBoxDialogFiller::AppCloseMessageBoxDialogFiller(U2::U2OpStatus &os) :
+AppCloseMessageBoxDialogFiller::AppCloseMessageBoxDialogFiller(GUITestOpStatus &os) :
     Filler(os, "")
 {
 
@@ -112,7 +112,7 @@ void AppCloseMessageBoxDialogFiller::commonScenario() {
 
 #define GT_CLASS_NAME "GTUtilsDialog::MessageBoxNoToAllOrNo"
 
-MessageBoxNoToAllOrNo::MessageBoxNoToAllOrNo(U2::U2OpStatus &os) :
+MessageBoxNoToAllOrNo::MessageBoxNoToAllOrNo(GUITestOpStatus &os) :
     Filler(os, "")
 {
 
@@ -138,7 +138,7 @@ void MessageBoxNoToAllOrNo::commonScenario() {
 
 #define GT_CLASS_NAME "MessageBoxOpenAnotherProject"
 
-MessageBoxOpenAnotherProject::MessageBoxOpenAnotherProject(U2::U2OpStatus &os) :
+MessageBoxOpenAnotherProject::MessageBoxOpenAnotherProject(GUITestOpStatus &os) :
     Filler(os, "")
 {
 
@@ -167,7 +167,7 @@ void MessageBoxOpenAnotherProject::commonScenario() {
 
 #define GT_CLASS_NAME "MessageBoxOpenAnotherProject"
 
-InputIntFiller::InputIntFiller(U2::U2OpStatus &os, int value) :
+InputIntFiller::InputIntFiller(GUITestOpStatus &os, int value) :
     Filler(os, ""),
     value(value)
 {

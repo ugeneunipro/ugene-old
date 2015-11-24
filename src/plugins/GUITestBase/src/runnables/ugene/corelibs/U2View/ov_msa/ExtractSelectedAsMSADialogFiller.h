@@ -29,7 +29,7 @@ using namespace HI;
 
 class ExtractSelectedAsMSADialogFiller : public Filler {
 public:
-    ExtractSelectedAsMSADialogFiller(U2OpStatus &os,QString _filepath, QStringList _list, int _from=0, int _to=0,bool _addToProj=true,
+    ExtractSelectedAsMSADialogFiller(HI::GUITestOpStatus &os,QString _filepath, QStringList _list, int _from=0, int _to=0,bool _addToProj=true,
                                      bool _invertButtonPress=false,bool _allButtonPress=false,
                                      bool _noneButtonPress=false, bool _dontCheckFilepath = false, QString format = "") : Filler(os, "CreateSubalignmentDialog"),
         filepath(_filepath),
@@ -42,9 +42,9 @@ public:
         allButtonPress(_allButtonPress),
         noneButtonPress(_noneButtonPress),
         dontCheckFilepath(_dontCheckFilepath) {}
-    ExtractSelectedAsMSADialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "CreateSubalignmentDialog", c){}
+    ExtractSelectedAsMSADialogFiller(HI::GUITestOpStatus &os, CustomScenario *c): Filler(os, "CreateSubalignmentDialog", c){}
     virtual void commonScenario();
-    static QStringList getSequences(U2OpStatus &os, bool selected = true);
+    static QStringList getSequences(HI::GUITestOpStatus &os, bool selected = true);
 private:
     QString filepath;
     QString format;

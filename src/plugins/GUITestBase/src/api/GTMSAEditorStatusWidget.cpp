@@ -27,7 +27,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTMSAEditorStatusWidget"
 
 #define GT_METHOD_NAME "length"
-int GTMSAEditorStatusWidget::length(U2OpStatus& os, QWidget* w) {
+int GTMSAEditorStatusWidget::length(HI::GUITestOpStatus& os, QWidget* w) {
 
     QLabel* label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", w));
     GT_CHECK_RESULT(label != NULL, "label is NULL", -1);
@@ -44,7 +44,7 @@ int GTMSAEditorStatusWidget::length(U2OpStatus& os, QWidget* w) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "count"
-int GTMSAEditorStatusWidget::getSequencesCount(U2OpStatus &os, QWidget *w) {
+int GTMSAEditorStatusWidget::getSequencesCount(HI::GUITestOpStatus &os, QWidget *w) {
     QLabel* label = GTWidget::findExactWidget<QLabel *>(os, "Line", w);
     GT_CHECK_RESULT(label != NULL, "label is NULL", -1);
 

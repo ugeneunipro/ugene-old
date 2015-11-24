@@ -29,7 +29,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "DigestSequenceDialogFiller"
 
-DigestSequenceDialogFiller::DigestSequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+DigestSequenceDialogFiller::DigestSequenceDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
     : Filler(os, "DigestSequenceDialog", scenario)
 {
 

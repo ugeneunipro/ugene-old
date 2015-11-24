@@ -141,7 +141,7 @@ void ExtractSelectedAsMSADialogFiller::commonScenario() {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSelectedSequences"
-QStringList ExtractSelectedAsMSADialogFiller::getSequences(U2OpStatus &os, bool selected){
+QStringList ExtractSelectedAsMSADialogFiller::getSequences(HI::GUITestOpStatus &os, bool selected){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", QStringList());
     QStringList result;

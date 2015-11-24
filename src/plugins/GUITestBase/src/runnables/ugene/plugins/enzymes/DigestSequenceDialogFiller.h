@@ -29,7 +29,7 @@ using namespace HI;
 
 class DigestSequenceDialogFiller : public Filler {
 public:
-    DigestSequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
+    DigestSequenceDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario = NULL);
 
     void commonScenario();
 };

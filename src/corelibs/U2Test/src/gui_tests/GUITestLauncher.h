@@ -27,10 +27,9 @@
 #include <U2Core/MultiTask.h>
 #include <U2Gui/MainWindow.h>
 #include <QtCore/QProcessEnvironment>
+#include <core/GUITest.h>
 
 namespace U2 {
-
-class GUITest;
 
 class GUITestLauncher: public Task {
     Q_OBJECT
@@ -42,7 +41,7 @@ public:
     virtual QString generateReport() const;
 
 private:
-    QList<GUITest *> tests;
+    QList<HI::GUITest *> tests;
     QMap<QString, QString> results;
     int suiteNumber;
     bool noIgnored;

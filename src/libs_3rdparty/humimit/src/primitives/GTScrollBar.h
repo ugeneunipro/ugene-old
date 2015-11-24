@@ -32,28 +32,28 @@ namespace HI {
 
 class HI_EXPORT GTScrollBar {
 public:
-    static QScrollBar* getScrollBar(U2::U2OpStatus &os, const QString &scrollBarSysName);
+    static QScrollBar* getScrollBar(GUITestOpStatus &os, const QString &scrollBarSysName);
 
-    static void pageUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
-    static void pageDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
+    static void pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
+    static void pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
 
-    static void lineUp(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line up (for example, moves cursor in text editors)
-    static void lineDown(U2::U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line down (for example, moves cursor in text editors)
+    static void lineUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line up (for example, moves cursor in text editors)
+    static void lineDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line down (for example, moves cursor in text editors)
 
-    static void moveSliderWithMouseUp(U2::U2OpStatus &os, QScrollBar *scrollbar, int nPix);
-    static void moveSliderWithMouseDown(U2::U2OpStatus &os, QScrollBar *scrollbar, int nPix);
+    static void moveSliderWithMouseUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix);
+    static void moveSliderWithMouseDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix);
 
-    static void moveSliderWithMouseWheelUp(U2::U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
-    static void moveSliderWithMouseWheelDown(U2::U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
+    static void moveSliderWithMouseWheelUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
+    static void moveSliderWithMouseWheelDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
 
-    static QPoint getSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar);
-    static QPoint getUpArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollbar);
-    static QPoint getDownArrowPosition(U2::U2OpStatus &os, QScrollBar *scrollbar);
-    static QPoint getAreaUnderSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar);
-    static QPoint getAreaOverSliderPosition(U2::U2OpStatus &os, QScrollBar *scrollbar);
+    static QPoint getSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar);
+    static QPoint getUpArrowPosition(GUITestOpStatus &os, QScrollBar *scrollbar);
+    static QPoint getDownArrowPosition(GUITestOpStatus &os, QScrollBar *scrollbar);
+    static QPoint getAreaUnderSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar);
+    static QPoint getAreaOverSliderPosition(GUITestOpStatus &os, QScrollBar *scrollbar);
 
 private:
-    static QStyleOptionSlider initScrollbarOptions(U2::U2OpStatus &os, QScrollBar *scrollbar);
+    static QStyleOptionSlider initScrollbarOptions(GUITestOpStatus &os, QScrollBar *scrollbar);
 };
 
 } //namespace

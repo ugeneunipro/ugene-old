@@ -45,7 +45,7 @@ using namespace HI;
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 
-void GTUtilsTaskTreeView::waitTaskFinished(U2OpStatus &os, long timeout) {
+void GTUtilsTaskTreeView::waitTaskFinished(HI::GUITestOpStatus &os, long timeout) {
     GTGlobals::sleep(500);
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
     int i = 0;
@@ -75,7 +75,7 @@ QString GTUtilsTaskTreeView::getTasksInfo(QList<Task *> tasks, int level){
     }
     return result;
 }
-void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
+void GTUtilsTaskTreeView::openView(HI::GUITestOpStatus& os) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
 
@@ -86,12 +86,12 @@ void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
     }
 }
 
-void GTUtilsTaskTreeView::toggleView(U2OpStatus& os) {
+void GTUtilsTaskTreeView::toggleView(HI::GUITestOpStatus& os) {
     GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
 }
 
 #define GT_METHOD_NAME "getTreeWidgetItem"
-QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( U2OpStatus &os, const QString &itemName, bool failOnNull){
+QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( HI::GUITestOpStatus &os, const QString &itemName, bool failOnNull){
     QTreeWidget *treeWidget = getTreeWidget(os);
     GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
 
@@ -120,7 +120,7 @@ QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( QTreeWidget* tree, cons
     return NULL;
 }
 
-QTreeWidget* GTUtilsTaskTreeView::getTreeWidget(U2OpStatus &os) {
+QTreeWidget* GTUtilsTaskTreeView::getTreeWidget(HI::GUITestOpStatus &os) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
 
@@ -142,25 +142,25 @@ QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetIte
     return treeItems;
 }
 
-void GTUtilsTaskTreeView::cancelTask( U2OpStatus& os, const QString &itemName ){
+void GTUtilsTaskTreeView::cancelTask( HI::GUITestOpStatus& os, const QString &itemName ){
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "Cancel task", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser);
     click(os, itemName, Qt::RightButton);
     GTGlobals::sleep(3000);
 }
 
-void GTUtilsTaskTreeView::click( U2OpStatus &os, const QString &itemName, Qt::MouseButton b ){
+void GTUtilsTaskTreeView::click( HI::GUITestOpStatus &os, const QString &itemName, Qt::MouseButton b ){
     moveTo(os, itemName);
     GTMouseDriver::click(os, b);
 }
 
-void GTUtilsTaskTreeView::moveTo(U2OpStatus &os,const QString &itemName) {
+void GTUtilsTaskTreeView::moveTo(HI::GUITestOpStatus &os,const QString &itemName) {
     openView(os);
     moveToOpenedView(os, itemName);
 }
 
 #define GT_METHOD_NAME "getTopLevelTasksCount"
-int GTUtilsTaskTreeView::getTopLevelTasksCount(U2OpStatus &os) {
+int GTUtilsTaskTreeView::getTopLevelTasksCount(HI::GUITestOpStatus &os) {
     openView(os);
 
     QTreeWidget *treeWidget = getTreeWidget(os);
@@ -170,13 +170,13 @@ int GTUtilsTaskTreeView::getTopLevelTasksCount(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsTaskTreeView::moveToOpenedView( U2OpStatus& os, const QString &itemName ){
+void GTUtilsTaskTreeView::moveToOpenedView( HI::GUITestOpStatus& os, const QString &itemName ){
     QPoint p = getTreeViewItemPosition(os, itemName);
     GTMouseDriver::moveTo(os, p);
 }
 
 #define GT_METHOD_NAME "getTreeViewItemPosition"
-QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QString &itemName ){
+QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( HI::GUITestOpStatus &os, const QString &itemName ){
     QTreeWidget *treeWidget = getTreeWidget(os);
     GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
@@ -192,7 +192,7 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkTask"
-bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
+bool GTUtilsTaskTreeView::checkTask(HI::GUITestOpStatus &os, const QString &itemName){
     openView(os);
     QTreeWidgetItem* item = getTreeWidgetItem(os, itemName, false);
     return item != NULL;
@@ -200,7 +200,7 @@ bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "countTasks"
-int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){
+int GTUtilsTaskTreeView::countTasks(HI::GUITestOpStatus &os, const QString &itemName){
     openView(os);
     int result = 0;
     QList<QTreeWidgetItem*> treeItems = getTaskTreeViewItems(getTreeWidget(os)->invisibleRootItem());

@@ -85,7 +85,7 @@ void GUITestLauncher::run() {
     }
 
     int finishedCount = 0;
-    foreach(GUITest* t, tests) {
+    foreach(HI::GUITest* t, tests) {
         if (isCanceled()) {
             return;
         }
@@ -111,7 +111,7 @@ void GUITestLauncher::run() {
                 qint64 finishTime = GTimer::currentTimeMicros();
                 GUITestTeamcityLogger::teamCityLogResult(testNameForTeamCity, testResult, GTimer::millisBetween(startTime, finishTime));
             }
-            else if(t->getReason() == GUITest::Bug){
+            else if(t->getReason() == HI::GUITest::Bug){
                 GUITestTeamcityLogger::testIgnored(testNameForTeamCity, t->getIgnoreMessage());
             }
         }
@@ -129,13 +129,13 @@ void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 bool GUITestLauncher::initGUITestBase() {
     GUITestBase* b = AppContext::getGUITestBase();
     SAFE_POINT(NULL != b, "Test base is NULL", false);
-    QList<GUITest *> list = b->getTests();
+    QList<HI::GUITest *> list = b->getTests();
     if (list.isEmpty()) {
         setError(tr("No tests to run"));
         return false;
     }
 
-    QList<QList<GUITest *> > suiteList;
+    QList<QList<HI::GUITest *> > suiteList;
     if(suiteNumber){
         for(int i=0; i<(list.length()/NUMBER_OF_TESTS_IN_SUITE + 1);i++){
             suiteList << list.mid(i*NUMBER_OF_TESTS_IN_SUITE,NUMBER_OF_TESTS_IN_SUITE);
@@ -157,7 +157,7 @@ bool GUITestLauncher::initGUITestBase() {
                 testName.remove('\t');
                 testName.remove(' ');
                 bool added = false;
-                foreach (GUITest* t, list) {
+                foreach (HI::GUITest* t, list) {
                     if((t->getFullName()) == testName){
                         tests<<t;
                         added = true;
@@ -175,7 +175,7 @@ bool GUITestLauncher::initGUITestBase() {
     }
 
     if(noIgnored){
-        foreach(GUITest* test, tests){
+        foreach(HI::GUITest* test, tests){
             test->setIgnored(false);
         }
     }

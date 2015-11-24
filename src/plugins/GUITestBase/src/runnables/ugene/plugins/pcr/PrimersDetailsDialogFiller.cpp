@@ -25,13 +25,13 @@
 
 namespace U2 {
 
-PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(U2OpStatus &os)
+PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(HI::GUITestOpStatus &os)
 : Filler(os, "PrimersDetailsDialog")
 {
 
 }
 
-PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "PrimersDetailsDialog", scenario)
 {
 

@@ -31,15 +31,15 @@ namespace HI {
  */
 class HI_EXPORT GTSpinBox {
 public:
-    static int getValue(U2::U2OpStatus &os, QSpinBox *spinBox);
-    static int getValue(U2::U2OpStatus &os, const QString &spinBoxName, QWidget *parent = NULL);
+    static int getValue(GUITestOpStatus &os, QSpinBox *spinBox);
+    static int getValue(GUITestOpStatus &os, const QString &spinBoxName, QWidget *parent = NULL);
 
-    static void setValue(U2::U2OpStatus &os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
-    static void setValue(U2::U2OpStatus &os, const QString &spinBoxName, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse, QWidget *parent = NULL);
-    static void setValue(U2::U2OpStatus &os, const QString &spinBoxName, int v, QWidget *parent = NULL);
+    static void setValue(GUITestOpStatus &os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
+    static void setValue(GUITestOpStatus &os, const QString &spinBoxName, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse, QWidget *parent = NULL);
+    static void setValue(GUITestOpStatus &os, const QString &spinBoxName, int v, QWidget *parent = NULL);
 
-    static void checkLimits(U2::U2OpStatus &os, QSpinBox *spinBox, int min, int max);
-    static void checkLimits(U2::U2OpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent = NULL);
+    static void checkLimits(GUITestOpStatus &os, QSpinBox *spinBox, int min, int max);
+    static void checkLimits(GUITestOpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent = NULL);
 };
 
 }   // namespace U2

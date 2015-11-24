@@ -34,7 +34,7 @@ AddPrimerDialogFiller::Parameters::Parameters()
 
 }
 
-AddPrimerDialogFiller::AddPrimerDialogFiller(U2OpStatus &os, const Parameters &parameters)
+AddPrimerDialogFiller::AddPrimerDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters)
 : Filler(os, "EditPrimerDialog", parameters.scenario), parameters(parameters)
 {
 

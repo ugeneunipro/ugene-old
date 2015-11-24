@@ -44,7 +44,7 @@
 
 namespace U2 {
 
-FormatDBSupportRunDialogFiller::FormatDBSupportRunDialogFiller(U2OpStatus &os, const Parameters &parameters)
+FormatDBSupportRunDialogFiller::FormatDBSupportRunDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters)
 : Filler(os, "FormatDBSupportRunDialog"), parameters(parameters)
 {
 

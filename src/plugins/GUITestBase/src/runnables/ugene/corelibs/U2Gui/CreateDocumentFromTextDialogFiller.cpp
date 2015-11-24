@@ -45,7 +45,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::createDocumentFiller"
-CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA, 
+CreateDocumentFiller::CreateDocumentFiller(HI::GUITestOpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA,
                                            bool _skipUnknownSymbols = true, bool _replaceUnknownSymbols = false, const QString _symbol = "", 
                                            const QString &_documentLocation = QString(),
                                            documentFormat _format = FASTA, const QString &_sequenceName = QString(), 
@@ -67,7 +67,7 @@ Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), al
     comboBoxAlphabetItems[AllSymbols] = "Raw";
 }
 
-CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &os, CustomScenario *scenario)
+CreateDocumentFiller::CreateDocumentFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
 : Filler(os, "CreateDocumentFromTextDialog", scenario)
 {
 
@@ -145,7 +145,7 @@ void CreateDocumentFiller::commonScenario()
 
 
 #define GT_CLASS_NAME "GTUtilsDialog::cancelCreateDocumentFiller"
-CancelCreateDocumentFiller::CancelCreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA, 
+CancelCreateDocumentFiller::CancelCreateDocumentFiller(HI::GUITestOpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA,
                                            bool _skipUnknownSymbols = true, bool _replaceUnknownSymbols = false, const QString _symbol = "", 
                                            const QString &_documentLocation = QString(),
                                            documentFormat _format = FASTA, const QString &_sequenceName = QString(), 

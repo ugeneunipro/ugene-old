@@ -29,7 +29,7 @@ using namespace HI;
 
     class ExportMSA2MSADialogFiller : public Filler {
     public:
-        ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal = -1, QString _path="");
+        ExportMSA2MSADialogFiller(HI::GUITestOpStatus &_os, int _formatVal = -1, QString _path="");
         virtual void run();
     private:
         int formatVal;

@@ -29,8 +29,8 @@ using namespace HI;
 
 class PredictSecondaryStructureDialogFiller : public Filler {
 public:
-    PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk = false);
-    PredictSecondaryStructureDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    PredictSecondaryStructureDialogFiller(HI::GUITestOpStatus &os, int startPos, int endPos, bool onlyPressOk = false);
+    PredictSecondaryStructureDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     virtual void commonScenario();
 

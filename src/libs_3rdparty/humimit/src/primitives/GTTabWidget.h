@@ -31,18 +31,18 @@ class HI_EXPORT GTTabWidget {
 public:
     // fails if the tabwidget is NULL, index is not in a tabwidget's range
     // or a tabwidget's index differs from a given index in the end of method's execution
-    static void setCurrentIndex(U2::U2OpStatus& os, QTabWidget *tabWidget, int index);
-    static QTabBar* getTabBar(U2::U2OpStatus &os, QTabWidget* tabWidget);
-    static void clickTab(U2::U2OpStatus &os, QTabWidget* tabWidget, int idx, Qt::MouseButton button = Qt::LeftButton);
-    static void clickTab(U2::U2OpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button = Qt::LeftButton);
-    static QString getTabName(U2::U2OpStatus &os, QTabWidget* tabWidget, int idx);
+    static void setCurrentIndex(GUITestOpStatus& os, QTabWidget *tabWidget, int index);
+    static QTabBar* getTabBar(GUITestOpStatus &os, QTabWidget* tabWidget);
+    static void clickTab(GUITestOpStatus &os, QTabWidget* tabWidget, int idx, Qt::MouseButton button = Qt::LeftButton);
+    static void clickTab(GUITestOpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button = Qt::LeftButton);
+    static QString getTabName(GUITestOpStatus &os, QTabWidget* tabWidget, int idx);
 
-    static int getTabNumByName(U2::U2OpStatus &os, QTabWidget* tabWidget, QString tabName);
-    static QWidget* getTabCornerWidget(U2::U2OpStatus &os, QTabWidget* tabWidget, int idx);
-    static QWidget* getTabCornerWidget(U2::U2OpStatus &os, QTabWidget* tabWidget, QString tabName);
+    static int getTabNumByName(GUITestOpStatus &os, QTabWidget* tabWidget, QString tabName);
+    static QWidget* getTabCornerWidget(GUITestOpStatus &os, QTabWidget* tabWidget, int idx);
+    static QWidget* getTabCornerWidget(GUITestOpStatus &os, QTabWidget* tabWidget, QString tabName);
 
-    static void closeTab(U2::U2OpStatus &os, QTabWidget *tabWidget, int idx);
-    static void closeTab(U2::U2OpStatus &os, QTabWidget *tabWidget, QString tabName);
+    static void closeTab(GUITestOpStatus &os, QTabWidget *tabWidget, int idx);
+    static void closeTab(GUITestOpStatus &os, QTabWidget *tabWidget, QString tabName);
 
 
 };

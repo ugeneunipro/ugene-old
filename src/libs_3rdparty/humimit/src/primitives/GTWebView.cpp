@@ -20,7 +20,7 @@
 */
 
 
-#include <U2Test/MainThreadRunnable.h>
+#include <core/MainThreadRunnable.h>
 
 #include <drivers/GTMouseDriver.h>
 #include "primitives/GTWebView.h"
@@ -41,8 +41,8 @@ bool compare(QString s1, QString s2, bool exactMatch){
 #define GT_CLASS_NAME "GTWebView"
 
 #define GT_METHOD_NAME "findElement"
-QWebElement GTWebView::findElement(U2::U2OpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
-    class Scenario : public U2::CustomScenario {
+QWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, QWebElement &webElement) :
             view(view),
@@ -51,7 +51,7 @@ QWebElement GTWebView::findElement(U2::U2OpStatus &os, QWebView *view, const QSt
             exactMatch(exactMatch),
             webElement(webElement) {}
 
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QWebFrame* frame = view->page()->mainFrame();
             foreach (QWebElement el, frame->findAllElements(tag)) {
@@ -75,14 +75,14 @@ QWebElement GTWebView::findElement(U2::U2OpStatus &os, QWebView *view, const QSt
     };
 
     QWebElement webElement;
-    U2::MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
     mainThreadRunnable.doRequest();
     return webElement;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkElement"
-void GTWebView::checkElement(U2::U2OpStatus &os, QWebView *view, QString text, QString tag, bool exists, bool exactMatch){
+void GTWebView::checkElement(GUITestOpStatus &os, QWebView *view, QString text, QString tag, bool exists, bool exactMatch){
     const bool found = doesElementExist(os, view, text, tag, exactMatch);
     if (exists) {
         GT_CHECK(found, "element with text " + text + " and tag " + tag + " not found");
@@ -93,7 +93,7 @@ void GTWebView::checkElement(U2::U2OpStatus &os, QWebView *view, QString text, Q
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doesElementExist"
-bool GTWebView::doesElementExist(U2::U2OpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
+bool GTWebView::doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
     Q_UNUSED(os)
     QWebFrame* frame = view->page()->mainFrame();
 
@@ -109,27 +109,27 @@ bool GTWebView::doesElementExist(U2::U2OpStatus &os, QWebView *view, const QStri
 }
 #undef GT_METHOD_NAME
 
-QWebElement GTWebView::findTreeElement(U2::U2OpStatus &os, QWebView *view, QString text){
+QWebElement GTWebView::findTreeElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "SPAN");
 }
 
-QWebElement GTWebView::findContextMenuElement(U2::U2OpStatus &os, QWebView *view, QString text){
+QWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "LI");
 }
 
-void GTWebView::click(U2::U2OpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button){
+void GTWebView::click(GUITestOpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button){
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().center()));
     GTMouseDriver::click(os, button);
 }
 
-void GTWebView::selectElementText(U2::U2OpStatus &os, QWebView *view, QWebElement el){
+void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, QWebElement el){
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
     GTMouseDriver::release(os);
 }
 
-void GTWebView::traceAllWebElements(U2::U2OpStatus &os, QWebView *view){
+void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebView *view){
     Q_UNUSED(os)
     QWebFrame* frame = view->page()->mainFrame();
     QWebElement result;

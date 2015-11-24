@@ -29,7 +29,7 @@ using namespace HI;
 
 class FindEnzymesDialogFiller : public Filler {
 public:
-    FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario = NULL);
+    FindEnzymesDialogFiller(HI::GUITestOpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario = NULL);
 
     void commonScenario();
 

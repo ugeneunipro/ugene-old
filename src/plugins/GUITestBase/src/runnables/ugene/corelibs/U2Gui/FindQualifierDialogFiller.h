@@ -56,8 +56,8 @@ public:
         bool selectAll;
     };
 
-    FindQualifierFiller(U2OpStatus &os, const FindQualifierFillerSettings& settings = FindQualifierFillerSettings());
-    FindQualifierFiller(U2OpStatus &os, CustomScenario *scenario);
+    FindQualifierFiller(HI::GUITestOpStatus &os, const FindQualifierFillerSettings& settings = FindQualifierFillerSettings());
+    FindQualifierFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 

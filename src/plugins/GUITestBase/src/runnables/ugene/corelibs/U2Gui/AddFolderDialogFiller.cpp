@@ -35,7 +35,7 @@
 namespace U2 {
 using namespace HI;
 
-AddFolderDialogFiller::AddFolderDialogFiller(U2OpStatus &os, const QString &folderName, GTGlobals::UseMethod acceptMethod)
+AddFolderDialogFiller::AddFolderDialogFiller(HI::GUITestOpStatus &os, const QString &folderName, GTGlobals::UseMethod acceptMethod)
     : Filler(os, "FolderNameDialog"), folderName(folderName), acceptMethod(acceptMethod)
 {
 

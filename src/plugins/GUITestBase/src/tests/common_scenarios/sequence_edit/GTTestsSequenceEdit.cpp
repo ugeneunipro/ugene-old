@@ -388,7 +388,7 @@ QString shiftQualifierRegions(const QString &value, int delta) {
     return result;
 }
 
-void checkQualifierValue(U2OpStatus &os, const QString &qualName, int regionShift) {
+void checkQualifierValue(HI::GUITestOpStatus &os, const QString &qualName, int regionShift) {
     QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, qualName);
     const QString qualValue = qual->data(2, Qt::DisplayRole).toString();
     const QString expectedVal = shiftQualifierRegions(getReferenceQualifiers()[qualName], regionShift);
@@ -396,13 +396,13 @@ void checkQualifierValue(U2OpStatus &os, const QString &qualName, int regionShif
         .arg(expectedVal).arg(qualValue));
 }
 
-void checkQualifierRegionsShift(U2OpStatus &os, int shift) {
+void checkQualifierRegionsShift(HI::GUITestOpStatus &os, int shift) {
     foreach(const QString &qualName, getReferenceQualifiers().keys()) {
         checkQualifierValue(os, qualName, shift);
     }
 }
 
-void doMagic(U2OpStatus &os) {
+void doMagic(HI::GUITestOpStatus &os) {
     QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 2)");
     GTTreeWidget::getItemCenter(os, annotationGroup);
     for (int i = 0; i < annotationGroup->childCount(); ++i) {

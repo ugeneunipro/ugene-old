@@ -29,7 +29,7 @@ using namespace HI;
 
     class ExportProjectDialogFiller : public Filler {
     public:
-        ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName = "")
+        ExportProjectDialogFiller(HI::GUITestOpStatus &_os, const QString &_projectFolder, const QString &_projectName = "")
             :Filler(_os, "ExportProjectDialog"), projectFolder(_projectFolder), projectName(_projectName){}
         virtual void run();
     private:
@@ -39,7 +39,7 @@ using namespace HI;
 
     class ExportProjectDialogChecker : public Filler {
     public:
-        ExportProjectDialogChecker(U2OpStatus &_os, const QString &_projectName)
+        ExportProjectDialogChecker(HI::GUITestOpStatus &_os, const QString &_projectName)
             :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
         virtual void run();
     private:
@@ -48,7 +48,7 @@ using namespace HI;
 
     class ExportProjectDialogSizeChecker : public Filler {
     public:
-        ExportProjectDialogSizeChecker(U2OpStatus &_os, const QString &_projectName)
+        ExportProjectDialogSizeChecker(HI::GUITestOpStatus &_os, const QString &_projectName)
             :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
         virtual void run();
     private:

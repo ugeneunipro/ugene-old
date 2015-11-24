@@ -276,7 +276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 
     class DotPlotExportImageFiller : public Filler {
     public:
-        DotPlotExportImageFiller(int scenario, U2OpStatus &os)
+        DotPlotExportImageFiller(int scenario, HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm"),
               scenario(scenario) {}
         virtual void run() {
@@ -316,7 +316,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
             GTWidget::click(os, button);
         }
 
-        static void performScenario(U2OpStatus &os, int scenario) {
+        static void performScenario(HI::GUITestOpStatus &os, int scenario) {
             GTUtilsDialog::waitForDialog(os, new DotPlotExportImageFiller(scenario, os));
             GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot" << "Save/Load" << "Save as image"));
             GTWidget::click(os, GTWidget::findWidget(os, "dotplot widget"), Qt::RightButton);

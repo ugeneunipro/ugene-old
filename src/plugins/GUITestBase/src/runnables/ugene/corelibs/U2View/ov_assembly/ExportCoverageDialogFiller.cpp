@@ -40,7 +40,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::BranchSettingsDialogFiller"
 
-ExportCoverageDialogFiller::ExportCoverageDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+ExportCoverageDialogFiller::ExportCoverageDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions) :
     Filler(os, "ExportCoverageDialog"),
     dialog(NULL),
     actions(actions)

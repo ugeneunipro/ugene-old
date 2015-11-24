@@ -12,7 +12,7 @@ GUITestBase::~GUITestBase() {
     qDeleteAll(postAdditionalChecks);
 }
 
-bool GUITestBase::registerTest(GUITest *test, TestType testType) {
+bool GUITestBase::registerTest(HI::GUITest *test, TestType testType) {
 
     Q_ASSERT(test);
 
@@ -26,7 +26,7 @@ bool GUITestBase::registerTest(GUITest *test, TestType testType) {
     return false;
 }
 
-QString GUITestBase::nameUnnamedTest(GUITest* test, TestType testType) {
+QString GUITestBase::nameUnnamedTest(HI::GUITest* test, TestType testType) {
 
     Q_ASSERT(test);
     if (!test) {
@@ -41,12 +41,12 @@ QString GUITestBase::nameUnnamedTest(GUITest* test, TestType testType) {
     return testName;
 }
 
-bool GUITestBase::isNewTest(GUITest *test, TestType testType) {
+bool GUITestBase::isNewTest(HI::GUITest *test, TestType testType) {
 
     return test && !findTest(test->getFullName(), testType);
 }
 
-void GUITestBase::addTest(GUITest *test, TestType testType) {
+void GUITestBase::addTest(HI::GUITest *test, TestType testType) {
 
     if (test) {
         getMap(testType).insert(test->getFullName(), test);
@@ -59,17 +59,17 @@ QString GUITestBase::getNextTestName(TestType testType) {
     return unnamedTestsPrefix + QString::number(testsCount);
 }
 
-GUITest *GUITestBase::findTest(const QString &name, TestType testType) {
+HI::GUITest *GUITestBase::findTest(const QString &name, TestType testType) {
     GUITestMap map = getMap(testType);
     return map.value(name);
 }
 
-GUITest *GUITestBase::getTest(const QString &suite, const QString &name, TestType testType) {
+HI::GUITest *GUITestBase::getTest(const QString &suite, const QString &name, TestType testType) {
 
     return getMap(testType).value(suite + ":" + name);
 }
 
-GUITest *GUITestBase::takeTest(const QString &suite, const QString &name, TestType testType) {
+HI::GUITest *GUITestBase::takeTest(const QString &suite, const QString &name, TestType testType) {
 
     return getMap(testType).take(suite + ":" + name);
 }

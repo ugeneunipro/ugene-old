@@ -44,10 +44,10 @@ void ColorDialogFiller::run(){
     GT_CHECK(dialog!=NULL, "dialog is NULL");
 
     if(setWithQt){
-        class Scenario : public U2::CustomScenario {
+        class Scenario : public CustomScenario {
         public:
             Scenario(QColorDialog* _d, QColor _c): d(_d), c(_c) {}
-            void run(U2::U2OpStatus &os) {
+            void run(GUITestOpStatus &os) {
                 Q_UNUSED(os);
                 d->setCurrentColor(c);
                 GTGlobals::sleep();

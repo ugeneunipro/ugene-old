@@ -52,7 +52,7 @@ public:
     };
     typedef QPair<ActionType, QVariant> Action;
 
-    NcbiSearchDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+    NcbiSearchDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
 
     void run();
 
@@ -84,7 +84,7 @@ private:
 // use NCBISearchDialogFillerDeprecated instead
 class NCBISearchDialogFillerDeprecated : public Filler {
 public:
-    NCBISearchDialogFillerDeprecated(U2OpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
+    NCBISearchDialogFillerDeprecated(HI::GUITestOpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
         Filler(os, "SearchGenbankSequenceDialog"),
         query(_query),
         doubleEnter(_doubleEnter),

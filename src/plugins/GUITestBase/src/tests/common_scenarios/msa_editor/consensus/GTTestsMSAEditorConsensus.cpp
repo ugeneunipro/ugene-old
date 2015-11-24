@@ -302,7 +302,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2){
 //Expected state: consensus must be W-------------
 }
 
-void checkLimits(U2OpStatus &os, int minVal, int maxVal){
+void checkLimits(HI::GUITestOpStatus &os, int minVal, int maxVal){
     QSlider* thresholdSlider = qobject_cast<QSlider*>(GTWidget::findWidget(os, "thresholdSlider"));
     CHECK_SET_ERR(thresholdSlider != NULL, "thresholdSlider not found");
     int actualSliderMin = thresholdSlider->minimum();
@@ -338,7 +338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     checkLimits(os, 1, 100);
 }
 
-void checkValues(U2OpStatus &os, int expected){
+void checkValues(HI::GUITestOpStatus &os, int expected){
     QSlider* thresholdSlider = qobject_cast<QSlider*>(GTWidget::findWidget(os, "thresholdSlider"));
     CHECK_SET_ERR(thresholdSlider != NULL, "thresholdSlider not found");
     int actualSliderValue = thresholdSlider->value();

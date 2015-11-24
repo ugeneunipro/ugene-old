@@ -30,7 +30,7 @@ using namespace HI;
 class BranchSettingsDialogFiller : public Filler
 {
 public:
-    BranchSettingsDialogFiller(U2OpStatus &os) : Filler(os,"BranchSettingsDialog"){}
+    BranchSettingsDialogFiller(HI::GUITestOpStatus &os) : Filler(os,"BranchSettingsDialog"){}
     virtual void run();
 };
 

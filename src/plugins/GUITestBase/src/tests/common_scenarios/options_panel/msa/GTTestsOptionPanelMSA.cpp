@@ -827,7 +827,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0006){
 }
 
 namespace {
-void setHighlightingType(U2OpStatus &os, const QString& type){
+void setHighlightingType(HI::GUITestOpStatus &os, const QString& type){
     QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     CHECK_SET_ERR(highlightingScheme != NULL, "highlightingScheme not found");
     GTComboBox::setIndexWithText(os, highlightingScheme, type);
@@ -1141,7 +1141,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005_1){
 
 namespace{
 
-void expandSettings(U2OpStatus &os, const QString& widgetName, const QString& arrowName) {
+void expandSettings(HI::GUITestOpStatus &os, const QString& widgetName, const QString& arrowName) {
     QWidget* widget = GTWidget::findWidget(os, widgetName);
     CHECK_SET_ERR(widget != NULL, QString("%1 not found").arg(widgetName));
     if(widget->isHidden()){
@@ -1149,11 +1149,11 @@ void expandSettings(U2OpStatus &os, const QString& widgetName, const QString& ar
     }
 }
 
-void expandAlgoSettings(U2OpStatus &os){
+void expandAlgoSettings(HI::GUITestOpStatus &os){
     expandSettings(os, "settingsContainerWidget", "ArrowHeader_Algorithm settings");
 }
 
-void expandOutputSettings(U2OpStatus &os){
+void expandOutputSettings(HI::GUITestOpStatus &os){
     expandSettings(os, "outputContainerWidget", "ArrowHeader_Output settings");
 }
 
@@ -1188,37 +1188,37 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0006){
 
 namespace{
 
-void setSpinValue(U2OpStatus &os, double value, const QString& spinName){
+void setSpinValue(HI::GUITestOpStatus &os, double value, const QString& spinName){
     expandAlgoSettings(os);
     QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, spinName));
     CHECK_SET_ERR(spinBox != NULL, spinName + " spinbox not found");
     GTDoubleSpinbox::setValue(os, spinBox, value, GTGlobals::UseKeyBoard);
 }
 
-void setGapOpen(U2OpStatus &os, double value){
+void setGapOpen(HI::GUITestOpStatus &os, double value){
     setSpinValue(os, value, "gapOpen");
 }
 
-void setGapExtd(U2OpStatus &os, double value){
+void setGapExtd(HI::GUITestOpStatus &os, double value){
     setSpinValue(os, value, "gapExtd");
 }
 
-void setGapTerm(U2OpStatus &os, double value){
+void setGapTerm(HI::GUITestOpStatus &os, double value){
     setSpinValue(os, value, "gapTerm");
 }
 
-void setBonusScore(U2OpStatus &os, double value){
+void setBonusScore(HI::GUITestOpStatus &os, double value){
     setSpinValue(os, value, "bonusScore");
 }
 
-void inNewWindow(U2OpStatus &os, bool inNew){
+void inNewWindow(HI::GUITestOpStatus &os, bool inNew){
     expandOutputSettings(os);
     QCheckBox* inNewWindowCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
     CHECK_SET_ERR(inNewWindowCheckBox != NULL, "inNewWindowCheckBox not found");
     GTCheckBox::setChecked(os, inNewWindowCheckBox, inNew);
 }
 
-void align(U2OpStatus &os){
+void align(HI::GUITestOpStatus &os){
     GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
 }
 
@@ -1289,7 +1289,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_3){
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(14,1), "AAG-CTTACT---AA");
 }
 namespace{
-void setOutputPath(U2OpStatus &os, const QString& path, const QString& name){
+void setOutputPath(HI::GUITestOpStatus &os, const QString& path, const QString& name){
     expandOutputSettings(os);
     QWidget* outputFileSelectButton = GTWidget::findWidget(os, "outputFileSelectButton");
     CHECK_SET_ERR(outputFileSelectButton != NULL, "outputFileSelectButton not found");
@@ -1599,7 +1599,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0005){
 }
 
 namespace{
-void expandFontSettings(U2OpStatus &os){
+void expandFontSettings(HI::GUITestOpStatus &os){
     QWidget* labelsColorButton = GTWidget::findWidget(os, "labelsColorButton");
     CHECK_SET_ERR(labelsColorButton != NULL, "labelsColorButton not found");
     if(!labelsColorButton->isVisible()){
@@ -1607,14 +1607,14 @@ void expandFontSettings(U2OpStatus &os){
     }
 }
 
-void setLabelsColor(U2OpStatus &os, int r, int g, int b){
+void setLabelsColor(HI::GUITestOpStatus &os, int r, int g, int b){
     expandFontSettings(os);
     GTUtilsDialog::waitForDialog(os , new ColorDialogFiller(os, r, g, b));
     QWidget* labelsColorButton = GTWidget::findWidget(os, "labelsColorButton");
     GTWidget::click(os, labelsColorButton);
 }
 
-bool checkLabelColor(U2OpStatus &os, QString expectedColorName){
+bool checkLabelColor(HI::GUITestOpStatus &os, QString expectedColorName){
     QGraphicsView* w = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR_RESULT(w != NULL, "tree view not found", false);
     QList<QGraphicsSimpleTextItem*> labels = GTUtilsPhyTree::getVisiableLabels(os, w);
@@ -1749,7 +1749,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0007){
 
 namespace{
 
-void expandPenSettings(U2OpStatus &os){
+void expandPenSettings(HI::GUITestOpStatus &os){
     QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
     CHECK_SET_ERR(branchesColorButton != NULL, "branchesColorButton not found");
     if(!branchesColorButton->isVisible()){
@@ -1757,14 +1757,14 @@ void expandPenSettings(U2OpStatus &os){
     }
 }
 
-void setBranchColor(U2OpStatus &os, int r, int g, int b){
+void setBranchColor(HI::GUITestOpStatus &os, int r, int g, int b){
     expandPenSettings(os);
     GTUtilsDialog::waitForDialog(os , new ColorDialogFiller(os, r, g, b));
     QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
     GTWidget::click(os, branchesColorButton);
 }
 
-double colorPercent(U2OpStatus & /*os*/, QWidget* w, const QString& c){
+double colorPercent(HI::GUITestOpStatus & /*os*/, QWidget* w, const QString& c){
     double total = 0;
     double found = 0;
     QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
@@ -1824,7 +1824,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0008){
 }
 
 namespace{
-void setConsensusOutputPath(U2OpStatus &os, const QString& path){
+void setConsensusOutputPath(HI::GUITestOpStatus &os, const QString& path){
     QLineEdit* pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
     CHECK_SET_ERR(pathLe != NULL, "pathLe not found");
     GTLineEdit::setText(os, pathLe, path);
@@ -1923,7 +1923,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
     class exportConsensusTest0004Filler: public CustomScenario{
     public:
         exportConsensusTest0004Filler(){}
-        virtual void run(U2::U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 

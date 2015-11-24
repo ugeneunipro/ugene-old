@@ -59,7 +59,7 @@ public:
         bool checkRComplText;
     };
 
-    EditFragmentDialogFiller(U2OpStatus &os, const Parameters &parameters);
+    EditFragmentDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters);
 
     void commonScenario();
 

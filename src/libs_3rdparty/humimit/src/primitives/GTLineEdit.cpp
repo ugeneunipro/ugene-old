@@ -30,7 +30,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME ""
-void GTLineEdit::setText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
+void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
     if(lineEdit->text() == str){
@@ -67,7 +67,7 @@ void GTLineEdit::setText(U2::U2OpStatus& os, QLineEdit* lineEdit, const QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getText"
-QString GTLineEdit::getText(U2::U2OpStatus &os, QLineEdit *lineEdit) {
+QString GTLineEdit::getText(GUITestOpStatus &os, QLineEdit *lineEdit) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != lineEdit, "lineEdit is NULL", "");
     return lineEdit->text();
@@ -75,7 +75,7 @@ QString GTLineEdit::getText(U2::U2OpStatus &os, QLineEdit *lineEdit) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clear"
-void GTLineEdit::clear(U2::U2OpStatus& os, QLineEdit* lineEdit) {
+void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
@@ -92,7 +92,7 @@ void GTLineEdit::clear(U2::U2OpStatus& os, QLineEdit* lineEdit) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "pasteClipboard"
-void GTLineEdit::pasteClipboard(U2::U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
+void GTLineEdit::pasteClipboard(GUITestOpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
@@ -113,7 +113,7 @@ void GTLineEdit::pasteClipboard(U2::U2OpStatus& os, QLineEdit* lineEdit, PasteMe
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkTextSize"
-void GTLineEdit::checkTextSize(U2::U2OpStatus& os, QLineEdit* lineEdit) {
+void GTLineEdit::checkTextSize(GUITestOpStatus& os, QLineEdit* lineEdit) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
@@ -127,7 +127,7 @@ void GTLineEdit::checkTextSize(U2::U2OpStatus& os, QLineEdit* lineEdit) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkText"
-void GTLineEdit::checkText(U2::U2OpStatus &os, QLineEdit *lineEdit, const QString &expectedText) {
+void GTLineEdit::checkText(GUITestOpStatus &os, QLineEdit *lineEdit, const QString &expectedText) {
     Q_UNUSED(os);
     GT_CHECK(NULL != lineEdit, "Line edit is NULL");
     GT_CHECK(expectedText == lineEdit->text(), QString("The text differs: expect '%1', got '%2'").arg(expectedText).arg(lineEdit->text()));
@@ -135,14 +135,14 @@ void GTLineEdit::checkText(U2::U2OpStatus &os, QLineEdit *lineEdit, const QStrin
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "copyText"
-QString GTLineEdit::copyText(U2::U2OpStatus& os, QLineEdit* lineEdit) {
+QString GTLineEdit::copyText(GUITestOpStatus& os, QLineEdit* lineEdit) {
     GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", QString());
     return lineEdit->text();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "tryToSetText"
-bool GTLineEdit::tryToSetText(U2::U2OpStatus &os, QLineEdit *lineEdit, const QString &str) {
+bool GTLineEdit::tryToSetText(GUITestOpStatus &os, QLineEdit *lineEdit, const QString &str) {
     GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", false);
     GTWidget::setFocus(os, lineEdit);
     if (lineEdit->text() == str) {

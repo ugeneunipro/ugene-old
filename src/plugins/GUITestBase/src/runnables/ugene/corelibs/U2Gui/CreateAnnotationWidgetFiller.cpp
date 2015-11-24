@@ -37,7 +37,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogFiller"
 
-CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os,
+CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(HI::GUITestOpStatus &os,
                                                            bool newTableRB,
                                                            const QString &groupName,
                                                            const QString &annotationName,
@@ -55,7 +55,7 @@ CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os,
 
 }
 
-CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os, CustomScenario *scenario) :
+CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "CreateAnnotationDialog", scenario),
     newTableRB(false)
 {

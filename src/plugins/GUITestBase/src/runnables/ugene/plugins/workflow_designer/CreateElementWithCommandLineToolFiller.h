@@ -84,9 +84,9 @@ public:
     };
 
 public:
-    CreateElementWithCommandLineToolFiller(U2OpStatus& os,
+    CreateElementWithCommandLineToolFiller(HI::GUITestOpStatus& os,
                                            const ElementWithCommandLineSettings& settings);
-    CreateElementWithCommandLineToolFiller(U2OpStatus &os, CustomScenario *scenario);
+    CreateElementWithCommandLineToolFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
     void commonScenario();
 private:
     QString dataTypeToString(const InOutType &type) const;

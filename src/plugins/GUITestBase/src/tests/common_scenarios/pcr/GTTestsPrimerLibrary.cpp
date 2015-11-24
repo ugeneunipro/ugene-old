@@ -79,7 +79,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     //Expected: the dialog appears. The OK button is disabled.
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //3. Set the focus at the primer line edit and write "Q%1" (not ACGT).
             QLineEdit *primerEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "primerEdit"));
             GTLineEdit::setText(os, primerEdit, "Q%1", true);
@@ -269,7 +269,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //        File path: any valid path;
 //    and accept the dialog.
     class ExportToFastaScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ExportPrimersDialogFiller::setExportTarget(os, ExportPrimersDialogFiller::LocalFile);
@@ -324,7 +324,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 //        File path: any valid path;
 //    and accept the dialog.
     class ExportToGenbankScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ExportPrimersDialogFiller::setExportTarget(os, ExportPrimersDialogFiller::LocalFile);
@@ -385,7 +385,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 //        Folder: any valid path;
 //    and accept the dialog.
     class ExportToSharedDbScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ExportPrimersDialogFiller::setExportTarget(os, ExportPrimersDialogFiller::SharedDb);
@@ -436,7 +436,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 //        Files: "_common_data/fasta/random_primers.fa"
 //    and accept the dialog.
     class ImportFromMultifasta : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ImportPrimersDialogFiller::setImportTarget(os, ImportPrimersDialogFiller::LocalFiles);
@@ -483,7 +483,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 //               "_common_data/fasta/random_primers.fa2"
 //    and accept the dialog.
     class ImportFromSeveralFiles : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ImportPrimersDialogFiller::setImportTarget(os, ImportPrimersDialogFiller::LocalFiles);
@@ -539,7 +539,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 //                 "/pcrlib/test_0011/primer4",
 //    and accept the dialog.
     class ImportFromSharedDatabaseObjects : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ImportPrimersDialogFiller::setImportTarget(os, ImportPrimersDialogFiller::SharedDb);
@@ -589,7 +589,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 //        Objects: "/pcrlib/test_0012/"
 //    and accept the dialog.
     class ImportFromSharedDatabaseFolder : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ImportPrimersDialogFiller::setImportTarget(os, ImportPrimersDialogFiller::SharedDb);
@@ -636,7 +636,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 //                 "user2@ugene_gui_test/pcrlib/test_0013/primerToImport9"
 //    and accept the dialog.
     class ImportFromTwoSharedDatabases : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ImportPrimersDialogFiller::setImportTarget(os, ImportPrimersDialogFiller::SharedDb);

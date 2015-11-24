@@ -32,22 +32,22 @@ namespace HI {
 
 class HI_EXPORT GTMenu {
 public:
-    static QMenu* showMainMenu(U2::U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);  // should be removed in Qt5, use clickMainMenuItem instead
-    static void clickMainMenuItem(U2::U2OpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
-    static void checkMainMenuItemState(U2::U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
-    static QMenu* showContextMenu(U2::U2OpStatus &os, QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static QMenu* showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);  // should be removed in Qt5, use clickMainMenuItem instead
+    static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static QMenu* showContextMenu(GUITestOpStatus &os, QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
-    static void clickMenuItemByName(U2::U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
-    static void clickMenuItemByText(U2::U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void clickMenuItemByName(GUITestOpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void clickMenuItemByText(GUITestOpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
     // moves cursor to menu item, clicks on menu item;
 
-    static QAction* clickMenuItem(U2::U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static QAction* clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
-    static QAction* getMenuItem(U2::U2OpStatus &os, const QMenu* menu, const QString &itemName, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static QAction* getMenuItem(GUITestOpStatus &os, const QMenu* menu, const QString &itemName, bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 
     // global position of menu action's center
-    static QPoint actionPos(U2::U2OpStatus &os, const QMenu* menu, QAction* action);
+    static QPoint actionPos(GUITestOpStatus &os, const QMenu* menu, QAction* action);
 
     static const QString FILE;
     static const QString ACTIONS;
@@ -57,7 +57,7 @@ public:
     static const QString HELP;
 
 private:
-    static void clickMenuItemPrivate(U2::U2OpStatus &os, const QMenu *menu, const QStringList &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse,
+    static void clickMenuItemPrivate(GUITestOpStatus &os, const QMenu *menu, const QStringList &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse,
                                      bool byText = false, Qt::MatchFlag matchFlag = Qt::MatchExactly);
 };
 

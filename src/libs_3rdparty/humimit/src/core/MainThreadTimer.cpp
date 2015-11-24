@@ -19,12 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "CustomScenario.h"
+#include "MainThreadTimer.h"
+#include <QApplication>
 
-namespace U2 {
+namespace HI {
 
-CustomScenario::~CustomScenario() {
-
+MainThreadTimer::MainThreadTimer(int interval) :
+    QObject(NULL),
+    counter(0)
+{
+    timer.setInterval(interval);
+    connect(&timer, SIGNAL(timeout()), SLOT(sl_timerTick()));
+    timer.start();
+    moveToThread(QApplication::instance()->thread());
 }
 
-}   // namespace U2
+qint64 MainThreadTimer::getCounter() const {
+    QMutexLocker locker(&guard);
+    Q_UNUSED(locker);
+    return counter;
+}
+
+void MainThreadTimer::sl_timerTick() {
+    QMutexLocker locker(&guard);
+    Q_UNUSED(locker);
+    counter++;
+}
+
+}   // namespace

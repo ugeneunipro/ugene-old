@@ -34,7 +34,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTWidget"
 
 #define GT_METHOD_NAME "click"
-void GTWidget::click(U2::U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QPoint p, bool safe) {
+void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QPoint p, bool safe) {
 
     GTGlobals::sleep(100);
     GT_CHECK(w != NULL, "widget is NULL");
@@ -60,7 +60,7 @@ void GTWidget::click(U2::U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setFocus"
-void GTWidget::setFocus(U2::U2OpStatus &os, QWidget *w) {
+void GTWidget::setFocus(GUITestOpStatus &os, QWidget *w) {
 
     GT_CHECK(w != NULL, "widget is NULL");
 
@@ -75,7 +75,7 @@ void GTWidget::setFocus(U2::U2OpStatus &os, QWidget *w) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWidget"
-QWidget* GTWidget::findWidget(U2::U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
+QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
     Q_UNUSED(os);
 
     if (parentWidget == NULL) {
@@ -106,14 +106,14 @@ QWidget* GTWidget::findWidget(U2::U2OpStatus &os, const QString &widgetName, QWi
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getWidgetCenter"
-QPoint GTWidget::getWidgetCenter(U2::U2OpStatus &os, QWidget *w){
+QPoint GTWidget::getWidgetCenter(GUITestOpStatus &os, QWidget *w){
     Q_UNUSED(os)
     return w->mapToGlobal(w->rect().center());
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findButtonByText"
-QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
+QAbstractButton* GTWidget::findButtonByText(GUITestOpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
 
     if (parentWidget == NULL) {
         QList<QAbstractButton*> resultList;
@@ -158,7 +158,7 @@ QAbstractButton* GTWidget::findButtonByText(U2::U2OpStatus &os, const QString &t
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWidget"
-void GTWidget::getAllWidgetsInfo(U2::U2OpStatus &os, QWidget *parent){
+void GTWidget::getAllWidgetsInfo(GUITestOpStatus &os, QWidget *parent){
 
     QList<QObject*> list;
     if(parent == NULL){
@@ -179,11 +179,11 @@ void GTWidget::getAllWidgetsInfo(U2::U2OpStatus &os, QWidget *parent){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "close"
-void GTWidget::close(U2::U2OpStatus &os, QWidget *widget) {
+void GTWidget::close(GUITestOpStatus &os, QWidget *widget) {
 #ifndef Q_OS_MAC
     GT_CHECK(NULL != widget, "Widget is NULL");
 
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QWidget *widget) :
             widget(widget)
@@ -191,7 +191,7 @@ void GTWidget::close(U2::U2OpStatus &os, QWidget *widget) {
 
         }
 
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             CHECK_SET_ERR(NULL != widget, "Widget is NULL");
             widget->close();
@@ -213,10 +213,10 @@ void GTWidget::close(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "showMaximized"
-void GTWidget::showMaximized(U2::U2OpStatus &os, QWidget *widget) {
+void GTWidget::showMaximized(GUITestOpStatus &os, QWidget *widget) {
     GT_CHECK(NULL != widget, "Widget is NULL");
 
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QWidget *widget) :
             widget(widget)
@@ -224,7 +224,7 @@ void GTWidget::showMaximized(U2::U2OpStatus &os, QWidget *widget) {
 
         }
 
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             CHECK_SET_ERR(NULL != widget, "Widget is NULL");
             widget->showMaximized();
@@ -240,10 +240,10 @@ void GTWidget::showMaximized(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "showNormal"
-void GTWidget::showNormal(U2::U2OpStatus &os, QWidget *widget) {
+void GTWidget::showNormal(GUITestOpStatus &os, QWidget *widget) {
     GT_CHECK(NULL != widget, "Widget is NULL");
 
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QWidget *widget) :
             widget(widget)
@@ -251,7 +251,7 @@ void GTWidget::showNormal(U2::U2OpStatus &os, QWidget *widget) {
 
         }
 
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             CHECK_SET_ERR(NULL != widget, "Widget is NULL");
             widget->showNormal();
@@ -267,7 +267,7 @@ void GTWidget::showNormal(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getColor"
-QColor GTWidget::getColor(U2::U2OpStatus &os, QWidget *widget, const QPoint &point) {
+QColor GTWidget::getColor(GUITestOpStatus &os, QWidget *widget, const QPoint &point) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QColor());
 
@@ -276,11 +276,11 @@ QColor GTWidget::getColor(U2::U2OpStatus &os, QWidget *widget, const QPoint &poi
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getPixmap"
-QPixmap GTWidget::getPixmap(U2::U2OpStatus &os, QWidget *widget) {
+QPixmap GTWidget::getPixmap(GUITestOpStatus &os, QWidget *widget) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QPixmap());
 
-    class Scenario : public U2::CustomScenario {
+    class Scenario : public CustomScenario {
     public:
         Scenario(QWidget *widget, QPixmap &pixmap) :
             widget(widget),
@@ -289,7 +289,7 @@ QPixmap GTWidget::getPixmap(U2::U2OpStatus &os, QWidget *widget) {
 
         }
 
-        void run(U2::U2OpStatus &os) {
+        void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             CHECK_SET_ERR(NULL != widget, "Widget to grab is NULL");
             pixmap = widget->grab(widget->rect());
@@ -307,7 +307,7 @@ QPixmap GTWidget::getPixmap(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getImage"
-QImage GTWidget::getImage(U2::U2OpStatus &os, QWidget *widget) {
+QImage GTWidget::getImage(GUITestOpStatus &os, QWidget *widget) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QImage());
 
@@ -316,7 +316,7 @@ QImage GTWidget::getImage(U2::U2OpStatus &os, QWidget *widget) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickLabelLink"
-void GTWidget::clickLabelLink(U2::U2OpStatus &os, QWidget *label, int step, int indent){
+void GTWidget::clickLabelLink(GUITestOpStatus &os, QWidget *label, int step, int indent){
 
     QRect r = label->rect();
 
@@ -339,7 +339,7 @@ void GTWidget::clickLabelLink(U2::U2OpStatus &os, QWidget *label, int step, int 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickWindowTitle"
-void GTWidget::clickWindowTitle(U2::U2OpStatus &os, QWidget *window) {
+void GTWidget::clickWindowTitle(GUITestOpStatus &os, QWidget *window) {
     GT_CHECK(NULL != window, "Window is NULL");
 
     QStyleOptionTitleBar opt;
@@ -351,7 +351,7 @@ void GTWidget::clickWindowTitle(U2::U2OpStatus &os, QWidget *window) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "moveWidgetTo"
-void GTWidget::moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &point){
+void GTWidget::moveWidgetTo(GUITestOpStatus &os, QWidget *window, const QPoint &point){
     //QPoint(window->width()/2,3) - is hack
     GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3));
     const QPoint p0 = getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3);
@@ -362,7 +362,7 @@ void GTWidget::moveWidgetTo(U2::U2OpStatus &os, QWidget *window, const QPoint &p
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "resizeWidget"
-void GTWidget::resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &size) {
+void GTWidget::resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &size) {
     GT_CHECK(NULL != widget, "Widget is NULL");
     QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget);
     for (int i=0; i<5; i++){
@@ -380,7 +380,7 @@ void GTWidget::resizeWidget(U2::U2OpStatus &os, QWidget *widget, const QSize &si
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getWidgetGlobalTopLeftPoint"
-QPoint GTWidget::getWidgetGlobalTopLeftPoint(U2::U2OpStatus &os, QWidget *widget) {
+QPoint GTWidget::getWidgetGlobalTopLeftPoint(GUITestOpStatus &os, QWidget *widget) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QPoint());
     return (widget->isWindow() ? widget->pos() : widget->parentWidget()->mapToGlobal(QPoint(0, 0)));

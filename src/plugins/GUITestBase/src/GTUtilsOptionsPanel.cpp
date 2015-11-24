@@ -48,7 +48,7 @@ using namespace HI;
 
 
 #define GT_METHOD_NAME "runFindPatternWithHotKey"
-void GTUtilsOptionsPanel::runFindPatternWithHotKey( const QString& pattern, U2OpStatus& os){
+void GTUtilsOptionsPanel::runFindPatternWithHotKey( const QString& pattern, HI::GUITestOpStatus& os){
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

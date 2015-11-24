@@ -19,21 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUSTOM_SCENARIO_H_
-#define _U2_CUSTOM_SCENARIO_H_
+#ifndef _U2_MAIN_THREAD_RUNNABLE_H_
+#define _U2_MAIN_THREAD_RUNNABLE_H_
 
-#include <U2Core/global.h>
+#include "GTGlobals.h"
 
-namespace U2 {
+#include <core/CustomScenario.h>
 
-class U2OpStatus;
+namespace HI {
 
-class U2TEST_EXPORT CustomScenario {
+/**
+ * Class takes ownership over the scenario.
+ */
+class HI_EXPORT MainThreadRunnable : public QObject {
+    Q_OBJECT
 public:
-    virtual ~CustomScenario();
-    virtual void run(U2OpStatus &os) = 0;
+    MainThreadRunnable(GUITestOpStatus &os, CustomScenario *scenario);
+    ~MainThreadRunnable();
+
+    void doRequest();
+    void run();
+
+    static void runInMainThread(GUITestOpStatus &os, CustomScenario *scenario);
+
+signals:
+    void si_request(MainThreadRunnable *mainThreadRunnable);
+
+private:
+    GUITestOpStatus &os;
+    CustomScenario *scenario;
 };
+
+class MainThreadRunnableObject : public QObject {
+    Q_OBJECT
+public:
+    MainThreadRunnableObject();
+
+public slots:
+    void sl_requestAsked(MainThreadRunnable *mainThreadRunnable);
+
+};
+
 
 }   // namespace U2
 
-#endif // _U2_CUSTOM_SCENARIO_H_
+#endif // _U2_MAIN_THREAD_RUNNABLE_H_

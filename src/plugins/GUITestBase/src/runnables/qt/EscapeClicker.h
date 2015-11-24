@@ -29,7 +29,7 @@ using namespace HI;
 class EscapeClicker: public Filler
 {
 public:
-    EscapeClicker(U2OpStatus &os, const QString &name = "", CustomScenario *scenario = NULL);
+    EscapeClicker(HI::GUITestOpStatus &os, const QString &name = "", CustomScenario *scenario = NULL);
 
     void commonScenario();
 };

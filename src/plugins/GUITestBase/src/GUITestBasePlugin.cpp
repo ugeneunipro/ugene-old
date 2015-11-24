@@ -92,34 +92,34 @@
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_WITH_TIMEOUT(X, TIMEOUT) \
     if (guiTestBase) { \
-        GUITest *test = new X(); \
+        HI::GUITest *test = new X(); \
         test->setTimeout(TIMEOUT); \
         guiTestBase->registerTest(test); \
     }
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE, reason) \
     if (guiTestBase) { \
-        GUITest *test = new X(); \
+        HI::GUITest *test = new X(); \
         test->setIgnored(BY, MESSAGE); \
         test->setReason(reason); \
         guiTestBase->registerTest(test); \
     }
 
-#define REGISTER_TEST_IGNORED(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::Ignored, MESSAGE, GUITest::Bug)
-#define REGISTER_TEST_IGNORED_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
-#define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, MESSAGE, GUITest::Bug)
-#define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_IGNORED(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::Ignored, MESSAGE, HI::GUITest::Bug)
+#define REGISTER_TEST_IGNORED_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredLinux, MESSAGE, HI::GUITest::Bug)
+#define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows, MESSAGE, HI::GUITest::Bug)
+#define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredMac, MESSAGE, HI::GUITest::Bug)
 
-#define REGISTER_TEST_NOT_FOR_LINUX(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, "not for Linux", GUITest::System)
-#define REGISTER_TEST_NOT_FOR_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, "not for Windows", GUITest::System)
-#define REGISTER_TEST_NOT_FOR_MAC(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, "not for Mac", GUITest::System)
+#define REGISTER_TEST_NOT_FOR_LINUX(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredLinux, "not for Linux", HI::GUITest::System)
+#define REGISTER_TEST_NOT_FOR_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows, "not for Windows", HI::GUITest::System)
+#define REGISTER_TEST_NOT_FOR_MAC(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredMac, "not for Mac", HI::GUITest::System)
 
-#define REGISTER_TEST_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, MESSAGE, GUITest::Bug)
-#define REGISTER_TEST_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
-#define REGISTER_TEST_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows|HI::GUITest::IgnoredMac, MESSAGE, HI::GUITest::Bug)
+#define REGISTER_TEST_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredMac|HI::GUITest::IgnoredLinux, MESSAGE, HI::GUITest::Bug)
+#define REGISTER_TEST_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows|HI::GUITest::IgnoredLinux, MESSAGE, HI::GUITest::Bug)
 
-#define REGISTER_TEST_ONLY_LINUX(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, "only for Linux", GUITest::System)
-#define REGISTER_TEST_ONLY_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, "only for Windows", GUITest::System)
-#define REGISTER_TEST_ONLY_MAC(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, "only for Mac", GUITest::System)
+#define REGISTER_TEST_ONLY_LINUX(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows|HI::GUITest::IgnoredMac, "only for Linux", HI::GUITest::System)
+#define REGISTER_TEST_ONLY_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredMac|HI::GUITest::IgnoredLinux, "only for Windows", HI::GUITest::System)
+#define REGISTER_TEST_ONLY_MAC(X) REGISTER_TEST_IGNORED_BY(X, HI::GUITest::IgnoredWindows|HI::GUITest::IgnoredLinux, "only for Mac", HI::GUITest::System)
 
 
 namespace U2 {

@@ -72,12 +72,12 @@ using namespace HI;
             QualifierParameter(const QString& _name) : name(_name){}
             QString name;
         };
-        ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
+        ImportAnnotationsToCsvFiller(HI::GUITestOpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
                                         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
                                         bool _columnSeparator, const QString &_separator, int _numberOfLines,
                                         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
                                         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& roleParameters = RoleParameters(), GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        ImportAnnotationsToCsvFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "ImportAnnotationsFromCSVDialog", c){}
+        ImportAnnotationsToCsvFiller(HI::GUITestOpStatus &_os, CustomScenario* c):Filler(_os, "ImportAnnotationsFromCSVDialog", c){}
         virtual void commonScenario();
     private:
         QString fileToRead;
@@ -98,9 +98,9 @@ using namespace HI;
 
     class RoleFiller : public Filler {
     public:
-        RoleFiller(U2OpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
+        RoleFiller(HI::GUITestOpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
             : Filler(os, "CSVColumnConfigurationDialog"), parameter(_parameter) {}
-        RoleFiller(U2OpStatus &os, CustomScenario* c):
+        RoleFiller(HI::GUITestOpStatus &os, CustomScenario* c):
             Filler(os, "CSVColumnConfigurationDialog", c){}
         virtual void commonScenario();
     private:

@@ -30,7 +30,7 @@ using namespace HI;
 class GraphLabelsSelectDialogFiller: public Filler
 {
 public:
-    GraphLabelsSelectDialogFiller(U2OpStatus &os, int _windowSize = -1, bool _selectedAreaCheck = false): Filler(os, "GraphLabelsSelectDialog"),
+    GraphLabelsSelectDialogFiller(HI::GUITestOpStatus &os, int _windowSize = -1, bool _selectedAreaCheck = false): Filler(os, "GraphLabelsSelectDialog"),
         windowSize(_windowSize), selectedAreaCheck(_selectedAreaCheck){}
     virtual void commonScenario();
 private:

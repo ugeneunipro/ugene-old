@@ -24,14 +24,14 @@
 
 #include <QTimer>
 #include <GTGlobals.h>
-#include <U2Test/CustomScenario.h>
+#include <core/CustomScenario.h>
 
 namespace HI {
 
-class HI_EXPORT ThreadWaiter : public QObject {
+class ThreadWaiter : public QObject {
     Q_OBJECT
 public:
-    ThreadWaiter(U2::U2OpStatus &os);
+    ThreadWaiter(GUITestOpStatus &os);
 
     void wait();
 
@@ -39,16 +39,15 @@ private slots:
     void sl_timeout();
 
 private:
-    QTimer timer;
-    U2::U2OpStatus &os;
+    GUITestOpStatus &os;
     qint64 startValue;
     qint64 endValue;
 };
 
 class HI_EXPORT GTThread {
 public:
-    static void waitForMainThread(U2::U2OpStatus &os);
-    static void runInMainThread(U2::U2OpStatus &os, U2::CustomScenario *scenario);
+    static void waitForMainThread(GUITestOpStatus &os);
+    static void runInMainThread(GUITestOpStatus &os, CustomScenario *scenario);
 };
 
 }   // namespace U2

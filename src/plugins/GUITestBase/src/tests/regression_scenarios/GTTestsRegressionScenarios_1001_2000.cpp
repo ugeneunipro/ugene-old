@@ -166,7 +166,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/ToolsMenu.h>
@@ -282,7 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_1003) {
 
     class Scenario_test_1003: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             QWidget *enzymesSelectorWidget = GTWidget::findWidget(os, "enzymesSelectorWidget");
             GTWidget::click(os, GTWidget::findWidget(os, "selectAllButton", enzymesSelectorWidget));
@@ -812,7 +811,8 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     AssemblyBrowserUi* ui = GTUtilsAssemblyBrowser::getView(os, "test_1038_bam [as] ref_and_others");
     QSharedPointer<AssemblyModel> model = ui->getModel();
 
-    U2DbiIterator<U2AssemblyRead> * it = model->getReads(U2Region(0, model->getModelLength(os)), os);
+    U2OpStatus2Log u2os;
+    U2DbiIterator<U2AssemblyRead> * it = model->getReads(U2Region(0, model->getModelLength(u2os)), u2os);
     CHECK_SET_ERR(it != NULL, "NULL iterator");
 
     int matchCount = 0;
@@ -918,7 +918,7 @@ GUI_TEST_CLASS_DEFINITION(test_1049){
 //    3. Click {Statistics->Generate distance matrix} in the context menu.
     class custom: public CustomScenario{
     public:
-        void run(U2::U2OpStatus &os){
+        void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
             //    4. Check the "Show group statistics of multiple alignment" checkbox and press the "Generate" button.
@@ -946,7 +946,7 @@ GUI_TEST_CLASS_DEFINITION(test_1052){
 //    2. Open "Find restriction sites" dialog
     class custom: public CustomScenario{
     public:
-        void run(U2::U2OpStatus &os){
+        void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
             //    3. Select all sites.
@@ -1020,7 +1020,7 @@ GUI_TEST_CLASS_DEFINITION(test_1059) {
 GUI_TEST_CLASS_DEFINITION(test_1061) {
     class CreateMarkerDialogFiller : public Filler {
     public:
-        CreateMarkerDialogFiller(U2OpStatus &os)
+        CreateMarkerDialogFiller(HI::GUITestOpStatus &os)
             : Filler(os, "EditMarkerDialog")
         {
 
@@ -1042,7 +1042,7 @@ GUI_TEST_CLASS_DEFINITION(test_1061) {
 
     class AddMarkerDialogFiller : public Filler {
     public:
-        AddMarkerDialogFiller(U2OpStatus &os)
+        AddMarkerDialogFiller(HI::GUITestOpStatus &os)
             : Filler(os, "EditMarkerGroupDialog")
         {
 
@@ -1100,7 +1100,7 @@ GUI_TEST_CLASS_DEFINITION(test_1061) {
 GUI_TEST_CLASS_DEFINITION(test_1063) {
     class EnableWdDebuggerFiller : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1336,7 +1336,7 @@ GUI_TEST_CLASS_DEFINITION(test_1079){
     //Expected state: the line edit is highlighted and has tooltip that the path contains spaces. The Search button is disabled
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QLineEdit *path = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "databasePathLineEdit"));
             GTLineEdit::setText(os, path, sandBoxDir + "test_1079/s p a c e s/human_T1formatDB.log");
             bool isDisabled = !GTUtilsDialog::isButtonEnabled(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
@@ -1352,7 +1352,7 @@ GUI_TEST_CLASS_DEFINITION(test_1079){
 GUI_TEST_CLASS_DEFINITION(test_1080) {
     class OkClicker2 : public Filler {
     public:
-        OkClicker2(U2OpStatus& _os) : Filler(_os, "EditMarkerDialog"){}
+        OkClicker2(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerDialog"){}
         virtual void run() {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
@@ -1369,7 +1369,7 @@ GUI_TEST_CLASS_DEFINITION(test_1080) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
         virtual void run() {
             GTUtilsDialog::waitForDialog(os, new OkClicker2(os));
 
@@ -1466,7 +1466,7 @@ GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
 //2. Press F1
     class EscClicker : public Filler {
     public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
+        EscClicker(HI::GUITestOpStatus& _os) : Filler(_os, "AboutDialog"){}
         virtual void run(){
 
             GTGlobals::sleep();
@@ -1520,7 +1520,7 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 //2. Help->About
     class EscClicker : public Filler {
     public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
+        EscClicker(HI::GUITestOpStatus& _os) : Filler(_os, "AboutDialog"){}
         virtual void run(){
             GTGlobals::sleep();
 #ifdef Q_OS_MAC
@@ -1688,7 +1688,7 @@ GUI_TEST_CLASS_DEFINITION(test_1124){
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget *dialog = QApplication::activeModalWidget();
             //    2. Hover the {Input files (long DNA reads to assembly)} field with mouse and wait the tooltip appeares.
@@ -1816,7 +1816,7 @@ GUI_TEST_CLASS_DEFINITION(test_1154) {
 GUI_TEST_CLASS_DEFINITION(test_1156) {
     class DigestCircularSequenceScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
 
             QListWidget *availableEnzymeWidget = GTWidget::findExactWidget<QListWidget *>(os, "availableEnzymeWidget", dialog);
@@ -2058,7 +2058,7 @@ GUI_TEST_CLASS_DEFINITION(test_1186_1){
     //     Expected state: "Result file name" is 'test.sam'
     class Scenario_test_1186_1: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
 
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, sandBoxDir, "test_1186_1.sam", GTFileDialogUtils::Save, GTGlobals::UseMouse));
@@ -2096,7 +2096,7 @@ GUI_TEST_CLASS_DEFINITION(test_1186_2){
 
     class Scenario_test_1186_2: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
 
             QCheckBox* samBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "samBox", dialog));
@@ -2269,7 +2269,7 @@ GUI_TEST_CLASS_DEFINITION(test_1203_2) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active model widget is NULL");
 
@@ -2397,7 +2397,7 @@ GUI_TEST_CLASS_DEFINITION(test_1219) {
 //    2. Open Smith-Waterman search dialog
 //    Excepted state: default value of combobox "Save result as" is "Annotations"
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -2451,7 +2451,7 @@ GUI_TEST_CLASS_DEFINITION(test_1220){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 //    2) Run Smith-waterman search using:
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 //    pattern: "ATCGAT"; note that pattern length is 6.
@@ -2579,9 +2579,11 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     CHECK_SET_ERR(NULL != seq1, "Failed to find a sequence widget for seq1!");
     CHECK_SET_ERR(NULL != seq2, "Failed to find a sequence widget for seq2!");
 
-    CHECK_SET_ERR("DLSAETL" == QString(seq0->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("DLSAETL").arg(QString(seq0->getSequenceObject()->getWholeSequenceData(os))));
-    CHECK_SET_ERR("ISRQKP" == QString(seq1->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("ISRQKP").arg(QString(seq1->getSequenceObject()->getWholeSequenceData(os))));
-    CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData(os))));
+    U2OpStatus2Log u2os;
+
+    CHECK_SET_ERR("DLSAETL" == QString(seq0->getSequenceObject()->getWholeSequenceData(u2os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("DLSAETL").arg(QString(seq0->getSequenceObject()->getWholeSequenceData(u2os))));
+    CHECK_SET_ERR("ISRQKP" == QString(seq1->getSequenceObject()->getWholeSequenceData(u2os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("ISRQKP").arg(QString(seq1->getSequenceObject()->getWholeSequenceData(u2os))));
+    CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData(u2os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData(u2os))));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1241) {
@@ -2611,7 +2613,7 @@ GUI_TEST_CLASS_DEFINITION(test_1245){
 
     class ExportDocumentCustomFiller : public Filler {
         public:
-            ExportDocumentCustomFiller(U2OpStatus &os)
+            ExportDocumentCustomFiller(HI::GUITestOpStatus &os)
                 : Filler(os, "ExportDocumentDialog") {}
             virtual void run() {
                 QWidget *dialog = QApplication::activeModalWidget();
@@ -2665,7 +2667,7 @@ GUI_TEST_CLASS_DEFINITION(test_1246){
 
     class ExportDocumentCustomFiller : public Filler {
         public:
-            ExportDocumentCustomFiller(U2OpStatus &os)
+            ExportDocumentCustomFiller(HI::GUITestOpStatus &os)
                 : Filler(os, "ExportDocumentDialog") {}
             virtual void run() {
                 QWidget *dialog = QApplication::activeModalWidget();
@@ -2977,7 +2979,7 @@ GUI_TEST_CLASS_DEFINITION(test_1266) {
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -3000,7 +3002,7 @@ GUI_TEST_CLASS_DEFINITION(test_1274){
 //    1. Select "Tabbed documents" mode in the Application Settings.
     class TabbedDoc : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -3031,7 +3033,7 @@ GUI_TEST_CLASS_DEFINITION(test_1273) {
     //(Settings -> Preferences -> General -> Windows Layout -> Tabbed documents -> OK)
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QList<QRadioButton*> buttons = GTRadioButton::getAllButtonsByText(os, "Tabbed documents", QApplication::activeModalWidget());
             foreach (QRadioButton *tabbedMode, buttons) {
                 GTRadioButton::click(os, tabbedMode);
@@ -3098,7 +3100,7 @@ GUI_TEST_CLASS_DEFINITION(test_1289) {
 
     class TabbedDoc : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -3119,7 +3121,7 @@ GUI_TEST_CLASS_DEFINITION(test_1289) {
 GUI_TEST_CLASS_DEFINITION(test_1295) {
     class CustomBuildTreeDialogFiller : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
@@ -3361,7 +3363,7 @@ GUI_TEST_CLASS_DEFINITION(test_1310) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -3516,7 +3518,7 @@ GUI_TEST_CLASS_DEFINITION(test_1321_2) {
 //    3. Go to the 'Advanced' tab of the dialog
 //    Expected state: 'Advanced' tab displayed, there is 'Advanced parameters' groupbox without 'Repeats identity' parameter
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -3594,7 +3596,7 @@ GUI_TEST_CLASS_DEFINITION(test_1325) {
 GUI_TEST_CLASS_DEFINITION(test_1326) {
 class CallVariantsWizardFiller : public Filler {
 public:
-        CallVariantsWizardFiller(U2OpStatus &os) :
+        CallVariantsWizardFiller(HI::GUITestOpStatus &os) :
         Filler(os, "Call Variants Wizard") {}
 #define GT_CLASS_NAME "GTUtilsDialog::CallVariantsWizardFiller"
 #define GT_METHOD_NAME "run"
@@ -3667,7 +3669,7 @@ GUI_TEST_CLASS_DEFINITION(test_1338) {
 
 GUI_TEST_CLASS_DEFINITION(test_1342) {
     class CustomPopupChecker : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
             CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL");
 
@@ -3850,7 +3852,7 @@ GUI_TEST_CLASS_DEFINITION(test_1364) {
 //    6. Click "Add file" button again.
     class customFileDialog : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* d = QApplication::activeModalWidget();
             CHECK_SET_ERR(d, "activeModalWidget is NULL");
             QFileDialog* dialog = qobject_cast<QFileDialog*>(d);
@@ -4011,7 +4013,7 @@ QString getFileContent(const QString &path) {
 
 GUI_TEST_CLASS_DEFINITION(test_1393) {
     class ExportSeqsAsMsaScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
 
@@ -4058,7 +4060,7 @@ GUI_TEST_CLASS_DEFINITION(test_1396){
 
 GUI_TEST_CLASS_DEFINITION(test_1404) {
     class ExportMsaToSeqScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
 
@@ -4115,7 +4117,7 @@ GUI_TEST_CLASS_DEFINITION(test_1408){
 //    2) Right click on "human_T1.fa" in the project tab
 
     class innerScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
 
@@ -4125,7 +4127,7 @@ GUI_TEST_CLASS_DEFINITION(test_1408){
     };
 
     class outerScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
 
@@ -4339,7 +4341,7 @@ GUI_TEST_CLASS_DEFINITION(test_1429){
     GTLogTracer lt;
     class CheckBowtie2Filler : public Filler {
     public:
-        CheckBowtie2Filler(U2OpStatus &os)
+        CheckBowtie2Filler(HI::GUITestOpStatus &os)
             : Filler (os, "BuildIndexFromRefDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -4388,7 +4390,7 @@ GUI_TEST_CLASS_DEFINITION(test_1432) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -4709,7 +4711,7 @@ GUI_TEST_CLASS_DEFINITION(test_1443){
 //    2. Use popup menu {Cloning->Construct molecule}
 
     class InnerScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -4722,7 +4724,7 @@ GUI_TEST_CLASS_DEFINITION(test_1443){
     };
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -4782,10 +4784,10 @@ GUI_TEST_CLASS_DEFINITION(test_1461_1) {
 //    3. Check "Scoring matrix" field
 //    Expected state: "Scoring matrix" field not contain "rna" value.
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QComboBox *comboMatrix = GTWidget::findExactWidget<QComboBox *>(os, "comboMatrix", QApplication::activeModalWidget());
             CHECK_SET_ERR(NULL != comboMatrix, "Matrix combobox is NULL");
-            U2OpStatusImpl innerOs;
+            HI::GUITestOpStatus innerOs;
             GTComboBox::setIndexWithText(innerOs, comboMatrix, "rna", false);
             CHECK_SET_ERR(innerOs.hasError(), "'rna' matrix unexpectedly presents in the matrix list");
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
@@ -4807,7 +4809,7 @@ GUI_TEST_CLASS_DEFINITION(test_1461_2) {
 //    3. Check "Scoring matrix" field
 //    Expected state: "Scoring matrix" field contain only "rna" value.
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QComboBox *comboMatrix = GTWidget::findExactWidget<QComboBox *>(os, "comboMatrix", QApplication::activeModalWidget());
             CHECK_SET_ERR(NULL != comboMatrix, "Matrix combobox is NULL");
             GTComboBox::setIndexWithText(os, comboMatrix, "rna");
@@ -4869,7 +4871,7 @@ GUI_TEST_CLASS_DEFINITION(test_1491) {
     //3. Select more than three sequences (for instance all the sequences from samples/Genbank)
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             //4. Select "Join sequences..." mode
             GTRadioButton::click(os, dynamic_cast<QRadioButton*>(GTWidget::findWidget(os, "join2alignmentMode", QApplication::activeModalWidget())));
@@ -4944,7 +4946,7 @@ GUI_TEST_CLASS_DEFINITION(test_1497) {
 GUI_TEST_CLASS_DEFINITION(test_1499) {
     class CustomBuildTreeDialogFiller : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
@@ -5355,7 +5357,7 @@ GUI_TEST_CLASS_DEFINITION(test_1551) {
 //    Expected state: there is no rename sequence dialog appeared.
 //    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os));
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() - QPoint(5, 0));
             GTMouseDriver::click(os);
             QWidget *contextMenu = QApplication::activePopupWidget();
@@ -5425,7 +5427,7 @@ GUI_TEST_CLASS_DEFINITION( test_1567 ){
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -6143,7 +6145,7 @@ GUI_TEST_CLASS_DEFINITION(test_1609) {
 
     class CustomFileDialogUtils : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
             GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
@@ -6408,7 +6410,7 @@ GUI_TEST_CLASS_DEFINITION( test_1651 ){
 //    1. Open the "Access remote database" dialog.
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -6772,7 +6774,7 @@ GUI_TEST_CLASS_DEFINITION(test_1673_5){
 namespace {
 class customFileDialog_1681: public GTFileDialogUtils{
 public:
-    customFileDialog_1681(U2OpStatus &os, QString path): GTFileDialogUtils(os, path){}
+    customFileDialog_1681(HI::GUITestOpStatus &os, QString path): GTFileDialogUtils(os, path){}
     void commonScenario(){
         GTFileDialogUtils::commonScenario();
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
@@ -6787,7 +6789,7 @@ GUI_TEST_CLASS_DEFINITION(test_1677){
 //    2. Add sample: "Main Tuxedo: Paired-end"
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -6928,7 +6930,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_1) {
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -7009,7 +7011,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_3) {
 //    2. Add sample: Single dataset tuxedo: Paired-end
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -7337,7 +7339,7 @@ GUI_TEST_CLASS_DEFINITION(test_1714){
 
     class DeselectCistromeAndPython : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QStringList cistromeTools;
             cistromeTools << "go_analysis" << "seqpos" << "conservation_plot" << "peak2gene"
                           << "MACS" << "CEAS Tools";
@@ -7488,7 +7490,7 @@ GUI_TEST_CLASS_DEFINITION(test_1734){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             QWizard* wizard = qobject_cast<QWizard*>(dialog);
             CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
@@ -7523,7 +7525,7 @@ GUI_TEST_CLASS_DEFINITION(test_1735){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             QWizard* wizard = qobject_cast<QWizard*>(dialog);
             CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
@@ -7604,7 +7606,7 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             //    2. Go to the second page
@@ -7679,7 +7681,7 @@ GUI_TEST_CLASS_DEFINITION(test_1763_1){
 //    4. On opened tab click right mouse button
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //    5. Click on "Rename" action
             //    Expected state: Showed "Rename Dashboard" dialog
             QWidget* dialog = QApplication::activeModalWidget();
@@ -7771,7 +7773,7 @@ GUI_TEST_CLASS_DEFINITION(test_1771){
 //    2. Select tuxedo sample
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             //    2. Go to the second page
@@ -8381,7 +8383,7 @@ GUI_TEST_CLASS_DEFINITION(test_1984){
 
     class CuffDiffIncorrectPath : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             AppSettingsDialogFiller::setExternalToolPath(os, "Cuffdiff", "./");
             GTGlobals::sleep(2000);
 

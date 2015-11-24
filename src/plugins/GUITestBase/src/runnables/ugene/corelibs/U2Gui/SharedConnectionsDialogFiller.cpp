@@ -56,13 +56,13 @@ SharedConnectionsDialogFiller::Action::Action(Type type, QString itemName)
     dbName = GTDatabaseConfig::database();
 }
 
-SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions) :
     Filler(os, "SharedConnectionsDialog"), actions(actions)
 {
 
 }
 
-SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "SharedConnectionsDialog", scenario)
 {
 
@@ -70,7 +70,7 @@ SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, Cus
 
 namespace {
 
-QListWidgetItem * findConnection(U2OpStatus &os, QListWidget *list, const QString &name, GTGlobals::FindOptions options = GTGlobals::FindOptions()) {
+QListWidgetItem * findConnection(HI::GUITestOpStatus &os, QListWidget *list, const QString &name, GTGlobals::FindOptions options = GTGlobals::FindOptions()) {
     GTGlobals::sleep(1000);
     QList<QListWidgetItem*> items = list->findItems(name, Qt::MatchExactly);
     if (1 != items.size()) {
@@ -83,7 +83,7 @@ QListWidgetItem * findConnection(U2OpStatus &os, QListWidget *list, const QStrin
     return items.first();
 }
 
-void clickConnection(U2OpStatus &os, QListWidget *list, const QString &name) {
+void clickConnection(HI::GUITestOpStatus &os, QListWidget *list, const QString &name) {
     QListWidgetItem *item = findConnection(os, list, name);
     CHECK_OP(os, );
 
@@ -93,14 +93,14 @@ void clickConnection(U2OpStatus &os, QListWidget *list, const QString &name) {
     GTMouseDriver::click(os);
 }
 
-void checkDocument(U2OpStatus &os, const QString &name, bool mustBe) {
+void checkDocument(HI::GUITestOpStatus &os, const QString &name, bool mustBe) {
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, name, GTGlobals::FindOptions(false));
     if (!mustBe) {
         CHECK_SET_ERR(!idx.isValid(), "Document is not deleted");
     }
 }
 
-void waitForConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
+void waitForConnection(HI::GUITestOpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
     switch (action.expectedResult) {
         case SharedConnectionsDialogFiller::Action::OK:
             break;
@@ -123,7 +123,7 @@ void waitForConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Acti
     }
 }
 
-void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action)
+void establishConnection(HI::GUITestOpStatus &os, const SharedConnectionsDialogFiller::Action &action)
 {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
@@ -137,7 +137,7 @@ void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Ac
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
-void deleteConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
+void deleteConnection(HI::GUITestOpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
     QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections"));
 
     GTWidget::click(os, GTWidget::findWidget(os,"pbDelete"));
@@ -151,7 +151,7 @@ void deleteConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Actio
     checkDocument(os, action.dbName, false);
 }
 
-void stopConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
+void stopConnection(HI::GUITestOpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
     QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect");
     QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect");
     QWidget *editBtn = GTWidget::findWidget(os,"pbEdit");

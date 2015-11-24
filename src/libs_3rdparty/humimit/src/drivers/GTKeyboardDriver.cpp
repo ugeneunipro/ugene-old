@@ -28,7 +28,7 @@ namespace HI {
 
 #define GT_METHOD_NAME "keyClick"
 
-void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
 #ifdef Q_OS_MAC
@@ -41,7 +41,7 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 }
 #undef GT_METHOD_NAME
 
-void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int modifiers)
+void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int modifiers)
 {
     if (modifiers) {
         keyPress(os, modifiers);

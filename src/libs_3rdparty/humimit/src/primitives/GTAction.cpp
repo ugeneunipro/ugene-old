@@ -36,7 +36,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTAction"
 
 #define GT_METHOD_NAME "button"
-QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
+QAbstractButton* GTAction::button(GUITestOpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
 
     QAction* a = findAction(os, actionName, parent);
     if (!a) {
@@ -69,7 +69,7 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QString &actionName,
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "button"
-QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QAction* a, QObject *parent) {
+QAbstractButton* GTAction::button(GUITestOpStatus &os, const QAction* a, QObject *parent) {
 
     GT_CHECK_RESULT(a != NULL, "action is NULL", NULL);
 
@@ -94,7 +94,7 @@ QAbstractButton* GTAction::button(U2::U2OpStatus &os, const QAction* a, QObject 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findAction"
-QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
+QAction* GTAction::findAction(GUITestOpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
 
     if (parent == NULL) { // If parent null, then searching for at QMainWindows
         QList<QAction*> list;
@@ -117,7 +117,7 @@ QAction* GTAction::findAction(U2::U2OpStatus &os, const QString &actionName, QOb
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findActionByText"
-QAction* GTAction::findActionByText(U2::U2OpStatus &os, const QString &text, QWidget *parent) {
+QAction* GTAction::findActionByText(GUITestOpStatus &os, const QString &text, QWidget *parent) {
 
     if (parent == NULL) { // If parent null, then searching for at QMainWindows
         QList<QAction*> resultList;

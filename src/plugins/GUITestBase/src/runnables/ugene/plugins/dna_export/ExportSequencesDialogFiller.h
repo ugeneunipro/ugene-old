@@ -29,9 +29,9 @@ using namespace HI;
 
     class ExportSelectedRegionFiller : public Filler {
     public:
-        ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
+        ExportSelectedRegionFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name,
             bool translate = false, const QString& seqName = QString(), bool saveAllAminoFrames = true);
-        ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario);
+        ExportSelectedRegionFiller(HI::GUITestOpStatus &os, CustomScenario *customScenario);
 
         void commonScenario();
         void setPath(const QString &value);
@@ -49,7 +49,7 @@ using namespace HI;
     public:
         enum FormatToUse {Fasta, Fastq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
-        ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
+        ExportSequenceOfSelectedAnnotationsFiller(HI::GUITestOpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:

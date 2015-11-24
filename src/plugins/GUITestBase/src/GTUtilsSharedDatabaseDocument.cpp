@@ -47,7 +47,7 @@ using namespace HI;
 #define GT_CLASS_NAME "GTUtilsSharedDatabaseDocument"
 
 #define GT_METHOD_NAME "connectToTestDatabase"
-Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
+Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(HI::GUITestOpStatus &os) {
     GTLogTracer lt;
     QString conName = "ugene_gui_test";
     GTDatabaseConfig::initTestConnectionInfo(conName);
@@ -66,7 +66,7 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "connectToUgenePublicDatabase"
-Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus &os) {
+Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(HI::GUITestOpStatus &os) {
     GTLogTracer lt;
     QString conName = "UGENE public database";
     {
@@ -84,7 +84,7 @@ Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getDatabaseDocumentByName"
-Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(U2OpStatus &os, const QString &name) {
+Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(HI::GUITestOpStatus &os, const QString &name) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(!name.isEmpty(), "Name is empty", NULL);
 
@@ -96,7 +96,7 @@ Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(U2OpStatus &o
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "disconnectDatabase"
-void GTUtilsSharedDatabaseDocument::disconnectDatabase(U2OpStatus &os, Document *databaseDoc) {
+void GTUtilsSharedDatabaseDocument::disconnectDatabase(HI::GUITestOpStatus &os, Document *databaseDoc) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     disconnectDatabase(os, databaseDoc->getName());
@@ -104,14 +104,14 @@ void GTUtilsSharedDatabaseDocument::disconnectDatabase(U2OpStatus &os, Document 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "disconnectDatabase"
-void GTUtilsSharedDatabaseDocument::disconnectDatabase(U2OpStatus &os, const QString &name) {
+void GTUtilsSharedDatabaseDocument::disconnectDatabase(HI::GUITestOpStatus &os, const QString &name) {
     Q_UNUSED(os);
     GTUtilsDocument::removeDocument(os, name);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getFolderItem"
-QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document *databaseDoc, const QString &itemPath, bool mustExist) {
+QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath, bool mustExist) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != databaseDoc, "databaseDoc is NULL", QModelIndex());
     GT_CHECK_RESULT(!itemPath.isEmpty(), "Folder path is empty", QModelIndex());
@@ -135,7 +135,7 @@ QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "createFolder"
-void GTUtilsSharedDatabaseDocument::createFolder(U2OpStatus &os, Document *databaseDoc, const QString &parentFolderPath, const QString &newFolderName) {
+void GTUtilsSharedDatabaseDocument::createFolder(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &parentFolderPath, const QString &newFolderName) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!parentFolderPath.isEmpty(), "Parent folder path is empty");
@@ -154,7 +154,7 @@ void GTUtilsSharedDatabaseDocument::createFolder(U2OpStatus &os, Document *datab
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "createPath"
-void GTUtilsSharedDatabaseDocument::createPath(U2OpStatus &os, Document *databaseDoc, const QString &path) {
+void GTUtilsSharedDatabaseDocument::createPath(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &path) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(path.startsWith(U2ObjectDbi::ROOT_FOLDER), "Path is not in the canonical form");
@@ -172,7 +172,7 @@ void GTUtilsSharedDatabaseDocument::createPath(U2OpStatus &os, Document *databas
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemPath"
-QString GTUtilsSharedDatabaseDocument::getItemPath(U2OpStatus &os, const QModelIndex &itemIndex) {
+QString GTUtilsSharedDatabaseDocument::getItemPath(HI::GUITestOpStatus &os, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(itemIndex.isValid(), "Item index is invalid", QString());
 
@@ -215,7 +215,7 @@ QString GTUtilsSharedDatabaseDocument::getItemPath(U2OpStatus &os, const QModelI
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "expantToItem"
-void GTUtilsSharedDatabaseDocument::expantToItem(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+void GTUtilsSharedDatabaseDocument::expantToItem(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!itemPath.isEmpty(), "Item path is empty");
@@ -242,7 +242,7 @@ void GTUtilsSharedDatabaseDocument::expantToItem(U2OpStatus &os, Document *datab
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "expantToItem"
-void GTUtilsSharedDatabaseDocument::expantToItem(U2OpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
+void GTUtilsSharedDatabaseDocument::expantToItem(HI::GUITestOpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
@@ -253,7 +253,7 @@ void GTUtilsSharedDatabaseDocument::expantToItem(U2OpStatus &os, Document *datab
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doubleClickItem"
-void GTUtilsSharedDatabaseDocument::doubleClickItem(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+void GTUtilsSharedDatabaseDocument::doubleClickItem(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!itemPath.isEmpty(), "Item path is empty");
@@ -265,7 +265,7 @@ void GTUtilsSharedDatabaseDocument::doubleClickItem(U2OpStatus &os, Document *da
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doubleClickItem"
-void GTUtilsSharedDatabaseDocument::doubleClickItem(U2OpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
+void GTUtilsSharedDatabaseDocument::doubleClickItem(HI::GUITestOpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
@@ -276,7 +276,7 @@ void GTUtilsSharedDatabaseDocument::doubleClickItem(U2OpStatus &os, Document *da
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openView"
-void GTUtilsSharedDatabaseDocument::openView(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+void GTUtilsSharedDatabaseDocument::openView(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!itemPath.isEmpty(), "Item path is empty");
@@ -289,7 +289,7 @@ void GTUtilsSharedDatabaseDocument::openView(U2OpStatus &os, Document *databaseD
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openView"
-void GTUtilsSharedDatabaseDocument::openView(U2OpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
+void GTUtilsSharedDatabaseDocument::openView(HI::GUITestOpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
@@ -302,7 +302,7 @@ void GTUtilsSharedDatabaseDocument::openView(U2OpStatus &os, Document *databaseD
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callImportDialog"
-void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+void GTUtilsSharedDatabaseDocument::callImportDialog(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!itemPath.isEmpty(), "Item path is empty");
@@ -313,7 +313,7 @@ void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callImportDialog"
-void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
+void GTUtilsSharedDatabaseDocument::callImportDialog(HI::GUITestOpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
@@ -330,7 +330,7 @@ void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "ensureItemExists"
-void GTUtilsSharedDatabaseDocument::ensureItemExists(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+void GTUtilsSharedDatabaseDocument::ensureItemExists(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
@@ -340,7 +340,7 @@ void GTUtilsSharedDatabaseDocument::ensureItemExists(U2OpStatus &os, Document *d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "ensureItemsExist"
-void GTUtilsSharedDatabaseDocument::ensureItemsExist(U2OpStatus &os, Document *databaseDoc, const QStringList &itemsPaths) {
+void GTUtilsSharedDatabaseDocument::ensureItemsExist(HI::GUITestOpStatus &os, Document *databaseDoc, const QStringList &itemsPaths) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
@@ -352,7 +352,7 @@ void GTUtilsSharedDatabaseDocument::ensureItemsExist(U2OpStatus &os, Document *d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "ensureThereAraNoItemsExceptListed"
-void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(U2OpStatus &os, Document *databaseDoc, const QString& parentPath, const QStringList &itemsPaths) {
+void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(HI::GUITestOpStatus &os, Document *databaseDoc, const QString& parentPath, const QStringList &itemsPaths) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
@@ -366,7 +366,7 @@ void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(U2OpStatus
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "importFiles"
-void GTUtilsSharedDatabaseDocument::importFiles(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &filesPaths, const QVariantMap& options) {
+void GTUtilsSharedDatabaseDocument::importFiles(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &filesPaths, const QVariantMap& options) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!filesPaths.isEmpty(), "Files paths are not provided");
@@ -394,7 +394,7 @@ void GTUtilsSharedDatabaseDocument::importFiles(U2OpStatus &os, Document *databa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "importDirs"
-void GTUtilsSharedDatabaseDocument::importDirs(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &dirsPaths, const QVariantMap& options) {
+void GTUtilsSharedDatabaseDocument::importDirs(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &dirsPaths, const QVariantMap& options) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!dirsPaths.isEmpty(), "Dirs paths are not provided");
@@ -422,7 +422,7 @@ void GTUtilsSharedDatabaseDocument::importDirs(U2OpStatus &os, Document *databas
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "importProjectItems"
-void GTUtilsSharedDatabaseDocument::importProjectItems(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QMap<QString, QStringList> &projectItems, const QVariantMap &options) {
+void GTUtilsSharedDatabaseDocument::importProjectItems(HI::GUITestOpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QMap<QString, QStringList> &projectItems, const QVariantMap &options) {
     Q_UNUSED(os);
     GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
     GT_CHECK(!projectItems.isEmpty(), "Project items are not provided");

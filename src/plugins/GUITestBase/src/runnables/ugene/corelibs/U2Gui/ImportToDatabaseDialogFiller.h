@@ -60,8 +60,8 @@ public:
         static const QString ACTION_DATA__PROJECT_ITEMS_LIST;
     };
 
-    ImportToDatabaseDialogFiller(U2OpStatus& os, const QList<Action>& actions);
-    ImportToDatabaseDialogFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "ImportToDatabaseDialog", c){}
+    ImportToDatabaseDialogFiller(HI::GUITestOpStatus& os, const QList<Action>& actions);
+    ImportToDatabaseDialogFiller(HI::GUITestOpStatus &os, CustomScenario* c): Filler(os, "ImportToDatabaseDialog", c){}
 
     void commonScenario();
 

@@ -1299,7 +1299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "active modal widget is NULL");
 

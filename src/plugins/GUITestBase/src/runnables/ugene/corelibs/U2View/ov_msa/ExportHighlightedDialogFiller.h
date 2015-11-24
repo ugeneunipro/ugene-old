@@ -29,7 +29,7 @@ using namespace HI;
 
 class ExportHighlightedDialogFiller : public Filler {
 public:
-    ExportHighlightedDialogFiller(U2OpStatus &os, const QString &filePath,
+    ExportHighlightedDialogFiller(HI::GUITestOpStatus &os, const QString &filePath,
                                   bool invertredExport = true);
 
     void run();

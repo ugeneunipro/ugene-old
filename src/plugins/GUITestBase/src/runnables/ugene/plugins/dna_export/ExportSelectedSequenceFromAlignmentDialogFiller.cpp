@@ -42,7 +42,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSelectedSequenceFromAlignment"
 
-ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &_os, const QString &_path,
+ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(HI::GUITestOpStatus &_os, const QString &_path,
                                                                          documentFormat _format, bool _keepGaps, bool _addToProj):
     Filler(_os, "U2__SaveSelectedSequenceFromMSADialog"),
     path(_path),
@@ -59,7 +59,7 @@ ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpSta
 
 }
 
-ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &os, CustomScenario *scenario)
+ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(HI::GUITestOpStatus &os, CustomScenario *scenario)
     : Filler(os, "U2__SaveSelectedSequenceFromMSADialog", scenario),
       format(EMBL),
       keepGaps(false),

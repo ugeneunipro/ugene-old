@@ -29,7 +29,7 @@ using namespace HI;
 
 class DeleteGapsDialogFiller : public Filler {
 public:
-    DeleteGapsDialogFiller(U2OpStatus &os, int _radioButNum=0) : Filler(os, "DeleteGapsDialog"),
+    DeleteGapsDialogFiller(HI::GUITestOpStatus &os, int _radioButNum=0) : Filler(os, "DeleteGapsDialog"),
         radioButNum(_radioButNum){}
     virtual void run();
 private:
@@ -39,7 +39,7 @@ private:
 class RemoveGapColsDialogFiller : public Filler {
 public:
     enum Radio {Number, Percent, Column};
-    RemoveGapColsDialogFiller(U2OpStatus &os, Radio _button, int _spinValue=1) : Filler(os, "DeleteGapsDialog"),
+    RemoveGapColsDialogFiller(HI::GUITestOpStatus &os, Radio _button, int _spinValue=1) : Filler(os, "DeleteGapsDialog"),
         button(_button), spinValue(_spinValue){
         radioMap[Number] = "absoluteRadioButton";
         radioMap[Percent] = "relativeRadioButton";

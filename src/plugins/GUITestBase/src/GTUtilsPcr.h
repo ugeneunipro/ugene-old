@@ -33,20 +33,20 @@ using namespace HI;
 
 class GTUtilsPcr {
 public:
-    static void setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
-    static void setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches);
-    static void setPerfectMatch(U2OpStatus &os, int number);
-    static void setMaxProductSize(U2OpStatus &os, int number);
-    static QWidget * browseButton(U2OpStatus &os, U2Strand::Direction direction);
-    static int productsCount(U2OpStatus &os);
-    static QString getResultRegion(U2OpStatus &os, int number);
-    static QPoint getResultPoint(U2OpStatus &os, int number);
-    static QPoint getDetailsPoint(U2OpStatus &os);
-    static QWidget * primerBox(U2OpStatus &os, U2Strand::Direction direction);
-    static void clearPcrDir(U2OpStatus &os);
+    static void setPrimer(HI::GUITestOpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
+    static void setMismatches(HI::GUITestOpStatus &os, U2Strand::Direction direction, int mismatches);
+    static void setPerfectMatch(HI::GUITestOpStatus &os, int number);
+    static void setMaxProductSize(HI::GUITestOpStatus &os, int number);
+    static QWidget * browseButton(HI::GUITestOpStatus &os, U2Strand::Direction direction);
+    static int productsCount(HI::GUITestOpStatus &os);
+    static QString getResultRegion(HI::GUITestOpStatus &os, int number);
+    static QPoint getResultPoint(HI::GUITestOpStatus &os, int number);
+    static QPoint getDetailsPoint(HI::GUITestOpStatus &os);
+    static QWidget * primerBox(HI::GUITestOpStatus &os, U2Strand::Direction direction);
+    static void clearPcrDir(HI::GUITestOpStatus &os);
 
 private:
-    static QTableView * table(U2OpStatus &os);
+    static QTableView * table(HI::GUITestOpStatus &os);
 };
 
 } // U2

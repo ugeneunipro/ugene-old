@@ -29,7 +29,7 @@ using namespace HI;
 
 class LicenseAgreemntDialogFiller : public Filler {
 public:
-    LicenseAgreemntDialogFiller(U2OpStatus &os);
+    LicenseAgreemntDialogFiller(HI::GUITestOpStatus &os);
 
     void commonScenario();
 };

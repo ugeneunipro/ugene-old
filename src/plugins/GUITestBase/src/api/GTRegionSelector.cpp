@@ -29,7 +29,7 @@ using namespace HI;
 #define GT_CLASS_NAME "GTRegionSelector"
 
 #define GT_METHOD_NAME "setRegion"
-void GTRegionSelector::setRegion(U2OpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s) {
+void GTRegionSelector::setRegion(HI::GUITestOpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s) {
 
     GT_CHECK(regionSelector != NULL, "RegionSelector is NULL");
 

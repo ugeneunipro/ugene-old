@@ -3438,7 +3438,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //Expected state: tree appeared
 }
 
-void test_0039_function(U2OpStatus &os, int comboNum, QString extention){
+void test_0039_function(HI::GUITestOpStatus &os, int comboNum, QString extention){
     //1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, GUITest::dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -3617,7 +3617,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
     // there should be no selection
     class ExportDialogChecker : public Filler {
     public:
-        ExportDialogChecker(U2OpStatus &os)
+        ExportDialogChecker(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3647,7 +3647,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045_1) {
 
     class ExportChecker : public Filler {
     public:
-        ExportChecker(U2OpStatus &os)
+        ExportChecker(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3696,7 +3696,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
 
     class SelectSubalignmentChecker : public Filler {
     public:
-        SelectSubalignmentChecker(U2OpStatus &os)
+        SelectSubalignmentChecker(HI::GUITestOpStatus &os)
             : Filler(os, "SelectSubalignmentDialog") {}
 
         virtual void run() {
@@ -3734,7 +3734,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
 
     class ExportChecker : public Filler {
     public:
-        ExportChecker(U2OpStatus &os)
+        ExportChecker(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3764,7 +3764,7 @@ GUI_TEST_CLASS_DEFINITION(test_0048) {
 
     class CustomFiller_0048 : public Filler {
     public:
-        CustomFiller_0048(U2OpStatus &os)
+        CustomFiller_0048(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3886,7 +3886,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
 
     class CustomFiller_0052 : public Filler {
     public:
-        CustomFiller_0052(U2OpStatus &os)
+        CustomFiller_0052(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -4126,7 +4126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0055){
 //    {Export->Export subalignment}
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
 
             QLineEdit* filepathEdit = GTWidget::findExactWidget<QLineEdit*>(os, "filepathEdit", dialog);
@@ -4153,7 +4153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0056){
 
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
 
             QLineEdit* fileNameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "fileNameEdit", dialog);
@@ -4182,7 +4182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
 
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep();
 
@@ -4209,7 +4209,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
 
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 
@@ -4248,7 +4248,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     class customColorSelector: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             GTGlobals::sleep(500);
             QWidget *dialog = QApplication::activeModalWidget();
 
@@ -4292,7 +4292,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     class customColorSchemeCreator: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             GTGlobals::sleep(500);
             QWidget *dialog = QApplication::activeModalWidget();
 
@@ -4312,7 +4312,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     class customAppSettingsFiller: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 
@@ -4338,7 +4338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
 //    Open "Color schemes" dialog.
     class customAppSettingsFiller: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 
@@ -4368,7 +4368,7 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
 
     class customAppSettingsFiller1: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 
@@ -4405,7 +4405,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061){
 
     class customColorSchemeCreator: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             GTGlobals::sleep(500);
             QWidget *dialog = QApplication::activeModalWidget();
 
@@ -4431,7 +4431,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061){
 
     class customAppSettingsFiller: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 
@@ -4460,7 +4460,7 @@ GUI_TEST_CLASS_DEFINITION(test_0062){
 //    Open "Export subalignment" dialog
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
             QLineEdit* filepathEdit = GTWidget::findExactWidget<QLineEdit*>(os, "filepathEdit", dialog);
@@ -4523,7 +4523,7 @@ GUI_TEST_CLASS_DEFINITION(test_0063){
 
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QStringList expectedActions = QStringList() << "Align with muscle"
                                                    << "Align sequences to profile with MUSCLE"
                                                    << "Align profile to profile with MUSCLE"
@@ -4802,7 +4802,7 @@ GUI_TEST_CLASS_DEFINITION(test_0074){
 //    Open "Export subalignment" dialog
     class custom: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             GTGlobals::sleep(500);
 

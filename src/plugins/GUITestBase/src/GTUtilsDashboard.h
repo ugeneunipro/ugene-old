@@ -36,15 +36,15 @@ class GTUtilsDashboard
 {
 public:
     enum Tabs{Overview, Input, ExternalTools};
-    static QWebView* getDashboard(U2OpStatus &os);
-    static QTabWidget* getTabWidget(U2OpStatus &os);
+    static QWebView* getDashboard(HI::GUITestOpStatus &os);
+    static QTabWidget* getTabWidget(HI::GUITestOpStatus &os);
 
-    static QWebElement findElement(U2OpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
-    static QWebElement findTreeElement(U2OpStatus &os, QString text);
-    static QWebElement findContextMenuElement(U2OpStatus &os, QString text);
-    static void click(U2OpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
-    static bool areThereProblems(U2OpStatus &os);
-    static void openTab(U2OpStatus &os, Tabs tab);
+    static QWebElement findElement(HI::GUITestOpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
+    static QWebElement findTreeElement(HI::GUITestOpStatus &os, QString text);
+    static QWebElement findContextMenuElement(HI::GUITestOpStatus &os, QString text);
+    static void click(HI::GUITestOpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
+    static bool areThereProblems(HI::GUITestOpStatus &os);
+    static void openTab(HI::GUITestOpStatus &os, Tabs tab);
 
 private:
     static QMap<QString, Tabs> initTabMap();

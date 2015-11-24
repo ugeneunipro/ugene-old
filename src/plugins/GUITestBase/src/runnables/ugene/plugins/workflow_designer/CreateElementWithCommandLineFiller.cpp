@@ -27,13 +27,13 @@ namespace U2 {
 
 #define GT_CLASS_NAME "CreateElementWithCommandLineFiller"
 
-CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(U2OpStatus& os,
+CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(HI::GUITestOpStatus& os,
                                                                                const ElementWithCommandLineSettings& settings)
     : Filler(os, "CreateExternalProcessWorkerDialog"),
       settings(settings)
 {}
 
-CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(U2OpStatus &os, CustomScenario *scenario)
+CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
 : Filler(os, "CreateExternalProcessWorkerDialog", scenario)
 {
 

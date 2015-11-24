@@ -271,7 +271,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
 namespace {
 
-void checkEditMenu(U2OpStatus &os, const QString &groupName, const QString &objectName) {
+void checkEditMenu(HI::GUITestOpStatus &os, const QString &groupName, const QString &objectName) {
     const QModelIndexList groupIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, groupName);
     CHECK_SET_ERR(groupIndexes.size() == 1, QString("Expected a single '%1' filter group in the project view").arg(groupName));
 
@@ -284,7 +284,7 @@ void checkEditMenu(U2OpStatus &os, const QString &groupName, const QString &obje
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
-void checkDeleteButton(U2OpStatus &os, const QString &groupName, const QString &objectName) {
+void checkDeleteButton(HI::GUITestOpStatus &os, const QString &groupName, const QString &objectName) {
     QModelIndexList groupIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, groupName);
     CHECK_SET_ERR(groupIndexes.size() == 1, QString("Expected a single '%1' filter group in the project view").arg(groupName));
 
@@ -304,7 +304,7 @@ void checkDeleteButton(U2OpStatus &os, const QString &groupName, const QString &
     CHECK_SET_ERR(filteredObjectCount == groupIndexes.first().model()->rowCount(groupIndexes.first()), "Filtered object count changed unexpectedly");
 }
 
-void makeRightClick(U2OpStatus &os, const QString &groupName) {
+void makeRightClick(HI::GUITestOpStatus &os, const QString &groupName) {
     const QModelIndexList groupIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, groupName);
     CHECK_SET_ERR(groupIndexes.size() == 1, QString("Expected a single '%1' filter group in the project view").arg(groupName));
     GTUtilsProjectTreeView::getTreeView(os)->scrollTo(groupIndexes.first());

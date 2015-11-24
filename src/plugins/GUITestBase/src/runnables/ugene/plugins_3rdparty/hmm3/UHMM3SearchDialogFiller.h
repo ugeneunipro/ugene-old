@@ -30,7 +30,7 @@ using namespace HI;
 class UHMM3SearchDialogFiller : public Filler
 {
 public:
-    UHMM3SearchDialogFiller(U2OpStatus &os, QString _profile, QString _newFilePath): Filler(os, "UHMM3SearchDialog"),
+    UHMM3SearchDialogFiller(HI::GUITestOpStatus &os, QString _profile, QString _newFilePath): Filler(os, "UHMM3SearchDialog"),
     profile(_profile),
     newFilePath(_newFilePath){}
     virtual void commonScenario();

@@ -23,6 +23,7 @@
 #define _GTUTILS_PRIMER_LIBRARY_H_
 
 #include <U2Core/U2OpStatus.h>
+#include <GTGlobals.h>
 
 class QAbstractButton;
 class QTableView;
@@ -32,21 +33,21 @@ namespace U2 {
 class GTUtilsPrimerLibrary {
 public:
     enum Button {Add, Edit, Remove, Import, Export, Close};
-    static QWidget * openLibrary(U2OpStatus &os);
-    static void clickButton(U2OpStatus &os, Button button);
-    static QAbstractButton * getButton(U2OpStatus &os, Button button);
-    static int librarySize(U2OpStatus &os);
-    static QString getPrimerSequence(U2OpStatus &os, int number);
-    static QString getPrimerSequence(U2OpStatus &os, const QString &name);
-    static QPoint getPrimerPoint(U2OpStatus &os, int number);
-    static void clickPrimer(U2OpStatus &os, int number);
-    static void clearLibrary(U2OpStatus &os);
-    static void addPrimer(U2OpStatus &os, const QString &name, const QString &data);
-    static void selectPrimers(U2OpStatus &os, const QList<int> &numbers);
-    static void selectAll(U2OpStatus &os);
+    static QWidget * openLibrary(HI::GUITestOpStatus &os);
+    static void clickButton(HI::GUITestOpStatus &os, Button button);
+    static QAbstractButton * getButton(HI::GUITestOpStatus &os, Button button);
+    static int librarySize(HI::GUITestOpStatus &os);
+    static QString getPrimerSequence(HI::GUITestOpStatus &os, int number);
+    static QString getPrimerSequence(HI::GUITestOpStatus &os, const QString &name);
+    static QPoint getPrimerPoint(HI::GUITestOpStatus &os, int number);
+    static void clickPrimer(HI::GUITestOpStatus &os, int number);
+    static void clearLibrary(HI::GUITestOpStatus &os);
+    static void addPrimer(HI::GUITestOpStatus &os, const QString &name, const QString &data);
+    static void selectPrimers(HI::GUITestOpStatus &os, const QList<int> &numbers);
+    static void selectAll(HI::GUITestOpStatus &os);
 
 private:
-    static QTableView * table(U2OpStatus &os);
+    static QTableView * table(HI::GUITestOpStatus &os);
 };
 
 } // U2

@@ -49,7 +49,7 @@ public:
     };
 
 
-    FormatDBSupportRunDialogFiller(U2OpStatus &os, const Parameters &parameters);
+    FormatDBSupportRunDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters);
     void run();
 
 private:

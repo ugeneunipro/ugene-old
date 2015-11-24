@@ -162,7 +162,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/ToolsMenu.h>
@@ -989,7 +988,7 @@ GUI_TEST_CLASS_DEFINITION(test_3155) {
     // 2. Press "Find ORFs" tool button
     class CancelClicker : public Filler {
     public:
-        CancelClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        CancelClicker(HI::GUITestOpStatus& _os) : Filler(_os, "ORFDialogBase"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -1027,7 +1026,7 @@ GUI_TEST_CLASS_DEFINITION(test_3156){
 
 class test_3165_messageBoxDialogFiller: public MessageBoxDialogFiller{
 public:
-    test_3165_messageBoxDialogFiller(U2OpStatus &os, QMessageBox::StandardButton _b):
+    test_3165_messageBoxDialogFiller(HI::GUITestOpStatus &os, QMessageBox::StandardButton _b):
         MessageBoxDialogFiller(os, _b){}
     virtual void run(){
         QWidget* activeModal = QApplication::activeModalWidget();
@@ -1510,10 +1509,9 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "ugene_gui_test");
     CHECK_OP(os, );
     GTMouseDriver::moveTo(os, p);
-    U2OpStatus2Log opStatus;
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(opStatus, QStringList() << "Export/Import"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export/Import"));
     GTMouseDriver::click(os, Qt::RightButton);
-    CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
+    CHECK_SET_ERR(os.hasError(), "Export item exists");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3253) {
@@ -2098,7 +2096,7 @@ GUI_TEST_CLASS_DEFINITION(test_3321){
 GUI_TEST_CLASS_DEFINITION(test_3328) {
     class TestBody_3328 : public QRunnable {
     public:
-        TestBody_3328(U2OpStatus &os, QEventLoop *waiter) :
+        TestBody_3328(HI::GUITestOpStatus &os, QEventLoop *waiter) :
             QRunnable(),
             os(os),
             waiter(waiter) {}
@@ -2125,7 +2123,7 @@ GUI_TEST_CLASS_DEFINITION(test_3328) {
         }
 
     private:
-        U2OpStatus &os;
+        HI::GUITestOpStatus &os;
         QEventLoop *waiter;
     };
 
@@ -2787,7 +2785,7 @@ GUI_TEST_CLASS_DEFINITION(test_3450) {
 
     class ExportHighlightedDialogFiller : public Filler {
     public:
-        ExportHighlightedDialogFiller(U2OpStatus &os)
+        ExportHighlightedDialogFiller(HI::GUITestOpStatus &os)
             : Filler(os, "ExportHighlightedDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -2844,7 +2842,7 @@ GUI_TEST_CLASS_DEFINITION(test_3451) {
 
     class CancelExportHighlightedDialogFiller : public Filler {
     public:
-        CancelExportHighlightedDialogFiller(U2OpStatus &os)
+        CancelExportHighlightedDialogFiller(HI::GUITestOpStatus &os)
             : Filler(os, "ExportHighlightedDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3242,7 +3240,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_1) {
 
     class SiteconCustomFiller : public Filler {
     public:
-        SiteconCustomFiller(U2OpStatus &os)
+        SiteconCustomFiller(HI::GUITestOpStatus &os)
             : Filler(os, "SiteconSearchDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3286,7 +3284,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
 
     class SiteconCustomFiller : public Filler {
     public:
-        SiteconCustomFiller(U2OpStatus &os)
+        SiteconCustomFiller(HI::GUITestOpStatus &os)
             : Filler(os, "SiteconSearchDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3310,7 +3308,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
 
     class AllEnzymesSearchScenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -3576,7 +3574,7 @@ GUI_TEST_CLASS_DEFINITION(test_3571_1) {
     // 1. Open file "test/_common_data/fasta/numbers_in_the_middle.fa" in sequence view
     class Custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -3619,7 +3617,7 @@ GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     // 1. Open file test/_common_data/fasta/numbers_in_the_middle.fa in sequence view
     class Custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -3809,7 +3807,7 @@ GUI_TEST_CLASS_DEFINITION(test_3610) {
     GTGlobals::sleep(1000);
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -4042,9 +4040,8 @@ GUI_TEST_CLASS_DEFINITION(test_3629) {
 //    6. Switch view to "human_T1".
 //    Expected state: there are no attached annotations.
     GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
-    U2OpStatusImpl opStatus;
-    GTUtilsAnnotationsTreeView::findItems(opStatus, "misc_feature");
-    CHECK_SET_ERR(opStatus.isCoR(), "The annotaion table is unexpectedly attached");
+    GTUtilsAnnotationsTreeView::findItems(os, "misc_feature");
+    CHECK_SET_ERR(os.isCoR(), "The annotaion table is unexpectedly attached");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3645) {
@@ -4572,7 +4569,7 @@ GUI_TEST_CLASS_DEFINITION(test_3731) {
 GUI_TEST_CLASS_DEFINITION(test_3732) {
 //    1. Open UGENE preferences, open "Resources" tab, set UGENE memory limit to 200Mb.
     class MemoryLimitSetScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -4656,7 +4653,7 @@ GUI_TEST_CLASS_DEFINITION(test_3749) {
     GTMouseDriver::click(os, Qt::LeftButton);
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() - QPoint(5, 0));
             GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 10));
             GTMouseDriver::click(os);
@@ -4748,7 +4745,7 @@ GUI_TEST_CLASS_DEFINITION(test_3768) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "ORFDialogBase"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -4841,7 +4838,7 @@ GUI_TEST_CLASS_DEFINITION(test_3773) {
 GUI_TEST_CLASS_DEFINITION(test_3773_1) {
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "UHMM3BuildDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "UHMM3BuildDialog"){}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK(dialog, );
@@ -4918,7 +4915,7 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
     //Expected state: the message about file name appears, the dialog is not closed (the export task does not start).
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "dialog is NULL");
             QLineEdit* fileNameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "fileNameEdit", dialog);
@@ -5090,7 +5087,7 @@ GUI_TEST_CLASS_DEFINITION(test_3813) {
     //2. Press "Find restriction sites" toolbutton
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //3. Press "Select by length"
             //4. Input "7" and press "Ok"
             GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 6));
@@ -5214,7 +5211,7 @@ GUI_TEST_CLASS_DEFINITION(test_3829){
     QModelIndex index = GTUtilsProjectTreeView::findIndex(os, "Ca20Chr1 features");
 //    Expected state: UGENE warning about annotation is out of range.
     class scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -5400,7 +5397,7 @@ GUI_TEST_CLASS_DEFINITION(test_3886) {
     //3. Show wizard.
     class TestWizardFiller : public Filler {
     public:
-        TestWizardFiller(U2OpStatus &os)
+        TestWizardFiller(HI::GUITestOpStatus &os)
         : Filler(os, "Extract Alignment Consensus as Sequence")
         {
 
@@ -5574,7 +5571,7 @@ GUI_TEST_CLASS_DEFINITION(test_3920) {
 
     class ORFDialogFiller : public Filler {
     public:
-        ORFDialogFiller(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        ORFDialogFiller(HI::GUITestOpStatus& _os) : Filler(_os, "ORFDialogBase"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );

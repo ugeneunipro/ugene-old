@@ -31,8 +31,8 @@ using namespace HI;
 class GTMSAEditorStatusWidget {
 public:
     // fails if the widget is NULL or can't get length
-    static int length(U2OpStatus& os, QWidget* w);
-    static int getSequencesCount(U2OpStatus &os, QWidget *w);
+    static int length(HI::GUITestOpStatus& os, QWidget* w);
+    static int getSequencesCount(HI::GUITestOpStatus &os, QWidget *w);
 };
 
 }

@@ -32,7 +32,7 @@ class GenerateAlignmentProfileDialogFiller : public Filler
 {
 public:
     enum saveFormat{NONE,HTML, CSV};
-    GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _counts=true, saveFormat _format=NONE,
+    GenerateAlignmentProfileDialogFiller(HI::GUITestOpStatus &os, bool _counts=true, saveFormat _format=NONE,
                                          QString _filePath = "") : Filler(os, "DNAStatMSAProfileDialog"),
         counts(_counts),
         gapScore(false),
@@ -46,7 +46,7 @@ public:
         checkBoxItems[CSV] = "csvRB";
     }
 
-    GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _gapsScore, bool _symbolScore, bool _skipGaps) : Filler(os, "DNAStatMSAProfileDialog"),
+    GenerateAlignmentProfileDialogFiller(HI::GUITestOpStatus &os, bool _gapsScore, bool _symbolScore, bool _skipGaps) : Filler(os, "DNAStatMSAProfileDialog"),
         counts(true),
         gapScore(_gapsScore),
         symdolScore(_symbolScore),

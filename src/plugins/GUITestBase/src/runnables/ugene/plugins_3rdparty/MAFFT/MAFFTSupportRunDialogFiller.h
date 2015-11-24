@@ -49,7 +49,7 @@ public:
     };
 
 
-    MAFFTSupportRunDialogFiller(U2OpStatus &os, Parameters* parameters) :
+    MAFFTSupportRunDialogFiller(HI::GUITestOpStatus &os, Parameters* parameters) :
         Filler(os, "MAFFTSupportRunDialog"),
         parameters(parameters) {
             CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");

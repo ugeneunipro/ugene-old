@@ -31,12 +31,12 @@ namespace HI{
 class HI_EXPORT GTListWidget
 {
 public:
-    static void click(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button = Qt::LeftButton);
-    static bool isItemChecked(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text);
-    static void checkItem(U2::U2OpStatus &os, QListWidget *listWidget, const QString &text, bool newState);
-    static void checkAllItems(U2::U2OpStatus &os, QListWidget *listWidget, bool newState);
-    static void checkOnlyItems(U2::U2OpStatus &os, QListWidget *listWidget, const QStringList &itemTexts, bool newState = true);
-    static QStringList getItems(U2::U2OpStatus &os, QListWidget *listWidget);
+    static void click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button = Qt::LeftButton);
+    static bool isItemChecked(GUITestOpStatus &os, QListWidget *listWidget, const QString &text);
+    static void checkItem(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, bool newState);
+    static void checkAllItems(GUITestOpStatus &os, QListWidget *listWidget, bool newState);
+    static void checkOnlyItems(GUITestOpStatus &os, QListWidget *listWidget, const QStringList &itemTexts, bool newState = true);
+    static QStringList getItems(GUITestOpStatus &os, QListWidget *listWidget);
 };
 
 }

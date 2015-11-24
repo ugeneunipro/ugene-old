@@ -7,7 +7,7 @@ TARGET = humimit
 TEMPLATE = lib
 CONFIG += thread debug_and_release warn_off qt dll
 INCLUDEPATH += src _tmp ../../include
-LIBS += -L../../_release -lU2Core -lU2Test
+LIBS += -L../../_release -lU2Core
 QT += testlib 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets 
@@ -23,8 +23,8 @@ DEFINES += QT_DLL
         CONFIG +=console
         DESTDIR=../../_debug/
         OBJECTS_DIR=_tmp/obj/debug
-        LIBS -= -L../../_release -lU2Core -lU2Test -lU2Gui
-        LIBS += -L../../_debug -lU2Cored -lU2Testd -lU2Guid
+        LIBS -= -L../../_release -lU2Core
+        LIBS += -L../../_debug -lU2Cored
     }
 
     CONFIG(release, debug|release) {

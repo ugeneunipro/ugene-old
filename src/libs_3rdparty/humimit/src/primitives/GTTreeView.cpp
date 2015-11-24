@@ -28,14 +28,14 @@ namespace HI{
 
 #define GT_CLASS_NAME "GTTreeView"
 #define GT_METHOD_NAME "findIndex"
-QModelIndex GTTreeView::findIndex(U2::U2OpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
+QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
                                   const GTGlobals::FindOptions& options){
     return findIndex(os, treeView, data, QModelIndex(), role, options);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findIndex"
-QModelIndex GTTreeView::findIndex(U2::U2OpStatus &os, QTreeView* treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role,
+QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role,
                                  const GTGlobals::FindOptions& options){
 
     GT_CHECK_RESULT(treeView != NULL, "Tree widget is NULL", QModelIndex());
@@ -58,7 +58,7 @@ QModelIndex GTTreeView::findIndex(U2::U2OpStatus &os, QTreeView* treeView, QVari
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findIndexes"
-QModelIndexList GTTreeView::findIndexes(U2::U2OpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
+QModelIndexList GTTreeView::findIndexes(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
                                         QModelIndex parent, int depth, const GTGlobals::FindOptions& options){
     QModelIndexList foundIndexes;
     CHECK(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || depth < options.depth, foundIndexes);
@@ -83,7 +83,7 @@ QModelIndexList GTTreeView::findIndexes(U2::U2OpStatus &os, QTreeView* treeView,
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemCenter"
-QPoint GTTreeView::getItemCenter(U2::U2OpStatus &, QTreeView *treeView, const QModelIndex &itemIndex) {
+QPoint GTTreeView::getItemCenter(GUITestOpStatus &, QTreeView *treeView, const QModelIndex &itemIndex) {
     QRect r = treeView->visualRect(itemIndex);
 
     return treeView->mapToGlobal(r.center());

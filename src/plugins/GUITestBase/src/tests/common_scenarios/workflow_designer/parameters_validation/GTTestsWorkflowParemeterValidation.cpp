@@ -69,7 +69,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     // 4. Move this file somewhere from its directory
     class RenameHelper {
     public:
-        RenameHelper(const QString &url, U2OpStatus &os)
+        RenameHelper(const QString &url, HI::GUITestOpStatus &os)
             : file(url), renamed(false) {
                 oldName = file.fileName();
                 renamed = file.rename("wd_pv_0001.aln");

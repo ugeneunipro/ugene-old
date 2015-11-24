@@ -24,11 +24,12 @@
 
 #include <QtGlobal>
 #include <QModelIndex>
+#include <GTGlobals.h>
+
 namespace U2 {
 
 class AssemblyBrowserUi;
 class AssemblyModel;
-class U2OpStatus;
 
 class GTUtilsAssemblyBrowser {
 public:
@@ -38,27 +39,27 @@ public:
         Reads
     };
 
-    static AssemblyBrowserUi *getView(U2OpStatus &os, const QString& viewTitle);
+    static AssemblyBrowserUi *getView(HI::GUITestOpStatus &os, const QString& viewTitle);
 
-    static void addRefFromProject(U2OpStatus &os, QString docName, QModelIndex parent = QModelIndex());
+    static void addRefFromProject(HI::GUITestOpStatus &os, QString docName, QModelIndex parent = QModelIndex());
 
-    static bool hasReference(U2OpStatus &os, const QString &viewTitle);
-    static bool hasReference(U2OpStatus &os, QWidget *view = NULL);
-    static bool hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser);
+    static bool hasReference(HI::GUITestOpStatus &os, const QString &viewTitle);
+    static bool hasReference(HI::GUITestOpStatus &os, QWidget *view = NULL);
+    static bool hasReference(HI::GUITestOpStatus &os, AssemblyBrowserUi *assemblyBrowser);
 
-    static qint64 getLength(U2OpStatus &os);
-    static qint64 getReadsCount(U2OpStatus &os);
+    static qint64 getLength(HI::GUITestOpStatus &os);
+    static qint64 getReadsCount(HI::GUITestOpStatus &os);
 
-    static bool isWelcomeScreenVisible(U2OpStatus &os);
+    static bool isWelcomeScreenVisible(HI::GUITestOpStatus &os);
 
-    static void zoomIn(U2OpStatus& os);
-    static void zoomToMax(U2OpStatus& os);
-    static void zoomToMin(U2OpStatus& os);
+    static void zoomIn(HI::GUITestOpStatus& os);
+    static void zoomToMax(HI::GUITestOpStatus& os);
+    static void zoomToMin(HI::GUITestOpStatus& os);
 
-    static void goToPosition(U2OpStatus &os, qint64 position);
+    static void goToPosition(HI::GUITestOpStatus &os, qint64 position);
 
-    static void callContextMenu(U2OpStatus &os, Area area = Consensus);
-    static void callExportCoverageDialog(U2OpStatus &os, Area area = Consensus);
+    static void callContextMenu(HI::GUITestOpStatus &os, Area area = Consensus);
+    static void callExportCoverageDialog(HI::GUITestOpStatus &os, Area area = Consensus);
 };
 
 }   // namespace U2

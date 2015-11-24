@@ -32,14 +32,14 @@ using namespace HI;
 class DocumentFormatSelectorDialogFiller : public Filler
 {
 public:
-    DocumentFormatSelectorDialogFiller(U2OpStatus &os, const QString &_format):
+    DocumentFormatSelectorDialogFiller(HI::GUITestOpStatus &os, const QString &_format):
         Filler(os, "DocumentFormatSelectorDialog"), format(_format){}
-    DocumentFormatSelectorDialogFiller(U2OpStatus &os, CustomScenario* custom):
+    DocumentFormatSelectorDialogFiller(HI::GUITestOpStatus &os, CustomScenario* custom):
         Filler(os, "DocumentFormatSelectorDialog", custom){}
     virtual void commonScenario();
 private:
     QString format;
-    QRadioButton* getButton(U2OpStatus &os);
+    QRadioButton* getButton(HI::GUITestOpStatus &os);
 };
 
 }

@@ -29,7 +29,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "ExportHighlightedDialogFiller"
-ExportHighlightedDialogFiller::ExportHighlightedDialogFiller(U2OpStatus &os, const QString &filePath, bool inverted) :
+ExportHighlightedDialogFiller::ExportHighlightedDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, bool inverted) :
     Filler(os, "ExportHighlightedDialog"),
     filePath(filePath),
     invertedExport(inverted)

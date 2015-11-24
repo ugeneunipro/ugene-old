@@ -28,9 +28,9 @@ namespace U2 {
 using namespace HI;
     class EditAnnotationFiller : public Filler {
     public:
-        EditAnnotationFiller(U2OpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false)
+        EditAnnotationFiller(HI::GUITestOpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false)
             :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location), complementStrand(_complementStrand) {}
-        EditAnnotationFiller(U2OpStatus &_os, CustomScenario* c): Filler(_os, "EditAnnotationDialog", c), annotationName(""), location(""), complementStrand(false) {}
+        EditAnnotationFiller(HI::GUITestOpStatus &_os, CustomScenario* c): Filler(_os, "EditAnnotationDialog", c), annotationName(""), location(""), complementStrand(false) {}
         virtual void commonScenario();
     private:
         QString annotationName;
@@ -40,7 +40,7 @@ using namespace HI;
 
     class EditAnnotationChecker : public Filler {
     public:
-        EditAnnotationChecker(U2OpStatus &_os, const QString &_annotationName, const QString &_location)
+        EditAnnotationChecker(HI::GUITestOpStatus &_os, const QString &_annotationName, const QString &_location)
             :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location){}
         virtual void commonScenario();
     private:

@@ -44,7 +44,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, const QString &saveTree, int model, double alpha, bool displayWithMsa) :
+BuildTreeDialogFiller::BuildTreeDialogFiller(HI::GUITestOpStatus &os, const QString &saveTree, int model, double alpha, bool displayWithMsa) :
     Filler(os, "CreatePhyTree"),
     saveTree(saveTree),
     model(model),
@@ -55,7 +55,7 @@ BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, const QString &save
 
 }
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os,
+BuildTreeDialogFiller::BuildTreeDialogFiller(HI::GUITestOpStatus &os,
                                              int replicates,
                                              const QString &saveTree,
                                              int seed,
@@ -73,7 +73,7 @@ BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os,
 
 }
 
-BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+BuildTreeDialogFiller::BuildTreeDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
     : Filler(os, "CreatePhyTree", scenario),
     model(0),
     replicates(0),
@@ -133,7 +133,7 @@ void BuildTreeDialogFiller::commonScenario() {
 
 #define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
 
-BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed, int bootstrap)
+BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(HI::GUITestOpStatus &os, bool _freqOptimRadioPressed, int bootstrap)
     : Filler(os, "CreatePhyTree"), freqOptimRadioPressed(_freqOptimRadioPressed), bootstrap(bootstrap)
 {
 

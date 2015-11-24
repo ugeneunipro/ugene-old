@@ -30,9 +30,9 @@ using namespace HI;
 class ExportSelectedSequenceFromAlignment : public Filler {
 public:
     enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
-    ExportSelectedSequenceFromAlignment(U2OpStatus &_os, const QString &_path, documentFormat _format = FASTA,
+    ExportSelectedSequenceFromAlignment(HI::GUITestOpStatus &_os, const QString &_path, documentFormat _format = FASTA,
         bool _keepGaps = true, bool _addToProj = true);
-    ExportSelectedSequenceFromAlignment(U2OpStatus &os, CustomScenario *scenario);
+    ExportSelectedSequenceFromAlignment(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 

@@ -32,8 +32,8 @@ public:
 
 
     enum ConnectionType {FROM_SETTINGS, MANUAL};
-    EditConnectionDialogFiller(U2OpStatus &os, const Parameters &parameters, ConnectionType type);
-    EditConnectionDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    EditConnectionDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters, ConnectionType type);
+    EditConnectionDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
     void commonScenario();
 
 private:
@@ -42,7 +42,7 @@ private:
 
 class AuthenticationDialogFiller : public Filler {
 public:
-    AuthenticationDialogFiller(U2OpStatus &os, const QString &login, const QString &password);
+    AuthenticationDialogFiller(HI::GUITestOpStatus &os, const QString &login, const QString &password);
     void run();
 
 private:

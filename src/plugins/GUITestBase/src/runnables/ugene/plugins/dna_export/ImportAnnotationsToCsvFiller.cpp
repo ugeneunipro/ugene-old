@@ -44,7 +44,7 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportAnnotationsToCsvFiller"
 
-ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
+ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(HI::GUITestOpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
         bool _columnSeparator, const QString &_separator, int _numberOfLines,
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
@@ -130,7 +130,7 @@ void RoleFiller::commonScenario() {
 
 class GTTableWidget {
 public:
-    static QPoint headerItemCenter(U2OpStatus&os, QTableWidget* w, int pos) {
+    static QPoint headerItemCenter(HI::GUITestOpStatus&os, QTableWidget* w, int pos) {
         CHECK_SET_ERR_RESULT(w != NULL, "QTableWidget is NULL", QPoint());
 
         QTableWidgetItem *widgetItem =  w->item(0, pos);

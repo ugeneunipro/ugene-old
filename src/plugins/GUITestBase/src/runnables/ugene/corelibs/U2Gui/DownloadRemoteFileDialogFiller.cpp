@@ -47,14 +47,14 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "DownloadRemoteFileDialogFiller"
-DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(U2OpStatus &os, const QList<DownloadRemoteFileDialogFiller::Action> &actions) :
+DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(HI::GUITestOpStatus &os, const QList<DownloadRemoteFileDialogFiller::Action> &actions) :
     Filler(os, "DownloadRemoteFileDialog"),
     actions(actions),
     dialog(NULL)
 {
 }
 
-DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(U2OpStatus &os, CustomScenario *c):
+DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c):
     Filler(os, "DownloadRemoteFileDialog", c){}
 
 #define GT_METHOD_NAME "commonScenario"

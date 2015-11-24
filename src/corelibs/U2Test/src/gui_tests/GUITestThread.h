@@ -24,22 +24,21 @@
 
 #include <QThread>
 #include <U2Core/global.h>
-
+#include <core/GUITest.h>
 
 namespace U2 {
 
-class GUITest;
 class Logger;
-typedef QList<GUITest *> GUITests;
+typedef QList<HI::GUITest *> GUITests;
 
 class U2TEST_EXPORT GUITestThread : public QThread {
     Q_OBJECT
 public:
-    GUITestThread(GUITest *test, Logger &log, bool needCleanup = true);
+    GUITestThread(HI::GUITest *test, Logger &log, bool needCleanup = true);
 
     void run();
 
-    GUITest* getTest(){ return test; }
+    HI::GUITest* getTest(){ return test; }
     QString getTestResult() { return testResult; }
 
 private slots:
@@ -57,7 +56,7 @@ private:
     static void cleanup();
     void writeTestResult();
 
-    GUITest *test;
+    HI::GUITest *test;
     Logger &log;
     bool needCleanup;
     QString testResult;

@@ -30,7 +30,7 @@ using namespace HI;
 class ExportConsensusDialogFiller: public Filler
 {
 public:
-    ExportConsensusDialogFiller(U2OpStatus &os, CustomScenario* _c):
+    ExportConsensusDialogFiller(HI::GUITestOpStatus &os, CustomScenario* _c):
         Filler(os, "ExportConsensusDialog", _c){}
     void commonScenario();
 

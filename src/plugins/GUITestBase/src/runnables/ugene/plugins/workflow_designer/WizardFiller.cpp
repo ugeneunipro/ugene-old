@@ -81,7 +81,7 @@ void WizardFiller::commonScenario(){
 
 
 #define GT_METHOD_NAME "WizardFiller::getExpandButton"
-QToolButton* WizardFiller::getExpandButton(U2OpStatus &os){
+QToolButton* WizardFiller::getExpandButton(HI::GUITestOpStatus &os){
     QToolButton* expandButton = NULL;
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL",NULL);

@@ -22,7 +22,7 @@
 #ifndef _U2_STARTUP_DIALOG_FILLER_H_
 #define _U2_STARTUP_DIALOG_FILLER_H_
 
-#include <U2Test/GUITest.h>
+#include <core/GUITest.h>
 
 #include "utils/GTUtilsDialog.h"
 
@@ -34,7 +34,7 @@ using namespace HI;
 
 class StartupDialogFiller : public Filler {
 public:
-    StartupDialogFiller(U2OpStatus &os, const QString &path = GUITest::sandBoxDir, bool isPathValid = true);
+    StartupDialogFiller(HI::GUITestOpStatus &os, const QString &path = HI::GUITest::sandBoxDir, bool isPathValid = true);
     void commonScenario();
 
 private:

@@ -43,13 +43,13 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemoteBLASTDialogFiller"
 
-RemoteBLASTDialogFiller::RemoteBLASTDialogFiller(U2OpStatus &os) :
+RemoteBLASTDialogFiller::RemoteBLASTDialogFiller(HI::GUITestOpStatus &os) :
     Filler(os, "RemoteBLASTDialog")
 {
 
 }
 
-RemoteBLASTDialogFiller::RemoteBLASTDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+RemoteBLASTDialogFiller::RemoteBLASTDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "RemoteBLASTDialog", scenario)
 {
 

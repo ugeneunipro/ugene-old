@@ -52,10 +52,10 @@ private:
 
 class GTUtilsLog {
 public:
-    static void check(U2OpStatus &os, const GTLogTracer &logTracer);
-    static void checkContainsError(U2OpStatus &os, const GTLogTracer& logTracer, const QString &messagePart);
-    static void checkContainsMessage(U2OpStatus &os, const GTLogTracer& logTracer, bool expected = true);
-    static QStringList getErrors(U2OpStatus &os, const GTLogTracer &logTracer);
+    static void check(HI::GUITestOpStatus &os, const GTLogTracer &logTracer);
+    static void checkContainsError(HI::GUITestOpStatus &os, const GTLogTracer& logTracer, const QString &messagePart);
+    static void checkContainsMessage(HI::GUITestOpStatus &os, const GTLogTracer& logTracer, bool expected = true);
+    static QStringList getErrors(HI::GUITestOpStatus &os, const GTLogTracer &logTracer);
 
 };
 

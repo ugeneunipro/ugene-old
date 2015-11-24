@@ -64,14 +64,14 @@ const QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::innerWid
 #define GT_CLASS_NAME "GTUtilsOptionPanelMSA"
 
 #define GT_METHOD_NAME "toggleTab"
-void GTUtilsOptionPanelMsa::toggleTab(U2OpStatus &os, GTUtilsOptionPanelMsa::Tabs tab) {
+void GTUtilsOptionPanelMsa::toggleTab(HI::GUITestOpStatus &os, GTUtilsOptionPanelMsa::Tabs tab) {
     GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
     GTGlobals::sleep(200);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openTab"
-void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab) {
+void GTUtilsOptionPanelMsa::openTab(HI::GUITestOpStatus &os, Tabs tab) {
     if (!isTabOpened(os, tab)) {
         toggleTab(os, tab);
     }
@@ -79,7 +79,7 @@ void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "closeTab"
-void GTUtilsOptionPanelMsa::closeTab(U2OpStatus &os, Tabs tab) {
+void GTUtilsOptionPanelMsa::closeTab(HI::GUITestOpStatus &os, Tabs tab) {
     if (isTabOpened(os, tab)) {
         toggleTab(os, tab);
     }
@@ -87,7 +87,7 @@ void GTUtilsOptionPanelMsa::closeTab(U2OpStatus &os, Tabs tab) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isTabOpened"
-bool GTUtilsOptionPanelMsa::isTabOpened(U2OpStatus &os, Tabs tab) {
+bool GTUtilsOptionPanelMsa::isTabOpened(HI::GUITestOpStatus &os, Tabs tab) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
     QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
@@ -96,7 +96,7 @@ bool GTUtilsOptionPanelMsa::isTabOpened(U2OpStatus &os, Tabs tab) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addReference"
-void GTUtilsOptionPanelMsa::addReference(U2OpStatus &os, QString seqName, AddRefMethod method){
+void GTUtilsOptionPanelMsa::addReference(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method){
     GT_CHECK(!seqName.isEmpty(), "sequence name is empty");
     //Option panel should be opned to use this method
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
@@ -123,13 +123,13 @@ void GTUtilsOptionPanelMsa::addReference(U2OpStatus &os, QString seqName, AddRef
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "removeReference"
-void GTUtilsOptionPanelMsa::removeReference(U2OpStatus &os){
+void GTUtilsOptionPanelMsa::removeReference(HI::GUITestOpStatus &os){
     GTWidget::click(os, GTWidget::findWidget(os, "deleteSeq"));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getReference"
-QString GTUtilsOptionPanelMsa::getReference(U2OpStatus &os) {
+QString GTUtilsOptionPanelMsa::getReference(HI::GUITestOpStatus &os) {
     openTab(os, General);
     QLineEdit *leReference = GTWidget::findExactWidget<QLineEdit *>(os, "sequenceLineEdit");
     GT_CHECK_RESULT(NULL != leReference, "Reference sequence name lineedit is NULL", QString());
@@ -138,7 +138,7 @@ QString GTUtilsOptionPanelMsa::getReference(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getLength"
-int GTUtilsOptionPanelMsa::getLength(U2OpStatus &os){
+int GTUtilsOptionPanelMsa::getLength(HI::GUITestOpStatus &os){
     QLabel* alignmentLengthLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "alignmentLength"));
     GT_CHECK_RESULT(alignmentLengthLabel != NULL, "alignmentLengthLabel not found", -1);
     bool ok;
@@ -149,7 +149,7 @@ int GTUtilsOptionPanelMsa::getLength(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getHeight"
-int GTUtilsOptionPanelMsa::getHeight(U2OpStatus &os){
+int GTUtilsOptionPanelMsa::getHeight(HI::GUITestOpStatus &os){
     QLabel* alignmentHeightLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "alignmentHeight"));
     GT_CHECK_RESULT(alignmentHeightLabel != NULL, "alignmentHeightLabel not found", -1);
     bool ok;
@@ -160,14 +160,14 @@ int GTUtilsOptionPanelMsa::getHeight(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setColorScheme"
-void GTUtilsOptionPanelMsa::setColorScheme(U2OpStatus &os, const QString &colorSchemeName) {
+void GTUtilsOptionPanelMsa::setColorScheme(HI::GUITestOpStatus &os, const QString &colorSchemeName) {
     openTab(os, Highlighting);
     GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "colorScheme"), colorSchemeName);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getColorScheme"
-QString GTUtilsOptionPanelMsa::getColorScheme(U2OpStatus &os) {
+QString GTUtilsOptionPanelMsa::getColorScheme(HI::GUITestOpStatus &os) {
     openTab(os, Highlighting);
     QComboBox *colorScheme = GTWidget::findExactWidget<QComboBox *>(os, "colorScheme");
     GT_CHECK_RESULT(NULL != colorScheme, "ColorSCheme combobox is NULL", "");
@@ -176,24 +176,24 @@ QString GTUtilsOptionPanelMsa::getColorScheme(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addFirstSeqToPA"
-void GTUtilsOptionPanelMsa::addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method){
+void GTUtilsOptionPanelMsa::addFirstSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method){
     addSeqToPA(os, seqName, method, 1);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSecondSeqToPA"
-void GTUtilsOptionPanelMsa::addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method){
+void GTUtilsOptionPanelMsa::addSecondSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method){
     addSeqToPA(os, seqName, method, 2);
 }
 #undef GT_METHOD_NAME
 
-QString GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(U2OpStatus &os, int num){
+QString GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(HI::GUITestOpStatus &os, int num){
     QLineEdit* le = qobject_cast<QLineEdit*>(getWidget(os, "sequenceLineEdit", num));
     return le->text();
 }
 
 #define GT_METHOD_NAME "addSeqToPA"
-void GTUtilsOptionPanelMsa::addSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method, int number){
+void GTUtilsOptionPanelMsa::addSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method, int number){
     GT_CHECK(number == 1 || number == 2, "number must be 1 or 2");
     GT_CHECK(!seqName.isEmpty(), "sequence name is empty");
     //Option panel should be opned to use this method
@@ -222,7 +222,7 @@ void GTUtilsOptionPanelMsa::addSeqToPA(U2OpStatus &os, QString seqName, AddRefMe
 
 
 #define GT_METHOD_NAME "getAddButton"
-QToolButton* GTUtilsOptionPanelMsa::getAddButton(U2OpStatus &os, int number){
+QToolButton* GTUtilsOptionPanelMsa::getAddButton(HI::GUITestOpStatus &os, int number){
     QToolButton* result = qobject_cast<QToolButton*>(getWidget(os, "addSeq", number));
     GT_CHECK_RESULT(result != NULL, "toolbutton is NULL", NULL);
     return result;
@@ -230,7 +230,7 @@ QToolButton* GTUtilsOptionPanelMsa::getAddButton(U2OpStatus &os, int number){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getDeleteButton"
-QToolButton* GTUtilsOptionPanelMsa::getDeleteButton(U2OpStatus &os, int number){
+QToolButton* GTUtilsOptionPanelMsa::getDeleteButton(HI::GUITestOpStatus &os, int number){
     QToolButton* result = qobject_cast<QToolButton*>(getWidget(os, "deleteSeq", number));
     GT_CHECK_RESULT(result != NULL, "toolbutton is NULL", NULL);
     return result;
@@ -238,21 +238,21 @@ QToolButton* GTUtilsOptionPanelMsa::getDeleteButton(U2OpStatus &os, int number){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getAlignButton"
-QPushButton *GTUtilsOptionPanelMsa::getAlignButton(U2OpStatus &os) {
+QPushButton *GTUtilsOptionPanelMsa::getAlignButton(HI::GUITestOpStatus &os) {
     // TODO: ensure that the Pairwise alignment" tab is opened.
     return GTWidget::findExactWidget<QPushButton *>(os, "alignButton");
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setPairwiseAlignmentAlgorithm"
-void GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(U2OpStatus &os, const QString &algorithm) {
+void GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(HI::GUITestOpStatus &os, const QString &algorithm) {
     // TODO: ensure that the Pairwise alignment" tab is opened.
     GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox*>(os, "algorithmListComboBox"), algorithm);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSeqLineEdit"
-QLineEdit* GTUtilsOptionPanelMsa::getSeqLineEdit(U2OpStatus &os, int number){
+QLineEdit* GTUtilsOptionPanelMsa::getSeqLineEdit(HI::GUITestOpStatus &os, int number){
     QLineEdit* result = qobject_cast<QLineEdit*>(getWidget(os, "sequenceLineEdit", number));
     GT_CHECK_RESULT(result != NULL, "sequenceLineEdit is NULL", NULL);
     return result;
@@ -260,7 +260,7 @@ QLineEdit* GTUtilsOptionPanelMsa::getSeqLineEdit(U2OpStatus &os, int number){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "agetWidget"
-QWidget* GTUtilsOptionPanelMsa::getWidget(U2OpStatus &os, const QString& widgetName, int number){
+QWidget* GTUtilsOptionPanelMsa::getWidget(HI::GUITestOpStatus &os, const QString& widgetName, int number){
     QWidget* sequenceContainerWidget = GTWidget::findWidget(os, "sequenceContainerWidget");
     GT_CHECK_RESULT(sequenceContainerWidget != NULL, "sequenceContainerWidget not found", NULL);
     QList<QWidget*> widgetList = sequenceContainerWidget->findChildren<QWidget*>(widgetName);

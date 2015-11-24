@@ -28,7 +28,7 @@ namespace HI {
 
 class HI_EXPORT FontDialogFiller : public Filler {
     public:
-        FontDialogFiller(U2::U2OpStatus &_os)
+        FontDialogFiller(GUITestOpStatus &_os)
             :Filler(_os, ""){}
         virtual void run();
     };

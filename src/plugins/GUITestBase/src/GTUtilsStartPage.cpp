@@ -33,18 +33,18 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsStartPage"
 
-void GTUtilsStartPage::openStartPage(U2OpStatus &os){
+void GTUtilsStartPage::openStartPage(HI::GUITestOpStatus &os){
     GTUtilsMdi::activateWindow(os, "Start Page");
 }
 
-QWebView* GTUtilsStartPage::getStartPage(U2OpStatus &os){
+QWebView* GTUtilsStartPage::getStartPage(HI::GUITestOpStatus &os){
     QWidget* startPageWidget = GTWidget::findWidget(os, "Start Page");
     QWebView* result = GTWidget::findExactWidget<QWebView*>(os, "webView", startPageWidget);
     return result;
 }
 
 #define GT_METHOD_NAME "getButton"
-QWebElement GTUtilsStartPage::getButton(U2OpStatus &os, Buttons button) {
+QWebElement GTUtilsStartPage::getButton(HI::GUITestOpStatus &os, Buttons button) {
     switch (button) {
     case OpenFile:
         return GTWebView::findElement(os, getStartPage(os), "Open File(s)", "DIV");
@@ -61,18 +61,18 @@ QWebElement GTUtilsStartPage::getButton(U2OpStatus &os, Buttons button) {
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsStartPage::clickButton(U2OpStatus &os, Buttons b) {
+void GTUtilsStartPage::clickButton(HI::GUITestOpStatus &os, Buttons b) {
     QWebElement but = getButton(os, b);
     QWebView* start = getStartPage(os);
     GTWebView::click(os, start, but);
 }
 
-void GTUtilsStartPage::clickResentDocument(U2OpStatus &os, QString text){
+void GTUtilsStartPage::clickResentDocument(HI::GUITestOpStatus &os, QString text){
     QWebElement el = GTWebView::findElement(os, getStartPage(os), "- " + text, "A");
     GTWebView::click(os, getStartPage(os), el);
 }
 
-void GTUtilsStartPage::clickResentProject(U2OpStatus &os, QString text){
+void GTUtilsStartPage::clickResentProject(HI::GUITestOpStatus &os, QString text){
     clickResentDocument(os, text);
 }
 

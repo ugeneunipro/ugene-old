@@ -37,7 +37,7 @@ using namespace HI;
 
 #define GT_CLASS_NAME "GTBaseCompleter"
 #define GT_METHOD_NAME "click"
-void GTBaseCompleter::click(U2OpStatus &os, QTreeWidget* tree, const QString &seqName){
+void GTBaseCompleter::click(HI::GUITestOpStatus &os, QTreeWidget* tree, const QString &seqName){
     GT_CHECK(tree != NULL, "tree widget is NULL");
     QTreeWidgetItem* item = GTTreeWidget::findItem(os, tree, seqName);
     GT_CHECK(item != NULL, "item not found");
@@ -50,7 +50,7 @@ void GTBaseCompleter::click(U2OpStatus &os, QTreeWidget* tree, const QString &se
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getNames"
-QStringList GTBaseCompleter::getNames(U2OpStatus &os, QTreeWidget *tree){
+QStringList GTBaseCompleter::getNames(HI::GUITestOpStatus &os, QTreeWidget *tree){
     if(tree == NULL){
         tree = getCompleter(os);
     }
@@ -64,7 +64,7 @@ QStringList GTBaseCompleter::getNames(U2OpStatus &os, QTreeWidget *tree){
 }
 #undef GT_METHOD_NAME
 
-bool GTBaseCompleter::isEmpty(U2OpStatus &os, QTreeWidget *tree){
+bool GTBaseCompleter::isEmpty(HI::GUITestOpStatus &os, QTreeWidget *tree){
     if(tree == NULL){
         tree = getCompleter(os);
     }
@@ -74,7 +74,7 @@ bool GTBaseCompleter::isEmpty(U2OpStatus &os, QTreeWidget *tree){
 }
 
 #define GT_METHOD_NAME "getCompleter"
-QTreeWidget* GTBaseCompleter::getCompleter(U2OpStatus &os){
+QTreeWidget* GTBaseCompleter::getCompleter(HI::GUITestOpStatus &os){
     QWidget* sequenceLineEdit = GTWidget::findWidget(os, "sequenceLineEdit");
     GT_CHECK_RESULT(sequenceLineEdit != NULL, "sequenceLineEdit not found", NULL);
     QTreeWidget* completer = sequenceLineEdit->findChild<QTreeWidget*>();

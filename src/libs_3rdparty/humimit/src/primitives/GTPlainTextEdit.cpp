@@ -30,7 +30,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTPlainTextEdit"
 
 #define GT_METHOD_NAME "setPlainText"
-void GTPlainTextEdit::setPlainText(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text) {
+void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text) {
 
     GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
     if(plainTextEdit->toPlainText() == text){
@@ -46,7 +46,7 @@ void GTPlainTextEdit::setPlainText(U2::U2OpStatus& os, QPlainTextEdit* plainText
 #undef GT_METHOD_NAME
 
 //#define GT_METHOD_NAME "clear"
-//void GTPlainTextEdit::clear(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit) {
+//void GTPlainTextEdit::clear(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit) {
 //
 //    GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
 //

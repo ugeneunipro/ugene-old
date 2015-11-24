@@ -29,13 +29,13 @@ namespace HI {
 class HI_EXPORT GTClipboard {
 public:
     // fails if can't get clipboard or clipboard doesn't contain text data
-    static QString text(U2::U2OpStatus &os);
+    static QString text(GUITestOpStatus &os);
 
-    static void setText(U2::U2OpStatus &os, QString text);
+    static void setText(GUITestOpStatus &os, QString text);
 
-    static void setUrls(U2::U2OpStatus &os, const QList<QString>& urls);
+    static void setUrls(GUITestOpStatus &os, const QList<QString>& urls);
 
-    static void clear(U2::U2OpStatus &os);
+    static void clear(GUITestOpStatus &os);
 };
 
 } //namespace

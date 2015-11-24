@@ -50,7 +50,13 @@ HEADERS += \
            src/utils/GTUtilsDialog.h \
 #           src/utils/GTUtilsMdi.h \
            src/utils/GTUtilsToolTip.h \
-    src/utils/GTMouseUtils.h
+    src/utils/GTMouseUtils.h \
+    src/core/GUITestOpStatus.h \
+    src/core/global.h \
+    src/core/CustomScenario.h \
+    src/core/GUITest.h \
+    src/core/MainThreadRunnable.h \
+    src/core/MainThreadTimer.h
 SOURCES += \
            src/GTGlobals.cpp \
            src/base_dialogs/ColorDialogFiller.cpp \
@@ -103,7 +109,11 @@ SOURCES += \
            src/utils/GTUtilsDialog.cpp \
 #           src/utils/GTUtilsMdi.cpp \
            src/utils/GTUtilsToolTip.cpp \
-    src/utils/GTMouseUtils.cpp
+    src/utils/GTMouseUtils.cpp \
+    src/core/CustomScenario.cpp \
+    src/core/GUITest.cpp \
+    src/core/MainThreadRunnable.cpp \
+    src/core/MainThreadTimer.cpp
 
 macx {
 OBJECTIVE_HEADERS += src/primitives/private/GTMenuPrivateMac.h

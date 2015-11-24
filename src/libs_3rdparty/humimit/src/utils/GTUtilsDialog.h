@@ -24,7 +24,7 @@
 
 #include <QDialogButtonBox>
 
-#include <U2Test/CustomScenario.h>
+#include <core/CustomScenario.h>
 
 #include "GTGlobals.h"
 
@@ -65,7 +65,7 @@ public:
         DialogDestiny destiny;
     };
 
-    GUIDialogWaiter(U2::U2OpStatus &os, Runnable* _r, const WaitSettings& settings = WaitSettings());
+    GUIDialogWaiter(GUITestOpStatus &os, Runnable* _r, const WaitSettings& settings = WaitSettings());
     virtual ~GUIDialogWaiter();
 
     WaitSettings getSettings(){return settings;}
@@ -81,7 +81,7 @@ public slots:
     void checkDialogPool();
 
 private:
-    U2::U2OpStatus &os;
+    GUITestOpStatus &os;
     Runnable *runnable;
     WaitSettings settings;
 
@@ -94,8 +94,8 @@ private:
 
 class HI_EXPORT Filler : public Runnable {
 public:
-    Filler(U2::U2OpStatus &os, const GUIDialogWaiter::WaitSettings &settings, U2::CustomScenario *scenario = NULL);
-    Filler(U2::U2OpStatus &os, const QString &objectName, U2::CustomScenario *scenario = NULL);
+    Filler(GUITestOpStatus &os, const GUIDialogWaiter::WaitSettings &settings, CustomScenario *scenario = NULL);
+    Filler(GUITestOpStatus &os, const QString &objectName, CustomScenario *scenario = NULL);
     ~Filler();
 
     GUIDialogWaiter::WaitSettings getSettings() const;
@@ -103,18 +103,18 @@ public:
     virtual void commonScenario() {}
 
 protected:
-    U2::U2OpStatus &os;
+    GUITestOpStatus &os;
     GUIDialogWaiter::WaitSettings settings;
-    U2::CustomScenario *scenario;
+    CustomScenario *scenario;
 };
 
 class HI_EXPORT HangChecker: public QObject{
     Q_OBJECT
 public:
-    HangChecker(U2::U2OpStatus &_os);
+    HangChecker(GUITestOpStatus &_os);
     QTimer* timer;
     void startChecking();
-    U2::U2OpStatus &os;
+    GUITestOpStatus &os;
     bool mightHung;
 public slots:
     void sl_check();
@@ -129,30 +129,30 @@ public:
         FailOnUnfinished, NoFailOnUnfinished
     };
 
-    static QDialogButtonBox * buttonBox(U2::U2OpStatus &os, QWidget *dialog);
+    static QDialogButtonBox * buttonBox(GUITestOpStatus &os, QWidget *dialog);
 
-    static void clickButtonBox(U2::U2OpStatus &os, QDialogButtonBox::StandardButton button);
-    static void clickButtonBox(U2::U2OpStatus &os, QWidget *dialog, QDialogButtonBox::StandardButton button);
+    static void clickButtonBox(GUITestOpStatus &os, QDialogButtonBox::StandardButton button);
+    static void clickButtonBox(GUITestOpStatus &os, QWidget *dialog, QDialogButtonBox::StandardButton button);
 
     // if objectName is not empty, waits for QWidget with a given name
-    static void waitForDialog(U2::U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
+    static void waitForDialog(GUITestOpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
 
-    static void waitForDialog(U2::U2OpStatus &os, Runnable *r, int timeout = 0);
+    static void waitForDialog(GUITestOpStatus &os, Runnable *r, int timeout = 0);
 
-    static void waitForDialogWhichMustNotBeRunned(U2::U2OpStatus &os, Runnable *r);
+    static void waitForDialogWhichMustNotBeRunned(GUITestOpStatus &os, Runnable *r);
 
-    static void waitForDialogWhichMayRunOrNot(U2::U2OpStatus &os, Runnable *r);
+    static void waitForDialogWhichMayRunOrNot(GUITestOpStatus &os, Runnable *r);
 
     // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
-    static void cleanup(U2::U2OpStatus &os, CleanupSettings s = FailOnUnfinished);
+    static void cleanup(GUITestOpStatus &os, CleanupSettings s = FailOnUnfinished);
 
-    static void startHangChecking(U2::U2OpStatus &os);
+    static void startHangChecking(GUITestOpStatus &os);
     static void stopHangChecking();
 
-    static bool isButtonEnabled(U2::U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button);
+    static bool isButtonEnabled(GUITestOpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button);
 
 private:
-    static void checkAllFinished(U2::U2OpStatus &os);
+    static void checkAllFinished(GUITestOpStatus &os);
 
     static QList<GUIDialogWaiter*> pool;
     static HangChecker* hangChecker;

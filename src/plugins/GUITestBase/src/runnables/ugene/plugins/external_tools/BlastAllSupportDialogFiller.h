@@ -50,8 +50,8 @@ public:
           bool test_3211;
     };
 
-    BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os);
-    BlastAllSupportDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    BlastAllSupportDialogFiller(const Parameters &parameters, HI::GUITestOpStatus &os);
+    BlastAllSupportDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 

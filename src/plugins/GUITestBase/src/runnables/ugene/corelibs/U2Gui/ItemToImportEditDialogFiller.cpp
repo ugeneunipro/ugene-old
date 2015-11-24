@@ -36,7 +36,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ItemToImportEditDialogFiller"
 
-ItemToImportEditDialogFiller::ItemToImportEditDialogFiller(U2OpStatus& os, const QVariantMap& data) :
+ItemToImportEditDialogFiller::ItemToImportEditDialogFiller(HI::GUITestOpStatus& os, const QVariantMap& data) :
     Filler(os, "ItemToImportEditDialog"),
     data(data)
 {

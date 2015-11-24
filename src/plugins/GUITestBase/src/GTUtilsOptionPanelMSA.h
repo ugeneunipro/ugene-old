@@ -30,8 +30,6 @@ class QToolButton;
 
 namespace U2 {
 
-class U2OpStatus;
-
 class GTUtilsOptionPanelMsa{
 public:
     enum Tabs{General, Highlighting, PairwiseAlignment, TreeSettings, ExportConsensus, Statistics};
@@ -40,34 +38,34 @@ public:
     static const QMap<Tabs, QString> tabsNames;
     static const QMap<Tabs, QString> innerWidgetNames;
 
-    static void toggleTab(U2OpStatus &os, Tabs tab);
-    static void openTab(U2OpStatus &os, Tabs tab);
-    static void closeTab(U2OpStatus &os, Tabs tab);
-    static bool isTabOpened(U2OpStatus &os, Tabs tab);
+    static void toggleTab(HI::GUITestOpStatus &os, Tabs tab);
+    static void openTab(HI::GUITestOpStatus &os, Tabs tab);
+    static void closeTab(HI::GUITestOpStatus &os, Tabs tab);
+    static bool isTabOpened(HI::GUITestOpStatus &os, Tabs tab);
 
-    static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
-    static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
-    static void addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
-    static QString getSeqFromPAlineEdit(U2OpStatus &os, int num);
-    static void removeReference(U2OpStatus &os);
-    static QString getReference(U2OpStatus &os);
-    static int getLength(U2OpStatus &os);
-    static int getHeight(U2OpStatus &os);
+    static void addReference(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method = Button);
+    static void addFirstSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method = Button);
+    static void addSecondSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method = Button);
+    static QString getSeqFromPAlineEdit(HI::GUITestOpStatus &os, int num);
+    static void removeReference(HI::GUITestOpStatus &os);
+    static QString getReference(HI::GUITestOpStatus &os);
+    static int getLength(HI::GUITestOpStatus &os);
+    static int getHeight(HI::GUITestOpStatus &os);
 
-    static void setColorScheme(U2OpStatus &os, const QString &colorSchemeName);
-    static QString getColorScheme(U2OpStatus &os);
+    static void setColorScheme(HI::GUITestOpStatus &os, const QString &colorSchemeName);
+    static QString getColorScheme(HI::GUITestOpStatus &os);
 
     //functions for accessing PA gui elements
-    static QToolButton* getAddButton(U2OpStatus &os, int number);
-    static QLineEdit* getSeqLineEdit(U2OpStatus &os, int number);
-    static QToolButton* getDeleteButton(U2OpStatus &os, int number);
-    static QPushButton *getAlignButton(U2OpStatus &os);
-    static void setPairwiseAlignmentAlgorithm(U2OpStatus &os, const QString &algorithm);
+    static QToolButton* getAddButton(HI::GUITestOpStatus &os, int number);
+    static QLineEdit* getSeqLineEdit(HI::GUITestOpStatus &os, int number);
+    static QToolButton* getDeleteButton(HI::GUITestOpStatus &os, int number);
+    static QPushButton *getAlignButton(HI::GUITestOpStatus &os);
+    static void setPairwiseAlignmentAlgorithm(HI::GUITestOpStatus &os, const QString &algorithm);
 
 private:
-    static QWidget* getWidget(U2OpStatus &os, const QString& widgetName, int number);
+    static QWidget* getWidget(HI::GUITestOpStatus &os, const QString& widgetName, int number);
 
-    static void addSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method, int number);
+    static void addSeqToPA(HI::GUITestOpStatus &os, QString seqName, AddRefMethod method, int number);
 
 
 private:

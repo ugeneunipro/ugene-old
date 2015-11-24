@@ -41,7 +41,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format,
+ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name, documentFormat _format,
                                                            bool saveFile, bool keepCharacters, GTGlobals::UseMethod method):
 Filler(_os, "U2__ExportMSA2SequencesDialog"), name(_name), format(_format), saveFile(saveFile), keepCharacters(keepCharacters),
 useMethod(method) {
@@ -59,7 +59,7 @@ useMethod(method) {
 
 }
 
-ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, CustomScenario *scenario)
+ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(HI::GUITestOpStatus &_os, CustomScenario *scenario)
     : Filler(_os, "U2__ExportMSA2SequencesDialog", scenario),
       format(EMBL),
       saveFile(false),

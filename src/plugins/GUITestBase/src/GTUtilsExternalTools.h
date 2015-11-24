@@ -28,8 +28,8 @@ namespace U2 {
 
 class GTUtilsExternalTools {
 public:
-    static void removeTool(U2OpStatus &os, const QString &toolName);
-    static void setToolUrl(U2OpStatus &os, const QString &toolName, const QString &url);
+    static void removeTool(HI::GUITestOpStatus &os, const QString &toolName);
+    static void setToolUrl(HI::GUITestOpStatus &os, const QString &toolName, const QString &url);
 };
 
 } // U2

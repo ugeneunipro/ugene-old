@@ -30,7 +30,7 @@ using namespace HI;
 
 class AddFolderDialogFiller : public Filler {
 public:
-    AddFolderDialogFiller(U2OpStatus &os, const QString &folderName, GTGlobals::UseMethod acceptMethod);
+    AddFolderDialogFiller(HI::GUITestOpStatus &os, const QString &folderName, GTGlobals::UseMethod acceptMethod);
     void run();
 
 private:

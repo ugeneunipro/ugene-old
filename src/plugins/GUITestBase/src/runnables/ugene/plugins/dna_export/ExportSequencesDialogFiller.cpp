@@ -43,7 +43,7 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name,
     bool translate, const QString& seqName, bool saveAllAminoFrames)
     : Filler(_os, "U2__ExportSequencesDialog"), name(_name), seqName(seqName), translate(translate),
     saveAllAminoFrames(saveAllAminoFrames)
@@ -56,7 +56,7 @@ ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QS
     path = __path;
 }
 
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario)
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(HI::GUITestOpStatus &os, CustomScenario *customScenario)
     : Filler(os, "U2__ExportSequencesDialog", customScenario),
       translate(false), saveAllAminoFrames(true)
 {
@@ -107,7 +107,7 @@ void ExportSelectedRegionFiller::setName(const QString &value) {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
-ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format,
+ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFiller(HI::GUITestOpStatus &_os, const QString &_path, FormatToUse _format,
     MergeOptions _options, int _gapLength, bool _addDocToProject, bool _exportWithAnnotations, GTGlobals::UseMethod method)
     : Filler(_os, "U2__ExportSequencesDialog"), gapLength(_gapLength), format(_format), addToProject(_addDocToProject),
     exportWithAnnotations(false), options(_options), useMethod(method)

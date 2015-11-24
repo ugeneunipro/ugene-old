@@ -33,7 +33,7 @@ namespace HI {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
 #define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
+void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
 {
     // get screen resolution
     HDC hDCScreen = GetDC(NULL);
@@ -118,7 +118,7 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "press"
-void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
+void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
 {
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTDOWN :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTDOWN :
@@ -139,7 +139,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "release"
-void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
+void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
     unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
@@ -161,7 +161,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 }
 #undef GT_METHOD_NAME
 
-void GTMouseDriver::scroll(U2::U2OpStatus &os, int value)
+void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
 {
     INPUT event;
     event.type = INPUT_MOUSE;

@@ -29,7 +29,7 @@ using namespace HI;
 
 class BuildIndexDialogFiller : public Filler {
 public:
-    BuildIndexDialogFiller(U2OpStatus &os,
+    BuildIndexDialogFiller(HI::GUITestOpStatus &os,
                            const QString &_refPath,
                            const QString &_refFileName,
                            const QString &_method = "UGENE Genome Aligner",

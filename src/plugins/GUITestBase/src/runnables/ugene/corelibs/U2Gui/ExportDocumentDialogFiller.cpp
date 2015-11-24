@@ -41,7 +41,7 @@ namespace U2 {
 QString ExportDocumentDialogFiller::defaultExportString = "";
 
 #define GT_CLASS_NAME "ExportDocumentDialogFiller"
-ExportDocumentDialogFiller::ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
+ExportDocumentDialogFiller::ExportDocumentDialogFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name,
                          ExportDocumentDialogFiller::FormatToUse _format, bool compressFile,
                          bool addToProject, GTGlobals::UseMethod method):
 Filler(_os, "ExportDocumentDialog"),

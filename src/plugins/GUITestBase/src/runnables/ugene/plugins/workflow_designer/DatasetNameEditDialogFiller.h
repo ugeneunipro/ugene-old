@@ -30,7 +30,7 @@ using namespace HI;
 class DatasetNameEditDialogFiller : public Filler
 {
 public:
-    DatasetNameEditDialogFiller(U2OpStatus& os, QString _datasetName = ""):Filler(os, ""),
+    DatasetNameEditDialogFiller(HI::GUITestOpStatus& os, QString _datasetName = ""):Filler(os, ""),
         datasetName(_datasetName){}
     virtual void run();
 private:

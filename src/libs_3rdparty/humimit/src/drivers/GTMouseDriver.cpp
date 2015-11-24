@@ -27,7 +27,7 @@
 
 namespace HI {
 
-void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
+void GTMouseDriver::click(GUITestOpStatus &os, Qt::MouseButton button)
 {
     press(os, button);
     release(os, button);
@@ -43,7 +43,7 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 
 }
 
-void GTMouseDriver::dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const QPoint& end) {
+void GTMouseDriver::dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
     GTDragger d(os, end);
     Q_UNUSED(d);
@@ -59,7 +59,7 @@ void GTMouseDriver::dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const Q
 }
 
 #ifndef Q_OS_MAC
-void GTMouseDriver::doubleClick(U2::U2OpStatus &os)
+void GTMouseDriver::doubleClick(GUITestOpStatus &os)
 {
     press(os, Qt::LeftButton);
     release(os, Qt::LeftButton);
@@ -71,7 +71,7 @@ void GTMouseDriver::doubleClick(U2::U2OpStatus &os)
 }
 #endif
 
-GTDragger::GTDragger(U2::U2OpStatus &_os, const QPoint& _to) :
+GTDragger::GTDragger(GUITestOpStatus &_os, const QPoint& _to) :
     QObject(),
     os(_os),
     to(_to),

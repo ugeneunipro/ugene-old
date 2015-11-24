@@ -588,7 +588,7 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
 
     class wd_test_0060 : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QMap<QString, QVariant> parameters;
             parameters["Output file"] = QDir(sandBoxDir).absolutePath() + "/wd_test_0060";
             //! The following code will not work because of UGENE-4234

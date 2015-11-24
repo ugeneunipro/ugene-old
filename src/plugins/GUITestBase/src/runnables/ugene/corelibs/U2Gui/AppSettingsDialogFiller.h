@@ -32,18 +32,18 @@ public:
     enum style{minimal,extended,none};
     enum Tabs{General, Resourses, Network, FileFormat, Directories, Logging, AlignmentColorScheme, GenomeAligner,
              WorkflowDesigner, ExternalTools, OpenCL};
-    AppSettingsDialogFiller(U2OpStatus &_os, style _itemStyle=extended):Filler(_os,"AppSettingsDialog"),
+    AppSettingsDialogFiller(HI::GUITestOpStatus &_os, style _itemStyle=extended):Filler(_os,"AppSettingsDialog"),
         itemStyle(_itemStyle),r(-1),g(-1),b(-1){}
-    AppSettingsDialogFiller(U2OpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
+    AppSettingsDialogFiller(HI::GUITestOpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
         itemStyle(none),r(_r),g(_g),b(_b){}
-    AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario);
+    AppSettingsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *customScenario);
     void commonScenario();
 
-    static void setExternalToolPath(U2OpStatus &os, const QString& toolName, const QString& toolPath);
-    static QString getExternalToolPath(U2OpStatus &os, const QString& toolName);
-    static void openTab(U2OpStatus &os, Tabs tab);
-    static bool isExternalToolValid(U2OpStatus &os, const QString& toolName);
-    static void clearToolPath(U2OpStatus &os, const QString& toolName);
+    static void setExternalToolPath(HI::GUITestOpStatus &os, const QString& toolName, const QString& toolPath);
+    static QString getExternalToolPath(HI::GUITestOpStatus &os, const QString& toolName);
+    static void openTab(HI::GUITestOpStatus &os, Tabs tab);
+    static bool isExternalToolValid(HI::GUITestOpStatus &os, const QString& toolName);
+    static void clearToolPath(HI::GUITestOpStatus &os, const QString& toolName);
 private:
     style itemStyle;
     int r,g,b;
@@ -55,8 +55,8 @@ class NewColorSchemeCreator: public Filler{
 public:
     enum alphabet{amino,nucl};
     enum Action{Create, Delete};
-    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create, bool cancel = false);
-    NewColorSchemeCreator(U2OpStatus &os, CustomScenario* c);
+    NewColorSchemeCreator(HI::GUITestOpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create, bool cancel = false);
+    NewColorSchemeCreator(HI::GUITestOpStatus &os, CustomScenario* c);
     virtual void commonScenario();
 
 private:
@@ -69,9 +69,9 @@ private:
 class CreateAlignmentColorSchemeDialogFiller: public Filler{
 public:
 
-    CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, QString _schemeName, NewColorSchemeCreator::alphabet _al):
+    CreateAlignmentColorSchemeDialogFiller(HI::GUITestOpStatus &os, QString _schemeName, NewColorSchemeCreator::alphabet _al):
         Filler(os, "CreateMSAScheme"), schemeName(_schemeName), al(_al){}
-    CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "CreateMSAScheme", c){}
+    CreateAlignmentColorSchemeDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c): Filler(os, "CreateMSAScheme", c){}
     virtual void commonScenario();
 private:
     QString schemeName;
@@ -80,8 +80,8 @@ private:
 
 class ColorSchemeDialogFiller: public Filler{
 public:
-    ColorSchemeDialogFiller(U2OpStatus &os): Filler(os, "ColorSchemaDialog"){}
-    ColorSchemeDialogFiller(U2OpStatus &os, CustomScenario *c): Filler(os, "ColorSchemaDialog", c){}
+    ColorSchemeDialogFiller(HI::GUITestOpStatus &os): Filler(os, "ColorSchemaDialog"){}
+    ColorSchemeDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c): Filler(os, "ColorSchemaDialog", c){}
     virtual void commonScenario();
 };
 }

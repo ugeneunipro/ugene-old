@@ -37,14 +37,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportPrimersDialogFiller"
 
-ImportPrimersDialogFiller::ImportPrimersDialogFiller(U2OpStatus &os, const QStringList &fileList) :
+ImportPrimersDialogFiller::ImportPrimersDialogFiller(HI::GUITestOpStatus &os, const QStringList &fileList) :
     Filler(os, "ImportPrimersDialog"),
     fileList(fileList)
 {
 
 }
 
-ImportPrimersDialogFiller::ImportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+ImportPrimersDialogFiller::ImportPrimersDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "ImportPrimersDialog", scenario)
 {
 
@@ -63,7 +63,7 @@ void ImportPrimersDialogFiller::commonScenario() {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setImportTarget"
-void ImportPrimersDialogFiller::setImportTarget(U2OpStatus &os, ImportSource importSource) {
+void ImportPrimersDialogFiller::setImportTarget(HI::GUITestOpStatus &os, ImportSource importSource) {
     switch (importSource) {
     case LocalFiles:
         GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbSource", getDialog(os)), "Local file(s)");
@@ -78,14 +78,14 @@ void ImportPrimersDialogFiller::setImportTarget(U2OpStatus &os, ImportSource imp
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addFile"
-void ImportPrimersDialogFiller::addFile(U2OpStatus &os, const QString &filePath) {
+void ImportPrimersDialogFiller::addFile(HI::GUITestOpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, filePath));
     GTWidget::click(os, GTWidget::findWidget(os, "pbAddFile", getDialog(os)));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "connectDatabase"
-void ImportPrimersDialogFiller::connectDatabase(U2OpStatus &os, const QString &databaseName) {
+void ImportPrimersDialogFiller::connectDatabase(HI::GUITestOpStatus &os, const QString &databaseName) {
     QList<SharedConnectionsDialogFiller::Action> actions;
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, databaseName);
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT);
@@ -96,7 +96,7 @@ void ImportPrimersDialogFiller::connectDatabase(U2OpStatus &os, const QString &d
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addObject"
-void ImportPrimersDialogFiller::addObjects(U2OpStatus &os, const QString &databaseName, const QStringList &objectNames) {
+void ImportPrimersDialogFiller::addObjects(HI::GUITestOpStatus &os, const QString &databaseName, const QStringList &objectNames) {
     QMap<QString, QStringList> objects;
     objects[databaseName] = objectNames;
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os,
@@ -108,7 +108,7 @@ void ImportPrimersDialogFiller::addObjects(U2OpStatus &os, const QString &databa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addObject"
-void ImportPrimersDialogFiller::addObjects(U2OpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames) {
+void ImportPrimersDialogFiller::addObjects(HI::GUITestOpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames) {
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os,
                                                                              databaseAndObjectNames,
                                                                              QSet<GObjectType>() << GObjectTypes::SEQUENCE,
@@ -118,7 +118,7 @@ void ImportPrimersDialogFiller::addObjects(U2OpStatus &os, const QMap<QString, Q
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getDialog"
-QWidget *ImportPrimersDialogFiller::getDialog(U2OpStatus &os) {
+QWidget *ImportPrimersDialogFiller::getDialog(HI::GUITestOpStatus &os) {
     Q_UNUSED(os);
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(NULL != dialog, "Active modal dialog is NULL", NULL);

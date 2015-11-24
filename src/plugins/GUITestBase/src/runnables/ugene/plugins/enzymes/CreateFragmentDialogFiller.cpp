@@ -25,13 +25,13 @@
 
 namespace U2 {
 
-CreateFragmentDialogFiller::CreateFragmentDialogFiller(U2OpStatus &os)
+CreateFragmentDialogFiller::CreateFragmentDialogFiller(HI::GUITestOpStatus &os)
 :  Filler(os, "CreateFragmentDialog")
 {
 
 }
 
-CreateFragmentDialogFiller::CreateFragmentDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+CreateFragmentDialogFiller::CreateFragmentDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "CreateFragmentDialog", scenario)
 {
 

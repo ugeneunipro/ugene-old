@@ -52,7 +52,7 @@ public:
 
     typedef QPair<ActionType, QVariant> Action;
 
-    ExportCoverageDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+    ExportCoverageDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
 
     void run();
 

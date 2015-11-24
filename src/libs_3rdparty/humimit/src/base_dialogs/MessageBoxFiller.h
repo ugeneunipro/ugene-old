@@ -29,8 +29,8 @@ namespace HI {
 
 class HI_EXPORT MessageBoxDialogFiller : public Filler {
 public:
-    MessageBoxDialogFiller(U2::U2OpStatus &os, QMessageBox::StandardButton b, const QString &message = "", const QString &objectName = "");
-    MessageBoxDialogFiller(U2::U2OpStatus &os, const QString &buttonText, const QString &message = "");
+    MessageBoxDialogFiller(GUITestOpStatus &os, QMessageBox::StandardButton b, const QString &message = "", const QString &objectName = "");
+    MessageBoxDialogFiller(GUITestOpStatus &os, const QString &buttonText, const QString &message = "");
 
     virtual void commonScenario();
 
@@ -42,25 +42,25 @@ protected:
 
 class HI_EXPORT AppCloseMessageBoxDialogFiller : public Filler {
 public:
-    AppCloseMessageBoxDialogFiller(U2::U2OpStatus &os);
+    AppCloseMessageBoxDialogFiller(GUITestOpStatus &os);
     void commonScenario();
 };
 
 class HI_EXPORT MessageBoxNoToAllOrNo : public Filler {
 public:
-    MessageBoxNoToAllOrNo(U2::U2OpStatus &os);
+    MessageBoxNoToAllOrNo(GUITestOpStatus &os);
     void commonScenario();
 };
 
 class HI_EXPORT MessageBoxOpenAnotherProject : public Filler {
 public:
-    MessageBoxOpenAnotherProject(U2::U2OpStatus &os);
+    MessageBoxOpenAnotherProject(GUITestOpStatus &os);
     void commonScenario();
 };
 
 class HI_EXPORT InputIntFiller : public Filler {
 public:
-    InputIntFiller(U2::U2OpStatus &os, int value);
+    InputIntFiller(GUITestOpStatus &os, int value);
     void commonScenario();
 private:
     int value;

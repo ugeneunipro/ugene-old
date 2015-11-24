@@ -516,7 +516,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 }
 
 namespace {
-    void prepareBigFasta(const QString &url, U2OpStatus &os) {
+    void prepareBigFasta(const QString &url, HI::GUITestOpStatus &os) {
         QFile file(url);
         bool opened = file.open(QIODevice::WriteOnly);
         if (!opened) {

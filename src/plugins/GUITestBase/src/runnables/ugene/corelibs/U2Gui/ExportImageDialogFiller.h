@@ -31,8 +31,8 @@ using namespace HI;
 
 class ExportImage : public Filler {
 public:
-    ExportImage(U2OpStatus &os, const QString &filePath, const QString &comboValue = "", int spinValue = 0);
-    ExportImage(U2OpStatus &os, CustomScenario *scenario);
+    ExportImage(HI::GUITestOpStatus &os, const QString &filePath, const QString &comboValue = "", int spinValue = 0);
+    ExportImage(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 
@@ -44,13 +44,13 @@ protected:
 
 class CircularViewExportImage : public Filler {
 public:
-    CircularViewExportImage(U2OpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
+    CircularViewExportImage(HI::GUITestOpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
         filePath(_filePath),
         comboValue(_comboValue),
         spinValue(_spinValue),
         exportedSequenceName(exportedSequenceName)
     {}
-    CircularViewExportImage(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "ImageExportForm", scenario), spinValue(0) {}
+    CircularViewExportImage(HI::GUITestOpStatus &os, CustomScenario *scenario) : Filler(os, "ImageExportForm", scenario), spinValue(0) {}
     void commonScenario();
 protected:
     QString filePath, comboValue;
@@ -82,7 +82,7 @@ public:
     };
 
     // default
-    ExportMsaImage(U2OpStatus &os, QString filePath,
+    ExportMsaImage(HI::GUITestOpStatus &os, QString filePath,
                    QString comboValue = "",int spinValue = 0)
         : ExportImage(os, filePath, comboValue, spinValue),
           exportWholeAlignment(true),
@@ -93,7 +93,7 @@ public:
     //  exportWholeAlignment = false,   exportCurrentSelection = true   : export of currently selected region, selection must be
     //  exportWholeAlignment = true,    exportCurrentSelection = false  : whole selection export
     //  exportWholeAlignment = true,    exportCurrentSelection = true   : error
-    ExportMsaImage(U2OpStatus &os, QString filePath,
+    ExportMsaImage(HI::GUITestOpStatus &os, QString filePath,
                    Settings settings,
                    bool exportWholeAlignment = true,
                    bool exportCurrentSelection = false,
@@ -130,11 +130,11 @@ public:
         U2Region    region;
     };
 
-    ExportSequenceImage(U2OpStatus &os, QString filePath,
+    ExportSequenceImage(HI::GUITestOpStatus &os, QString filePath,
                         QString comboValue = "", int spinValue = 0)
         : ExportImage(os, filePath, comboValue, spinValue) {}
 
-    ExportSequenceImage(U2OpStatus &os, QString filePath,
+    ExportSequenceImage(HI::GUITestOpStatus &os, QString filePath,
                         Settings settings,
                         QString comboValue = "", int spinValue = 0)
         : ExportImage(os, filePath, comboValue, spinValue),
@@ -148,7 +148,7 @@ private:
 
 class SelectSubalignmentFiller : public Filler {
 public:
-    SelectSubalignmentFiller(U2OpStatus &_os, const RegionMsa &regionMsa)
+    SelectSubalignmentFiller(HI::GUITestOpStatus &_os, const RegionMsa &regionMsa)
         : Filler(_os, "SelectSubalignmentDialog"),
           msaRegion(regionMsa) {}
     virtual void run();
@@ -172,7 +172,7 @@ public:
         QString format;
     };
 
-    ImageExportFormFiller(U2OpStatus &os, const Parameters &parameters);
+    ImageExportFormFiller(HI::GUITestOpStatus &os, const Parameters &parameters);
     void run();
 
 private:

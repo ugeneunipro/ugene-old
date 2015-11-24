@@ -40,7 +40,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportBAMFileFiller"
 #define GT_METHOD_NAME "run"
-ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl,
+ImportBAMFileFiller::ImportBAMFileFiller(HI::GUITestOpStatus &os, const QString destinationUrl,
                                          const QString referenceFolderPath, const QString referenceFileName,
                                          bool importUnmappedReads,
                                          int timeoutMs) :
@@ -52,7 +52,7 @@ ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinati
     settings.timeout = timeoutMs;
 }
 
-ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, CustomScenario* _c):Filler(os, "Import BAM File", _c),
+ImportBAMFileFiller::ImportBAMFileFiller(HI::GUITestOpStatus &os, CustomScenario* _c):Filler(os, "Import BAM File", _c),
     referenceFolderPath(""),
     referenceFileName(""),
     destinationUrl(""),

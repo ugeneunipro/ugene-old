@@ -30,7 +30,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTTabBar"
 
 #define GT_METHOD_NAME "setCurrentIndex"
-void GTTabBar::setCurrentIndex(U2::U2OpStatus& os, QTabBar *tabBar, int index) {
+void GTTabBar::setCurrentIndex(GUITestOpStatus& os, QTabBar *tabBar, int index) {
 
     GT_CHECK(tabBar != NULL, "QTabWidget* == NULL");
 

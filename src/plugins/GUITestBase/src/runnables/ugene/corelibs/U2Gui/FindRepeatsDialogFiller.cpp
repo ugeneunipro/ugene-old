@@ -45,7 +45,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::FindRepeatsDialogFiller"
 #define GT_METHOD_NAME "run"
 
-FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath,
+FindRepeatsDialogFiller::FindRepeatsDialogFiller(HI::GUITestOpStatus &_os, const QString & _resultFilesPath,
     bool _searchInverted, int minRepeatLength, int repeatsIdentity, int minDistance)
     : Filler(_os, "FindRepeatsDialog"), button(Start), resultAnnotationFilesPath(_resultFilesPath),
     searchInverted(_searchInverted), minRepeatLength(minRepeatLength), repeatsIdentity(repeatsIdentity), minDistance(minDistance)
@@ -53,7 +53,7 @@ FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString 
     GTGlobals::sleep(10);
 }
 
-FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+FindRepeatsDialogFiller::FindRepeatsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "FindRepeatsDialog", scenario),
     button(Start),
     searchInverted(false),

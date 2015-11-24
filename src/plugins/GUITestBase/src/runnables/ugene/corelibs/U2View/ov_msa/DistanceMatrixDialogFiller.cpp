@@ -44,7 +44,7 @@ namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::DistanceMatrixDialogFiller"
 
-DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming, bool _counts, bool _excludeGaps) :
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, bool _hamming, bool _counts, bool _excludeGaps) :
     Filler(os,"DistanceMatrixMSAProfileDialog"),
     hamming(_hamming),
     counts(_counts),
@@ -55,7 +55,7 @@ DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, bool _ham
 
 }
 
-DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, DistanceMatrixDialogFiller::SaveFormat _format, QString _path) :
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, DistanceMatrixDialogFiller::SaveFormat _format, QString _path) :
     Filler(os,"DistanceMatrixMSAProfileDialog"),
     hamming(true),
     counts(true),
@@ -67,7 +67,7 @@ DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, DistanceM
 
 }
 
-DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, CustomScenario *c):
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, CustomScenario *c):
     Filler(os, "DistanceMatrixMSAProfileDialog", c){}
 
 #define GT_METHOD_NAME "run"

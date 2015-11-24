@@ -26,7 +26,7 @@ namespace HI{
 
 #define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "getCellPosition"
-QPoint GTTableView::getCellPosition(U2::U2OpStatus &os, QTableView *table, int column, int row){
+QPoint GTTableView::getCellPosition(GUITestOpStatus &os, QTableView *table, int column, int row){
     GT_CHECK_RESULT(table,"table view is NULL",QPoint());
     QPoint p(table->columnViewportPosition(column)+table->columnWidth(column)/2,
              table->rowViewportPosition(row)+table->rowHeight(row)*1.5);
@@ -36,7 +36,7 @@ QPoint GTTableView::getCellPosition(U2::U2OpStatus &os, QTableView *table, int c
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getCellPoint"
-QPoint GTTableView::getCellPoint(U2::U2OpStatus &os, QTableView *table, int row, int column) {
+QPoint GTTableView::getCellPoint(GUITestOpStatus &os, QTableView *table, int row, int column) {
     QModelIndex idx = table->model()->index(row, column);
     table->scrollTo(idx);
     QRect rect = table->visualRect(idx);
@@ -46,7 +46,7 @@ QPoint GTTableView::getCellPoint(U2::U2OpStatus &os, QTableView *table, int row,
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "rowCount"
-int GTTableView::rowCount(U2::U2OpStatus &os, QTableView *table) {
+int GTTableView::rowCount(GUITestOpStatus &os, QTableView *table) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != table, "Table view is NULL", -1);
     GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", -1);
@@ -55,7 +55,7 @@ int GTTableView::rowCount(U2::U2OpStatus &os, QTableView *table) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "data"
-QString GTTableView::data(U2::U2OpStatus &os, QTableView *table, int row, int column) {
+QString GTTableView::data(GUITestOpStatus &os, QTableView *table, int row, int column) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != table, "Table view is NULL", "");
     GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", "");

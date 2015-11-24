@@ -25,7 +25,7 @@
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>
 
-#include <U2Test/GUITest.h>
+#include <core/GUITest.h>
 
 #include <U2View/AnnotationsTreeView.h>
 
@@ -69,7 +69,7 @@ namespace GUITest_common_scenarios_shared_database {
 using namespace HI;
 namespace {
 
-QListWidgetItem * getConnectionItem(U2OpStatus &os, const QString &connectionName) {
+QListWidgetItem * getConnectionItem(HI::GUITestOpStatus &os, const QString &connectionName) {
     QWidget *dialog = QApplication::activeModalWidget();
     CHECK_SET_ERR_RESULT(NULL != dialog, "Active modal widget is NULL", NULL);
 
@@ -81,7 +81,7 @@ QListWidgetItem * getConnectionItem(U2OpStatus &os, const QString &connectionNam
     return items.first();
 }
 
-void checkButtonStateForConnectionItem(U2OpStatus &os, const QString &connectionName, const QString &buttonText, bool isEnabled) {
+void checkButtonStateForConnectionItem(HI::GUITestOpStatus &os, const QString &connectionName, const QString &buttonText, bool isEnabled) {
     QWidget *dialog = QApplication::activeModalWidget();
     CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
@@ -92,7 +92,7 @@ void checkButtonStateForConnectionItem(U2OpStatus &os, const QString &connection
     CHECK_SET_ERR(isEnabled == button->isEnabled(), QString("Button '%1' has an incorrect state").arg(buttonText));
 }
 
-void checkConnectionItemIcon(U2OpStatus &os, const QString &connectionName, const QString &expectedIconPath) {
+void checkConnectionItemIcon(HI::GUITestOpStatus &os, const QString &connectionName, const QString &expectedIconPath) {
     QListWidgetItem *connectionItem = getConnectionItem(os, connectionName);
     CHECK_OP(os, );
     const QIcon icon = connectionItem->icon();
@@ -143,7 +143,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0001) {
     GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "cm_test_0001: new shared database", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "cm_test_0001: new shared database", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -181,7 +181,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0002) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "cm_test_0002: new shared database", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "cm_test_0002: new shared database", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -245,7 +245,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0003) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "cm_test_0003: new shared database 1", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "cm_test_0003: new shared database 1", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -265,7 +265,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0003) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario2 : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "cm_test_0003: new shared database 1", "");
             checkButtonStateForConnectionItem(os, "cm_test_0003: new shared database 1", "Edit", true);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -302,7 +302,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0004) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -341,7 +341,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0005) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -361,7 +361,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0005) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario2 : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "ugene_gui_test", "");
             checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", true);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -399,7 +399,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0006) {
     GTDatabaseConfig::initTestConnectionInfo(conName, GTDatabaseConfig::uninitializedDatabase());
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget");
 
@@ -425,7 +425,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0006) {
     CHECK_SET_ERR(exists, "A database connection not found in the project view");
 
     class Scenario2 : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             const QString conName = "cm_test_0006: uninitialized database";
             checkConnectionItemIcon(os, conName, ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, conName, "Edit", false);
@@ -490,7 +490,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0008) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "ugene_gui_test", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "ugene_gui_test", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -514,7 +514,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0008) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario2 : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "ugene_gui_test_2", ":/core/images/db/database_lightning.png");
             checkButtonStateForConnectionItem(os, "ugene_gui_test_2", "Edit", false);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -612,7 +612,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
 
     class Scenario : public CustomScenario {
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             checkConnectionItemIcon(os, "cm_test_0013: new shared database", "");
             checkButtonStateForConnectionItem(os, "cm_test_0013: new shared database", "Edit", true);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Close);
@@ -641,7 +641,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0014) {
     }
     {
         class ReadOnlyCheckScenario : public CustomScenario {
-            void run(U2::U2OpStatus &os) {
+            void run(HI::GUITestOpStatus &os) {
                 QWidget *dialog = QApplication::activeModalWidget();
                 CHECK_SET_ERR(NULL != dialog, "Dialog is NULL");
 

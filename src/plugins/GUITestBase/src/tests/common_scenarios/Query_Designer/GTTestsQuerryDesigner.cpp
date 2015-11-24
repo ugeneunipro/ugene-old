@@ -44,7 +44,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_querry_designer {
 using namespace HI;
 
-void test1(U2OpStatus &os, QString s="") {
+void test1(HI::GUITestOpStatus &os, QString s="") {
 //Bug: QD: Crash while resizing and deleting elements (0002402)
 //1. Open Query Designer
     GTUtilsQueryDesigner::openQueryDesigner(os);

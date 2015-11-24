@@ -81,7 +81,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 #define GT_METHOD_NAME "run"
 class WizardFiller0002:public WizardFiller{
 public:
-    WizardFiller0002(U2OpStatus &_os):WizardFiller(_os,"Tuxedo Wizard"){}
+    WizardFiller0002(HI::GUITestOpStatus &_os):WizardFiller(_os,"Tuxedo Wizard"){}
     void run(){
         QWidget* dialog = QApplication::activeModalWidget();
         GT_CHECK(dialog, "activeModalWidget is NULL");

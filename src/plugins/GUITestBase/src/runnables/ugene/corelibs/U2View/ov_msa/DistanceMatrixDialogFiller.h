@@ -32,9 +32,9 @@ public:
         CSV
     };
 
-    DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming=true, bool _counts=true, bool _excludeGaps=true);
-    DistanceMatrixDialogFiller(U2OpStatus &os, SaveFormat _format,QString _path);
-    DistanceMatrixDialogFiller(U2OpStatus &os, CustomScenario* c);
+    DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, bool _hamming=true, bool _counts=true, bool _excludeGaps=true);
+    DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, SaveFormat _format,QString _path);
+    DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, CustomScenario* c);
 
     virtual void commonScenario();
 

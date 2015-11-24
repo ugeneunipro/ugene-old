@@ -33,17 +33,17 @@ public:
 
     // fails if lineEdit is NULL, GTLineEdit::clear fails
     // or a set text differs from a given string
-    static void setPlainText(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text);
+    static void setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text);
 
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
-    static void clear(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit);
+    static void clear(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit);
 
     // fails if GTLineEdit::clear fails
-   // static void pasteClipboard(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit, PasteMethod pasteMethod = Shortcut);
+   // static void pasteClipboard(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, PasteMethod pasteMethod = Shortcut);
 
     // fails if lineEdit is NULL or lineEdit text is not in lineEdit's rect
     // considering lineEdit's fontMetrics and textMargins
-    //static void checkTextSize(U2::U2OpStatus& os, QPlainTextEdit* plainTextEdit);
+    //static void checkTextSize(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit);
 };
 
 }

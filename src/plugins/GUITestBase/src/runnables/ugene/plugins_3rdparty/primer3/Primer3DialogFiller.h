@@ -50,7 +50,7 @@ public:
         bool shortRegion;
     };
 
-    Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings = Primer3Settings());
+    Primer3DialogFiller(HI::GUITestOpStatus &os, const Primer3Settings &settings = Primer3Settings());
     void commonScenario();
 private:
     Primer3Settings settings;

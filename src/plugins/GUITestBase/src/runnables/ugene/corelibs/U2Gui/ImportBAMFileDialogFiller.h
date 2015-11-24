@@ -29,11 +29,11 @@ using namespace HI;
 
 class ImportBAMFileFiller : public Filler {
 public:
-    ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl = "",
+    ImportBAMFileFiller(HI::GUITestOpStatus &os, const QString destinationUrl = "",
                         const QString referenceFolderPath = "", const QString referenceFileName = "",
                         bool importUnmappedReads = false,
                         int timeoutMs = 120000);
-    ImportBAMFileFiller(U2OpStatus &os, CustomScenario *_c);
+    ImportBAMFileFiller(HI::GUITestOpStatus &os, CustomScenario *_c);
 
     virtual void commonScenario();
 private:

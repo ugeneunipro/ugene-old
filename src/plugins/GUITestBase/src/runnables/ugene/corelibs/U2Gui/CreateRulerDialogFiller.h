@@ -30,9 +30,9 @@ using namespace HI;
 class CreateRulerDialogFiller: public Filler
 {
 public:
-    CreateRulerDialogFiller(U2OpStatus &os, QString _rulerName, int _startPos): Filler(os, "CreateRulerDialog"),
+    CreateRulerDialogFiller(HI::GUITestOpStatus &os, QString _rulerName, int _startPos): Filler(os, "CreateRulerDialog"),
     rulerName(_rulerName), startPos(_startPos){}
-    CreateRulerDialogFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "CreateRulerDialog", c){}
+    CreateRulerDialogFiller(HI::GUITestOpStatus &os, CustomScenario* c): Filler(os, "CreateRulerDialog", c){}
     virtual void commonScenario();
 private:
     QString rulerName;

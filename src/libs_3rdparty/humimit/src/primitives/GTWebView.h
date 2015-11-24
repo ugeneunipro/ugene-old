@@ -31,16 +31,16 @@ namespace HI {
 
 class HI_EXPORT GTWebView{
 public:
-    static QWebElement findElement(U2::U2OpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
-    static void checkElement(U2::U2OpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
-    static bool doesElementExist(U2::U2OpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
+    static QWebElement findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
+    static void checkElement(GUITestOpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
+    static bool doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
 
-    static void click(U2::U2OpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
-    static void selectElementText(U2::U2OpStatus &os, QWebView *view, QWebElement el);
-    static QWebElement findTreeElement(U2::U2OpStatus &os, QWebView *view, QString text);
-    static QWebElement findContextMenuElement(U2::U2OpStatus &os, QWebView *view, QString text);
+    static void click(GUITestOpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
+    static void selectElementText(GUITestOpStatus &os, QWebView *view, QWebElement el);
+    static QWebElement findTreeElement(GUITestOpStatus &os, QWebView *view, QString text);
+    static QWebElement findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text);
 
-    static void traceAllWebElements(U2::U2OpStatus &os, QWebView *view);
+    static void traceAllWebElements(GUITestOpStatus &os, QWebView *view);
 
 };
 

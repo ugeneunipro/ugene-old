@@ -42,7 +42,7 @@ void DashboardsManagerDialogFiller::commonScenario(){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectDashboards"
-void DashboardsManagerDialogFiller::selectDashboards(U2OpStatus &os, QStringList names){
+void DashboardsManagerDialogFiller::selectDashboards(HI::GUITestOpStatus &os, QStringList names){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -57,7 +57,7 @@ void DashboardsManagerDialogFiller::selectDashboards(U2OpStatus &os, QStringList
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isDashboardPresent"
-bool DashboardsManagerDialogFiller::isDashboardPresent(U2OpStatus &os, QString name){
+bool DashboardsManagerDialogFiller::isDashboardPresent(HI::GUITestOpStatus &os, QString name){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", false);
 

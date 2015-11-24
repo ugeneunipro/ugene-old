@@ -29,7 +29,7 @@ namespace HI {
 
 class HI_EXPORT GTUtilsToolTip {
 public:
-    static void checkExistingToolTip(U2::U2OpStatus &os, const QString& tooltip);
+    static void checkExistingToolTip(GUITestOpStatus &os, const QString& tooltip);
 
     static QString getToolTip();
 };

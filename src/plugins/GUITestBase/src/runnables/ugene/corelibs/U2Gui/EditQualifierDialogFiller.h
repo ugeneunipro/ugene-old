@@ -28,7 +28,7 @@ namespace U2 {
 using namespace HI;
 class EditQualifierFiller : public Filler {
 public:
-    EditQualifierFiller(U2OpStatus &_os, const QString &_qualifierName, const QString &_valueName, bool _noCheck = false, bool _closeErrorMessageBox = false)
+    EditQualifierFiller(HI::GUITestOpStatus &_os, const QString &_qualifierName, const QString &_valueName, bool _noCheck = false, bool _closeErrorMessageBox = false)
         :Filler(_os, "EditQualifierDialog"), qualifierName(_qualifierName), valueName(_valueName), noCheck(_noCheck), closeErrormessageBox(_closeErrorMessageBox){}
     virtual void run();
 private:
@@ -40,7 +40,7 @@ private:
 
 class RenameQualifierFiller : public Filler {
 public:
-    RenameQualifierFiller(U2OpStatus &_os, const QString &_newName)
+    RenameQualifierFiller(HI::GUITestOpStatus &_os, const QString &_newName)
         :Filler(_os, ""), newName(_newName) {}
     virtual void run();
 private:

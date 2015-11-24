@@ -28,7 +28,7 @@ namespace HI{
 class HI_EXPORT ColorDialogFiller : public Filler
 {
 public:
-    ColorDialogFiller(U2::U2OpStatus &os,int _r, int _g, int _b, bool _setWithQt = false) : Filler(os, ""),
+    ColorDialogFiller(GUITestOpStatus &os,int _r, int _g, int _b, bool _setWithQt = false) : Filler(os, ""),
         r(_r),g(_g),b(_b),setWithQt(_setWithQt){}
     virtual void run();
 private:

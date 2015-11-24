@@ -32,10 +32,10 @@ using namespace HI;
         enum documentFormat {FASTA, Genbank};
         enum documentAlphabet {StandardDNA, StandardRNA, ExtendedDNA, ExtendedRNA, StandardAmino, AllSymbols};
 
-        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
+        CreateDocumentFiller(HI::GUITestOpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
                              bool replaceUnknownSymbols, const QString symbol, const QString &_documentLocation,
                              documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        CreateDocumentFiller(U2OpStatus &os, CustomScenario *scenario);
+        CreateDocumentFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
         void commonScenario();
     private:
 
@@ -59,7 +59,7 @@ using namespace HI;
         enum documentFormat {FASTA, Genbank};
         enum documentAlphabet {StandardDNA, StandardRNA, ExtendedDNA, ExtendedRNA, StandardAmino, AllSymbols};
 
-        CancelCreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
+        CancelCreateDocumentFiller(HI::GUITestOpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
             bool replaceUnknownSymbols, const QString symbol, const QString &_documentLocation,
             documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();

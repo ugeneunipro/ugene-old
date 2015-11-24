@@ -30,14 +30,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "ConstructMoleculeDialogFiller"
 
-ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(U2OpStatus &os, const QList<Action> &actions) :
+ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions) :
     Filler(os, "ConstructMoleculeDialog"),
     dialog(NULL),
     actions(actions)
 {
 }
 
-ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario)
 : Filler(os, "ConstructMoleculeDialog", scenario), dialog(NULL)
 {
 }

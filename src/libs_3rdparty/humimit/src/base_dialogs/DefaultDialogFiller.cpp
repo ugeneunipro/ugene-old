@@ -24,7 +24,7 @@
 
 namespace HI {
 
-DefaultDialogFiller::DefaultDialogFiller(U2::U2OpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, U2::CustomScenario *scenario):
+DefaultDialogFiller::DefaultDialogFiller(GUITestOpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, CustomScenario *scenario):
     Filler(os, name, scenario),b(_b) {}
 void DefaultDialogFiller::commonScenario(){
     GTUtilsDialog::clickButtonBox(os, b);

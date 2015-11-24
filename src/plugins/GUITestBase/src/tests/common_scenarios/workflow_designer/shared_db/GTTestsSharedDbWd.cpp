@@ -48,7 +48,7 @@ namespace GUITest_common_scenarios_shared_db_wd {
 using namespace HI;
 namespace {
 
-void createTestConnection(U2OpStatus &os) {
+void createTestConnection(HI::GUITestOpStatus &os) {
     GTLogTracer lt;
     QString conName = "ugene_gui_test";
     {

@@ -33,43 +33,43 @@ class HI_EXPORT GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
-    static void moveTo(U2::U2OpStatus &os, const QPoint& p) {mousePos = p; moveToP(os, p.x(), p.y()); }
+    static void moveTo(GUITestOpStatus &os, const QPoint& p) {mousePos = p; moveToP(os, p.x(), p.y()); }
 
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
-    static void click(U2::U2OpStatus &os, Qt::MouseButton = Qt::LeftButton); //all click methods work with the current position of the cursor
-    static void doubleClick(U2::U2OpStatus &os);
+    static void click(GUITestOpStatus &os, Qt::MouseButton = Qt::LeftButton); //all click methods work with the current position of the cursor
+    static void doubleClick(GUITestOpStatus &os);
 
     // fails if the given button is not Qt::LeftButton, Qt::RightButton or Qt::MiddleButton
     // Linux: fails if there is an opening X display error
-    static void press(U2::U2OpStatus &os, Qt::MouseButton = Qt::LeftButton);
-    static void release(U2::U2OpStatus &os, Qt::MouseButton = Qt::LeftButton); //release method should check if this key has been already pressed. Do nothing otherwise
+    static void press(GUITestOpStatus &os, Qt::MouseButton = Qt::LeftButton);
+    static void release(GUITestOpStatus &os, Qt::MouseButton = Qt::LeftButton); //release method should check if this key has been already pressed. Do nothing otherwise
 
-    static void dragAndDrop(U2::U2OpStatus &os, const QPoint& start, const QPoint& end);
+    static void dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end);
 
     // Linux: fails if there is an opening X display error
-    static void scroll(U2::U2OpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
+    static void scroll(GUITestOpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
 
     static QPoint getMousePosition() { return mousePos; }
 private:
     static QPoint mousePos;
     static Qt::MouseButtons bp;
 
-    static void moveToP(U2::U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
-    static void selectArea(U2::U2OpStatus &os, const int x, const int y);
+    static void moveToP(GUITestOpStatus &os, const int x, const int y); // platform-depended realization of moveTo
+    static void selectArea(GUITestOpStatus &os, const int x, const int y);
 };
 
 class HI_EXPORT GTDragger : public QObject{
     Q_OBJECT
 public:
-    GTDragger(U2::U2OpStatus &_os, const QPoint& _to);
+    GTDragger(GUITestOpStatus &_os, const QPoint& _to);
     ~GTDragger();
 
 public slots:
     void sl_execDrag();
 
 private:
-    U2::U2OpStatus& os;
+    GUITestOpStatus& os;
     QPoint to;
     bool done;
 };

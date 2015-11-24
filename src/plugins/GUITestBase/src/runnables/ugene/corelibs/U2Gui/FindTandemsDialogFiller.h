@@ -32,8 +32,8 @@ class FindTandemsDialogFiller : public Filler {
 public:
     enum Button {Start, Cancel};
 
-    FindTandemsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath);
-    FindTandemsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    FindTandemsDialogFiller(HI::GUITestOpStatus &_os, const QString & _resultFilesPath);
+    FindTandemsDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario);
 
     virtual void commonScenario();
     Button button;

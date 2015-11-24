@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-EditFragmentDialogFiller::EditFragmentDialogFiller(U2OpStatus &os, const Parameters &parameters)
+EditFragmentDialogFiller::EditFragmentDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters)
 : Filler(os, "EditFragmentDialog"), parameters(parameters)
 {
 

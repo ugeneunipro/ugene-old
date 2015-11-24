@@ -37,7 +37,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "NotificationChecker"
 
-NotificationChecker::NotificationChecker(U2OpStatus &_os):os(_os){
+NotificationChecker::NotificationChecker(HI::GUITestOpStatus &_os):os(_os){
     t = new QTimer(this);
     t->connect(t, SIGNAL(timeout()), this, SLOT(sl_checkNotification()));
     t->start(100);
@@ -66,7 +66,7 @@ void NotificationChecker::sl_checkNotification() {
 
 #define GT_CLASS_NAME "NotificationDialogFiller"
 
-NotificationDialogFiller::NotificationDialogFiller(U2OpStatus &os, const QString &message) :
+NotificationDialogFiller::NotificationDialogFiller(HI::GUITestOpStatus &os, const QString &message) :
     Filler(os, "NotificationDialog"),
     message(message)
 {
@@ -101,7 +101,7 @@ void NotificationDialogFiller::commonScenario() {
 
 #define GT_CLASS_NAME "NotificationChecker"
 #define GT_METHOD_NAME "waitForNotification"
-void GTUtilsNotifications::waitForNotification(U2OpStatus &os, bool dialogExpected, const QString &message){
+void GTUtilsNotifications::waitForNotification(HI::GUITestOpStatus &os, bool dialogExpected, const QString &message){
     if (dialogExpected) {
         GTUtilsDialog::waitForDialog(os, new NotificationDialogFiller(os, message));
     }

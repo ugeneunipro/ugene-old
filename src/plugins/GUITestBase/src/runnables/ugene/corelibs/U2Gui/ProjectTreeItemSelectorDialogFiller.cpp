@@ -43,14 +43,14 @@ using namespace HI;
 
 #define GT_CLASS_NAME "ProjectTreeItemSelectorDialogFiller"
 
-ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QString& documentName, const QString &objectName,
+ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, const QString& documentName, const QString &objectName,
     const QSet<GObjectType> &acceptableTypes, SelectionMode mode, int expectedDocCount)
     : Filler(os, "ProjectTreeItemSelectorDialogBase"), acceptableTypes(acceptableTypes), mode(mode), expectedDocCount(expectedDocCount)
 {
     itemsToSelect.insert(documentName, QStringList() << objectName);
 }
 
-ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
+ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
     const QSet<GObjectType> &acceptableTypes, SelectionMode mode, int expectedDocCount)
     : Filler(os, "ProjectTreeItemSelectorDialogBase"), itemsToSelect(itemsToSelect), acceptableTypes(acceptableTypes), mode(mode),
     expectedDocCount(expectedDocCount)
@@ -58,7 +58,7 @@ ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpSta
 
 }
 
-ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(HI::GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, "ProjectTreeItemSelectorDialogBase", scenario),
     mode(Single),
     expectedDocCount(0)

@@ -37,7 +37,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/ToolsMenu.h>
@@ -271,7 +270,7 @@ GUI_TEST_CLASS_DEFINITION( test_2009 ){
 //    2) Set correct BWA or any other tool path (preferably just executable)
     class BWAInactivation : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //    3) Clear set path
             AppSettingsDialogFiller::clearToolPath(os, "BWA");
 
@@ -777,7 +776,7 @@ GUI_TEST_CLASS_DEFINITION( test_2076 ){
 //    Expected state: 'Dashboards manager' dialog appeared
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             //    4) Select some dashboards in the dialog
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -848,7 +847,7 @@ GUI_TEST_CLASS_DEFINITION(test_2078) {
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             QWizard* wizard = qobject_cast<QWizard*>(dialog);
@@ -1393,7 +1392,7 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
 GUI_TEST_CLASS_DEFINITION( test_2188 ) {
     class Helper {
     public:
-        Helper(const QString &dataDir, const QString &testDir, U2OpStatus &os) {
+        Helper(const QString &dataDir, const QString &testDir, HI::GUITestOpStatus &os) {
             dir = testDir + "_common_data/scenarios/sandbox/";
             fileName = "regression_test_2188.fa";
             url = dir + fileName;
@@ -1541,7 +1540,7 @@ GUI_TEST_CLASS_DEFINITION( test_2204 ){
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -1775,7 +1774,7 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
 
     class Scenario_test_2269: public CustomScenario{
     public:
-        virtual void run(U2OpStatus &os){
+        virtual void run(HI::GUITestOpStatus &os){
             QWidget* dialog = QApplication::activeModalWidget();
 
             QComboBox* methodNamesBox = GTWidget::findExactWidget<QComboBox*>(os, "methodNamesBox", dialog);
@@ -1921,7 +1920,7 @@ GUI_TEST_CLASS_DEFINITION( test_2293 ){
 
     class CheckBowtie2Filler : public Filler {
     public:
-        CheckBowtie2Filler(U2OpStatus &os)
+        CheckBowtie2Filler(HI::GUITestOpStatus &os)
             : Filler (os, "BuildIndexFromRefDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -2128,7 +2127,7 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     class FirstItemPopupChooser : public PopupChooser {
     public:
-        FirstItemPopupChooser(U2OpStatus& os) :
+        FirstItemPopupChooser(HI::GUITestOpStatus& os) :
             PopupChooser(os, QStringList()) {}
 
         virtual void run() {
@@ -2141,7 +2140,7 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
 
     class PlusClicker : public FindAnnotationCollocationsDialogFiller {
     public:
-        PlusClicker(U2OpStatus& os, const QString& _annName) :
+        PlusClicker(HI::GUITestOpStatus& os, const QString& _annName) :
             FindAnnotationCollocationsDialogFiller(os),
             annName(_annName) {}
 
@@ -2199,7 +2198,7 @@ GUI_TEST_CLASS_DEFINITION( test_2351 ) {
 //    Expected state: UGENE does not crash
     class RapidProjectCreator : public Filler {
     public:
-        RapidProjectCreator(U2OpStatus& os, const QString& _projectName, const QString& _projectFolder, const QString& _projectFile) :
+        RapidProjectCreator(HI::GUITestOpStatus& os, const QString& _projectName, const QString& _projectFolder, const QString& _projectFile) :
             Filler(os, "CreateNewProjectDialog"),
             projectName(_projectName),
             projectFolder(_projectFolder),
@@ -2539,7 +2538,7 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
         // I know that it is bad practice to create so useless classes, but I don't need to extend the original class.
         // Do not move it to another place: if you need the same filler than extand the original class.
     public:
-        CreateProjectFiller(U2OpStatus &_os,
+        CreateProjectFiller(HI::GUITestOpStatus &_os,
                             const QString &_projectName,
                             const QString &_projectFolder,
                             const QString &_projectFile) :
@@ -2655,8 +2654,8 @@ GUI_TEST_CLASS_DEFINITION( test_2387 ) {
 
     class SequenceReadingModeDialogUtils : public CustomScenario {
     public:
-        //SequenceReadingModeDialogUtils(U2OpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
-        virtual void run(U2OpStatus &os){
+        //SequenceReadingModeDialogUtils(HI::GUITestOpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
+        virtual void run(HI::GUITestOpStatus &os){
             GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
             GTFile::copy(os, testDir + "_common_data/scenarios/_regression/2387/binary.dll", testDir + "_common_data/scenarios/sandbox/sars.gb");
             GTSequenceReadingModeDialogUtils(os).commonScenario();
@@ -3056,7 +3055,7 @@ GUI_TEST_CLASS_DEFINITION(test_2437) {
     //Expected state: {Database path} and {Base name for BLAST DB files} fields are correctly filled.
     class Scenario : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir + "test_2437/human_T1formatDB.log"));
             GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton"));
 
@@ -3116,7 +3115,7 @@ GUI_TEST_CLASS_DEFINITION(test_2451){
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
         //    4. Select input MSA "samples\CLUSTALW\COI.aln"
@@ -3195,7 +3194,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
+        OkClicker(HI::GUITestOpStatus& _os, const QString &dbPath, const QString &outputPath)
             : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath){};
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
@@ -3237,7 +3236,7 @@ GUI_TEST_CLASS_DEFINITION(test_2470_1) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os, const QString &dbPath, const QString &outputPath)
+        OkClicker(HI::GUITestOpStatus& _os, const QString &dbPath, const QString &outputPath)
             : Filler(_os, "BlastDBCmdDialog"), dbPath(dbPath), outputPath(outputPath){};
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
@@ -3538,7 +3537,7 @@ GUI_TEST_CLASS_DEFINITION( test_2542 ) {
 GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     class BuildTreeDialogFiller_test_2543 : public Filler {
     public:
-        BuildTreeDialogFiller_test_2543(U2OpStatus &os, QString _saveTree="default") : Filler(os, "CreatePhyTree"),
+        BuildTreeDialogFiller_test_2543(HI::GUITestOpStatus &os, QString _saveTree="default") : Filler(os, "CreatePhyTree"),
             saveTree(_saveTree){}
         virtual void run(){
             QWidget* dialog = QApplication::activeModalWidget();
@@ -3602,7 +3601,7 @@ GUI_TEST_CLASS_DEFINITION( test_2544 ){
 
     class innerMessageBoxFiller: public MessageBoxDialogFiller{
     public:
-        innerMessageBoxFiller(U2OpStatus &os): MessageBoxDialogFiller(os, QMessageBox::Yes){}
+        innerMessageBoxFiller(HI::GUITestOpStatus &os): MessageBoxDialogFiller(os, QMessageBox::Yes){}
         void run(){
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "", "permissionBox"));
             MessageBoxDialogFiller::run();
@@ -3610,7 +3609,7 @@ GUI_TEST_CLASS_DEFINITION( test_2544 ){
     };
     class customSaver: public GTFileDialogUtils{
     public:
-        customSaver(U2OpStatus &os): GTFileDialogUtils(os, sandBoxDir, "test_2544.fa", GTFileDialogUtils::Save){}
+        customSaver(HI::GUITestOpStatus &os): GTFileDialogUtils(os, sandBoxDir, "test_2544.fa", GTFileDialogUtils::Save){}
         void commonScenario(){
             fileDialog = QApplication::activeModalWidget();
             GTUtilsDialog::waitForDialog(os, new innerMessageBoxFiller(os));
@@ -3765,7 +3764,7 @@ GUI_TEST_CLASS_DEFINITION( test_2568 ){
 
     class customFileDialog : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* d = QApplication::activeModalWidget();
             CHECK_SET_ERR(d, "activeModalWidget is NULL");
             QFileDialog* dialog = qobject_cast<QFileDialog*>(d);
@@ -3779,7 +3778,7 @@ GUI_TEST_CLASS_DEFINITION( test_2568 ){
 
     class customWizard : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             //    4. Click to browse a reference file and choose a reference
@@ -3909,7 +3908,7 @@ GUI_TEST_CLASS_DEFINITION( test_2579 ) {
 
     class MafftInactivation : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QString path = AppSettingsDialogFiller::getExternalToolPath(os, "MAFFT");
             AppSettingsDialogFiller::clearToolPath(os, "MAFFT");
             AppSettingsDialogFiller::setExternalToolPath(os, "MAFFT", path);
@@ -4198,7 +4197,7 @@ GUI_TEST_CLASS_DEFINITION(test_2632){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
             //    2. Go to the second page
@@ -4264,7 +4263,7 @@ GUI_TEST_CLASS_DEFINITION(test_2640){
 //    0. Set CPU optimisation in settings dialog
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "dialog is NULL");
 
@@ -4384,7 +4383,7 @@ GUI_TEST_CLASS_DEFINITION( test_2656 ) {
 
     class DotplotLoadSequenceFiller : public Filler {
     public:
-        DotplotLoadSequenceFiller(U2OpStatus &os, const QString seqPath, const QString seqName)
+        DotplotLoadSequenceFiller(HI::GUITestOpStatus &os, const QString seqPath, const QString seqName)
             : Filler(os, "DotPlotDialog"), seqPath(seqPath), seqName(seqName) {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -4464,7 +4463,7 @@ GUI_TEST_CLASS_DEFINITION(test_2683){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
 
             QWidget* dialog = QApplication::activeModalWidget();
@@ -4539,7 +4538,7 @@ GUI_TEST_CLASS_DEFINITION(test_2701) {
 
     class ImageQualityChecker : public Filler {
     public:
-        ImageQualityChecker(U2OpStatus &os)
+        ImageQualityChecker(HI::GUITestOpStatus &os)
             : Filler(os, "ImageExportForm") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();
@@ -4584,7 +4583,7 @@ GUI_TEST_CLASS_DEFINITION(test_2709) {
 
     class test_2709_canceler : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             GTGlobals::sleep();
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
         }
@@ -4610,7 +4609,7 @@ GUI_TEST_CLASS_DEFINITION(test_2711){
 
     class test_2711DialogFiller : public CustomScenario {
     public:
-        void run(U2OpStatus &os){
+        void run(HI::GUITestOpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
@@ -4679,7 +4678,7 @@ GUI_TEST_CLASS_DEFINITION(test_2721){
 //2. Select Cistrome example.
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
         //Expected state: wizard appeared - on the first page "Cistrome data directory" is set to "data/cistrome".
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
@@ -4806,7 +4805,7 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
 
@@ -4840,7 +4839,7 @@ GUI_TEST_CLASS_DEFINITION(test_2761_1) {
 
     class customFiller: public ExtractSelectedAsMSADialogFiller{
     public:
-        customFiller(U2OpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_1/2761.aln",
+        customFiller(HI::GUITestOpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_1/2761.aln",
                                                        QStringList() << "Bicolorana_bicolor_EF540830" << "Roeseliana_roeseli"){}
         void run(){
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "No write permission to"));
@@ -4868,7 +4867,7 @@ GUI_TEST_CLASS_DEFINITION(test_2761_2) {
 
         class customFiller: public ExtractSelectedAsMSADialogFiller{
         public:
-            customFiller(U2OpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_2/2761.aln",
+            customFiller(HI::GUITestOpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_2/2761.aln",
                                                            QStringList() << "Bicolorana_bicolor_EF540830" << "Roeseliana_roeseli"){}
             void run(){
                 GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Directory to save does not exist"));
@@ -4895,7 +4894,7 @@ GUI_TEST_CLASS_DEFINITION(test_2762) {
 */
     class EscClicker : public Filler {
     public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, "SaveProjectDialog"){}
+        EscClicker(HI::GUITestOpStatus& _os) : Filler(_os, "SaveProjectDialog"){}
         virtual void run(){
 
             GTGlobals::sleep();
@@ -5185,7 +5184,7 @@ GUI_TEST_CLASS_DEFINITION( test_2808 ){
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -5237,7 +5236,7 @@ GUI_TEST_CLASS_DEFINITION( test_2809 ){
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        OkClicker(HI::GUITestOpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -5532,7 +5531,7 @@ GUI_TEST_CLASS_DEFINITION(test_2899){
 
     class custom : public CustomScenario {
     public:
-        void run(U2OpStatus &os) {
+        void run(HI::GUITestOpStatus &os) {
 //    4. Go to the "Cuffmerge settings" page and click the "Defaults" button.
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
@@ -5683,7 +5682,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
     // Expected state: the region is invalid, a "Go" button is disabled.
     class CancelClicker : public Filler {
     public:
-        CancelClicker(U2OpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
+        CancelClicker(HI::GUITestOpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -5720,7 +5719,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
     // Expected state: the region is invalid, a "Go" button is disabled.
     class CancelClicker : public Filler {
     public:
-        CancelClicker(U2OpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
+        CancelClicker(HI::GUITestOpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -5804,7 +5803,7 @@ GUI_TEST_CLASS_DEFINITION(test_2929){
 
     class SiteconCustomFiller : public Filler {
     public:
-        SiteconCustomFiller(U2OpStatus &os)
+        SiteconCustomFiller(HI::GUITestOpStatus &os)
             : Filler(os, "SiteconSearchDialog") {}
         virtual void run() {
             QWidget* dialog = QApplication::activeModalWidget();

@@ -41,7 +41,7 @@ public:
         bool unset;
     };
 
-    static void setRegion(U2OpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s);
+    static void setRegion(HI::GUITestOpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s);
 };
 
 }

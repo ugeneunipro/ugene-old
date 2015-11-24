@@ -30,7 +30,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
 
-ExportBlastResultDialogFiller::ExportBlastResultDialogFiller(U2OpStatus &os, const QString &filePath, bool _addRefBoxChecked) :
+ExportBlastResultDialogFiller::ExportBlastResultDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, bool _addRefBoxChecked) :
     Filler(os, "ExportBlastResultDialog"),
     filePath(filePath),
     addRefBoxChecked(_addRefBoxChecked)

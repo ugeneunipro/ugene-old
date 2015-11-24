@@ -39,7 +39,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len) : Filler(_os, "RangeSelectionDialog")
+selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = true;
@@ -51,7 +51,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_os) : Filler(_os, "RangeSelectionDialog")
+selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = true;
@@ -63,7 +63,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal) : Filler(_os, "RangeSelectionDialog")
+selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = false;
@@ -75,7 +75,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range) : Filler(_os, "RangeSelectionDialog")
+selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Multiple;
     selectAll = false;
@@ -87,7 +87,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_
     multipleRange = range;
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_os, int _length, bool selectFromBegin) : Filler(_os, "RangeSelectionDialog")
+selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = false;

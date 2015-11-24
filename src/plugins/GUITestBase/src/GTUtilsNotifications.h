@@ -31,18 +31,18 @@ using namespace HI;
 class NotificationChecker : public QObject {
     Q_OBJECT
 public:
-    NotificationChecker(U2OpStatus &_os);
+    NotificationChecker(HI::GUITestOpStatus &_os);
     ~NotificationChecker();
 public slots:
     void sl_checkNotification();
 private:
     QTimer* t;
-    U2OpStatus &os;
+    HI::GUITestOpStatus &os;
 };
 
 class NotificationDialogFiller : public Filler {
 public:
-    NotificationDialogFiller(U2OpStatus &os, const QString &message = "");
+    NotificationDialogFiller(HI::GUITestOpStatus &os, const QString &message = "");
 
     void commonScenario();
 
@@ -53,7 +53,7 @@ private:
 class GTUtilsNotifications
 {
 public:
-    static void waitForNotification(U2OpStatus &os, bool dialogExpected = true, const QString &message = "");
+    static void waitForNotification(HI::GUITestOpStatus &os, bool dialogExpected = true, const QString &message = "");
 };
 
 }   // namespace U2

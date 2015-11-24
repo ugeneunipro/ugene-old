@@ -38,7 +38,7 @@ public:
     enum sequenceMode {Separate, Merge};
     enum Button {Ok, Cancel};
 
-    GTSequenceReadingModeDialogUtils(U2OpStatus &os, CustomScenario *scenario = NULL);
+    GTSequenceReadingModeDialogUtils(HI::GUITestOpStatus &os, CustomScenario *scenario = NULL);
     virtual void commonScenario();
 private:
     void selectMode();

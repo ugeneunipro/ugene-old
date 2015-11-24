@@ -28,9 +28,9 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "GUITest.h"
+#include <core/GUITest.h>
 #include "GUITestLauncher.h"
-#include "MainThreadTimer.h"
+//#include "MainThreadTimer.h"
 
 namespace U2 {
 
@@ -47,8 +47,8 @@ public:
     GUITestService(QObject *parent = NULL);
     ~GUITestService();
 
-    void runTest(GUITests testsToRun);
-    qint64 getMainThreadTimerValue() const;
+    void runTest(HI::GUITests testsToRun);
+//    qint64 getMainThreadTimerValue() const;
 
     static GUITestService * getGuiTestService();    // the service should be already created and registered
 
@@ -58,7 +58,7 @@ public:
 public slots:
      void runGUICrazyUserTest();
      void runGUITest();
-     void runGUITest(GUITest* t);
+     void runGUITest(HI::GUITest* t);
 
     void runAllGUITests();
 
@@ -69,14 +69,13 @@ private slots:
     void sl_registerTestLauncherTask();
     void sl_taskStateChanged(Task*);
     void sl_testThreadFinish();
-    void sl_requestAsked(MainThreadRunnable *runnable);
 
 private:
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
 
-    static GUITests preChecks();
-    static GUITests postChecks();
-    static GUITests postActions();
+    static HI::GUITests preChecks();
+    static HI::GUITests postChecks();
+    static HI::GUITests postActions();
 
     static void clearSandbox();
     static void removeDir(QString dirName);
@@ -96,8 +95,8 @@ private:
 
     QAction *runTestsAction;
     Task *testLauncher;
-    GUITests testsToRun;
-    MainThreadTimer timer;
+    HI::GUITests testsToRun;
+//    MainThreadTimer timer;
 };
 
 }   // namespace U2
