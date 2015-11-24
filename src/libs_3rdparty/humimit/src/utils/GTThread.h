@@ -28,7 +28,7 @@
 
 namespace HI {
 
-class ThreadWaiter : public QObject {
+class HI_EXPORT ThreadWaiter : public QObject {
     Q_OBJECT
 public:
     ThreadWaiter(GUITestOpStatus &os);
