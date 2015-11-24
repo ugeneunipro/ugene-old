@@ -27,6 +27,8 @@
 
 #include <QApplication>
 #include <QComboBox>
+#include <QDesktopWidget>
+#include <QGuiApplication>
 #include <QMainWindow>
 #include <QStyle>
 
@@ -364,17 +366,27 @@ void GTWidget::moveWidgetTo(GUITestOpStatus &os, QWidget *window, const QPoint &
 #define GT_METHOD_NAME "resizeWidget"
 void GTWidget::resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &size) {
     GT_CHECK(NULL != widget, "Widget is NULL");
+
+    QRect displayRect = QApplication::desktop()->screenGeometry();
+    GT_CHECK( (displayRect.width() >= size.width()) && (displayRect.height() >= size.height()) , "Specified the size larger than the size of the screen");
+
+    bool neededPositionFound = false;
+    QSize oldSize = widget->size();
+
     QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget);
     for (int i=0; i<5; i++){
         GTMouseDriver::moveTo(os, topLeftPos);
-        if (widget->cursor().shape() == Qt::SizeFDiagCursor){
+        QPoint newTopLeftPos = topLeftPos + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1) - QPoint(size.width(), size.height());
+        GTMouseDriver::dragAndDrop(os, topLeftPos, newTopLeftPos);
+        if (widget->size() != oldSize){
+            neededPositionFound = true;
             break;
         }else{
-            topLeftPos += QPoint(1,0);
+            topLeftPos += QPoint(1,1);
         }
     }
-    QPoint newTopLeftPos = topLeftPos + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1) - QPoint(size.width(), size.height());
-    GTMouseDriver::dragAndDrop(os, topLeftPos, newTopLeftPos);
+    GT_CHECK(neededPositionFound, "Needed mouse position for resizing not found");
+
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
