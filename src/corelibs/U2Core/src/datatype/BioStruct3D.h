@@ -150,8 +150,8 @@ public:
 
 class MoleculeData : public QSharedData {
 public:
-    MoleculeData() : engineered(false), chainId(0){}
-    MoleculeData(const QString& molName) : name(molName), engineered(false), chainId(0) {}
+    MoleculeData() : chainId(0), engineered(false) {}
+    MoleculeData(const QString& molName) : name(molName), chainId(0), engineered(false) {}
     QMap<ResidueIndex, SharedResidue> residueMap;
 
     // this list used by biostrct renderers
