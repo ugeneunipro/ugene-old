@@ -28,9 +28,6 @@
 #include <QToolButton>
 #include <QWidget>
 
-#include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
-
 namespace HI {
 
 #define GT_CLASS_NAME "GTAction"

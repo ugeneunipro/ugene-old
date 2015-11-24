@@ -24,8 +24,6 @@
 #include "primitives/GTMenu.h"
 #include "drivers/GTMouseDriver.h"
 
-//#include <U2Core/U2OpStatusUtils.h>
-
 #include <QApplication>
 #include <QMenu>
 

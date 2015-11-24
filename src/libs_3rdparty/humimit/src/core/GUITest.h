@@ -1,7 +1,6 @@
 #ifndef _U2_GUI_TEST_H_
 #define _U2_GUI_TEST_H_
 
-//#include <U2Core/global.h>
 #include <QtCore/QTimer>
 #include "GTGlobals.h"
 #include <core/GUITestOpStatus.h>
