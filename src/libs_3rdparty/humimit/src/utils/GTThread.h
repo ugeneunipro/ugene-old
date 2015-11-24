@@ -35,9 +35,6 @@ public:
 
     void wait();
 
-private slots:
-    void sl_timeout();
-
 private:
     GUITestOpStatus &os;
     qint64 startValue;
