@@ -37,14 +37,14 @@ namespace HI {
  */
 class GTMenuPrivateMac {
 public:
-    static void clickMainMenuItem(U2::U2OpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag = Qt::MatchExactly);
-    static void checkMainMenuItemState(U2::U2OpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag = Qt::MatchExactly);
+    static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
 
 private:
 #ifdef __OBJC__
-    static NSMenu *clickMenuItem(U2::U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
-    static NSMenuItem *getMenuItem(U2::U2OpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
-    static void checkMenuItemState(U2::U2OpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState);
+    static NSMenu *clickMenuItem(GUITestOpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
+    static NSMenuItem *getMenuItem(GUITestOpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
+    static void checkMenuItemState(GUITestOpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState);
 #endif // __OBJC__NSMenuItem
 };
 
