@@ -4463,7 +4463,7 @@ GUI_TEST_CLASS_DEFINITION(test_4885_1) {
     QWidget *graphOverview = GTUtilsMsaEditor::getGraphOverview(os);
     CHECK_SET_ERR(NULL != graphOverview, "Graph overview is NULL");
     const QColor actualColor = GTUtilsMsaEditor::getGraphOverviewPixelColor(os, QPoint(graphOverview->width() / 2, 2));
-    CHECK_SET_ERR("white" == actualColor.name(), QString("Incorrect color of the graph overview ('%1'). Does it render now?").arg(actualColor.name()));
+    CHECK_SET_ERR("#ffffff" == actualColor.name(), QString("Incorrect color of the graph overview ('%1'). Does it render now?").arg(actualColor.name()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4885_2) {
