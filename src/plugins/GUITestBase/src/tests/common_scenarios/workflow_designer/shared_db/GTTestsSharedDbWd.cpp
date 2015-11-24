@@ -624,14 +624,18 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0004) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Plain Text");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Plain Text");
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Plain Text"),
+    GTUtilsWorkflowDesigner::getWorker(os, "Write Plain Text"));
+
+    GTUtilsWorkflowDesigner::click(os, "Read Plain Text");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/text/", "text.txt");
 
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Plain Text");
+    GTUtilsWorkflowDesigner::click(os, "Write Plain Text");
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
 
-    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Plain Text"),
-        GTUtilsWorkflowDesigner::getWorker(os, "Write Plain Text"));
+    
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
         "Please fix issues listed in the error list (located under workflow)."));
