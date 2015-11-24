@@ -3282,7 +3282,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
 //                   dialog can't be closed until the search task finish,
 //                   the search task waits until the "auto-annotation update" task finish.
 
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/FASTA/", "Mycobacterium.fna");
 
     class SiteconCustomFiller : public Filler {
     public:
