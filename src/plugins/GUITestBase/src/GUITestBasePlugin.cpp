@@ -2457,7 +2457,7 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0010);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0011, "UGENE-4944");
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011_1);
 
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0012);

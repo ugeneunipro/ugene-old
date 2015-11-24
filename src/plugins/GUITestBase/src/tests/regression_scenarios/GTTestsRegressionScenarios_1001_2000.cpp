@@ -3735,6 +3735,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     settings.input = input;
     settings.executionString = "./ugenem $in1";
 
+    GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
     GTWidget::click(os, createElement);
@@ -3750,10 +3751,16 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep(4000);
-
+#ifdef Q_OS_UNIX
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
-                                                      << "Custom Elements with CMD Tools",
-                                                      PopupChecker::NotExists));
+        << "Custom Elements with CMD Tools" << settings.elementName, PopupChecker::NotExists));
+#endif // Q_OS_UNIX
+
+#ifdef Q_OS_WIN
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
+        << "Custom Elements with CMD Tools", PopupChecker::NotExists));
+#endif // Q_OS_UNIX
+
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
 }
 
