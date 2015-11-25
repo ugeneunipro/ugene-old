@@ -109,7 +109,7 @@ changeCoreInstallNames () {
 restorePluginsQtInstallName () {
     if [ "$1" ] && [ "$2" ]
     then
-        install_name_tool -change @loader_path/../../Frameworks/$1.framework/Versions/4/$1 @executable_path/../Frameworks/$1.framework/Versions/4/$1 "$TARGET_EXE_DIR"/plugins/$2
+        install_name_tool -change @loader_path/../../Frameworks/$1.framework/Versions/5/$1 @executable_path/../Frameworks/$1.framework/Versions/5/$1 "$TARGET_EXE_DIR"/plugins/$2
     else
         echo "restorePluginsQtInstallName: not enough parameters"
     fi
@@ -122,20 +122,29 @@ restorePluginsQtInstallName () {
 restorePluginsQtInstallNames () {
    if [ "$1" ]
    then
-        # TODO: it is better to get Qt library names to change from otool output
-
         echo "Restore qt install names for plugin $1"
         PLUGIN_LIB="lib$1.dylib"
 
         restorePluginsQtInstallName QtCore $PLUGIN_LIB
         restorePluginsQtInstallName QtGui $PLUGIN_LIB
+        restorePluginsQtInstallName QtMultimedia $PLUGIN_LIB
+        restorePluginsQtInstallName QtMultimediaWidgets $PLUGIN_LIB
         restorePluginsQtInstallName QtNetwork $PLUGIN_LIB
         restorePluginsQtInstallName QtOpenGL $PLUGIN_LIB
+        restorePluginsQtInstallName QtPositioning $PLUGIN_LIB
+        restorePluginsQtInstallName QtPrintSupport $PLUGIN_LIB
+        restorePluginsQtInstallName QtQml $PLUGIN_LIB
+        restorePluginsQtInstallName QtQuick $PLUGIN_LIB
         restorePluginsQtInstallName QtScript $PLUGIN_LIB
         restorePluginsQtInstallName QtScriptTools $PLUGIN_LIB
+        restorePluginsQtInstallName QtSensors $PLUGIN_LIB
+        restorePluginsQtInstallName QtSql $PLUGIN_LIB
         restorePluginsQtInstallName QtSvg $PLUGIN_LIB
         restorePluginsQtInstallName QtTest $PLUGIN_LIB
+        restorePluginsQtInstallName QtWebChannel $PLUGIN_LIB
         restorePluginsQtInstallName QtWebKit $PLUGIN_LIB
+        restorePluginsQtInstallName QtWebKitWidgets $PLUGIN_LIB
+        restorePluginsQtInstallName QtWidgets $PLUGIN_LIB
         restorePluginsQtInstallName QtXml $PLUGIN_LIB
         restorePluginsQtInstallName QtXmlPatterns $PLUGIN_LIB
 
