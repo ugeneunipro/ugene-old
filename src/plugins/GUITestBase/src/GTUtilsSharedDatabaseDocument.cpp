@@ -386,6 +386,7 @@ void GTUtilsSharedDatabaseDocument::importFiles(HI::GUITestOpStatus &os, Documen
     GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
 
     createPath(os, databaseDoc, dstFolderPath);
+    GTGlobals::sleep();
     callImportDialog(os, databaseDoc, dstFolderPath);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);

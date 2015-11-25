@@ -634,14 +634,12 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0004) {
     GTUtilsWorkflowDesigner::click(os, "Write Plain Text");
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
-
-    
-
+  
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
         "Please fix issues listed in the error list (located under workflow)."));
 
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
-    GTGlobals::sleep();
+    GTGlobals::sleep(10000); //neccessary sleep
 
     GTUtilsWorkflowDesigner::checkErrorList(os, "You do not have write permissions to the database");
 }

@@ -2275,7 +2275,7 @@ GUI_TEST_CLASS_DEFINITION(test_0846) {
 //    4. Chose "csv" in combobox "File format"
 //    5. Click checkbox "Save sequence names"
 //    6. Click "OK"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export annotations...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export" << "Export annotations...", GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(os, sandBoxDir + "test_0846.csv", ExportAnnotationsFiller::csv));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);

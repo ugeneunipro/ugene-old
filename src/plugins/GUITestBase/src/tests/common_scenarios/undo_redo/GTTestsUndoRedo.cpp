@@ -729,7 +729,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
                         "AAGCCTTTT---AA");
 
     //Use context {Edit->Align with Kalign}
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTUtilsTaskTreeView::waitTaskFinished(os);
