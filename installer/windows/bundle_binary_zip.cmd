@@ -78,6 +78,7 @@ copy %U_ROOT%\data\manuals\*.pdf %OUTPUT_DIR%\data\manuals\
 REM copy libs 
 call %INSTALL_DIR%\copy_lib.cmd ugenedb
 call %INSTALL_DIR%\copy_lib.cmd breakpad
+call %INSTALL_DIR%\copy_lib.cmd humimit
 call %INSTALL_DIR%\copy_lib.cmd U2Algorithm
 call %INSTALL_DIR%\copy_lib.cmd U2Core
 call %INSTALL_DIR%\copy_lib.cmd U2Designer

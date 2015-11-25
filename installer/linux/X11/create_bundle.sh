@@ -109,6 +109,7 @@ add-core-library U2Test
 add-core-library U2View
 add-core-library ugenedb
 add-core-library breakpad
+add-core-library humimit
 
 echo
 echo copying qt libraries

@@ -148,6 +148,7 @@ Section "Build"
     !insertmacro AddLibrary U2View
     !insertmacro AddLibrary ugenedb
     !insertmacro AddLibrary breakpad
+    !insertmacro AddLibrary humimit
 
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
