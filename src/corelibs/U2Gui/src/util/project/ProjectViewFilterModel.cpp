@@ -356,7 +356,7 @@ QVariant ProjectViewFilterModel::getObjectData(const QModelIndex &index, int rol
             const bool isDatabase = parentDoc->isDatabaseConnection();
             const QString itemDocInfo = parentDoc->getName() + (isDatabase ? ": " + objectPath : QString());
             const QString objectName = getStyledObjectName(object, toGroup(index.parent()));
-            result = QString("%1<p style=\"margin-top:0px;font-size:9px;\">%2</p>").arg(objectName).arg(itemDocInfo);
+            result = QString("%1<p style=\"margin-top:0px;font-size:6.75pt;\">%2</p>").arg(objectName).arg(itemDocInfo);
         }
     }
     return result;
