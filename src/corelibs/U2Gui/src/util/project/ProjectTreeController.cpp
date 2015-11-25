@@ -64,7 +64,7 @@ namespace U2 {
 
 ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeControllerModeSettings &settings, QObject *parent)
     : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), filterModel(NULL), previousItemDelegate(NULL),
-    proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL)
+    proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL), renameInProgress(false)
 {
     Project *project = AppContext::getProject();
     SAFE_POINT(NULL != project, "NULL project", );
@@ -625,6 +625,7 @@ void ProjectTreeController::sl_onRename() {
 
     const QModelIndex selectedIndex = NULL == proxyModel ? selection.first() : proxyModel->mapToSource(selection.first());
     CHECK(ProjectViewModel::DOCUMENT != ProjectViewModel::itemType(selectedIndex), );
+    renameInProgress = true;
 
     tree->edit(selectedIndex);
 }
@@ -897,6 +898,14 @@ void ProjectTreeController::sl_onLoadingDocumentProgressChanged() {
     updateLoadingState(doc);
 }
 
+bool isHotkeyPressed(int key) {
+#ifdef Q_OS_MAC
+    return key == Qt::Key_Return || key == Qt::Key_Enter;
+#else
+    return key == Qt::Key_F2;
+#endif // Q_OS_MAC
+}
+
 bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
     QTreeView *tree = dynamic_cast<QTreeView*>(o);
     CHECK(NULL != tree, false);
@@ -906,7 +915,7 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
         CHECK(NULL != kEvent, false);
         int key = kEvent->key();
         bool hasSelection = !documentSelection.isEmpty() || !objectSelection.isEmpty() || !folderSelection.isEmpty();
-        if (key == Qt::Key_F2 && hasSelection) {
+        if (!renameInProgress && isHotkeyPressed(key) && hasSelection) {
             if (renameAction->isEnabled()) {
                 sl_onRename();
             }
@@ -925,8 +934,11 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
                 Document *doc = documentSelection.getSelectedDocuments().last();
                 emit si_returnPressed(doc);
             }
+            renameInProgress = false;
             return true;
         }
+    } else if (QEvent::FocusOut == e->type() && renameInProgress) {
+        renameInProgress = false;
     }
 
     return false;

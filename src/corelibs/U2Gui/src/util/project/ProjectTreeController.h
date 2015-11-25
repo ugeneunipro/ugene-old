@@ -179,6 +179,7 @@ private:
     GObjectSelection objectSelection;
     GObjectView *markActiveView;
     GObject *objectIsBeingRecycled;
+    bool renameInProgress;
 
     QHash<Task *, QHash<Document *, QSet<U2DataId> > > task2ObjectsBeingDeleted;
     QHash<Task *, QHash<Document *, QSet<QString> > > task2FoldersBeingDeleted;
