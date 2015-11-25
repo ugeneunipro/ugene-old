@@ -1,4 +1,16 @@
 ===================================
+Prerequisites
+===================================
+
+Make sure the Qt (>= 5.2.1) development libraries are installed:
+
+* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
+* In Fedora:        `yum install qt-devel`
+* In Arch Linux:    `pacman -S qt`
+* In Mac OS X: download from Qt official site (http://www.qt.io/download/)
+* In Windows: download from Qt official site (http://www.qt.io/download/)
+
+===================================
 For Windows users:
 ===================================
 

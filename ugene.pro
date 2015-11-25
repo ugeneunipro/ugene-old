@@ -1,5 +1,16 @@
 include( src/ugene_globals.pri )
 
+# Check the Qt version. If QT_VERSION is not set, it is probably Qt 3.
+isEmpty(QT_VERSION) {
+    error("QT_VERSION not defined. Unipro UGENE does not work with Qt 3.")
+}
+
+!minQtVersion(5, 2, 1) {
+    message("Cannot build Unipro UGENE with Qt version $${QT_VERSION}")
+    error("Use at least Qt 5.2.1.")
+}
+
+
 TEMPLATE = subdirs
 
 CONFIG += ordered debug_and_release
