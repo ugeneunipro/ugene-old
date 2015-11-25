@@ -373,7 +373,7 @@ void GTWidget::resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &s
     bool neededPositionFound = false;
     QSize oldSize = widget->size();
 
-    QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget);
+    QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(5, 5);
     for (int i=0; i<5; i++){
         GTMouseDriver::moveTo(os, topLeftPos);
         QPoint newTopLeftPos = topLeftPos + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1) - QPoint(size.width(), size.height());
@@ -382,7 +382,7 @@ void GTWidget::resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &s
             neededPositionFound = true;
             break;
         }else{
-            topLeftPos += QPoint(1,1);
+            topLeftPos -= QPoint(1,1);
         }
     }
     GT_CHECK(neededPositionFound, "Needed mouse position for resizing not found");
