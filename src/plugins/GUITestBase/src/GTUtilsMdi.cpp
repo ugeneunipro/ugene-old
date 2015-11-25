@@ -165,6 +165,7 @@ void GTUtilsMdi::closeAllWindows(HI::GUITestOpStatus &os) {
         GTMouseDriver::moveTo(os, closeButtonPos);
         GTMouseDriver::click(os);
         GTGlobals::sleep(100);
+        GTThread::waitForMainThread(os);
     }
 #endif
 }

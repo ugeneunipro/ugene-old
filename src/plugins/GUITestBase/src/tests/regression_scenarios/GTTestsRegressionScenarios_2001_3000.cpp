@@ -5729,6 +5729,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
             QRadioButton *multipleButton = w->findChild<QRadioButton*>("miltipleButton");
             CHECK_SET_ERR(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
             GTRadioButton::click(os, multipleButton);
+            GTGlobals::sleep();
 
             QLineEdit *regionEdit= w->findChild<QLineEdit*>("multipleRegionEdit");
             CHECK_SET_ERR(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
@@ -5744,8 +5745,8 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
         }
     };
     GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
-    GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2923) {

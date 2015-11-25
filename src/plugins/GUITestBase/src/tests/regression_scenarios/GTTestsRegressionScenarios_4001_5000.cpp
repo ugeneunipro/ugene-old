@@ -504,7 +504,15 @@ GUI_TEST_CLASS_DEFINITION(test_4047){
     class custom : public CustomScenario {
     public:
         void run(HI::GUITestOpStatus &os) {
+            GTGlobals::sleep(500);
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+#ifdef Q_OS_MAC
+            //dirty hack for mac
+            GTGlobals::sleep(500);
+            if(QApplication::activeModalWidget() != NULL){
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+            }
+#endif
         }
     };
 
@@ -512,6 +520,7 @@ GUI_TEST_CLASS_DEFINITION(test_4047){
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw DNA-Seq Data Processing", new custom()));
     GTUtilsWorkflowDesigner::addSample(os, "Raw DNA-Seq data processing");
     GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
 
     CHECK_SET_ERR(GTAction::button(os, "Show wizard")->isVisible() == false, "'Show wizard' button should not be at toolbar!");
 }
