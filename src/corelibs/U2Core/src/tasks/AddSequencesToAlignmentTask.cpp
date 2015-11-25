@@ -190,7 +190,7 @@ QList<Task*> AddSequencesFromFilesToAlignmentTask::onSubTaskFinished(Task* subTa
         U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(seqObj);
         SAFE_POINT(casted != NULL, "Cast to U2SequenceObject failed", subTasks);
         DNASequence seq = casted->getWholeSequence(stateInfo);
-        CHECK(stateInfo.isCoR(), subTasks);
+        CHECK(!stateInfo.isCoR(), subTasks);
         seq.alphabet = casted->getAlphabet();
         seqList.append(seq);
     }
