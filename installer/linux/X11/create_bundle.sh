@@ -129,6 +129,7 @@ add-qt-library Qt5ScriptTools
 add-qt-library Qt5Sensors
 add-qt-library Qt5Sql
 add-qt-library Qt5Svg
+add-qt-library Qt5Test
 add-qt-library Qt5WebChannel
 add-qt-library Qt5WebKit
 add-qt-library Qt5WebKitWidgets

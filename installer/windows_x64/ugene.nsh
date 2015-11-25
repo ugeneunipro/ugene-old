@@ -176,6 +176,7 @@ SetRegView 64
     File "${PATH_TO_QT_LIBS}\Qt5Sensors.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Sql.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Svg.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Test.dll"
     File "${PATH_TO_QT_LIBS}\Qt5WebChannel.dll"
     File "${PATH_TO_QT_LIBS}\Qt5WebKit.dll"
     File "${PATH_TO_QT_LIBS}\Qt5WebKitWidgets.dll"
