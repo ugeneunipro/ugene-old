@@ -20,35 +20,41 @@
  */
 
 #include "DetView.h"
+
 #include "ADVSequenceObjectContext.h"
+#include "view_rendering/DetViewSingleLineRenderer.h"
+#include "view_rendering/DetViewMultiLineRenderer.h"
 
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/AppContext.h>
-
-#include <U2Core/DNATranslationImpl.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DNATranslationImpl.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QFontMetrics>
-
 #include <QApplication>
-#include <QTextEdit>
-#include <QMenu>
+#include <QFontMetrics>
 #include <QLayout>
+#include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
+#include <QTextEdit>
+
 
 namespace U2 {
 
+
+/************************************************************************/
+/* DetView */
+/************************************************************************/
 DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     : GSequenceLineViewAnnotated(p, ctx)
 {
@@ -62,8 +68,14 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     showTranslationAction->setObjectName("translation_action");
     connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
+    wrapSequenceAction = new QAction(tr("Wrap sequence"), this);
+    wrapSequenceAction->setIcon(QIcon(":core/images/wrap_sequence.png"));
+    wrapSequenceAction->setObjectName("wrap_sequence_action");
+    connect(wrapSequenceAction, SIGNAL(triggered(bool)), SLOT(sl_wrapSequenceToggle(bool)));
+
     showComplementAction->setCheckable(true);
     showTranslationAction->setCheckable(true);
+    wrapSequenceAction->setCheckable(true);
 
     bool hasComplement = ctx->getComplementTT() != NULL;
     showComplementAction->setChecked(hasComplement);
@@ -79,12 +91,18 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     connect(ctx, SIGNAL(si_aminoTranslationChanged()), SLOT(sl_onAminoTTChanged()));
     connect(ctx, SIGNAL(si_translationRowsChanged()), SLOT(sl_translationRowsChanged()));
 
+    addActionToLocalToolbar(wrapSequenceAction);
     if (hasComplement) {
         addActionToLocalToolbar(showComplementAction);
     }
     if (hasAmino) {
         addActionToLocalToolbar(showTranslationAction);
     }
+
+    verticalScrollBar = new GScrollBar(Qt::Vertical, this);
+
+    verticalScrollBar->setHidden(!wrapSequenceAction->isChecked());
+    scrollBar->setHidden(wrapSequenceAction->isChecked());
 
     pack();
 
@@ -93,58 +111,46 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 }
 
-void DetView::updateSize() {
-    addUpdateFlags(GSLV_UF_ViewResized);
-
-    DetViewRenderArea* detArea = (static_cast<DetViewRenderArea*>(renderArea));
-    detArea->updateSize();
-    setMinimumHeight(layout()->minimumSize().height());
+DetViewRenderArea* DetView::getDetViewRenderArea() const {
+    return static_cast<DetViewRenderArea*>(renderArea);
 }
 
-void DetView::resizeEvent(QResizeEvent *e) {
-    int w = contentWidget->width();
-    int charWidth = renderArea->getCharWidth();
-    int visibleSymbolsCount = w / charWidth;
+bool DetView::hasTranslations() {
+    return getAminoTT() != NULL;
+}
 
-    if (visibleSymbolsCount > seqLen) {
-        visibleRange.startPos = 0;
-        visibleRange.length = seqLen;
-    } else {
-        visibleRange.length = visibleSymbolsCount;
-        if (visibleRange.endPos() > seqLen) {
-            visibleRange.startPos = seqLen - visibleSymbolsCount;
-        }
+bool DetView::hasComplementaryStrand() {
+    return getComplementTT() != NULL;
+}
+
+bool DetView::isWrapMode() {
+    return wrapSequenceAction->isChecked();
+}
+
+void DetView::setStartPos(qint64 newPos) {
+    if (newPos + visibleRange.length > seqLen && !wrapSequenceAction->isChecked()) {
+        newPos = seqLen - visibleRange.length;
+    }
+    if (newPos < 0) {
+        newPos = 0;
+    }
+    if (visibleRange.startPos != newPos) {
+        visibleRange.startPos = newPos;
+        updateVisibleRange();
+    }
+}
+
+void DetView::setCenterPos(qint64 pos) {
+    if (!isWrapMode()) {
+        GSequenceLineView::setCenterPos(pos);
+        return;
     }
 
-    Q_ASSERT(visibleRange.startPos >= 0 && visibleRange.endPos()<=seqLen);
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    qint64 line = pos / detArea->getSymbolsPerLine();
 
-    addUpdateFlags(GSLV_UF_ViewResized);
-    GSequenceLineView::resizeEvent(e);
-
-    onVisibleRangeChanged();
-}
-
-void DetView::updateActions() {
-    bool hasComplement = ctx->getComplementTT()!=NULL;
-    showComplementAction->setEnabled(hasComplement);
-
-    bool hasAmino = ctx->getAminoTT()!=NULL;
-    showTranslationAction->setEnabled(hasAmino);
-}
-
-void DetView::showEvent(QShowEvent * e) {
-    updateActions();
-    GSequenceLineViewAnnotated::showEvent(e);
-}
-
-void DetView::hideEvent(QHideEvent * e) {
-    updateActions();
-    GSequenceLineViewAnnotated::hideEvent(e);
-}
-
-void DetView::sl_onAminoTTChanged() {
-    lastUpdateFlags|=GSLV_UF_NeedCompleteRedraw;
-    update();
+    qint64 newPos = (line - detArea->getFullyVisibleLinesCount() / 2) * detArea->getSymbolsPerLine();
+    setStartPos(newPos);
 }
 
 DNATranslation* DetView::getComplementTT() const {
@@ -155,88 +161,55 @@ DNATranslation* DetView::getAminoTT() const {
     return showTranslationAction->isChecked() ? ctx->getAminoTT() : NULL;
 }
 
-
 void DetView::setShowComplement(bool t) {
     showComplementAction->disconnect(this);
     showComplementAction->setChecked(t);
     connect(showComplementAction, SIGNAL(triggered(bool)), SLOT(sl_showComplementToggle(bool)));
 
     updateSize();
+    updateVisibleRange();
 }
 
 void DetView::setShowTranslation(bool t) {
     showTranslationAction->disconnect(this);
     showTranslationAction->setChecked(t);
-    if(!t){
-        getSequenceContext()->setTranslationsVisible(t);
-    }
+    getSequenceContext()->setTranslationsVisible(t);
     connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
     updateSize();
+    updateVisibleRange();
 }
 
 void DetView::setDisabledDetViewActions(bool t){
     showTranslationAction->setDisabled(t);
     showComplementAction->setDisabled(t);
+    wrapSequenceAction->setDisabled(t);
 }
 
-void DetView::mouseReleaseEvent(QMouseEvent* me) {
-    //click with 'alt' shift selects single base in GSingleSeqWidget;
-    //here we adjust this behavior -> if click was done in translation line -> select 3 bases
-    Qt::KeyboardModifiers km = QApplication::keyboardModifiers();
-    bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
-    if (me->button() == Qt::LeftButton && singleBaseSelectionMode) {
-        QPoint areaPoint = toRenderAreaPoint(me->pos());
-        if ((static_cast<DetViewRenderArea*>(renderArea))->isOnTranslationsLine(areaPoint.y())) {
-            qint64 pos = renderArea->coordToPos(areaPoint.x());
-            if (pos == lastPressPos) {
-                U2Region rgn(pos-1, 3);
-                if (rgn.startPos >=0 && rgn.endPos() <= seqLen) {
-                    setSelection(rgn);
-                    lastPressPos=-1;
-                }
-            }
-        }
-    }
-    GSequenceLineViewAnnotated::mouseReleaseEvent(me);
-}
-
-void DetView::sl_sequenceChanged(){
+void DetView::sl_sequenceChanged() {
     seqLen = ctx->getSequenceLength();
-    int w = contentWidget->width();
-    int charWidth = renderArea->getCharWidth();
-    int visibleSymbolsCount = w / charWidth;
-    if(seqLen > visibleSymbolsCount){
-        if((visibleRange.length != visibleSymbolsCount) || (visibleRange.endPos() > seqLen)){
-            visibleRange.length = visibleSymbolsCount;
-            if(visibleRange.endPos() > visibleSymbolsCount){
-                visibleRange.startPos = seqLen - visibleSymbolsCount;
-            }
-            onVisibleRangeChanged(true);
-        }
-    }else{
-        visibleRange.length = seqLen;
-        onVisibleRangeChanged(true);
-    }
+    updateVisibleRange();
     GSequenceLineView::sl_sequenceChanged();
 }
 
-void DetView::sl_translationRowsChanged(){
-    if(isHidden()){
-        setHidden(false);
-    }
+void DetView::sl_onAminoTTChanged() {
+    lastUpdateFlags |= GSLV_UF_NeedCompleteRedraw;
+    update();
+}
+
+void DetView::sl_translationRowsChanged() {
     QVector<bool> visibleRows = getSequenceContext()->getTranslationRowsVisibleStatus();
     bool anyFrame = false;
     foreach(bool b, visibleRows){
         anyFrame = anyFrame || b;
     }
-    if(!anyFrame){
-        if(showTranslationAction->isChecked()){
+    if (!anyFrame){
+        if(showTranslationAction->isChecked()) {
             sl_showTranslationToggle(false);
         }
         return;
     }
-    if(!showTranslationAction->isChecked()){
+    if (!showTranslationAction->isChecked()) {
         if(!getSequenceContext()->isRowChoosed()){
             sl_showTranslationToggle(true);
         }
@@ -246,210 +219,237 @@ void DetView::sl_translationRowsChanged(){
     }
 
     updateScrollBar();
+    updateVerticalScrollBar();
     updateSize();
     completeUpdate();
 }
 
-void DetView::sl_showTranslationToggle(bool v){
-    showTranslationAction->setChecked(v);
-    getSequenceContext()->setTranslationsVisible(v);
-    updateSize();
-    //setShowTranslation(v);
-}
-//////////////////////////////////////////////////////////////////////////
-/// render
-DetViewRenderArea::DetViewRenderArea(DetView* v) : GSequenceLineViewAnnotatedRenderArea(v, true) {
-    updateSize();
+void DetView::sl_showComplementToggle(bool v) {
+    setShowComplement(v);
 }
 
-void DetViewRenderArea::updateLines() {
-    numLines = -1;
-    rulerLine = -1;
-    directLine = -1;
-    complementLine = -1;
-    firstDirectTransLine = -1;
-    firstComplTransLine = -1;
+void DetView::sl_showTranslationToggle(bool v) {
+    setShowTranslation(v);
+}
 
-    DetView* detView = getDetView();
-    if (detView->isOneLineMode()) {
-        directLine = 0;
-        rulerLine = 1;
-        numLines = 2;
-    } else if (detView->hasComplementaryStrand() && detView->hasTranslations()) {
-        //change
-        firstDirectTransLine = 0;
-        directLine = 3;
-        rulerLine = 4;
-        complementLine = 5;
-        firstComplTransLine = 6;
-        numLines = 9;
-        QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
+void DetView::sl_wrapSequenceToggle(bool v) {
+    // turn off/on multiline mode
+    addUpdateFlags(GSLV_UF_ViewResized);
 
-        for(int i = 0; i<6; i++){
-            if(!v[i]){
-                if(i<3){
-                    directLine--;
-                    rulerLine--;
-                    complementLine--;
-                    firstComplTransLine--;
+    scrollBar->setHidden(v);
+    verticalScrollBar->setHidden(!v);
+
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    detArea->setWrapSequence(v);
+    updateVisibleRange();
+
+    updateSize();
+    addUpdateFlags(GSLV_UF_ViewResized);
+    completeUpdate();
+}
+
+void DetView::sl_verticalSrcollBarMoved(int pos) {
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    setStartPos(pos * detArea->getSymbolsPerLine());
+}
+
+void DetView::pack() {
+    QGridLayout* layout = new QGridLayout();
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(renderArea, 0, 0);
+    layout->addWidget(scrollBar, 1, 0);
+    layout->addWidget(verticalScrollBar, 0, 1);
+
+    setContentLayout(layout);
+    setMinimumHeight(scrollBar->height() + renderArea->minimumHeight());
+}
+
+void DetView::showEvent(QShowEvent * e) {
+    updateVisibleRange();
+    updateScrollBar();
+    updateActions();
+    GSequenceLineViewAnnotated::showEvent(e);
+}
+
+void DetView::hideEvent(QHideEvent * e) {
+    updateActions();
+    GSequenceLineViewAnnotated::hideEvent(e);
+}
+
+void DetView::mouseMoveEvent(QMouseEvent *me) {
+    if (lastPressPos == -1) {
+        QWidget::mouseMoveEvent(me);
+        return;
+    }
+    if (me->buttons() & Qt::LeftButton) {
+        QPoint areaPoint = toRenderAreaPoint(me->pos());
+
+        // manage scrollbar auto-scrolling
+        GScrollBar* sBar = wrapSequenceAction->isChecked() ? verticalScrollBar : scrollBar;
+        if (areaPoint.x() > width()) {
+            sBar->setupRepeatAction(QAbstractSlider::SliderSingleStepAdd);
+        } else if (areaPoint.x() <= 0) {
+            sBar->setupRepeatAction(QAbstractSlider::SliderSingleStepSub);
+        } else {
+            sBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
+        }
+
+        // compute selection
+        qint64 pos = renderArea->coordToPos(areaPoint);
+        qint64 selStart = qMin(lastPressPos, pos);
+        qint64 selLen = qAbs(pos - lastPressPos);
+        if (selStart<0) {
+            selLen += selStart;
+            selStart = 0;
+        } else if (selStart + selLen > seqLen) {
+            selLen = seqLen - selStart;
+        }
+        setSelection(U2Region(selStart, selLen));
+    }
+    QWidget::mouseMoveEvent(me);
+}
+
+void DetView::mouseReleaseEvent(QMouseEvent* me) {
+    //click with 'alt' shift selects single base in GSingleSeqWidget;
+    //here we adjust this behavior -> if click was done in translation line -> select 3 bases
+    Qt::KeyboardModifiers km = QApplication::keyboardModifiers();
+    bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
+    if (me->button() == Qt::LeftButton && singleBaseSelectionMode) {
+        QPoint areaPoint = toRenderAreaPoint(me->pos());
+        DetViewRenderArea* detArea = getDetViewRenderArea();
+        if (detArea->isOnTranslationsLine(areaPoint)) {
+            qint64 pos = detArea->coordToPos(areaPoint);
+            if (pos == lastPressPos) {
+                U2Region rgn(pos - 1, 3);
+                if (rgn.startPos >= 0 && rgn.endPos() <= seqLen) {
+                    setSelection(rgn);
+                    lastPressPos = -1;
                 }
-                numLines--;
-            }
-        }
-    } else if (detView->hasComplementaryStrand()) {
-        assert(!detView->hasTranslations());
-        directLine = 0;
-        rulerLine = 1;
-        complementLine = 2;
-        numLines = 3;
-    } else {
-        assert(!detView->hasComplementaryStrand() && detView->hasTranslations());
-        firstDirectTransLine = 0;
-        directLine = 3;
-        rulerLine = 4;
-        numLines = 5;
-        QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
-
-        for (int i = 0; i < 3; i++) {
-            if (!v[i]) {
-                directLine--;
-                rulerLine--;
-                numLines--;
             }
         }
     }
-    assert(numLines > 0);
+    GSequenceLineViewAnnotated::mouseReleaseEvent(me);
 }
 
-int DetViewRenderArea::getVisibleDirectTransLine(int absoluteFrameNumber) const {
-    int lineNumber = firstDirectTransLine + absoluteFrameNumber;
+void DetView::wheelEvent(QWheelEvent *we) {
+    bool renderAreaWheel = QRect(renderArea->x(), renderArea->y(), renderArea->width(), renderArea->height()).contains(we->pos());
+    if (!renderAreaWheel) {
+        QWidget::wheelEvent(we);
+        return;
+    }
+    setFocus();
 
-    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
-    const int halfRowsCount = rowsVisibility.size() / 2;
-    SAFE_POINT(absoluteFrameNumber < halfRowsCount, "Unexpected translation line number", -1);
-    if (!rowsVisibility[absoluteFrameNumber]) {
-        return -1;
-    } else {
-        for (int i = 0; i < absoluteFrameNumber; ++i) {
-            if (!rowsVisibility[i]) {
-                --lineNumber;
-            }
-        }
-        return lineNumber;
+    bool toMin = we->delta() > 0;
+    if (we->modifiers() == 0) {
+        // clear wheel event
+        GScrollBar* sBar = wrapSequenceAction->isChecked() ? verticalScrollBar : scrollBar;
+        sBar->triggerAction(toMin ? QAbstractSlider::SliderSingleStepSub : QAbstractSlider::SliderSingleStepAdd);
     }
 }
 
-int DetViewRenderArea::getVisibleComplTransLine(int absoluteFrameNumber) const {
-    int lineNumber = firstComplTransLine + absoluteFrameNumber;
+void DetView::resizeEvent(QResizeEvent *e) {
+    updateVisibleRange();
 
-    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
-    const int halfRowsCount = rowsVisibility.size() / 2;
-    SAFE_POINT(absoluteFrameNumber < halfRowsCount, "Unexpected translation line number", -1);
-    if (!rowsVisibility[halfRowsCount + absoluteFrameNumber]) {
-        return -1;
-    } else {
-        for (int i = halfRowsCount; i < halfRowsCount + absoluteFrameNumber; ++i) {
-            if (!rowsVisibility[i]) {
-                --lineNumber;
-            }
-        }
-        return lineNumber;
-    }
+    addUpdateFlags(GSLV_UF_ViewResized);
+    GSequenceLineView::resizeEvent(e);
 }
 
-U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const {
-    const SharedAnnotationData &aData = a->getData();
-    const U2Strand strand = aData->getStrand();
-    const bool complement = strand.isCompementary() && getDetView()->hasComplementaryStrand();
-    const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
-
-    DetView *detView = getDetView();
-    const bool transl = detView->hasTranslations() && (aminoState == TriState_Yes);
-    const int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), strand, aData->isOrder(), region, aData->getRegions());
-
-    int line = -1;
-    if (complement) {
-        if (transl) {
-            line = getVisibleComplTransLine(frame);
-            line = (-1 == line) ? complementLine : line;
-        } else {
-            line = complementLine;
+void DetView::updateVisibleRange() {
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    if (isWrapMode()) {
+        if (visibleRange.startPos % detArea->getSymbolsPerLine() != 0) {
+            // shift to the nearest line break
+            visibleRange.startPos = detArea->getSymbolsPerLine() * (int)(visibleRange.startPos / detArea->getSymbolsPerLine() - 0.5);
         }
-    } else {
-        if (transl) {
-            line = getVisibleDirectTransLine(frame);
-            line = (-1 == line) ? directLine : line;
-        } else {
-            line = directLine;
+        bool drawAnotherLine = (visibleRange.startPos  + detArea->getVisibleSymbolsCount()) < seqLen;
+        visibleRange.length = qMin((int)(seqLen - visibleRange.startPos),
+                                   detArea->getVisibleSymbolsCount() + drawAnotherLine * detArea->getSymbolsPerLine());
+
+        bool emptyLineDetected = (detArea->getVisibleSymbolsCount() - visibleRange.length) > detArea->getSymbolsPerLine();
+        if (seqLen != visibleRange.length && emptyLineDetected) {
+            visibleRange.startPos -= detArea->getSymbolsPerLine();
+            visibleRange.length = qMin(seqLen, visibleRange.length + detArea->getSymbolsPerLine());
         }
+    } else if (visibleRange.length != detArea->getVisibleSymbolsCount()) {
+        visibleRange.length = qMin((qint64)detArea->getVisibleSymbolsCount(), seqLen);
     }
-    SAFE_POINT(-1 != line, "Unable to calculate annotation vertical position!", U2Region());
-    int y = getLineY(line);
-    return U2Region(y + getHalfOfUnusedHeight(), lineHeight);
+
+    SAFE_POINT(visibleRange.startPos >= 0 && visibleRange.endPos() <= seqLen, "Visible range is out of sequence range", );
+
+    updateVerticalScrollBar();
+    onVisibleRangeChanged();
 }
 
-U2Region DetViewRenderArea::getMirroredYRange(const U2Strand &mirroredStrand) const {
-    int line = mirroredStrand.isDirect() ? directLine : complementLine;
-    int y = getLineY(line);
-    return U2Region(y + getHalfOfUnusedHeight(), lineHeight);
+void DetView::updateActions() {
+    bool hasComplement = ctx->getComplementTT() != NULL;
+    showComplementAction->setEnabled(hasComplement);
+
+    bool hasAmino = ctx->getAminoTT() != NULL;
+    showTranslationAction->setEnabled(hasAmino);
+
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    bool occupyMoreThanOneLine = getSequenceLength() > detArea->getSymbolsPerLine();
+    wrapSequenceAction->setEnabled(occupyMoreThanOneLine);
 }
 
-bool DetViewRenderArea::isOnTranslationsLine(int y) const {
-    if (firstDirectTransLine != -1) {
-        U2Region dtr(getLineY(firstDirectTransLine), 3*lineHeight);
-        if (dtr.contains(y)) {
-            return true;
-        }
-    }
-    if (firstComplTransLine !=-1) {
-        U2Region ctr(getLineY(firstComplTransLine), 3*lineHeight);
-        if (ctr.contains(y)) {
-            return true;
-        }
-    }
-    return false;
+void DetView::updateSize() {
+    addUpdateFlags(GSLV_UF_ViewResized);
+
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    detArea->updateSize();
+
+    updateVerticalScrollBar();
 }
 
-void DetViewRenderArea::drawAll(QPainter &p, const U2Region& visibleRange) {
-    SAFE_POINT(getDetView() != NULL, "DetView is NULL", );
-    U2Region currentRange = getDetView()->getVisibleRange();
-    getDetView()->setVisibleRange(visibleRange, false);
+void DetView::updateVerticalScrollBar() {
+    verticalScrollBar->disconnect(this);
 
-    cutsiteDataList.clear();
-    p.fillRect(0, 0, charWidth * visibleRange.length, height(), Qt::white);
-    p.setPen(Qt::black);
-    ADVSequenceObjectContext *ctx = view->getSequenceContext();
-
-    QPen pen1(Qt::SolidLine);
-    pen1.setWidth(1);
-
-    foreach (const AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
-        foreach (Annotation *a, ao->getAnnotationsByRegion(visibleRange)) {
-            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
-            AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
-            drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as, U2Region(), true);
-            drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, U2Region(), true);
-        }
+    DetViewRenderArea* detArea = getDetViewRenderArea();
+    int linesCount = seqLen / detArea->getSymbolsPerLine();
+    if (seqLen % detArea->getSymbolsPerLine() != 0) {
+        linesCount++;
     }
 
-    int hCenter = getHalfOfUnusedHeight();
-    p.translate(0, hCenter);
+    verticalScrollBar->setMinimum(0);
+    verticalScrollBar->setMaximum(linesCount - detArea->getFullyVisibleLinesCount());
+    verticalScrollBar->setSliderPosition(int(visibleRange.startPos / detArea->getSymbolsPerLine()));
 
-    drawDirect(p, visibleRange);
-    drawComplement(p, visibleRange);
-    drawTranslations(p, visibleRange);
-    drawCutSites(p);
+    connect(verticalScrollBar, SIGNAL(valueChanged(int)), SLOT(sl_verticalSrcollBarMoved(int)));
+}
 
-    int y = getLineY(rulerLine) + 2;
-    int firstCharStart = posToCoord(visibleRange.startPos, true);
-    int lastCharStart = posToCoord(visibleRange.endPos() - 1, true);
-    int firstCharCenter = firstCharStart + charWidth / 2;
-    int firstLastLen = lastCharStart - firstCharStart;
-    GraphUtils::RulerConfig c;
-    GraphUtils::drawRuler(p, QPoint(firstCharCenter, y), firstLastLen, visibleRange.startPos + 1, visibleRange.endPos(), rulerFont, c);
+/************************************************************************/
+/* DetViewRenderArea */
+/************************************************************************/
+DetViewRenderArea::DetViewRenderArea(DetView* v)
+    : GSequenceLineViewAnnotatedRenderArea(v, true) {
+    renderer = DetViewRendererFactory::createRenderer(getDetView(), view->getSequenceContext(), v->isWrapMode());
+    updateSize();
+}
 
-    getDetView()->setVisibleRange(currentRange);
-    view->addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
+DetViewRenderArea::~DetViewRenderArea() {
+    delete renderer;
+}
+
+void DetViewRenderArea::setWrapSequence(bool v) {
+    delete renderer;
+    renderer = DetViewRendererFactory::createRenderer(getDetView(), view->getSequenceContext(), v);
+
+    updateSize();
+}
+
+U2Region DetViewRenderArea::getAnnotationYRange(Annotation* a, int r, const AnnotationSettings* as) const {
+    U2Region absoluteRegion = renderer->getAnnotationYRange(a, r, as, size(), view->getVisibleRange());
+    absoluteRegion.startPos += renderer->getContentIndentY(size(), view->getVisibleRange());
+    return  absoluteRegion;
+}
+
+bool DetViewRenderArea::isOnTranslationsLine(const QPoint& p) const {
+    return renderer->isOnTranslationsLine(p, size(), view->getVisibleRange());
+}
+
+bool DetViewRenderArea::isPosOnAnnotationYRange(const QPoint &p, Annotation *a, int region, const AnnotationSettings *as) const {
+    return renderer->isOnAnnotationLine(p, a, region, as, size(), view->getVisibleRange());
 }
 
 void DetViewRenderArea::drawAll(QPaintDevice* pd) {
@@ -457,418 +457,52 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw)  || uf.testFlag(GSLV_UF_ViewResized)  ||
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
 
-    bool hasSelectedAnnotationInRange = isAnnotationSelectionInVisibleRange();
-    int hCenter = getHalfOfUnusedHeight();
+    QSize canvasSize(pd->width(), pd->height());
 
     if (completeRedraw) {
-        cutsiteDataList.clear();
         QPainter pCached(cachedView);
-        pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
-        pCached.setPen(Qt::black);
-        drawAnnotations(pCached);
-
-        pCached.translate(0, hCenter);
-
-        drawDirect(pCached, view->getVisibleRange());
-        drawComplement(pCached, view->getVisibleRange());
-        drawTranslations(pCached, view->getVisibleRange());
-        drawCutSites(pCached);
-
-        drawRuler(pCached);
-
+        renderer->drawAll(pCached, canvasSize,
+                            view->getVisibleRange());
         pCached.end();
     }
 
     QPainter p(pd);
     p.drawPixmap(0, 0, *cachedView);
-
-    drawAnnotationsSelection(p);
-
-    if (hasSelectedAnnotationInRange) {
-        p.translate(0, hCenter);
-
-        drawDirect(p, view->getVisibleRange());
-        drawComplement(p, view->getVisibleRange());
-        drawTranslations(p, view->getVisibleRange());
-
-        p.translate(0, -hCenter);
-    }
-
-    p.translate(0, hCenter);
-    drawSequenceSelection(p);
+    renderer->drawSelection(p, canvasSize, view->getVisibleRange());
 
     if (view->hasFocus()) {
-        p.translate(0, -hCenter);
         drawFocus(p);
     }
 }
 
-void DetViewRenderArea::drawDirect(QPainter& p, const U2Region& visibleRange) {
-    p.setFont(sequenceFont);
-    p.setPen(Qt::black);
-
-    U2OpStatusImpl os;
-    QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange, os);
-    SAFE_POINT_OP(os, );
-    const char* seq = sequence.constData();
-
-    /// draw base line;
-    int y = getTextY(directLine);
-    for(int i = 0; i < visibleRange.length; i++) {
-        char nucl = seq[i];
-        p.drawText(i*charWidth + xCharOffset, y, QString(nucl));
-    }
-}
-
-void DetViewRenderArea::drawComplement(QPainter& p, const U2Region& visibleRange) {
-    p.setFont(sequenceFont);
-    p.setPen(Qt::black);
-
-    DetView* detView = getDetView();
-    if (complementLine > 0) {
-        U2OpStatusImpl os;
-        QByteArray visibleSequence = detView->getSequenceContext()->getSequenceData(visibleRange, os);
-        SAFE_POINT_OP(os, );
-        const char* seq = visibleSequence.constData();
-
-        DNATranslation* complTrans = detView->getComplementTT();
-        CHECK(complTrans != NULL, );
-        QByteArray map = complTrans->getOne2OneMapper();
-        int y = getTextY(complementLine);
-        for(int i=0;i< visibleRange.length; i++) {
-            char nucl = seq[i];
-            char complNucl = map.at(nucl);
-            p.drawText(i*charWidth + xCharOffset, y, QString(complNucl));
-        }
-    }
-}
-
-static QByteArray translate(DNATranslation* t, const char* seq, qint64 seqLen) {
-    QByteArray res(seqLen / 3, 0);
-    t->translate(seq, seqLen, res.data(), seqLen/3);
-    return res;
-}
-
-static int correctLine(QVector<bool> visibleRows, int line){
-    int retLine = line;
-    assert(visibleRows.size() == 6);
-    for(int i = 0; i < line; i++){
-        if(!visibleRows[i+3]){
-            retLine--;
-        }
-    }
-    return retLine;
-}
-
-void DetViewRenderArea::drawTranslations(QPainter& p, const U2Region& visibleRange) {
-    p.setFont(sequenceFont);
-    DetView* detView = getDetView();
-    QVector<bool> visibleRows = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
-
-    if (firstDirectTransLine < 0 && firstComplTransLine < 0) {
-        return;
-    }
-    DNATranslation3to1Impl* aminoTable = (DNATranslation3to1Impl*)detView->getAminoTT();
-    CHECK(aminoTable != NULL && aminoTable->isThree2One(), );
-
-    qint64 wholeSeqLen = detView->getSequenceLength();
-    qint64 minUsedPos = qMax(visibleRange.startPos - 1, qint64(0));
-    qint64 maxUsedPos = qMin(visibleRange.endPos() + 1, wholeSeqLen);
-    U2Region seqBlockRegion(minUsedPos, maxUsedPos - minUsedPos);
-    U2OpStatusImpl os;
-    QByteArray seqBlockData = detView->getSequenceContext()->getSequenceData(seqBlockRegion, os);
-    SAFE_POINT_OP(os, );
-    const char* seqBlock = seqBlockData.constData();
-
-    QColor startC(0,0x99,0);
-    QColor stopC(0x99,0,0);
-
-    QFont fontB = sequenceFont;
-    fontB.setBold(true);
-    QFont fontI = sequenceFont;
-    fontI.setItalic(true);
-
-    QFont sequenceFontSmall = sequenceFont;
-    sequenceFontSmall.setPointSize(sequenceFont.pointSize()-1);
-    QFont fontBS = sequenceFontSmall;
-    fontBS.setBold(true);
-    QFont fontIS = sequenceFontSmall;
-    fontIS.setItalic(true);
-
-    QList<SharedAnnotationData> annotationsInRange;
-    foreach (Annotation *a, detView->findAnnotationsInRange(visibleRange)) {
-        annotationsInRange << a->getData();
-    }
-
-    {//direct translations
-        for(int i = 0; i < 3; i++) {
-            int indent = (visibleRange.startPos + i) % 3;
-            qint64 seqStartPos = visibleRange.startPos + indent - 3;
-            if (seqStartPos < minUsedPos) {
-                seqStartPos += 3;
-            }
-            int line = seqStartPos % 3;//0,1,2
-            if(visibleRows[line] == true){
-                const char* seq  = seqBlock + (seqStartPos - minUsedPos);
-                QByteArray amino = translate(aminoTable, seq, maxUsedPos - seqStartPos);
-
-                int yOffset=0;
-                for (int k=0; k < line; k++){
-                    yOffset += (visibleRows[k]== true ? 0 : 1);
-                }
-                int y = getTextY(firstDirectTransLine + line - yOffset);
-                int dx = seqStartPos - visibleRange.startPos;//-1,0,1,2(if startPos==0)
-                for(int j = 0, n = amino.length(); j < n ; j++, seq += 3) {
-                    char amin = amino[j];
-                    int xpos = 3 * j + 1 + dx;
-                    assert(xpos >= 0 && xpos < visibleRange.length);
-                    int x =  xpos * charWidth + xCharOffset;
-
-                    QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(seq - seqBlock  + seqBlockRegion.startPos,
-                                U2Strand::Direct, annotationsInRange, charColor);
-
-                    if (aminoTable->isStartCodon(seq)) {
-                        p.setPen(inAnnotation ? charColor : startC);
-                        p.setFont(inAnnotation ? fontB : fontBS);
-                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, seq)) {
-                        p.setPen(inAnnotation ? charColor : startC);
-                        p.setFont(inAnnotation ? fontI: fontIS);
-                    } else if (aminoTable->isStopCodon(seq)) {
-                        p.setPen(inAnnotation ? charColor : stopC);
-                        p.setFont(inAnnotation ? fontB : fontBS);
-                    } else {
-                        p.setPen(charColor);
-                        p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
-                    }
-                    p.drawText(x, y, QString(amin));
-                }
-            }
-        }
-    }
-    if (detView->hasComplementaryStrand()) {//reverse translations
-        DNATranslation* complTable = detView->getComplementTT();
-        assert(complTable!=NULL);
-        QByteArray revComplDna(seqBlockRegion.length, 0);
-        complTable->translate(seqBlock, seqBlockRegion.length, revComplDna.data(), seqBlockRegion.length);
-        TextUtils::reverse(revComplDna.data(), revComplDna.size());
-        int complLine = 0;
-        for(int i = 0; i < 3; i++) {
-            int indent = (wholeSeqLen - visibleRange.endPos() + i) % 3;
-            qint64 revComplStartPos = visibleRange.endPos() - indent + 3; //start of the reverse complement sequence in direct coords
-            if (revComplStartPos > maxUsedPos) {
-                revComplStartPos -= 3;
-            }
-            qint64 revComplDnaOffset = maxUsedPos - revComplStartPos;
-            assert(revComplDnaOffset >= 0);
-            const char* revComplData = revComplDna.constData();
-            const char* seq = revComplData + revComplDnaOffset;
-            qint64 seqLen = revComplStartPos - minUsedPos;
-            QByteArray amino = translate(aminoTable, seq, seqLen);
-            complLine = (wholeSeqLen - revComplStartPos) % 3;
-            if(visibleRows[complLine+3] == true){
-                complLine = correctLine(visibleRows, complLine);
-                //int line = (seqLen - revComplStartPos) % 3;
-                int y = getTextY(firstComplTransLine + complLine);
-                int dx = visibleRange.endPos() - revComplStartPos;
-                for(int j = 0, n = amino.length(); j < n ; j++, seq +=3) {
-                    char amin = amino[j];
-                    int xpos = visibleRange.length - (3 * j + 2 + dx);
-                    assert(xpos >= 0 && xpos < visibleRange.length);
-                    int x =  xpos * charWidth + xCharOffset;
-
-                    QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(maxUsedPos - (seq - revComplDna.constData()),
-                        U2Strand::Complementary, annotationsInRange, charColor);
-
-                    if (aminoTable->isStartCodon(seq)) {
-                        p.setPen(inAnnotation ? charColor : startC);
-                        p.setFont(inAnnotation ? fontB : fontBS);
-                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, seq)) {
-                        p.setPen(inAnnotation ? charColor : startC);
-                        p.setFont(inAnnotation ? fontI : fontIS);
-                    } else if (aminoTable->isStopCodon(seq)) {
-                        p.setPen(inAnnotation ? charColor : stopC);
-                        p.setFont(inAnnotation ? fontB : fontBS);
-                    } else {
-                        p.setPen(charColor);
-                        p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
-                    }
-                    p.drawText(x, y, QString(amin));
-                }
-            }
-        }
-    }
-    p.setPen(Qt::black);
-    p.setFont(sequenceFont);
-}
-
-bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, const U2Strand &strand,
-    const QList<SharedAnnotationData> &annotationsInRange, QColor &result)
-{
-    // logic:
-    // no annotations found -> grey
-    // found annotation that is on translation -> black
-    // 1 annotation found on nucleic -> darker(annotation color)
-    // 2+ annotations found on nucleic -> black
-
-    int nAnnotations = 0;
-    const U2Region tripletRange = strand.isCompementary() ? U2Region(pos - 2, 2) : U2Region(pos, 2);
-    AnnotationSettings *as = NULL;
-    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry();
-    const int sequenceLen = view->getSequenceLength();
-    foreach (const SharedAnnotationData &aData, annotationsInRange) {
-        if (aData->getStrand() != strand) {
-            continue;
-        }
-        bool annotationOk = false;
-        AnnotationSettings *tas = NULL;
-        const bool order = aData->isOrder();
-        const QVector<U2Region> &location = aData->getRegions();
-        for (int i = 0, n = location.size(); i < n; i++) {
-            const U2Region &r = location.at(i);
-            if (!r.contains(tripletRange)) {
-                continue;
-            }
-            const int regionFrame = U1AnnotationUtils::getRegionFrame(sequenceLen, strand, order, i, location);
-            const int posFrame = strand.isCompementary() ? (sequenceLen - pos) % 3 : pos % 3;
-            if (regionFrame ==  posFrame) {
-                tas = registry->getAnnotationSettings(aData);
-                if (tas->visible) {
-                    annotationOk = true;
-                    break;
-                }
-            }
-        }
-        if (annotationOk) {
-            nAnnotations++;
-            as = tas;
-            if (nAnnotations > 1) {
-                break;
-            }
-        }
-    }
-    if (0 == nAnnotations) {
-        result = Qt::gray;
-        return false;
-    }
-
-    if (nAnnotations > 1) {
-        result = Qt::black;
-        return true;
-    }
-    const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
-    const bool aminoOverlap = (aminoState == TriState_Yes); // annotation is drawn on amino strand -> use black color for letters
-    result = aminoOverlap ? Qt::black : as->color.darker(300);
-
-    return true;
-}
-
-void DetViewRenderArea::drawSequenceSelection(QPainter& p) {
-    DetView* detView = getDetView();
-    DNASequenceSelection* sel = detView->getSequenceContext()->getSequenceSelection();
-    if (sel->isEmpty()) {
-        return;
-    }
-
-    QPen pen1(Qt::black, 1, Qt::DashLine);
-    p.setPen(pen1);
-
-    foreach(const U2Region& r, sel->getSelectedRegions()) {
-        highlight(p, r, directLine);
-        if (detView->hasComplementaryStrand()) {
-            highlight(p, r, complementLine);
-        }
-        if (detView->hasTranslations()) {
-            int translLine = posToDirectTransLine(r.startPos);
-            if (translLine >= 0 && r.length >= 3) {
-                highlight(p, U2Region(r.startPos,r.length / 3 * 3), translLine);
-            }
-            if (detView->hasComplementaryStrand()) {
-                int complTransLine = posToComplTransLine(r.endPos());
-                if (complTransLine >= 0 && r.length >= 3) {
-                    const qint64 translLen = r.length / 3 * 3;
-                    highlight(p, U2Region(r.endPos() - translLen, translLen), complTransLine);
-                }
-            }
-        }
-    }
-}
-
-void DetViewRenderArea::drawRuler(QPainter& p) {
-    int y = getLineY(rulerLine) + 2;
-    const U2Region& visibleRange = view->getVisibleRange();
-    int firstCharStart = posToCoord(visibleRange.startPos);
-    int lastCharStart = posToCoord(visibleRange.endPos() - 1);
-    int firstCharCenter = firstCharStart + charWidth / 2;
-    int firstLastLen = lastCharStart - firstCharStart;
-    GraphUtils::RulerConfig c;
-    GraphUtils::drawRuler(p, QPoint(firstCharCenter, y), firstLastLen, visibleRange.startPos + 1, visibleRange.endPos(), rulerFont, c);
-}
-
-int DetViewRenderArea::posToDirectTransLine(int p) const {
-    SAFE_POINT(firstDirectTransLine >= 0, "Invalid direct translation line number", -1);
-    const int absoluteLineNumber = p % 3;
-    return getVisibleDirectTransLine(absoluteLineNumber);
-}
-
-int DetViewRenderArea::posToComplTransLine(int p) const {
-    SAFE_POINT(firstComplTransLine >= 0, "Invalid complementary translation line number", -1);
-    const int absoluteLineNumber = (view->getSequenceLength() - p) % 3;
-    return getVisibleComplTransLine(absoluteLineNumber);
-}
-
-void DetViewRenderArea::highlight(QPainter& p, const U2Region& r, int line) {
-    SAFE_POINT(line >= 0, "Unexpected sequence view line number", );
-
-    const U2Region& visibleRange = view->getVisibleRange();
-    if (!visibleRange.intersects(r)) {
-        return;
-    }
-    U2Region visibleRegion = visibleRange.intersect(r);
-    int x = posToCoord(visibleRegion.startPos);
-    int width = posToCoord(visibleRegion.endPos()) - x;
-
-    int ymargin = yCharOffset / 2;
-    int y = getLineY(line) + ymargin;
-    int height = lineHeight - 2 * ymargin;
-    p.drawRect(x, y, width, height);
-}
-
-qint64 DetViewRenderArea::coordToPos(int x) const {
-    U2Region visibleRange = view->getVisibleRange();
-    qint64 pos = visibleRange.startPos + x / charWidth;
-    if (pos > visibleRange.endPos()) {
-        pos = visibleRange.endPos();
-    }
-    return pos;
-}
-
-float DetViewRenderArea::posToCoordF(qint64 x, bool useVirtualSpace) const {
-    const U2Region& visible = view->getVisibleRange();
-    if (!useVirtualSpace && !visible.contains(x) && visible.endPos()!=x) {
-        return -1;
-    }
-    float res = (float)(x - visible.startPos) * charWidth;
-    SAFE_POINT(useVirtualSpace || (res >= 0 && res <= width()), "Position is outside the visible rect", res);
-    return res;
+qint64 DetViewRenderArea::coordToPos(const QPoint& p) const {
+    return renderer->coordToPos(p, QSize(width(), height()), view->getVisibleRange());
 }
 
 double DetViewRenderArea::getCurrentScale() const {
-    assert(0); //TODO: must never be called. Not tested if called
-    return (double)charWidth;
+    return renderer->getCurrentScale();
 }
 
 void DetViewRenderArea::updateSize()  {
-    updateLines();
-    int h = numLines * lineHeight + 5;
-    setMinimumHeight(h);
+    renderer->update();
+    setMinimumHeight(renderer->getMinimumHeight());
     repaint();
 }
 
-int DetViewRenderArea::getHalfOfUnusedHeight() const {
-    int minH = numLines * lineHeight + 5;
-    return (height() - minH) / 2;
+DetView* DetViewRenderArea::getDetView() const {
+    return static_cast<DetView*>(view);
+}
+
+int DetViewRenderArea::getSymbolsPerLine() const {
+    return width() / charWidth;
+}
+
+int DetViewRenderArea::getFullyVisibleLinesCount() const {
+    return renderer->getLinesCount(size());
+}
+
+int DetViewRenderArea::getVisibleSymbolsCount() const {
+    return getFullyVisibleLinesCount() * getSymbolsPerLine();
 }
 
 } // namespace U2

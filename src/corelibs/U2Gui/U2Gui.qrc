@@ -176,5 +176,6 @@
         <file>images/zoom_view.png</file>
         <file>images/hide_all_views.png</file>
         <file>images/show_all_views.png</file>
+        <file>images/wrap_sequence.png</file>
     </qresource>
 </RCC>

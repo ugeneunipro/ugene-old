@@ -180,6 +180,8 @@ public:
     ~GSequenceLineViewRenderArea();
 
     virtual qint64 coordToPos(int x) const;
+    virtual qint64 coordToPos(const QPoint& p) const;
+
     virtual int posToCoord(qint64 p, bool useVirtualSpace = false) const;
     virtual float posToCoordF(qint64 p, bool useVirtualSpace = false) const;
     //number of pixels per base
@@ -198,8 +200,9 @@ protected:
 
     GSequenceLineView* view;
     QPixmap* cachedView;
-    QPixmap* tmpView;
 
+    //! VIEW_RENDERER_REFACTORING: the following parameters should be stored only in renderer (until they cannot be modifyed in view).
+    //! Currenlty they are doubled in SequenceViewRenderer class.
     //per char and per line metrics
     QFont   sequenceFont;
     QFont   smallSequenceFont;

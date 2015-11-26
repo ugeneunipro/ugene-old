@@ -165,7 +165,7 @@ void GSequenceLineView::mousePressEvent(QMouseEvent* me) {
         return;
     }
 
-    lastPressPos = renderArea->coordToPos(renderAreaPos.x());
+    lastPressPos = renderArea->coordToPos(renderAreaPos);
 
     SAFE_POINT(lastPressPos >= visibleRange.startPos && lastPressPos <= visibleRange.endPos(), "Last mouse press position is out of visible range!",);
 
@@ -191,7 +191,7 @@ void GSequenceLineView::mouseReleaseEvent(QMouseEvent* me) {
         bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
         if (me->button() == Qt::LeftButton && singleBaseSelectionMode) {
             QPoint areaPoint = toRenderAreaPoint(me->pos());
-            qint64 pos = renderArea->coordToPos(areaPoint.x());
+            qint64 pos = renderArea->coordToPos(areaPoint);
             if (pos == lastPressPos) {
                 U2Region rgn(pos, 1);
                 if (rgn.startPos >=0 && rgn.endPos() <= seqLen) {
@@ -224,7 +224,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
         }
 
         // compute selection
-        qint64 pos = renderArea->coordToPos(areaPoint.x());
+        qint64 pos = renderArea->coordToPos(areaPoint);
         qint64 selStart = qMin(lastPressPos, pos);
         qint64 selLen = qAbs(pos - lastPressPos);
         if (selStart<0) {
@@ -243,7 +243,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
 void GSequenceLineView::mouseDoubleClickEvent(QMouseEvent* me) {
     QPoint areaPoint = toRenderAreaPoint(me->pos());
     if (renderArea->rect().contains(areaPoint)) {
-        qint64 pos = renderArea->coordToPos(areaPoint.x());
+        qint64 pos = renderArea->coordToPos(areaPoint);
         emit si_centerPosition(pos);
     }
     QWidget::mouseDoubleClickEvent(me);
@@ -294,7 +294,6 @@ void GSequenceLineView::setCenterPos(qint64 centerPos) {
     qint64 newPos = qMax(qint64(0), centerPos - visibleRange.length/2);
     setStartPos(newPos);
 }
-
 
 void GSequenceLineView::setStartPos(qint64 newPos) {
     if (newPos + visibleRange.length > seqLen) {
@@ -460,7 +459,6 @@ U2SequenceObject* GSequenceLineView::getSequenceObject() const {
     return ctx->getSequenceObject();
 }
 
-
 void GSequenceLineView::completeUpdate(){
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
@@ -541,7 +539,7 @@ void GSequenceLineViewRenderArea::paintEvent(QPaintEvent *e) {
     QSize cachedViewSize = cachedView->size();
     QSize currentSize = size();
     if (cachedViewSize != currentSize) {
-        assert(view->getUpdateFlags().testFlag(GSLV_UF_ViewResized)==true);
+        view->addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
         delete cachedView;
         cachedView = new QPixmap(currentSize);
     }
@@ -566,6 +564,10 @@ qint64 GSequenceLineViewRenderArea::coordToPos(int _x) const {
     pos = qMax(pos, vr.startPos);
     pos = qMin(pos, vr.endPos());
     return pos;
+}
+
+qint64 GSequenceLineViewRenderArea::coordToPos(const QPoint &p) const {
+    return coordToPos(p.x());
 }
 
 float GSequenceLineViewRenderArea::posToCoordF(qint64 p, bool useVirtualSpace) const {

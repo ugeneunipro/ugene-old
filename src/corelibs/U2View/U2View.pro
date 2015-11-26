@@ -158,6 +158,12 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
            src/ov_sequence/sequence_info/SequenceInfoFactory.h \
+           src/ov_sequence/view_rendering/DetViewMultiLineRenderer.h \
+           src/ov_sequence/view_rendering/DetViewRenderer.h \
+           src/ov_sequence/view_rendering/DetViewSingleLineRenderer.h \
+           src/ov_sequence/view_rendering/PanViewRenderer.h \
+           src/ov_sequence/view_rendering/SequenceViewAnnotatedRenderer.h \
+           src/ov_sequence/view_rendering/SequenceViewRenderer.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
            src/phyltree/BaseSettingsDialog.h \
@@ -355,6 +361,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.cpp \
+           src/ov_sequence/codon_table/CodonTable.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
@@ -368,7 +375,12 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \
            src/ov_sequence/sequence_info/SequenceInfoFactory.cpp \
-           src/ov_sequence/codon_table/CodonTable.cpp \
+           src/ov_sequence/view_rendering/DetViewMultiLineRenderer.cpp \
+           src/ov_sequence/view_rendering/DetViewRenderer.cpp \
+           src/ov_sequence/view_rendering/DetViewSingleLineRenderer.cpp \
+           src/ov_sequence/view_rendering/PanViewRenderer.cpp \
+           src/ov_sequence/view_rendering/SequenceViewAnnotatedRenderer.cpp \
+           src/ov_sequence/view_rendering/SequenceViewRenderer.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \
            src/phyltree/BaseSettingsDialog.cpp \

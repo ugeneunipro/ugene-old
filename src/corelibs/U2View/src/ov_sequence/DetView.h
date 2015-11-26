@@ -22,16 +22,13 @@
 #ifndef _U2_DET_VIEW_H_
 #define _U2_DET_VIEW_H_
 
-#include <QtGui/QFont>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#else
-#include <QtWidgets/QAction>
-#endif
+#include <QAction>
+#include <QFont>
 
 #include <U2Core/U2Location.h>
 
 #include "GSequenceLineViewAnnotated.h"
+
 
 class QActionGroup;
 
@@ -39,15 +36,22 @@ namespace U2 {
 
 class Annotation;
 class DNATranslation;
+class DetViewRenderArea;
+class DetViewRenderer;
 
 class U2VIEW_EXPORT DetView : public GSequenceLineViewAnnotated {
     Q_OBJECT
 public:
     DetView(QWidget* p, ADVSequenceObjectContext* ctx);
 
-    bool isOneLineMode()  {return getComplementTT() == NULL && getAminoTT() == NULL;}
-    bool hasTranslations()  {return getAminoTT() != NULL;}
-    bool hasComplementaryStrand()  {return getComplementTT() != NULL;}
+    DetViewRenderArea* getDetViewRenderArea() const;
+
+    bool hasTranslations();
+    bool hasComplementaryStrand();
+    bool isWrapMode();
+
+    virtual void setStartPos(qint64 pos);
+    virtual void setCenterPos(qint64 pos);
 
     DNATranslation* getComplementTT() const;
     DNATranslation* getAminoTT() const;
@@ -57,79 +61,68 @@ public:
 
     void setDisabledDetViewActions(bool t);
 
-    QAction* getShowComplementAction() const {return showComplementAction;}
-    QAction* getShowTranslationAction() const {return showTranslationAction;}
-
 protected slots:
     virtual void sl_sequenceChanged();
     void sl_onAminoTTChanged();
-    void sl_showComplementToggle(bool v) {setShowComplement(v);}
-    void sl_showTranslationToggle(bool v);
     void sl_translationRowsChanged();
+    void sl_showComplementToggle(bool v);
+    void sl_showTranslationToggle(bool v);
+    void sl_wrapSequenceToggle(bool v);
+    void sl_verticalSrcollBarMoved(int position);
 
 protected:
+    virtual void pack();
+
     void showEvent(QShowEvent * e);
     void hideEvent(QHideEvent * e);
 
+    void mouseMoveEvent(QMouseEvent* me);
     void mouseReleaseEvent(QMouseEvent* me);
-
-    void updateActions();
-
+    void wheelEvent(QWheelEvent* we);
     void resizeEvent(QResizeEvent *e);
+
+    void updateVisibleRange();
+    void updateActions();
     void updateSize();
+    void updateVerticalScrollBar();
 
     QAction*        showComplementAction;
     QAction*        showTranslationAction;
-};
+    QAction*        wrapSequenceAction;
 
+    GScrollBar*     verticalScrollBar;
+};
 
 class DetViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {
 public:
     DetViewRenderArea(DetView* d);
+    ~DetViewRenderArea();
 
-    virtual qint64 coordToPos(int x) const;
-    virtual float posToCoordF(qint64 x, bool useVirtualSpace = false) const;
-    virtual double getCurrentScale() const;
-
-    DetView* getDetView() const {return static_cast<DetView*>(view);}
+    DetViewRenderer* getRenderer() { return renderer; }
 
     virtual U2Region getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const;
-    virtual U2Region getMirroredYRange(const U2Strand &mirroredStrand) const;
-    virtual int getHalfOfUnusedHeight() const;
+    virtual double getCurrentScale() const;
+
+    void setWrapSequence(bool v);
+
+    qint64 coordToPos(const QPoint& p) const;
+
+    DetView* getDetView() const;
+
+    int getSymbolsPerLine() const;
+    int getFullyVisibleLinesCount() const;
+    int getVisibleSymbolsCount() const;
 
     void updateSize();
 
-    bool isOnTranslationsLine(int y) const;
-
-    void drawAll(QPainter& p, const U2Region &visibleRange);
+    bool isOnTranslationsLine(const QPoint& p) const;
+    bool isPosOnAnnotationYRange(const QPoint &p, Annotation *a, int region, const AnnotationSettings *as) const;
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
 
 private:
-    int getLineY(int line) const {return 2 + line * lineHeight;}
-    int getTextY(int line) const {return getLineY(line) + lineHeight - yCharOffset;}
-
-    void updateLines();
-    void drawDirect(QPainter& p, const U2Region& visibleRange);
-    void drawComplement(QPainter& p, const U2Region& visibleRange);
-    void drawTranslations(QPainter& p, const U2Region& visibleRange);
-    void drawSequenceSelection(QPainter& p);
-    void drawRuler(QPainter& p);
-    void highlight(QPainter& p, const U2Region& r, int line);
-
-    int posToComplTransLine(int p) const;
-    int posToDirectTransLine(int p) const;
-    int getVisibleDirectTransLine(int absoluteFrameNumber) const;
-    int getVisibleComplTransLine(int absoluteFrameNumber) const;
-    bool deriveTranslationCharColor(qint64 pos, const U2Strand &strand, const QList<SharedAnnotationData> &annotationsInRange, QColor &result);
-
-    int numLines;
-    int rulerLine;
-    int directLine;
-    int complementLine;
-    int firstDirectTransLine;
-    int firstComplTransLine;
+    DetViewRenderer* renderer;
 };
 
 } // namespace U2

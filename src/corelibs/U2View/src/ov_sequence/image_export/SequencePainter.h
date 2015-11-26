@@ -32,7 +32,9 @@ namespace U2 {
 
 class ADVSingleSequenceWidget;
 class DetView;
+class DetViewRenderer;
 class PanView;
+class PanViewRenderer;
 
 enum SequenceExportType {
     ExportCurrentView,
@@ -82,9 +84,7 @@ private:
 /************************************************************************/
 class ZoomedViewPainter : public ExportImagePainter {
 public:
-    ZoomedViewPainter(PanView* panView)
-        : ExportImagePainter(),
-          panView(panView) {}
+    ZoomedViewPainter(PanView* panView);
 
     void    paint(QPainter &p, CustomExportSettings* settings) const;
     QSize   getImageSize(CustomExportSettings* settings) const;
@@ -92,6 +92,7 @@ public:
 
 private:
     PanView*    panView;
+    PanViewRenderer*    panViewRenderer;
 };
 
 /************************************************************************/
@@ -99,16 +100,14 @@ private:
 /************************************************************************/
 class DetailsViewPainter : public ExportImagePainter {
 public:
-    DetailsViewPainter(DetView* detView)
-        : ExportImagePainter(),
-          detView(detView) {}
+    DetailsViewPainter(DetView* detView);
 
     void    paint(QPainter &p, CustomExportSettings* settings) const;
     QSize   getImageSize(CustomExportSettings* settings) const;
-    bool    canPaintSvg(CustomExportSettings* /*settings*/, U2OpStatus &os) const { return true; }
+    bool    canPaintSvg(CustomExportSettings* /*settings*/, U2OpStatus &/*os*/) const { return true; }
 
 private:
-    DetView*    detView;
+    DetViewRenderer*    detViewRenderer;
 };
 
 /************************************************************************/

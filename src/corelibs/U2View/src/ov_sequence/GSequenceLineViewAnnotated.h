@@ -39,25 +39,19 @@ class ClearAnnotationsTask;
 class U2VIEW_EXPORT GSequenceLineViewAnnotated : public GSequenceLineView {
     Q_OBJECT
 public:
-    class DrawSettings {
-    public:
-                DrawSettings();
-
-        bool    drawAnnotationNames;
-        bool    drawAnnotationArrows;
-        bool    drawCutSites;
-    };
 
                                             GSequenceLineViewAnnotated(QWidget *p, ADVSequenceObjectContext *ctx);
 
     bool                                    isAnnotationVisible(Annotation *a) const;
-    const DrawSettings &                    getDrawSettings() const;
 
     virtual QList<AnnotationSelectionData>  selectAnnotationByCoord(const QPoint &coord) const;
 
     static QString                          prepareAnnotationText(const SharedAnnotationData &a, const AnnotationSettings *as);
 
-    QList<Annotation *>                       findAnnotationsInRange(const U2Region &range) const;
+    QList<Annotation *>                     findAnnotationsInRange(const U2Region &range) const;
+
+    bool                                    isAnnotationSelectionInVisibleRange() const;
+
 
 protected:
     void                                    mousePressEvent(QMouseEvent *e);
@@ -85,51 +79,30 @@ private:
     void                                    connectAnnotationObject(const AnnotationTableObject *ao);
 
 protected:
-    DrawSettings    drawSettings;
-
     friend class ClearAnnotationsTask;
 };
-
 
 class U2VIEW_EXPORT GSequenceLineViewAnnotatedRenderArea : public GSequenceLineViewRenderArea {
 public:
                                     GSequenceLineViewAnnotatedRenderArea(GSequenceLineViewAnnotated *d, bool annotationsCanOverlap);
                                     ~GSequenceLineViewAnnotatedRenderArea();
 
+    //! VIEW_RENDERER_REFACTORING: only the second method should be available, because it is more common
     virtual U2Region                getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const = 0;
-    virtual U2Region                getMirroredYRange(const U2Strand &mirroredStrand) const = 0;
-    virtual int                     getHalfOfUnusedHeight() const {return 0;}
+    virtual bool                    isPosOnAnnotationYRange(const QPoint& p, Annotation *a, int region, const AnnotationSettings* as) const;
+
     GSequenceLineViewAnnotated *    getGSequenceLineViewAnnotated() const;
 
 protected:
-    struct CutSiteDrawData {
-        CutSiteDrawData():direct(true), pos(0){}
-        QRect r;
-        QColor color;
-        bool direct;
-        int pos;
-    };
+    virtual void drawAll(QPaintDevice* pd) = 0;
 
-    virtual void                    drawAnnotations(QPainter &p);
-    virtual void                    drawBoundedText(QPainter &p, const QRect &r, const QString &text) const;
-    virtual void                    drawAnnotationConnections(QPainter &p, Annotation *a, const AnnotationSettings *as, U2Region yRange);
-    virtual void                    drawAnnotationsSelection(QPainter &p);
-    void                            drawCutSites(QPainter &p);
-    virtual void                    drawCutSite(QPainter &p, const QRect &r, const QColor &color, int pos, bool direct);
-
-    bool                            isAnnotationSelectionInVisibleRange() const;
-
+    //! VIEW_RENDERER_REFACTORING: should be removed, currenlty is used in CircularView
     enum DrawAnnotationPass {
         DrawAnnotationPass_DrawFill,
         DrawAnnotationPass_DrawBorder
     };
 
-    void                            drawAnnotation(QPainter &p, DrawAnnotationPass pass, Annotation *a, const QPen &borderPen,
-                                        bool selected = false, const AnnotationSettings *as = NULL, U2Region y = U2Region(),
-                                                   bool ignoreVisibleRange = false);
-
-    bool annotationsCanOverlap;
-
+    //! VIEW_RENDERER_REFACTORING: this parameters are also doubled in SequenceViewAnnotaterRenderer
     //af* == annotation font
     QFont *afNormal;
     QFont *afSmall;
@@ -141,7 +114,6 @@ protected:
     int afSmallCharWidth;
 
     QBrush gradientMaskBrush;
-    QList<CutSiteDrawData>  cutsiteDataList;
 };
 
 class ClearAnnotationsTask : public Task {
