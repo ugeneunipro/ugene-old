@@ -23,6 +23,7 @@
 #include "GTGlobals.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "utils/GTKeyboardUtils.h"
+#include <utils/GTThread.h>
 #include <drivers/GTMouseDriver.h>
 #include "primitives/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
@@ -219,22 +220,17 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
-
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
-
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
 
     QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
-    if (! activeWindow->windowTitle().contains("Zychia_baranovi") && !os.hasError()) {
-        os.setError("fasta file with sequences has been not opened");
-        }
+    CHECK_SET_ERR(activeWindow->windowTitle().contains("Zychia_baranovi"), "fasta file with sequences has been not opened");
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 586, "Sequence length is " + QString::number(sequenceLength) + ", expected 586");

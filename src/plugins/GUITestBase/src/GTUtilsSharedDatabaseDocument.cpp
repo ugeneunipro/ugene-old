@@ -144,7 +144,7 @@ void GTUtilsSharedDatabaseDocument::createFolder(HI::GUITestOpStatus &os, Docume
 
     QModelIndex parentFolderIndex = getItemIndex(os, databaseDoc, parentFolderPath);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__CREATE_FOLDER, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__CREATE_FOLDER));
     GTUtilsDialog::waitForDialog(os, new AddFolderDialogFiller(os, newFolderName, GTGlobals::UseMouse));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, parentFolderIndex));

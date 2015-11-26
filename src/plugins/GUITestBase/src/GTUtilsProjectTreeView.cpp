@@ -59,6 +59,7 @@ void GTUtilsProjectTreeView::openView(HI::GUITestOpStatus& os) {
         toggleView(os);
     }
     GTGlobals::sleep(100);
+    GTThread::waitForMainThread(os);
 
     documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     GT_CHECK(documentTreeWidget != NULL, "Can't open document tree widget view, findWidget returned NULL");

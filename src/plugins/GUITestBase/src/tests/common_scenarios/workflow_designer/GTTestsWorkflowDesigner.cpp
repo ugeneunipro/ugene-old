@@ -613,7 +613,7 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "/_common_data/bedtools/", "mutation.gff");
 
     GTUtilsWorkflowDesigner::click(os, "Write Annotations");
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", "bed", GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
