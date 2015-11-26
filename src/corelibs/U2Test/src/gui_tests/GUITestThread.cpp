@@ -206,7 +206,11 @@ void GUITestThread::saveScreenshot() {
 void GUITestThread::cleanup() {
     foreach (HI::GUITest *postAction, postActions()) {
         HI::GUITestOpStatus os;
-        postAction->run(os);
+        try {
+            postAction->run(os);
+        } catch (HI::GUITestOpStatus *opStatus) {
+            coreLog.error(opStatus->getError());
+        }
     }
 }
 
