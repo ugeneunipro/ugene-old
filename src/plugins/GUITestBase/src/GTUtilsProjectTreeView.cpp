@@ -36,6 +36,7 @@
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTWidget.h>
 #include <primitives/PopupChooser.h>
+#include <utils/GTThread.h>
 
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
@@ -75,6 +76,8 @@ void GTUtilsProjectTreeView::toggleView(HI::GUITestOpStatus& os) {
     //qmw->setFocus();
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep(100);
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 
