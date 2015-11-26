@@ -56,7 +56,7 @@ namespace U2 {
 namespace GUITest_initial_checks {
 using namespace HI;
 
-GUI_TEST_CLASS_DEFINITION(test_0000) {
+GUI_TEST_CLASS_DEFINITION(pre_action_0000) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
@@ -75,11 +75,11 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
     GTUtilsDialog::startHangChecking(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0001) {
+GUI_TEST_CLASS_DEFINITION(pre_action_0001) {
     CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0002) {
+GUI_TEST_CLASS_DEFINITION(pre_action_0002) {
     Q_UNUSED(os);
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
@@ -91,7 +91,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0003) {
+GUI_TEST_CLASS_DEFINITION(pre_action_0003) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj1.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2.uprj");
@@ -100,14 +100,15 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0004){
+GUI_TEST_CLASS_DEFINITION(pre_action_0004) {
     Q_UNUSED(os);
     QDir dir(QDir().absoluteFilePath(screenshotDir));
-    if(!dir.exists(dir.absoluteFilePath(screenshotDir))){
+    if (!dir.exists(dir.absoluteFilePath(screenshotDir))) {
         dir.mkpath(dir.path());
     }
 }
-GUI_TEST_CLASS_DEFINITION(test_0005){
+
+GUI_TEST_CLASS_DEFINITION(pre_action_0005) {
     PermissionsSetter::setReadWrite(os, sandBoxDir);
     GTGlobals::sleep();
     QDir sandBox = QDir(sandBoxDir);
@@ -116,33 +117,45 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     }
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0006){
+GUI_TEST_CLASS_DEFINITION(pre_action_0006) {
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mw != NULL, "main window is NULL");
 #ifdef Q_OS_MAC
-    GTWidget::click(os, mw, Qt::LeftButton, QPoint(200,200));
+    GTWidget::click(os, mw, Qt::LeftButton, QPoint(200, 200));
 #endif
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0007){
-    ///temporary ignored
-    //GTFile::removeDir(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath());
-}
-
-GUI_TEST_CLASS_DEFINITION(post_test_0000){
+GUI_TEST_CLASS_DEFINITION(post_check_0000) {
     GTUtilsDialog::cleanup(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0001) {
-    QWidget* widget = QApplication::activeModalWidget();
-    while (widget != NULL) {
-        GTWidget::close(os, widget);
-        widget = QApplication::activeModalWidget();
+GUI_TEST_CLASS_DEFINITION(post_check_0001) {
+    QWidget *modalWidget = QApplication::activeModalWidget();
+    if (NULL != modalWidget) {
+        CHECK_SET_ERR(NULL == modalWidget, QString("There is a modal widget after test finish: %1").arg(modalWidget->windowTitle()));
     }
+
+    QWidget *popupWidget = QApplication::activePopupWidget();
+    CHECK_SET_ERR(NULL == popupWidget, "There is a popup widget after test finish");
+}
+
+GUI_TEST_CLASS_DEFINITION(post_action_0000) {
+    QWidget* popupWidget = QApplication::activePopupWidget();
+    while (popupWidget != NULL) {
+        GTWidget::close(os, popupWidget);
+        popupWidget = QApplication::activePopupWidget();
+    }
+
+    QWidget* modalWidget = QApplication::activeModalWidget();
+    while (modalWidget != NULL) {
+        GTWidget::close(os, modalWidget);
+        modalWidget = QApplication::activeModalWidget();
+    }
+
     GTClipboard::clear(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0002) {
+GUI_TEST_CLASS_DEFINITION(post_action_0001) {
     GTGlobals::sleep(1000);
     // close project
     if (AppContext::getProject() != NULL) {
@@ -174,7 +187,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0003) {
+GUI_TEST_CLASS_DEFINITION(post_action_0002) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
@@ -188,46 +201,6 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
         GTFile::removeDir(sandBox.absolutePath() + "/" + path);
     }
-}
-
-GUI_TEST_CLASS_DEFINITION(post_test_0004) {     //if this post test detect any problems, use test_0004 and post_test_0002 for backup and restore corrupted files
-    Q_UNUSED(os);
-#ifdef Q_OS_WIN
-    QProcess *svnProcess = new QProcess();
-
-    QStringList dirs;
-    dirs.append(testDir + "_common_data/");
-    dirs.append(dataDir + "samples/");
-    bool SVNCorrupted = false;
-    foreach(QString workingDir, dirs){
-        QDir d;
-        svnProcess->setWorkingDirectory(d.absoluteFilePath(workingDir));
-        svnProcess->start("svn", QStringList()<<"st");
-        if ( !svnProcess->waitForStarted( 2000 ) ) {
-            coreLog.info( "SVN process hasn't start!" );
-            continue;
-        }
-        while (!svnProcess->waitForFinished(30000));
-        //CHECK_SET_ERR(svnProcess->exitCode() != EXIT_FAILURE, "SVN process finished wrong");
-        QStringList output = QString(svnProcess->readAllStandardOutput()).split('\n');
-        bool needUpdate = false;
-        foreach(QString str, output){
-            QStringList byWords = str.split(QRegExp("\\s+"));
-            if (byWords[0][0] == '?' || byWords[0][0] == 'M'){
-                if(byWords[0][0] == 'M'){
-                    SVNCorrupted = true;
-                    needUpdate = true;
-                }
-                QFile::remove(workingDir + QDir::separator() + byWords[1]);
-            }
-        }
-        if (needUpdate){
-            svnProcess->start("svn", QStringList()<<"up");
-            while(!svnProcess->waitForFinished(30000));
-        }
-    }
-    CHECK_SET_ERR(!SVNCorrupted, "SVN corrupted by this test");
-#endif
 }
 
 } // GUITest_initial_checks namespace

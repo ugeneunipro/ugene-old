@@ -2766,16 +2766,15 @@ GUI_TEST_CLASS_DEFINITION(test_2402) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2403) {
-    //1. Open "human_T1.fa".
-    //    2. Resize the main UGENE window that not all buttons will be visible on the sequence toolbar.
-    //    3. Click on the "Show full toolbar" button.
-    //Expected: all toolbar actions appears.
-
+    // 1. Open "human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa" );
+
+    // 2. Resize the main UGENE window that not all buttons will be visible on the sequence toolbar.
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     GTWidget::showNormal(os, mw);
     GTWidget::resizeWidget(os, mw, QSize(300, mw->size().height()));
 
+    // 3. Click on the "Show full toolbar" button.
     QWidget *toolbarWidget = GTWidget::findWidget(os, "mwtoolbar_activemdi");
     CHECK_SET_ERR( NULL != toolbarWidget, "Toolbar  is not present");
     QWidget *expandWidget = GTWidget::findWidget(os, "qt_toolbar_ext_button", toolbarWidget);
@@ -2783,8 +2782,12 @@ GUI_TEST_CLASS_DEFINITION(test_2403) {
 
     GTWidget::click( os, expandWidget);
     GTGlobals::sleep();
+
+    //Expected: all toolbar actions appears.
     QWidget *toggleWidget = GTWidget::findWidget(os, "toggleViewButton", toolbarWidget);
     CHECK_SET_ERR( NULL != toggleWidget, "\"Toggle view\" button  is not present");
+
+    GTWidget::click(os, expandWidget);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2404 ) {

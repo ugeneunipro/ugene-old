@@ -2642,23 +2642,21 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
-
     if (guiTestBase) {
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0000, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0004, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0005, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0006, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0007, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0000, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0001, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0002, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0003, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0004, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0005, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0006, GUITestBase::PreAdditional);
 
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditionalChecks);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_check_0000, GUITestBase::PostAdditionalChecks);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_check_0001, GUITestBase::PostAdditionalChecks);
 
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditionalActions);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditionalActions);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditionalActions);
-        //guiTestBase->registerTest(new GUITest_initial_checks::post_test_0004, GUITestBase::PostAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0000, GUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0001, GUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0002, GUITestBase::PostAdditionalActions);
     }
 }
 
