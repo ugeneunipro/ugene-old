@@ -1605,7 +1605,7 @@ void MSAEditorSequenceArea::keyReleaseEvent(QKeyEvent *ke) {
         emit si_stopMsaChanging(true);
     }
 
-    QWidget::keyPressEvent(ke);
+    QWidget::keyReleaseEvent(ke);
 }
 
 void MSAEditorSequenceArea::focusInEvent(QFocusEvent* fe) {
