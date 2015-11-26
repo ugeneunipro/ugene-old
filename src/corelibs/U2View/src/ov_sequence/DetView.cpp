@@ -368,8 +368,11 @@ void DetView::updateVisibleRange() {
 
         bool emptyLineDetected = (detArea->getVisibleSymbolsCount() - visibleRange.length) > detArea->getSymbolsPerLine();
         if (seqLen != visibleRange.length && emptyLineDetected) {
-            visibleRange.startPos -= detArea->getSymbolsPerLine();
-            visibleRange.length = qMin(seqLen, visibleRange.length + detArea->getSymbolsPerLine());
+            int emptyLinesCount = ((detArea->getVisibleSymbolsCount() - visibleRange.length) - detArea->getSymbolsPerLine()) / detArea->getSymbolsPerLine();
+            emptyLinesCount += ((detArea->getVisibleSymbolsCount() - visibleRange.length) - detArea->getSymbolsPerLine()) % detArea->getSymbolsPerLine() == 0
+                    ? 0 : 1;
+            visibleRange.startPos = qMax((qint64)0, visibleRange.startPos - detArea->getSymbolsPerLine() * emptyLinesCount);
+            visibleRange.length = qMin(seqLen, visibleRange.length + detArea->getSymbolsPerLine() * emptyLinesCount);
         }
     } else if (visibleRange.length != detArea->getVisibleSymbolsCount()) {
         visibleRange.length = qMin((qint64)detArea->getVisibleSymbolsCount(), seqLen);

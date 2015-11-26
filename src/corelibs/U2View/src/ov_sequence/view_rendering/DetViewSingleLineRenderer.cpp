@@ -271,6 +271,8 @@ static int correctLine(QVector<bool> visibleRows, int line) {
 void DetViewSingleLineRenderer::drawTranslations(QPainter &p, const U2Region &visibleRange) {
     CHECK(!(firstDirectTransLine < 0 && firstComplTransLine < 0), );
     p.setFont(commonMetrics.sequenceFont);
+    // update translations metrics
+    trMetrics = TranslationMetrics(detView, visibleRange, commonMetrics.sequenceFont);
 
     U2OpStatusImpl os;
     QByteArray seqBlockData = ctx->getSequenceData(trMetrics.seqBlockRegion, os);
@@ -282,8 +284,6 @@ void DetViewSingleLineRenderer::drawTranslations(QPainter &p, const U2Region &vi
         annotationsInRange << a->getData();
     }
 
-    // update translations metrics
-    trMetrics = TranslationMetrics(detView, visibleRange, commonMetrics.sequenceFont);
     drawDirectTranslations(p, visibleRange, seqBlock, annotationsInRange);
 
     if (detView->hasComplementaryStrand()) {//reverse translations
