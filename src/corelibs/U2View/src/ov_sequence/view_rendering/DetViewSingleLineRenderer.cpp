@@ -405,7 +405,7 @@ void DetViewSingleLineRenderer::drawSequenceSelection(QPainter &p, const QSize &
             highlight(p, r, complementLine, canvasSize, visibleRange);
         }
         if (detView->hasTranslations()) {
-            int translLine = posToDirectTransLine(r.startPos);
+            int translLine = posToDirectTransLine(reg.startPos);
             if (translLine >= 0 && r.length >= 3) {
                 highlight(p, U2Region(r.startPos,r.length / 3 * 3), translLine, canvasSize, visibleRange);
             }
