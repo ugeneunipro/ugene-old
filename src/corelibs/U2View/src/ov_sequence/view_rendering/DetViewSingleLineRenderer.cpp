@@ -77,7 +77,7 @@ DetViewSingleLineRenderer::DetViewSingleLineRenderer(DetView *detView, ADVSequen
 }
 
 qint64 DetViewSingleLineRenderer::coordToPos(const QPoint &p, const QSize &/*canvasSize*/, const U2Region &visibleRange) const {
-    return visibleRange.startPos + p.x() / commonMetrics.charWidth;
+    return qMin(visibleRange.startPos + p.x() / commonMetrics.charWidth, visibleRange.endPos());
 }
 
 U2Region DetViewSingleLineRenderer::getAnnotationYRange(Annotation *a, int region, const AnnotationSettings* as, const QSize& /*canvasSize*/, const U2Region& /*visibleRange*/) const {
