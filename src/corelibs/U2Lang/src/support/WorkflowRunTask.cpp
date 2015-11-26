@@ -578,9 +578,8 @@ void RunCmdlineWorkflowTask::prepare() {
 
     proc->start(cmdlineUgenePath, args);
 #if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
-    if (NULL != proc->pid()) {
-        processLogPrefix = QString("process:%1>").arg(proc->pid()->dwProcessId);
-    }
+    QString processId = NULL != proc->pid() ? QString::number(proc->pid()->dwProcessId) : "unknown";
+    processLogPrefix = QString("process: %1>").arg(processId);
 #else
     processLogPrefix = QString("process:%1>").arg(proc->pid());
 #endif
