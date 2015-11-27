@@ -36,6 +36,7 @@
 #include "primitives/GTMenu.h"
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
@@ -58,6 +59,9 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(HI::GUITestOpStat
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTThread::waitForMainThread(os);
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
 

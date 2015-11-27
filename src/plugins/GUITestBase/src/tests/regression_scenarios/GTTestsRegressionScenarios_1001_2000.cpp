@@ -4785,11 +4785,12 @@ GUI_TEST_CLASS_DEFINITION(test_1461_1) {
 //    Expected state: "Scoring matrix" field not contain "rna" value.
     class Scenario : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
+            GTGlobals::sleep(500);
             QComboBox *comboMatrix = GTWidget::findExactWidget<QComboBox *>(os, "comboMatrix", QApplication::activeModalWidget());
-            CHECK_SET_ERR(NULL != comboMatrix, "Matrix combobox is NULL");
-            HI::GUITestOpStatus innerOs;
-            GTComboBox::setIndexWithText(innerOs, comboMatrix, "rna", false);
-            CHECK_SET_ERR(innerOs.hasError(), "'rna' matrix unexpectedly presents in the matrix list");
+            for(int i=0; i<comboMatrix->count(); i++){
+                CHECK_SET_ERR(!comboMatrix->itemText(i).contains("rna", Qt::CaseInsensitive),
+                              QString("'rna' item unexpectidly found at index: %1, text is %2").arg(i).arg(comboMatrix->itemText(i)));
+            }
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
         }
     };

@@ -20,6 +20,11 @@
  */
 
 #include "SmithWatermanDialogBaseFiller.h"
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTGroupBox.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSpinBox.h>
 #include <primitives/GTWidget.h>
 #include <primitives/GTTabWidget.h>
 #include <primitives/GTTextEdit.h>
@@ -103,7 +108,7 @@ void SmithWatermanDialogFiller::commonScenario() {
     } else {
         assert(0);
     }
-    resultViewVariants->setCurrentIndex(resultViewIndex);
+    GTComboBox::setCurrentIndex(os, resultViewVariants, resultViewIndex);
 
     if(!resultFilesPath.isEmpty()) {
         QLineEdit * resultFilePathContainer = NULL;
@@ -116,22 +121,22 @@ void SmithWatermanDialogFiller::commonScenario() {
             resultFilesPath += ANNOTATION_RESULT_FILE_NAME;
         }
         assert(NULL != resultFilePathContainer);
-        resultFilePathContainer->setText(resultFilesPath);
+        GTLineEdit::setText(os, resultFilePathContainer, resultFilesPath);
     }
 
     if(autoSetupAlgorithmParams) {
         if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
             QGroupBox * advOptions = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "advOptions", dialog));
-            advOptions->setChecked(true);
+            GTGroupBox::setChecked(os, advOptions, true);
 
             QLineEdit * mObjectNameTmpl = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "mObjectNameTmpl", dialog));
-            mObjectNameTmpl->setText(mObjectNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
+            GTLineEdit::setText(os, mObjectNameTmpl, mObjectNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
 
             QLineEdit * refSubseqNameTmpl = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "refSubseqNameTmpl", dialog));
-            refSubseqNameTmpl->setText(refSubseqNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
+            GTLineEdit::setText(os, refSubseqNameTmpl, refSubseqNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
         } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
             QLineEdit * annotationNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leAnnotationName", dialog));
-            annotationNameEdit->setText(TEST_NAME_FOR_ANNOT_RESULTS);
+            GTLineEdit::setText(os, annotationNameEdit, TEST_NAME_FOR_ANNOT_RESULTS);
         } else {
             assert(0);
         }
@@ -160,19 +165,19 @@ void SmithWatermanDialogFiller::commonScenario() {
         }
 
         const int swRealizationIndex = comboRealization->findText(realizationName);
-        comboRealization->setCurrentIndex(swRealizationIndex);
+        GTComboBox::setCurrentIndex(os, comboRealization, swRealizationIndex);
 
         QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
-        comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);
+        GTComboBox::setCurrentIndex(os, comboResultFilter, RESULT_INTERSECTION_FILTER_INDEX);
 
         QSpinBox * spinScorePercent = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinScorePercent", dialog));
-        spinScorePercent->setValue(RESULT_SCORE_PERCENTAGE);
+        GTSpinBox::setValue(os, spinScorePercent, RESULT_SCORE_PERCENTAGE, GTGlobals::UseKeyBoard);
 
         QSpinBox * dblSpinGapOpen = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinGapOpen", dialog));
-        dblSpinGapOpen->setValue(GAP_OPEN_PENALTY);
+        GTSpinBox::setValue(os, dblSpinGapOpen, GAP_OPEN_PENALTY);
 
         QSpinBox * dblSpinGapExtd = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinGapExtd", dialog));
-        dblSpinGapExtd->setValue(GAP_EXTENDING_PENALTY);
+        GTSpinBox::setValue(os, dblSpinGapExtd, GAP_EXTENDING_PENALTY);
     }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);

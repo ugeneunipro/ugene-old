@@ -1506,13 +1506,11 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     //2. Right click on the document in the project view.
     //Expected: there are no the "Export/Import" menu for the database connection.
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
-    CHECK_OP(os, );
     QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "ugene_gui_test");
-    CHECK_OP(os, );
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export/Import"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Export/Import", PopupChecker::NotExists));
     GTMouseDriver::click(os, Qt::RightButton);
-    CHECK_SET_ERR(os.hasError(), "Export item exists");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3253) {
@@ -4043,8 +4041,9 @@ GUI_TEST_CLASS_DEFINITION(test_3629) {
 //    6. Switch view to "human_T1".
 //    Expected state: there are no attached annotations.
     GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
-    GTUtilsAnnotationsTreeView::findItems(os, "misc_feature");
-    CHECK_SET_ERR(os.isCoR(), "The annotaion table is unexpectedly attached");
+    GTThread::waitForMainThread(os);
+    QList<QTreeWidgetItem*> list = GTUtilsAnnotationsTreeView::findItems(os, "misc_feature", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(list.isEmpty(), QString("%1 annotation(s) unexpectidly found").arg(list.isEmpty()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3645) {

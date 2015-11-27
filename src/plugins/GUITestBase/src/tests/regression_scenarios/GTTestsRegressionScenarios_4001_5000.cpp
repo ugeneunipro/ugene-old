@@ -2549,6 +2549,7 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Show/hide restriction sites map"));
     GTWidget::click(os, extButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4377) {
@@ -4297,7 +4298,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_3) {
 
     //    2. Add  extended amino sequence by drag and drop
     QModelIndex toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_amino_seq");
-    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino\"");
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
     GTUtilsProjectTreeView::dragAndDrop(os, toDragNDrop, GTWidget::findWidget(os, "msa_editor_sequence_area"));
     GTGlobals::sleep();
 
