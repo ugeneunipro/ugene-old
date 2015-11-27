@@ -1466,6 +1466,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     // 4. Click "Remove sequence" button
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/PBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_SYNPBR322");
     CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_SYNPBR322");

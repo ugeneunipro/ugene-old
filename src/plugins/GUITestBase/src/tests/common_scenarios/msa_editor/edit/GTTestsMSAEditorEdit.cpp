@@ -47,6 +47,7 @@
 #include <utils/GTUtilsDialog.h>
 
 #include "GTTestsMSAEditorEdit.h"
+#include "GTUtilsTaskTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
@@ -80,6 +81,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 //Check insert gaps
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_1(os,0,"-AAGACTTCTTTTAA");
 //2. Select first symbol for Phaneroptera_falcata sequence. Press "space".
@@ -87,6 +89,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 GUI_TEST_CLASS_DEFINITION(test_0001_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_1(os,3,"-AAGTC---TATTAA");
 //DIFFERENCE:Select first symbol for Tettigonia_viridissima sequence. Press "space".
@@ -94,6 +97,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
 }
 GUI_TEST_CLASS_DEFINITION(test_0001_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_1(os,6,"TAGCT-TATTAA---",5);
 //DIFFERENCE:Select first symbol for Conocephalus_percaudata sequence. Press "space".
@@ -121,6 +125,7 @@ void test_3(HI::GUITestOpStatus &os, int i=0, QString expectedSec=""){
 GUI_TEST_CLASS_DEFINITION(test_0003){
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_3(os,0,"AAGACTTCTTTTA-A");
 //Expected state: Phaneroptera_falcata AAGAC-TTCTTTTAA, sequence length 15, right offset 14
@@ -128,6 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 
 GUI_TEST_CLASS_DEFINITION(test_0003_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_3(os,3,"AAGTC---TATTA-A");
 //Expected state: DIFFERENCE: Tettigonia_viridissima AAGTC---TATTA-A, sequence length 15, right offset 14
@@ -135,6 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0003_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_3(os,7,"AAGTCTTT---TA-A");
 //Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---TA-A, sequence length 15, right offset 14
@@ -164,6 +171,7 @@ void test_4(HI::GUITestOpStatus &os, int startPos, int endPos, QString expectedS
 GUI_TEST_CLASS_DEFINITION(test_0004){
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Select 1..5 region for Phaneroptera_falcata sequence. Press "delete".
     test_4(os,0,4,"TTCTTTTAA-----");
 //    Expected state: Phaneroptera_falcata TTCTTTTAA-----, sequence length 14, right offset 9
@@ -171,6 +179,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
 GUI_TEST_CLASS_DEFINITION(test_0004_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,0,4,"---TATTAA-----",3);
 //    Expected state: DIFFERENCE: Tettigonia_viridissima ---TATTAA-----, sequence length 14, right offset 9
@@ -178,6 +187,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0004_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,0,4,"TTT---TAA-----",7);
 //    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J TTT---TAA-----, sequence length 14, right offset 9
@@ -186,6 +196,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2){
 GUI_TEST_CLASS_DEFINITION(test_0005){
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Select 6..9 symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Delete selection}.
     test_4(os,5,8,"AAGACTTTAA----");
 //    Expected state: Phaneroptera_falcata AAGACTTTAA----, sequence length 14, right offsets 10
@@ -193,6 +204,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0005_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,5,8,"AAGTCATTAA----",3);
 //    Expected state: DIFFERENCE: Tettigonia_viridissima AAGTCATTAA----, sequence length 14, right offset 10
@@ -200,6 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0005_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,5,8,"AAGTC--TAA----",7);
 //    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTC--TAA----, sequence length 14, right offset 10
@@ -208,6 +221,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2){
 GUI_TEST_CLASS_DEFINITION(test_0006){
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Select 13..14 symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Delete selection}.
     test_4(os,12,13,"AAGACTTCTTTT--",0,1);
 //    Expected state: Phaneroptera_falcata AAGACTTCTTTT--, sequence length 14, right offsets 12
@@ -215,6 +229,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,12,13,"AAGTC---TATT--",3,1);
 //    Expected state: DIFFERENCE: Tettigonia_viridissima AAGTC---TATT--, sequence length 14, right offsets 12
@@ -222,6 +237,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0006_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_4(os,12,13,"AAGTCTTT---T--",7,1);
 //    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---T--, sequence length 14, right offsets 12
@@ -231,6 +247,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 //    Check remove all gaps
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use msa editor context menu {Edit->Remove all gaps}.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
@@ -271,6 +288,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1){
 //    Check remove all gaps
 //DIFFERENSE:    1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use msa editor context menu {Edit->Remove all gaps}.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
@@ -310,6 +328,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 //Check remove columns with gaps
 //1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Place cursor on 4th column of alignment. Use msa editor context menu (at the column with gaps) {Edit->Remove column of gaps}.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(3,3));
 
@@ -356,6 +375,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){
 //Check remove columns with gaps
 //1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Place cursor on 4th column of alignment. Use msa editor context menu (at the column with gaps) {Edit->Remove column of gaps}.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(3,3));
 
@@ -496,12 +516,14 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 //Check remove columns with gaps
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Put cursor at last symbol in first sequence, click "Space" two times.
     test_9(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009_1){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //DIFFERENCE: 2. Select column 3, click "Space" two times.
     test_9(os,2);
 
@@ -509,6 +531,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0009_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //DIFFERENCE: 2. Select column 9, click "Space" two times.
     test_9(os,8);
 }
@@ -517,10 +540,14 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 //UGENE crashes when edit multiply alignment (0001744)
 //1. Open file samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open at least 2 views for multiple alignment
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //3. Try to edit MSA(insert spaces or something
     GTUtilsMSAEditorSequenceArea::click(os);
@@ -535,6 +562,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 //Check Undo/Redo functional
 //1. Open document _common_data\scenarios\msa\ma.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Select region 4..11 from Zychia_baranovi sequence. Press "Delete" button.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3,8), QPoint(10,8));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -573,6 +601,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 //Check Undo/Redo functional
 //1. Open document _common_data\scenarios\msa\ma.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Select region 4..11 from Zychia_baranovi sequence. Press "Delete" button.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3,8), QPoint(10,8));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -616,6 +645,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //Check Undo/Redo functional
 //1. Open document _common_data\scenarios\msa\ma.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use msa editor context menu {Edit->Remove all gaps}.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
@@ -678,6 +708,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3){
 //Check Undo/Redo functional
 //1. Open document _common_data\scenarios\msa\ma.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Insert seversl spaces somewhere
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
     for(int i=0; i<6; i++){
@@ -706,6 +737,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
 //Check copy
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Select region 3..8 for Conocephalus_discolor sequence. Press Ctrl+C.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2,4), QPoint(7, 4));
     GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
@@ -750,6 +782,7 @@ void test_13(HI::GUITestOpStatus &os, int comboVal, int SpinVal, QString Expecte
 GUI_TEST_CLASS_DEFINITION(test_0013){
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_13(os,1,100,"aagc+tattaataa");
 }
@@ -757,6 +790,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
 GUI_TEST_CLASS_DEFINITION(test_0013_1){
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_13(os,1,1,"AAGC+TATTAATAA");
 }
@@ -764,6 +798,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1){
 GUI_TEST_CLASS_DEFINITION(test_0013_2){
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     test_13(os,2,75,"WAGYYTWYTAW");
 }
@@ -772,6 +807,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
 //Create subaligniment
 //1. Open document samples\CLUSTALW\COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Right click on aligniment view. Open context menu {Export->save subalignment}
     GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(0,5),QPoint(10,5));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
@@ -807,6 +843,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 //Create subaligniment
 //1. Open document "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //2. Right click on aligniment view. Open context menu {Export->save subalignment}
 

@@ -79,6 +79,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1CF7.PDB" is opened
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
@@ -110,6 +111,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 // 6. Use menu {File->Open}. Open project _common_data/sandbox/proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
 // Expected state:
@@ -219,6 +221,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document", GTGlobals::UseMouse));
 
@@ -262,6 +265,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
     //1. Open project _common_data\scenario\project\proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProject::checkProject(os);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxOpenAnotherProject(os));
@@ -410,6 +414,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
 GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
@@ -454,6 +459,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 GUI_TEST_CLASS_DEFINITION(test_0031) {
 
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "human_T1.fa");
 
     GTUtilsProjectTreeView::openView(os);
@@ -489,6 +495,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 //    Expected state: file opens, document contains two malignment objects, the MSA Editor is shown.
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDocument::checkDocument(os, "ace_test_1.ace", MSAEditorFactory::ID);
     GTUtilsProjectTreeView::checkObjectTypes(os,
@@ -503,6 +510,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "project_test_0033.ugenedb"));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_2.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDocument::checkDocument(os, "project_test_0033.ugenedb", AssemblyBrowserFactory::ID);
     GTUtilsProjectTreeView::checkObjectTypes(os,
@@ -512,6 +520,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 
 GUI_TEST_CLASS_DEFINITION(test_0034) {
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //select sequence object
     GTUtilsProjectTreeView::click(os, "murine.gb");
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
@@ -521,7 +530,9 @@ GUI_TEST_CLASS_DEFINITION(test_0034) {
 
 GUI_TEST_CLASS_DEFINITION(test_0035) {
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //select 2 objects
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
     GTUtilsProjectTreeView::click(os, "NC_001363");
@@ -534,7 +545,9 @@ GUI_TEST_CLASS_DEFINITION(test_0035) {
 
 GUI_TEST_CLASS_DEFINITION(test_0036) {
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //select 2 files
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
     GTUtilsProjectTreeView::click(os, "sars.gb");
@@ -547,6 +560,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036) {
 
 GUI_TEST_CLASS_DEFINITION(test_0037) {
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //select 1 file
     GTUtilsProjectTreeView::click(os, "sars.gb");
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
@@ -558,6 +572,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038){
     //test for several alignments in one document
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
     GTFileDialog::openFile(os, dataDir + "samples/ACE/BL060C3.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //check for first document
     GTUtilsProjectTreeView::doubleClickItem(os, "Contig1");
@@ -592,6 +607,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_3637_1.ugenedb"));
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTFileDialog::openFile(os, dataDir + "samples/ACE/BL060C3.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //check for first document
     GTUtilsProjectTreeView::doubleClickItem(os, "Contig1");

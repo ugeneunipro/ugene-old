@@ -35,6 +35,7 @@
 #include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -45,6 +46,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
@@ -69,6 +71,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
@@ -94,6 +97,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
@@ -115,6 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 5. Open exported project
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -143,6 +148,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 9. Load _common_data/scenarios/sandbox/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state: project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 

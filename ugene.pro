@@ -25,8 +25,8 @@ SUBDIRS += \
           src/libs_3rdparty/sqlite3 \
           src/libs_3rdparty/gtest \
           src/libs_3rdparty/samtools \
-          src/corelibs/U2Core \
           src/libs_3rdparty/humimit \
+          src/corelibs/U2Core \
           src/corelibs/U2Test \
           src/corelibs/U2Algorithm \
           src/corelibs/U2Formats \

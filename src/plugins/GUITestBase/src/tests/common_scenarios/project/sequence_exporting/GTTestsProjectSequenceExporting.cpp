@@ -172,6 +172,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
 // Expected state:
@@ -238,6 +239,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QModelIndex nc_001363 = GTUtilsProjectTreeView::findIndex(os,"NC_001363 sequence", GTUtilsProjectTreeView::findIndex(os, "1.gb"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, nc_001363));
@@ -339,6 +341,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     };
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
@@ -349,6 +352,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     // the test checks that a sequence associated with an annotation table can be exported
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
@@ -364,7 +368,9 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 GUI_TEST_CLASS_DEFINITION(test_0010) {
     // negative test for an annotation table not associated with any sequence
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/GFF/", "5prime_utr_intron_A21.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Ca21chr5 features"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
@@ -395,6 +401,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     // negative test for annotation table associated with a removed sequence
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
     GTMouseDriver::click(os);
@@ -409,7 +416,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 GUI_TEST_CLASS_DEFINITION(test_0012) {
     // test for an annotation table whose sequence association was changed
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QModelIndex annIdx = GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
     QWidget *seqArea = GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
@@ -431,6 +440,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 GUI_TEST_CLASS_DEFINITION(test_0013) {
     // test for multiple annotation object selection associated sequence import is not available
     GTFileDialog::openFile(os, dataDir + "samples/GFF/", "5prime_utr_intron_A21.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);

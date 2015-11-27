@@ -61,11 +61,13 @@ namespace {
 
 void openFileAndCallCreateAnnotationDialog(HI::GUITestOpStatus &os, const QString &filePath) {
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
 }
 
 void openFileAndCallSmithWatermanDialog(HI::GUITestOpStatus &os, const QString &filePath) {
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find pattern [Smith-Waterman]");
 }
 
@@ -76,6 +78,7 @@ void setSmithWatermanPatternAndOpenLastTab(HI::GUITestOpStatus &os, QWidget *dia
 
 void openFileOpenSearchTabAndSetPattern(HI::GUITestOpStatus &os, const QString &filePath, const QString &pattern = "GCCCATCAGACTAACAG") {
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTTextEdit::setText(os, GTWidget::findExactWidget<QTextEdit *>(os, "textPattern"), pattern);
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1971,6 +1974,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
 
 //    1. Open "_common_data/genbank/2nanot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
     GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
@@ -2080,6 +2084,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
 
 //    1. Open "_common_data/genbank/2anot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
     GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
@@ -2191,6 +2196,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 
 //    1. Open "_common_data/genbank/2anot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
     GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
@@ -2485,6 +2491,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037) {
 
 //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call "ORF Marker" dialog. Open "Output" tab.
 
@@ -2935,6 +2942,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038) {
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario2));
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::markSequenceAsCircular(os, "murine.gb");
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
 }

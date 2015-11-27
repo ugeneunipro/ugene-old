@@ -56,6 +56,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 //        right_end_strand
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "SacII"));
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find restriction sites"));

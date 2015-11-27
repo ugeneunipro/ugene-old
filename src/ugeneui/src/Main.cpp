@@ -221,7 +221,7 @@ void guiTestMessageOutput(QtMsgType type, const QMessageLogContext &context, con
         uiLog.trace(msg);
         break;
     case QtWarningMsg:
-        uiLog.error(msg);
+        uiLog.details(msg);
         break;
     case QtCriticalMsg:
         uiLog.error(msg);

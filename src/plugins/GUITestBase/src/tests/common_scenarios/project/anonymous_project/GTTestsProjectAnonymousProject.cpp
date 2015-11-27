@@ -33,6 +33,7 @@
 #include <base_dialogs/MessageBoxFiller.h>
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -44,6 +45,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 1. Use menu {File->Open}. Open file data/samples/PDB/1CF7.pdb
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) Project view with document "1CF7.PDB" is opened
@@ -71,6 +73,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 8. Use menu {File->Open}. Open project _common_data/scenarios/sandbox/proj2.uprj
     GTGlobals::sleep();
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) project view with document "1CF7.PDB" has been opened,
@@ -86,6 +89,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 // 1. Use menu {File->Open}. Open file samples/PDB/1CF7.pdb
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) Project view with document "1CF7.PDB" is opened
@@ -112,6 +116,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 // 6. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 //     1) project view with document "1CF7.PDB" has been opened,

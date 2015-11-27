@@ -40,6 +40,7 @@
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
 
@@ -49,6 +50,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -76,6 +78,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -103,6 +106,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -129,6 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -156,6 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -183,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -210,6 +217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -237,6 +245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -264,6 +273,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -291,6 +301,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -318,6 +329,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -346,6 +358,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -374,6 +387,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -402,6 +416,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -430,6 +445,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -458,6 +474,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -485,6 +502,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -512,6 +530,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -539,6 +558,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -566,6 +586,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -593,6 +614,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -620,6 +642,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -647,6 +670,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -674,6 +698,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
@@ -701,6 +726,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));
@@ -728,6 +754,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0009_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));
@@ -755,6 +782,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0009_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
     roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));

@@ -354,7 +354,9 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0011) {
 
 GUI_TEST_CLASS_DEFINITION(read_gui_neg_test_0012) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Alignment");
@@ -471,6 +473,7 @@ GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0001) {
     GTLogTracer l;
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_objects_input.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
 }
 
@@ -478,6 +481,7 @@ GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0002) {
     GTLogTracer l;
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_folders_input.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
 }
 
@@ -485,6 +489,7 @@ GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0003) {
     GTLogTracer l;
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_output.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
 }
 
@@ -538,6 +543,7 @@ GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0002) {
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0001_1) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_shared_db_no_credentials.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Write Alignment");
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.aln", GTUtilsWorkflowDesigner::textValue);
@@ -557,6 +563,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0001_2) {
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_shared_db_no_credentials.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Write Alignment");
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.aln", GTUtilsWorkflowDesigner::textValue);
@@ -572,6 +579,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0001_2) {
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0002) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_inaccessible_shared_db.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Write Variations");
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.snp", GTUtilsWorkflowDesigner::textValue);
@@ -650,6 +658,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_1) {
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_shared_db_no_credentials.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Read Sequence");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "aaa.fa");
@@ -664,6 +673,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_1) {
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_2) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_shared_db_no_credentials.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Read Sequence");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "aaa.fa");
@@ -680,6 +690,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_2) {
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_inaccessible_shared_db.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsWorkflowDesigner::click(os, "Read Assembly");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "1.bam.ugenedb");

@@ -40,6 +40,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 // 	1) Project view with document "1.gb" has been opened
@@ -59,6 +60,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 5. Use menu {File->Open}. Open file samples/PDB/1CF7.PDB
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 // 	1) Project view with documents "1CF7.PDB", "1.gb" has been opened
@@ -71,6 +73,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 7. Open project from the location used in item 3
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state:
 // Project has 2 documents: 1CF7.PDB and 1.gb

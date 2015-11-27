@@ -141,6 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     Runnable *filler = new InsertSequenceFiller(os,
@@ -169,6 +170,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     Runnable *filler = new InsertSequenceFiller(os,
@@ -197,6 +199,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
@@ -224,6 +227,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/", "NC_014267.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE, GTGlobals::UseKey));
@@ -259,6 +263,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTGlobals::sleep();
     QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1");
@@ -309,6 +314,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 11));
@@ -325,6 +331,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence"));
@@ -417,6 +424,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     // Check that qualifiers are recalculated on a removal of a subsequence that is located to the left of a region mentioned in a qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..10", false));
@@ -436,6 +444,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1_neg) {
     // Check that qualifiers aren't recalculated on a removal of a subsequence that is located to the right of a region mentioned in a qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1000..1100", true));
@@ -449,6 +458,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     // Check that a translation qualifier is recalculated on a removal of a subsequence that is located inside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1040..1042", true));
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Remove subsequence...", GTGlobals::UseMouse);
@@ -466,6 +476,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2_neg) {
     // Check that a translation qualifier isn't recalculated on a removal of a subsequence that is located outside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "996..1000", true));
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Remove subsequence...", GTGlobals::UseMouse);
@@ -483,6 +494,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
     // Check that qualifiers are recalculated on an insertion of a subsequence that is located to the left of a region mentioned in a qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 1);
@@ -506,6 +518,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1_neg) {
     // Check that qualifiers aren't recalculated on an insertion of a subsequence that is located to the right of a region mentioned in a qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsSequenceView::selectSequenceRegion(os, 100000, 100000);
@@ -522,6 +535,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
     // Check that a translation qualifier is recalculated on an insertion of a subsequence that is located inside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1050, 1050);
 
@@ -542,6 +556,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2_neg) {
     // Check that a translation qualifier isn't recalculated on an insertion of a subsequence that is located outside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 1);
 
@@ -562,6 +577,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     // Check that a qualifier is recalculated on a substitution of a subsequence that is located to the left of a region mentioned in the qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 10);
@@ -587,6 +603,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1_neg) {
     // Check that a qualifier isn't recalculated on a substitution of a subsequence that is located to the right of a region mentioned in the qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1000, 1010);
@@ -603,6 +620,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     // Check that a translation qualifier is recalculated on a substitution of a subsequence that is located inside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1050, 1050);
 
@@ -623,6 +641,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2_neg) {
     // Check that a translation qualifier isn't recalculated on a substitution of a subsequence that is located outside an annotated region
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 996, 1000);
 
@@ -643,6 +662,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
     // Check that a qualifier isn't recalculated on a removal of a subsequence that includes a region mentioned in the qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..600", true));
@@ -660,6 +680,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
     // Check that a qualifier isn't recalculated on a complete replacement of a subsequence that includes a region mentioned in the qualifier
 
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 600);

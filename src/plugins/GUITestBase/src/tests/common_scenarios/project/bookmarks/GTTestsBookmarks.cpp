@@ -53,6 +53,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 //  1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
 //  2. Create a bookmark
@@ -70,6 +71,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     // 1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // 2. Create a bookmark. Change: Create 2 bookmarks.
@@ -92,6 +94,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     // 1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // 2. Create a bookmark

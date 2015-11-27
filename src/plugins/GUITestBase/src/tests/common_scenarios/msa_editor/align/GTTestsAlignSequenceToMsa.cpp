@@ -78,8 +78,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "3000_sequences.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, testDir + "_common_data/alignment/align_sequence_to_an_alignment/", "tub1.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::click(os, "tub");
@@ -107,8 +109,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "3000_sequences.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, testDir + "_common_data/alignment/align_sequence_to_an_alignment/", "tub1.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::click(os, "tub");
@@ -135,6 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     //Expected state: MAFFT alignment started and finished succesfully with using option --addfragments
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/cmdline/primers/", "primers.fa");
@@ -166,6 +171,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     //Expected state: UGENE alignment started and finished succesfully
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsExternalTools::removeTool(os, "MAFFT");
 
@@ -187,6 +193,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
     GTFileDialog::openFile(os, testDir + "_common_data/alignment/align_sequence_to_an_alignment/", "TUB.msf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QStringList fileList;
@@ -227,6 +234,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
     GTFileDialog::openFile(os, testDir + "_common_data/alignment/align_sequence_to_an_alignment/", "TUB.msf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsExternalTools::removeTool(os, "MAFFT");
@@ -273,6 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/Genbank/", "CVU55762.gb");
     GTUtilsDialog::waitForDialog(os, ob);
@@ -290,6 +299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     //Expected state: The sequences were added to the alignment and aligned
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QStringList fileList;
@@ -311,6 +321,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, testDir + "_common_data/alignment/align_sequence_to_an_alignment/", "TUB.msf");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/clustal/", "COI na.aln");
     GTUtilsDialog::waitForDialog(os, ob);
@@ -327,6 +338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     //1. Open "_common_data/fasta/empty.fa" as msa.
     //2. Ensure that MAFFT tool is set.
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Click "Align sequence to this alignment" button on the toolbar.

@@ -41,6 +41,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2View/ADVConstants.h>
 
@@ -56,6 +57,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -94,6 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -132,6 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -170,6 +174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -204,6 +209,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -238,6 +244,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -272,6 +279,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -310,6 +318,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -345,6 +354,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -380,6 +390,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -415,6 +426,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -453,6 +465,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -487,6 +500,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -522,6 +536,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -556,6 +571,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -602,6 +618,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
     GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os,
         SequenceReadingModeSelectorDialogFiller::Separate ) );
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "DNA.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141619"), "No GXL_141619 object!");
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141618"), "No GXL_141618 object!");
 
@@ -633,6 +650,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0010_1.bed");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141619 features"), "No GXL_141619 features object!");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141618 features"), "No GXL_141618 features object!");
 }
@@ -652,6 +670,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os,
         SequenceReadingModeSelectorDialogFiller::Separate ) );
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "DNA.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141619"), "No GXL_141619 object!");
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141618"), "No GXL_141618 object!");
 
@@ -683,6 +702,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0010_2.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141619 features"), "No GXL_141619 features object!");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141618 features"), "No GXL_141618 features object!");
 }
@@ -702,6 +722,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_3) {
     GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os,
         SequenceReadingModeSelectorDialogFiller::Separate ) );
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "DNA.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141619"), "No GXL_141619 object!");
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "GXL_141618"), "No GXL_141618 object!");
 
@@ -743,6 +764,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_3) {
 
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0010_3.gtf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141619 features"), "No GXL_141619 features object!");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141618 features"), "No GXL_141618 features object!");
 }
@@ -758,6 +780,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     GTLogTracer l;
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "exon", "annotation", "200..300",
                                                                       sandBoxDir + "ann_test_0011_1.gb"));
@@ -788,6 +811,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTLogTracer l;
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann", "200..300",
                                                                       sandBoxDir + "ann_test_0011_1.gb"));
@@ -819,6 +843,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3) {
     GTLogTracer l;
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann", "200..300",
                                                                       sandBoxDir + "ann_test_0011_1.gb"));
@@ -854,9 +879,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     //    Expected state: annotation table object name contain sequence name
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
 
     GTFileDialog::openFile(os, testDir + "_common_data/gff/", "scaffold_90.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features");
 
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "scaffold_90 features");
@@ -882,6 +909,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0012_1.bed");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
     CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features"), "Object shound not be in the project");
 }
@@ -901,9 +929,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     //    Expected state: annotation table object name contain sequence name
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
 
     GTFileDialog::openFile(os, testDir + "_common_data/gff/", "scaffold_90.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features");
 
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "scaffold_90 features");
@@ -929,6 +959,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0012_2.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
     CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features"), "Object shound not be in the project");
 
@@ -949,9 +980,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012_3) {
     //    Expected state: annotation table object name contain sequence name
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
 
     GTFileDialog::openFile(os, testDir + "_common_data/gff/", "scaffold_90.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features");
 
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "scaffold_90 features");
@@ -985,6 +1018,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_3) {
 
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0012_3.gtf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
     CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features"), "Object shound not be in the project");
 }
@@ -992,6 +1026,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_3) {
 GUI_TEST_CLASS_DEFINITION(test_0013) {
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");

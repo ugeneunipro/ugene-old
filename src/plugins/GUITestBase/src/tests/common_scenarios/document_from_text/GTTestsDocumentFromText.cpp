@@ -884,6 +884,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     }
@@ -910,6 +911,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     }
 
@@ -935,6 +937,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     }
 GUI_TEST_CLASS_DEFINITION(test_0013) {

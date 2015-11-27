@@ -36,7 +36,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
-
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
 
@@ -50,6 +50,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -92,6 +93,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -139,6 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -186,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -215,6 +219,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -257,6 +262,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -299,6 +305,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -331,6 +338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -375,6 +383,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -417,6 +426,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     // Steps:
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -449,6 +459,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     // Steps:
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -481,6 +492,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     // Steps:
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -514,6 +526,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     // 1. Open data/samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Press <Ctrl>+N
     //2.1 CHECK if dialog box titled with "Create annotation" appeared
@@ -549,6 +562,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
 
     // 1. Open data/samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Press <Ctrl>+N
     //2.1 CHECK if dialog box titled with "Create annotation" appeared
@@ -607,6 +621,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     // 1. Open data/samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Press <Ctrl>+N
     //2.1 CHECK if dialog box titled with "Create annotation" appeared
@@ -659,6 +674,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     // Steps:
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -685,6 +701,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     // Steps:
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -720,6 +737,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     // Steps:
     // 1. Open data/samples/Genbank/mirine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Select a group on annotations editor
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");

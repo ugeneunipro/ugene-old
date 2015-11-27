@@ -173,6 +173,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));

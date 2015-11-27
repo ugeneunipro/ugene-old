@@ -71,8 +71,8 @@ private:
 class HI_EXPORT GTFileDialog {
 public:
     enum Button {Open, Cancel};
-    static void openFile(GUITestOpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
-    static void openFile(GUITestOpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool waitForFinished = true);
+    static void openFile(GUITestOpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void openFile(GUITestOpStatus &os, const QString &filePath, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
     static void openFileList(GUITestOpStatus &, const QString &, const QStringList &);
     static void openFileList(GUITestOpStatus &os, const QStringList &filePaths);

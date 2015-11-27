@@ -40,6 +40,8 @@
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include <base_dialogs/MessageBoxFiller.h>
 #include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 namespace U2 {
@@ -69,6 +71,7 @@ void checkColor(HI::GUITestOpStatus &os, QPoint p, QString expectedColor, int Xm
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Colors->UGENE} in MSA editor area.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"UGENE"));
@@ -96,6 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use context menu {Colors->No Colors} in MSA editor area.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"No colors"));
@@ -120,6 +124,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 GUI_TEST_CLASS_DEFINITION(test_0003){
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Colors->Jalview} in MSA editor area.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"Jalview"));
@@ -145,6 +150,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 GUI_TEST_CLASS_DEFINITION(test_0004){
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use context menu {Colors->Persentage identity} in MSA editor area.
 //    Expected state: Background of the symbol  with the highest number of matches in the column is painted over.
 //    Intensity of colour depends on the frequency of appearance in the column.

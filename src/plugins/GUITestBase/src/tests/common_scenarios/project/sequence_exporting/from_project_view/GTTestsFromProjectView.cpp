@@ -172,6 +172,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
@@ -209,6 +210,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
@@ -241,6 +243,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
@@ -279,6 +282,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
@@ -318,6 +322,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
 // Expected state:
@@ -360,6 +365,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // 5. Open file _common_data/scenarios/sandbox/exp2.msf
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.msf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
 // Expected state: multiple aligniment view with NC_001363 sequence has been opened
@@ -375,6 +381,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state:
@@ -417,6 +424,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.sto");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
@@ -432,6 +440,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state:
@@ -474,6 +483,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
@@ -489,6 +499,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state:
@@ -531,6 +542,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.meg");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
@@ -540,6 +552,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
@@ -556,6 +569,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
@@ -571,6 +585,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));

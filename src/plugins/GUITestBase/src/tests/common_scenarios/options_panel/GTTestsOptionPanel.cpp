@@ -52,6 +52,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
 
@@ -62,6 +63,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 //    Options panel. Information tab. Character occurence
 //    1. Open file (samples/FASTA/human_T1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
 
@@ -88,6 +90,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
 //    Options panel. Information tab. Character occurence
 //    1. Open file (_common_data/scenarios/_regression/1093/refrence.fa)
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
 
@@ -109,6 +112,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //Options panel. Information tab. Dinucleotides
 //1. Open file (samples/FASTA/human_T1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Activate Information tab on Options panel at the right edge of UGENE window. Expand Dinucleotides
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     GTGlobals::sleep(500);
@@ -158,6 +162,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 //Options panel. Information tab. Dinucleotides
 //    1. Open file (_common_data/scenarios/_regression/1093/refrence.fa)
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Activate Information tab on Options panel at the right edge of UGENE window. Expand Dinucleotides
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
 
@@ -189,6 +194,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){//commit sequenceInfo
 //    Options panel. Information tab. Sequence length
 //    1. Open file (samples/FASTA/human_T1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -208,6 +214,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
 //    Options panel. Information tab. Sequence length
 //    1. Open file (_common_data/scenarios/_regression/1093/refrence.fa)
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -225,6 +232,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
 GUI_TEST_CLASS_DEFINITION(test_0004){
 //1. Open file (samples/FASTA/human_T1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
@@ -290,6 +298,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj3.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 // Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -315,6 +324,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 // DEFFERS: OTHER SOURSE FILE, OTHER SUBSEQUENCE
 // PROJECT IS CLOSED MANUALY TO CACHE MESSAGEBOX
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
@@ -335,6 +345,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     // nucl statistics 1
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "human_T1_cutted.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -361,6 +372,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 GUI_TEST_CLASS_DEFINITION(test_0008) {
     // nucl statistics 2
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -393,6 +405,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     // amino statistics
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "titin.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -415,6 +428,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 GUI_TEST_CLASS_DEFINITION(test_0010) {
     // nucl statistics update on selection
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -455,6 +469,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "numbers_in_the_middle.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -478,6 +493,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "numbers_in_the_middle.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
     QWidget *w = GTWidget::findWidget(os,"Common Statistics");
@@ -523,6 +539,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 GUI_TEST_CLASS_DEFINITION(test_0013) {
     // 1. Open linear nucl sequence
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "Circular View Settings" tab
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
@@ -542,6 +559,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     // 1. Open sequence with CV
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
     GTUtilsOptionPanelSequenceView::toggleCircularView(os);
 
@@ -552,6 +570,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
     // 3. Open another sequence
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
     GTUtilsOptionPanelSequenceView::toggleCircularView(os);
 
@@ -563,6 +582,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 GUI_TEST_CLASS_DEFINITION(test_0015) {
     // 1. Open sequence
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open CV
     // 3. Open CV Settings tab
@@ -582,6 +602,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 GUI_TEST_CLASS_DEFINITION(test_0016) {
     // 1. Open sequence with CV
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open CV Settings tab
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
@@ -603,6 +624,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 GUI_TEST_CLASS_DEFINITION(test_0017) {
     // 1. Open sequence with CV
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open CV Settings tab
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
@@ -632,6 +654,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 GUI_TEST_CLASS_DEFINITION(test_0018) {
     // 1. Open sequence with CV
     GTFileDialog::openFile(os, dataDir  + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open CV Settings tab
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::CircularView);
@@ -702,6 +725,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     CHECK_SET_ERR( openCvWidget1->isVisible(), "Hint label and OpenCV button should be visible");
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
     CHECK_SET_ERR(seqWidgets.size() == 1, "Wrong number of sequences");
     ADVSingleSequenceWidget* seqWidget2 = seqWidgets.first();

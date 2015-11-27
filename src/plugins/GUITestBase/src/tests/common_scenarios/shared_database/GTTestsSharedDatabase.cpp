@@ -1018,6 +1018,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0001) {
     const QModelIndex newFolderItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, newFolderPath);
 
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     const QModelIndex fileDocIndex = GTUtilsProjectTreeView::findIndex(os, fileDocName);
     const QModelIndex objectDocIndex = GTUtilsProjectTreeView::findIndex(os, fileObjectName, fileDocIndex);
 
@@ -1056,6 +1057,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
     const QString importedObjectPath = importedDocFolderPath + U2ObjectDbi::PATH_SEP + fileObjectName;
 
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
@@ -1118,6 +1120,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     QModelIndex databaseSequenceObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     const QModelIndex fileDocIndex = GTUtilsProjectTreeView::findIndex(os, fileDocName);
     const QModelIndex fileAnnotationObjectIndex = GTUtilsProjectTreeView::findIndex(os, annotationObjectName, fileDocIndex);
 
@@ -1618,6 +1621,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0010) {
 
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", documentName);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
@@ -1681,6 +1685,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0011) {
 
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", documentName);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 

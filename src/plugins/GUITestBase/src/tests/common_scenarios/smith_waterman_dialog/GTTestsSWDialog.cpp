@@ -39,6 +39,7 @@
 #include "GTTestsSWDialog.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include "../../../runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "primitives/PopupChooser.h"
@@ -55,6 +56,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //
 // 1. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/query.txt. Get pattern sequence
     GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "query.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "query.txt");
     QString patternSequence;
     GTUtilsSequenceView::getSequenceAsString(os, patternSequence);
@@ -62,6 +64,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 2. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/search.txt
     GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "search.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "search.txt");
 
 // 3. Run Smith-Waterman Search by SW dialog
@@ -115,6 +118,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //
 // 1. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/query.txt. Get pattern sequence
     GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "query.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "query.txt");
     QString patternSequence;
     GTUtilsSequenceView::getSequenceAsString(os, patternSequence);
@@ -122,6 +126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 2. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/search.txt
     GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "search.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "search.txt");
 
 // 3. Run Smith-Waterman Search by SW dialog

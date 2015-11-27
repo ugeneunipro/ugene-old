@@ -50,6 +50,7 @@ namespace GUITest_common_scenarios_annotations_qualifiers {
 using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -71,6 +72,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -102,6 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -135,6 +138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -157,6 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -179,6 +184,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -211,6 +217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -232,6 +239,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -253,6 +261,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -285,6 +294,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
@@ -303,6 +313,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
@@ -323,6 +334,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -350,6 +362,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -370,6 +383,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 GUI_TEST_CLASS_DEFINITION(test_0005_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -390,6 +404,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
 GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -421,6 +436,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     // Open "_common_data/scenarios/annotations_qualifiers/test_6_murine.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_qualifiers/test_6_murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Click the "db_xref" qualifier value in any "CDS" annotation.
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
@@ -457,6 +473,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -487,6 +504,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -517,6 +535,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -557,6 +576,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
 GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "1anot_1seq.gen");
     GTFileDialog::openFile(os, sandBoxDir + "1anot_1seq.gen");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -601,6 +621,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "1anot_1seq.gen");
     GTFileDialog::openFile(os, sandBoxDir + "1anot_1seq.gen");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);

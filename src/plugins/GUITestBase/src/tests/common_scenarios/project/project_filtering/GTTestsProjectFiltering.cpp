@@ -46,9 +46,11 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     // 1. Open "data/samples/FASTA/human_T1.fa"
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -73,9 +75,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     // 1. Open "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -99,9 +103,11 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     // 1. Open "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "CVU55762.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -125,9 +131,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     // 1. Open "data/samples/FASTA/human_T1.fa"
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -150,9 +158,11 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     // 1. Open "data/samples/FASTA/human_T1.fa"
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/HIV-1.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -176,9 +186,11 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     // 1. Open "test/_common_data/text/text.txt"
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
     GTFileDialog::openFile(os, testDir + "_common_data/text/", "text.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/HIV-1.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -206,9 +218,11 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     // 1. Open "data/samples/Genbank/sars.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/HIV-1.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -233,9 +247,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 GUI_TEST_CLASS_DEFINITION(test_0008) {
     // 1. Open "data/samples/FASTA/human_T1.fa"
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -352,9 +368,11 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 GUI_TEST_CLASS_DEFINITION(test_0011) {
     // 1. Open "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -422,9 +440,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 GUI_TEST_CLASS_DEFINITION(test_0013) {
     // 1. Open "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Connect to the "ugene_gui_test" database
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
@@ -449,9 +469,11 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     // 1. Open "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Expected state: Project filter clear button is invisible
     QWidget *clearButton = GTWidget::findWidget(os, "project filter clear button");

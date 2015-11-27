@@ -91,6 +91,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //    Expected state: 'Show circular view' button disabled for 1CF7 chain 1 sequence and 1CF7 chain 2 sequence, but enabled for others
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -116,6 +117,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -138,6 +140,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -170,6 +173,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 //    Expected state: buttons 'Show amino translations' and 'Show amino strand' becomes enabled
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
@@ -208,6 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     QWidget* ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "mwtoolbar_activemdi"));
@@ -250,6 +255,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
@@ -311,6 +317,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 //    Expected state: UGENE not crashed
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "fa1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
@@ -323,6 +330,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0004_1) { //CHANGES: keyboard used instead mouse
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "fa1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
@@ -389,6 +397,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //     GTGlobals::sleep();
 //     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 //  !!! dirty fastfix of test, very temporary
@@ -416,6 +425,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     //Expected state: there is no auto-annotations for opened sequences
 
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTGlobals::sleep();
     QTreeWidgetItem* enz = GTUtilsAnnotationsTreeView::findItem(os, "enzymes", GTGlobals::FindOptions(false));
@@ -431,6 +441,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTGlobals::sleep();
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 //  !!! dirty fastfix of test, very temporary
@@ -491,6 +502,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     //2. Open any PBD file from samples
     //Expected state: there is no auto-annotations for opened sequences
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     //Expected state: there is no auto-annotations for opened sequences
@@ -508,6 +520,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTGlobals::sleep();
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //1. Enable Auto-annotations
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
@@ -571,6 +584,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 //     Expected state: even the sequence is linear, Primer3 finds primers on junction
 
     GTFileDialog::openFile(os, testDir + "/_common_data/primer3", "linear_circular_results.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
@@ -595,6 +609,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022) {
 //     Expected state: the sequence is circular - a few primers cover junction point
 
     GTFileDialog::openFile(os, testDir + "/_common_data/primer3", "circular_primers.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
@@ -621,6 +636,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 //     Expected state: results are linear
 
     GTFileDialog::openFile(os, testDir + "/_common_data/primer3", "DNA.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
@@ -673,6 +689,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 //    Expected state: primers are located on both selected regions(start and end).
 
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     ADVSingleSequenceWidget* wgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
     CHECK_SET_ERR(wgt != NULL, "ADVSequenceWidget is NULL");
     GTUtilsCv::cvBtn::click(os, wgt);
@@ -712,6 +729,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 //    Expected state: primers(left and right) are located on either side of junction point
 
     GTFileDialog::openFile(os, testDir + "/_common_data/primer3", "DNA.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     ADVSingleSequenceWidget* wgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
     CHECK_SET_ERR(wgt != NULL, "ADVSequenceWidget is NULL");
 
@@ -740,6 +758,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 //    4. Accept the dialog
 //    Expected state: no warning apeared, primers are located on selected region
     GTFileDialog::openFile(os, testDir + "/_common_data/primer3", "DNA.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     ADVSingleSequenceWidget* wgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
     CHECK_SET_ERR(wgt != NULL, "ADVSequenceWidget is NULL");
@@ -768,6 +787,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027) {
 //    2. Export sequence as image
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_image_0027"));
     GTWidget::click(os, GTAction::button(os, "export_image"));
@@ -778,6 +798,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028) {
 //    Region selector is hidden if CurrentView export is selected
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class RegionChecker : public Filler {
     public:
@@ -835,6 +856,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QAction* zoom = GTAction::findActionByText(os, "Zoom In");
     CHECK_SET_ERR(zoom != NULL, "Cannot find Zoom In action");
@@ -905,6 +927,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 
 
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "YkrI"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Analyze" << "Find restriction sites"));
@@ -970,6 +993,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 GUI_TEST_CLASS_DEFINITION(test_0031){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select some redion
     GTUtilsSequenceView::selectSequenceRegion(os, 10, 20);
 //    Use context menu {Copy->Copy reverse complement sequence}
@@ -985,6 +1009,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031){
 GUI_TEST_CLASS_DEFINITION(test_0031_1){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select some redion
     GTUtilsSequenceView::selectSequenceRegion(os, 10, 20);
 //    Use context menu {Copy->Copy reverse complement sequence}
@@ -1000,6 +1025,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_1){
 GUI_TEST_CLASS_DEFINITION(test_0031_2){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select annotation
     GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
 //    Use context menu {Copy->Copy reverse complement sequence}
@@ -1036,6 +1062,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_2){
 GUI_TEST_CLASS_DEFINITION(test_0031_3){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select annotation
     GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
 //    Use context menu {Copy->Copy reverse complement sequence}
@@ -1083,6 +1110,7 @@ QAction* compl3 = GTMenu::getMenuItem(os, activePopupMenu, "3 complementary tran
 GUI_TEST_CLASS_DEFINITION(test_0032){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Click "Amino translations" button on mdi toolbar
     QWidget* aminoToolbarButton = GTWidget::findWidget(os, "AminoToolbarButton");
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show direct only"));
@@ -1161,6 +1189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
 GUI_TEST_CLASS_DEFINITION(test_0034){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* panView = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     QImage init = GTWidget::getImage(os, panView);
 //    Create custom ruler
@@ -1190,6 +1219,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034){
 GUI_TEST_CLASS_DEFINITION(test_0035){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Double click on pan view
     QWidget* panView = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     GTWidget::click(os, panView, Qt::LeftButton, QPoint(panView->rect().right() - 50, panView->rect().center().y()));
@@ -1205,6 +1235,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035){
 GUI_TEST_CLASS_DEFINITION(test_0036){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select 2 annotations.
     GTUtilsAnnotationsTreeView::createAnnotation(os, "new_group", "ann1", "10..20");
     GTUtilsAnnotationsTreeView::createAnnotation(os, "new_group", "ann2", "40..50",false);
@@ -1232,6 +1263,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036){
 GUI_TEST_CLASS_DEFINITION(test_0037) {
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select any area
     GTUtilsSequenceView::selectSequenceRegion(os, 10000, 11000);
 //    Press zoom to selection button
@@ -1247,6 +1279,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_1) {
 //Check defails "zoom to selection" dialog values
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Press zoom to selection button
     GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os));
     GTWidget::click(os, GTAction::button(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
@@ -1259,6 +1292,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_1) {
 GUI_TEST_CLASS_DEFINITION(test_0038){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* exportButton = GTWidget::findWidget(os, "export_image");
 //    Export image
 //    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_view_test_0037_1.png"));
@@ -1286,6 +1320,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038){
 GUI_TEST_CLASS_DEFINITION(test_0040){
 //scrollbar on seq view
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     DetView* det = GTWidget::findExactWidget<DetView*>(os, "det_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     QScrollBar* scroll = det->findChild<QScrollBar*>();
     GTWidget::click(os, scroll);
@@ -1296,6 +1331,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){
 GUI_TEST_CLASS_DEFINITION(test_0041){
     //test key events
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     DetView* det = GTWidget::findExactWidget<DetView*>(os, "det_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     int initLength = det->getVisibleRange().length;
     GTWidget::click(os, det);
@@ -1345,6 +1381,7 @@ GUI_TEST_CLASS_DEFINITION(test_0041){
 GUI_TEST_CLASS_DEFINITION(test_0042){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Select annotation
     GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
 //    Expected: annotation selected
@@ -1362,6 +1399,7 @@ GUI_TEST_CLASS_DEFINITION(test_0042){
 GUI_TEST_CLASS_DEFINITION(test_0043){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    move mouse to annotation on det view
     GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
     GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20, 0));
@@ -1377,6 +1415,7 @@ GUI_TEST_CLASS_DEFINITION(test_0043){
 GUI_TEST_CLASS_DEFINITION(test_0044){
     //Overview weel event
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget()->parentWidget());
     GTWidget::click(os, over);
     GTGlobals::sleep(1000);
@@ -1393,6 +1432,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044){
 GUI_TEST_CLASS_DEFINITION(test_0044_1){
     //selection on overview
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget()->parentWidget());
     GTWidget::click(os, over);
 
@@ -1410,6 +1450,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044_1){
 GUI_TEST_CLASS_DEFINITION(test_0044_2){
     //move slider
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     Overview* over = GTUtilsSequenceView::getOverviewByNumber(os);
     GTWidget::click(os, over);
     GTMouseDriver::doubleClick(os);
@@ -1434,6 +1475,7 @@ GUI_TEST_CLASS_DEFINITION(test_0044_2){
 
 GUI_TEST_CLASS_DEFINITION(test_0045){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* pan = GTUtilsSequenceView::getPanViewByNumber(os);
     QImage init = GTWidget::getImage(os, pan);
 //show restriction sites
@@ -1473,6 +1515,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045){
 
 GUI_TEST_CLASS_DEFINITION(test_0046){
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     for(int i=0; i<5; i++){
         GTWidget::click(os, GTAction::button(os, "action_zoom_in_NC_001363"));
     }
@@ -1499,6 +1542,7 @@ GUI_TEST_CLASS_DEFINITION(test_0046){
 GUI_TEST_CLASS_DEFINITION(test_0047){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open CV
     GTUtilsCv::cvBtn::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 //    Use context menu on CV
@@ -1514,7 +1558,9 @@ GUI_TEST_CLASS_DEFINITION(test_0047){
 GUI_TEST_CLASS_DEFINITION(test_0048){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Use context menu on annotation in tree view
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363 features"));
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
@@ -1562,6 +1608,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
     };
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem*>() << GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
 
     GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, new WrongNameChecker));
@@ -1590,6 +1637,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050_1){
     };
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem*>() << GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
 
     GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, new custom));
@@ -1601,6 +1649,7 @@ GUI_TEST_CLASS_DEFINITION(test_0050_1){
 GUI_TEST_CLASS_DEFINITION(test_0051){
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
 
     QColor init = GTUtilsAnnotHighlightingTreeView::getItemColor(os, "CDS");
@@ -1619,6 +1668,7 @@ GUI_TEST_CLASS_DEFINITION(test_0051){
 
 GUI_TEST_CLASS_DEFINITION(test_0052){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
@@ -1644,6 +1694,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
 
 GUI_TEST_CLASS_DEFINITION(test_0052_1){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     DetView* det = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
@@ -1670,6 +1721,7 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
 GUI_TEST_CLASS_DEFINITION(test_0053){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
@@ -1687,6 +1739,7 @@ GUI_TEST_CLASS_DEFINITION(test_0053){
 GUI_TEST_CLASS_DEFINITION(test_0054){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
@@ -1712,6 +1765,7 @@ GUI_TEST_CLASS_DEFINITION(test_0054){
 GUI_TEST_CLASS_DEFINITION(test_0055){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
@@ -1763,6 +1817,7 @@ GUI_TEST_CLASS_DEFINITION(test_0056){
     //wrong cutoff values
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
@@ -1795,6 +1850,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
     //Uses processor core!!!
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
@@ -1816,6 +1872,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     // complex test on local toolbars buttons
 
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QAction* zoomIn = GTAction::findAction(os, "action_zoom_in_A1#berezikov");
     CHECK_SET_ERR(zoomIn != NULL, "Cannot find action_zoom_in_A1#berezikov");
@@ -1852,6 +1909,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
 GUI_TEST_CLASS_DEFINITION(test_0059){
     //"Invert annotation selection" action test
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Invert annotation selection"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
     QList<QTreeWidgetItem*> selected = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
@@ -1860,6 +1918,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
 GUI_TEST_CLASS_DEFINITION(test_0059_1){
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1876,6 +1935,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0060){
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* nameLabel = GTWidget::findWidget(os, "nameLabel");
     GTMouseDriver::moveTo(os, GTWidget::getWidgetCenter(os, nameLabel) + QPoint(2*nameLabel->geometry().width()/3, 0));
     GTMouseDriver::doubleClick(os);
@@ -1896,6 +1956,7 @@ GUI_TEST_CLASS_DEFINITION(test_0060){
 GUI_TEST_CLASS_DEFINITION(test_0061_1) {
     //1. Open "data/Samples/PDB/1CF7.PDB".
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Check that first sequence name is '1CF7 chain A sequence'
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7 chain A sequence"));
     //3. Check that first annotation table name is '1CF7 chain A annotation'
@@ -1919,6 +1980,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061_1) {
 GUI_TEST_CLASS_DEFINITION(test_0061_2) {
     //1. Open "_common_data/pdb/1CRN_without_compnd_tag.PDB"
     GTFileDialog::openFile(os, testDir + "_common_data/pdb", "1CRN_without_compnd_tag.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Check that first annotation table name is '1CRN chain A sequence'
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CRN chain A annotation"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "1CRN chain A annotation [1CRN_without_compnd_tag.PDB]"));
@@ -1934,6 +1996,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061_2) {
 GUI_TEST_CLASS_DEFINITION(test_0061_3) {
     //1. Open "data/samples/PDB/1CF7.PDB".
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Call context menu on the 3dview, select {Structural Alignment -> Align With...} menu item.
     //3. Check that chain combobox contains identifiers: A, B, C, D.

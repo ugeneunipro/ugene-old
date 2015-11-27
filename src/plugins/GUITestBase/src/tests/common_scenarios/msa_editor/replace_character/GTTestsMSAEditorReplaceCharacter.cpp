@@ -39,6 +39,7 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "primitives/PopupChooser.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
@@ -51,6 +52,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -74,6 +76,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 GUI_TEST_CLASS_DEFINITION(test_0002){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -101,6 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 GUI_TEST_CLASS_DEFINITION(test_0003){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -127,6 +131,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     //1. Open an alignment in the Alignment Editor.
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a region with more than one character.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 9), QPoint(10, 10));
@@ -140,6 +145,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 GUI_TEST_CLASS_DEFINITION(test_0005){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -168,6 +174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 GUI_TEST_CLASS_DEFINITION(test_0005_1){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -206,6 +213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1){
 GUI_TEST_CLASS_DEFINITION(test_0006){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -231,6 +239,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 GUI_TEST_CLASS_DEFINITION(test_0006_1){
     //1. Open an alignment in the Alignment Editor.
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select one character.
     //Expected result : the character is selected in the normal mode(i.e.borders of the character are drawn using a dashed line).
@@ -265,6 +274,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 GUI_TEST_CLASS_DEFINITION(test_0007){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a character and make active the replace mode for it.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(9, 9), QPoint(9, 9));
@@ -287,6 +297,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     //1. Open an alignment.
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a gap after sequence character.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(41, 9));
@@ -306,6 +317,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 GUI_TEST_CLASS_DEFINITION(test_0009){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a gap before sequence character.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(43, 9));
@@ -325,6 +337,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 GUI_TEST_CLASS_DEFINITION(test_0010){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a gap between other gaps.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(42, 9));
@@ -344,6 +357,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 GUI_TEST_CLASS_DEFINITION(test_0011){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a gap after the last sequence character.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(603, 9));
@@ -370,6 +384,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 GUI_TEST_CLASS_DEFINITION(test_0012){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a gap before the first sequence character.
     GTUtilsMSAEditorSequenceArea::selectColumnInConsensus(os, 0);
@@ -392,6 +407,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
 GUI_TEST_CLASS_DEFINITION(test_0013){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a first character in sequence.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 9), QPoint(0, 9));
@@ -412,6 +428,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
 GUI_TEST_CLASS_DEFINITION(test_0014){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a last character in sequence.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(603, 9));
@@ -432,6 +449,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
 GUI_TEST_CLASS_DEFINITION(test_0015){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMsaEditor::toggleCollapsingMode(os);
 
@@ -463,6 +481,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
 GUI_TEST_CLASS_DEFINITION(test_0016){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a character in sequence.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 9), QPoint(0, 9));
@@ -498,6 +517,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
 GUI_TEST_CLASS_DEFINITION(test_0017){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a first character in sequence.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 9), QPoint(0, 9));
@@ -519,6 +539,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
 GUI_TEST_CLASS_DEFINITION(test_0018){
     //1. Open an alignment.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select a character in sequence.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 9), QPoint(0, 9));

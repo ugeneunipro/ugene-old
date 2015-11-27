@@ -64,6 +64,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //checking 'next' 'prev' buttons functionality
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isGetAnnotationsEnabled(os), "Get annotations is enabled");
@@ -84,6 +85,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 GUI_TEST_CLASS_DEFINITION(test_0002){
     //checking searching with invalid pattern
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTUtilsOptionPanelSequenceView::enterPattern(os, "zz");
@@ -95,6 +97,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 GUI_TEST_CLASS_DEFINITION(test_0003){
     //checking results with diffirent algorithms
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
@@ -110,6 +113,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 GUI_TEST_CLASS_DEFINITION(test_0004){
     //checking saving annotations after search
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -125,6 +129,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 GUI_TEST_CLASS_DEFINITION(test_0005){
     //checking searching with different parameter 'match percentage'
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
@@ -140,6 +145,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Open "Search In Sequence" options panel tab.
 //    Expected state: all show/hide widgetsare collapsed.
@@ -155,6 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 GUI_TEST_CLASS_DEFINITION(test_0007){
     //checking results with searching in translation
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
@@ -169,6 +176,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 GUI_TEST_CLASS_DEFINITION(test_0008){
     //checking results with searching in translation
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
@@ -185,6 +193,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 GUI_TEST_CLASS_DEFINITION(test_0009){
     //checking results with searching in translation
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
@@ -209,6 +218,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 GUI_TEST_CLASS_DEFINITION(test_0010){
     //checking results with searching in translation
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 

@@ -36,6 +36,8 @@
 #include "GTUtilsOptionPanelMSA.h"
 #include "primitives/PopupChooser.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 namespace U2 {
@@ -47,6 +49,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 //    Check consensus in MSA editor
 //    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Use context menu {Consensus mode} in MSA editor area.
 //    Expected state: consensus representstion dialog appeared
 
@@ -75,6 +78,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Default consensus type. Set 100% treshhold
@@ -104,6 +108,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Default consensus type. Set 100% treshhold
@@ -128,6 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Default consensus type. Set 100% treshhold
@@ -152,6 +158,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Strict consensus type. Set 100% treshhold.
@@ -181,6 +188,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Strict consensus type. Set 100% treshhold.
@@ -205,6 +213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Strict consensus type. Set 100% treshhold.
@@ -230,6 +239,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Levitsky consensus type. Set 90% treshhold.
@@ -258,6 +268,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Levitsky consensus type. Set 90% treshhold.
@@ -282,6 +293,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Use context menu {Consensus mode} in MSA editor area.
 //Expected state: consensus representstion dialog appeared
 //3. Select Levitsky consensus type. Set 90% treshhold.
@@ -322,6 +334,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //check thresholdSpinBox and thresholdSlider limits
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
     GTGlobals::sleep(200);
@@ -354,6 +367,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 //check reset button
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
     GTGlobals::sleep(200);

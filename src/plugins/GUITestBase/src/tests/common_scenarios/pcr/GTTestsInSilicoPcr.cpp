@@ -48,6 +48,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     //1. Open "_common_data/fasta/alphabet.fa".
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "alphabet.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Activate the "Amino" sequence in the sequence view (set the focus for it).
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0));
@@ -76,6 +77,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -110,6 +112,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -146,6 +149,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -199,6 +203,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -252,6 +257,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -293,6 +299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -332,6 +339,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -367,6 +375,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     //    3' perfect match
     //1. Open "_common_data/fasta/pcr_test.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
@@ -401,6 +410,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     //Export annotations
     //1. Open "_common_data/cmdline/pcr/begin-end.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/pcr/begin-end.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));

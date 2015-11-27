@@ -189,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 //  Expected state: workflow schema opened in Workflow designer
 //    2. Change item style (Minimal - Extended - Minimal - Extended)
@@ -218,6 +219,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 //  Expected state: workflow schema opened in Workflow designer
 //    2. Change item style (Minimal - Extended - Minimal - Extended)
@@ -250,6 +252,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
 //    1. Start UGENE. Open workflow schema file from \common data\workflow\remoteDBReaderTest.uws
     GTFileDialog::openFile(os,testDir + "_common_data/workflow/","remoteDBReaderTest.uws");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: workflow schema opened in Workflow designer
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     CHECK_SET_ERR(table,"tableView not found");
@@ -267,6 +270,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //    2. If you don't want result file (T1.gb) in UGENE run directory, change this property in write genbank worker.Run schema.
 //    Expected state: T1.gb file is saved to your disc
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/sandbox/","T1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
@@ -476,6 +480,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1){//DIFFERENCE:file is loaded
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 //    2. Select any worker on palette.
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write Weight Matrix"));
@@ -569,6 +574,7 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, sandBoxDir, "wd_test_0059.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "NC_004718 1..29751 source"), "Sequence not found" );

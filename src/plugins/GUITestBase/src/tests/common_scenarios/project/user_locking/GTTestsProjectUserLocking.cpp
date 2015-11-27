@@ -96,6 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 #undef GT_CLASS_NAME
 
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj5.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -152,6 +153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 //     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "1.gb");

@@ -39,6 +39,7 @@
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include <base_dialogs/MessageBoxFiller.h>
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2Gui/ToolsMenu.h>
 
@@ -124,6 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
 GUI_TEST_CLASS_DEFINITION(test_0011_3){
     //DIFFERENCE: EXITBUTTON IS USED
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/", "dp1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
 
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));

@@ -69,6 +69,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 //1. Open _common_data/scenarios/assembly/example-alignment.ugenedb
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 //2. Zoom in until overview selection transforms to cross-hair
     for (int i = 0;i < 24;i++){
@@ -105,6 +106,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "replace" ));
     GTUtilsDialog::waitForDialog(os,new ImportBAMFileFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 //2. convert bam file to example-alignment.ugenedb
 //Expected state: conversion finished without error
@@ -116,6 +118,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on the consensus area, select "Export coverage" menu item.
 //    Expected state: an "Export the Assembly Coverage" dialog appears.
@@ -171,6 +174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on the consensus area, select "Export coverage" menu item.
 //    Expected state: an "Export the Assembly Coverage" dialog appears.
@@ -252,6 +256,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on the consensus area, select "Export coverage" menu item.
 //    Expected state: an "Export the Assembly Coverage" dialog appears.
@@ -295,6 +300,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on the consensus area, select "Export coverage" menu item.
 //    Expected state: an "Export the Assembly Coverage" dialog appears.
@@ -350,6 +356,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on the consensus area, select "Export coverage" menu item.
 //    Expected state: an "Export the Assembly Coverage" dialog appears.
@@ -455,6 +462,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
 //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<ExportCoverageDialogFiller::Action> actions;
 
 //    2. Call context menu on the consensus area, select {Export coverage} menu item.
@@ -484,9 +492,11 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0017.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Click the "chrM" sequence object in Project View.
     GTUtilsProjectTreeView::click(os, "chrM", "chrM.fa");
@@ -537,9 +547,11 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0018.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Click the "chrM" sequence object in Project View.
     GTUtilsProjectTreeView::click(os, "chrM", "chrM.fa");
@@ -576,12 +588,15 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0019.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //4. Click the "chrM" sequence object in Project View.
     GTUtilsProjectTreeView::click(os, "chrM", "chrM.fa");
@@ -615,6 +630,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 
     //1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0020.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Click "Set reference sequence".
     //Expected: file dialog appears.
@@ -629,6 +645,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 
     //1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0021.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Click "Set reference sequence".
     //Expected: file dialog appears.
@@ -646,6 +663,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022) {
 
     //1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0022.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Click "Set reference sequence".
     //Expected: file dialog appears.
@@ -662,9 +680,11 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0023.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //3. Click the "Set reference sequence" toolbar button.
     //Expected: file dialog appears.
@@ -682,6 +702,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     //1. Open "samples/Assembly/chrM.fa".
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Unload the document.
     GTUtilsDocument::unloadDocument(os, "chrM.fa");
@@ -689,6 +710,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
 
     //3. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0024.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //4. Click the "Set reference sequence" toolbar button.
     //Expected: file dialog appears.
@@ -708,6 +730,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 
     //1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Unload the document.
     GTUtilsDocument::unloadDocument(os, "COI.aln");
@@ -715,6 +738,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 
     //3. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
     GTFileDialog::openFile(os, sandBoxDir + "assembly_test_0025.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //4. Click the "Set reference sequence" toolbar button.
     //Expected: file dialog appears.

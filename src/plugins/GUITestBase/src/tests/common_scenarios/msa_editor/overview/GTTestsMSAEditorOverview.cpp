@@ -47,6 +47,7 @@ using namespace HI;
 GUI_TEST_CLASS_DEFINITION(test_0001){
     //1. Open "_common_data/fasta/empty.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
@@ -74,6 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     //1. Open "_common_data/clustal/10000_sequences.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "10000_sequences.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //Expected state: simple overview is disabled, graph overview is displayed.
     QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
     CHECK_SET_ERR(!simple->isVisible(), "simple overveiw is visiable");
@@ -85,6 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 GUI_TEST_CLASS_DEFINITION(test_0003){
 //    1. Open "_common_data/clustal/protein.fasta.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "protein.fasta.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Click on "Overview" button on tool bar.
     QAbstractButton* button = GTAction::button(os, "Show overview");
     GTWidget::click(os, button);
@@ -102,6 +105,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 // + show/hide simple overview
 //    1. Open "_common_data/clustal/protein.fasta.aln"
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "protein.fasta.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA Overview context menu (right click on msa overview).
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
@@ -121,6 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 GUI_TEST_CLASS_DEFINITION(test_0005){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 //    Expected state: simple overview is enabled.
@@ -150,6 +155,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 GUI_TEST_CLASS_DEFINITION(test_0006){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 //    2. Resize main window.
@@ -179,6 +185,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 GUI_TEST_CLASS_DEFINITION(test_0007){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 //    2. Delete symbols until msa becomes very small.
@@ -213,6 +220,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 GUI_TEST_CLASS_DEFINITION(test_0008){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 
@@ -257,6 +265,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 GUI_TEST_CLASS_DEFINITION(test_0009){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 
@@ -294,6 +303,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 GUI_TEST_CLASS_DEFINITION(test_0010){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
 
@@ -335,6 +345,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 GUI_TEST_CLASS_DEFINITION(test_0011){
 //    1. Open "_common_data/phylip/seq_protein.ph".
     GTFileDialog::openFile(os, testDir + "_common_data/phylip", "seq_protein.ph");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* overviewGraph = GTWidget::findWidget(os, "msa_overview_area_graph");
     //saving overview image
     QPixmap pixmapGraph = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
@@ -356,6 +367,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 GUI_TEST_CLASS_DEFINITION(test_0012){
 //    1. Open "_common_data/stockholm/5_msa.sto".
     GTFileDialog::openFile(os, testDir + "_common_data/stockholm", "5_msa.sto");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA Overview context menu (right click on msa overview).
     GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os, 255,0,0));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Display settings"
@@ -378,6 +390,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
 GUI_TEST_CLASS_DEFINITION(test_0013){
 //    1. Open "_common_data/stockholm/5_msa.sto".
     GTFileDialog::openFile(os, testDir + "_common_data/stockholm", "5_msa.sto");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA Overview context menu (right click on msa overview).
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Display settings"
                                                       << "Graph type"
@@ -398,6 +411,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
 GUI_TEST_CLASS_DEFINITION(test_0014){
 //    1. Open "_common_data/clustal/COI_na.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
@@ -419,6 +433,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
     //this is 0015 and 0016 scenarios
 //    1. Open "_common_data/CLUSLAL/COI_na.aln"
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "COI na.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA overview context menu (right click on MSA Overview).
     QWidget* overviewGraph = GTWidget::findWidget(os, "msa_overview_area_graph");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Calculation method"
@@ -450,6 +465,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
 GUI_TEST_CLASS_DEFINITION(test_0017){
 //    1. Open "_common_data/CLUSLAL/HIV_1.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA overview context menu (right click on MSA Overview).
 //    3. Select {Calculation method -> Gaps}.
     QWidget* overviewGraph = GTWidget::findWidget(os, "msa_overview_area_graph");
@@ -486,6 +502,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019){
     //0019 and 0020 scenarios
 //    1. Open "_common_data/CLUSLAL/HIV_1.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Go to MSA overview context menu (right click on MSA Overview).
     QWidget* overviewGraph = GTWidget::findWidget(os, "msa_overview_area_graph");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Calculation method"
@@ -528,6 +545,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020){
  */
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
@@ -553,6 +571,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021){
  */
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-4,2), QPoint(-5,0));
 
@@ -577,6 +596,7 @@ GUI_TEST_CLASS_DEFINITION(test_0022){
  */
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "test_1393.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::openView(os);
 

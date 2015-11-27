@@ -19,9 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
-
 #include "base_dialogs/GTFileDialog.h"
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
@@ -330,36 +327,21 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 }
 #undef GT_METHOD_NAME
 
-namespace {
-void waitTaskFinished(GUITestOpStatus &os) {
-    GTGlobals::sleep(500);
-    U2::TaskScheduler* scheduller = U2::AppContext::getTaskScheduler();
-    int i = 0;
-    while(!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep(1000);
-       i++;
-    }
-}
-
-
-}
-
+#define GT_METHOD_NAME "openFile"
 void GTFileDialog::openFile(GUITestOpStatus &os, const QString &path, const QString &fileName,
-                            Button button, GTGlobals::UseMethod m, bool waitForFinished)
+                            Button button, GTGlobals::UseMethod m)
 {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, (GTFileDialogUtils::Button)button, m);
     GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
-    if(waitForFinished){
-        waitTaskFinished(os);
-    }else{
-        GTThread::waitForMainThread(os);
-    }
+    GTThread::waitForMainThread(os);
+    GTGlobals::sleep(100);
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openFile"
-void GTFileDialog::openFile(GUITestOpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m, bool wainForFinished){
+void GTFileDialog::openFile(GUITestOpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m){
     int num = filePath.lastIndexOf('/');
     if (num == -1){
         num = filePath.lastIndexOf('\\');
@@ -368,7 +350,7 @@ void GTFileDialog::openFile(GUITestOpStatus &os, const QString &filePath, Button
     QString path = filePath.left(num);
     QString name = filePath.right(filePath.length() - num - 1);
 
-    openFile(os, path, name, button, m, wainForFinished);
+    openFile(os, path, name, button, m);
 }
 #undef GT_METHOD_NAME
 

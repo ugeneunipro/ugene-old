@@ -140,9 +140,11 @@ GUI_TEST_CLASS_DEFINITION(test_4007) {
     GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_4007/murine.gb");
     GTFileDialog::openFile(os, sandBoxDir + "test_4007", "murine.gb");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Open file {data/samples/FASTA/human_T1.fa}
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    3. Drag and drop annotations object to the human_T1 sequence.
@@ -187,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
 //    Current: "Show offsets" option is disabled.
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
                                                             PopupChecker::IsEnabled | PopupChecker::IsChecable));
@@ -194,6 +197,7 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTGlobals::sleep();
@@ -205,6 +209,7 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
 GUI_TEST_CLASS_DEFINITION(test_4009) {
     //1. Open file "_common_data/clustal/big.aln"
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     //2. Open "Export Consensus" OP tab
@@ -231,6 +236,7 @@ GUI_TEST_CLASS_DEFINITION(test_4009) {
 GUI_TEST_CLASS_DEFINITION(test_4010) {
 //    1. Open "samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Open the PCR OP tab.
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
@@ -275,6 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_4011){
 
 GUI_TEST_CLASS_DEFINITION(test_4013) {
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     int length = GTUtilsMSAEditorSequenceArea::getLength(os);
 
@@ -340,6 +347,7 @@ GUI_TEST_CLASS_DEFINITION(test_4026) {
     //1. Open "samples/Genbank/sars.gb".
     //Expected: there are a lot of annotations in the panoramic and details views.
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Close the MDI window.
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
@@ -357,6 +365,7 @@ GUI_TEST_CLASS_DEFINITION(test_4026) {
 GUI_TEST_CLASS_DEFINITION(test_4030) {
     //1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the "Statistics" tab.
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
@@ -396,6 +405,7 @@ GUI_TEST_CLASS_DEFINITION(test_4033) {
 
     //1. Open "samples/Genbank/murine.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Ctrl + N.
     //Expected: if the "Existing table" radio button is not checked, then the URL line edit is disabled.
@@ -412,6 +422,7 @@ GUI_TEST_CLASS_DEFINITION(test_4034) {
     //It is a wrong behavior for this graphic primitive
     //Solution: replace the check boxes with radio buttons.
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "exon", "annotation", "200..300",
         sandBoxDir + "ann_test_4034.gb"));
@@ -422,6 +433,7 @@ GUI_TEST_CLASS_DEFINITION(test_4034) {
 GUI_TEST_CLASS_DEFINITION(test_4035) {
     //1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Click the "Build tree" button on the main toolbar.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFillerPhyML(os, false, 10));
     GTWidget::click(os, GTAction::button(os, "Build Tree"));
@@ -442,6 +454,7 @@ GUI_TEST_CLASS_DEFINITION(test_4036) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "gap_column.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
     GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os, 1));
@@ -458,6 +471,7 @@ GUI_TEST_CLASS_DEFINITION(test_4045) {
     //Current state: SAFE_POINT is triggered
     GTLogTracer logTracer;
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class OkClicker : public Filler {
     public:
@@ -488,6 +502,7 @@ GUI_TEST_CLASS_DEFINITION(test_4045) {
 GUI_TEST_CLASS_DEFINITION(test_4046){
 //    Open 'human_T1.fa'
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Create a new annotation
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
@@ -530,6 +545,7 @@ GUI_TEST_CLASS_DEFINITION(test_4059) {
     //1. Open "_common_data/text/text.txt".
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
     GTFileDialog::openFile(os, testDir + "_common_data/text/text.txt");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Delete the "Text" object.
     GTUtilsProjectTreeView::click(os, "text");
@@ -581,10 +597,12 @@ GUI_TEST_CLASS_DEFINITION(test_4064) {
 
     GTUtilsDialog::waitForDialog(os, new CustomImportBAMDialogFiller(os, true));
     GTFileDialog::openFile(os, sandBoxDir, "test_4064.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFile::copy(os, testDir + "_common_data/bam/scerevisiae.bam.bai", sandBoxDir + "test_4064.bai");
     GTUtilsDialog::waitForDialog(os, new CustomImportBAMDialogFiller(os, false));
     GTFileDialog::openFile(os, sandBoxDir, "test_4064.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4065) {
@@ -595,6 +613,7 @@ GUI_TEST_CLASS_DEFINITION(test_4065) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4065.ugenedb"));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4065/example_bam.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     bool hasMessage = l.checkMessage("No bam index given");
     CHECK_SET_ERR(false == hasMessage , "Error message is found. Bam index file not found.");
@@ -603,6 +622,7 @@ GUI_TEST_CLASS_DEFINITION(test_4065) {
 GUI_TEST_CLASS_DEFINITION(test_4070) {
 //    1. Open file "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Switch on collapsing mode.
     GTUtilsMsaEditor::toggleCollapsingMode(os);
@@ -632,6 +652,7 @@ GUI_TEST_CLASS_DEFINITION(test_4071) {
     GTLogTracer l;
     //1. Open any file (for example, human_T1.fa).
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Select the object "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)".
     GTUtilsProjectTreeView::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
@@ -653,6 +674,7 @@ GUI_TEST_CLASS_DEFINITION(test_4071) {
 
 GUI_TEST_CLASS_DEFINITION(test_4072) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QWidget *hSeqScroll = GTWidget::findWidget(os, "horizontal_sequence_scroll");
     CHECK_SET_ERR(hSeqScroll != NULL, "No scroll bar at the bottom of sequence area");
@@ -686,6 +708,7 @@ GUI_TEST_CLASS_DEFINITION(test_4072) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/fungal - all.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     hNameScroll = GTWidget::findWidget(os, "horizontal_names_scroll");
     CHECK_SET_ERR(hNameScroll != NULL, "No scroll bar at the bottom of name list area");
     CHECK_SET_ERR(hNameScroll->isVisible(), "Scroll bar at the botton of name list area is visible");
@@ -694,6 +717,7 @@ GUI_TEST_CLASS_DEFINITION(test_4072) {
 GUI_TEST_CLASS_DEFINITION(test_4084) {
     //1. Open "_common_data/fasta/human_T1_cutted.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Create any annotation.
@@ -710,10 +734,15 @@ GUI_TEST_CLASS_DEFINITION(test_4084) {
 
 GUI_TEST_CLASS_DEFINITION(test_4091) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/PBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/CVU55762.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QSet<GObjectType> acceptableTypes;
     acceptableTypes << GObjectTypes::SEQUENCE << GObjectTypes::ANNOTATION_TABLE;
@@ -746,6 +775,7 @@ GUI_TEST_CLASS_DEFINITION(test_4091) {
 GUI_TEST_CLASS_DEFINITION(test_4093) {
     //1. Open "human_T1.fa"
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Call context menu on the document
     //{ Export / Import->Import annotations from CSV... }
@@ -778,6 +808,7 @@ GUI_TEST_CLASS_DEFINITION(test_4095) {
  *   Current state: nothing happens
 */
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_EDIT<<ACTION_EDIT_RESERVE_SEQUENCE));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -825,6 +856,7 @@ GUI_TEST_CLASS_DEFINITION(test_4096) {
 
     //GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
     GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, new ExportSeqsAsMsaScenario));
@@ -845,6 +877,7 @@ GUI_TEST_CLASS_DEFINITION(test_4097) {
  *   Expected state: the saved file contains only 8 entries in the COMMENT section and doesn't contain "Vector_NTI_Display_Data_(Do_Not_Edit!)" comment.
 */
     GTFileDialog::openFile(os, testDir + "_common_data/vector_nti_sequence", "unrefined.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "test_4097.gb", ExportDocumentDialogFiller::VectorNTI, false, false));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
@@ -872,6 +905,7 @@ GUI_TEST_CLASS_DEFINITION(test_4099) {
  *   Note: The value of the "label" qualifier is displayed both on the circular view and the zoom view as annotation names.
 */
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4099", "p4228.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<QTreeWidgetItem*> items = GTUtilsAnnotationsTreeView::findItems(os,"CDS");
     CHECK_SET_ERR( 2 == items.length(), "CDS annotations count is not 2");
     foreach (QTreeWidgetItem* item, items) {
@@ -950,6 +984,7 @@ GUI_TEST_CLASS_DEFINITION(test_4104) {
     //1. Open the attached workflow file.
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4104/test.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Set file "data/samples/Genbank/murine.gb" as input.
     GTUtilsWorkflowDesigner::click(os, "Read Sequence");
@@ -984,6 +1019,7 @@ GUI_TEST_CLASS_DEFINITION(test_4106){
  *   Current state: the state is not changed.
 */
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW", "ty3.aln.gz" );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     MSAEditorSequenceArea* msaEdistorSequenceAres = GTUtilsMSAEditorSequenceArea::getSequenceArea(os);
@@ -1028,6 +1064,7 @@ GUI_TEST_CLASS_DEFINITION(test_4110){
     CHECK_SET_ERR(num == 14, QString("1: unexpected annotations number: %1").arg(num));
 //    3. Open file "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, sandBoxDir + "test_4110_human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    4. Drag&drop annotation object "ugene_gui_test_win:/view_test_0001/NC_001363 features" to the sequence view.
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
     GTUtilsProjectTreeView::dragAndDrop(os, annFol, GTWidget::findWidget(os, "ADV_single_sequence_widget_0", GTUtilsMdi::activeWindow(os)));
@@ -1240,6 +1277,7 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
  *   Current state: annotations are not created, a safe point is triggered
 */
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTUtilsOptionPanelSequenceView::enterPattern(os, "GAGTTCTGAACACCCGGC", true);
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
@@ -1319,6 +1357,7 @@ GUI_TEST_CLASS_DEFINITION(test_4127) {
  *   Expected state: UGENE does not crash
 */
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4127", "merged_document.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     class OrfScenario : public CustomScenario {
     public:
         void run(HI::GUITestOpStatus &os) {
@@ -1346,6 +1385,7 @@ GUI_TEST_CLASS_DEFINITION(test_4131) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     QString pattern("ATCGTAC");
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "Search in Sequence" options panel tab.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
@@ -1394,6 +1434,7 @@ GUI_TEST_CLASS_DEFINITION(test_4141) {
     QWidget *appWindow = QApplication::activeWindow();
     //1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open the "Statistics" tab on the Options panel
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
@@ -1461,6 +1502,7 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
 
     // Open file "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, sandBoxDir, "test_4150_murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Close the sequence view
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -1534,6 +1576,7 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
 GUI_TEST_CLASS_DEFINITION(test_4151) {
     //1. Open samples / Genbank / murine.gb.
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Hide all views.
     QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_NC_001363");
@@ -1547,6 +1590,7 @@ GUI_TEST_CLASS_DEFINITION(test_4151) {
 
 GUI_TEST_CLASS_DEFINITION(test_4153) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
@@ -1625,6 +1669,7 @@ GUI_TEST_CLASS_DEFINITION(test_4156) {
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/query/crash_4156.uql");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new filler_4156(os));
@@ -1640,6 +1685,7 @@ GUI_TEST_CLASS_DEFINITION(test_4156) {
 GUI_TEST_CLASS_DEFINITION(test_4160) {
     QString pattern("TTGTCAGATTCACCA");
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(500);
     GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
     GTGlobals::sleep(500);
@@ -1686,6 +1732,7 @@ GUI_TEST_CLASS_DEFINITION(test_4170) {
 */
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(1000);
 
     GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
@@ -1725,6 +1772,7 @@ GUI_TEST_CLASS_DEFINITION(test_4179) {
     //1. Open file "data/samples/Genabnk/sars.gb"
     //Current state: Two words are merged into a single one, in the file they are separated by a newline symbol.
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os,"comment");
     CHECK_SET_ERR(item != NULL, "Can't find \"comment\" item");
@@ -1752,6 +1800,7 @@ GUI_TEST_CLASS_DEFINITION(test_4194) {
 GUI_TEST_CLASS_DEFINITION(test_4209) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4209/", "crash.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsWorkflowDesigner::click(os, "Align to Reference");
@@ -1765,6 +1814,7 @@ GUI_TEST_CLASS_DEFINITION(test_4218) {
     // Check that "Write Annotations" worker takes into account object names of incoming annotation tables
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/regression/4218/test.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Annotations",
@@ -1777,6 +1827,7 @@ GUI_TEST_CLASS_DEFINITION(test_4218) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, sandBoxDir + "out.bed");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkItem(os, "chr2 features");
 }
 
@@ -1784,6 +1835,7 @@ GUI_TEST_CLASS_DEFINITION(test_4218_1) {
     // Check that an output annotation object has a default name if incoming annotation objects have different names
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/regression/4218/test.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Annotations", testDir + "_common_data/regression/4218/test.bed");
@@ -1795,6 +1847,7 @@ GUI_TEST_CLASS_DEFINITION(test_4218_1) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, sandBoxDir + "out.bed");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkItem(os, "Annotations features");
 }
 
@@ -1827,10 +1880,13 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
 GUI_TEST_CLASS_DEFINITION(test_4232) {
     // 1. Open a file with variations
     GTFileDialog::openFile(os, testDir + "_common_data/vcf/valid.vcf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // 2. Open a file with a sequence
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/illumina.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // 3. Open a file with an assembly
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb/scerevisiae.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 4. Drag&drop the sequence object from the project view on the assembly view
     const QModelIndex sequenceDocIndex = GTUtilsProjectTreeView::findIndex(os, "illumina.fa");
@@ -1875,6 +1931,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
 GUI_TEST_CLASS_DEFINITION(test_4232_1) {
     // 1. Open file with a chromatogram
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Expected state: a chromatogram object and a sequence object are highlighted in the Project view
     const QModelIndex seqObjIndex = GTUtilsProjectTreeView::findIndex(os, "A1#berezikov");
@@ -1889,7 +1946,9 @@ GUI_TEST_CLASS_DEFINITION(test_4232_1) {
 GUI_TEST_CLASS_DEFINITION(test_4244){
     //1. Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class Scenario : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
@@ -1937,6 +1996,7 @@ GUI_TEST_CLASS_DEFINITION(test_4244){
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, sandBoxDir + "test_4244.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__unload_selected_action",
                                                       PopupChecker::IsEnabled));
     GTUtilsProjectTreeView::click(os, "test_4244.gb", Qt::RightButton);
@@ -1969,6 +2029,7 @@ GUI_TEST_CLASS_DEFINITION(test_4266) {
 GUI_TEST_CLASS_DEFINITION(test_4272){
 //    Open any sequence
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget* mainTb = GTWidget::findWidget(os, "mwtoolbar_activemdi");
     QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", mainTb, GTGlobals::FindOptions(false));
     if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
@@ -1992,6 +2053,7 @@ GUI_TEST_CLASS_DEFINITION(test_4272){
 GUI_TEST_CLASS_DEFINITION(test_4276) {
     //1. Open "COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Use context menu
     //{Add->Sequence from file...}
@@ -2023,6 +2085,7 @@ GUI_TEST_CLASS_DEFINITION(test_4284){
  *   Current state: the state is not changed.
 */
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW", "ty3.aln.gz" );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     MSAEditorSequenceArea* msaEdistorSequenceAres = GTUtilsMSAEditorSequenceArea::getSequenceArea(os);
@@ -2121,6 +2184,7 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 GUI_TEST_CLASS_DEFINITION(test_4302_1) {
     //1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Select any region
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -2134,6 +2198,7 @@ GUI_TEST_CLASS_DEFINITION(test_4302_1) {
 GUI_TEST_CLASS_DEFINITION(test_4302_2) {
     //1. Open samples/Genbank/sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Select any annotation
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
@@ -2146,6 +2211,7 @@ GUI_TEST_CLASS_DEFINITION(test_4302_2) {
 GUI_TEST_CLASS_DEFINITION(test_4306_1) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Build a tree with default parameters.
 //    Expected state: a tree view is displayed with the alignment editor.
@@ -2170,6 +2236,7 @@ GUI_TEST_CLASS_DEFINITION(test_4306_1) {
 GUI_TEST_CLASS_DEFINITION(test_4306_2) {
 //    1. Open "data/samples/Newick/COI.nwk".
     GTFileDialog::openFile(os, dataDir + "samples/Newick/COI.nwk");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Use context menu on the tree view.
 //    Expected state: there are "Zoom in", "Zoom out" and "Reset zooming" actions in the menu.
@@ -2184,7 +2251,7 @@ GUI_TEST_CLASS_DEFINITION(test_4306_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_4308) {
 //    1. Open "_common_data/clustal/10000_sequences.aln".
-    GTFileDialog::openFile(os, testDir + "_common_data/clustal/10000_sequences.aln", GTFileDialog::Open, GTGlobals::UseMouse, false);
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/10000_sequences.aln", GTFileDialog::Open, GTGlobals::UseMouse);
     GTUtilsTask::waitTaskStart(os, "Loading documents");
 
 //    2. Remove the document while the file is opening.
@@ -2208,6 +2275,7 @@ GUI_TEST_CLASS_DEFINITION(test_4309) {
     // Expected state: Vector NTI format is abcent
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     class VectorNTIFormatChecker : public Filler {
@@ -2277,6 +2345,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_1) {
 
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Click "Align sequence to this alignment" and select "_common_data/database.ini".
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/database.ini"));
@@ -2291,6 +2360,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_1) {
 GUI_TEST_CLASS_DEFINITION(test_4323_2) {
 //    1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.PDB"));
@@ -2317,6 +2387,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
 GUI_TEST_CLASS_DEFINITION(test_4323_3) {
 //    1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.PDB"));
@@ -2333,6 +2404,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_3) {
 GUI_TEST_CLASS_DEFINITION(test_4323_4) {
 //    1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Rename the first two sequences to "1".
     GTUtilsMSAEditorSequenceArea::renameSequence(os, "Phaneroptera_falcata", "1");
@@ -2387,6 +2459,7 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, sandBoxDir, "test_4325.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR(GTUtilsSequenceView::getLengthOfSequence(os) == 150, "Product size is incorrect");
     QList<U2Region> regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
@@ -2398,6 +2471,7 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
 GUI_TEST_CLASS_DEFINITION(test_4334) {
     //1. Open "_common_data/fasta/empty.fa" as msa.
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTLogTracer lt;
     //    2. Add human_t1.fa sequence throu context menu {Add->Sequence from file}
@@ -2414,15 +2488,21 @@ GUI_TEST_CLASS_DEFINITION(test_4345) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Close active view", GTGlobals::UseKey);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "CVU55762.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "PBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4352) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Toggle the Circular View for the sequence.
     GTUtilsCv::commonCvBtn::click(os);
@@ -2457,6 +2537,7 @@ GUI_TEST_CLASS_DEFINITION(test_4359) {
  *   Expected state: the "Pick primers" button should be in focus
  */
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class EscClicker : public Filler {
     public:
@@ -2483,6 +2564,7 @@ GUI_TEST_CLASS_DEFINITION(test_4368) {
  * 4. Set "Show distances column" option.
  */
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
 
@@ -2517,6 +2599,7 @@ GUI_TEST_CLASS_DEFINITION(test_4373) {
     // Expected state: there is a button with an arrows at the bottom of toolbar and it shows the hidden action
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsCv::commonCvBtn::click(os);
 
@@ -2563,6 +2646,7 @@ GUI_TEST_CLASS_DEFINITION(test_4377) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 
     GTGlobals::sleep();
@@ -2572,6 +2656,7 @@ GUI_TEST_CLASS_DEFINITION(test_4377) {
 
 GUI_TEST_CLASS_DEFINITION(test_4383) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::scrollToPosition(os, QPoint(603, 1));
 
@@ -2602,6 +2687,7 @@ GUI_TEST_CLASS_DEFINITION(test_4383) {
 GUI_TEST_CLASS_DEFINITION(test_4386_1) {
     //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Change this alignment by adding random gaps.
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(5, 5));
@@ -2631,6 +2717,7 @@ GUI_TEST_CLASS_DEFINITION(test_4386_1) {
 GUI_TEST_CLASS_DEFINITION(test_4386_2) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Rename the alignment, a new name should contain spaces.
     GTUtilsProjectTreeView::rename(os, "COI", "C O I");
@@ -2671,6 +2758,7 @@ GUI_TEST_CLASS_DEFINITION(test_4391) {
 
 GUI_TEST_CLASS_DEFINITION(test_4400) {
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/VectorNTI_CAN_READ.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QTreeWidgetItem* commentItem = GTUtilsAnnotationsTreeView::findItem(os, "comment");
     QString qualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Original database", commentItem);
@@ -2680,6 +2768,7 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
 GUI_TEST_CLASS_DEFINITION(test_4439) {
 //    1. Open "data/samples/Genbank/sars.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call context menu on "NC_004718 features [sars.gb]" item in the Annotations tree view, select "Find qualifier..." menu item.
 
@@ -2726,6 +2815,7 @@ GUI_TEST_CLASS_DEFINITION(test_4440) {
 //    Expected state: object should be named "COI".
 
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os,"COI.aln");
     GTUtilsProjectTreeView::checkItem(os, GTUtilsProjectTreeView::getTreeView(os), "COI", idx);
@@ -2752,6 +2842,7 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
 
     GTFileDialog::openFile(os, sandBoxDir, "test_4463.gb.gz");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Remove subsequence..."));
@@ -2772,6 +2863,7 @@ GUI_TEST_CLASS_DEFINITION(test_4486) {
     QDir().mkpath(sandBoxDir + "test_4486");
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4486/test_4486.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    3. Zoom in assembly view while reads are not visible.
     bool readsAreVisible = !GTUtilsAssemblyBrowser::isWelcomeScreenVisible(os);
@@ -2797,6 +2889,7 @@ GUI_TEST_CLASS_DEFINITION(test_4486) {
 GUI_TEST_CLASS_DEFINITION(test_4488) {
     //1. Open COI.aln.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Set a sequence as reference.
     GTUtilsMsaEditor::setReference(os, "Phaneroptera_falcata");
@@ -2824,6 +2917,7 @@ GUI_TEST_CLASS_DEFINITION(test_4488) {
 GUI_TEST_CLASS_DEFINITION(test_4489) {
     //1. Open COI.aln.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Select some region
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5, 5), QPoint(10, 10));
     //3. Move it to the right with a mouse.
@@ -2846,6 +2940,7 @@ GUI_TEST_CLASS_DEFINITION(test_4505) {
 //    1. Open "test/_common_data/scenarios/msa/Chikungunya_E1.fasta".
     GTLogTracer l;
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/Chikungunya_E1.fasta");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Delete any column
     GTUtilsMSAEditorSequenceArea::selectColumnInConsensus(os, 1);
@@ -2870,6 +2965,7 @@ GUI_TEST_CLASS_DEFINITION(test_4508) {
 
 //    1. Open "_common_data/fasta/400000_symbols_msa.fasta".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/400000_symbols_msa.fasta");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2.  Click "Export as image" button on the toolbar.
 //    Expected state: an "Export Image" dialog appears.
@@ -2945,6 +3041,7 @@ GUI_TEST_CLASS_DEFINITION(test_4508) {
 GUI_TEST_CLASS_DEFINITION(test_4524) {
     // Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Remove the first sequence.
     GTUtilsMSAEditorSequenceArea::selectSequence(os, "Phaneroptera_falcata");
@@ -2990,6 +3087,7 @@ GUI_TEST_CLASS_DEFINITION(test_4537) {
 GUI_TEST_CLASS_DEFINITION(test_4557){
 //    1. Open "samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Open the PCR OP tab.
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
@@ -3054,6 +3152,7 @@ GUI_TEST_CLASS_DEFINITION(test_4587) {
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4587/", "extended_dna.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsProjectTreeView::checkObjectTypes(os,
         QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT,
         GTUtilsProjectTreeView::findIndex(os, "Contig1"));
@@ -3062,6 +3161,7 @@ GUI_TEST_CLASS_DEFINITION(test_4587) {
 
 GUI_TEST_CLASS_DEFINITION(test_4588) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4588", "4588.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
     GTUtilsAnnotationsTreeView::selectItems(os, blastResultItems);
 
@@ -3102,6 +3202,7 @@ GUI_TEST_CLASS_DEFINITION(test_4588) {
 GUI_TEST_CLASS_DEFINITION(test_4588_1) {
     GTUtilsExternalTools::removeTool(os, "BlastAll");
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4588", "4588_1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
     GTUtilsAnnotationsTreeView::selectItems(os, blastResultItems);
 
@@ -3141,6 +3242,7 @@ GUI_TEST_CLASS_DEFINITION(test_4588_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_4588_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4588", "4588_1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
     GTUtilsAnnotationsTreeView::selectItems(os, blastResultItems);
 
@@ -3182,6 +3284,7 @@ GUI_TEST_CLASS_DEFINITION(test_4588_2) {
 GUI_TEST_CLASS_DEFINITION(test_4620) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
 //    Expected state: an "Add new document" dialog appears.
@@ -3224,6 +3327,7 @@ GUI_TEST_CLASS_DEFINITION(test_4620) {
 GUI_TEST_CLASS_DEFINITION(test_4621) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Find some restriction sites.
     class Scenario : public CustomScenario {
@@ -3252,6 +3356,7 @@ GUI_TEST_CLASS_DEFINITION(test_4621) {
 GUI_TEST_CLASS_DEFINITION(test_4624) {
     //1. Open assembly with DNA extended alphabet
     GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "extended_dna.ace.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Open view" << "Open new view: Assembly Browser" ));
     GTUtilsProjectTreeView::click(os, "extended_dna.ace.ugenedb", Qt::RightButton);
@@ -3278,6 +3383,7 @@ GUI_TEST_CLASS_DEFINITION(test_4628) {
     GTUtilsNotifications::waitForNotification(os, false);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4628", "cow.chr13.repeats.shifted.bed");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTGlobals::sleep();
     QTextEdit *textEdit = dynamic_cast<QTextEdit*>(GTWidget::findWidget(os, "reportTextEdit", GTUtilsMdi::activeWindow(os)));
@@ -3299,6 +3405,7 @@ GUI_TEST_CLASS_DEFINITION(test_4674) {
     // Expected state: the connection with the tree is broken, the sequence is removed
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4674", 0, 0, true));
     GTWidget::click(os, GTAction::button(os, "Build Tree"));
@@ -3338,6 +3445,7 @@ GUI_TEST_CLASS_DEFINITION(test_4674_1) {
     // Expected state: the connection with the tree is broken, the aligned sequence is removed
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/Genbank/", "murine.gb");
     GTUtilsDialog::waitForDialog(os, ob);
@@ -3384,6 +3492,7 @@ GUI_TEST_CLASS_DEFINITION(test_4674_2) {
     // Expected state: no message box
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4674_2", 0, 0, true));
     GTWidget::click(os, GTAction::button(os, "Build Tree"));
@@ -3415,6 +3524,7 @@ GUI_TEST_CLASS_DEFINITION(test_4674_2) {
 GUI_TEST_CLASS_DEFINITION(test_4687) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Open OP and select pairwice alignment tab, select sequences to align
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
     GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
@@ -3446,6 +3556,7 @@ GUI_TEST_CLASS_DEFINITION(test_4687) {
 GUI_TEST_CLASS_DEFINITION(test_4689_1) {
     //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
     QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
@@ -3479,6 +3590,7 @@ GUI_TEST_CLASS_DEFINITION(test_4689_1) {
 GUI_TEST_CLASS_DEFINITION(test_4689_2) {
     //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Add amino extended sequence
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/amino_ext.fa"));
@@ -3519,6 +3631,7 @@ GUI_TEST_CLASS_DEFINITION(test_4689_2) {
 GUI_TEST_CLASS_DEFINITION(test_4694) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Open OP and select pairwice alignment tab, select sequences to align, set "in new window" parameter to "false"
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
     GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
@@ -3547,6 +3660,7 @@ GUI_TEST_CLASS_DEFINITION(test_4694) {
 GUI_TEST_CLASS_DEFINITION(test_4702_1) {
     // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     // 2. Select one annotation
     QList<QTreeWidgetItem *> commentItem = GTUtilsAnnotationsTreeView::findItems(os, "comment");
@@ -3564,6 +3678,7 @@ GUI_TEST_CLASS_DEFINITION(test_4702_1) {
 GUI_TEST_CLASS_DEFINITION(test_4702_2) {
     // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     // 2. Select two annotation from different groups (denote them as "A" and "B").
     QList<QTreeWidgetItem *> annotationItems = GTUtilsAnnotationsTreeView::findItems(os, "comment");
@@ -3583,6 +3698,7 @@ GUI_TEST_CLASS_DEFINITION(test_4702_2) {
 GUI_TEST_CLASS_DEFINITION(test_4702_3) {
     // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     // 2. Make sure nothing is selected in the Annotations Editor.
     int selectedItemsCount = GTUtilsAnnotationsTreeView::getAllSelectedItems(os).size();
@@ -3600,6 +3716,7 @@ GUI_TEST_CLASS_DEFINITION(test_4702_3) {
 GUI_TEST_CLASS_DEFINITION(test_4702_4) {
     // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     // 2. Select an annotations group in the Annotations Editor.
     QList<QTreeWidgetItem *> annotationGroup;
@@ -3619,6 +3736,7 @@ GUI_TEST_CLASS_DEFINITION(test_4702_4) {
 GUI_TEST_CLASS_DEFINITION(test_4702_5) {
     // 1. Open "samples/Genbank/NC_014267.1.gb"
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     // 2. Select an annotations document in the Annotations Editor.
     QList<QTreeWidgetItem *> annotationGroup;
@@ -3709,6 +3827,7 @@ GUI_TEST_CLASS_DEFINITION(test_4710_1){
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new sequence"));
@@ -3746,6 +3865,7 @@ GUI_TEST_CLASS_DEFINITION(test_4714_1) {
 GUI_TEST_CLASS_DEFINITION(test_4714_2) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Call a context menu on the chromatogram, select {Edit new sequence} menu item.
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit new sequence"));
@@ -3787,6 +3907,7 @@ GUI_TEST_CLASS_DEFINITION(test_4718) {
 
 //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Open "Search in Sequence" options panel tab.
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
@@ -3806,6 +3927,7 @@ GUI_TEST_CLASS_DEFINITION(test_4718) {
 GUI_TEST_CLASS_DEFINITION(test_4719_1) {
     //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
@@ -3836,6 +3958,7 @@ GUI_TEST_CLASS_DEFINITION(test_4719_1) {
 GUI_TEST_CLASS_DEFINITION(test_4719_2) {
     //    1. Open "_common_data/clustal/amino_ext.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/amino_ext.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
@@ -3866,6 +3989,7 @@ GUI_TEST_CLASS_DEFINITION(test_4719_2) {
 GUI_TEST_CLASS_DEFINITION(test_4719_3) {
     //    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Click "Align sequence to this alignment" and select "data/samples/Genbank/PBR322.gb".
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Genbank/PBR322.gb"));
@@ -3895,6 +4019,7 @@ GUI_TEST_CLASS_DEFINITION(test_4719_3) {
 GUI_TEST_CLASS_DEFINITION(test_4728) {
     //1. Open 'fa1.fa'
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(500);
 
     //2. Select all sequence by mouse
@@ -3923,6 +4048,7 @@ GUI_TEST_CLASS_DEFINITION(test_4732) {
     QFile::copy(dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "test_4732.fa");
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, sandBoxDir + "test_4732.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Document context menu -> Export / Import -> Export sequences.
     //Expected: "Export selected sequences" dialog appears.
@@ -3964,6 +4090,7 @@ GUI_TEST_CLASS_DEFINITION(test_4734) {
     //    1. Open file {data/samples/FASTA/human_T1.fa}
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //    2. Open {Context menu -> Analyze menu} and check menu item "Show circular view" is not present there
 
     class AllPopupChecker : public CustomScenario {
@@ -3987,6 +4114,7 @@ GUI_TEST_CLASS_DEFINITION(test_4734) {
 GUI_TEST_CLASS_DEFINITION(test_4735) {
     //1. Open "_common_data/fasta/empty.fa" as msa.
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/empty.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Open "Simple overview"
@@ -4059,6 +4187,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_2) {
 
     //1. Open "_common_data/NIAID_pipelines/Call_variants/input_data/chr6/chr6.fa".
     GTFileDialog::openFile(os, sandBoxDir + "regression_test_4784_2.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Sequence context menu Analyze -> Query with local BLAST+...
     //3. Press "Select a database file".
@@ -4085,6 +4214,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_3) {
 
     //1. Open "_common_data/NIAID_pipelines/Call_variants/input_data/chr6/chr6.fa".
     GTFileDialog::openFile(os, sandBoxDir + "regression_test_4784_3.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Sequence context menu Analyze -> Query with local BLAST...
     //3. Press "Select a database file".
@@ -4131,6 +4261,7 @@ GUI_TEST_CLASS_DEFINITION(test_4785) {
     //Expected state : a file browser appeared
     GTFile::copy(os, testDir + "_common_data/clustal/1000_sequences.aln", sandBoxDir + "test_4785.aln");
     GTFileDialog::openFile(os, sandBoxDir, "test_4785.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     //2. Use context menu { Align->Align profile to profile with MUSCLE }
@@ -4153,8 +4284,10 @@ GUI_TEST_CLASS_DEFINITION(test_4785) {
 GUI_TEST_CLASS_DEFINITION(test_4795) {
     //    1. Open "_common_data/clustal/amino_ext.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/amino_ext.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //    2. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QModelIndex aminoExtIdx = GTUtilsProjectTreeView::findIndex(os, "amino_ext");
     GTUtilsProjectTreeView::dragAndDrop(os, aminoExtIdx, GTWidget::findWidget(os, "msa_editor_sequence_area"));
@@ -4172,6 +4305,7 @@ GUI_TEST_CLASS_DEFINITION(test_4795) {
 GUI_TEST_CLASS_DEFINITION(test_4803_1) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Build tree, display it with msa.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
@@ -4189,6 +4323,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_1) {
 GUI_TEST_CLASS_DEFINITION(test_4803_2) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Build tree, display it with msa.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
@@ -4208,6 +4343,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_2) {
 GUI_TEST_CLASS_DEFINITION(test_4803_3) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Build tree, display it with msa.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
@@ -4241,6 +4377,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_3) {
 GUI_TEST_CLASS_DEFINITION(test_4803_4) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Build tree, display it with msa.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4803/COI.nwk", 0, 0, true));
@@ -4257,6 +4394,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_4) {
 GUI_TEST_CLASS_DEFINITION(test_4804_1) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_dna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_dna.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Add dna extended sequence throu context menu {Add->Sequence from file}
     GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
@@ -4276,6 +4414,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_1) {
 GUI_TEST_CLASS_DEFINITION(test_4804_2) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_rna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_rna.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Add rna extended sequence throu menu {Actions->Add->Sequence from file}
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_rna.fa"));
@@ -4293,8 +4432,11 @@ GUI_TEST_CLASS_DEFINITION(test_4804_2) {
 GUI_TEST_CLASS_DEFINITION(test_4804_3) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Add  extended amino sequence by drag and drop
     QModelIndex toDragNDrop = GTUtilsProjectTreeView::findIndex(os, "ext_amino_seq");
@@ -4312,6 +4454,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_3) {
 GUI_TEST_CLASS_DEFINITION(test_4804_4) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_dna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_dna.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //    2. Check what MAFFT tool is set up 
     //    3. Use 'Align sequence to this alignment' toolbar button to align Extended rna sequence to alignment
     //Expected state: corresponding notification message has appeared
@@ -4330,6 +4473,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_5) {
     //    1. Check what MAFFT tool is not set up  
     //    2. Open _common_data/scenarios/_regression/4804/standard_rna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_rna.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //    3. Use 'Align sequence to this alignment' toolbar button to align Extended rna sequence to alignment
     //Expected state: corresponding notification message has appeared
     GTUtilsExternalTools::removeTool(os, "MAFFT");
@@ -4347,6 +4491,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_5) {
 GUI_TEST_CLASS_DEFINITION(test_4804_6) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_dna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_dna.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Add amino extended sequence throu context menu {Add->Sequence from file}
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804/ext_amino.fa"));
@@ -4369,7 +4514,9 @@ GUI_TEST_CLASS_DEFINITION(test_4804_6) {
 GUI_TEST_CLASS_DEFINITION(test_4833_1) {
     //Add sequence from curent project by main menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_dna.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ext_dna.fa", "ext_dna_seq"));
@@ -4380,7 +4527,9 @@ GUI_TEST_CLASS_DEFINITION(test_4833_1) {
 GUI_TEST_CLASS_DEFINITION(test_4833_2) {
     //Add sequence from curent project by context menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ext_amino.fa", "ext_amino_seq"));
@@ -4392,6 +4541,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_2) {
 GUI_TEST_CLASS_DEFINITION(test_4833_3) {
     //align sequences to profile by MUSCLE by main menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
     GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
@@ -4403,6 +4553,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_3) {
 GUI_TEST_CLASS_DEFINITION(test_4833_4) {
     //align sequences to profile by MUSCLE by context menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
@@ -4414,6 +4565,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_4) {
 
 GUI_TEST_CLASS_DEFINITION(test_4833_5) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
@@ -4427,6 +4579,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_5) {
 GUI_TEST_CLASS_DEFINITION(test_4833_6) {
     //align sequences to profile by MUSCLE by main menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
     GTUtilsNotifications::waitForNotification(os, true, "from \"Standard amino acid\" to \"Extended amino acid\"");
@@ -4438,6 +4591,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_6) {
 GUI_TEST_CLASS_DEFINITION(test_4833_7) {
     //align sequences to profile by MUSCLE by context menu
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
@@ -4449,6 +4603,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_7) {
 
 GUI_TEST_CLASS_DEFINITION(test_4833_8) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_amino.fa"));
@@ -4462,6 +4617,7 @@ GUI_TEST_CLASS_DEFINITION(test_4833_8) {
 GUI_TEST_CLASS_DEFINITION(test_4885_1) {
 //    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Wait until overview finishes rendering.
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4480,6 +4636,7 @@ GUI_TEST_CLASS_DEFINITION(test_4885_1) {
 GUI_TEST_CLASS_DEFINITION(test_4885_2) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Build a tree. The result tree should be synchronised with the msa.
     GTUtilsMsaEditor::buildPhylogeneticTree(os, sandBoxDir + "test_4885_2.nwk");
@@ -4498,6 +4655,7 @@ GUI_TEST_CLASS_DEFINITION(test_4885_3) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", sandBoxDir + "test_4885_3.aln");
     GTFileDialog::openFile(os, sandBoxDir + "test_4885_3.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Build a tree. The result tree should be synchronised with the msa.
     GTUtilsMsaEditor::buildPhylogeneticTree(os, sandBoxDir + "test_4885_3.nwk");
@@ -4513,6 +4671,7 @@ GUI_TEST_CLASS_DEFINITION(test_4885_3) {
 //    5. Open the saved project.
 //    Expected state: there are two unloaded documents in a project: COI.aln and its tree.
     GTFileDialog::openFile(os, sandBoxDir + "test_4885_3.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    6. Doubleclick the COI.aln document.
     GTUtilsProjectTreeView::doubleClickItem(os, "test_4885_3.aln");
@@ -4524,6 +4683,7 @@ GUI_TEST_CLASS_DEFINITION(test_4885_3) {
 
 GUI_TEST_CLASS_DEFINITION(test_4886) {
     GTFileDialog::openFile(os, dataDir + "samples/SCF/", "90-JRI-07.scf");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTLogTracer lt;
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
@@ -4565,6 +4725,7 @@ GUI_TEST_CLASS_DEFINITION(test_4913) {
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P16152.txt");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class CheckWordSizeScenario : public CustomScenario {
     public:
@@ -4596,6 +4757,7 @@ GUI_TEST_CLASS_DEFINITION(test_4913) {
 GUI_TEST_CLASS_DEFINITION(test_4918) {
     //1. Open "COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     //2. Select "Align->Align profile to profile with MUSCLE" in the MSAEditor context menu
@@ -4611,6 +4773,7 @@ GUI_TEST_CLASS_DEFINITION(test_4918) {
 GUI_TEST_CLASS_DEFINITION(test_4918_1) {
     //1. Open "COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     //2. Select "Align->Align profile to profile with MUSCLE" in the MSAEditor context menu

@@ -66,6 +66,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0001){
     const QString seqName = "Phaneroptera_falcata";
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //    3. Use button to add Phaneroptera_falcata as referene
@@ -94,6 +95,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0001_1){
     const QString seqName = "Phaneroptera_falcata";
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //    3. Use button to add Phaneroptera_falcata as reference
@@ -121,6 +123,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0002){
     const QString seqName = "Phaneroptera_falcata";
 //1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //3. Type "phan" in reference line edit
@@ -139,6 +142,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0002){
 GUI_TEST_CLASS_DEFINITION(general_test_0003){
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //    3. Type some string which is not part some sequence's name
@@ -154,6 +158,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0003){
 GUI_TEST_CLASS_DEFINITION(general_test_0004){
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //    3. Rename Isophya_altaica_EF540820 to Phaneroptera_falcata
@@ -175,6 +180,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0004){
 GUI_TEST_CLASS_DEFINITION(general_test_0005){
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //    3. Delete Hetrodes_pupus_EF540832
@@ -196,6 +202,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0005){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0001){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "UGENE" color scheme
@@ -218,6 +225,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0001){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_1){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "No colors" color scheme
@@ -240,6 +248,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_2){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Jalview" color scheme
@@ -262,6 +271,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_2){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_3){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Percentage Identity" color scheme
@@ -284,6 +294,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_3){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_4){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Percentage Identity (gray)" color scheme
@@ -306,6 +317,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0001_4){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0002){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create custom color scheme
     const QString schemeName = getName() + "Scheme";
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, schemeName, NewColorSchemeCreator::nucl);
@@ -332,6 +344,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0002){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0002_1){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create 3 color schemes
     const QString scheme1 = getName() + "_scheme1";
     const QString scheme2 = getName() + "_scheme2";
@@ -350,6 +363,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0002_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0003){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create custom color scheme
     const QString scheme = getName() + "_scheme111111111111111111111111111111111111111111111";
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::nucl);
@@ -381,6 +395,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0003){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "No color" color scheme
@@ -395,6 +410,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_1){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Buried index" color scheme
@@ -434,6 +450,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_2){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Clustal X" color scheme
@@ -473,6 +490,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_2){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_3){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Helix propensity" color scheme
@@ -512,6 +530,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_3){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_4){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Hydrophobicity" color scheme
@@ -551,6 +570,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_4){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_5){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Strand propensity" color scheme
@@ -590,6 +610,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_5){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_6){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Tailor" color scheme
@@ -629,6 +650,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_6){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_7){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Turn propensity" color scheme
@@ -668,6 +690,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_7){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_8){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "UGENE" color scheme
@@ -707,6 +730,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_8){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_9){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select "Zappo" color scheme
@@ -746,6 +770,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0004_9){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0005){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create custom color scheme
     const QString scheme = getName() + "_scheme";
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::amino);
@@ -790,6 +815,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0005){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0005_1){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create 3 color schemes
     const QString scheme1 = getName() + "_scheme1";
     const QString scheme2 = getName() + "_scheme2";
@@ -808,6 +834,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0005_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0006){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Create custom color scheme
     const QString scheme = getName() + "_scheme";
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::amino);
@@ -837,6 +864,7 @@ void setHighlightingType(HI::GUITestOpStatus &os, const QString& type){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0007){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -853,6 +881,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0007){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0007_1){
 //    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -867,6 +896,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0007_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0008){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -883,6 +913,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0008){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0008_1){
 //    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -896,6 +927,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0008_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0009){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -912,6 +944,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0009){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0009_1){
 //    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -925,6 +958,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0009_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0010){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -937,6 +971,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0010){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0010_1){
 //    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -949,6 +984,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0010_1){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0011){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -963,6 +999,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0011){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0012){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    3. Select Phaneroptera_falcata as reference.
@@ -977,6 +1014,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0012){
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0013){
 //1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     QWidget* w = GTWidget::findWidget(os, "msa_editor_sequence_area");
@@ -1002,6 +1040,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0013){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0001){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence
@@ -1024,6 +1063,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0001){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0002){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence two times
@@ -1044,6 +1084,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0002){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0003){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence with popup helper
@@ -1069,6 +1110,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0003){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0004){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Type wrong names in sequences' line edits.
@@ -1091,6 +1133,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0004){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005){
 //    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add two sequences to PA line edits
@@ -1114,6 +1157,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005_1){
 //    1. Open file test/_common_data/alphabets/raw_alphabet.aln
         GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "raw_alphabet.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    Expected state: wrong alphabet hint appeared
@@ -1161,6 +1205,7 @@ void expandOutputSettings(HI::GUITestOpStatus &os){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0006){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab. check spinboxes limits for KAilign
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
     expandAlgoSettings(os);
@@ -1226,6 +1271,7 @@ void align(HI::GUITestOpStatus &os){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
@@ -1242,6 +1288,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_1){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
@@ -1258,6 +1305,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_1){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_2){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
@@ -1274,6 +1322,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_2){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_3){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
@@ -1304,6 +1353,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0008){
     const QString fileName = "pairwise_alignment_test_0008.aln";
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence
@@ -1332,6 +1382,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
     const QString fileName = "pairwise_alignment_test_0009.aln";
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence
@@ -1367,6 +1418,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
     const QString dirName = "pairwise_alignment_test_0010";
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //    3. Add Phaneroptera_falcata sequence
@@ -1392,6 +1444,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0011){
 //1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Open Pairwise alignment option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 //3. Add Phaneroptera_falcata sequence
@@ -1417,6 +1470,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0011){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0001){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
 //    3. Press "Open tree" button. Select data/samples/CLUSTALW/COI.nwk in file dialog
@@ -1430,6 +1484,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0001){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0002){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
 //    3. Press "build tree" button.
@@ -1444,6 +1499,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0002){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0003){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1490,6 +1546,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0003){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0004){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1531,6 +1588,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0004){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0005){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1648,6 +1706,7 @@ bool checkLabelColor(HI::GUITestOpStatus &os, QString expectedColorName){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0006){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1719,6 +1778,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0006){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0007){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1792,6 +1852,7 @@ double colorPercent(HI::GUITestOpStatus & /*os*/, QWidget* w, const QString& c){
 GUI_TEST_CLASS_DEFINITION(tree_settings_test_0008){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab. build tree
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
@@ -1835,6 +1896,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
     const QString fileName = "export_consensus_test_0001.txt";
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export consensus option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
@@ -1860,6 +1922,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
     const QString fileName = "export_consensus_test_0002.aln";
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export consensus option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
 //    3. Select some existing read-only file as output
@@ -1893,6 +1956,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
     const QString dirName = "export_consensus_test_0003";
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export consensus option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
 //    3. Select some existing read-only file as output
@@ -1915,6 +1979,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export consensus option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
 //    3. Set empty path
@@ -1952,6 +2017,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0006){
 GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export statistics option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
 //    3. check showDistancesColumn checkbox
@@ -1993,6 +2059,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
 GUI_TEST_CLASS_DEFINITION(statistics_test_0002){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export statistics option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
 //    3. check showDistancesColumn checkbox
@@ -2020,6 +2087,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0002){
 GUI_TEST_CLASS_DEFINITION(statistics_test_0003){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export statistics option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
 //    3. check showDistancesColumn checkbox
@@ -2068,6 +2136,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0003){
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0001){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export general option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
 //   Check saving parameters
@@ -2099,6 +2168,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0001){
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0002){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
@@ -2137,6 +2207,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0003){
     //KAlign settings
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 
@@ -2190,6 +2261,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0003_1){//
     //smith-waterman settings
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open export highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
 
@@ -2242,6 +2314,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0003_1){//
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
 //    3. Press "build tree" button.
@@ -2313,6 +2386,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Open tree settings option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
 //    3. Press "build tree" button.
@@ -2369,6 +2443,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0005){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2.  Set scrict consensus
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
     QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
@@ -2405,6 +2480,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0005){
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0006){
 //    1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2.  Set scrict consensus
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
     GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");

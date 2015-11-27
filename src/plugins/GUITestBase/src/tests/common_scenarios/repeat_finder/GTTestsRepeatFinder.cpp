@@ -37,6 +37,8 @@
 #include "GTUtilsMdi.h"
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
+#include "GTUtilsTaskTreeView.h"
+
 #include <U2View/ADVConstants.h>
 
 namespace U2 {
@@ -50,6 +52,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //
 // 1. Use menu {File->Open}. Open file _common_data/fasta/seq4.fa.
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "seq4.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::checkDocument(os, "seq4.fa");
 
 // 2. Run Find Repeats dialog

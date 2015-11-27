@@ -131,6 +131,7 @@ ADVSingleSequenceWidget * GTUtilsProject::openFileExpectSequence(HI::GUITestOpSt
                                                                 const QString &seqName)
 {
     GTFileDialog::openFile(os, path, fileName);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GT_CHECK_OP_RESULT(os, "Error opening file!", NULL);
 
     GTGlobals::sleep(200);
@@ -174,6 +175,7 @@ QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(HI::GUIT
     QList<ADVSingleSequenceWidget*> result;
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, path, fileName);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GT_CHECK_OP_RESULT(os, "Error opening file!", QList<ADVSingleSequenceWidget*>());
 
     GTGlobals::sleep(200);
@@ -210,6 +212,7 @@ void GTUtilsProject::openMultiSequenceFileAsSequences(HI::GUITestOpStatus &os, c
 void GTUtilsProject::openMultiSequenceFileAsSequences(HI::GUITestOpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 
@@ -217,6 +220,7 @@ void GTUtilsProject::openMultiSequenceFileAsSequences(HI::GUITestOpStatus &os, c
 void GTUtilsProject::openMultiSequenceFileAsMergedSequence(HI::GUITestOpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 
@@ -230,6 +234,7 @@ void GTUtilsProject::openMultiSequenceFileAsMalignment(HI::GUITestOpStatus &os, 
 void GTUtilsProject::openMultiSequenceFileAsMalignment(HI::GUITestOpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTFileDialog::openFile(os, filePath);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 

@@ -49,6 +49,7 @@
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "../../workflow_designer/src/WorkflowViewItems.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2Core/AppContext.h>
 
@@ -152,6 +153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep( 200 );
 
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa.result.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 }
 

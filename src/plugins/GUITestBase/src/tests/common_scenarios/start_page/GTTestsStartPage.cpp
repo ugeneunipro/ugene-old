@@ -36,6 +36,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include "GTTestsStartPage.h"
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
 
@@ -73,6 +74,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //    Start UGENE
 //    Open any file.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Go to Start page.
     GTUtilsStartPage::openStartPage(os);
 //    Expected state: File added to "Resent files" list
@@ -94,6 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 //    Start UGENE
 //    Open any project.
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Go to Start page.
 //    Expected state: project is added to "Resent files" list
 //    Close project

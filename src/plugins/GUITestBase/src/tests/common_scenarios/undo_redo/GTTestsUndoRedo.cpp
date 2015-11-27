@@ -53,6 +53,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){//DIFFERENCE: lock document is checked
 //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Insert seversl spaces somewhere
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
     for(int i=0; i<6; i++){
@@ -110,6 +111,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){//DIFFERENCE: delete sequence is checked
 //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //2. Delete 4-th sequence
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
@@ -150,6 +152,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){//DIFFERENCE: add sequence is checked
     //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. add sequence to alignment
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_LOAD<<"Sequence from file"));
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "/samples/Raw/", "raw.seq");
@@ -186,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){//DIFFERENCE: add sequence is checked
 //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. insert gap->undo->insert gap->undo->redo
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
     QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
@@ -207,6 +211,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){//DIFFERENCE: add sequence is checked
 GUI_TEST_CLASS_DEFINITION(test_0005){//undo remove selection
     //open file
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //remove selection
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(3,1));
@@ -249,6 +254,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 
 // 1. Open file _common_data\scenarios\msa\translations_nucl.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
@@ -318,6 +324,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 
 // 1. Open file _common_data\scenarios\msa\translations_nucl.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse"));
@@ -389,6 +396,7 @@ GUI_TEST_CLASS_DEFINITION( test_0006_2 )
 
 // 1. Open file _common_data\scenarios\msa\translations_nucl.aln
     GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln" );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << MSAE_MENU_EDIT
@@ -459,6 +467,7 @@ GUI_TEST_CLASS_DEFINITION( test_0006_2 )
 GUI_TEST_CLASS_DEFINITION(test_0007){//remove columns with 3 or more gaps
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //save initial state
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
@@ -503,6 +512,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){//remove columns with 3 or more gaps
 GUI_TEST_CLASS_DEFINITION(test_0007_1){//remove columns with 15 percents of gaps
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //save initial state
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
@@ -546,6 +556,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1){//remove columns with 15 percents of gaps
 GUI_TEST_CLASS_DEFINITION(test_0007_2){//remove columns of gaps is tested
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //save initial state
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
@@ -589,6 +600,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2){//remove columns of gaps is tested
 GUI_TEST_CLASS_DEFINITION(test_0008){//remove all gaps is tested
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //save initial state
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
@@ -631,6 +643,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){//remove all gaps is tested
 GUI_TEST_CLASS_DEFINITION(test_0009){//rename msa is tested
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //rename msa
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<"Rename"));
@@ -660,6 +673,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){//rename msa is tested
 GUI_TEST_CLASS_DEFINITION(test_0010){//MUSCLE aligner undo test
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -711,6 +725,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){//MUSCLE aligner undo test
 GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -763,6 +778,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
 GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -814,6 +830,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
 GUI_TEST_CLASS_DEFINITION(test_0012){//ClustalW aligner undo test
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
