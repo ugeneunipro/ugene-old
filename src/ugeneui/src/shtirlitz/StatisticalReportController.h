@@ -33,6 +33,8 @@ public:
     bool isInfoSharingAccepted() const;
 protected:
     void paintEvent(QPaintEvent *event);
+private slots:
+void sl_onAnchorClicked(const QUrl &url);
 };
 
 }

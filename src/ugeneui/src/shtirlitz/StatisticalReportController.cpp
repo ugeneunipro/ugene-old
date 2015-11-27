@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDesktopServices>
 #include <QFile>
 #include <QScrollBar>
 
@@ -37,7 +38,7 @@ StatisticalReportController::StatisticalReportController(const QString &newHtmlF
     setWindowTitle(tr("Welcome to UGENE %1.%2").arg(v.major).arg(v.minor));
     QFile file(newHtmlFilepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        newsTextEdit->setText(tr("Error loading release new from file"));
+        newsTextBrowser->setText(tr("Error loading release new from file"));
         return;
     }
 
@@ -46,7 +47,8 @@ StatisticalReportController::StatisticalReportController(const QString &newHtmlF
         htmlText += file.readLine();
     }
 
-    newsTextEdit->setText(htmlText);
+    newsTextBrowser->setText(htmlText);
+    connect(newsTextBrowser, SIGNAL(anchorClicked(const QUrl &)), SLOT(sl_onAnchorClicked(const QUrl &)));
 }
 
 bool StatisticalReportController::isInfoSharingAccepted() const {
@@ -55,15 +57,19 @@ bool StatisticalReportController::isInfoSharingAccepted() const {
 
 void StatisticalReportController::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
-    QScrollBar *vBar = newsTextEdit->verticalScrollBar();
+    QScrollBar *vBar = newsTextBrowser->verticalScrollBar();
     if(vBar->maximum() == vBar->value()){
         return;
     }
     //adjust QTextEditor size
     while(vBar->maximum() != vBar->value()){
-        newsTextEdit->setMinimumHeight(newsTextEdit->size().height() + 1);
+        newsTextBrowser->setMinimumHeight(newsTextBrowser->size().height() + 1);
     }
-    newsTextEdit->setMinimumHeight(newsTextEdit->size().height() + 10);
+    newsTextBrowser->setMinimumHeight(newsTextBrowser->size().height() + 10);
+}
+
+void StatisticalReportController::sl_onAnchorClicked(const QUrl &url) {
+    QDesktopServices::openUrl(url);
 }
 
 }
