@@ -126,4 +126,4 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace

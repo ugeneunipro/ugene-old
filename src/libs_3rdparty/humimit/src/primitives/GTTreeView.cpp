@@ -61,7 +61,9 @@ QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVar
 QModelIndexList GTTreeView::findIndexes(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
                                         QModelIndex parent, int depth, const GTGlobals::FindOptions& options){
     QModelIndexList foundIndexes;
-    CHECK(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || depth < options.depth, foundIndexes);
+    if (!(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || depth < options.depth)) {
+        return foundIndexes;
+    }
 
     QAbstractItemModel *model = treeView->model();
     CHECK_SET_ERR_RESULT(NULL != model, "Model is NULL", foundIndexes);

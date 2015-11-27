@@ -19,9 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef U2_GUI_GTMOUSE_H
-#define U2_GUI_GTMOUSE_H
-
 #include "GTMouseUtils.h"
 #include "GTGlobals.h"
 #include "drivers/GTMouseDriver.h"
@@ -52,5 +49,3 @@ void GTMouseUtils::moveCursorOutOfWidget(GUITestOpStatus &os, QWidget *widget) {
 #undef GT_CLASS_NAME
 
 }
-
-#endif // U2_GUI_GTMOUSE_H

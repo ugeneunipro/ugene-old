@@ -33,6 +33,7 @@
 #endif
 
 #include <U2Core/U2IdTypes.h>
+#include <U2Core/U2SafePoints.h>
 #include "GTDatabaseConfig.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"

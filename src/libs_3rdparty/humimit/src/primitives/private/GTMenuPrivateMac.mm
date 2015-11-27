@@ -159,6 +159,6 @@ void GTMenuPrivateMac::checkMenuItemState(GUITestOpStatus &os, NSMenu *container
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace
 
 #endif // __OBJC__

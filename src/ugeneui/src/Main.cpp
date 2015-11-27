@@ -213,7 +213,27 @@ static void initLogsCache(LogCacheExt& logsCache, const QStringList& ) {
         logsCache.setFileOutputEnabled(ls.outputFile);
     }
 }
-
+void guiTestMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(context)
+    switch (type) {
+    case QtDebugMsg:
+        uiLog.trace(msg);
+        break;
+    case QtInfoMsg:
+        uiLog.info(msg);
+        break;
+    case QtWarningMsg:
+        uiLog.error(msg);
+        break;
+    case QtCriticalMsg:
+        uiLog.error(msg);
+        break;
+    case QtFatalMsg:
+        uiLog.error(msg);
+        abort();
+    }
+}
 static void initOptionsPanels() {
     OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
     OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = AppContext::getOPCommonWidgetFactoryRegistry();
@@ -429,6 +449,9 @@ int main(int argc, char **argv)
 
     //print some settings info, can't do it earlier than logging is initialized
     coreLog.trace(QString("Active UGENE.ini file : %1").arg(AppContext::getSettings()->fileName()));
+
+    qInstallMessageHandler(guiTestMessageOutput);
+
 
 #if defined(Q_OS_UNIX)
     if (envList.indexOf("UGENE_GUI_TEST=1") >= 0) {

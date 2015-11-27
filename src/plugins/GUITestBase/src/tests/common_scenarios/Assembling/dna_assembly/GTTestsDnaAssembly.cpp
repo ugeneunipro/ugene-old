@@ -27,6 +27,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 namespace GUITest_dna_assembly {

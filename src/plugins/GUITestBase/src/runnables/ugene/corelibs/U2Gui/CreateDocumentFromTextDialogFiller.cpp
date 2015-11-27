@@ -27,6 +27,8 @@
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTGroupBox.h>
 
+#include <U2Core/Log.h>
+
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

@@ -22,6 +22,7 @@
 #include "GTRegionSelector.h"
 #include <primitives/GTWidget.h>
 #include <primitives/GTLineEdit.h>
+#include <U2Core/Log.h>
 
 namespace U2 {
 using namespace HI;

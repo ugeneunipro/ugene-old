@@ -21,6 +21,7 @@
 
 #include "GTUtilsLog.h"
 #include "U2Core/LogCache.h"
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 using namespace HI;

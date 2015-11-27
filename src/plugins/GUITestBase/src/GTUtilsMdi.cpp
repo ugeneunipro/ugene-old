@@ -25,7 +25,7 @@
 #include <QMenu>
 
 #include <U2Core/AppContext.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 
 #include "GTUtilsMdi.h"

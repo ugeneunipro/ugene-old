@@ -188,4 +188,4 @@ void InputIntFiller::commonScenario() {
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace

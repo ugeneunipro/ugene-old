@@ -33,6 +33,7 @@
 #endif
 
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/AceImporter.h>
 

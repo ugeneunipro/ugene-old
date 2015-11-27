@@ -35,6 +35,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QDir>
 

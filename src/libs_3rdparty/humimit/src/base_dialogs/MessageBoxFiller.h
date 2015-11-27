@@ -66,6 +66,6 @@ private:
     int value;
 };
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
+#endif

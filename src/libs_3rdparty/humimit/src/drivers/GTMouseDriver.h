@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_GTMOUSEDRIVER_H_
-#define _U2_GUI_GTMOUSEDRIVER_H_
+#ifndef _HI_GUI_GTMOUSEDRIVER_H_
+#define _HI_GUI_GTMOUSEDRIVER_H_
 
 #include "GTGlobals.h"
 #include <QtCore/QPoint>

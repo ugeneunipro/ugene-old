@@ -41,4 +41,4 @@ public:
 };
 
 }
-#endif // U2_GUI_GTMOUSE_H
+#endif

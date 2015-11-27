@@ -67,4 +67,4 @@ void GTKeyboardUtils::cut(GUITestOpStatus &os)
     GTKeyboardDriver::keyClick(os, 'x', modifiers);
 }
 
-} // namespace U2
+} // namespace

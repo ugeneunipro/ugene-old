@@ -41,4 +41,4 @@ private:
 
 }
 
-#endif // _U2_GT_GROUP_BOX_H_
+#endif

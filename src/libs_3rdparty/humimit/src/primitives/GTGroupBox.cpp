@@ -34,7 +34,9 @@ namespace HI {
 void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool checked) {
     GT_CHECK(groupBox != NULL, "QGroupBox is NULL");
 
-    CHECK(groupBox->isChecked() != checked, );
+    if (groupBox->isChecked() == checked) {
+        return;
+    }
 
     GT_CHECK(groupBox->isEnabled(), "QGroupBox is disabled");
 
@@ -66,4 +68,4 @@ QRect GTGroupBox::getCheckBoxRect(QGroupBox *groupBox) {
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace

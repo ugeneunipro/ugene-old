@@ -38,4 +38,4 @@ public:
 };
 
 }
-#endif // _U2_GT_CHECKBOX_H_
+#endif

@@ -31,7 +31,10 @@ MainThreadRunnable::MainThreadRunnable(GUITestOpStatus &os, CustomScenario *scen
     os(os),
     scenario(scenario)
 {
-    SAFE_POINT_EXT(NULL != scenario, os.setError("Scenario is NULL"), );
+    if (Q_UNLIKELY(NULL == scenario)) {
+        os.setError("Scenario is NULL");
+        return;
+    }
 }
 
 MainThreadRunnable::~MainThreadRunnable() {
@@ -60,12 +63,18 @@ void MainThreadRunnable::doRequest() {
 }
 
 void MainThreadRunnable::run() {
-    SAFE_POINT_EXT(NULL != scenario, os.setError("Scenario is NULL"), );
+    if (Q_UNLIKELY(NULL == scenario)) {
+        os.setError("Scenario is NULL");
+        return;
+    }
     scenario->run(os);
 }
 
 void MainThreadRunnable::runInMainThread(GUITestOpStatus &os, CustomScenario *scenario) {
-    SAFE_POINT_EXT(NULL != scenario, os.setError("Custom scenario is NULL"), );
+    if (Q_UNLIKELY(NULL == scenario)) {
+        os.setError("Custom scenario is NULL");
+        return;
+    }
     MainThreadRunnable mainThreadRunnable(os, scenario);
     mainThreadRunnable.doRequest();
 }
@@ -79,4 +88,4 @@ void MainThreadRunnableObject::sl_requestAsked(MainThreadRunnable *runnable){
     runnable->run();
 }
 
-}   // namespace U2
+}   // namespace

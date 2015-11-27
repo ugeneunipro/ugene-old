@@ -47,6 +47,6 @@ public:
     static void runInMainThread(GUITestOpStatus &os, CustomScenario *scenario);
 };
 
-}   // namespace U2
+}   // namespace
 
 #endif // _HI_GT_THREAD_H_

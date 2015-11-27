@@ -35,6 +35,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "NCBISearchDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 

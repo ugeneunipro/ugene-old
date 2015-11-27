@@ -42,6 +42,6 @@ public:
     static void checkLimits(GUITestOpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent = NULL);
 };
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_GT_SPINBOX_H_
+#endif

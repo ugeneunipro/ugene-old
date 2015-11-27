@@ -47,4 +47,4 @@ public:
 };
 
 }
-#endif // _U2_GT_COMBOBOX_H_
+#endif

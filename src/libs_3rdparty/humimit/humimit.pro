@@ -7,13 +7,7 @@ HEADERS += \
            src/base_dialogs/DefaultDialogFiller.h \
            src/base_dialogs/FontDialogFiller.h \
            src/base_dialogs/GTFileDialog.h \
-#           src/base_dialogs/GTUtilsEscClicker.h \
            src/base_dialogs/MessageBoxFiller.h \
-#           src/core/global.h \
-#           src/core/CustomScenario.h \
-#           src/core/Log.h \
-#           src/core/U2OpStatus.h \
-#           src/core/U2SafePoints.h \
            src/drivers/GTKeyboardDriver.h \
            src/drivers/GTMouseDriver.h \
            src/primitives/GTAction.h \
@@ -48,25 +42,21 @@ HEADERS += \
            src/utils/GTThread.h \
            src/utils/GTUtilsApp.h \
            src/utils/GTUtilsDialog.h \
-#           src/utils/GTUtilsMdi.h \
            src/utils/GTUtilsToolTip.h \
-    src/utils/GTMouseUtils.h \
-    src/core/GUITestOpStatus.h \
-    src/core/global.h \
-    src/core/CustomScenario.h \
-    src/core/GUITest.h \
-    src/core/MainThreadRunnable.h \
-    src/core/MainThreadTimer.h
+           src/utils/GTMouseUtils.h \
+           src/core/GUITestOpStatus.h \
+           src/core/global.h \
+           src/core/CustomScenario.h \
+           src/core/GUITest.h \
+           src/core/MainThreadRunnable.h \
+           src/core/MainThreadTimer.h
 SOURCES += \
            src/GTGlobals.cpp \
            src/base_dialogs/ColorDialogFiller.cpp \
            src/base_dialogs/DefaultDialogFiller.cpp \
            src/base_dialogs/FontDialogFiller.cpp \
            src/base_dialogs/GTFileDialog.cpp \
-#           src/base_dialogs/GTUtilsEscClicker.cpp \
            src/base_dialogs/MessageBoxFiller.cpp \
-#           src/core/CustomScenario.cpp \
-#           src/core/Log.cpp \
            src/drivers/GTKeyboardDriver.cpp \
            src/drivers/GTKeyboardDriverLinux.cpp \
            src/drivers/GTKeyboardDriverMac.cpp \
@@ -107,13 +97,12 @@ SOURCES += \
            src/utils/GTThread.cpp \
            src/utils/GTUtilsApp.cpp \
            src/utils/GTUtilsDialog.cpp \
-#           src/utils/GTUtilsMdi.cpp \
            src/utils/GTUtilsToolTip.cpp \
-    src/utils/GTMouseUtils.cpp \
-    src/core/CustomScenario.cpp \
-    src/core/GUITest.cpp \
-    src/core/MainThreadRunnable.cpp \
-    src/core/MainThreadTimer.cpp
+           src/utils/GTMouseUtils.cpp \
+           src/core/CustomScenario.cpp \
+           src/core/GUITest.cpp \
+           src/core/MainThreadRunnable.cpp \
+           src/core/MainThreadTimer.cpp
 
 macx {
 OBJECTIVE_HEADERS += src/primitives/private/GTMenuPrivateMac.h

@@ -79,7 +79,7 @@ GTGlobals::FindOptions::FindOptions(bool fail) :
 }
 
 void GTGlobals::GUITestFail(){
-    U2::uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
+    qCritical("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
 }
 
 } //namespace

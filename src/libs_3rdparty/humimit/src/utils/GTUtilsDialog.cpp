@@ -20,6 +20,7 @@
  */
 
 #include <QApplication>
+#include <QDateTime>
 #include <QPushButton>
 #include <QTimer>
 
@@ -62,11 +63,11 @@ void GUIDialogWaiter::stopTimer(){
 bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName) {
 
     if (expectedObjectName.isNull()) {
-        U2::uiLog.trace("GUIDialogWaiter Warning!! Checking name, widget name <" + widgetObjectName + ">, but expected any, saying it's expected");
+        qWarning("GT_DEBUG_MESSAGE GUIDialogWaiter Warning!! Checking name, widget name '%s', but expected any, saying it's expected", widgetObjectName.toLocal8Bit().constData());
         return true;
     }
 
-    U2::uiLog.trace("GUIDialogWaiter Checking name, widget name <" + widgetObjectName + ">, expected <" + expectedObjectName + ">");
+    qInfo("GT_DEBUG_MESSAGE GUIDialogWaiter Checking name, widget name '%s', expected '%s'", widgetObjectName.toLocal8Bit().constData(), expectedObjectName.toLocal8Bit().constData());
     return widgetObjectName == expectedObjectName;
 }
 
@@ -97,9 +98,9 @@ void GUIDialogWaiter::checkDialog() {
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
         timer->stop();
-        U2::uiLog.trace("-------------------------");
-        U2::uiLog.trace(QString("GUIDialogWaiter::wait ID = %1, name = '%2' going to RUN").arg(waiterId).arg(settings.objectName));
-        U2::uiLog.trace("-------------------------");
+        qInfo("-------------------------");
+        qInfo("GT_DEBUG_MESSAGE GUIDialogWaiter::wait ID = %d, name = '%s' going to RUN", waiterId, settings.objectName.toLocal8Bit().constData());
+        qInfo("-------------------------");
 
         try {
             runnable->run();
@@ -121,9 +122,9 @@ void GUIDialogWaiter::checkDialog() {
     else {
         waitingTime += timerPeriod;
         if (waitingTime > settings.timeout) {
-            U2::uiLog.trace("-------------------------");
-            U2::uiLog.trace("!!! GUIDialogWaiter::TIMEOUT Id = " + QString::number(waiterId) + ", going to finish waiting");
-            U2::uiLog.trace("-------------------------");
+            qInfo("-------------------------");
+            qInfo("GT_DEBUG_MESSAGE !!! GUIDialogWaiter::TIMEOUT Id = %d, going to finish waiting", waiterId);
+            qInfo("-------------------------");
 
             finishWaiting();
             GT_CHECK(false, "TIMEOUT, waiterId = " + QString::number(waiterId));
@@ -172,7 +173,7 @@ void HangChecker::sl_check(){
             if(!found){
                 if(!mightHung){
                     mightHung = true;
-                    U2::uiLog.trace("dialog mignt hang up");
+                    qWarning("GT_DEBUG_MESSAGE dialog mignt hang up");
                 }
             }
 

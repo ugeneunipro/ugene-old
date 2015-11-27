@@ -29,6 +29,7 @@
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTListWidget.h>
 #include <primitives/GTWidget.h>
+#include <U2Core/U2SafePoints.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

@@ -45,4 +45,4 @@ private:
 
 }   // namespace
 
-#endif // _U2_MAIN_THREAD_TIMER_H_
+#endif

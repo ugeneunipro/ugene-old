@@ -29,6 +29,7 @@
 #include <U2Gui/MainWindow.h>
 
 #include <U2View/AnnotationsTreeView.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsDialog.h"

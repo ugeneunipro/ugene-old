@@ -30,6 +30,7 @@
 
 #include <U2View/AssemblyBrowser.h>
 #include <U2View/AssemblyModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "GTUtilsAssemblyBrowser.h"
 #include "utils/GTUtilsDialog.h"

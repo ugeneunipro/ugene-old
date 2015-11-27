@@ -164,15 +164,21 @@ void PermissionsSetter::setReadOnly(GUITestOpStatus &os, const QString &path){
 
 bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions perm) {
     QFileInfo fileInfo(path);
-    CHECK(fileInfo.exists(), false);
-    CHECK(!fileInfo.isSymLink(), false);
+    if (!(fileInfo.exists())) {
+        return false;
+    }
+    if (fileInfo.isSymLink()) {
+        return false;
+    }
 
     if (fileInfo.isDir()) {
         QDir dir(path);
         foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
             setOnce(path + "/" + entryPath, perm);
             bool res = setRecursive(path + "/" + entryPath, perm);
-            CHECK(res, res);
+            if(!res){
+                return res;
+            }
         }
     }
 
@@ -183,8 +189,12 @@ bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions per
 
 bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, bool savePreviousState ) {
     QFileInfo fileInfo( path );
-    CHECK( fileInfo.exists( ), false );
-    CHECK( !fileInfo.isSymLink( ), false );
+    if (!(fileInfo.exists())) {
+        return false;
+    }
+    if (fileInfo.isSymLink()) {
+        return false;
+    }
 
     QFile file( path );
     QFile::Permissions p = file.permissions( );
@@ -335,7 +345,7 @@ void GTFile::removeDir(QString dirName)
 void GTFile::removeDir(QString dirName)
 {
     QDir dir(dirName);
-    U2::coreLog.trace("removing dir: " + dirName);
+    qInfo("GT_DEBUG_MESSAGE removing dir: %s", dirName.toLocal8Bit().constData());
 
     foreach (QFileInfo fileInfo, dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
         QString fileName = fileInfo.fileName();
@@ -354,7 +364,7 @@ void GTFile::removeDir(QString dirName)
     }
     dir.rmdir(dir.absoluteFilePath(dirName));
 
-    U2::coreLog.trace("directory removed: " + dirName);
+    qInfo("GT_DEBUG_MESSAGE directory removed: %s", dirName.toLocal8Bit().constData());
 
 }
 #endif

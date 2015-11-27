@@ -23,8 +23,8 @@
 #define _HI_GT_GLOBALS_H_
 
 #include <core/GUITestOpStatus.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/Log.h>
+//#include <U2Core/U2SafePoints.h>
+//#include <U2Core/Log.h>
 
 #include <core/global.h>
 
@@ -60,21 +60,33 @@ public:
 
 #define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
 { \
-    U2::uiLog.trace("\n------------"); \
-    U2::uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
-    U2::uiLog.trace("GT_DEBUG_MESSAGE errorMessage <" + QString(errorMessage) + ">"); \
+    QString cond = #condition;\
     if (condition) { \
-        U2::uiLog.trace("GT_DEBUG_MESSAGE ok"); \
+        qInfo("GT_DEBUG_MESSAGE Checking condition (%s). Result: OK", cond.toLocal8Bit().constData()); \
     } \
     else { \
-        U2::uiLog.trace("GT_DEBUG_MESSAGE FAILED"); \
+        qWarning("\n------------"); \
+        qWarning("GT_DEBUG_MESSAGE Checking condition (%s). Result: FAILED", cond.toLocal8Bit().constData()); \
+        qWarning("GT_DEBUG_MESSAGE errorMessage '%s'", QString(errorMessage).toLocal8Bit().constData()); \
+        qWarning("------------\n"); \
     } \
     if (os.hasError()) { \
-        U2::uiLog.trace("GT_DEBUG_MESSAGE OpStatus already has error"); \
-        U2::uiLog.trace("GT_DEBUG_MESSAGE OpStatus error <" + os.getError() + ">"); \
+        qCritical("GT_DEBUG_MESSAGE OpStatus already has error"); \
+        qCritical("GT_DEBUG_MESSAGE OpStatus error '%s'",os.getError().toLocal8Bit().constData()); \
     } \
-    U2::uiLog.trace("------------\n"); \
 }
+
+/**
+    Checks condition is false and returns the result if it is.
+    Before the result is returned the 'extraOp' operation is performed (for example logging)
+
+    Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
+*/
+#define CHECK_EXT(condition, extraOp, result) \
+    if (!(condition)) { \
+        extraOp; \
+        return result; \
+    }
 
 /** Used in tests */
 #define CHECK_SET_ERR(condition, errorMessage) \

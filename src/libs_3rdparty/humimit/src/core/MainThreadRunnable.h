@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MAIN_THREAD_RUNNABLE_H_
-#define _U2_MAIN_THREAD_RUNNABLE_H_
+#ifndef _HI_MAIN_THREAD_RUNNABLE_H_
+#define _HI_MAIN_THREAD_RUNNABLE_H_
 
 #include "GTGlobals.h"
 
@@ -61,6 +61,6 @@ public slots:
 };
 
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_MAIN_THREAD_RUNNABLE_H_
+#endif

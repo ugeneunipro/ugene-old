@@ -78,7 +78,7 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
         GT_CHECK(modelIndex.isValid(), "invalid model index");
         view->scrollTo(modelIndex);
         GTGlobals::sleep(500);
-        U2::coreLog.trace("MOVING TO LIST ITEM");
+        qInfo("GT_DEBUG_MESSAGE moving to list item");
         GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(view->visualRect(modelIndex).center()));
         GTMouseDriver::click(os);
         GTGlobals::sleep(500);
@@ -95,7 +95,7 @@ void GTComboBox::setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, cons
     GT_CHECK(index != -1, "Text " + text + " was not found");
 
     setCurrentIndex(os, comboBox, index, checkVal, method);
-    CHECK_OP(os, );
+    //CHECK_OP(os, );
     if(checkVal){
         QString currentText = comboBox->currentText();
         GT_CHECK(currentText == text, "Can't set text");

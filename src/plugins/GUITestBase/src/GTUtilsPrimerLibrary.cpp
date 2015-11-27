@@ -22,6 +22,7 @@
 #include <QTableView>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"

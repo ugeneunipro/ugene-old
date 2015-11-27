@@ -42,6 +42,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 using namespace HI;

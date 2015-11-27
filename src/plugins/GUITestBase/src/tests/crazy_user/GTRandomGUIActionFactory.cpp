@@ -29,6 +29,7 @@
 #include <QtWidgets/QFileDialog>
 #endif
 #include <QtCore/QDirIterator>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 

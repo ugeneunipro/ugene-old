@@ -78,6 +78,7 @@ GUITestRunner::GUITestRunner(GUITestBase* _guiTestBase, QWidget *parent) :
     connect(startAllButton,SIGNAL(clicked(bool)),this,SLOT(sl_runAllGUITests()));
 
     show();
+    filter->setFocus();
 }
 
 GUITestRunner::~GUITestRunner()

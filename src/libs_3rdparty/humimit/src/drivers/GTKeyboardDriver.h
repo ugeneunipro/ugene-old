@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_GTKEYBOARDDRIVER_H_
-#define _U2_GUI_GTKEYBOARDDRIVER_H_
+#ifndef _HI_GUI_GTKEYBOARDDRIVER_H_
+#define _HI_GUI_GTKEYBOARDDRIVER_H_
 
 #include <QMap>
 #include "GTGlobals.h"
@@ -86,4 +86,4 @@ public:
 
 } //namespace
 
-#endif // _U2_GUI_GTKEYBOARDDRIVER_H_
+#endif

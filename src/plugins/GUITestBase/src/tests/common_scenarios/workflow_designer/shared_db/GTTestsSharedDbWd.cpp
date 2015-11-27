@@ -22,6 +22,7 @@
 #include <QListWidget>
 
 #include <U2Core/global.h>
+#include <U2Core/U2SafePoints.h>
 #include "primitives/GTAction.h"
 #include <drivers/GTKeyboardDriver.h>
 #include "primitives/GTMenu.h"

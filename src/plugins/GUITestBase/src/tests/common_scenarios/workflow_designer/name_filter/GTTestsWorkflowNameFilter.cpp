@@ -31,6 +31,7 @@
 #include "GTTestsWorkflowNameFilter.h"
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Core/U2SafePoints.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>

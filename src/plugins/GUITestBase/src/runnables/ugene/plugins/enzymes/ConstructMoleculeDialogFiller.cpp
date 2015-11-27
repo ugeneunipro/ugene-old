@@ -25,6 +25,7 @@
 #include "ConstructMoleculeDialogFiller.h"
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWidget.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 

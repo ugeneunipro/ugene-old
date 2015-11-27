@@ -37,6 +37,6 @@ public:
     static void cut(GUITestOpStatus&);       // ctrl (or cmd on MacOS) + X
 };
 
-} // namespace U2
+} // namespace
 
 #endif

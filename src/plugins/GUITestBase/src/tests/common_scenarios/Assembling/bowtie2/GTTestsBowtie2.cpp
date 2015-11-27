@@ -31,6 +31,7 @@
 #include "GTTestsBowtie2.h"
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 namespace GUITest_Bowtie2 {

@@ -67,4 +67,4 @@ void GTThread::runInMainThread(GUITestOpStatus &os, CustomScenario *scenario) {
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace

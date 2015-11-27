@@ -35,6 +35,7 @@
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTWidget.h>
 #include <base_dialogs/MessageBoxFiller.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 

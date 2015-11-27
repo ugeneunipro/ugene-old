@@ -29,6 +29,8 @@
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTListWidget.h>
 
+#include <U2Core/Log.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QListWidget>

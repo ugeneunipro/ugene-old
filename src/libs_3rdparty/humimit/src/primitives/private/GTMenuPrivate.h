@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_MENU_PRIVATE_H_
-#define _U2_GT_MENU_PRIVATE_H_
+#ifndef _HI_GT_MENU_PRIVATE_H_
+#define _HI_GT_MENU_PRIVATE_H_
 
 #include "GTGlobals.h"
 #include "primitives/PopupChooser.h"
@@ -37,6 +37,6 @@ private:
 
 };
 
-}   // namespace U2
+}   // namespace
 
-#endif // _U2_GT_MENU_PRIVATE_H_
+#endif

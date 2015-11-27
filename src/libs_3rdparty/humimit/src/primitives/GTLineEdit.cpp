@@ -163,4 +163,4 @@ bool GTLineEdit::tryToSetText(GUITestOpStatus &os, QLineEdit *lineEdit, const QS
 
 #undef GT_CLASS_NAME
 
-}   // namespace U2
+}   // namespace

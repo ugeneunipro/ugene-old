@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _U2_GUI_TEST_OP_STATUS_H_
-#define _U2_GUI_TEST_OP_STATUS_H_
+#ifndef _HI_GUI_TEST_OP_STATUS_H_
+#define _HI_GUI_TEST_OP_STATUS_H_
 
 #include "core/global.h"
 
@@ -30,7 +30,7 @@
 namespace HI {
 
 class HI_EXPORT GUITestOpStatus
-{ // : public U2::U2OpStatus
+{
 public:
     GUITestOpStatus(){}
 
