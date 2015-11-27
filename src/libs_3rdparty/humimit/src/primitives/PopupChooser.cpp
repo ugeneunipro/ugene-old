@@ -97,25 +97,25 @@ void PopupChecker::commonScenario() {
 
         if(options.testFlag(Exists)){
             GT_CHECK(act != NULL, "action '" + actName + "' not found");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(Exists)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(Exists)");
         }else{
             GT_CHECK(act == NULL, "action '" + actName + "' unexpectidly found");
         }
         if(options.testFlag(IsEnabled)){
             GT_CHECK(act->isEnabled(), "action '" + act->objectName() + "' is not enabled");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsEnabled)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsEnabled)");
         }
         if(options.testFlag(IsDisabled)){
             GT_CHECK(!act->isEnabled(), "action '" + act->objectName() + "' is enabled");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsDisabled");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsDisabled");
         }
         if(options.testFlag(IsChecable)){
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checkable");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
         }
         if(options.testFlag(IsChecked)){
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
         }
         for(int i = 0; i<escCount; i++){
             PopupChooser::clickEsc(os);
@@ -194,25 +194,25 @@ void PopupCheckerByText::commonScenario() {
 
         if(options.testFlag(PopupChecker::Exists)){
             GT_CHECK(act != NULL, "action '" + actName + "' not found");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(Exists)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(Exists)");
         }else{
             GT_CHECK(act == NULL, "action '" + actName + "' unexpectidly found");
         }
         if(options.testFlag(PopupChecker::IsEnabled)){
             GT_CHECK(act->isEnabled(), "action '" + act->objectName() + "' is not enabled");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsEnabled)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsEnabled)");
         }
         if(options.testFlag(PopupChecker::IsDisabled)){
             GT_CHECK(!act->isEnabled(), "action '" + act->objectName() + "' is enabled");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsDisabled");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsDisabled");
         }
         if(options.testFlag(PopupChecker::IsChecable)){
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checkable");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
         }
         if(options.testFlag(PopupChecker::IsChecked)){
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
-            qInfo("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
         }
         for (int i = 0; i < escCount - 1; i++) {
             PopupChooser::clickEsc(os);

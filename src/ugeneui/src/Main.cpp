@@ -220,9 +220,6 @@ void guiTestMessageOutput(QtMsgType type, const QMessageLogContext &context, con
     case QtDebugMsg:
         uiLog.trace(msg);
         break;
-    case QtInfoMsg:
-        uiLog.info(msg);
-        break;
     case QtWarningMsg:
         uiLog.error(msg);
         break;
@@ -232,6 +229,9 @@ void guiTestMessageOutput(QtMsgType type, const QMessageLogContext &context, con
     case QtFatalMsg:
         uiLog.error(msg);
         abort();
+    default:
+        uiLog.trace(msg);
+        break;
     }
 }
 static void initOptionsPanels() {

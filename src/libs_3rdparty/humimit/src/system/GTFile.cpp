@@ -345,7 +345,7 @@ void GTFile::removeDir(QString dirName)
 void GTFile::removeDir(QString dirName)
 {
     QDir dir(dirName);
-    qInfo("GT_DEBUG_MESSAGE removing dir: %s", dirName.toLocal8Bit().constData());
+    qDebug("GT_DEBUG_MESSAGE removing dir: %s", dirName.toLocal8Bit().constData());
 
     foreach (QFileInfo fileInfo, dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
         QString fileName = fileInfo.fileName();
@@ -364,7 +364,7 @@ void GTFile::removeDir(QString dirName)
     }
     dir.rmdir(dir.absoluteFilePath(dirName));
 
-    qInfo("GT_DEBUG_MESSAGE directory removed: %s", dirName.toLocal8Bit().constData());
+    qDebug("GT_DEBUG_MESSAGE directory removed: %s", dirName.toLocal8Bit().constData());
 
 }
 #endif

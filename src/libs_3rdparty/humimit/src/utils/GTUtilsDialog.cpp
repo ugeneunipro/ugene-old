@@ -67,7 +67,7 @@ bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QStr
         return true;
     }
 
-    qInfo("GT_DEBUG_MESSAGE GUIDialogWaiter Checking name, widget name '%s', expected '%s'", widgetObjectName.toLocal8Bit().constData(), expectedObjectName.toLocal8Bit().constData());
+    qDebug("GT_DEBUG_MESSAGE GUIDialogWaiter Checking name, widget name '%s', expected '%s'", widgetObjectName.toLocal8Bit().constData(), expectedObjectName.toLocal8Bit().constData());
     return widgetObjectName == expectedObjectName;
 }
 
@@ -98,9 +98,9 @@ void GUIDialogWaiter::checkDialog() {
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
         timer->stop();
-        qInfo("-------------------------");
-        qInfo("GT_DEBUG_MESSAGE GUIDialogWaiter::wait ID = %d, name = '%s' going to RUN", waiterId, settings.objectName.toLocal8Bit().constData());
-        qInfo("-------------------------");
+        qDebug("-------------------------");
+        qDebug("GT_DEBUG_MESSAGE GUIDialogWaiter::wait ID = %d, name = '%s' going to RUN", waiterId, settings.objectName.toLocal8Bit().constData());
+        qDebug("-------------------------");
 
         try {
             runnable->run();
@@ -122,9 +122,9 @@ void GUIDialogWaiter::checkDialog() {
     else {
         waitingTime += timerPeriod;
         if (waitingTime > settings.timeout) {
-            qInfo("-------------------------");
-            qInfo("GT_DEBUG_MESSAGE !!! GUIDialogWaiter::TIMEOUT Id = %d, going to finish waiting", waiterId);
-            qInfo("-------------------------");
+            qDebug("-------------------------");
+            qDebug("GT_DEBUG_MESSAGE !!! GUIDialogWaiter::TIMEOUT Id = %d, going to finish waiting", waiterId);
+            qDebug("-------------------------");
 
             finishWaiting();
             GT_CHECK(false, "TIMEOUT, waiterId = " + QString::number(waiterId));

@@ -175,9 +175,9 @@ QAction* GTMenu::getMenuItem(GUITestOpStatus &os, const QMenu* menu, const QStri
     if(!byText){
         foreach(QAction *act, actions) {
             QString objName = act->objectName();
-            qInfo("GT_DEBUG_MESSAGE: Action name: '%s'", objName.toLocal8Bit().constData());
+            qDebug("GT_DEBUG_MESSAGE: Action name: '%s'", objName.toLocal8Bit().constData());
             if (compare(objName, itemName, matchFlag)) {
-                qInfo("GT_DEBUG_MESSAGE: Found action");
+                qDebug("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;
             }
@@ -185,9 +185,9 @@ QAction* GTMenu::getMenuItem(GUITestOpStatus &os, const QMenu* menu, const QStri
     }else{
         foreach(QAction *act, actions) {
             QString text = act->text();
-            qInfo("GT_DEBUG_MESSAGE: Action text: '%s'",text.toLocal8Bit().constData());
+            qDebug("GT_DEBUG_MESSAGE: Action text: '%s'",text.toLocal8Bit().constData());
             if (compare(text, itemName, matchFlag)) {
-                qInfo("GT_DEBUG_MESSAGE: Found action");
+                qDebug("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;
             }
@@ -195,7 +195,7 @@ QAction* GTMenu::getMenuItem(GUITestOpStatus &os, const QMenu* menu, const QStri
     }
 
     if (!action) {
-       qInfo("GT_DEBUG_MESSAGE: Not found action");
+       qDebug("GT_DEBUG_MESSAGE: Not found action");
     }
     return action;
 }

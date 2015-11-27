@@ -139,7 +139,7 @@ void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebView *view){
         QString localName = el.localName();
 
         if(el.geometry().width() != 0){
-            qInfo("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
+            qDebug("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
         }
         if (s == "Input"){
             result = el;

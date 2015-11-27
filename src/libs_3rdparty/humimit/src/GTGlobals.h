@@ -60,7 +60,7 @@ public:
 { \
     QString cond = #condition;\
     if (condition) { \
-        qInfo("GT_DEBUG_MESSAGE Checking condition (%s). Result: OK", cond.toLocal8Bit().constData()); \
+        qDebug("GT_DEBUG_MESSAGE Checking condition (%s). Result: OK", cond.toLocal8Bit().constData()); \
     } \
     else { \
         qWarning("\n------------"); \
