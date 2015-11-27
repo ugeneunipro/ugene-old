@@ -22,11 +22,9 @@
 #ifndef _HI_GT_GLOBALS_H_
 #define _HI_GT_GLOBALS_H_
 
-#include <core/GUITestOpStatus.h>
-//#include <U2Core/U2SafePoints.h>
-//#include <U2Core/Log.h>
-
 #include <core/global.h>
+#include <core/GUITestOpStatus.h>
+#include <QMessageLogger>
 
 #include <QAction>
 
