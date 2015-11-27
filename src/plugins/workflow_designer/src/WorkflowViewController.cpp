@@ -188,12 +188,12 @@ static void addToggleDashboardAction(QToolBar *toolBar, QAction *action) {
 
 #ifdef Q_OS_MAC
     b->setStyleSheet("QToolButton {"
-                     "font-size: 9.75pt;"
+                     "font-size: 13px;"
                      "border: 1px solid gray;"
                      "border-radius: 6px;"
                      "margin-right: 5px;"
                      "height: 25px;"
-                     "width: 168px;"
+                     "padding: 0px 5px;"
                      "}");
 #endif
 }
