@@ -246,9 +246,13 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
         GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
         GTGlobals::sleep(200);
 
+#ifdef Q_OS_WIN
+        GTMouseDriver::click(os);
+#else
         if (!clickingSubMenu) {
             GTMouseDriver::click(os);
         }
+#endif
         break;
     }
     case GTGlobals::UseKey:

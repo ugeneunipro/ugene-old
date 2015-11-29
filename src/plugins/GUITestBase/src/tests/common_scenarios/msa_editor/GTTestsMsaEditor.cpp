@@ -975,7 +975,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
     QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1001,7 +1001,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
 //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1025,7 +1025,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTGlobals::sleep();
 //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1089,7 +1089,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
     //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
     QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1109,7 +1109,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
 
     //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1127,7 +1127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
     GTGlobals::sleep();
     //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1185,7 +1185,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates chan
     //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
     QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1211,7 +1211,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates chan
 
     //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1235,7 +1235,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates chan
     GTGlobals::sleep();
     //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1288,7 +1288,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
     //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
     QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "HIV-1 [m] HIV-1");
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1314,7 +1314,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
 
     //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1338,7 +1338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
     GTGlobals::sleep();
     //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
     GTMouseDriver::moveTo(os, p);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseKey));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1394,7 +1394,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseKey));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     //GTGlobals::sleep();
@@ -1432,7 +1432,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
     //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseKey));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     //GTGlobals::sleep();
@@ -1468,7 +1468,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
     //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseKey));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     //GTGlobals::sleep();
@@ -1927,12 +1927,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
 // CHANGES: using main menu
-    GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "Multiple sequence alignment" << "Align with Kalign...");
-    GTGlobals::sleep();
-    GTGlobals::sleep();
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Align" << "Align with Kalign...");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // Expected state: UGENE not crash
-    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
@@ -2916,12 +2914,13 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
         GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
     //    2. Select first sequence
         GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseKey));
         Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTA,true);
         GTUtilsDialog::waitForDialog(os, r);
 
         GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
         GTGlobals::sleep();
+        GTUtilsTaskTreeView::waitTaskFinished(os);
         //GTMouseDriver::click(os,Qt::RightButton);
 
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
@@ -2956,7 +2955,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029_1){//DIFFERENCE:gaps are trimmed, FASTQ form
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Select first sequence
     GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,2));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseKey));
     Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTQ,false);
     GTUtilsDialog::waitForDialog(os, r);
 
@@ -2968,10 +2967,10 @@ GUI_TEST_CLASS_DEFINITION(test_0029_1){//DIFFERENCE:gaps are trimmed, FASTQ form
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseKey));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseKey));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 
     QString clipboardText = GTClipboard::text(os);
@@ -2992,7 +2991,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029_2){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Select first sequence
     GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,2));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseKey));
     Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::Genbank,true,false);
     GTUtilsDialog::waitForDialog(os, r);
 
@@ -3015,10 +3014,10 @@ GUI_TEST_CLASS_DEFINITION(test_0031){//TODO: check statistic result
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile"));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(1500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Exptcted state: generate alignment profile dialog appeared
 
 //    3. Fill dialog: Profile mode:Counts. Click "Generate"
@@ -3033,7 +3032,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_1){//DIFFERENCE: Percentage is used
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile"));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(1500);
@@ -3051,7 +3050,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_2){//TODO: check statistic result
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,false,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(1500);
@@ -3069,7 +3068,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){//TODO: check statistic result
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,true,false));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(1500);
@@ -3087,7 +3086,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_4){//TODO: check statistic result
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,false,true));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(1500);
@@ -3106,7 +3105,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
 //    Exptcted state: generata alignment profile dialog appeared
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::HTML,
                                                                               testDir + "_common_data/scenarios/sandbox/stat.html"));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
@@ -3128,7 +3127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032_1){//DIFFERENCE: csv format is used
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Do MSA area context menu->Statistics->generate grid profile
 //    Exptcted state: generata alignment profile dialog appeared
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::CSV,
                                                                               testDir + "_common_data/scenarios/sandbox/stat.html"));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
@@ -3150,7 +3149,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Do MSA area context menu->Statistics->generate distance matrix
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,true,true));
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3171,7 +3170,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033_1){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Do MSA area context menu->Statistics->generate distance matrix
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,false,true,true));
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3192,7 +3191,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Do MSA area context menu->Statistics->generate distance matrix
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,false,true));
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3214,7 +3213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0034_1){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //2. Do MSA area context menu->Statistics->generate distance matrix
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,true,false));
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3237,7 +3236,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035){
 //2. Do MSA area context menu->Statistics->generate distance matrix
     Runnable* dis = new DistanceMatrixDialogFiller(os,DistanceMatrixDialogFiller::HTML,testDir + "_common_data/scenarios/sandbox/matrix.html");
     GTUtilsDialog::waitForDialog(os, dis);
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3261,7 +3260,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035_1){
 //2. Do MSA area context menu->Statistics->generate distance matrix
     Runnable* dis = new DistanceMatrixDialogFiller(os,DistanceMatrixDialogFiller::CSV,testDir + "_common_data/scenarios/sandbox/matrix.html");
     GTUtilsDialog::waitForDialog(os, dis);
-    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, pop);
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -3749,7 +3748,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
 
             GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "SelectSubalignmentDialog", QDialogButtonBox::Cancel));
             QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
-            GTComboBox::setIndexWithText(os, exportType, "Custom region", false, GTGlobals::UseMouse);
+            GTComboBox::setIndexWithText(os, exportType, "Custom region", false, GTGlobals::UseKey);
 
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
