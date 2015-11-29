@@ -940,63 +940,6 @@ GUI_TEST_CLASS_DEFINITION(test_0659){
     CHECK_SET_ERR(list.contains("test_659_2"), "unexpected file name csv: " + list[2]);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0663) {
-    //1. open human_t1.fa
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    //2. Select region 3..50
-    GTUtilsSequenceView::selectSequenceRegion(os, 3, 50);
-
-    //3. Choose in the context menu - "Export"->"Selected sequence region"
-    //4. In the export dialog check "Translate to amino alphabet", uncheck "Save all amino frames", click "Export"
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "1.fa", true, QString(), false));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "action_export_selected_sequence_region"));
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
-
-    //5. The protein sequence "VRFTKVEMKEKMLRAA" appear.
-    QString sequenceData;
-    GTUtilsSequenceView::getSequenceAsString(os, sequenceData);
-    CHECK_SET_ERR(sequenceData == "VRFTKVEMKEKMLRAA", "Unexpeced sequence content");
-
-    //6. Click "Statistics" in the context menu
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Statistics"));
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
-    GTGlobals::sleep(500);
-
-    //7. It must be the same with the statistics below
-    //Sequence length : 16
-    //Molecule Type : Standard amino
-    //Molecular Weight : 1937.61
-    //Isoelectric Point(pI) : 10.65
-
-    //Symbol counts	Symbol percents %
-    //A	2	12.5
-    //E	2	12.5
-    //F	1	6.25
-    //K	3	18.75
-    //L	1	6.25
-    //M	2	12.5
-    //R	2	12.5
-    //T	1	6.25
-    //V	2	12.5
-    QWebView *statisticsView = GTWidget::findExactWidget<QWebView *>(os, "DNAStatWebViewregion [3 50]|transl");
-    const QString statisticsData = statisticsView->page()->mainFrame()->toHtml();
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Sequence length:</b></td><td>16</td></tr>"), "1 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecule Type:</b></td><td>Standard amino acid</td></tr>"), "2 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Molecular Weight:</b></td><td>1937.61</td></tr>"), "3 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>Isoelectric Point (pI):</b></td><td>10.65</td></tr>"), "4 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>A</b></td><td>2</td><td>12.5</td></tr>"), "5 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>E</b></td><td>2</td><td>12.5</td></tr>"), "6 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>F</b></td><td>1</td><td>6.25</td></tr>"), "7 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>K</b></td><td>3</td><td>18.75</td></tr>"), "8 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>L</b></td><td>1</td><td>6.25</td></tr>"), "9 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>M</b></td><td>2</td><td>12.5</td></tr>"), "10 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>R</b></td><td>2</td><td>12.5</td></tr>"), "11 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>T</b></td><td>1</td><td>6.25</td></tr>"), "12 Unexpected statistics gathered");
-    CHECK_SET_ERR(statisticsData.contains("<tr><td><b>V</b></td><td>2</td><td>12.5</td></tr>"), "13 Unexpected statistics gathered");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_0666) {
 /* Crash on removing some annotations from Primer3 result
  * 1. Open samples\FASTA\human_T1.fa
@@ -1294,6 +1237,7 @@ GUI_TEST_CLASS_DEFINITION(test_0729){
     GTWidget::findWidget(os, "includeMaskEdit");
     GTWidget::findWidget(os, "excludeMaskEdit");
     GTWidget::findWidget(os, "recursiveBox");
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 
 }
 
@@ -1705,6 +1649,7 @@ GUI_TEST_CLASS_DEFINITION(test_0792) {
     GTWidget::findExactWidget<QCheckBox*>(os, "recursiveBox");
 //            Include mask, Exclude mask lineedits;
 //            Recursive checkbox
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0798){

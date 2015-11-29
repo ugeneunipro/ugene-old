@@ -625,6 +625,7 @@ GUI_TEST_CLASS_DEFINITION(test_3103) {
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     {
@@ -780,6 +781,7 @@ GUI_TEST_CLASS_DEFINITION(test_3130) {
     connectAction.expectedResult = SharedConnectionsDialogFiller::Action::WRONG_DATA;
     actions << connectAction;
     actions << connectAction;
+    actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
 
     GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
 

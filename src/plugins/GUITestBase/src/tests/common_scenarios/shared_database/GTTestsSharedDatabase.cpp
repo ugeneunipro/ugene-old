@@ -454,7 +454,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0007) {
         cAction.dbName = GTDatabaseConfig::versionDatabase();
         cAction.expectedResult = SharedConnectionsDialogFiller::Action::VERSION;
         actions << cAction;
-
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Connect to UGENE shared database...");
@@ -550,6 +550,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0009) {
         SharedConnectionsDialogFiller::Action cAction(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         cAction.expectedResult = SharedConnectionsDialogFiller::Action::WRONG_DATA;
         actions << cAction;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     {
@@ -637,6 +638,7 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0014) {
         QList<SharedConnectionsDialogFiller::Action> actions;
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, "UGENE public database");
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::EDIT);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLOSE);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     {

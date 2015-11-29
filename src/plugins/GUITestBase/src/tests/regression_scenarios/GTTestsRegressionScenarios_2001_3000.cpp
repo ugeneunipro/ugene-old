@@ -1933,6 +1933,7 @@ GUI_TEST_CLASS_DEFINITION( test_2298 ){
     GTWidget::click(os, tree);
     GTGlobals::sleep();
 //    3. Collapse any node on the tree
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     QGraphicsItem* node = GTUtilsPhyTree::getNodes(os).at(1);
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     treeView->ensureVisible(node);
@@ -3388,21 +3389,16 @@ GUI_TEST_CLASS_DEFINITION( test_2482 ) {
     GTMouseDriver::moveTo(os, nodeCoords);
 
     GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep();
 
     // 4. Call context menu on the Tree Viewer.
     // Expected state: menu items "Swap Sublings" and "Reroot tree" are disabled.
-    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    CHECK_SET_ERR(activePopupMenu != NULL, "There is no popup menu appeared");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Reroot tree", PopupChecker::IsDisabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 
-    const QList<QAction*> menuActions = activePopupMenu->actions();
-
-    foreach (QAction* a, menuActions) {
-        if (a->text() == "Reroot tree" || a->text() == "Swap Sublings") {
-            CHECK_SET_ERR( !a->isEnabled(), a->text() + " action is enabled");
-        }
-    }
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Swap Sublings", PopupChecker::IsDisabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 
@@ -3420,21 +3416,15 @@ GUI_TEST_CLASS_DEFINITION( test_2487 ) {
 
     QPoint rootCoords = GTUtilsPhyTree::getGlobalCoord(os, items.first());
     GTMouseDriver::moveTo(os, rootCoords);
-
     GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Reroot tree", PopupChecker::IsDisabled));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
-    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    CHECK_SET_ERR(activePopupMenu != NULL, "There is no popup menu appeared");
-
-    const QList<QAction*> menuActions = activePopupMenu->actions();
-
-    foreach (QAction* a, menuActions) {
-        if (a->text() == "Reroot tree" || a->text() == "Collapse") {
-            CHECK_SET_ERR( !a->isEnabled(), a->text() + " action is enabled");
-        }
-    }
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Collapse", PopupChecker::IsDisabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2496 ) {

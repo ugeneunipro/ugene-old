@@ -110,6 +110,8 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
     CHECK_OP( os, );
     GTGlobals::sleep( 5000 );
+    GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+    GTGlobals::sleep();
 //     3. Click start:
 //     Expected: the error dialog appears. It tells that the short reads file has the unknown format.
 }

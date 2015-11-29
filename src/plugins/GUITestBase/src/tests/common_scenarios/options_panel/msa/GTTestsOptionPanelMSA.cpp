@@ -137,6 +137,7 @@ GUI_TEST_CLASS_DEFINITION(general_test_0002){
 
     QString name = names.at(0);
     CHECK_SET_ERR(name == seqName, QString("wrong sequence name. Expected %1, found %2").arg(seqName).arg(name));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 }
 
 GUI_TEST_CLASS_DEFINITION(general_test_0003){
