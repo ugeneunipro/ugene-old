@@ -384,7 +384,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     QString s = QString("Length: </b></td><td>199 950");
     QString s1 = QString("GC Content: </b></td><td>38.84%");
-    QString s2 = QString("Molar Weight: </b></td><td>61730585.82");
+    QString s2 = QString("Molar Weight: </b></td><td>61730585.8");
     QString s3 = QString("Molar Ext. Coef: </b></td><td>2223359500");
     QString s4 = QString("Melting TM: </b></td><td>80.82 C");
     QString s5 = QString("nmole/OD<sub>260</sub> : </b></td><td>0.00");
@@ -444,7 +444,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     QString s = QString("Length: </b></td><td>199 950");
     QString s1 = QString("GC Content: </b></td><td>38.84%");
-    QString s2 = QString("Molar Weight: </b></td><td>61730585.82");
+    QString s2 = QString("Molar Weight: </b></td><td>61730585.8");
     QString s3 = QString("Molar Ext. Coef: </b></td><td>2223359500");
     QString s4 = QString("Melting TM: </b></td><td>80.82 C");
     QString s5 = QString("nmole/OD<sub>260</sub> : </b></td><td>0.00");
