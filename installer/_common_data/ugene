@@ -21,7 +21,7 @@ do
     shift
 done
 
-dirname=$(dirname `readlink -f $0`)
+dirname=$(dirname "`readlink -f $0`")
 
 tmp="${dirname#?}"
 
@@ -63,8 +63,8 @@ fi
 export QT_QPA_PLATFORMTHEME=
 
 if [ -z $IS_KDE ]; then
-    $dirname/$appname "${params[@]}"
+    "$dirname/$appname" "${params[@]}"
 else
-    $dirname/$appname "${params[@]}" -style cleanlooks
+    "$dirname/$appname" "${params[@]}" -style cleanlooks
 fi
 
