@@ -23,6 +23,7 @@
 #include "system/GTClipboard.h"
 #include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
+#include <primitives/GTScrollBar.h>
 #include <drivers/GTMouseDriver.h>
 #include "GTGlobals.h"
 #include <primitives/GTWidget.h>
@@ -2008,6 +2009,264 @@ GUI_TEST_CLASS_DEFINITION(test_0061_3) {
     QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
     CHECK_SET_ERR(NULL != widget3d, "3D widget was not found");
     GTWidget::click(os, widget3d, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0062) {
+//    1. Open any sequence (e.g. murine.gb)
+//    2. "Wrap sequence" button is not checked
+//    3. Click "Wrap sequence" button on the local toolbar
+//    Expected state: the view was not resized, horizontal scrollbar is hidden, vertical scrollbar appeared, sequence is split into lines
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(seqWgt != NULL, "No sequence widget found");
+    QSize seqWgtSize = seqWgt->size();
+
+    QScrollBar* hScrollBar = GTScrollBar::getScrollBar(os, "singleline_scrollbar");
+    CHECK_SET_ERR(hScrollBar != NULL, "Cannot find singleline_scrollbar");
+    CHECK_SET_ERR(hScrollBar->isVisible(), "singleline_scrollbar is not visible");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+    CHECK_SET_ERR(seqWgtSize == seqWgt->size(), "Multi-line mode resized the view");
+    CHECK_SET_ERR(hScrollBar->isHidden(), "singleline_scrollbar is visible");
+
+    QScrollBar* scrollBar = GTScrollBar::getScrollBar(os, "multiline_scrollbar");
+    CHECK_SET_ERR(scrollBar != NULL, "Cannot find multiline_scrollbar");
+    CHECK_SET_ERR(scrollBar->isVisible(), "multiline_scrollbar is hidden");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0063) {
+//    1. Open any sequence (e.g. murine.gb)
+//    2. Scroll to the middle of the sequence (say visible range starts from X position)
+//    3. Click "Wrap sequence" (say visible range starts from Y position now)
+//    4. Expected state: X position is located in the first visible line
+//    5. Uncheck "Wrap sequence"
+//    Expected state: sequence is displayed in one line, and visible range starts from Y position
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    int pos = 789;
+    GTUtilsSequenceView::goToPosition(os, pos);
+    GTGlobals::sleep();
+    U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    CHECK_SET_ERR(visibleRange.contains(pos), "Visible range does not contain 789 position");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+    GTGlobals::sleep();
+
+    visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    CHECK_SET_ERR(visibleRange.contains(pos), "Visible range does not contain requeried position");
+    pos = visibleRange.startPos;
+
+    GTWidget::click(os, wrapButton);
+    GTGlobals::sleep();
+    visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    CHECK_SET_ERR(visibleRange.startPos == pos, "Start position of visible range was changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0064) {
+//    1. Open any sequence (e.g. murine.gb)
+//    2. Scroll with the mouse wheel to the end of the sequence and back to the beginning
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "seq4.fa");
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    QScrollBar* scrollBar = GTScrollBar::getScrollBar(os, "multiline_scrollbar");
+    CHECK_SET_ERR(scrollBar != NULL, "Cannot find multiline_scrollbar");
+
+    GTScrollBar::moveSliderWithMouseWheelDown(os, scrollBar, scrollBar->maximum());
+    GTGlobals::sleep();
+
+    U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    CHECK_SET_ERR(visibleRange.contains(GTUtilsSequenceView::getSeqWidgetByNumber(os)->getSequenceLength() - 1), "The end position of the sequence is not visible. Failed to scroll to the end" );
+
+    GTScrollBar::moveSliderWithMouseWheelUp(os, scrollBar, scrollBar->maximum());
+    GTGlobals::sleep();
+
+    visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    CHECK_SET_ERR(visibleRange.contains(1), "The end position of the sequence is not visible. Failed to scroll to the end" );
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0065) {
+//    1. Open any sequence (e.g. murine.gb), "Wrap sequence"
+//    2. Set focus on the DetView
+//    3. Press down-arrow button a few times
+//    Expected state: the view is scrolled down a little
+//    4. Press up-arrow button a few times
+//    Expected state: the view is scrolled up a little
+//    5. Press page-down button
+//    Expected state: the sequence was scrolled to the next line
+//    6. Press page-up button
+//    Expected state: the sequence was scrolled to the previous line
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    for (int i = 0; i < 5; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    }
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisibleRange(os).startPos, "Visible range was changed");
+
+    for (int i = 0; i < 5; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+    }
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisibleRange(os).startPos, "Visible range was changed");
+
+    visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"]);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(visibleRange.startPos != GTUtilsSequenceView::getVisibleRange(os).startPos, "Visible range was not changed on page down");
+    visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"]);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(visibleRange.startPos != GTUtilsSequenceView::getVisibleRange(os).startPos, "Visible range was not changed on page up");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0066) {
+//    1. Open any sequence (e.g. sars.gb)
+//    2. Click "Wrap sequence"
+//    3. Enlarge the view at the bottom
+//    Expected state: more lines become visible at the bottom of the view, visible range starts from the same position
+//    4. Reduce the height of the view by the bottom splitter
+//    Expected state: lines at the bottom become hidden, visible range starts from the same position
+//    5.Enlarge the view at the top
+//    Expected state: more lines become visible at the bottom of the view, visible range starts from the same position
+//    6. Reduce the height of the view by the top splitter
+//    Expected state: lines at the bottom become hidden, visible range starts from the same position
+//    7. Scroll to the end of the sequence
+//    8. Enlarge at the top
+//    Expected state: more lines become visible at the top, the end of the sequence is still visible
+//    9. Enlarge at the bottom
+//    Expected state: more lines become visible at the top, the end of the sequence is still visible
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
+    GTUtilsSequenceView::goToPosition(os, 1000);
+    GTGlobals::sleep();
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+    QSplitter* splitter = qobject_cast<QSplitter*>(GTWidget::findWidget(os, "annotated_DNA_splitter"));
+    CHECK_SET_ERR(splitter != NULL, "Cannot find annotated_DNA_splitter");
+    QWidget* bottomSplitterHandle = splitter->handle( splitter->count() - 1);//GTWidget::findWidget(os, "qt_splithandle_", GTWidget::findWidget(os, "annotated_DNA_splitter"));
+    CHECK_SET_ERR(bottomSplitterHandle != NULL, "Cannot find bottom splitter handle");
+    GTWidget::click(os, bottomSplitterHandle);
+    QPoint p1 = GTMouseDriver::getMousePosition();
+    QPoint p2 = QPoint(p1.x(), p1.y() + 100);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p2);
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisiableStart(os), "Start position of visible range was changed on enlarge at the bottom");
+
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p1);
+    GTMouseDriver::release(os);
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisiableStart(os), "Start position of visible range was changed on reduce at the bottom");
+
+    QWidget* topSplitterHandle = GTWidget::findWidget(os, "qt_splithandle_det_view_NC_004718");
+    CHECK_SET_ERR(topSplitterHandle != NULL, "Cannot find qt_splithandle_det_view_NC_004718");
+    GTWidget::click(os, topSplitterHandle);
+    p1 = GTMouseDriver::getMousePosition();
+    p2 = QPoint(p1.x(), p1.y() - 100);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p2);
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisiableStart(os), "Start position of visible range was changed on enlarge at the top");
+
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p1);
+    GTMouseDriver::release(os);
+    CHECK_SET_ERR(visibleRange.startPos == GTUtilsSequenceView::getVisiableStart(os), "Start position of visible range was changed on reduce at the top");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0067) {
+//    1. Open very short sequence <50 (e.g. "_common_data/fasta/fa1.fa")
+//    2. Ensure that DetView is visible (click "Show detail view" button)
+//    3. Randomly click on an empty space after the end of the sequence
+//    4. Click "Wrap sequence"
+//    Expected state: the view looks the same, only the scroll bar was changed to vertical
+//    5. Randomly click on an empty space after the end of the sequence
+//    Export "Sequence details" to file
+//    6. Expected state: exported image have the whole sequence in it and has the minimum size to fit the sequence (no extra white space)
+
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");
+    QWidget* showDetViewButton = GTWidget::findWidget(os, "show_hide_details_view");
+    CHECK_SET_ERR(showDetViewButton != NULL, "Cannot find show_hide_details_view button");
+    GTWidget::click(os, showDetViewButton);
+
+    ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(seqWgt != NULL, "No sequence widget found");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    QScrollBar* scrollBar = GTScrollBar::getScrollBar(os, "multiline_scrollbar");
+    CHECK_SET_ERR(scrollBar->minimum() == scrollBar->maximum(), "There is something to scroll");
+
+    GTWidget::click(os, seqWgt);
+    GTMouseDriver::doubleClick(os);
+    GTWidget::click(os, wrapButton);
+    GTWidget::click(os, seqWgt);
+    GTMouseDriver::doubleClick(os);
+
+    ExportSequenceImage::Settings s(ExportSequenceImage::DetailsView, U2Region(1, 3));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_image_0067", s));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QPixmap p(sandBoxDir + "seq_image_0027");
+    CHECK_SET_ERR(p.size() != QSize() && p.size() !=  seqWgt->getDetView()->getDetViewRenderArea()->size(), "Exported image size is incorrect");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0068) {
+//    1. Open any sequence (e.g. murine.gb)
+//    Optionally: enlarge the widget for a better view
+//    2. Click "Wrap seqeence"
+//    3. Uncheck "Show amino translations" button
+//    Expected state: the view is updated, the lines fill all available space
+//    4. Uncheck "Show complement strand"
+//    Expected state: the view is updated, the lines fill all available space
+//    5. Check "Show amino translations" button
+//    Expected state: the view is updated, the lines fill all available space
+//    6. Check "Show complement strand"
+//    Expected state: the view is updated, the lines fill all available space
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+    U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
+
+    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    CHECK_SET_ERR(visibleRange != GTUtilsSequenceView::getVisibleRange(os), "Visible range was not changed on translation show/hide");
+
+    GTWidget::click(os, GTAction::button(os, "complement_action"));
+    CHECK_SET_ERR(visibleRange != GTUtilsSequenceView::getVisibleRange(os), "Visible range was not changed on complement strand show/hide");
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

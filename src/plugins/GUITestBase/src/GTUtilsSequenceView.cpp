@@ -227,6 +227,14 @@ int GTUtilsSequenceView::getVisiableStart(HI::GUITestOpStatus &os, int widgetNum
     return getSeqWidgetByNumber(os, widgetNumber)->getDetView()->getVisibleRange().startPos;
 }
 
+#define GT_METHOD_NAME "getVisibleRange"
+U2Region GTUtilsSequenceView::getVisibleRange(HI::GUITestOpStatus &os, int widgetNumber) {
+    ADVSingleSequenceWidget* seqWgt = getSeqWidgetByNumber(os, widgetNumber);
+    GT_CHECK_RESULT(seqWgt != NULL, "Cannot find sequence view", U2Region());
+    return seqWgt->getDetView()->getVisibleRange();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "checkSequence"
 void GTUtilsSequenceView::checkSequence(HI::GUITestOpStatus &os, const QString &expectedSequence)
 {

@@ -102,6 +102,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 
     verticalScrollBar = new GScrollBar(Qt::Vertical, this);
     verticalScrollBar->setObjectName("multiline_scrollbar");
+    scrollBar->setObjectName("singleline_scrollbar");
     currentShiftsCounter = 0;
     numShiftsInOneLine = 1;
 

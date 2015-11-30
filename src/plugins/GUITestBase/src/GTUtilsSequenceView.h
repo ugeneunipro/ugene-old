@@ -42,6 +42,7 @@ public:
     static QString getEndOfSequenceAsString(HI::GUITestOpStatus &os, int length);
     static int getLengthOfSequence(HI::GUITestOpStatus &os);
     static int getVisiableStart(HI::GUITestOpStatus &os, int widgetNumber = 0);
+    static U2Region getVisibleRange(HI::GUITestOpStatus &os, int widgetNumber = 0);
     static void checkSequence(HI::GUITestOpStatus &os, const QString &expectedSequence);
     static void selectSequenceRegion(HI::GUITestOpStatus &os, int from, int to);
 
