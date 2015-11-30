@@ -138,7 +138,7 @@ void DetViewMultiLineRenderer::drawAll(QPainter &p, const QSize &canvasSize, con
     int sequenceLinesCount = visibleRange.length / symbolsPerLine + 1;
     if (ctx->getSequenceLength() == visibleRange.length) {
         int fullContentH = getOneLineHeight() * sequenceLinesCount;
-        if (canvasSize.height() > fullContentH) {
+        if (canvasSize.height() > fullContentH && detView->getShift() == 0) {
             extraIndent = (canvasSize.height() - fullContentH) / sequenceLinesCount;
         }
     }
