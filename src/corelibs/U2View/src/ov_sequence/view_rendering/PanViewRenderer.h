@@ -48,7 +48,6 @@ public:
 
     qint64 getContentIndentY(const QSize& canvasSize, const U2Region& visibleRange) const;
     qint64 getMinimumHeight() const;
-    qint64 getRowLineHeight() const;
 
     QSize getBaseCanvasSize(const U2Region &visibleRange) const;
     void drawAll(QPainter& p, const U2Region& visibleRange);

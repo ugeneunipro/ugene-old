@@ -84,10 +84,6 @@ qint64 PanViewRenderer::getMinimumHeight() const {
     return commonMetrics.lineHeight * (s->getAdditionalLines() + 1);
 }
 
-qint64 PanViewRenderer::getRowLineHeight() const {
-    return commonMetrics.lineHeight;
-}
-
 QSize PanViewRenderer::getBaseCanvasSize(const U2Region &visibleRange) const {
     float halfChar = getCurrentScale() / 2;
     int firstCharCenter = qRound(halfChar);
@@ -100,15 +96,15 @@ QSize PanViewRenderer::getBaseCanvasSize(const U2Region &visibleRange) const {
 
     PVRowsManager *rm = panView->getRowsManager();
     return QSize(firstLastWidth + 2 * halfChar + 5,
-                 commonMetrics.lineHeight * (rm->getNumRows() + s->showCustomRulers * s->customRulers.size() + s->showMainRuler + isSequenceCharsVisible()) + 6 );
+                 commonMetrics.lineHeight * (rm->getNumRows() + s->showCustomRulers * s->customRulers.size() + s->showMainRuler + isSequenceCharsVisible() + 1) + 6 );
 }
 
 void PanViewRenderer::drawAll(QPainter &p, const U2Region &visibleRange) {
-    QSize canvasSize = getBaseCanvasSize(visibleRange);
     int rowsOffsetOnScreen = s->rowLinesOffset;
     int numVisibleRows = s->numLines;
     s->rowLinesOffset = 0;
     s->numLines = panView->getRowsManager()->getNumRows() + s->getAdditionalLines();
+    QSize canvasSize = getBaseCanvasSize(visibleRange);
     drawAll(p, canvasSize, visibleRange);
     s->rowLinesOffset = rowsOffsetOnScreen;
     s->numLines = numVisibleRows;

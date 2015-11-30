@@ -113,13 +113,18 @@ qint64 DetViewMultiLineRenderer::getContentIndentY(const QSize& , const U2Region
     return 0;
 }
 
+int DetViewMultiLineRenderer::getRowsInLineCount() const {
+    return singleLinePainter->getRowsInLineCount() + 2;
+}
+
 QSize DetViewMultiLineRenderer::getBaseCanvasSize(const U2Region &visibleRange) const {
     int defaultW = detView->getRenderArea()->width();
     int lineCount = visibleRange.length / getSymbolsPerLine(defaultW);
     if (visibleRange.length % getSymbolsPerLine(defaultW)) {
         lineCount++;
     }
-    return QSize(defaultW, getOneLineHeight() * lineCount);
+    defaultW = qMin(defaultW, (int)(getCurrentScale() * visibleRange.length));
+    return QSize(defaultW, (getOneLineHeight() - extraIndent) * lineCount);
 }
 
 void DetViewMultiLineRenderer::drawAll(QPainter &p, const QSize &canvasSize, const U2Region &visibleRange) {

@@ -41,6 +41,8 @@ public:
     double getCurrentScale() const;
     qint64 getSymbolsPerLine(const qint64 width) const;
 
+    virtual int getRowsInLineCount() const = 0;
+
     virtual bool isOnTranslationsLine(const QPoint& p, const QSize& canvasSize, const U2Region& visibleRange) const = 0;
     virtual bool isOnAnnotationLine(const QPoint& p, Annotation*a, int region, const AnnotationSettings *as, const QSize &canvasSize, const U2Region& visibleRange) const = 0;
 

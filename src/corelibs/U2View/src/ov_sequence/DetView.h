@@ -46,9 +46,9 @@ public:
 
     DetViewRenderArea* getDetViewRenderArea() const;
 
-    bool hasTranslations();
-    bool hasComplementaryStrand();
-    bool isWrapMode();
+    bool hasTranslations() const;
+    bool hasComplementaryStrand() const;
+    bool isWrapMode() const;
 
     virtual void setStartPos(qint64 pos);
     virtual void setCenterPos(qint64 pos);
@@ -60,6 +60,8 @@ public:
     void setShowTranslation(bool t);
 
     void setDisabledDetViewActions(bool t);
+
+    int getShift() const;
 
 protected slots:
     virtual void sl_sequenceChanged();
@@ -80,17 +82,22 @@ protected:
     void mouseReleaseEvent(QMouseEvent* me);
     void wheelEvent(QWheelEvent* we);
     void resizeEvent(QResizeEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 
     void updateVisibleRange();
     void updateActions();
     void updateSize();
     void updateVerticalScrollBar();
+    void updateVerticalScrollBarPosition();
 
     QAction*        showComplementAction;
     QAction*        showTranslationAction;
     QAction*        wrapSequenceAction;
 
     GScrollBar*     verticalScrollBar;
+
+    int numShiftsInOneLine;
+    int currentShiftsCounter;
 };
 
 class DetViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {
@@ -110,8 +117,11 @@ public:
     DetView* getDetView() const;
 
     int getSymbolsPerLine() const;
-    int getFullyVisibleLinesCount() const;
+    int getLinesCount() const;
     int getVisibleSymbolsCount() const;
+
+    int getShiftsCount() const;
+    int getShiftHeight() const;
 
     void updateSize();
 

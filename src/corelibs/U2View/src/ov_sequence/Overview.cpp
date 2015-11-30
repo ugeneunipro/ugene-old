@@ -228,15 +228,14 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
 
     if (me->buttons() & Qt::LeftButton) {
         qint64 pos = renderArea->coordToPos(renderAreaPos.x() - mousePosToSlider.x());
-        if(lastPressPos!=-1) {//make selection
+        if (lastPressPos != -1) {//make selection
             U2Region selection;
             qint64 mousePos = renderArea->coordToPos(renderAreaPos.x());
             qint64 selLen = mousePos-lastPressPos;
-            if(selLen>0) {
+            if (selLen > 0) {
                 selection.startPos=lastPressPos;
                 selection.length=selLen;
-            }
-            else {
+            } else {
                 selection.startPos=mousePos;
                 selection.length=-selLen;
             }
@@ -247,7 +246,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
 
         if (panView->isVisible()) {
             qint64 seqLen = ctx->getSequenceLength();
-            if(panSliderMovedRight) {
+            if (panSliderMovedRight) {
                 OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
 
                 QRectF panSlider(ra->getPanSlider());
@@ -262,7 +261,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
                 if(panVisLen > 0 && seqLen >= (panVisLen + pos)) {
                     panView->setVisibleRange(U2Region(pos, panVisLen));
                 }
-            } else if(panSliderMovedLeft) {
+            } else if (panSliderMovedLeft) {
                 OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
 
                 QRectF panSlider(ra->getPanSlider());
@@ -277,16 +276,14 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
                 if(panVisLen > 0 && pos > 0 && (panVisLen + pos) <= seqLen) {
                     panView->setVisibleRange(U2Region(pos, panVisLen));
                 }
-            } else if(panSliderClicked) {
+            } else if (panSliderClicked) {
                 qint64 panVisLen = panView->getVisibleRange().length;
                 pos = qBound(qint64(0), qint64(pos), seqLen - panVisLen);
                 panView->setVisibleRange(U2Region(pos, panVisLen));
             }
         }
         if (detSliderClicked) {
-            qint64 detVisLen = detView->getVisibleRange().length;
-            pos = qBound(qint64(0), qint64(pos), seqLen - detVisLen);
-            detView->setVisibleRange(U2Region(pos, detVisLen));
+            detView->setStartPos(pos);
         }
     }
     QWidget::mouseMoveEvent(me);

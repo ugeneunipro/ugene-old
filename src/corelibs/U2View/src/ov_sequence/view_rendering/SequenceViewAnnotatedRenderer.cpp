@@ -236,7 +236,13 @@ void SequenceViewAnnotatedRenderer::drawAnnotationConnections(QPainter &p, Annot
             const int max = qMax(prevPos, pos);
             if (visibleRange.intersects(U2Region(min, max - min))) {
                 int x1 = posToXCoord(prevPos, canvasSize, visibleRange) + dx1;
+                if (x1 == -1 && prevPos > visibleRange.endPos()) {
+                    x1 = posToXCoord(visibleRange.endPos() - 1, canvasSize, visibleRange) + dx1;
+                }
                 int x2 = posToXCoord(pos, canvasSize, visibleRange) + dx2;
+                if (x2 == -1 && pos > visibleRange.endPos()) {
+                    x2 = posToXCoord(visibleRange.endPos() - 1, canvasSize, visibleRange) + dx2;
+                }
                 if (qAbs(x2 - x1) > 1) {
                     x1 = qBound( - MAX_VIRTUAL_RANGE, x1, MAX_VIRTUAL_RANGE); //qt4.4 crashes in line clipping alg for extremely large X values
                     x2 = qBound( - MAX_VIRTUAL_RANGE, x2, MAX_VIRTUAL_RANGE);

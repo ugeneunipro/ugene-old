@@ -69,4 +69,8 @@ float SequenceViewRenderer::posToXCoordF(qint64 p, const QSize &canvasSize, cons
     return res;
 }
 
+qint64 SequenceViewRenderer::getRowLineHeight() const {
+    return commonMetrics.lineHeight;
+}
+
 } // namespace

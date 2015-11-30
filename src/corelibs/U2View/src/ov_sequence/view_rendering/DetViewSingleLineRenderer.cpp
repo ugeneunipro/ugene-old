@@ -113,6 +113,7 @@ U2Region DetViewSingleLineRenderer::getAnnotationYRange(Annotation *a, int regio
 
 U2Region DetViewSingleLineRenderer::getMirroredYRange(const U2Strand &mirroredStrand) const {
     int line = mirroredStrand.isDirect() ? directLine : complementLine;
+    line = (line == -1) ? directLine : line;
     int y = getLineY(line);
     return U2Region(y, commonMetrics.lineHeight);
 }
@@ -135,8 +136,12 @@ qint64 DetViewSingleLineRenderer::getContentIndentY(const QSize& canvasSize, con
    return (canvasSize.height() - getOneLineHeight()) / 2;
 }
 
+int DetViewSingleLineRenderer::getRowsInLineCount() const {
+    return numLines;
+}
+
 QSize DetViewSingleLineRenderer::getBaseCanvasSize(const U2Region &visibleRange) const {
-    return QSize(visibleRange.length * commonMetrics.charWidth, detView->getRenderArea()->height());
+    return QSize(visibleRange.length * commonMetrics.charWidth, getOneLineHeight());
 }
 
 bool DetViewSingleLineRenderer::isOnTranslationsLine(const QPoint &p, const QSize& /*canvasSize*/, const U2Region& /*visibleRange*/) const {

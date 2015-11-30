@@ -57,6 +57,8 @@ public:
     int posToXCoord(const qint64 p, const QSize& canvasSize, const U2Region& visibleRange) const;
     virtual float posToXCoordF(const qint64 p, const QSize& canvasSize, const U2Region& visibleRange) const;
 
+    virtual qint64 getRowLineHeight() const;
+
     virtual double getCurrentScale() const = 0;
 
     virtual qint64 getContentIndentY(const QSize& canvasSize, const U2Region& visibleRange) const = 0;
