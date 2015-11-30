@@ -50,17 +50,12 @@ const QString ConductGOTask::BASE_DIR_NAME("ConductGO_tmp");
 const QString ConductGOTask::BASE_SUBDIR_NAME("ConductGO");
 const QString ConductGOTask::TREAT_NAME("treatment");
 
-ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn)
-: ExternalToolSupportTask("ConductGO annotation", TaskFlag_None)
-, settings(_settings)
-, storage(storage)
-, treatAnn(_treatAnn)
-, treatDoc(NULL)
-, treatTask(NULL)
+ConductGOTask::ConductGOTask(const ConductGOSettings& settings)
+: ExternalToolSupportTask("ConductGO annotation", TaskFlag_CollectChildrenWarnings)
+, settings(settings)
 , etTask(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:ConductGOTask");
-    SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 ConductGOTask::~ConductGOTask() {
@@ -68,15 +63,10 @@ ConductGOTask::~ConductGOTask() {
 }
 
 void ConductGOTask::cleanup() {
-    treatAnn.clear();
-
-    delete treatDoc; treatDoc = NULL;
-
-    //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
     QDir tmpDir(tmpDirPath);
-    if(tmpDir.exists()){
-        foreach(QString file, tmpDir.entryList()){
+    if (tmpDir.exists()) {
+        foreach (const QString &file, tmpDir.entryList()) {
             tmpDir.remove(file);
         }
     }
@@ -87,65 +77,28 @@ void ConductGOTask::prepare() {
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
     CHECK_OP(stateInfo, );
 
-    settings.outDir = GUrlUtils::createDirectory(
-        settings.outDir + "/" + BASE_SUBDIR_NAME,
-        "_", stateInfo);
+    settings.outDir = GUrlUtils::createDirectory(settings.outDir + "/" + BASE_SUBDIR_NAME, "_", stateInfo);
     CHECK_OP(stateInfo, );
 
-    treatDoc = createDoc(treatAnn, TREAT_NAME);
-    CHECK_OP(stateInfo, );
+    copyFile(settings.treatUrl, workingDir + "/" + QFileInfo(settings.treatUrl).fileName());
+    settings.treatUrl = workingDir + "/" + QFileInfo(settings.treatUrl).fileName();
 
-    treatTask = new SaveDocumentTask(treatDoc);
-    addSubTask(treatTask);
+    ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+    SAFE_POINT_EXT(NULL != rTool, setError("R script tool wasn't found in the registry"), );
+    const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-}
-
-Document* ConductGOTask::createDoc(const QList<Workflow::SharedDbiDataHandler>& annData, const QString& name) {
-    Document* doc = NULL;
-
-    QString docUrl = workingDir + "/" + name +".bed";
-
-    DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BED);
-    CHECK_EXT(NULL != bedFormat, stateInfo.setError("NULL bed format"), doc);
-
-    doc = bedFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), docUrl, stateInfo);
-    CHECK_OP(stateInfo, doc);
-    doc->setDocumentOwnsDbiResources(false);
-
-    QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(storage, annData);
-    foreach (AnnotationTableObject *annTable, annTables) {
-        doc->addObject(annTable);
-    }
-
-    return doc;
-}
-
-QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
-    QList<Task*> result;
-    CHECK(!subTask->isCanceled(), result);
-    CHECK(!subTask->hasError(), result);
-
-    if (treatTask == subTask) {
-            QStringList args = settings.getArguments(treatDoc->getURLString());
-
-            ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
-            SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
-            const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
-
-            etTask = new ExternalToolRunTask(ET_GO_ANALYSIS, args, new ExternalToolLogParser(), getSettings().outDir, QStringList() << rDir);
-            setListenerForTask(etTask);
-            result << etTask;
-    }
-    return result;
+    etTask = new ExternalToolRunTask(ET_GO_ANALYSIS, settings.getArguments(), new ExternalToolLogParser(), getSettings().outDir, QStringList() << rDir);
+    setListenerForTask(etTask);
+    addSubTask(etTask);
 }
 
 void ConductGOTask::run() {
-    foreach(const QString& file, getResultFileNames()){
-        copyFile(workingDir+"/"+ file, getSettings().outDir + "/" + file);
+    foreach (const QString& file, getResultFileNames()) {
+        copyFile(workingDir + "/" + file, getSettings().outDir + "/" + file);
     }
 }
 
-const ConductGOSettings& ConductGOTask::getSettings(){
+const ConductGOSettings & ConductGOTask::getSettings() const {
     return settings;
 }
 
@@ -169,7 +122,7 @@ bool ConductGOTask::copyFile(const QString &src, const QString &dst) {
 }
 
 
-QStringList ConductGOTask::getResultFileNames(){
+QStringList ConductGOTask::getResultFileNames() const {
     QStringList result;
 
     QString current;

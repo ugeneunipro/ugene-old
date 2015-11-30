@@ -41,25 +41,26 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include "Gene2PeakFormatLoader.h"
+#include "Peak2GeneFormatLoader.h"
 #include "Peak2GeneSupport.h"
 #include "Peak2GeneTask.h"
 
 namespace U2 {
 
 const QString Peak2GeneTask::BASE_DIR_NAME("peak2gene_tmp");
+const QString Peak2GeneTask::BASE_SUBDIR_NAME("peak2gene");
 const QString Peak2GeneTask::TREAT_NAME("treatment");
 
-Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn)
-: ExternalToolSupportTask("Peak2gene annotation", TaskFlag_None)
-, settings(_settings)
+Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& treatAnn)
+: ExternalToolSupportTask("Peak2gene annotation", TaskFlag_CollectChildrenWarnings)
+, settings(settings)
 , storage(storage)
-, treatAnn(_treatAnn)
+, treatAnn(treatAnn)
 , treatDoc(NULL)
-, geneDoc(NULL)
-, peaksDoc(NULL)
+, genesAto(NULL)
+, peaksAto(NULL)
 , treatTask(NULL)
-, geneTask(NULL)
-, peaksTask(NULL)
 , etTask(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:Peak2GeneTask");
@@ -73,9 +74,12 @@ Peak2GeneTask::~Peak2GeneTask() {
 void Peak2GeneTask::cleanup() {
     treatAnn.clear();
 
-    delete treatDoc; treatDoc = NULL;
-    delete peaksDoc; peaksDoc = NULL;
-    delete geneDoc; geneDoc = NULL;
+    delete treatDoc;
+    treatDoc = NULL;
+    delete genesAto;
+    genesAto = NULL;
+    delete peaksAto;
+    peaksAto = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -132,72 +136,55 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
             setListenerForTask(etTask);
             result << etTask;
     }
-    else if(subTask == etTask){
+    else if (subTask == etTask) {
         //read annotations
-        QString geneName = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME+"_gene_annotation.txt";
-        QString peakName = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME+"_peaks_annotation.txt";
-
-        geneTask=
-            new LoadDocumentTask(BaseDocumentFormats::BED,
-            geneName,
-            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-        result.append(geneTask);
-
-        peaksTask=
-            new LoadDocumentTask(BaseDocumentFormats::BED,
-            peakName,
-            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-
-        result.append(peaksTask);
-
-    }else if(subTask == geneTask){
-        geneDoc = geneTask->takeDocument();
-
-    }else if(subTask == peaksTask){
-        peaksDoc = peaksTask->takeDocument();
+        genesUrl = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME + "_gene_annotation.txt";
+        peaksUrl = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME + "_peaks_annotation.txt";
     }
 
     return result;
 }
 
 void Peak2GeneTask::run() {
+    QScopedPointer<IOAdapter> geneAdapter(AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE)->createIOAdapter());
+    CHECK_EXT(geneAdapter->open(genesUrl, IOAdapterMode_Read), L10N::errorOpeningFileRead(genesUrl), );
 
+    Gene2PeakFormatLoader geneLoader(stateInfo, geneAdapter.data());
+    QList<SharedAnnotationData> geneAnnotations = geneLoader.loadAnnotations();
+    CHECK_OP(stateInfo, );
+
+    genesAto = new AnnotationTableObject("gene2peak", storage->getDbiRef());
+    genesAto->addAnnotations(geneAnnotations);
+
+    QScopedPointer<IOAdapter> peakAdapter(AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE)->createIOAdapter());
+    CHECK_EXT(peakAdapter->open(peaksUrl, IOAdapterMode_Read), L10N::errorOpeningFileRead(peaksUrl), );
+
+    Peak2GeneFormatLoader peakLoader(stateInfo, peakAdapter.data());
+    QList<SharedAnnotationData> peakAnnotations = peakLoader.loadAnnotations();
+    CHECK_OP(stateInfo, );
+
+    peaksAto = new AnnotationTableObject("peak2gene", storage->getDbiRef());
+    peaksAto->addAnnotations(peakAnnotations);
 }
 
-const Peak2GeneSettings& Peak2GeneTask::getSettings(){
+const Peak2GeneSettings& Peak2GeneTask::getSettings() const{
     return settings;
 }
 
-QList<AnnotationTableObject *> Peak2GeneTask::getGenes() const {
-    QList<AnnotationTableObject *> res;
-
-    if (geneDoc == NULL) {
-        return res;
-    }
-
-    const QList<GObject*> objects = geneDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    foreach(GObject* ao, objects) {
-        res << qobject_cast<AnnotationTableObject *>(ao);
-        geneDoc->removeObject(ao, DocumentObjectRemovalMode_Release);
-    }
-
-    return res;
+AnnotationTableObject * Peak2GeneTask::getGenes() const {
+    return genesAto;
 }
 
-QList<AnnotationTableObject *> Peak2GeneTask::getPeaks() const {
-    QList<AnnotationTableObject *> res;
+AnnotationTableObject * Peak2GeneTask::getPeaks() const {
+    return peaksAto;
+}
 
-    if (peaksDoc == NULL){
-        return res;
-    }
+const QString &Peak2GeneTask::getGenesUrl() const {
+    return genesUrl;
+}
 
-    const QList<GObject*> objects = peaksDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    foreach(GObject* ao, objects) {
-        res << qobject_cast<AnnotationTableObject *>(ao);
-        peaksDoc->removeObject(ao, DocumentObjectRemovalMode_Release);
-    }
-
-    return res;
+const QString &Peak2GeneTask::getPeaksUrl() const {
+    return genesUrl;
 }
 
 } // U2

@@ -50,7 +50,7 @@ const QString MACSTask::BASE_DIR_NAME("macs_tmp");
 const QString MACSTask::BASE_SUBDIR_NAME("macs");
 
 MACSTask::MACSTask(const MACSSettings &_settings, const GUrl &_treatUrl, const GUrl &_conUrl)
-    : ExternalToolSupportTask(tr("MACS peak calling"), TaskFlag_None)
+    : ExternalToolSupportTask(tr("MACS peak calling"), TaskFlag_CollectChildrenWarnings)
     , settings(_settings)
     , treatUrl(_treatUrl)
     , conUrl(_conUrl)

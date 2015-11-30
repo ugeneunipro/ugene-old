@@ -19,43 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CONDUCT_GO_SETTINGS_
-#define _U2_CONDUCT_GO_SETTINGS_
+#ifndef _U2_TABULATED_FORMAT_READER_H_
+#define _U2_TABULATED_FORMAT_READER_H_
 
-#include <QString>
-#include <QStringList>
+#include <QObject>
 
 namespace U2 {
 
+class IOAdapter;
+class U2OpStatus;
 
-class ConductGOSettings {
+class TabulatedFormatReader : public QObject {
 public:
-    const static QString UNIVERSE_HGU133A;
-    const static QString UNIVERSE_HGU133B;
-    const static QString UNIVERSE_HGU133PLUS2;
-    const static QString UNIVERSE_HGU95AV2;
-    const static QString UNIVERSE_MOUSE_430a2;
-    const static QString UNIVERSE_CELEGANS;
-    const static QString UNIVERSE_DROSOPHILA2;
-    const static QString UNIVERSE_ORG_HS_EG;
-    const static QString UNIVERSE_ORG_MM_EG;
-    const static QString UNIVERSE_ORG_CE_EG;
-    const static QString UNIVERSE_ORG_DM_EG;
+    TabulatedFormatReader(U2OpStatus &os, IOAdapter *ioAdapter);
 
-    ConductGOSettings();
+    bool hasNextLine() const;
+    QStringList getNextLine();
+    qint64 getCurrentLineNumber() const;
 
-    QString     outDir;
-    QString     title;
-    QString     treatUrl;
-    QString     geneUniverse;
-
-public:
-     QStringList getArguments() const;
+    const QStringList &getComments() const;
 
 private:
-    void initDefault();
+    void readNextLine();
+    QString read();
+    static bool isComment(const QString &line);
+    void storeLine(const QString &line);
+
+    IOAdapter *ioAdapter;
+
+    QStringList storedLine;
+    QStringList comments;
+
+    static const int BUFFER_SIZE = 4096;
+    char buffer[BUFFER_SIZE];
+    qint64 currentLine;
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_CONDUCT_GO_SETTINGS_
+#endif // _U2_TABULATED_FORMAT_READER_H_

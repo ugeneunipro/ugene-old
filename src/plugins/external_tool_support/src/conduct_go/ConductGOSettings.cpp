@@ -48,14 +48,14 @@ void ConductGOSettings::initDefault(){
     geneUniverse = "hgu133a";
 }
 
-QStringList ConductGOSettings::getArguments( const QString& treatFilePath){
+QStringList ConductGOSettings::getArguments() const {
     QStringList result;
 
 //    go_analysis.py  '$title' '$diff_expr_file' '$logmeta' '$diff_expr_file.dbkey', '$annotation'
 
     result << title;
 
-    result << treatFilePath;
+    result << treatUrl;
 
     result << "logmeta.txt";
 

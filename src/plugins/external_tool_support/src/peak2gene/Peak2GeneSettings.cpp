@@ -62,7 +62,7 @@ QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
 
     QStringList result;
 
-    result << "--treat=" + treatFilePath;
+    result << "--treat=" + GUrlUtils::getQuotedString(treatFilePath);
 
     result << "--name=" + DEFAULT_NAME;
 
@@ -74,9 +74,9 @@ QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
 
     result << "--distance=" + QByteArray::number(distance);
 
-    result << "--genome=" + genomePath;
+    result << "--genome=" + GUrlUtils::getQuotedString(genomePath);
 
-    result << "--entrez=" + entrezPath;
+    result << "--entrez=" + GUrlUtils::getQuotedString(entrezPath);
 
     return result;
 }

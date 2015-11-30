@@ -51,7 +51,7 @@ const QString SeqPosTask::BASE_SUBDIR_NAME("SeqPos");
 const QString SeqPosTask::TREAT_NAME("treatment");
 
 SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_treatAnn)
-: ExternalToolSupportTask("SeqPos annotation", TaskFlag_None)
+: ExternalToolSupportTask("SeqPos annotation", TaskFlag_CollectChildrenWarnings)
 , settings(_settings)
 , storage(storage)
 , treatAnn(_treatAnn)

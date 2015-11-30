@@ -40,7 +40,7 @@ class SaveDocumentTask;
 class Peak2GeneTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    Peak2GeneTask(const Peak2GeneSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn);
+    Peak2GeneTask(const Peak2GeneSettings& settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& treatAnn);
     virtual ~Peak2GeneTask();
 
     virtual void prepare();
@@ -48,11 +48,12 @@ public:
     virtual void run();
     virtual void cleanup();
 
-    const Peak2GeneSettings & getSettings();
+    const Peak2GeneSettings & getSettings() const;
 
-    // Memory should be released by caller
-    QList<AnnotationTableObject *> getGenes() const;
-    QList<AnnotationTableObject *> getPeaks() const;
+    AnnotationTableObject * getGenes() const;
+    AnnotationTableObject * getPeaks() const;
+    const QString & getGenesUrl() const;
+    const QString & getPeaksUrl() const;
 
 private:
     Peak2GeneSettings settings;
@@ -63,17 +64,18 @@ private:
 
     Document *treatDoc;
 
-    Document *geneDoc;
-    Document *peaksDoc;
+    AnnotationTableObject *genesAto;
+    AnnotationTableObject *peaksAto;
+
+    QString genesUrl;
+    QString peaksUrl;
 
     SaveDocumentTask *treatTask;
-
-    LoadDocumentTask *geneTask;
-    LoadDocumentTask *peaksTask;
 
     ExternalToolRunTask *etTask;
 
     static const QString BASE_DIR_NAME;
+    static const QString BASE_SUBDIR_NAME;
     static const QString TREAT_NAME;
 
 private:

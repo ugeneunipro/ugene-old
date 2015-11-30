@@ -83,10 +83,9 @@ Task *ConductGOWorker::tick() {
             return new FailTask(os.getError());
         }
 
-        QList<SharedDbiDataHandler> treatData = StorageUtils::getAnnotationTableHandlers(data[ANNOT_SLOT_ID]);
-        ConductGOSettings settings = createConductGOSettings();
+        ConductGOSettings settings = createConductGOSettings(data[ANNOT_SLOT_ID].toString());
 
-        ConductGOTask* t = new ConductGOTask(settings, context->getDataStorage(), treatData);
+        ConductGOTask* t = new ConductGOTask(settings);
         t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
@@ -109,7 +108,7 @@ void ConductGOWorker::sl_taskFinished() {
     const QStringList& resFileNames = t->getResultFileNames();
     foreach(const QString& fn, resFileNames){
         QString url = t->getSettings().outDir + "/" + fn;
-        context->getMonitor()->addOutputFile(url, getActor()->getId());
+        context->getMonitor()->addOutputFile(url, getActor()->getId(), QFileInfo(url).suffix() == "html");
     }
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
@@ -117,11 +116,12 @@ void ConductGOWorker::sl_taskFinished() {
     }
 }
 
-ConductGOSettings ConductGOWorker::createConductGOSettings(){
+ConductGOSettings ConductGOWorker::createConductGOSettings(const QString &treatUrl) {
     ConductGOSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);
     settings.title = getValue<QString>(TITLE);
+    settings.treatUrl = treatUrl;
     settings.geneUniverse = getValue<QString>(GENE_UNIVERSE);
 
     return settings;
@@ -139,12 +139,12 @@ void ConductGOWorkerFactory::init() {
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(ANNOT_SLOT_ID,
         ConductGOWorker::tr("Target genes"),
-        ConductGOWorker::tr("Gene list to identify over represented GO terms."));
-    inTypeMap[treatDesc] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
+        ConductGOWorker::tr("URL to file with genes to identify over represented GO terms."));
+    inTypeMap[treatDesc] = BaseTypes::STRING_TYPE();
 
     Descriptor inPortDesc(IN_PORT_DESCR,
         ConductGOWorker::tr("Conduct GO data"),
-        ConductGOWorker::tr("Gene list to identify over represented GO terms."));
+        ConductGOWorker::tr("URL to file with genes to identify over represented GO terms."));
 
     DataTypePtr inTypeSet(new MapDataType(IN_TYPE_ID, inTypeMap));
     portDescs << new PortDescriptor(inPortDesc, inTypeSet, true);

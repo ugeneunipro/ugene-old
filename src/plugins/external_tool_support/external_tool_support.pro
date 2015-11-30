@@ -104,10 +104,13 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/mrbayes/MrBayesSupport.h \
            src/mrbayes/MrBayesTask.h \
            src/mrbayes/MrBayesTests.h \
+           src/peak2gene/Gene2PeakFormatLoader.h \
+           src/peak2gene/Peak2GeneFormatLoader.h \
            src/peak2gene/Peak2GeneSettings.h \
            src/peak2gene/Peak2GeneSupport.h \
            src/peak2gene/Peak2GeneTask.h \
            src/peak2gene/Peak2GeneWorker.h \
+           src/peak2gene/TabulatedFormatReader.h \
            src/perl/PerlSupport.h \
            src/phyml/PhyMLDialogWidget.h \
            src/phyml/PhyMLSupport.h \
@@ -277,10 +280,13 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/mrbayes/MrBayesSupport.cpp \
            src/mrbayes/MrBayesTask.cpp \
            src/mrbayes/MrBayesTests.cpp \
+           src/peak2gene/Gene2PeakFormatLoader.cpp \
+           src/peak2gene/Peak2GeneFormatLoader.cpp \
            src/peak2gene/Peak2GeneSettings.cpp \
            src/peak2gene/Peak2GeneSupport.cpp \
            src/peak2gene/Peak2GeneTask.cpp \
            src/peak2gene/Peak2GeneWorker.cpp \
+           src/peak2gene/TabulatedFormatReader.cpp \
            src/perl/PerlSupport.cpp \
            src/phyml/PhyMLDialogWidget.cpp \
            src/phyml/PhyMLSupport.cpp \

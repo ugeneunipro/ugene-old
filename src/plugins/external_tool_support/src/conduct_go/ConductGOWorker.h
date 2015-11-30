@@ -46,7 +46,7 @@ private:
     IntegralBus *inChannel;
 
 private:
-    ConductGOSettings createConductGOSettings();
+    ConductGOSettings createConductGOSettings(const QString &treatUrl);
 
 private slots:
     void sl_taskFinished();

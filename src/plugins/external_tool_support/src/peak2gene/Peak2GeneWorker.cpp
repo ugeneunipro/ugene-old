@@ -39,6 +39,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "Peak2GeneSupport.h"
 #include "Peak2GeneWorker.h"
@@ -60,6 +61,8 @@ static const QString OUT_PORT_DESCR("out-data");
 static const QString PEAK_ANNOTATION("peak-annotation");
 static const QString GENE_ANNOTATION("gene-annotation");
 
+static const QString PEAK_ANNOTATION_URL("peak-annotation-url");
+static const QString GENE_ANNOTATION_URL("gene-annotation-url");
 
 static const QString OUTPOS("outpos");
 static const QString SYMBOL("symbol");
@@ -118,20 +121,21 @@ void Peak2GeneWorker::cleanup() {
 }
 
 void Peak2GeneWorker::sl_taskFinished() {
-    Peak2GeneTask *t = dynamic_cast<Peak2GeneTask*>(sender());
-    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
+    Peak2GeneTask *task = qobject_cast<Peak2GeneTask*>(sender());
+    if (!task->isFinished() || task->hasError() || task->isCanceled()) {
         return;
     }
 
     QVariantMap data;
 
-    QList<AnnotationTableObject *> genesTables = t->getGenes();
-    data[GENE_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(genesTables));
-    qDeleteAll(genesTables);
+    AnnotationTableObject * genesTable = task->getGenes();
+    data[GENE_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTable(genesTable));
 
-    QList<AnnotationTableObject *> peaksTables = t->getPeaks();
-    data[PEAK_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(peaksTables));
-    qDeleteAll(peaksTables);
+    AnnotationTableObject * peaksTable = task->getPeaks();
+    data[PEAK_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTable(peaksTable));
+
+    data[GENE_ANNOTATION_URL] = task->getGenesUrl();
+    data[PEAK_ANNOTATION_URL] = task->getPeaksUrl();
 
     output->put(Message(output->getBusType(), data));
 
@@ -141,7 +145,7 @@ void Peak2GeneWorker::sl_taskFinished() {
     }
 }
 
-U2::Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings( U2OpStatus &os ){
+Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings(U2OpStatus &os) {
     Q_UNUSED(os);
     Peak2GeneSettings settings;
 
@@ -207,20 +211,27 @@ void Peak2GeneWorkerFactory::init() {
     Descriptor geneRegDesc(GENE_ANNOTATION,
         Peak2GeneWorker::tr("Gene regions"),
         Peak2GeneWorker::tr("Annotation for each gene, containing all the peaks nearby."));
-    Descriptor peakRegDescr(PEAK_ANNOTATION,
+    Descriptor peakRegDesc(PEAK_ANNOTATION,
         Peak2GeneWorker::tr("Peak regions"),
         Peak2GeneWorker::tr("Annotation for each peak, containing all the genes nearby."));
+    Descriptor geneRegUrlDesc(GENE_ANNOTATION_URL,
+        Peak2GeneWorker::tr("Gene regions URL"),
+        Peak2GeneWorker::tr("URL to file with annotation for each gene, containing all the peaks nearby."));
+    Descriptor peakRegUrlDesc(PEAK_ANNOTATION_URL,
+        Peak2GeneWorker::tr("Peak regions URL"),
+        Peak2GeneWorker::tr("URL to file with annotation for each peak, containing all the genes nearby."));
 
     Descriptor outPortDesc(OUT_PORT_DESCR,
         Peak2GeneWorker::tr("Peak2gene output data"),
         Peak2GeneWorker::tr("Genes containing all the peaks nearby and peaks containing all the genes nearby."));
 
     outTypeMap[geneRegDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
-    outTypeMap[peakRegDescr] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    outTypeMap[peakRegDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    outTypeMap[geneRegUrlDesc] = BaseTypes::STRING_TYPE();
+    outTypeMap[peakRegUrlDesc] = BaseTypes::STRING_TYPE();
 
     DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
     portDescs << new PortDescriptor(outPortDesc, outTypeSet, false, true);
-
 
      QList<Attribute*> attrs;
      {

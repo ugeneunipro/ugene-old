@@ -42,14 +42,12 @@ workflow "ChIP-seq analysis with control"{
     write-annotations {
         type:write-annotations;
         name:"Write Gene Annotations";
-        document-format:bed;
-        url-out:genes.bed;
+        url-out:genes.gb;
     }
     write-annotations-1 {
         type:write-annotations;
         name:"Write Peak Annotations";
-        document-format:bed;
-        url-out:peaks.bed;
+        url-out:peaks.gb;
     }
     get-file-list {
         type:get-file-list;
@@ -141,16 +139,16 @@ workflow "ChIP-seq analysis with control"{
     }
 
     .actor-bindings {
-        get-file-list.out-url->multiplexer.input-data-1
-        get-file-list-1.out-url->multiplexer.input-data-2
-        multiplexer.output-data->macs-id.in-data
-        peak2gene-id.out-data->conduct-go-id.in-data
-        peak2gene-id.out-data->write-annotations.in-annotations
-        peak2gene-id.out-data->write-annotations-1.in-annotations
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
+        multiplexer.output-data->macs-id.in-data
+        get-file-list-1.out-url->multiplexer.input-data-2
+        get-file-list.out-url->multiplexer.input-data-1
+        peak2gene-id.out-data->conduct-go-id.in-data
+        peak2gene-id.out-data->write-annotations.in-annotations
+        peak2gene-id.out-data->write-annotations-1.in-annotations
     }
 
     get-file-list.url->macs-id.in-data._treatment-ann
@@ -160,7 +158,7 @@ workflow "ChIP-seq analysis with control"{
     macs-id.peak-summits->conservation_plot-id.in-data.cp_treat-ann
     macs-id.peak-summits->seqpos-id.in-data.cp_treat-ann
     macs-id.peak-summits->peak2gene-id.in-data._treat-ann
-    peak2gene-id.gene-annotation->conduct-go-id.in-data.in-ann
+    peak2gene-id.gene-annotation-url->conduct-go-id.in-data.in-ann
     peak2gene-id.gene-annotation->write-annotations.in-annotations.annotations
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
@@ -203,7 +201,7 @@ workflow "ChIP-seq analysis with control"{
                 in-data.angle:14.6383;
             }
             conservation_plot-id {
-                pos:"-165.294 -689.353";
+                pos:"-114.706 -801.118";
                 style:ext;
                 bg-color-ext:"128 128 0 64";
                 in-data.angle:180;
@@ -245,19 +243,19 @@ workflow "ChIP-seq analysis with control"{
                 out-data.angle:292.805;
             }
             seqpos-id {
-                pos:"-173.529 -547.588";
+                pos:"-114.705 -575.823";
                 style:ext;
                 bg-color-ext:"128 128 0 64";
                 in-data.angle:180;
             }
             write-annotations {
-                pos:"-316.412 -330.706";
+                pos:"-315.236 -307.177";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-annotations.angle:53.9726;
             }
             write-annotations-1 {
-                pos:"-539.765 -328.353";
+                pos:"-545.647 -306";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-annotations.angle:23.9625;
@@ -287,7 +285,7 @@ workflow "ChIP-seq analysis with control"{
                 text-pos:"-74 -26";
             }
             peak2gene-id.out-data->write-annotations-1.in-annotations {
-                text-pos:"-40 -6";
+                text-pos:"-36 -13";
             }
             peak2gene-id.out-data->write-annotations.in-annotations {
                 text-pos:"-9 -14";

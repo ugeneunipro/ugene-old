@@ -49,7 +49,7 @@ namespace U2 {
 const QString ConservationPlotTask::BASE_DIR_NAME("ConservationPlot_tmp");
 
 ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_plotData)
-: ExternalToolSupportTask("ConservationPlot annotation", TaskFlag_None)
+: ExternalToolSupportTask("ConservationPlot annotation", TaskFlag_CollectChildrenWarnings)
 , settings(_settings)
 , treatDoc(NULL)
 , treatTask(NULL)
