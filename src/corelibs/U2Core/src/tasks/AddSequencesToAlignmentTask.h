@@ -26,12 +26,15 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
 class StateLock;
 class LoadDocumentTask;
 class DNASequence;
+class U2MsaDbi;
+class U2UseCommonUserModStep;
 
 class U2CORE_EXPORT AddSequenceObjectsToAlignmentTask : public Task {
     Q_OBJECT
@@ -39,6 +42,7 @@ public:
     AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList);
 
     virtual void prepare();
+    virtual void run();
     ReportResult report();
 protected:
     void processObjectsAndSetResultingAlphabet();
@@ -51,11 +55,16 @@ private:
     StateLock*                  stateLock;
     const DNAAlphabet*          msaAlphabet;
     QStringList                 errorList;    
+    U2MsaDbi*                   dbi;
+    U2EntityRef                 entityRef;
+    U2UseCommonUserModStep*     modStep;
+    MAlignmentModInfo           mi;
 
     static const int maxErrorListSize;
     /** Returns the max length of the rows including trailing gaps */
-    qint64 createRows(QList<U2MsaRow>& rows);
-    void addRows(QList<U2MsaRow> &rows, qint64 len);
+    qint64 createRows(QList<U2MsaRow> &rows);
+    void addRows(QList<U2MsaRow> &rows, qint64 maxLength);
+    void updateAlphabet();
     void setupError();
 };
 

@@ -39,8 +39,10 @@ namespace U2 {
 const int AddSequenceObjectsToAlignmentTask::maxErrorListSize = 5;
 
 AddSequenceObjectsToAlignmentTask::AddSequenceObjectsToAlignmentTask(MAlignmentObject* obj, const QList<DNASequence>& seqList)
-    : Task("Add sequences to alignment task", TaskFlags(TaskFlags_NR_FOSE_COSC)), seqList(seqList), maObj(obj), 
-    stateLock(NULL), msaAlphabet(maObj->getAlphabet()) {}
+    : Task("Add sequences to alignment task", TaskFlags(TaskFlags_FOSE_COSC)), seqList(seqList), maObj(obj), 
+    stateLock(NULL), msaAlphabet(maObj->getAlphabet()), dbi(NULL), modStep(NULL) {
+    entityRef = maObj->getEntityRef();
+}
 
 void AddSequenceObjectsToAlignmentTask::prepare() {
     if (maObj.isNull()) {
@@ -56,6 +58,20 @@ void AddSequenceObjectsToAlignmentTask::prepare() {
     stateLock = new StateLock("Adding_files_to_alignment", StateLockFlag_LiveLock);
     maObj->lockState(stateLock);
     processObjectsAndSetResultingAlphabet();
+
+    // Create user mod step
+    modStep = new U2UseCommonUserModStep(entityRef, stateInfo);
+    CHECK_OP(stateInfo, );
+    dbi = modStep->getDbi()->getMsaDbi();
+}
+
+void AddSequenceObjectsToAlignmentTask::run() {
+    QList<U2MsaRow> rows;
+    qint64 maxLength = createRows(rows);
+    CHECK_OP(stateInfo, );
+    addRows(rows, maxLength);
+    CHECK_OP(stateInfo, );
+    updateAlphabet();
 }
 
 void AddSequenceObjectsToAlignmentTask::processObjectsAndSetResultingAlphabet() {
@@ -73,16 +89,15 @@ void AddSequenceObjectsToAlignmentTask::processObjectsAndSetResultingAlphabet() 
 }
 
 Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
+    delete modStep;
     releaseLock();
+
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
-    QList<U2MsaRow> rows;
-    qint64 len = createRows(rows);
-    CHECK_OP(stateInfo, ReportResult_Finished);
 
-    addRows(rows, len);
-    CHECK_OP(stateInfo, ReportResult_Finished);
+    // Update object
+    maObj->updateCachedMAlignment(mi);
 
     if (!errorList.isEmpty()) {
         setupError();
@@ -90,47 +105,38 @@ Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
     return ReportResult_Finished;
 }
 
-qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
-    U2EntityRef entityRef = maObj.data()->getEntityRef();
-    qint64 maxLen = 0;
+qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow> &rows) {
+    qint64 maxLength = 0;
+    U2EntityRef entityRef = maObj->getEntityRef();
     foreach (const DNASequence& seqObj, seqList) {
         U2MsaRow row = MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
         if (0 < row.gend) {
             rows << row;
-            maxLen = qMax(maxLen, (qint64)seqObj.length());
+            maxLength = qMax(maxLength, (qint64)seqObj.length());
         }
         CHECK_OP(stateInfo, 0);
     }
-    return maxLen;
+    return maxLength;
 }
 
-void AddSequenceObjectsToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
-    U2EntityRef entityRef = maObj.data()->getEntityRef();
-    // Create user mod step
-    MAlignmentModInfo mi;
-    U2UseCommonUserModStep modStep(entityRef, stateInfo);
-    CHECK_OP(stateInfo, );
-    U2MsaDbi *dbi = modStep.getDbi()->getMsaDbi();
-
+void AddSequenceObjectsToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 maxLength) {
     // Add rows
     dbi->addRows(entityRef.entityId, rows, stateInfo);
     CHECK_OP(stateInfo, );
 
-    if (len > maObj->getLength()) {
-        dbi->updateMsaLength(entityRef.entityId, len, stateInfo);
+    if (maxLength > maObj->getLength()) {
+        dbi->updateMsaLength(entityRef.entityId, maxLength, stateInfo);
         CHECK_OP(stateInfo, );
     }
+}
 
-    // Update alphabet
+void AddSequenceObjectsToAlignmentTask::updateAlphabet() {
     if (maObj->getAlphabet() != msaAlphabet) {
         SAFE_POINT(NULL != msaAlphabet, "NULL result alphabet", );
         dbi->updateMsaAlphabet(entityRef.entityId, msaAlphabet->getId(), stateInfo);
         CHECK_OP(stateInfo, );
         mi.alphabetChanged = true;
     }
-
-    // Update object
-    maObj->updateCachedMAlignment(mi);
 }
 
 void AddSequenceObjectsToAlignmentTask::setupError() {
