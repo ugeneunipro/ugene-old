@@ -21,7 +21,7 @@ do
     shift
 done
 
-dirname=$(dirname "`readlink -f $0`")
+dirname=$(dirname "`readlink -f "$0"`")
 
 tmp="${dirname#?}"
 
