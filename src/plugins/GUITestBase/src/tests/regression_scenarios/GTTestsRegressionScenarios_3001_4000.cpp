@@ -3419,10 +3419,11 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new AllEnzymesSearchScenario()));
     GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
     GTThread::waitForMainThread(os);
+    GTGlobals::sleep(20000);
 
     GTUtilsTaskTreeView::openView(os);
     GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Analyze" << "Find TFBS with SITECON...", GTGlobals::UseMouse);
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Analyze" << "Find TFBS with SITECON...");
 
     GTGlobals::sleep();
     CHECK_SET_ERR( GTUtilsTaskTreeView::checkTask(os, "SITECON search") == false, "SITECON task is still running");
