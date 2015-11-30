@@ -626,16 +626,6 @@ void MainWindowImpl::sl_show(){
     emit si_show();
 }
 
-int bar();
-
-int foo() {
-    return bar();
-}
-
-int bar() {
-    return foo();
-}
-
 void MainWindowImpl::sl_crashUgene() {
     volatile int *killer = NULL;
     *killer = 0;
