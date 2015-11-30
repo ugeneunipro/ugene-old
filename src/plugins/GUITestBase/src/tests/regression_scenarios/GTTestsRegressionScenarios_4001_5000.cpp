@@ -4128,7 +4128,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     QImage img = pixmap.toImage();
     QRgb rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
     QColor c(rgb);
-    CHECK_SET_ERR(c.name() == "#ededed", "simple overview has wrong color. Expected: #ededed, Found: " + c.name());
+    CHECK_SET_ERR(c.name() == "#ededed", "First check: simple overview has wrong color. Expected: #ededed, Found: " + c.name());
 
     //3. Add sequence eas.fastq to alignment
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
@@ -4147,14 +4147,14 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     //4. Undo changes
     GTUtilsMsaEditor::undo(os);
     GTGlobals::sleep();
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTThread::waitForMainThread(os);
 
     //Check empty simple overview gray color again
     pixmap = QPixmap::grabWidget(simple, simple->rect());
     img = pixmap.toImage();
     rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
     c = QColor(rgb);
-    CHECK_SET_ERR(c.name() == "#ededed", "simple overview has wrong color. Expected: #ededed, Found: " + c.name());
+    CHECK_SET_ERR(c.name() == "#ededed", "Second check: simple overview has wrong color. Expected: #ededed, Found: " + c.name());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4784_1) {
