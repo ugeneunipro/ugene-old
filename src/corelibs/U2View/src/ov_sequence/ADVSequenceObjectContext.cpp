@@ -24,6 +24,7 @@
 #include "AnnotatedDNAView.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -133,6 +134,7 @@ QList<GObject *> ADVSequenceObjectContext::getAnnotationGObjects() const {
 }
 
 void ADVSequenceObjectContext::sl_showDirectOnly(){
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::ShowDirectTranslationsOnly" );
     bool needUpdate = false;
     QList<QAction*> actionList = visibleFrames->actions();
     translationRowsStatus.clear();
@@ -158,6 +160,7 @@ void ADVSequenceObjectContext::sl_showDirectOnly(){
 }
 
 void ADVSequenceObjectContext::sl_showComplOnly(){
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::ShowComplementTranslationsOnly" );
     bool needUpdate = false;
     QList<QAction*> actionList = visibleFrames->actions();
     translationRowsStatus.clear();
@@ -183,6 +186,7 @@ void ADVSequenceObjectContext::sl_showComplOnly(){
 }
 
 void ADVSequenceObjectContext::sl_showShowAll(){
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::ShowAllTranslations" );
     bool needUpdate = false;
     translationRowsStatus.clear();
     foreach(QAction* a, visibleFrames->actions()){
@@ -224,7 +228,7 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
         connect(frames->addAction(QString("Show complementary only")), SIGNAL(triggered()), SLOT(sl_showComplOnly()));
         connect(frames->addAction(QString("Show all")), SIGNAL(triggered()), SLOT(sl_showShowAll()));
 
-        if(view != NULL){
+        if (view != NULL){
             m->addAction(view->getShowCodonTableAction());
         }
         m->addMenu(frames);
@@ -259,6 +263,7 @@ void ADVSequenceObjectContext::setAminoTranslation(const QString& tid) {
 }
 
 void ADVSequenceObjectContext::sl_setAminoTranslation() {
+    GCOUNTER( cvar, tvar, "DetView_SetAminoTranslation" );
     QAction* a = qobject_cast<QAction*>(sender());
     QString tid = a->data().toString();
     setAminoTranslation(tid);

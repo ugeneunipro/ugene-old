@@ -27,6 +27,7 @@
 
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -236,14 +237,17 @@ void DetView::sl_translationRowsChanged() {
 }
 
 void DetView::sl_showComplementToggle(bool v) {
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::ShowComplement" );
     setShowComplement(v);
 }
 
 void DetView::sl_showTranslationToggle(bool v) {
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::ShowTranslations" );
     setShowTranslation(v);
 }
 
 void DetView::sl_wrapSequenceToggle(bool v) {
+    GCOUNTER( cvar, tvar, "SequenceView::DetView::WrapSequence" );
     // turn off/on multiline mode
     scrollBar->setHidden(v);
     verticalScrollBar->setHidden(!v);
