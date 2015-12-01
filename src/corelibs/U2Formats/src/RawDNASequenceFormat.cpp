@@ -54,12 +54,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
     Q_UNUSED(opBlock);
-    static const int READ_BUFF_SIZE = 4096;
 
     U2SequenceImporter seqImporter(fs, true);
     const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
     const QBitArray& ALPHAS = TextUtils::ALPHA_NUMS;
@@ -73,7 +72,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     int len = 0;
     bool isStarted = false;
 
-    while (ok && (len = io->readBlock(buff, READ_BUFF_SIZE)) > 0) {
+    while (ok && (len = io->readBlock(buff, DocumentFormat::READ_BUFF_SIZE)) > 0) {
         seq.clear();
         bool isSeek = writer.seek(0);
                 assert(isSeek); Q_UNUSED(isSeek);

@@ -63,13 +63,12 @@ AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &
 }
 
 namespace {
-    const int bufferSize = 10 * 1024; // 10 Kb
 
     inline QByteArray readLine(IOAdapter *io, char *buffer, int bufferSize) {
         QByteArray result;
         bool terminatorFound = false;
         do {
-            qint64 length = io->readLine(buffer, bufferSize, &terminatorFound);
+            qint64 length = io->readLine(buffer, U2::DocumentFormat::READ_BUFF_SIZE, &terminatorFound);
             CHECK(-1 != length, result);
             result += QByteArray(buffer, length);
         } while (!terminatorFound && !io->isEof());
@@ -88,7 +87,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     SAFE_POINT(io, "IO adapter is NULL!",  NULL);
     SAFE_POINT(io->isOpen(), QString("IO adapter is not open %1").arg(io->getURL().getURLString()), NULL);
 
-    QByteArray readBuff(bufferSize + 1, 0);
+    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
 
     SplitAlleles splitting = fs.contains(DocumentReadingMode_SplitVariationAlleles)? AbstractVariationFormat::Split : AbstractVariationFormat::NoSplit;
@@ -101,7 +100,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     int lineNumber = 0;
     do {
         os.setProgress(io->getProgress());
-        QString line = readLine(io, buff, bufferSize);
+        QString line = readLine(io, buff, READ_BUFF_SIZE);
         lineNumber++;
         if (line.isEmpty()) {
             continue;

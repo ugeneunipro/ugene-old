@@ -114,7 +114,6 @@ public:
     const int valOffset;
     EMBLGenbankDataEntry* entry;
     IOAdapter* io;
-    static const int READ_BUFF_SIZE = 40000;
     char* buff;
     int len;
     U2OpStatus& si;

@@ -218,7 +218,6 @@ bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter&
     int headerSeqLen = st->entry->seqLen;
     res.reserve(res.size() + headerSeqLen);
 
-    static int READ_BUFF_SIZE = 4096;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
@@ -295,7 +294,7 @@ void SwissProtPlainTextFormat::readAnnotations(ParserState *st, int offset){
             break;
         }
         //parsing feature;
-        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::READ_BUFF_SIZE, st->si, offset);
+        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, READ_BUFF_SIZE, st->si, offset);
         st->entry->features.push_back(f);
     } while (st->readNextLine());
 }

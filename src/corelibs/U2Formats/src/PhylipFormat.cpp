@@ -107,7 +107,6 @@ Document* PhylipFormat::loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, cons
 }
 
 
-#define READ_BUFF_SIZE  1024
 #define MAX_NAME_LEN    10  // max name length for phylip format is 10
 
 #define SEQ_BLOCK_SIZE  100

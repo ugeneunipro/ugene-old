@@ -205,12 +205,9 @@ static bool checkSeq(const QByteArray &seq){
     return true;
 }
 
-
-#define READ_BUFF_SIZE  4096
-
 static inline void skipBreaks(U2::IOAdapter *io, U2OpStatus &ti, char* buff, qint64* len){
     bool lineOk = true;
-    *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+    *len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     if (*len == 0) { //end if stream
         ti.setError(ACEFormat::tr("Unexpected end of file"));
         return;
@@ -238,7 +235,7 @@ static inline void parseConsensus(U2::IOAdapter *io, U2OpStatus &ti, char* buff,
     names.insert(consName);
     consensus.clear();
     do {
-        len = io->readUntil(buff, READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
+        len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
         if (len <= 0) {
             ti.setError(ACEFormat::tr("No consensus"));
             return ;
@@ -248,7 +245,7 @@ static inline void parseConsensus(U2::IOAdapter *io, U2OpStatus &ti, char* buff,
         consensus.append(buff);
         ti.setProgress(io->getProgress());
     } while (!ti.isCoR() && !ok);
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = QString(QByteArray::fromRawData(buff, len)).trimmed();
     if(!line.startsWith("BQ")){
         ti.setError(ACEFormat::tr("BQ keyword hasn't been found"));
@@ -337,7 +334,7 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff
 
     sequence.clear();
     do {
-        len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
+        len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
         if (len <= 0) {
             ti.setError(ACEFormat::tr("No sequence"));
             return ;
@@ -347,7 +344,7 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff
         sequence.append(buff);
         ti.setProgress(io->getProgress());
     } while (!ti.isCoR() && !ok);
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = QString(QByteArray::fromRawData(buff, len)).trimmed();
     if(!line.startsWith("QA")){
         ti.setError(ACEFormat::tr("QA keyword hasn't been found"));

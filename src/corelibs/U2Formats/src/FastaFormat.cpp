@@ -124,7 +124,6 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     return res;
 }
 
-#define READ_BUFF_SIZE  4096
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os)
 {
@@ -138,7 +137,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     CHECK_OP(os, );
 
     writeLockReason.clear();
-    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    QByteArray readBuff(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
 
@@ -153,7 +152,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     //skip leading whites if present
     bool lineOk = true;
     static QBitArray nonWhites = ~TextUtils::WHITES;
-    io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
+    io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
     U2SequenceImporter seqImporter(fs, true);
     const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
@@ -170,7 +169,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         //skip start comments and read header
         if(!headerReaded){
             do{
-                len = io->readLine(buff, READ_BUFF_SIZE);
+                len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE);
             }while(buff[0] == fastaCommentStartChar && len > 0);
         }
 
@@ -208,7 +207,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         int sequenceLen = 0;
         while (!os.isCoR()) {
             do{
-                len = io->readLine(buff, READ_BUFF_SIZE);
+                len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE);
             }while(len <= 0 && !io->isEof());
 
             if (len <= 0 && io->isEof()) {

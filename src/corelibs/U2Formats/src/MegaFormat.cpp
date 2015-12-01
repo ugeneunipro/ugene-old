@@ -96,7 +96,6 @@ FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl
 
 bool MegaFormat::getNextLine(IOAdapter* io, QByteArray& line) {
     line.clear();
-    static int READ_BUFF_SIZE = 4096;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff = readBuffer.data();
 

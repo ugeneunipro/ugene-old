@@ -133,6 +133,8 @@ public:
     static const QString DBI_FOLDER_HINT;
     static const QString DEEP_COPY_OBJECT;
 
+    static const int READ_BUFF_SIZE;
+
     enum DocObjectOp {
         DocObjectOp_Add,
         DocObjectOp_Remove

@@ -67,21 +67,20 @@ MSFFormat::MSFFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(Documen
 }
 
 static bool getNextLine(IOAdapter* io, QByteArray& line) {
-    static int READ_BUFF_SIZE = 1024;
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0');
     char* buff = readBuffer.data();
 
     qint64 len;
     bool eolFound = false, eof = false;
     while (!eolFound) {
-        len = io->readLine(buff, READ_BUFF_SIZE, &eolFound);
-        if (len < READ_BUFF_SIZE && !eolFound) {
+        len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE, &eolFound);
+        if (len < DocumentFormat::READ_BUFF_SIZE && !eolFound) {
             eolFound = eof = true;
         }
         line += readBuffer;
     }
-    if (len != READ_BUFF_SIZE) {
-        line.resize(line.size() + len - READ_BUFF_SIZE);
+    if (len != DocumentFormat::READ_BUFF_SIZE) {
+        line.resize(line.size() + len - DocumentFormat::READ_BUFF_SIZE);
     }
     line = line.simplified();
     return eof;

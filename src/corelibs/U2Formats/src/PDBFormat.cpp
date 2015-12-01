@@ -169,11 +169,9 @@ PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), c
     flagAtomRecordPresent = false;
 }
 
-#define READ_BUF_SIZE 4096
-
 void PDBFormat::PDBParser::parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& ti) {
 
-    QByteArray readBuff(READ_BUF_SIZE+1, 0);
+    QByteArray readBuff(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buf = readBuff.data();
     qint64 len = 0;
     bool firstCompndLine = true;
@@ -181,7 +179,7 @@ void PDBFormat::PDBParser::parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& 
 
         bool lineOk = true;
 
-        len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        len = io->readUntil(buf, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
         if (len == 0) {
             break;
         }
@@ -560,10 +558,10 @@ int PDBFormat::getElementNumberByName(const QByteArray& elementName)
 
 QByteArray PDBFormat::PDBParser::getNextSpecLine()
 {
-    QByteArray readBuf(READ_BUF_SIZE+1, 0);
+    QByteArray readBuf(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buf = readBuf.data();
     bool lineOk;
-    int len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+    int len = io->readUntil(buf, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     QByteArray line = QByteArray::fromRawData(buf, len);
     // retrieve back ioAdapter position
     io->skip(-len);

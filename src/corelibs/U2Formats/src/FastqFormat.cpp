@@ -130,18 +130,16 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     return res;
 }
 
-#define BUFF_SIZE  4096
-
 static QString readSequenceName(U2OpStatus& os, IOAdapter *io, char beginWith = '@') {
     static const QString errorMessage = U2::FastqFormat::tr("Error while trying to find sequence name start");
 
-    QByteArray buffArray(BUFF_SIZE+1, 0);
+    QByteArray buffArray(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     { // read name string
         char *buff = buffArray.data();
         bool sequenceNameStartFound = false;
         int readedCount = 0;
         while ((readedCount == 0) && !io->isEof()) { // skip \ns
-            readedCount = io->readLine(buff, BUFF_SIZE, &sequenceNameStartFound);
+            readedCount = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE, &sequenceNameStartFound);
         }
         CHECK_EXT(io->isEof() == false,,"");
         CHECK_EXT(readedCount >= 0, os.setError(errorMessage), "");
@@ -163,14 +161,14 @@ static bool checkFirstSymbol(const QByteArray& b, char symbol) {
 
 static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, char readUntil = '+') {
 
-    QByteArray buffArray(BUFF_SIZE+1, 0);
+    QByteArray buffArray(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buff = buffArray.data();
 
     // reading until readUntil symbol i.e. quality or dna sequence name start, ignoring whitespace at the beginning and the end of lines
 
     while (!io->isEof()) {
         bool eolnFound = false;
-        int readedCount = io->readUntil(buff, BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
+        int readedCount = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
         CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading sequence")),);
 
         QByteArray trimmed = QByteArray(buffArray.data(), readedCount);
@@ -188,7 +186,7 @@ static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, ch
 
 static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int count) {
 
-    QByteArray buffArray(BUFF_SIZE+1, 0);
+    QByteArray buffArray(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buff = buffArray.data();
 
     // reading quality sequence, ignoring whitespace at the beginning and the end of lines
@@ -196,7 +194,7 @@ static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int
     int readed = 0;
     while (!io->isEof() && (readed < count)) {
         bool eolnFound = false;
-        int readedCount = io->readUntil(buff, BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
+        int readedCount = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
         CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading sequence")),);
 
         QByteArray trimmed = QByteArray(buffArray.data(), readedCount);

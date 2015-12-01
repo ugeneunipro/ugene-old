@@ -42,7 +42,6 @@
 
 namespace U2{
 
-#define READ_BUFF_SIZE 32768         //file reader buffer size
 #define SAVE_LINE_LEN 70            //line length for
 #define DEFAULT_EMPTY_FASTA_SEQUENCE_NAME "EMPTY_NAME"            //line length for
 
@@ -70,10 +69,10 @@ int readLongLine(QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &char
     int len;
     buffer.clear();
     do {
-        len = io->readLine(charbuff.data(), READ_BUFF_SIZE - 1);
+        len = io->readLine(charbuff.data(), DocumentFormat::READ_BUFF_SIZE - 1);
         charbuff.data()[len] = '\0';
         buffer.append(QString(charbuff.data()));
-    } while (READ_BUFF_SIZE - 1 == len);
+    } while (DocumentFormat::READ_BUFF_SIZE - 1 == len);
     return buffer.length();
 }
 

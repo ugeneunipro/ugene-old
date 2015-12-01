@@ -71,8 +71,6 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return hasBinaryBlocks ? FormatDetection_NotMatched : FormatDetection_HighSimilarity;
 }
 
-
-#define READ_BUFF_SIZE  4096
 void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                      U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {

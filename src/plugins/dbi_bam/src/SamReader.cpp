@@ -272,7 +272,7 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
 
 SamReader::SamReader(IOAdapter &ioAdapter):
         Reader(ioAdapter),
-        readBuffer(READ_BUFF_SIZE, '\0')
+        readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0')
 {
     readHeader();
 }
@@ -296,7 +296,7 @@ QByteArray SamReader::readString(bool &eof) {
     bool lineOk = false;
     int len = 0;
     QByteArray result;
-    while((len = ioAdapter.readLine(buff, READ_BUFF_SIZE, &lineOk)) == 0) {}
+    while((len = ioAdapter.readLine(buff, DocumentFormat::READ_BUFF_SIZE, &lineOk)) == 0) {}
     if (len == -1) {
         eof = true;
     } else {
@@ -317,7 +317,7 @@ void SamReader::readHeader() {
         QList<Header::ReadGroup> readGroups;
         QList<Header::Program> programs;
         QList<QByteArray> previousProgramIds;
-        while((len = ioAdapter.readLine(buff, READ_BUFF_SIZE, &lineOk)) >= 0) {
+        while ((len = ioAdapter.readLine(buff, DocumentFormat::READ_BUFF_SIZE, &lineOk)) >= 0) {
             if(isEof()){
                 break;
             }

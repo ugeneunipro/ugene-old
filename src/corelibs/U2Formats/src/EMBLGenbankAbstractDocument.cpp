@@ -105,7 +105,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
     GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
 
-    QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
@@ -294,7 +294,7 @@ DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus
 
     QByteArray sequenceData;
     U2MemorySequenceImporter seqImporter(sequenceData);
-    QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
@@ -625,9 +625,7 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
     U2OpStatus& si = st->si;
     si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
     //res.reserve(res.size() + headerSeqLen);
-
-    static int READ_BUFF_SIZE = 4096;
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
     //reading sequence
@@ -637,7 +635,7 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
     int len;
     int dataOffset = 0;
     bool numIsPrefix = isNcbiLikeFormat();
-    while (ok && (len = io->readLine(buff, READ_BUFF_SIZE)) > 0) {
+    while (ok && (len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE)) > 0) {
         if (si.isCoR()) {
             res.clear();
             break;
@@ -730,7 +728,7 @@ void EMBLGenbankAbstractDocument::readAnnotations(ParserState* st, int offset) {
             break;
         }
         //parsing feature;
-        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::READ_BUFF_SIZE, st->si, offset, st->entry->seqLen);
+        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, READ_BUFF_SIZE, st->si, offset, st->entry->seqLen);
         st->entry->features.push_back(f);
     } while (st->readNextLine());
 }
@@ -780,10 +778,10 @@ bool ParserState::readNextLine(bool emptyOK) {
     CHECK_OP_EXT(si, len = 0, false);
 
     bool ok = false;
-    len = io->readLine(buff, READ_BUFF_SIZE, &ok);
+    len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE, &ok);
     si.setProgress(io->getProgress());
 
-    if (!ok && len == READ_BUFF_SIZE) {
+    if (!ok && len == DocumentFormat::READ_BUFF_SIZE) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Line is too long."));
     } else if (len == -1) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("IO error."));

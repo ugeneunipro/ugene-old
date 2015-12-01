@@ -22,6 +22,7 @@
 #ifndef _U2_DOCUMENT_FORMAT_UTILS_H_
 #define _U2_DOCUMENT_FORMAT_UTILS_H_
 
+#include <U2Core/DocumentModel.h>
 #include <U2Core/U2Region.h>
 
 #include <QtCore/QStringList>
@@ -33,7 +34,6 @@ class AnnotationTableObject;
 class DNAAlphabet;
 class DNASequence;
 class Document;
-class DocumentFormat;
 class GObject;
 class GObjectReference;
 class GUrl;

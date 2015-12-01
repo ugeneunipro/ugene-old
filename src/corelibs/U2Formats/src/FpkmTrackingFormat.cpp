@@ -111,15 +111,14 @@ Document* FpkmTrackingFormat::loadDocument(IOAdapter* io, const U2DbiRef&  dbiRe
 }
 
 
-#define READ_BUFF_SIZE 4096
 int readFpkmTrLine(QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff) {
     int len;
     buffer.clear();
     do {
-        len = io->readLine(charbuff.data(), READ_BUFF_SIZE - 1);
+        len = io->readLine(charbuff.data(), DocumentFormat::READ_BUFF_SIZE - 1);
         charbuff.data()[len] = '\0';
         buffer.append(QString(charbuff.data()));
-    } while (READ_BUFF_SIZE - 1 == len);
+    } while (DocumentFormat::READ_BUFF_SIZE - 1 == len);
     return buffer.length();
 }
 

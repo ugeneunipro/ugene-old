@@ -579,9 +579,6 @@ void ASNFormat::BioStructLoader::loadIntraResidueBonds( BioStruct3D& struc )
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-#define READ_BUF_SIZE 4096
-
-
 AsnNode* ASNFormat::AsnParser::loadAsnTree()
 {
     try {
@@ -612,12 +609,12 @@ bool ASNFormat::AsnParser::readRootElement()
 {
     Q_ASSERT(io->getProgress() == 0);
 
-    QByteArray readBuff(READ_BUF_SIZE+1, 0);
+    QByteArray readBuff(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buf = readBuff.data();
     quint64 len = 0;
 
     bool lineOk = true;
-    len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+    len = io->readUntil(buf, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     if (!lineOk) {
         throw AsnParserError(ASNFormat::tr("First line is too long"));
     }

@@ -92,7 +92,6 @@ private:
     static const QByteArray TAG_SEQUENCE_URI; //URI of the sequence
     static const QByteArray TAG_SEQUENCE_SPECIES; //Species.
 
-    static const int READ_BUFF_SIZE = 1024;
     static const char SPACE = '\t';
 
     static const Field samFields[];

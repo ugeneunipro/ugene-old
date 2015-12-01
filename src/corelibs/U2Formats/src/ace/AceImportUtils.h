@@ -98,7 +98,6 @@ private:
     int contigsCount;
     int currentContig;
 
-    static const int READ_BUFF_SIZE;
     static const int CONTIG_COUNT_POS;
     static const int READS_COUNT_POS;
     static const int READS_POS;

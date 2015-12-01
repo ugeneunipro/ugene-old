@@ -532,7 +532,7 @@ bool GenbankPlainTextFormat::checkCircularity(const GUrl& filePath, U2OpStatus& 
     bool ok = io->open(filePath, IOAdapterMode_Read);
     CHECK_EXT( ok, os.setError(L10N::errorOpeningFileRead(filePath)), false);
 
-    QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     ParserState st(12, io, NULL, os);
     st.buff = readBuffer.data();
     EMBLGenbankDataEntry data;

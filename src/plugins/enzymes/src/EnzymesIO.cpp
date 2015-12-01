@@ -25,6 +25,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
@@ -131,7 +132,6 @@ EnzymeFileFormat EnzymesIO::detectFileFormat(const QString& url) {
 
 }
 
-#define READ_BUFF_SIZE 4096
 QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFactory* iof, TaskStateInfo& ti) {
     QList<SEnzymeData> res;
 
@@ -142,12 +142,12 @@ QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFacto
     }
 
     SEnzymeData currentData(new EnzymeData());
-    QByteArray buffArr(READ_BUFF_SIZE, 0);
+    QByteArray buffArr(DocumentFormat::READ_BUFF_SIZE, 0);
     char* buff = buffArr.data();
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     int line = 0, len = 0;
     bool lineOk = true;
-    while ((len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0 && !ti.cancelFlag) {
+    while ((len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0 && !ti.cancelFlag) {
         line++;
         if (!lineOk) {
             ti.setError(  tr("Line is too long: %1").arg(line) );
@@ -236,14 +236,14 @@ void EnzymesIO::writeBairochFile(const QString& url, IOAdapterFactory* iof, cons
         return;
     }
 
-    QByteArray buffArr(READ_BUFF_SIZE, 0);
+    QByteArray buffArr(DocumentFormat::READ_BUFF_SIZE, 0);
     char* buff = buffArr.data();
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     int line = 0, len = 0;
     bool lineOk = true;
     bool writeString = true;
 
-    while ((len = srcio->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0 && !ti.cancelFlag) {
+    while ((len = srcio->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0 && !ti.cancelFlag) {
         line++;
         if (!lineOk) {
             ti.setError(  tr("Line is too long: %1").arg(line) );

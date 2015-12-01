@@ -103,7 +103,6 @@ QList<U2AssemblyRead> Assembly::convertReads() const {
 ///////////////////////////////////
 //// AceReader
 ///////////////////////////////////
-const int AceReader::READ_BUFF_SIZE = 4096;
 const int AceReader::CONTIG_COUNT_POS = 1;
 const int AceReader::READS_COUNT_POS = 3;
 const int AceReader::READS_POS = 3;
@@ -126,7 +125,7 @@ AceReader::AceReader(IOAdapter& _io, U2OpStatus &_os) :
     io(&_io),
     os(&_os),
     currentContig(0) {
-    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    QByteArray readBuff(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
 
@@ -144,7 +143,7 @@ Assembly AceReader::getAssembly() {
     Assembly result;
     Assembly::Sequence reference;
 
-    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    QByteArray readBuff(DocumentFormat::READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
     int readsCount = 0;
@@ -208,7 +207,7 @@ bool AceReader::isFinish() {
 
 void AceReader::skipBreaks(IOAdapter *io, char *buff, qint64 *len) {
     bool lineOk = true;
-    *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+    *len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     CHECK_EXT(*len != 0, os->setError(DocumentFormatUtils::tr("Unexpected end of file")), );
     CHECK_EXT(lineOk || io->isEof(), os->setError(DocumentFormatUtils::tr("Line is too long")), );
 }
@@ -266,7 +265,7 @@ void AceReader::parseConsensus(IOAdapter *io, char *buff, QSet<QByteArray> &name
     consensus.name += "_ref";
 
     do {
-        len = io->readUntil(buff, READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
+        len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
         CHECK_EXT(len > 0, os->setError(DocumentFormatUtils::tr("No consensus")), );
 
         len = TextUtils::remove(buff, len, TextUtils::WHITES);
@@ -275,7 +274,7 @@ void AceReader::parseConsensus(IOAdapter *io, char *buff, QSet<QByteArray> &name
         os->setProgress(io->getProgress());
     } while (!ok);
 
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = (QByteArray::fromRawData(buff, len)).trimmed();
     CHECK_EXT(line.startsWith(BQ), os->setError(DocumentFormatUtils::tr("BQ keyword hasn't been found")), );
 
@@ -462,7 +461,7 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
     CHECK_EXT(rdBlock.startsWith(RD), os->setError(DocumentFormatUtils::tr("There is no read note")), );
 
     do {    // read the tail of RD part
-        len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
+        len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
         CHECK_EXT(len > 0, os->setError(DocumentFormatUtils::tr("Unexpected end of file")), );
         buff[len] = 0;
         rdBlock += QByteArray(" ") + QByteArray(buff);
@@ -480,7 +479,7 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
         read.data += rdSplitted[chain];
     }
 
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    len = io->readUntil(buff, DocumentFormat::READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     QByteArray qaBlock = (QByteArray::fromRawData(buff, len)).trimmed();
     CHECK_EXT(qaBlock.startsWith(QA), os->setError(DocumentFormatUtils::tr("QA keyword hasn't been found")), );
 
