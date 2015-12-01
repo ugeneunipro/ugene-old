@@ -123,7 +123,7 @@ void ConservationPlotWorker::sl_taskFinished() {
         return;
     }
 
-    context->getMonitor()->addOutputFile(t->getSettings().outFile, getActor()->getId());
+    context->getMonitor()->addOutputFile(t->getSettings().outFile, getActor()->getId(), true);
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();

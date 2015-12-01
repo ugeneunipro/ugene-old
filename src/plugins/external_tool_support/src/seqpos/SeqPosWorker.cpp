@@ -117,7 +117,7 @@ void SeqPosWorker::sl_taskFinished() {
 
     const QStringList& resFileNames = t->getOutputFiles();
     foreach(const QString& fn, resFileNames){
-        context->getMonitor()->addOutputFile(fn, getActor()->getId());
+        context->getMonitor()->addOutputFile(fn, getActor()->getId(), true);
     }
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
