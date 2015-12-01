@@ -55,6 +55,8 @@ public:
 
     DNATranslation* getComplementTT() const;
     DNATranslation* getAminoTT() const;
+    // for GUI tests
+    int getSymbolsPerLine() const;
 
     void setShowComplement(bool t);
     void setShowTranslation(bool t);

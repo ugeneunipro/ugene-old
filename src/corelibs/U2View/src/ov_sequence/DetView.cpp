@@ -168,6 +168,10 @@ DNATranslation* DetView::getAminoTT() const {
     return showTranslationAction->isChecked() ? ctx->getAminoTT() : NULL;
 }
 
+int DetView::getSymbolsPerLine() const {
+    return getDetViewRenderArea()->getSymbolsPerLine();
+}
+
 void DetView::setShowComplement(bool t) {
     showComplementAction->disconnect(this);
     showComplementAction->setChecked(t);
