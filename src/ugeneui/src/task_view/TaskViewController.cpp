@@ -315,8 +315,9 @@ void TaskViewDockWidget::sl_onSubtaskAdded(Task* sub) {
 }
 
 void TaskViewDockWidget::sl_onTaskProgress()  {
-    Task* t = qobject_cast<Task*>(sender());
-    TVTreeItem* ti = findItem(t, false);
+    Task *t = qobject_cast<Task *>(sender());
+    CHECK(NULL != t, );
+    TVTreeItem *ti = findItem(t, false);
     if (ti == NULL) {
         if (t != NULL){
             assert(!t->isTopLevelTask());
