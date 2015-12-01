@@ -2269,6 +2269,83 @@ GUI_TEST_CLASS_DEFINITION(test_0068) {
     CHECK_SET_ERR(visibleRange != GTUtilsSequenceView::getVisibleRange(os), "Visible range was not changed on complement strand show/hide");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0069) {
+//    1. Open any sequence (e.g. murine.gb)
+//    2. Resize the view to see a few lines
+//    3. Press the mouse button on one line (start the selection)
+//    4. Move the mouse to the other line and release the button (finish the selection)
+//    Expected state: the sequence between press position and release position is selected (the line is selected)
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(seqWgt != NULL, "Cannot find sequence widget");
+    CHECK_SET_ERR(GTUtilsSequenceView::getSelection(os).isEmpty(), "Selection is not empty");
+
+    GTWidget::click(os, seqWgt);
+    QPoint p1 = GTMouseDriver::getMousePosition();
+    QPoint p2(p1.x() + 300, p1.y() + 200);
+
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p2);
+    GTMouseDriver::release(os);
+
+    CHECK_SET_ERR(!GTUtilsSequenceView::getSelection(os).isEmpty(), "Nothing is selected");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0070) {
+//    1. Open any sequence with annotations (e.g. murine.gb)
+//    2. Click on annotation
+//    Expected state: annotation is selected
+//    3. Click "Wrap sequence"
+//    4. Enlarge the view to see a few lines of the sequence
+//    5. Click on a few annotations located on a different lines of the sequence
+//    Expected state: clicked annotation is selected
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
+    QVector<U2Region> selection = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(!selection.isEmpty(), "Nothing is selected");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+//    DetView* detView = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
+//    CHECK_SET_ERR(detView != NULL, "DetView is NULL");
+    GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 1042);
+    CHECK_SET_ERR(!GTUtilsSequenceView::getSelection(os).isEmpty(), "Selection is empty");
+    CHECK_SET_ERR(GTUtilsSequenceView::getSelection(os) != selection, "Selection was not changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0071) {
+//    1. Open any sequence (e.g. murine.gb)
+//    2. Click "Wrap sequence"
+//    3. Click "Export image"
+//    4. Fill the dialog (select a region from the middle of the sequence) and export the dialog
+//    Expected state: the result file contains the lines of the sequence started from the specified position, no extra empty space
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(seqWgt != NULL, "Cannot find sequence widget");
+
+    QAbstractButton* wrapButton = GTAction::button(os, "wrap_sequence_action");
+    CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
+    GTWidget::click(os, wrapButton);
+
+    ExportSequenceImage::Settings s(ExportSequenceImage::DetailsView, U2Region(1, 2000));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_image_0071", s));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QPixmap p(sandBoxDir + "seq_image_0071");
+    CHECK_SET_ERR(p.size() != QSize() && p.size() !=  seqWgt->getDetView()->getDetViewRenderArea()->size(), "Exported image size is incorrect");
+}
+
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2

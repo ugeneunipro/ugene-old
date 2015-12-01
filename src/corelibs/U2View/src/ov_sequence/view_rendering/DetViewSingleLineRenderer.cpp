@@ -125,7 +125,7 @@ qint64 DetViewSingleLineRenderer::getMinimumHeight() const {
 }
 
 qint64 DetViewSingleLineRenderer::getOneLineHeight() const {
-    return numLines * commonMetrics.lineHeight;
+    return numLines * commonMetrics.lineHeight + 5;
 }
 
 qint64 DetViewSingleLineRenderer::getLinesCount(const QSize& /*canvasSize*/) const {
@@ -141,7 +141,7 @@ int DetViewSingleLineRenderer::getRowsInLineCount() const {
 }
 
 QSize DetViewSingleLineRenderer::getBaseCanvasSize(const U2Region &visibleRange) const {
-    return QSize(visibleRange.length * commonMetrics.charWidth, getOneLineHeight());
+    return QSize(visibleRange.length * commonMetrics.charWidth, getMinimumHeight());
 }
 
 bool DetViewSingleLineRenderer::isOnTranslationsLine(const QPoint &p, const QSize& /*canvasSize*/, const U2Region& /*visibleRange*/) const {
@@ -152,7 +152,7 @@ bool DetViewSingleLineRenderer::isOnTranslationsLine(const QPoint &p, const QSiz
             return true;
         }
     }
-    if (firstComplTransLine !=-1) {
+    if (firstComplTransLine != -1) {
         U2Region ctr(getLineY(firstComplTransLine), 3 * commonMetrics.lineHeight);
         if (ctr.contains(y)) {
             return true;
@@ -185,7 +185,7 @@ void DetViewSingleLineRenderer::drawAll(QPainter &p, const QSize &canvasSize, co
     drawTranslations(p, visibleRange);
     drawRuler(p, canvasSize, visibleRange);
 
-    p.translate(0, -hCenter);
+    p.translate(0, - hCenter);
 }
 
 void DetViewSingleLineRenderer::drawSelection(QPainter &p, const QSize &canvasSize, const U2Region &visibleRange) {
@@ -412,12 +412,13 @@ void DetViewSingleLineRenderer::drawSequenceSelection(QPainter &p, const QSize &
         if (detView->hasTranslations()) {
             int translLine = posToDirectTransLine(reg.startPos);
             if (translLine >= 0 && r.length >= 3) {
-                highlight(p, U2Region(r.startPos,r.length / 3 * 3), translLine, canvasSize, visibleRange);
+                int translLen = reg.endPos() > r.endPos() ? r.length : r.length / 3 * 3;
+                highlight(p, U2Region(r.startPos, translLen), translLine, canvasSize, visibleRange);
             }
             if (detView->hasComplementaryStrand()) {
                 int complTransLine = posToComplTransLine(reg.endPos());
                 if (complTransLine >= 0 && r.length >= 3) {
-                    const qint64 translLen = r.length / 3 * 3;
+                    const qint64 translLen = reg.startPos < r.startPos ? r.length : r.length / 3 * 3;
                     highlight(p, U2Region(r.endPos() - translLen, translLen), complTransLine, canvasSize, visibleRange);
                 }
             }

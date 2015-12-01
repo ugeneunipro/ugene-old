@@ -178,7 +178,7 @@ bool GSequenceLineViewAnnotated::isAnnotationVisible(Annotation *a) const  {
 QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoord(const QPoint &p) const {
     QList<AnnotationSelectionData> res;
     GSequenceLineViewAnnotatedRenderArea *ra = static_cast<GSequenceLineViewAnnotatedRenderArea *>(renderArea);
-    CHECK(ra->rect().contains(p), res);
+    CHECK(ra->rect().contains(ra->mapFrom(this, p)), res);
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
     const qint64 pos = ra->coordToPos(p);
     qint64 dPos = 0;

@@ -332,9 +332,13 @@ void DetView::mouseMoveEvent(QMouseEvent *me) {
 
         // compute selection
         qint64 pos = renderArea->coordToPos(areaPoint);
+        if (isWrapMode() && (areaPoint.x() > width() || areaPoint.x() <= 0)) {
+            QPoint boundaryPoint(areaPoint.x() > width() ? width() : 0, areaPoint.y());
+            pos = renderArea->coordToPos(boundaryPoint);
+        }
         qint64 selStart = qMin(lastPressPos, pos);
         qint64 selLen = qAbs(pos - lastPressPos);
-        if (selStart<0) {
+        if (selStart < 0) {
             selLen += selStart;
             selStart = 0;
         } else if (selStart + selLen > seqLen) {
@@ -470,7 +474,7 @@ void DetView::updateVisibleRange() {
             visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), visibleRangeLen);
             currentShiftsCounter = qMax(0, verticalScrollBar->maximum() % numShiftsInOneLine);
         }
-    } else if (visibleRange.length != detArea->getVisibleSymbolsCount()) {
+    } else {
         visibleRange.length = qMin((qint64)detArea->getVisibleSymbolsCount(), seqLen);
         visibleRange.startPos = qMin(visibleRange.startPos, seqLen - visibleRange.length);
     }

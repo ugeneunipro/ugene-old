@@ -424,6 +424,9 @@ void GTUtilsSequenceView::clickAnnotationDet(HI::GUITestOpStatus &os, QString na
 
     float start = visibleLocation.startPos;
     float end = visibleLocation.endPos();
+    if (seq->getDetView()->isWrapMode()) {
+        end = visibleLocation.startPos + det->getSymbolsPerLine();
+    }
     float x1f = (float)(start - vr.startPos) * det->getCharWidth();
     float x2f = (float)(end - vr.startPos) * det->getCharWidth();
 

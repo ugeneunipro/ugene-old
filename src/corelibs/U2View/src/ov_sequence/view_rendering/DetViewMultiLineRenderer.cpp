@@ -60,7 +60,12 @@ float DetViewMultiLineRenderer::posToXCoordF(qint64 p, const QSize &canvasSize, 
     return commonMetrics.charWidth * (p % symbolsPerLine);
 }
 
-U2Region DetViewMultiLineRenderer::getAnnotationYRange(Annotation *, int, const AnnotationSettings *, const QSize&, const U2Region&) const {
+U2Region DetViewMultiLineRenderer::getAnnotationYRange(Annotation *a, int r, const AnnotationSettings *as, const QSize& canvasSize, const U2Region& visibleRange) const {
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1) {
+        U2Region res = singleLinePainter->getAnnotationYRange(a, r, as, QSize(canvasSize.width(), getOneLineHeight()), visibleRange);
+        res.startPos += INDENT_BETWEEN_LINES / 2;
+        return res;
+    }
     FAIL("The method must never be called", U2Region());
 }
 
