@@ -34,7 +34,7 @@ NewBreakpointDialog::NewBreakpointDialog(const QStringList &elementsNames, QWidg
     Qt::WindowFlags f) : QDialog(parent, f), ui(new Ui::NewBreakpointDialog())
 {
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "16126516");
+    new HelpButton(this, ui->buttonBox, "17466602");
     ui->elementCombo->addItems(elementsNames);
 
     QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);

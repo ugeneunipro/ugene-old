@@ -73,7 +73,7 @@ public:
 
 ExpertDiscoverySearchDialogController::ExpertDiscoverySearchDialogController(ADVSequenceObjectContext* _ctx, ExpertDiscoveryData& data, QWidget *p):QDialog(p), edData(data) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16126866");
+    new HelpButton(this, buttonBox, "17466264");
 
     ctx = _ctx;
     task = NULL;

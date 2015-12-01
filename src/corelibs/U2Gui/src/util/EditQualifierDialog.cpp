@@ -40,7 +40,7 @@ EditQualifierDialog::EditQualifierDialog(QWidget* p, const U2Qualifier& q, bool 
 {
     ui = new Ui_EditQualifierDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "16126628");
+    new HelpButton(this, ui->buttonBox, "17466026");
     
     if(true == ro){
         this->setWindowTitle(tr("View Qualifier"));

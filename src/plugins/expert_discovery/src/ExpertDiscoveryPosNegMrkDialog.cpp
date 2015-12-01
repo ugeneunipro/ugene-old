@@ -38,7 +38,7 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
 : QDialog(parent), generateDescr(true){
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "16126867");
+    new HelpButton(this, buttonBox, "17466265");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));

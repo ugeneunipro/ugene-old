@@ -99,7 +99,7 @@ DocumentProviderSelectorController::DocumentProviderSelectorController(const QLi
     formatDetectionResults(formatDetectionResults)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16126754");
+    new HelpButton(this, buttonBox, "17466152");
 }
 
 int DocumentProviderSelectorController::getSelectedFormatIdx() const {

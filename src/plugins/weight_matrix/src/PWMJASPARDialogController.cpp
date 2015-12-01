@@ -38,7 +38,7 @@ namespace U2 {
 PWMJASPARDialogController::PWMJASPARDialogController(QWidget *w)
 : QDialog(w) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16126840");
+    new HelpButton(this, buttonBox, "17466238");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Select"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

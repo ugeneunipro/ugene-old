@@ -36,7 +36,7 @@ SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<
 : QDialog(parent), Ui::SelectModelsDialog()
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16126650");
+    new HelpButton(this, buttonBox, "17466048");
     buttonBox_1->button(QDialogButtonBox::Cancel)->setText(::U2::SelectModelsDialog::tr("All"));
     buttonBox_1->button(QDialogButtonBox::No)->setText(::U2::SelectModelsDialog::tr("Invert"));
     buttonBox->button(QDialogButtonBox::Ok)->setText(::U2::SelectModelsDialog::tr("OK"));

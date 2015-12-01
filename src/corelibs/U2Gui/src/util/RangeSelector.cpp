@@ -240,7 +240,7 @@ MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2R
 
     ui = new Ui_RangeSelectionDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "16126603");
+    new HelpButton(this, ui->buttonBox, "17466001");
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Go"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
