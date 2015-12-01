@@ -21,6 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
+#include <utils/GTThread.h>
 
 namespace HI {
 
@@ -56,6 +57,7 @@ void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int 
         }
 #ifdef  Q_OS_MAC
         GTGlobals::sleep(10); // need for MacOS
+        GTThread::waitForMainThread(os);
 #endif
     }
 

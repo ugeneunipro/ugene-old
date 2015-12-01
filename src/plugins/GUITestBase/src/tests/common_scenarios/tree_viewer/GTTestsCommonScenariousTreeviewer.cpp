@@ -1217,6 +1217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
     CHECK_SET_ERR(!distances.isEmpty(), "Distances array is empty");
     distances.swap(1, 2);
 
+    GTWidget::click(os, GTUtilsPhyTree::getTreeViewerUi(os));
     QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
     CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
     GTUtilsPhyTree::clickNode(os, nodes.first());
@@ -1247,6 +1248,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
     GTGlobals::sleep();
 
     //    2. Select the parent node of "Bicolorana_bicolor_EF540830" and "Roeseliana_roeseli".
+    GTWidget::click(os, GTUtilsPhyTree::getTreeViewerUi(os));
     QList<GraphicsButtonItem *> nodes = GTUtilsPhyTree::getOrderedRectangularNodes(os);
     CHECK_SET_ERR(!nodes.isEmpty(), "Tree nodes are not found");
     const qreal firstNodeDistance = GTUtilsPhyTree::getNodeDistance(os, nodes.first());
