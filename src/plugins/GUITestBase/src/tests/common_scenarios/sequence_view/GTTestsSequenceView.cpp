@@ -1724,7 +1724,7 @@ GUI_TEST_CLASS_DEFINITION(test_0053){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Open any graph
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "GC Content (%)", GTGlobals::UseMouse));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
     GTGlobals::sleep(500);
 //    Add label with shift+left mouse
@@ -1734,7 +1734,7 @@ GUI_TEST_CLASS_DEFINITION(test_0053){
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
 
     QList<QVariant> list = GTUtilsSequenceView::getLabelPositions(os, GTUtilsSequenceView::getGraphView(os));
-    CHECK_SET_ERR(list.size() == 1, QString("unexpected number of labels: ").arg(list.size()));
+    CHECK_SET_ERR(list.size() == 1, QString("unexpected number of labels: %1").arg(list.size()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0054){
