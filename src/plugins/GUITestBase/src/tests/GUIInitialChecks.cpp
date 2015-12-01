@@ -140,6 +140,21 @@ GUI_TEST_CLASS_DEFINITION(post_check_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(post_action_0000) {
+    const Qt::KeyboardModifiers modifiers = QGuiApplication::queryKeyboardModifiers();
+    if (modifiers & Qt::ShiftModifier) {
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    }
+
+    if (modifiers & Qt::ControlModifier) {
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    }
+
+    if (modifiers & Qt::AltModifier) {
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
+    }
+}
+
+GUI_TEST_CLASS_DEFINITION(post_action_0001) {
     QWidget* popupWidget = QApplication::activePopupWidget();
     while (popupWidget != NULL) {
         GTWidget::close(os, popupWidget);
@@ -155,7 +170,7 @@ GUI_TEST_CLASS_DEFINITION(post_action_0000) {
     GTClipboard::clear(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_action_0001) {
+GUI_TEST_CLASS_DEFINITION(post_action_0002) {
     GTGlobals::sleep(1000);
     // close project
     if (AppContext::getProject() != NULL) {
@@ -187,7 +202,7 @@ GUI_TEST_CLASS_DEFINITION(post_action_0001) {
     GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_action_0002) {
+GUI_TEST_CLASS_DEFINITION(post_action_0003) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
