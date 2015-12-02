@@ -35,10 +35,12 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _
       widget(_widget),
       title(_title)
 {
-    qreal fSize = font().pointSizeF();
-    if (fSize != -1){
-        setStyleSheet(QString("font-size: %1pt;").arg(fSize - 1.5));
-    }
+
+#ifdef Q_OS_MAC
+    setStyleSheet("font-size: 11.25pt;");
+#else
+    setStyleSheet("font-size: 8.25pt;");
+#endif
 
     titleWidget = new QLabel(title);
     titleWidget->setObjectName("titleWidget");
