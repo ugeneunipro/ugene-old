@@ -4120,6 +4120,8 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     //2. Open "Simple overview"
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+    GTGlobals::sleep();
+    GTThread::waitForMainThread(os);
     QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
     CHECK_SET_ERR(simple->isVisible(), "simple overveiw is not visiable");
 
