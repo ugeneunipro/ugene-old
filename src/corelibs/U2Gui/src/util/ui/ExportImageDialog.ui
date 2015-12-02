@@ -38,7 +38,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string notr="true"> export settings</string>
+      <string notr="true">Export settings</string>
      </property>
      <layout class="QVBoxLayout" name="settingsLayout">
       <property name="spacing">
