@@ -3396,7 +3396,7 @@ GUI_TEST_CLASS_DEFINITION( test_2482 ) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Swap Sublings", PopupChecker::IsDisabled));
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList()<<"Swap Siblings", PopupChecker::IsDisabled));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 }
