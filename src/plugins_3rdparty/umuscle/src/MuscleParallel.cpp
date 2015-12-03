@@ -110,9 +110,9 @@ void MusclePrepareTask::run() {
         workpool->ph = new MuscleParamsHelper(workpool->ti, workpool->ctx);
         _run(); 
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     } 
     catch (std::bad_alloc) {
@@ -319,9 +319,9 @@ void ProgressiveAlignTask::run() {
     try {
         _run(); 
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
     catch (std::bad_alloc) {
@@ -394,9 +394,9 @@ void ProgressiveAlignWorker::run() {
     try {
         _run();
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
     catch (std::bad_alloc) {
@@ -526,9 +526,9 @@ void RefineTreeTask::run() {
     try {
         _run(); 
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
     }
     catch (std::bad_alloc) {
@@ -587,9 +587,9 @@ void RefineTask::run() {
         workpool->mainSem.release(workpool->nThreads);
         perfLog.trace(QString("Parallel muscle refine stage complete. Elapsed %1 ms").arg(timer.elapsed()));
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
         }
         workpool->refineDone = true;
         workpool->mainSem.release(workpool->nThreads);
@@ -645,9 +645,9 @@ void RefineWorker::run() {
     try {
         _run();
     }
-    catch (MuscleException *e) {
+    catch (const MuscleException& e) {
         if (!isCanceled()) {
-            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e->str) );
+            workpool->ti.setError(  tr("Internal parallel MUSCLE error: %1").arg(e.str) );
             workpool->childSem.release();
         }
     }
