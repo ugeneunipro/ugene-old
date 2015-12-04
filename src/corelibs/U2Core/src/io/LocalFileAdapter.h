@@ -89,6 +89,7 @@ public:
 
 private:
     QFile* f;
+    quint64 fileSize;
 
     bool bufferOptimization;
     QByteArray buffer;

@@ -21,7 +21,9 @@
 
 #include "LocalFileAdapter.h"
 #include "ZlibAdapter.h"
+
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DocumentModel.h>
 
 namespace U2 {
 
@@ -42,10 +44,10 @@ IOAdapter* GzippedLocalFileAdapterFactory::createIOAdapter() {
     return new ZlibAdapter(new LocalFileAdapter(this));
 }
 
-const quint64 LocalFileAdapter::BUF_SIZE = 1024*1024;
+const quint64 LocalFileAdapter::BUF_SIZE = DocumentFormat::READ_BUFF_SIZE;
 
 LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o, bool b)
-: IOAdapter(factory, o), f(NULL), bufferOptimization(b)
+    : IOAdapter(factory, o), f(NULL), bufferOptimization(b), fileSize(0)
 {
     bufferOptimization = true;
     if (bufferOptimization) {
@@ -79,6 +81,7 @@ bool LocalFileAdapter::open(const GUrl& url, IOAdapterMode m) {
         f = NULL;
         return false;
     }
+    fileSize = f->size();
     return true;
 }
 
@@ -87,6 +90,7 @@ void LocalFileAdapter::close() {
     f->close();
     delete f;
     f = NULL;
+    fileSize = 0;
 }
 
 qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
@@ -120,6 +124,7 @@ qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
 qint64 LocalFileAdapter::writeBlock(const char* data, qint64 size) {
     SAFE_POINT(isOpen(), "Adapter is not opened!",-1);
     qint64 l = f->write(data, size);
+    fileSize += size;
     return l;
 }
 
@@ -147,16 +152,15 @@ bool LocalFileAdapter::skip(qint64 nBytes) {
 qint64 LocalFileAdapter::left() const {
     SAFE_POINT(isOpen(), "Adapter is not opened!",-1);
     qint64 p = f->pos();
-    qint64 len = f->size();
     if (bufferOptimization) {
         p -= bufLen - currentPos;
     }
-    return len - p;
+    return fileSize - p;
 }
 
 int LocalFileAdapter::getProgress() const {
     SAFE_POINT(isOpen(), "Adapter is not opened!",false);
-    return int(100 * float(bytesRead()) / f->size());
+    return int(100 * float(bytesRead()) / fileSize);
 }
 
 qint64 LocalFileAdapter::bytesRead() const {
