@@ -50,14 +50,14 @@ using namespace HI;
 const QString GTUtilsProjectTreeView::widgetName = "documentTreeWidget";
 
 #define GT_METHOD_NAME "openView"
-void GTUtilsProjectTreeView::openView(HI::GUITestOpStatus& os) {
+void GTUtilsProjectTreeView::openView(HI::GUITestOpStatus& os, GTGlobals::UseMethod method) {
 
     GTGlobals::FindOptions options;
     options.failIfNull = false;
 
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
-        toggleView(os);
+        toggleView(os, method);
     }
     GTGlobals::sleep(100);
     GTThread::waitForMainThread(os);
@@ -68,7 +68,7 @@ void GTUtilsProjectTreeView::openView(HI::GUITestOpStatus& os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "toggleView"
-void GTUtilsProjectTreeView::toggleView(HI::GUITestOpStatus& os) {
+void GTUtilsProjectTreeView::toggleView(HI::GUITestOpStatus& os, GTGlobals::UseMethod method) {
 
     MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK(mw != NULL, "MainWindow is NULL");
@@ -77,7 +77,18 @@ void GTUtilsProjectTreeView::toggleView(HI::GUITestOpStatus& os) {
 
     //qmw->setFocus();
 
-    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    switch (method) {
+    case GTGlobals::UseKey:
+    case GTGlobals::UseKeyBoard:
+        GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+        break;
+    case GTGlobals::UseMouse:
+        GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_project_view"));
+        break;
+    default:
+        break;
+    }
+
     GTGlobals::sleep(100);
     GTThread::waitForMainThread(os);
 }

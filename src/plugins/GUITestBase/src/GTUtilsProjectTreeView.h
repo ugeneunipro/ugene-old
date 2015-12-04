@@ -41,8 +41,8 @@ public:
     static void rename(HI::GUITestOpStatus &os, const QString &itemName, const QString &newItemName, GTGlobals::UseMethod invokeMethod = GTGlobals::UseKey);
     static void rename(HI::GUITestOpStatus &os, const QModelIndex& itemIndex, const QString &newItemName, GTGlobals::UseMethod invokeMethod = GTGlobals::UseKey);
 
-    static void openView(HI::GUITestOpStatus& os);
-    static void toggleView(HI::GUITestOpStatus& os);
+    static void openView(HI::GUITestOpStatus& os, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    static void toggleView(HI::GUITestOpStatus& os, GTGlobals::UseMethod method = GTGlobals::UseMouse);
 
     // returns center or item's rect
     // fails if the item wasn't found
