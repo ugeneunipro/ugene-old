@@ -57,7 +57,7 @@ mkdir "%OUTPUT_DIR%\platforms"
 copy %PATH_TO_QT_LIBS%\..\plugins\platforms\qwindows.dll %OUTPUT_DIR%\platforms\
 
 REM copy external tools if exists
-xcopy /E %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
+xcopy /E /Y %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
 
 REM copy executables
 call %INSTALL_DIR%\copy_executable.cmd ugeneui

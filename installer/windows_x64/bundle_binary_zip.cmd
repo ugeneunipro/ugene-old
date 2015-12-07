@@ -57,7 +57,7 @@ mkdir "%OUTPUT_DIR%\platforms"
 copy %PATH_TO_QT_LIBS%\..\plugins\platforms\qwindows.dll %OUTPUT_DIR%\platforms\
 
 REM copy external tools if exists
-xcopy /E %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
+xcopy /E /Y %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
 if DEFINED UGENE_R_DIST_PATH (
     xcopy /E %UGENE_R_DIST_PATH% %OUTPUT_DIR%\tools\
 )
@@ -143,10 +143,12 @@ call %INSTALL_DIR%\copy_plugin.cmd variants
 cd %INSTALL_DIR%
 
 resort_symbols.py %SYMBOLS_DIR% >> %DUMP_SYMBOLS_LOG% 2>&1
-zip -r %SYMBOLS_DIR_ZIPFILE% %SYMBOLS_DIR_NAME%\*
+REM zip -r %SYMBOLS_DIR_ZIPFILE% %SYMBOLS_DIR_NAME%\*
+7z a -r %SYMBOLS_DIR_ZIPFILE% %SYMBOLS_DIR_NAME%/*
 
 if NOT DEFINED UGENE_CISTROME_PATH (
-zip -r %BINARY_ZIPFILE% ugene-%U_VERSION%\*
+REM zip -r %BINARY_ZIPFILE% ugene-%U_VERSION%\*
+7z a -r %BINARY_ZIPFILE% ugene-%U_VERSION%/*
 )
 
 if DEFINED UGENE_CISTROME_PATH (
