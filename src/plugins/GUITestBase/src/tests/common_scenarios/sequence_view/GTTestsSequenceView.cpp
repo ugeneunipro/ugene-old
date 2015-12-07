@@ -2315,8 +2315,6 @@ GUI_TEST_CLASS_DEFINITION(test_0070) {
     CHECK_SET_ERR(!wrapButton->isChecked(), "Multi-line mode is unexpectedly active");
     GTWidget::click(os, wrapButton);
 
-//    DetView* detView = GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView();
-//    CHECK_SET_ERR(detView != NULL, "DetView is NULL");
     GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 1042);
     CHECK_SET_ERR(!GTUtilsSequenceView::getSelection(os).isEmpty(), "Selection is empty");
     CHECK_SET_ERR(GTUtilsSequenceView::getSelection(os) != selection, "Selection was not changed");

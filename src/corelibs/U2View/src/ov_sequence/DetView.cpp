@@ -495,10 +495,6 @@ void DetView::updateActions() {
 
     bool hasAmino = ctx->getAminoTT() != NULL;
     showTranslationAction->setEnabled(hasAmino);
-
-    DetViewRenderArea* detArea = getDetViewRenderArea();
-    bool occupyMoreThanOneLine = getSequenceLength() > detArea->getSymbolsPerLine();
-    wrapSequenceAction->setEnabled(occupyMoreThanOneLine);
 }
 
 void DetView::updateSize() {
