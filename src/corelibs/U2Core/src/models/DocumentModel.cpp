@@ -56,7 +56,7 @@ const QString DocumentFormat::DBI_FOLDER_HINT("dbi_folder");
 const QString DocumentFormat::DEEP_COPY_OBJECT("deep_copy_object");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
-const int DocumentFormat::READ_BUFF_SIZE = 4194304; //4Mb optimal buffer size for reading from network drives
+const int DocumentFormat::READ_BUFF_SIZE = 4096; //4Kb typical processor L3 cache size
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url,
     U2OpStatus& os, const QVariantMap& hints)
