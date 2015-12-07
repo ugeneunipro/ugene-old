@@ -4792,19 +4792,22 @@ GUI_TEST_CLASS_DEFINITION(test_4918_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4934) {
+    //1. Open samples/CLUSTALW/ty3.aln.gz
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-
+    //2. Align with Kalign
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
-
-    GTGlobals::sleep(6000);
+    //3. while aligning lock document for editing
+    GTGlobals::sleep(5000);
     GTUtilsDocument::lockDocument(os, "ty3.aln.gz");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    //4. Unlock document after alignment finished
     GTUtilsDocument::unlockDocument(os, "ty3.aln.gz");
     GTLogTracer l;
+    //5. Align with Kalign again
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
