@@ -104,6 +104,8 @@ public:
     MAlignment getResult();
 
 private:
+    void releaseModStep(const QString error = QString());
+
     QPointer<MAlignmentObject>  obj;
     QPointer<StateLock>         lock;
     QString                     docName;

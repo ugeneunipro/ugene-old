@@ -170,8 +170,7 @@ void SimpleMSAWorkflow4GObjectTask::prepare() {
 
 Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
     if (stateInfo.isCoR()) {
-        delete userModStep;
-        userModStep = NULL;
+        releaseModStep();
     }
 
     if (lock != NULL) {
@@ -182,8 +181,8 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
         lock = NULL;
     }
     CHECK_OP(stateInfo, ReportResult_Finished);
-    CHECK_EXT(!obj.isNull(), setError(tr("Object '%1' removed").arg(docName)), ReportResult_Finished);
-    CHECK_EXT(!obj->isStateLocked(), setError(tr("Object '%1' is locked").arg(docName)), ReportResult_Finished);
+    CHECK_EXT(!obj.isNull(), releaseModStep(tr("Object '%1' removed").arg(docName)), ReportResult_Finished);
+    CHECK_EXT(!obj->isStateLocked(), releaseModStep(tr("Object '%1' is locked").arg(docName)), ReportResult_Finished);
 
     MAlignment res = getResult();
     const MAlignment &originalAlignment = obj->getMAlignment();
@@ -191,10 +190,17 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
     res.setName(originalAlignment.getName());
     obj->setMAlignment(res);
 
-    delete userModStep;
-    userModStep = NULL;
+    releaseModStep();
 
     return ReportResult_Finished;
+}
+
+void SimpleMSAWorkflow4GObjectTask::releaseModStep(const QString error) {
+    if (!error.isEmpty()) {
+        setError(tr("Object '%1' removed").arg(docName));
+    }
+    delete userModStep;
+    userModStep = NULL;
 }
 
 MAlignment SimpleMSAWorkflow4GObjectTask::getResult() {

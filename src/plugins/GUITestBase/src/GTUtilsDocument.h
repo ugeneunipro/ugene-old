@@ -49,6 +49,7 @@ public:
     static void loadDocument(HI::GUITestOpStatus &os, const QString& documentName);
 
     static void lockDocument(HI::GUITestOpStatus &os, const QString& documentName);
+    static void unlockDocument(HI::GUITestOpStatus &os, const QString& documentName);
 
 protected:
     static GObjectView* getDocumentGObjectView(HI::GUITestOpStatus &os, Document* d);

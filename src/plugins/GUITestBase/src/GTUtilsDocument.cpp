@@ -187,6 +187,13 @@ void GTUtilsDocument::lockDocument(HI::GUITestOpStatus &os, const QString &docum
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "unlockDocument"
+void GTUtilsDocument::unlockDocument(HI::GUITestOpStatus &os, const QString &documentName) {
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Unlock document for editing"));
+    GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
 QList<GObjectView*> GTUtilsDocument::getAllGObjectViews() {
 
     QList<GObjectView*> gObjectViews;

@@ -122,6 +122,7 @@
 #include "runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
@@ -4788,6 +4789,26 @@ GUI_TEST_CLASS_DEFINITION(test_4918_1) {
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/genbank", "DNA.gen"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4934) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    GTGlobals::sleep(6000);
+    GTUtilsDocument::lockDocument(os, "ty3.aln.gz");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::unlockDocument(os, "ty3.aln.gz");
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    CHECK_SET_ERR(!l.hasError(), "Log should not contain errors");
 }
 
 } // namespace GUITest_regression_scenarios
