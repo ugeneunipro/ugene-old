@@ -425,6 +425,7 @@ void DetView::keyPressEvent(QKeyEvent *e) {
         break;
     case Qt::Key_Home:
         setStartPos(0);
+        currentShiftsCounter = 0;
         accepted = true;
         break;
     case Qt::Key_End:
@@ -469,15 +470,20 @@ void DetView::updateVisibleRange() {
         int lastStartPos = lastLine * detArea->getSymbolsPerLine();
 
         bool posAtTheEnd = visibleRange.startPos > lastStartPos;
-        visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), visibleRangeLen);
+        visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), qMin(visibleRangeLen, (int)seqLen));
         bool emptyLineDetected = (visibleRangeLen - visibleRange.length) > detArea->getSymbolsPerLine();
 
         if (seqLen != visibleRange.length && (posAtTheEnd || (emptyLineDetected && visibleRange.startPos + visibleRangeLen >= seqLen))) {
             // scroll to the end
-            visibleRange.startPos = (verticalScrollBar->maximum() / numShiftsInOneLine) * detArea->getSymbolsPerLine();
-            visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), visibleRangeLen);
+            visibleRange.startPos = qMax(0, (verticalScrollBar->maximum() / numShiftsInOneLine) * detArea->getSymbolsPerLine());
+            visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), qMin(visibleRangeLen, (int)seqLen));
             currentShiftsCounter = qMax(0, verticalScrollBar->maximum() % numShiftsInOneLine);
         }
+
+        if (visibleRange.length == seqLen) {
+            currentShiftsCounter = 0;
+        }
+
     } else {
         visibleRange.length = qMin((qint64)detArea->getVisibleSymbolsCount(), seqLen);
         visibleRange.startPos = qMin(visibleRange.startPos, seqLen - visibleRange.length);
