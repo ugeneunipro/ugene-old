@@ -93,7 +93,7 @@ namespace U2 {
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
     : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), editModeAnimationTimer(this), prevPressedButton(Qt::NoButton),
-    changeTracker(editor->getMSAObject()->getEntityRef()), msaVersionBeforeShifting(-1), useDotsAction(NULL), colorScheme(NULL), highlightingScheme(NULL)
+    msaVersionBeforeShifting(-1), useDotsAction(NULL), colorScheme(NULL), highlightingScheme(NULL), changeTracker(editor->getMSAObject()->getEntityRef())
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -118,7 +118,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 
     delSelectionAction = new QAction(tr("Remove selection"), this);
     delSelectionAction->setObjectName("Remove selection");
-    delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
 
     connect(ui->getCopySelectionAction(), SIGNAL(triggered()), SLOT(sl_copyCurrentSelection()));
@@ -134,23 +133,21 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     delColAction->setObjectName("remove_columns_of_gaps");
     delColAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_Delete));
     delColAction->setShortcutContext(Qt::WidgetShortcut);
+    addAction(delColAction);
     connect(delColAction, SIGNAL(triggered()), SLOT(sl_delCol()));
 
     insSymAction = new QAction(tr("Fill selection with gaps"), this);
     insSymAction->setObjectName("fill_selection_with_gaps");
-    insSymAction->setShortcutContext(Qt::WidgetShortcut);
     connect(insSymAction, SIGNAL(triggered()), SLOT(sl_fillCurrentSelectionWithGaps()));
     addAction(insSymAction);
 
 
     createSubaligniment = new QAction(tr("Save subalignment"), this);
     createSubaligniment->setObjectName("Save subalignment");
-    createSubaligniment->setShortcutContext(Qt::WidgetShortcut);
     connect(createSubaligniment, SIGNAL(triggered()), SLOT(sl_createSubaligniment()));
 
     saveSequence = new QAction(tr("Save sequence"), this);
     saveSequence->setObjectName("Save sequence");
-    saveSequence->setShortcutContext(Qt::WidgetShortcut);
     connect(saveSequence, SIGNAL(triggered()), SLOT(sl_saveSequence()));
 
     gotoAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
@@ -193,7 +190,8 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     replaceCharacterAction = new QAction(tr("Replace selected character"), this);
     replaceCharacterAction->setObjectName("replace_selected_character");
     replaceCharacterAction->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_R));
-    replaceCharacterAction->setShortcutContext(Qt::WindowShortcut);
+    replaceCharacterAction->setShortcutContext(Qt::WidgetShortcut);
+    addAction(replaceCharacterAction);
     connect(replaceCharacterAction, SIGNAL(triggered()), SLOT(sl_replaceSelectedCharacter()));
 
     reverseAction = new QAction(tr("Replace selected rows with reverse"), this);
@@ -1567,13 +1565,9 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Delete:
-            if(!isAlignmentLocked()) {
-                if (shift) {
-                    sl_delCol();
-                } else {
-                    emit si_startMsaChanging();
-                    deleteCurrentSelection();
-                }
+            if (!isAlignmentLocked() && !shift) {
+                emit si_startMsaChanging();
+                deleteCurrentSelection();
             }
             break;
         case Qt::Key_Backspace:
