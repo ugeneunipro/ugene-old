@@ -40,6 +40,7 @@ private:
     void readHeader();
     Alignment parseAlignmentString(QByteArray line);
 
+    static const int LOCAL_READ_BUFFER_SIZE;
     QByteArray readBuffer;
 friend class AlignmentParser;
 };

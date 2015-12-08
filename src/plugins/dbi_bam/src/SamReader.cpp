@@ -32,6 +32,8 @@
 namespace U2 {
 namespace BAM {
 
+const int SamReader::LOCAL_READ_BUFFER_SIZE = 100000;
+
 Alignment SamReader::parseAlignmentString(QByteArray line) {
     Alignment alignment;
 
@@ -272,7 +274,7 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
 
 SamReader::SamReader(IOAdapter &ioAdapter):
         Reader(ioAdapter),
-        readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0')
+        readBuffer(LOCAL_READ_BUFFER_SIZE, '\0')
 {
     readHeader();
 }
@@ -296,7 +298,7 @@ QByteArray SamReader::readString(bool &eof) {
     bool lineOk = false;
     int len = 0;
     QByteArray result;
-    while((len = ioAdapter.readLine(buff, DocumentFormat::READ_BUFF_SIZE, &lineOk)) == 0) {}
+    while((len = ioAdapter.readLine(buff, LOCAL_READ_BUFFER_SIZE, &lineOk)) == 0) {}
     if (len == -1) {
         eof = true;
     } else {
@@ -317,7 +319,7 @@ void SamReader::readHeader() {
         QList<Header::ReadGroup> readGroups;
         QList<Header::Program> programs;
         QList<QByteArray> previousProgramIds;
-        while ((len = ioAdapter.readLine(buff, DocumentFormat::READ_BUFF_SIZE, &lineOk)) >= 0) {
+        while ((len = ioAdapter.readLine(buff, LOCAL_READ_BUFFER_SIZE, &lineOk)) >= 0) {
             if(isEof()){
                 break;
             }

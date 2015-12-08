@@ -53,6 +53,8 @@ private:
     QStringList parseLine(const QString& line) const;
 
     QString formatName;
+
+    static const int LOCAL_READ_BUFFER_SIZE;
 };
 
 }//namespace

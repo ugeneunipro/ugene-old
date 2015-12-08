@@ -50,6 +50,8 @@
 
 namespace U2 {
 
+const int ParserState::LOCAL_READ_BUFFER_SIZE = 40000;
+
 /* TRANSLATOR U2::EMBLGenbankAbstractDocument */
 //TODO: local8bit or ascii??
 
@@ -105,7 +107,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
     GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
 
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(ParserState::LOCAL_READ_BUFFER_SIZE, '\0');
     ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
@@ -294,7 +296,7 @@ DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus
 
     QByteArray sequenceData;
     U2MemorySequenceImporter seqImporter(sequenceData);
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    QByteArray readBuffer(ParserState::LOCAL_READ_BUFFER_SIZE, '\0');
     ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
@@ -728,7 +730,7 @@ void EMBLGenbankAbstractDocument::readAnnotations(ParserState* st, int offset) {
             break;
         }
         //parsing feature;
-        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, READ_BUFF_SIZE, st->si, offset, st->entry->seqLen);
+        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::LOCAL_READ_BUFFER_SIZE, st->si, offset, st->entry->seqLen);
         st->entry->features.push_back(f);
     } while (st->readNextLine());
 }
@@ -778,10 +780,10 @@ bool ParserState::readNextLine(bool emptyOK) {
     CHECK_OP_EXT(si, len = 0, false);
 
     bool ok = false;
-    len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE, &ok);
+    len = io->readLine(buff, LOCAL_READ_BUFFER_SIZE, &ok);
     si.setProgress(io->getProgress());
 
-    if (!ok && len == DocumentFormat::READ_BUFF_SIZE) {
+    if (!ok && len == LOCAL_READ_BUFFER_SIZE) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Line is too long."));
     } else if (len == -1) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("IO error."));

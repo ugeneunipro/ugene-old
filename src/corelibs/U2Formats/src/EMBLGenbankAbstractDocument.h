@@ -125,6 +125,7 @@ public:
     bool hasValue() const {return len > valOffset;}
     bool readNextLine(bool emptyOK = false);
     bool isNull() const {return entry->name.isNull();}
+    static const int LOCAL_READ_BUFFER_SIZE;
 };
 
 }//namespace

@@ -45,6 +45,8 @@ namespace U2{
 #define SAVE_LINE_LEN 70            //line length for
 #define DEFAULT_EMPTY_FASTA_SEQUENCE_NAME "EMPTY_NAME"            //line length for
 
+const int GFFFormat::LOCAL_READ_BUFFER_SIZE = 32768;
+
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("gff")){
     formatName = tr("GFF");
     formatDescription = tr("GFF is a format used for storing features and annotations");
@@ -65,14 +67,14 @@ Document* GFFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
-int readLongLine(QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff) {
+int readLongLine(QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff, int readBufferSize) {
     int len;
     buffer.clear();
     do {
-        len = io->readLine(charbuff.data(), DocumentFormat::READ_BUFF_SIZE - 1);
+        len = io->readLine(charbuff.data(), readBufferSize - 1);
         charbuff.data()[len] = '\0';
         buffer.append(QString(charbuff.data()));
-    } while (DocumentFormat::READ_BUFF_SIZE - 1 == len);
+    } while (readBufferSize - 1 == len);
     return buffer.length();
 }
 
@@ -221,8 +223,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     CHECK_OP(os,);
     Q_UNUSED(opBlock);
 
-    QScopedArrayPointer<char> buff(new char[READ_BUFF_SIZE]);
-    int len = io->readLine(buff.data(), READ_BUFF_SIZE);
+    QScopedArrayPointer<char> buff(new char[LOCAL_READ_BUFFER_SIZE]);
+    int len = io->readLine(buff.data(), LOCAL_READ_BUFFER_SIZE);
     buff.data()[len] = '\0';
     QString qstrbuf(buff.data());
     QStringList words = qstrbuf.split(QRegExp("\\s+"));
@@ -251,7 +253,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     const int objectsCountLimit = hints.contains(DocumentReadingMode_MaxObjectsInDoc) ? hints[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
 
     while (!io->isEof()) {
-        len = readLongLine(qstrbuf, io, buff);
+        len = readLongLine(qstrbuf, io, buff, GFFFormat::LOCAL_READ_BUFFER_SIZE);
         //skip empty lines
         if (TextUtils::remove(buff.data(), len, TextUtils::WHITES) == 0) {
             ioLog.info(GFFFormat::tr("Parsing error: file contains empty line %1, line skipped").arg(lineNumber));
