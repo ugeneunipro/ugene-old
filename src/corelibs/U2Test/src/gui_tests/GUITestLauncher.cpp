@@ -20,6 +20,7 @@
  */
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QMap>
 
 #include <U2Core/AppContext.h>
@@ -234,6 +235,11 @@ QString GUITestLauncher::performTest(const QString& testName) {
     process.setProcessEnvironment(getProcessEnvironment(testName));
     process.start(path, getTestProcessArguments(testName));
 
+#ifdef Q_OS_LINUX
+    QProcess screenRecorder;
+    screenRecorder.start(getScreenRecorderString(testName));
+#endif
+
     bool started = process.waitForStarted();
     if (!started) {
         return tr("An error occurred while starting UGENE: ") + process.errorString();
@@ -246,14 +252,22 @@ QString GUITestLauncher::performTest(const QString& testName) {
     QProcess::execute("closeErrorReport.exe"); //this exe file, compiled Autoit script
 #endif
 
+    QString testResult = readTestResult(process.readAllStandardOutput());
+#ifdef Q_OS_LINUX
+    screenRecorder.kill();
+    if(!GUITestTeamcityLogger::testFailed(testResult)){
+        QFile(getVideoPath(testName)).remove();
+    }
+#endif
+
     if (finished && (exitStatus == QProcess::NormalExit)) {
-        return readTestResult(process.readAllStandardOutput());
+        return testResult;
     }
 #ifdef Q_OS_WIN
     process.kill();
 #endif
     if (finished) {
-        return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
+        return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + testResult;
     } else {
         return tr("Test fails because of timeout.");
     }
@@ -300,6 +314,21 @@ QString GUITestLauncher::generateReport() const {
     res+="</table>";
 
     return res;
+}
+
+QString GUITestLauncher::getScreenRecorderString(const QString &testName){
+    QRect rec = QApplication::desktop()->screenGeometry();
+    int height = rec.height();
+    int width = rec.width();
+    QString display = qgetenv("DISPLAY");
+    QString result = QString("ffmpeg -video_size %1x%2 -framerate 5 -f x11grab -i %3.0 %4").arg(width).arg(height).arg(display).arg(getVideoPath(testName));
+    return result;
+}
+
+QString GUITestLauncher::getVideoPath(const QString &testName){
+    QDir().mkpath(QDir::currentPath() + "/videos");
+    QString result = QDir::currentPath() + "/videos/" + testName + ".avi";
+    return result;
 }
 
 }

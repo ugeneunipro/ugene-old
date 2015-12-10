@@ -26,7 +26,7 @@
 
 namespace HI {
 
-#define GT_CLASS_NAME "GTSpinBox"
+#define GT_CLASS_NAME "GTDoubleSpinBox"
 
 #define GT_METHOD_NAME "getValue"
 int GTDoubleSpinbox::getValue(GUITestOpStatus &os, QDoubleSpinBox *spinBox) {
@@ -95,6 +95,7 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
             GTGlobals::sleep(100);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
             GTKeyboardDriver::keySequence(os,s);
+            GTGlobals::sleep(100);
 
         }
     }
