@@ -21,11 +21,11 @@
 
 #include "ObjectViewTreeController.h"
 
-#include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
-
 
 #include <QtCore/QEvent>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -348,6 +348,7 @@ void ObjectViewTreeController::sl_onTreeCurrentChanged(QTreeWidgetItem * current
 
 
 void ObjectViewTreeController::sl_activateView() {
+    GCOUNTER(cvar, tvar, "Bookmarks::Bookmark Activated");
     OVTViewItem* vi = currentViewItem();
     if (vi!=NULL && vi->viewWindow!=NULL) { //raise existing view, no state change
         AppContext::getMainWindow()->getMDIManager()->activateWindow(vi->viewWindow);
@@ -384,6 +385,7 @@ void ObjectViewTreeController::makeViewPersistent(GObjectViewWindow* w) {
 }
 
 void ObjectViewTreeController::sl_addState() {
+    GCOUNTER(cvar, tvar, "Bookmarks::Add New Bookmark");
     OVTViewItem* vi = activeViewItem();
     SAFE_POINT(vi != NULL, QString("Can't find view item to add state!"),);
     SAFE_POINT(vi->viewWindow != NULL, QString("View window is NULL: %1").arg(vi->viewName),);
@@ -406,6 +408,7 @@ void ObjectViewTreeController::makeViewTransient(GObjectViewWindow* w) {
 }
 
 void ObjectViewTreeController::sl_removeState() {
+    GCOUNTER(cvar, tvar, "Bookmarks::Remove Bookmark");
     OVTStateItem* si = currentStateItem();
     Project* p = AppContext::getProject();
     if (si!=NULL) {
@@ -424,6 +427,7 @@ void ObjectViewTreeController::sl_removeState() {
 }
 
 void ObjectViewTreeController::sl_renameState() {
+    GCOUNTER(cvar, tvar, "Bookmarks::Rename Bookmark");
     OVTStateItem* si = currentStateItem();
     SAFE_POINT(si != NULL, QString("Can't find state item to rename!"),);
 
