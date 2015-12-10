@@ -473,17 +473,12 @@ void DetView::updateVisibleRange() {
         visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), qMin(visibleRangeLen, (int)seqLen));
         bool emptyLineDetected = (visibleRangeLen - visibleRange.length) > detArea->getSymbolsPerLine();
 
-        if (seqLen != visibleRange.length && (posAtTheEnd || (emptyLineDetected && visibleRange.startPos + visibleRangeLen >= seqLen))) {
+        if (posAtTheEnd || (emptyLineDetected && visibleRange.startPos + visibleRangeLen >= seqLen)) {
             // scroll to the end
             visibleRange.startPos = qMax(0, (verticalScrollBar->maximum() / numShiftsInOneLine) * detArea->getSymbolsPerLine());
             visibleRange.length = qMin((int)(seqLen - visibleRange.startPos), qMin(visibleRangeLen, (int)seqLen));
             currentShiftsCounter = qMax(0, verticalScrollBar->maximum() % numShiftsInOneLine);
         }
-
-        if (visibleRange.length == seqLen) {
-            currentShiftsCounter = 0;
-        }
-
     } else {
         visibleRange.length = qMin((qint64)detArea->getVisibleSymbolsCount(), seqLen);
         visibleRange.startPos = qMin(visibleRange.startPos, seqLen - visibleRange.length);
