@@ -32,6 +32,7 @@
 #include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
+#include <U2Core/TaskWatchdog.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -300,6 +301,7 @@ void FindRepeatsDialog::accept() {
 
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart,
         cam.data->name, cam.groupName, cam.description, cam.annotationObjectRef);
+    TaskWatchdog::trackResourceExistence(sc->getSequenceObject(), t);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 

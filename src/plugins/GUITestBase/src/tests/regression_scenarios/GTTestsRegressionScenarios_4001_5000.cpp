@@ -96,6 +96,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
@@ -4617,6 +4618,25 @@ GUI_TEST_CLASS_DEFINITION(test_4833_8) {
     QAbstractButton* button = GTAction::button(os, "Align");
     GTWidget::click(os, button);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4852) {
+    //1. Open _common_data/genome_aligner/chrY.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/genome_aligner", "chrY.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Run Find repeats with default parameters
+    QDir().mkpath(sandBoxDir + "test_4852");
+    GTUtilsDialog::waitForDialog(os, new FindRepeatsDialogFiller(os, sandBoxDir + "test_4852"));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find repeats"));
+    
+    //3. Delete chrY.fa document from project view
+    GTUtilsProjectTreeView::click(os, "chrY.fa");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    
+    //Expected state: 'find repeats' task cancelled
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 0, "Running task count should be 0");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4885_1) {
