@@ -109,7 +109,6 @@ private:
     QMutex                              resultsLock;
 
     QString                             group;
-    QPointer<AnnotationTableObject *>     aObj;
 };
 
 
