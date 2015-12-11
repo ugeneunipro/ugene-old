@@ -30,6 +30,7 @@
 #include "GTUtilsPhyTree.h"
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
 
 namespace U2 {
 using namespace HI;
@@ -190,6 +191,8 @@ QPoint GTUtilsPhyTree::getGlobalCoord(HI::GUITestOpStatus& os,QGraphicsItem *ite
 #define GT_METHOD_NAME "clickNode"
 void GTUtilsPhyTree::clickNode(HI::GUITestOpStatus &os, GraphicsButtonItem *node) {
     GT_CHECK(NULL != node, "Node to click is NULL");
+    node->ensureVisible();
+    GTThread::waitForMainThread(os);
     GTMouseDriver::moveTo(os, getGlobalCoord(os, node));
     GTMouseDriver::click(os);
 }

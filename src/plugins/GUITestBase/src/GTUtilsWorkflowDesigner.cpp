@@ -411,6 +411,7 @@ void GTUtilsWorkflowDesigner::click(HI::GUITestOpStatus &os, QString itemName, Q
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     GT_CHECK(sceneView!=NULL, "scene view is NULL");
     sceneView->ensureVisible(getWorker(os, itemName));
+    GTThread::waitForMainThread(os);
 
     GTMouseDriver::moveTo(os, getItemCenter(os, itemName) + p);
     GTMouseDriver::click(os);

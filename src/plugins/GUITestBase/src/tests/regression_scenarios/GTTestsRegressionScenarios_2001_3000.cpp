@@ -1937,6 +1937,7 @@ GUI_TEST_CLASS_DEFINITION( test_2298 ){
     QGraphicsItem* node = GTUtilsPhyTree::getNodes(os).at(1);
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     treeView->ensureVisible(node);
+    GTThread::waitForMainThread(os);
     GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, node));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -2964,6 +2965,7 @@ GUI_TEST_CLASS_DEFINITION( test_2410 ) {
     GTUtilsDialog::waitForDialog( os, chooser );
 
     GTWidget::click( os, graphAction );
+    GTGlobals::sleep(500);
 
     GTWidget::click( os, GTAction::button( os,
         "action_zoom_in_human_T1 (UCSC April 2002 chr7:115977709-117855134)" ) );

@@ -2206,6 +2206,7 @@ GUI_TEST_CLASS_DEFINITION(test_0842) {
 
     GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
     GTUtilsWorkflowDesigner::clickOnPalette(os, "test", Qt::RightButton);
+    GTGlobals::sleep(5000);//added to ensure that crash is not here or to fix this crash
 
 //    Expected state: There are two custom workers on the palette now (test and test1).
     const QList<QTreeWidgetItem *> customElements = GTUtilsWorkflowDesigner::getPaletteGroupEntries(os, "Custom Elements with CMD Tools");

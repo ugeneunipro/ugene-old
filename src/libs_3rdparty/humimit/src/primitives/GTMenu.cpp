@@ -30,6 +30,8 @@
 #include <QMainWindow>
 #include <QMenuBar>
 
+#include <utils/GTThread.h>
+
 namespace HI {
 
 #define GT_CLASS_NAME "GTMenu"
@@ -267,6 +269,7 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
     default:
         break;
     }
+    GTThread::waitForMainThread(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     if(activePopupMenu==NULL)
         action=NULL;

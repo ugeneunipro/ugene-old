@@ -24,6 +24,8 @@
 #include "primitives/GTSpinBox.h"
 #include "primitives/GTWidget.h"
 
+#include <utils/GTThread.h>
+
 namespace HI {
 
 #define GT_CLASS_NAME "GTSpinBox"
@@ -101,7 +103,7 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
             GTGlobals::sleep(100);
         }
     }
-
+    GTThread::waitForMainThread(os);
     int currIndex = spinBox->value();
     GT_CHECK(currIndex == v, QString("Can't set index. Expected: %1 actual: %2").arg(v).arg(currIndex));
     GTGlobals::sleep(100);

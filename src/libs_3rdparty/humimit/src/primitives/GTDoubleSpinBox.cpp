@@ -24,6 +24,8 @@
 #include "primitives/GTDoubleSpinBox.h"
 #include "primitives/GTWidget.h"
 
+#include <utils/GTThread.h>
+
 namespace HI {
 
 #define GT_CLASS_NAME "GTDoubleSpinBox"
@@ -100,6 +102,7 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
         }
     }
 
+    GTThread::waitForMainThread(os);
     double currIndex = spinBox->value();
     GT_CHECK(QString().setNum(currIndex) == QString().setNum(v), "Expected: " + QString().setNum(v) + " Found: " + QString().setNum(currIndex));
 }
