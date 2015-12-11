@@ -4813,6 +4813,7 @@ GUI_TEST_CLASS_DEFINITION(test_4918_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_4934) {
     //1. Open samples/CLUSTALW/ty3.aln.gz
+    GTLogTracer l;
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Align with Kalign
@@ -4820,18 +4821,22 @@ GUI_TEST_CLASS_DEFINITION(test_4934) {
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     //3. while aligning lock document for editing
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep();
     GTUtilsDocument::lockDocument(os, "ty3.aln.gz");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //4. Unlock document after alignment finished
     GTUtilsDocument::unlockDocument(os, "ty3.aln.gz");
-    GTLogTracer l;
+
     //5. Align with Kalign again
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
-    CHECK_SET_ERR(!l.hasError(), "Log should not contain errors");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::checkContainsError(os, l, "Object 'ty3.aln.gz' removed");
+    int errorNum = GTUtilsLog::getErrors(os, l).size();
+    CHECK_SET_ERR(errorNum==1, QString("Too many errors in log: %1").arg(errorNum));
 }
 
 } // namespace GUITest_regression_scenarios
