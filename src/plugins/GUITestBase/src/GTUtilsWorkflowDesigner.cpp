@@ -380,6 +380,7 @@ QPoint GTUtilsWorkflowDesigner::getItemCenter(HI::GUITestOpStatus &os,QString it
 void GTUtilsWorkflowDesigner::removeItem(HI::GUITestOpStatus &os, QString itemName) {
     click(os, itemName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 
