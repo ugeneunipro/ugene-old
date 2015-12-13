@@ -235,7 +235,7 @@ QString GUITestLauncher::performTest(const QString& testName) {
     process.setProcessEnvironment(getProcessEnvironment(testName));
     process.start(path, getTestProcessArguments(testName));
 
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WIN
     QProcess screenRecorder;
     screenRecorder.start(getScreenRecorderString(testName));
 #endif
@@ -253,7 +253,7 @@ QString GUITestLauncher::performTest(const QString& testName) {
 #endif
 
     QString testResult = readTestResult(process.readAllStandardOutput());
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WIN
     screenRecorder.kill();
     if(!GUITestTeamcityLogger::testFailed(testResult)){
         QFile(getVideoPath(testName)).remove();
@@ -317,11 +317,16 @@ QString GUITestLauncher::generateReport() const {
 }
 
 QString GUITestLauncher::getScreenRecorderString(const QString &testName){
+    QString result;
+#ifdef Q_OS_LINUX
     QRect rec = QApplication::desktop()->screenGeometry();
     int height = rec.height();
     int width = rec.width();
     QString display = qgetenv("DISPLAY");
-    QString result = QString("ffmpeg -video_size %1x%2 -framerate 5 -f x11grab -i %3.0 %4").arg(width).arg(height).arg(display).arg(getVideoPath(testName));
+    result = QString("ffmpeg -video_size %1x%2 -framerate 5 -f x11grab -i %3.0 %4").arg(width).arg(height).arg(display).arg(getVideoPath(testName));
+#elif defined Q_OS_MAC
+    result = QString("ffmpeg -f avfoundation -r 5 -i \"1:none\" %1").arg(getVideoPath(testName));
+#endif
     return result;
 }
 
