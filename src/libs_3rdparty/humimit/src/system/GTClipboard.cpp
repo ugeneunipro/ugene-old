@@ -38,6 +38,32 @@ namespace HI {
 QString GTClipboard::text(GUITestOpStatus &os) {
     GTGlobals::sleep(300);
 // check that clipboard contains text
+#ifdef Q_OS_WIN
+    //On windows clipboard actions should be done in main thread
+    QString clipboardText;
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QString &_text) : text(_text){}
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            QClipboard *clipboard = QApplication::clipboard();
+
+            GT_CHECK(clipboard != NULL, "Clipboard is NULL");
+            const QMimeData *mimeData = clipboard->mimeData();
+            GT_CHECK(mimeData != NULL, "Clipboard MimeData is NULL");
+
+            GT_CHECK(mimeData->hasText() == true, "Clipboard doesn't contain text data");
+            QString clipboardText = mimeData->text();
+            text = clipboardText;
+            // need to clear clipboard, UGENE will crash on close otherwise because of Qt assert
+            clipboard->clear();
+        }
+    private:
+        QString text;
+    };
+
+    GTThread::runInMainThread(os, new Scenario(clipboardText));
+#else
     QClipboard *clipboard = QApplication::clipboard();
 
     GT_CHECK_RESULT(clipboard != NULL, "Clipboard is NULL", "");
@@ -48,6 +74,7 @@ QString GTClipboard::text(GUITestOpStatus &os) {
     QString clipboardText = mimeData->text();
 // need to clear clipboard, UGENE will crash on close otherwise because of Qt assert
     clipboard->clear();
+#endif
 
     return clipboardText;
 }

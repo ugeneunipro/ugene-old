@@ -2904,7 +2904,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_windows){
 
 //    3. Fill dialog: svg format, output file
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
-    CHECK_SET_ERR(fileSize > 7400000 && fileSize < 9800000, "Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize > 6500000 && fileSize < 9800000, "Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }
