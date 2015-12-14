@@ -235,10 +235,12 @@ QString GUITestLauncher::performTest(const QString& testName) {
     process.setProcessEnvironment(getProcessEnvironment(testName));
     process.start(path, getTestProcessArguments(testName));
 
-#ifndef Q_OS_WIN
     QProcess screenRecorder;
-    screenRecorder.start(getScreenRecorderString(testName));
+    if(qgetenv("UGENE_SKIP_TEST_RECORDING").toInt() != 1){
+#ifndef Q_OS_WIN
+        screenRecorder.start(getScreenRecorderString(testName));
 #endif
+    }
 
     bool started = process.waitForStarted();
     if (!started) {
@@ -253,12 +255,15 @@ QString GUITestLauncher::performTest(const QString& testName) {
 #endif
 
     QString testResult = readTestResult(process.readAllStandardOutput());
+
+    if(qgetenv("UGENE_SKIP_TEST_RECORDING").toInt() != 1){
 #ifndef Q_OS_WIN
-    screenRecorder.kill();
-    if(!GUITestTeamcityLogger::testFailed(testResult)){
-        QFile(getVideoPath(testName)).remove();
-    }
+        screenRecorder.kill();
+        if(!GUITestTeamcityLogger::testFailed(testResult)){
+            QFile(getVideoPath(testName)).remove();
+        }
 #endif
+    }
 
     if (finished && (exitStatus == QProcess::NormalExit)) {
         return testResult;
