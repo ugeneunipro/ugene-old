@@ -3250,7 +3250,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));
-    GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
+    //GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
     GTGlobals::sleep();
 
@@ -3261,7 +3261,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     GTUtilsDocument::removeDocument(os, "COI_3484_1.nwk");
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Save all");
 
-    GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
+    //GTWidget::clickWindowTitle(os, AppContext::getMainWindow()->getQMainWindow());
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));

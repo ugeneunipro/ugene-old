@@ -338,6 +338,7 @@ QString GUITestLauncher::getScreenRecorderString(const QString &testName){
 QString GUITestLauncher::getVideoPath(const QString &testName){
     QDir().mkpath(QDir::currentPath() + "/videos");
     QString result = QDir::currentPath() + "/videos/" + testName + ".avi";
+    uiLog.trace("going to record video: " + result);
     return result;
 }
 
