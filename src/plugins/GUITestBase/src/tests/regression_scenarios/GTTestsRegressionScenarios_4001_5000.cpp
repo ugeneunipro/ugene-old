@@ -942,7 +942,7 @@ GUI_TEST_CLASS_DEFINITION(test_4100) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__add_menu" << "action_project__import_to_database"));
     GTUtilsProjectTreeView::click(os, "ugene_gui_test", Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
 
     GTUtilsSharedDatabaseDocument::doubleClickItem(os, databaseDoc, "JQ040024.1");
     QModelIndex idx = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, "/JQ040024.1/JQ040025");

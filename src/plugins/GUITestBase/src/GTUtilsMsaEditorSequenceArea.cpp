@@ -36,6 +36,7 @@
 #include "api/GTMSAEditorStatusWidget.h"
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
 #include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 
@@ -273,6 +274,7 @@ QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(HI::GUITestOpStatus &
 void GTUtilsMSAEditorSequenceArea::removeSequence(HI::GUITestOpStatus &os, const QString &sequenceName) {
     selectSequence(os, sequenceName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 

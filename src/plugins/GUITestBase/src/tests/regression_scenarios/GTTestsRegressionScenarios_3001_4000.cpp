@@ -3377,7 +3377,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
 //                   dialog can't be closed until the search task finish,
 //                   the search task waits until the "auto-annotation update" task finish.
 
-    GTFileDialog::openFile(os, testDir + "_common_data/FASTA/", "Mycobacterium.fna");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Mycobacterium.fna");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     class SiteconCustomFiller : public Filler {
@@ -3419,7 +3419,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new AllEnzymesSearchScenario()));
     GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
     GTThread::waitForMainThread(os);
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(40000);
 
     GTUtilsTaskTreeView::openView(os);
     GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
