@@ -59,10 +59,12 @@ QString GTClipboard::text(GUITestOpStatus &os) {
             clipboard->clear();
         }
     private:
-        QString text;
+        QString &text;
     };
 
     GTThread::runInMainThread(os, new Scenario(clipboardText));
+    GTThread::waitForMainThread(os);
+
 #else
     QClipboard *clipboard = QApplication::clipboard();
 
