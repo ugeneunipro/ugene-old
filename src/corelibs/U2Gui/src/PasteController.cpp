@@ -110,7 +110,7 @@ QList<Task*> PasteTaskImpl::onSubTaskFinished(Task* task){
     if (task->isCanceled() || task->hasError()){
         return res;
     }
-    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
+    DocumentProviderTask* loadTask = qobject_cast<DocumentProviderTask*>(task);
     if (loadTask != NULL){
         Document* doc = loadTask->takeDocument();
         processDocument(doc);
@@ -181,7 +181,7 @@ PasteUrlsTask::PasteUrlsTask(const QList<QUrl> &toPasteUrls, bool addToProject)
     }
     CHECK(!urls.isEmpty(), );
     foreach (const GUrl& url, urls){
-        LoadDocumentTask* loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(url);
+        DocumentProviderTask* loadDocTask = LoadDocumentTask::getCommonLoadDocTask(url);
         if (loadDocTask){
             addSubTask(loadDocTask);
         }
@@ -219,6 +219,7 @@ PasteTextTask::PasteTextTask(const QClipboard* clipboard, QSet<QString>& exclude
 
     QVariantMap hints;
     hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
+    hints[DocumentReadingMode_SequenceAsSeparateHint] = true;
     LoadDocumentTask* loadDocumentTask = new LoadDocumentTask(df->getFormatId(), GUrl(clipboardUrl), iof, hints);
     addSubTask(loadDocumentTask);
 }

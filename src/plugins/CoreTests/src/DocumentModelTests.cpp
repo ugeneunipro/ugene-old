@@ -89,6 +89,8 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
             hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
         } else if ("merge" == seqMode) {
             hints[DocumentReadingMode_SequenceMergeGapSize] = 10; // just default value
+        } else if ("split" == seqMode) {
+            hints[DocumentReadingMode_SequenceAsSeparateHint] = true;
         }
     }
 

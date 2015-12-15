@@ -46,9 +46,19 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
     formatName = tr("Raw sequence");
     fileExtensions << "seq" << "txt";
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
-    formatDescription = tr("Raw sequence file - a whole content of the file is treated either as a single nucleotide or peptide sequence UGENE will remove all non-alphabetic chars from the result sequence");
+    formatDescription = tr("Raw sequence file - a whole content of the file is treated either as a single/multiple nucleotide or peptide sequence(s). UGENE will remove all non-alphabetic chars from the result sequence. By default the characters in the file are considered a single sequence.");
 }
 
+void finishSequence(QList<GObject*>& objects, IOAdapter* io, U2OpStatus& os, const U2DbiRef& dbiRef, const QVariantMap& fs, TmpDbiObjects& dbiObjects, U2SequenceImporter& seqImporter){
+    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    dbiObjects.objects << u2seq.id;
+    CHECK_OP(os, );
+
+    GObjectReference sequenceRef(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL, fs);
+
+    objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
+}
 
 static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
     DbiOperationsBlock opBlock(dbiRef, os);
@@ -68,11 +78,21 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     //reading sequence
     QBuffer writer(&seq);
     writer.open(QIODevice::WriteOnly);
+    TmpDbiObjects dbiObjects(dbiRef, os);
     bool ok = true;
     int len = 0;
     bool isStarted = false;
+    int sequenceCounter = 0;
+    bool terminatorFound = false;
+    bool isSplit = fs.value((DocumentReadingMode_SequenceAsSeparateHint), false).toBool();
 
-    while (ok && (len = io->readBlock(buff, DocumentFormat::READ_BUFF_SIZE)) > 0) {
+
+    while (ok && !io->isEof()) {
+        len = io->readLine(buff, DocumentFormat::READ_BUFF_SIZE, &terminatorFound);
+        if (len <= 0){
+            continue;
+        }
+
         seq.clear();
         bool isSeek = writer.seek(0);
                 assert(isSeek); Q_UNUSED(isSeek);
@@ -87,11 +107,17 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
             }
         }
         if(seq.size()>0 && isStarted == false ){
+            QString name = sequenceCounter == 0 ? seqName : seqName + QString("_%1").arg(sequenceCounter);
             isStarted = true;
-            seqImporter.startSequence(dbiRef, folder, seqName, false, os);
+            seqImporter.startSequence(dbiRef, folder, name, false, os);
         }
         if(isStarted){
             seqImporter.addBlock(seq.data(),seq.size(),os);
+        }
+        if (seq.size()>0 && isStarted && terminatorFound && isSplit){
+            finishSequence(objects, io, os, dbiRef, fs, dbiObjects, seqImporter);
+            sequenceCounter++;
+            isStarted = false;
         }
         if (os.isCoR()) {
             break;
@@ -101,22 +127,17 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     writer.close();
 
     CHECK_OP(os, );
-
-    CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
-    U2Sequence u2seq = seqImporter.finalizeSequence(os);
-    TmpDbiObjects dbiObjects(dbiRef, os);
-    dbiObjects.objects << u2seq.id;
-    CHECK_OP(os, );
-
-    GObjectReference sequenceRef(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
-    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL, fs);
-
-    objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
+    if (sequenceCounter == 0){
+        CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
+    }
+    if (isStarted){
+        finishSequence(objects, io, os, dbiRef, fs, dbiObjects, seqImporter);
+    }
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList<GObject*> objects;
-        load(io, dbiRef, objects, fs, os);
+    load(io, dbiRef, objects, fs, os);
     CHECK_OP(os, NULL);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return doc;
