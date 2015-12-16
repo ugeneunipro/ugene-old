@@ -22,6 +22,8 @@
 #include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2FeatureUtils.h>
 
 #include "FeatureDbiUnitTests.h"
 
@@ -30,8 +32,11 @@ namespace U2 {
 static const U2Feature INVALID_FEATURE = U2Feature();
 
 TestDbiProvider FeatureTestData::dbiProvider = TestDbiProvider();
+TestDbiProvider FeatureTestData::subgroupsDbiProvider = TestDbiProvider();
 const QString FeatureTestData::featureDbiUrl("features-dbi.ugenedb");
+const QString FeatureTestData::subgroupDbiUrl("featureSubgroupsSorting.ugenedb");
 U2FeatureDbi *FeatureTestData::featureDbi = NULL;
+U2FeatureDbi *FeatureTestData::subgroupDbi = NULL;
 U2SequenceDbi *FeatureTestData::sequenceDbi = NULL;
 
 void FeatureTestData::init() {
@@ -46,17 +51,33 @@ void FeatureTestData::init() {
 
     sequenceDbi = dbi->getSequenceDbi();
     SAFE_POINT(NULL != sequenceDbi, "Failed to get sequenceDbi!",);
+
+    SAFE_POINT(NULL == subgroupDbi, "subgroupDbi has been already initialized!", );
+
+    ok = subgroupsDbiProvider.init(subgroupDbiUrl, false);
+    SAFE_POINT(ok, "Dbi provider failed to initialize in FeaturesTestData::init()!", );
+
+    dbi = subgroupsDbiProvider.getDbi();
+    subgroupDbi = dbi->getFeatureDbi();
+    SAFE_POINT(NULL != featureDbi, "Failed to get subgroupDbi!", );
 }
 
 void FeatureTestData::shutdown() {
+    U2OpStatusImpl os;
     if (NULL != featureDbi) {
         SAFE_POINT(NULL != sequenceDbi, "sequenceDbi must also be not NULL on this step!",);
 
-        U2OpStatusImpl os;
         dbiProvider.close();
         featureDbi = NULL;
         sequenceDbi = NULL;
         SAFE_POINT_OP(os,);
+    }
+    if (NULL != subgroupDbi) {
+        SAFE_POINT(NULL != subgroupDbi, "subgroupDbi must also be not NULL on this step!", );
+
+        subgroupsDbiProvider.close();
+        subgroupDbi = NULL;
+        SAFE_POINT_OP(os, );
     }
 }
 
@@ -65,6 +86,13 @@ U2FeatureDbi *FeatureTestData::getFeatureDbi() {
         init();
     }
     return featureDbi;
+}
+
+U2FeatureDbi *FeatureTestData::getSubgroupDbi() {
+    if (NULL == subgroupDbi) {
+        init();
+    }
+    return subgroupDbi;
 }
 
 U2SequenceDbi* FeatureTestData::getSequenceDbi() {
@@ -713,6 +741,28 @@ IMPLEMENT_TEST(FeatureDbiUnitTests, getFeaturesBySequence) {
         U2Feature current = iter->next();
         CHECK_TRUE((current.id == feature1.id) || (current.id == feature3.id),
             "Unexpected feature ID");
+    }
+}
+
+IMPLEMENT_TEST(FeatureDbiUnitTests, sortingSubgroups) {
+    U2OpStatusImpl os;
+    U2FeatureDbi *subgroupDbi = FeatureTestData::getSubgroupDbi();
+    
+    U2DataId rootFeatureId = U2DbiUtils::toU2DataId(2, U2Type::AnnotationTable);
+    QList<FeatureAndKey> rawData = subgroupDbi->getFeatureTable(rootFeatureId, os);
+    QList<FeatureAndKey> groups = U2FeatureUtils::getSortedSubgroups(rawData, rootFeatureId);
+
+    QList<U2DataId> passedFeaturesList;
+    for (int i = 0; i < groups.size(); i++) {
+        U2DataId id = groups.at(i).feature.id;
+        U2DataId parentId = groups.at(i).feature.parentFeatureId;
+        passedFeaturesList.append(id);
+        if (i == 0) {
+            U2DataId rootId = groups.at(i).feature.rootFeatureId;
+            CHECK_TRUE(parentId == rootId, "Wrong groups sorting");
+        } else {
+            CHECK_TRUE(passedFeaturesList.contains(parentId), "Wrong groups sorting");
+        }
     }
 }
 

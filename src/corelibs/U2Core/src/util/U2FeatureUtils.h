@@ -23,7 +23,7 @@
 #define _U2_FEATURE_UTILS_H_
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/U2Feature.h>
+#include <U2Core/U2FeatureDbi.h>
 
 namespace U2 {
 
@@ -131,6 +131,8 @@ public:
      */
     static QList<U2Feature>         getSubGroups(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
                                         OperationScope scope = Recursive, ParentFeatureStatus parent = Nonroot);
+    
+    static QList<FeatureAndKey>     getSortedSubgroups(QList<FeatureAndKey> &fkList, const U2DataId &parentId);
 
 private:
     static QList<U2Feature>         getFeaturesByParent(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,

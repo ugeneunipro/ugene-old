@@ -37,6 +37,7 @@ class FeatureTestData {
 public:
     static U2FeatureDbi * getFeatureDbi( );
     static U2SequenceDbi * getSequenceDbi( );
+    static U2FeatureDbi *getSubgroupDbi();
 
     static U2Feature createTestFeature1( const U2Sequence &seq, U2OpStatus &os,
         const U2Feature &parentFeature = U2Feature( ) );
@@ -53,8 +54,11 @@ private:
     static void init( );
 
     static TestDbiProvider dbiProvider;
+    static TestDbiProvider subgroupsDbiProvider;
     static const QString featureDbiUrl;
+    static const QString subgroupDbiUrl;
     static U2FeatureDbi *featureDbi;
+    static U2FeatureDbi *subgroupDbi;
     static U2SequenceDbi *sequenceDbi;
 };
 
@@ -88,6 +92,8 @@ DECLARE_TEST( FeatureDbiUnitTests, removeFeature );
 DECLARE_TEST( FeatureDbiUnitTests, getFeaturesByRegion );
 DECLARE_TEST( FeatureDbiUnitTests, getSubFeatures );
 DECLARE_TEST( FeatureDbiUnitTests, getFeaturesBySequence );
+/** Testing properly sorting of annotation subgroups */
+DECLARE_TEST( FeatureDbiUnitTests, sortingSubgroups );
 
 } // namespace U2
 
@@ -107,5 +113,6 @@ DECLARE_METATYPE( FeatureDbiUnitTests, removeFeature );
 DECLARE_METATYPE( FeatureDbiUnitTests, getFeaturesByRegion );
 DECLARE_METATYPE( FeatureDbiUnitTests, getSubFeatures );
 DECLARE_METATYPE( FeatureDbiUnitTests, getFeaturesBySequence );
+DECLARE_METATYPE( FeatureDbiUnitTests, sortingSubgroups );
 
 #endif // _U2_FEATURES_DBI_UNIT_TESTS_H_

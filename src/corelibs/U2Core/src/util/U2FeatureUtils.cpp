@@ -192,6 +192,28 @@ void U2FeatureUtils::addSubFeatures(const QVector<U2Region> &regions, const U2St
      }
 }
 
+QList<FeatureAndKey> U2FeatureUtils::getSortedSubgroups(QList<FeatureAndKey> &fkList, const U2DataId &parentId) {
+    QList<FeatureAndKey> result;
+    if (fkList.size() == 0) {
+        return result;
+    }
+    int i = 0;
+    FeatureAndKey fk = fkList[i];
+    while (fk.feature.featureClass == U2Feature::Group) {
+        if (fk.feature.parentFeatureId == parentId) {
+            result.append(fk);
+            fkList.removeAt(i);
+        } else {
+            i++;
+        }
+        fk = fkList[i];
+    }
+    foreach(const FeatureAndKey &fk, result) {
+        result.append(getSortedSubgroups(fkList, fk.feature.id));
+    }
+    return result;
+}
+
 AnnotationGroup * U2FeatureUtils::loadAnnotationTable(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef,
     AnnotationTableObject *parentObj, U2OpStatus &os)
 {
@@ -207,7 +229,10 @@ AnnotationGroup * U2FeatureUtils::loadAnnotationTable(const U2DataId &rootFeatur
     AnnotationGroup *rootGroup = new AnnotationGroup(rootFeatureId, AnnotationGroup::ROOT_GROUP_NAME, NULL, parentObj);
 
     Annotation *currentAnnotation = NULL;
-    const QList<FeatureAndKey> rawData = dbi->getFeatureTable(rootFeatureId, os);
+    QList<FeatureAndKey> rawData = dbi->getFeatureTable(rootFeatureId, os);
+    QList<FeatureAndKey> groups = getSortedSubgroups(rawData, rootFeatureId);
+    rawData = groups + rawData;
+
     foreach (const FeatureAndKey &fnk, rawData) {
         if (U2Feature::Group == fnk.feature.featureClass) {
             rootGroup->addSubgroup(fnk.feature);
