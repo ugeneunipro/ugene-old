@@ -4348,7 +4348,20 @@ GUI_TEST_CLASS_DEFINITION(test_1426) {
     CHECK_SET_ERR(GTWidget::findWidget(os, "addButton", NULL, GTGlobals::FindOptions(false)) == NULL, "addButton is shown");
 
     GTUtilsWorkflowDesigner::click(os, "Read HMM2 Profile");
-    GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", dataDir + "samples/FASTA/HMM/aligment15900.hmm", GTUtilsWorkflowDesigner::textValue);
+    GTGlobals::sleep(500);
+
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,0));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+    QLineEdit* line = qobject_cast<QLineEdit*>(table->findChild<QLineEdit*>());
+    CHECK_SET_ERR(line, "QLineEdit not found. Widget in this cell might be not QLineEdit");
+    GTLineEdit::setText(os, line, dataDir + "samples/FASTA/HMM/aligment15900.hmm");
+
+
     GTGlobals::sleep(1000);
 #ifdef Q_OS_MAC
     GTGlobals::sleep();

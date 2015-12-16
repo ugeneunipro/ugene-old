@@ -752,7 +752,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(HI::GUITestOpStatus &os, QStri
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addFileButton);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 
