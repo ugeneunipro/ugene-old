@@ -127,8 +127,9 @@ void editItemName(HI::GUITestOpStatus &os, const QString &newItemName, GTGlobals
 #endif // Q_OS_MAC
         break;
     case GTGlobals::UseMouse:
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Edit" << "Rename...", GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__edit_menu" << "Rename", GTGlobals::UseMouse));
         GTMouseDriver::click(os, Qt::RightButton);
+        GTGlobals::sleep(300);
         break;
     default:
         os.setError("An unsupported way of a rename procedure invocation");
@@ -136,6 +137,7 @@ void editItemName(HI::GUITestOpStatus &os, const QString &newItemName, GTGlobals
     }
 
     GTKeyboardDriver::keySequence(os, newItemName);
+    GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
     GTGlobals::sleep(500);

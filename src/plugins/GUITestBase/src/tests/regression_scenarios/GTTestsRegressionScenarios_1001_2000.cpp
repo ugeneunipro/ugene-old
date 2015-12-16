@@ -2547,8 +2547,8 @@ GUI_TEST_CLASS_DEFINITION(test_1229) {
     const QModelIndex firstDoc = GTUtilsProjectTreeView::findIndex(os, "1.txt");
     const QModelIndex secondDoc = GTUtilsProjectTreeView::findIndex(os, "2.txt");
 
-    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", firstDoc), "tub_1");
-    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", secondDoc), "tub_2");
+    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", firstDoc), "tub_1", GTGlobals::UseMouse);
+    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", secondDoc), "tub_2", GTGlobals::UseMouse);
 
     // 3. Select both sequence objects and export them as multiple alignment.
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
@@ -4349,6 +4349,7 @@ GUI_TEST_CLASS_DEFINITION(test_1426) {
 
     GTUtilsWorkflowDesigner::click(os, "Read HMM2 Profile");
     GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", dataDir + "samples/FASTA/HMM/aligment15900.hmm", GTUtilsWorkflowDesigner::textValue);
+    GTGlobals::sleep(1000);
 #ifdef Q_OS_MAC
     GTGlobals::sleep();
     GTMouseDriver::doubleClick(os);

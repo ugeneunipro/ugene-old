@@ -445,6 +445,7 @@ GUI_TEST_CLASS_DEFINITION(test_0339) {
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["cmd"]);
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+    GTGlobals::sleep();
 
 //    5. Press Ctrl+N
     // hotkey replaced with Cmd+N on Mac
@@ -452,12 +453,14 @@ GUI_TEST_CLASS_DEFINITION(test_0339) {
 //    6. Close the dialog
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "CreateAnnotationDialog", QDialogButtonBox::Cancel));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["cmd"]);
+    GTGlobals::sleep();
 
 //    7. Press Ctrl+F
     // hotkey replaced with Cmd+F on Mac
 //    Expected: Search pattern panel appears
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["cmd"]);
     GTThread::waitForMainThread(os);
+    GTGlobals::sleep();
     const bool isTabOpened = GTUtilsOptionPanelSequenceView::isTabOpened(os, GTUtilsOptionPanelSequenceView::Search);
     CHECK_SET_ERR(isTabOpened, "'Search in sequence' tab is not opened");
 }
@@ -2761,14 +2764,14 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     //1) Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(os, "test");
+    GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(os, "test_0908");
 
     //2) Click "Create element with command line tool"
     //3) input name "test"
     //4) input data : "in1" and "in2" of FASTA
     //5) output data : "out1" of FASTA
     //6) Execution string : "cmd /c copy $in1 $out1 | copy $in2 $out1"
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/908/test.etc"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/908/test_0908.etc"));
     GTWidget::click(os, GTAction::button(os, "AddElementWithCommandLineTool"));
 
     //7) Add input and output readers of FASTA
@@ -2780,7 +2783,7 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
 
     WorkflowProcessItem* writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
 
-    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test");
+    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test_0908");
 
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), cmdlineWorker);
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1"), cmdlineWorker);
