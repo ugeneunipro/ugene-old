@@ -24,6 +24,8 @@
 #include "primitives/GTComboBox.h"
 #include "primitives/GTWidget.h"
 
+#include <utils/GTThread.h>
+
 #include <QListView>
 #include <QStandardItemModel>
 
@@ -63,6 +65,7 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
             GTGlobals::sleep(100);
         }
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTThread::waitForMainThread(os);
         GTGlobals::sleep(500);
 
         if(checkVal){
