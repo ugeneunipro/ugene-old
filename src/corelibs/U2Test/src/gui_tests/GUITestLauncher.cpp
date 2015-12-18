@@ -330,7 +330,7 @@ QString GUITestLauncher::getScreenRecorderString(const QString &testName){
     QString display = qgetenv("DISPLAY");
     result = QString("ffmpeg -video_size %1x%2 -framerate 5 -f x11grab -i %3.0 %4").arg(width).arg(height).arg(display).arg(getVideoPath(testName));
 #elif defined Q_OS_MAC
-    result = QString("ffmpeg -f avfoundation -r 5 -i \"1:none\" %1").arg(getVideoPath(testName));
+    result = QString("ffmpeg -f avfoundation -r 5 -i \"1:none\" \"%1\"").arg(getVideoPath(testName));
 #endif
     return result;
 }
