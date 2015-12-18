@@ -237,9 +237,7 @@ QString GUITestLauncher::performTest(const QString& testName) {
 
     QProcess screenRecorder;
     if(qgetenv("UGENE_SKIP_TEST_RECORDING").toInt() != 1){
-#ifndef Q_OS_WIN
         screenRecorder.start(getScreenRecorderString(testName));
-#endif
     }
 
     bool started = process.waitForStarted();
@@ -257,12 +255,10 @@ QString GUITestLauncher::performTest(const QString& testName) {
     QString testResult = readTestResult(process.readAllStandardOutput());
 
     if(qgetenv("UGENE_SKIP_TEST_RECORDING").toInt() != 1){
-#ifndef Q_OS_WIN
         screenRecorder.kill();
         if(!GUITestTeamcityLogger::testFailed(testResult)){
             QFile(getVideoPath(testName)).remove();
         }
-#endif
     }
 
     if (finished && (exitStatus == QProcess::NormalExit)) {
@@ -331,6 +327,8 @@ QString GUITestLauncher::getScreenRecorderString(const QString &testName){
     result = QString("ffmpeg -video_size %1x%2 -framerate 5 -f x11grab -i %3.0 %4").arg(width).arg(height).arg(display).arg(getVideoPath(testName));
 #elif defined Q_OS_MAC
     result = QString("ffmpeg -f avfoundation -r 5 -i \"1:none\" \"%1\"").arg(getVideoPath(testName));
+#elif defined Q_OS_WIN
+    result = QString("ffmpeg -f dshow -i video=\"UScreenCapture\" -r 5 %1").arg(getVideoPath(testName));
 #endif
     return result;
 }
