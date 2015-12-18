@@ -66,7 +66,7 @@ public:
     ProjectTreeControllerModeSettings()
         : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL),
         groupMode(ProjectTreeGroupMode_ByDocument), allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL),
-        markActive(false) {}
+        markActive(false), ignoreRemoteObjects(false) {}
 
     QSet<GObjectType>          objectTypesToShow;  // show only objects of specified type
     QSet<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
@@ -78,6 +78,7 @@ public:
     LoadDocumentTaskProvider*   loadTaskProvider;   // use custom LoadDocumentTask factory instead of default
     ProjectTreeGroupMode        groupMode;          // group mode for objects
     bool                        allowSelectUnloaded; // ability to select unloaded objects
+    bool                        ignoreRemoteObjects; // do not load from remote database
 
     //Note that objectFilter and documentFilter are called only on object add/remove ops!
     //WARN: object and document filters live-range is controlled by the side created these objects

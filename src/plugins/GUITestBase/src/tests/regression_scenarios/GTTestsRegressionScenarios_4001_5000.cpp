@@ -3828,6 +3828,37 @@ GUI_TEST_CLASS_DEFINITION(test_4710_1){
 //    Expected result: Close dashboard tab button is enabled
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4712) {
+    class Scenario : public CustomScenario {
+        void run(HI::GUITestOpStatus &os) {
+            GTGlobals::sleep(1000);
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog was not found");
+
+            QTreeView* treeView = dialog->findChild<QTreeView*>();
+            int visibleItemCount = 0;
+            for (int i = 0; i < treeView->model()->rowCount(); ++i) {
+                if (Qt::NoItemFlags != treeView->model()->flags(treeView->model()->index(i, 0))) {
+                    ++visibleItemCount;
+                }
+            }
+            CHECK_SET_ERR(visibleItemCount == 0, "Should be zero items");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    
+    //    1. Open "data/samples/ABIF/A01.abi".
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //    2. Open "data/samples/ABIF/A01.abi".
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    //    3. Click context menu item "Edit existing sequence"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit existing sequence"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, new Scenario()));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4714_1) {
 //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");

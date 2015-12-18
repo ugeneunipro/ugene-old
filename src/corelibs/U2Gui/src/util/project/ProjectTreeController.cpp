@@ -31,6 +31,7 @@
 
 #include <U2Core/AddObjectsToDocumentTask.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DeleteObjectsTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/L10n.h>
@@ -110,6 +111,9 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     setupActions();
 
     foreach (Document *doc, project->getDocuments()) {
+        if (settings.ignoreRemoteObjects && doc->isDatabaseConnection()) {
+            continue;
+        }
         sl_onDocumentAdded(doc);
     }
 
