@@ -52,8 +52,8 @@
 #include "DetView.h"
 #include "GSequenceGraphView.h"
 #include "Overview.h"
-
 #include "image_export/SingleSequenceImageExportController.h"
+#include "ov_sequence/codon_table/CodonTable.h"
 
 namespace U2 {
 
@@ -198,6 +198,7 @@ void ADVSingleSequenceWidget::init() {
         QMenu* ttMenu = seqCtx->createTranslationsMenu();
         tbMenues.append(ttMenu);
         QToolButton* button = detView->addActionToLocalToolbar(ttMenu->menuAction());
+        detView->addAction(ctx->getShowCodonTableAction());
         SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
         button->setPopupMode(QToolButton::InstantPopup);
         button->setObjectName("AminoToolbarButton");
