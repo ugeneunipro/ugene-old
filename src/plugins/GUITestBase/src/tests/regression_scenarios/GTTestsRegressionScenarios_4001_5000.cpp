@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFile>
 #include <QListWidget>
 #include <QPlainTextEdit>
 #include <QTableView>
@@ -4868,6 +4869,33 @@ GUI_TEST_CLASS_DEFINITION(test_4934) {
     GTUtilsLog::checkContainsError(os, l, "Object 'ty3.aln.gz' removed");
     int errorNum = GTUtilsLog::getErrors(os, l).size();
     CHECK_SET_ERR(errorNum==1, QString("Too many errors in log: %1").arg(errorNum));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4936) {
+    GTLogTracer logTracer;
+
+//    1. Open "data/samples/Swiss-Prot/D0VTW9.txt".
+    GTFile::copy(os, dataDir + "samples/Swiss-Prot/D0VTW9.txt", sandBoxDir + "test_4936.sw");
+    GTFileDialog::openFile(os, sandBoxDir + "test_4936.sw");
+
+//    2. Edit the file directly.
+//    Expected state: UGENE offers to reload the file.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "Do you want to reload it?"));
+
+    QByteArray data = GTFile::readAll(os, sandBoxDir + "test_4936.sw");
+    data.replace("D0VTW9_9INFA", "00VTW9_9INFA");
+
+    QFile file(sandBoxDir + "test_4936.sw");
+    file.open(QFile::WriteOnly);
+    file.write(data);
+    file.close();
+
+    GTGlobals::sleep();
+
+//    3. Accept the offer.
+//    Expected state: the document is successfully reloaded, there are no errors in the log.
+    GTUtilsProjectTreeView::findIndex(os, "00VTW9_9INFA");
+    GTUtilsLog::check(os, logTracer);
 }
 
 } // namespace GUITest_regression_scenarios
