@@ -671,7 +671,7 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
     public:
         SaveGraphCutoffsDialogFiller(HI::GUITestOpStatus &os)
             : Filler (os, "SaveGraphCutoffsDialog") {}
-        virtual void run() {
+        void commonScenario() {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
