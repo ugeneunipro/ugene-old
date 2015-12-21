@@ -35,7 +35,7 @@ public:
         Refine = 2
     };
     MuscleDialogFiller(HI::GUITestOpStatus &os, Mode mode = Default, bool _doNotReArr = true, bool translateToAmino = false);
-    virtual void run();
+    void commonScenario();
 
 private:
     Mode mode;

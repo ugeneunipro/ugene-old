@@ -41,7 +41,6 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::MuscleDialogFiller"
-#define GT_METHOD_NAME "run"
 
 MuscleDialogFiller::MuscleDialogFiller(HI::GUITestOpStatus &os, Mode _mode, bool _doNotReArr, bool translateToAmino)
     : Filler(os, "MuscleAlignmentDialog"), mode(_mode), doNotReArr(_doNotReArr), translateToAmino(translateToAmino)
@@ -49,7 +48,8 @@ MuscleDialogFiller::MuscleDialogFiller(HI::GUITestOpStatus &os, Mode _mode, bool
 
 }
 
-void MuscleDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void MuscleDialogFiller::commonScenario(){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
