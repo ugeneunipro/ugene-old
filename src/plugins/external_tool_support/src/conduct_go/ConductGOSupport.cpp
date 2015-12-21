@@ -66,7 +66,7 @@ void ConductGOSupport::initialize() {
     validMessage = "Conduct GO";
     validationArguments << "--version";
 
-    versionRegExp = QRegExp("Conduct GO (\\d+\\.\\d+)");
+    versionRegExp = QRegExp("Conduct GO (\\d+\\.\\d+(\\.\\d+)?)");
 
     muted = true;
 }
