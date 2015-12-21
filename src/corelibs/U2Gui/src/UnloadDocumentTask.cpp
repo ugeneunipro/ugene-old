@@ -212,8 +212,7 @@ QList<Task *> ReloadDocumentTask::onSubTaskFinished( Task* subTask ) {
         SAFE_POINT( NULL != currentProj, "Invalid project state!", res );
         doc = currentProj->findDocumentByURL( url );
         SAFE_POINT( NULL != doc, "Reloaded document not found!", res );
-        SAFE_POINT( !doc->isStateLocked( ) && doc->isLoaded( ),
-            "Unable to restore relations between external objects!", res );
+        SAFE_POINT(doc->isLoaded(), "The reloaded document unexpectedly has unloaded state", res );
         restoreObjectRelationsForDoc( );
 
         // annotation files without seq.reference can be opened after adding relations
