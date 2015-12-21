@@ -41,9 +41,8 @@ namespace U2 {
 ClustalWDialogFiller::ClustalWDialogFiller(HI::GUITestOpStatus &_os, int _gapOpenVal) : Filler(_os, "ClustalWSupportRunDialog"),
     gapOpenVal(_gapOpenVal) {}
 
-#define GT_METHOD_NAME "run"
-void ClustalWDialogFiller::run()
-{
+#define GT_METHOD_NAME "commonScenario"
+void ClustalWDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
