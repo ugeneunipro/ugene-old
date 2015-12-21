@@ -230,7 +230,7 @@ class GTest_Compare_VCF_Files : public GTest {
 
 private:
     IOAdapter* createIoAdapter(const QString& filePath);
-    QByteArray getLine(IOAdapter* io);
+    QString getLine(IOAdapter* io);
 
     QString doc1Path;
     QString doc2Path;

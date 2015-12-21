@@ -41,6 +41,7 @@
 
 #include <U2Formats/SAMFormat.h>
 
+#include <QStringList>
 
 namespace U2 {
 
@@ -939,23 +940,29 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
     QScopedPointer<IOAdapter> doc2Adapter(createIoAdapter(doc2Path));
     CHECK_OP(stateInfo, ReportResult_Finished);
 
-    int lineNum = 0;
-    while(!doc1Adapter->isEof() && !doc2Adapter->isEof()) {
-        QByteArray bytes1 = getLine(doc1Adapter.data());
-        QByteArray bytes2 = getLine(doc2Adapter.data());
-        lineNum++;
-
-        if (bytes1 != bytes2) {
-            setError(QString("The files %1 and %2 are not equal at line %3."
-                "The first file contains '%4'' and the second contains '%5'!")
-                .arg(doc1Path).arg(doc2Path).arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
-            return ReportResult_Finished;
-        }
+    QStringList vcfList1;
+    while(!doc1Adapter->isEof()) {
+        QString line = getLine(doc1Adapter.data());
+        vcfList1.append(line);
     }
-
-    if (!doc1Adapter->isEof() || !doc2Adapter->isEof()) {
+    QStringList vcfList2;
+    while(!doc2Adapter->isEof()) {
+        QString line = getLine(doc2Adapter.data());
+        vcfList2.append(line);
+    }
+    if (vcfList1.size() != vcfList2.size()) {
         setError("files are of different size");
         return ReportResult_Finished;
+    }
+    vcfList1.sort();
+    vcfList2.sort();
+    for(int i = 0; i < vcfList1.size(); i++){
+        if(vcfList1.at(i) != vcfList2.at(i)){
+            setError(QString("The files %1 and %2 are not equal."
+                            "The first file contains '%3'' and the second contains '%4'!")
+                            .arg(doc1Path).arg(doc2Path).arg(vcfList1.at(i)).arg(vcfList2.at(i)));
+                        return ReportResult_Finished;
+        }
     }
 
     return ReportResult_Finished;
@@ -975,7 +982,7 @@ IOAdapter* GTest_Compare_VCF_Files::createIoAdapter(const QString& filePath) {
     return ioAdapter;
 }
 
-QByteArray GTest_Compare_VCF_Files::getLine(IOAdapter* io) {
+QString GTest_Compare_VCF_Files::getLine(IOAdapter* io) {
     QByteArray line;
 
     QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
@@ -990,7 +997,7 @@ QByteArray GTest_Compare_VCF_Files::getLine(IOAdapter* io) {
         line = (QByteArray::fromRawData(buff, len)).trimmed();
     } while (line.startsWith(COMMENT_MARKER));
 
-    return line;
+    return QString(line);
 }
 
 /*******************************
