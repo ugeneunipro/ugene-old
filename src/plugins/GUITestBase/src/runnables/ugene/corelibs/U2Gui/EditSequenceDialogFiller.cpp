@@ -57,9 +57,8 @@ InsertSequenceFiller::InsertSequenceFiller(HI::GUITestOpStatus &_os, const QStri
     mergeAnnotations = _mergeAnnotations;
 }
 
-#define GT_METHOD_NAME "run"
-void InsertSequenceFiller::run()
-{
+#define GT_METHOD_NAME "commonScenario"
+void InsertSequenceFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 

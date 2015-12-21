@@ -106,6 +106,9 @@ protected:
     GUITestOpStatus &os;
     GUIDialogWaiter::WaitSettings settings;
     CustomScenario *scenario;
+
+private:
+    void releaseMouseButtons();
 };
 
 class HI_EXPORT HangChecker: public QObject{

@@ -27,8 +27,9 @@
 #include <core/GUITest.h>
 
 #include "GTUtilsDialog.h"
-#include "utils/GTThread.h"
+#include "drivers/GTMouseDriver.h"
 #include "primitives/GTWidget.h"
+#include "utils/GTThread.h"
 
 namespace HI {
 
@@ -348,12 +349,25 @@ GUIDialogWaiter::WaitSettings Filler::getSettings() const {
 
 void Filler::run() {
     GTGlobals::sleep(500);
+//    releaseMouseButtons();
     if (NULL == scenario) {
         commonScenario();
     } else {
         scenario->run(os);
     }
     GTThread::waitForMainThread(os);
+}
+
+void Filler::releaseMouseButtons() {
+    Qt::MouseButtons buttons = QGuiApplication::mouseButtons();
+
+    if (buttons | Qt::LeftButton) {
+        GTMouseDriver::release(os, Qt::LeftButton);
+    }
+
+    if (buttons | Qt::RightButton) {
+        GTMouseDriver::release(os, Qt::RightButton);
+    }
 }
 
 } //namespace
