@@ -79,6 +79,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 //3. Set save path to _common_data/scenarios/sandbox/COI.nwk . Click  OK button
 //Expected state: philogenetic tree appears
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //4. Use "Capture tree" button on toolbar to make screenshots
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Screen Capture"));
