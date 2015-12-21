@@ -127,6 +127,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialog::waitForDialog(os, removeDialog);
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
 // Expected state:
 //     document with edited sequence must appear in project view,
 //     sequence length in new document must be 199900
