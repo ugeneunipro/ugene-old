@@ -19,10 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtOpenGL>
+
 #include "GraphicUtils.h"
 #include "BioStruct3DColorScheme.h"
 #include "BioStruct3DGLWidget.h"
 #include "TubeGLRenderer.h"
+
 
 namespace U2 {
 
@@ -30,7 +33,6 @@ const QString TubeGLRenderer::ID(QObject::tr("Tubes"));
 
 void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     GLUquadricObj *pObj;    // Quadric Object
 
     pObj = gluNewQuadric();
@@ -45,7 +47,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
             foreach(const SharedAtom atom, tubeAtoms) {
                 Color4f atomColor = colorScheme->getAtomColor(atom);
                 Vector3D pos = atom.constData()->coord3d;
-                f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, atomColor.getConstData());
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, atomColor.getConstData());
                 glDrawAtom(pObj, pos, ribbonThickness, settings->detailLevel);
 
                 if (!firstPass) {
@@ -56,7 +58,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                             Vector3D bufPos = bufAtom.constData()->coord3d;
                             Color4f bufAtomColor = colorScheme->getAtomColor(bufAtom);
                             glDrawHalfBond(pObj, bufPos, pos, ribbonThickness, settings->detailLevel);
-                            f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bufAtomColor.getConstData());
+                            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bufAtomColor.getConstData());
                             glDrawHalfBond(pObj, pos, bufPos, ribbonThickness, settings->detailLevel);
                         }
                     }

@@ -19,31 +19,49 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
-#define _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#ifndef _U2_BIOSTRUCT3D_TUBE_RENDERER_H_
+#define _U2_BIOSTRUCT3D_TUBE_RENDERER_H_
+
+#include <QtCore/QSharedDataPointer>
+#include <QtCore/QVector>
+#include <U2Core/BioStruct3D.h>
 
 #include "BioStruct3DGLRender.h"
 
+
 namespace U2 {
 
-class VanDerWaalsGLRenderer : public BioStruct3DGLRenderer {
+
+class TubeGLRenderer : public BioStruct3DGLRenderer {
+
+    typedef QVector< SharedAtom > AtomsVector;
+
+    struct Tube {
+        QMap<int, AtomsVector> modelsMap;
+    };
+
+
+    QMap<int, Tube> tubeMap;
+
+    void drawTubes(const BioStruct3DColorScheme* colorScheme);
+
 protected:
-    VanDerWaalsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
+    TubeGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
 
 public:
     void drawBioStruct3D();
-    virtual void create() {}
 
-    virtual void updateColorScheme() {}
-    virtual void updateShownModels() {}
-    virtual void updateSettings() {}
+    virtual void create();
+    virtual void updateColorScheme() {};
+    virtual void updateShownModels() {};
+    virtual void updateSettings() {};
 
-private:
-    void drawAtoms(const BioStruct3DColorScheme* s);
+public:
+    static bool isAvailableFor(const BioStruct3D &);
 
-    RENDERER_FACTORY(VanDerWaalsGLRenderer)
+    RENDERER_FACTORY(TubeGLRenderer)
 };
 
 } //namespace
 
-#endif // _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#endif // _U2_BIOSTRUCT3D_TUBE_RENDERER_H_

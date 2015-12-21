@@ -22,6 +22,7 @@
 #include "MolecularSurfaceRenderer.h"
 #include <GraphicUtils.h>
 #include <U2Algorithm/MolecularSurface.h>
+#include <QtOpenGL>
 
 namespace U2 {
 
@@ -70,14 +71,13 @@ const QString ConvexMapRenderer::ID(QObject::tr("Convex Map"));
 /* class DotsRenderer : public MolecularSurfaceRenderer */
 void DotsRenderer::drawSurface( MolecularSurface& surface )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     GLboolean ligting = glIsEnabled(GL_LIGHTING);
-    f->glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
 
-    f->glPointSize(1.0f);
-    f->glColor3f(1.0f, 1.0f, 1.0f);
+    glPointSize(1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
-    f->glBegin(GL_POINTS);
+    glBegin(GL_POINTS);
     foreach(const Face& face, surface.getFaces()) {
         float vct[3][3] = {
             {
@@ -96,15 +96,15 @@ void DotsRenderer::drawSurface( MolecularSurface& surface )
                 static_cast<float>(face.v[2].z),
             },
         };
-        f->glVertex3fv(vct[0]);
-        f->glVertex3fv(vct[1]);
-        f->glVertex3fv(vct[2]);
+        glVertex3fv(vct[0]);
+        glVertex3fv(vct[1]);
+        glVertex3fv(vct[2]);
 
         /*glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
         glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
         glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);*/
     }
-    f->glEnd();
+    glEnd();
 
     if (ligting) glEnable(GL_LIGHTING);
     CHECK_GL_ERROR;
@@ -114,20 +114,19 @@ void DotsRenderer::drawSurface( MolecularSurface& surface )
 /* class ConvexMapRenderer : public MolecularSurfaceRenderer */
 void ConvexMapRenderer::drawSurface( MolecularSurface& surface )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     static GLfloat wall_mat[] = {1.f, 1.f, 1.f, 0.3f};
-    f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wall_mat);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wall_mat);
 
-    f->glBegin(GL_TRIANGLES);
+    glBegin(GL_TRIANGLES);
     foreach(const Face& face, surface.getFaces()) {
-        f->glNormal3f(face.n[0].x, face.n[0].y, face.n[0].z);
-        f->glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
-        f->glNormal3f(face.n[1].x, face.n[1].y, face.n[1].z);
-        f->glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
-        f->glNormal3f(face.n[2].x, face.n[2].y, face.n[2].z);
-        f->glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
+        glNormal3f(face.n[0].x, face.n[0].y, face.n[0].z);
+        glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
+        glNormal3f(face.n[1].x, face.n[1].y, face.n[1].z);
+        glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
+        glNormal3f(face.n[2].x, face.n[2].y, face.n[2].z);
+        glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
     }
-    f->glEnd( );
+    glEnd( );
     CHECK_GL_ERROR;
 }
 

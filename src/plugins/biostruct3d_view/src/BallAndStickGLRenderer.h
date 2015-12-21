@@ -23,7 +23,6 @@
 #define _U2_BIOSTRUCT3D_BALLANDSTICK_RENDERER_H_
 
 #include "BioStruct3DGLRender.h"
-#include <QtOpenGL>
 
 namespace U2 {
 

@@ -22,23 +22,31 @@
 #ifndef _U2_OPENGL_WIDGET_H_
 #define _U2_OPENGL_WIDGET_H_
 
-#include <QAction>
-#include <QActionGroup>
-#include <QColor>
-#include <QMenu>
-#include <QOpenGLWidget>
-#include <QSharedPointer>
-#include <QTimer>
-
-#include "AnaglyphRenderer.h"
-#include "BioStruct3DColorScheme.h"
 #include "BioStruct3DGLRender.h"
+#include "BioStruct3DColorScheme.h"
+#include "AnaglyphRenderer.h"
 #include "MolecularSurfaceRenderer.h"
+
+#include <U2Core/Vector3D.h>
+#include <U2Core/BioStruct3DObject.h>
 
 #include <U2Algorithm/MolecularSurface.h>
 
-#include <U2Core/BioStruct3DObject.h>
-#include <U2Core/Vector3D.h>
+#include <QtCore/QTimer>
+#include <QtCore/QSharedPointer>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QActionGroup>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QActionGroup>
+#endif
+#include <QtGui/QColor>
+
+#include <QtOpenGL/QGLWidget>
 
 namespace U2 {
 
@@ -87,7 +95,7 @@ public:
 *
 * Also it includes actions for visualization control.
 */
-class BioStruct3DGLWidget : public QOpenGLWidget
+class BioStruct3DGLWidget : public QGLWidget
 {
     Q_OBJECT
     static int widgetCount;

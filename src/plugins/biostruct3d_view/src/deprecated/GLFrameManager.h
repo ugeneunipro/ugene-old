@@ -24,9 +24,8 @@
 
 #include <U2Core/Matrix44.h>
 
+#include <QtOpenGL/QGLWidget>
 #include <QtCore/QVariantList>
-
-class QOpenGLWidget;
 
 namespace U2 {
 
@@ -39,15 +38,15 @@ class GLFrame {
     static const GLfloat DEFAULT_ZOOM;
     //static const Vector3D DEFAULT_CAMERA;
 public:
-    GLFrame(QOpenGLWidget* widget);
+    GLFrame(QGLWidget* widget);
 
     void setState(const QVariantMap& state);
     void writeStateToMap(QVariantMap& states);
-    QOpenGLWidget* getGLWidget() { return glWidget; }
+    QGLWidget* getGLWidget() { return glWidget; }
     void makeCurrent() { glWidget->makeCurrent(); }
     void updateViewPort(int width, int height);
     void updateViewPort();
-    void updateGL() { glWidget->update(); }
+    void updateGL() { glWidget->updateGL(); }
     GLfloat getZoomFactor() const { return zoomFactor; }
     float* getRotationMatrix() { return rotMatrix.data(); }
     void rotateCamera(const Vector3D& rotAxis, float rotAngle);
@@ -62,7 +61,7 @@ public:
     void performShift(float deltaX, float deltaY);
 
 private:
-    QOpenGLWidget* glWidget;
+    QGLWidget* glWidget;
     Matrix44 rotMatrix;
     float cameraClipNear, cameraClipFar;
 
@@ -71,17 +70,17 @@ private:
 };
 
 class GLFrameManager {
-    QMap<QOpenGLWidget*, GLFrame*> widgetFrameMap;
+    QMap<QGLWidget*, GLFrame*> widgetFrameMap;
     bool syncLock;
 
 public:
     GLFrameManager() : syncLock(false) {}
     ~GLFrameManager();
     bool getSyncLock() const { return syncLock; }
-    void setSyncLock(bool lockOn, QOpenGLWidget* syncWidget);
+    void setSyncLock(bool lockOn, QGLWidget* syncWidget);
     void addGLFrame(GLFrame* frame);
-    GLFrame* getGLWidgetFrame(QOpenGLWidget* widget);
-    void removeGLWidgetFrame(QOpenGLWidget *widget);
+    GLFrame* getGLWidgetFrame(QGLWidget* widget);
+    void removeGLWidgetFrame(QGLWidget* widget);
     void clear();
     QList<GLFrame*> getGLFrames();
     QList<GLFrame*> getActiveGLFrameList(GLFrame* currentFrame, bool syncModeOn);

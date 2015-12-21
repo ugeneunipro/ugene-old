@@ -57,7 +57,7 @@ void BioStruct3DImageExportToBitmapTask::run() {
                     setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("BioStruct3DImageExportToBitmapTask")), );
 
     glWidget->setImageRenderingMode(true);
-    QPixmap image = glWidget->grab().scaled( settings.imageSize, Qt::KeepAspectRatio);
+    QPixmap image = glWidget->renderPixmap().scaled( settings.imageSize, Qt::KeepAspectRatio);
     glWidget->setImageRenderingMode(false);
 
     CHECK_EXT( image.save(settings.fileName, qPrintable(settings.format), settings.imageQuality),

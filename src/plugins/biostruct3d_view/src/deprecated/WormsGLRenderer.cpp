@@ -21,6 +21,7 @@
 
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/U2SafePoints.h>
+#include <QtOpenGL>
 
 #include "GraphicUtils.h"
 #include "BioStruct3DColorScheme.h"
@@ -77,7 +78,6 @@ void WormsGLRenderer::create() {
 
 void WormsGLRenderer::drawWorms(  )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     GLUquadricObj *pObj;    // Quadric Object
 
     // Draw atoms as spheres
@@ -104,9 +104,9 @@ void WormsGLRenderer::drawWorms(  )
                     continue;
                 }
 
-                f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a1));
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a1));
                 glDrawHalfWorm(a0->coord3d, a1->coord3d, a2->coord3d, a3->coord3d, ribbonThickness, false, false, tension, settings->detailLevel);
-                f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a2));
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a2));
                 glDrawHalfWorm(a3->coord3d, a2->coord3d, a1->coord3d, a0->coord3d, ribbonThickness, false, false, tension, settings->detailLevel);
             }
 
@@ -116,7 +116,7 @@ void WormsGLRenderer::drawWorms(  )
                 const SharedAtom a1 = wormCoords.at(1);
                 const SharedAtom a2 = wormCoords.at(2);
                 Vector3D atomCoordFirst = model.openingAtom;
-                f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a0));
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a0));
                 glDrawHalfWorm(atomCoordFirst, a0->coord3d, a1->coord3d, a2->coord3d, ribbonThickness, true, false, tension, settings->detailLevel);
                 glDrawHalfWorm(a2->coord3d, a1->coord3d, a0->coord3d, atomCoordFirst, ribbonThickness, false, false, tension, settings->detailLevel);
                 // Draw worm ending
@@ -124,7 +124,7 @@ void WormsGLRenderer::drawWorms(  )
                 const SharedAtom aN2 = wormCoords.at(size - 2);
                 const SharedAtom aN3 = wormCoords.at(size - 3);
                 Vector3D atomCoordLast = model.closingAtom;
-                f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(aN1));
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(aN1));
                 glDrawHalfWorm(atomCoordLast, aN1->coord3d, aN2->coord3d, aN3->coord3d, ribbonThickness, true, false, tension, settings->detailLevel);
                 glDrawHalfWorm(aN3->coord3d, aN2->coord3d, aN1->coord3d, atomCoordLast, ribbonThickness, false, false, tension, settings->detailLevel);
             }

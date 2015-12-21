@@ -19,31 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
-#define _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#ifndef _U2_BIOSTRUCT3D_BALLANDSTICK_RENDERER_H_
+#define _U2_BIOSTRUCT3D_BALLANDSTICK_RENDERER_H_
 
 #include "BioStruct3DGLRender.h"
+#include <QtOpenGL>
 
 namespace U2 {
 
-class VanDerWaalsGLRenderer : public BioStruct3DGLRenderer {
+class BallAndStickGLRenderer : public BioStruct3DGLRenderer {
 protected:
-    VanDerWaalsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
+    BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
 
 public:
-    void drawBioStruct3D();
-    virtual void create() {}
+    virtual ~BallAndStickGLRenderer();
 
-    virtual void updateColorScheme() {}
-    virtual void updateShownModels() {}
-    virtual void updateSettings() {}
+    void drawBioStruct3D();
+
+    virtual void create();
+
+    virtual void update();
+    virtual void updateColorScheme();
+    virtual void updateShownModels();
+    virtual void updateSettings();
 
 private:
-    void drawAtoms(const BioStruct3DColorScheme* s);
+    void createDisplayList();
 
-    RENDERER_FACTORY(VanDerWaalsGLRenderer)
+private:
+    GLuint dl;
+    static QList<GLuint> dlIndexStorage;
+    static QMutex mutex;
+
+    RENDERER_FACTORY(BallAndStickGLRenderer)
 };
 
 } //namespace
 
-#endif // _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#endif // _U2_BIOSTRUCT3D_BALLANDSTICK_RENDERER_H_

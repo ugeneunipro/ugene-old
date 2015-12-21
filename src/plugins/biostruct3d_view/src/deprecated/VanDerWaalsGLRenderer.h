@@ -32,11 +32,11 @@ protected:
 
 public:
     void drawBioStruct3D();
-    virtual void create() {}
+    virtual void create() {};
 
-    virtual void updateColorScheme() {}
-    virtual void updateShownModels() {}
-    virtual void updateSettings() {}
+    virtual void updateColorScheme() {};
+    virtual void updateShownModels() {};
+    virtual void updateSettings() {};
 
 private:
     void drawAtoms(const BioStruct3DColorScheme* s);

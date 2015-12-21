@@ -19,31 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
-#define _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#ifndef _U2_STRUCTURAL_ALIGNMENT_DIALOG_H_
+#define _U2_STRUCTURAL_ALIGNMENT_DIALOG_H_
 
-#include "BioStruct3DGLRender.h"
+#include "ui_StructuralAlignmentDialog.h"
 
 namespace U2 {
 
-class VanDerWaalsGLRenderer : public BioStruct3DGLRenderer {
-protected:
-    VanDerWaalsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
+class StructuralAlignmentTask;
+class BioStruct3DObject;
+class BioStruct3DSubsetEditor;
+
+class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog
+{
+    Q_OBJECT
 
 public:
-    void drawBioStruct3D();
-    virtual void create() {}
+    StructuralAlignmentDialog(const BioStruct3DObject *fixedRef = 0, int fixedRefModel = -1, QWidget *parent = 0);
 
-    virtual void updateColorScheme() {}
-    virtual void updateShownModels() {}
-    virtual void updateSettings() {}
+    /** Check if algorithm available and ::exec() */
+    int execIfAlgorithmAvailable();
+
+    /** @returns set up StructuralAlignmentTask */
+    StructuralAlignmentTask* getTask() { return task; }
+
+public slots:
+    virtual void accept();
 
 private:
-    void drawAtoms(const BioStruct3DColorScheme* s);
+    StructuralAlignmentTask *task;
+    BioStruct3DSubsetEditor *ref, *mob;
 
-    RENDERER_FACTORY(VanDerWaalsGLRenderer)
 };
 
-} //namespace
+}   // namespace U2
 
-#endif // _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#endif  // #ifndef _U2_STRUCTURAL_ALIGNMENT_DIALOG_H_

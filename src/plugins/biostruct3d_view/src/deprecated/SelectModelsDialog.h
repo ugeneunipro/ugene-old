@@ -19,31 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
-#define _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#ifndef U2_SELECTMODELSDIALOG_H
+#define U2_SELECTMODELSDIALOG_H
 
-#include "BioStruct3DGLRender.h"
+#include "ui_SelectModelsDialog.h"
+#include <QDialog>
 
 namespace U2 {
 
-class VanDerWaalsGLRenderer : public BioStruct3DGLRenderer {
-protected:
-    VanDerWaalsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
+class SelectModelsDialog : public QDialog, public Ui::SelectModelsDialog
+{
+    Q_OBJECT
 
 public:
-    void drawBioStruct3D();
-    virtual void create() {}
+    SelectModelsDialog(const QList<int> &modelIds, const QList<int> &selectedItems, QWidget *parent = 0);
+    ~SelectModelsDialog();
 
-    virtual void updateColorScheme() {}
-    virtual void updateShownModels() {}
-    virtual void updateSettings() {}
+    const QList<int> &getSelectedModelsIndexes() const { return selectedModelsIndexes; }
+
+public slots:
+    virtual void accept();
+
+    void sl_onItemDoubleClicked(QListWidgetItem *item);
+
+    void sl_onSlectAll();
+    void sl_onInvertSelection();
 
 private:
-    void drawAtoms(const BioStruct3DColorScheme* s);
-
-    RENDERER_FACTORY(VanDerWaalsGLRenderer)
+    QList<int> selectedModelsIndexes;
 };
 
-} //namespace
+}   // namespace U2
 
-#endif // _U2_BIOSTRUCT3D_VANDERWAALS_RENDERER_H_
+#endif  // #ifndef U2_SELECTMODELSDIALOG_H

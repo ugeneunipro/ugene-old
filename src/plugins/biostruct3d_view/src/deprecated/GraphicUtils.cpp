@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtOpenGL>
 #include <U2Algorithm/GeomUtils.h>
 #include <math.h>
 #include "GraphicUtils.h"
@@ -90,7 +91,6 @@ bool Color4f::operator== (const Color4f &a) const
 
 void glDrawCylinder(GLUquadric* pObj, const Vector3D& p1, const Vector3D& p2, double thickness, float renderDetailLevel)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     int numSlices = (8 * renderDetailLevel);
     int numStacks = 1;
     static Vector3D zAxis(0.0, 0.0, 1.0);
@@ -100,11 +100,11 @@ void glDrawCylinder(GLUquadric* pObj, const Vector3D& p1, const Vector3D& p2, do
     float rotAngle = Rad2Deg* acos( vec.z / length );
     Vector3D rotAxis = vector_cross(zAxis, vec);
 
-    f->glPushMatrix();
-    f->glTranslatef(p1.x, p1.y, p1.z);
-    f->glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+    glPushMatrix();
+    glTranslatef(p1.x, p1.y, p1.z);
+    glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
     gluCylinder(pObj, thickness, thickness, length, numSlices, numStacks);
-    f->glPopMatrix();
+    glPopMatrix();
 }
 
 /* class Helix3D : public Object3D */
@@ -123,31 +123,30 @@ Helix3D::Helix3D(const Color4f& cl, const Vector3D& c, const Vector3D& n, float 
 
 void Helix3D::draw(float renderDetailLevel)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
-    f->glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color.getConstData());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color.getConstData());
     int numSlices = 10 * renderDetailLevel;
     int numStacks = 1;
     static float smallLength = 1.2f;
 
     radius=1.0f;
 
-    f->glPushMatrix();
-        f->glTranslatef(cterm.x, cterm.y, cterm.z);
-        f->glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
-        f->glPushMatrix();
-            f->glScalef(1,1,-1);
+    glPushMatrix();
+        glTranslatef(cterm.x, cterm.y, cterm.z);
+        glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+        glPushMatrix();
+            glScalef(1,1,-1);
             gluDisk(pObj, 0, radius, numSlices, numSlices);
-        f->glPopMatrix();
+        glPopMatrix();
         gluCylinder(pObj, radius, radius, length - smallLength, numSlices, numStacks);
-        f->glTranslatef(0, 0, length - smallLength);
-        f->glPushMatrix();
-            f->glScalef(1,1,-1);
+        glTranslatef(0, 0, length - smallLength);
+        glPushMatrix();
+            glScalef(1,1,-1);
             gluDisk(pObj, 0, radius*1.2f, numSlices, numSlices);
-        f->glPopMatrix();
+        glPopMatrix();
         gluCylinder(pObj, radius*1.2f, radius*0.4f, smallLength, numSlices, numStacks);
-        f->glTranslatef(0, 0, smallLength);
+        glTranslatef(0, 0, smallLength);
         gluDisk(pObj, 0, radius*0.4f, numSlices, numStacks);
-    f->glPopMatrix();
+    glPopMatrix();
 }
 
 Helix3D::~Helix3D()
@@ -170,19 +169,18 @@ Strand3D::Strand3D( const Color4f& cl, const Vector3D& c, const Vector3D& n, con
 
 void Strand3D::draw(float renderDetailLevel)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     Q_UNUSED(renderDetailLevel);
 
     float width = 1.5f;
     float height = 0.4f;
 
-    f->glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color.getConstData());
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color.getConstData());
 
-    f->glPushMatrix();
-    f->glTranslatef(cterm.x, cterm.y, cterm.z);
-    f->glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+    glPushMatrix();
+    glTranslatef(cterm.x, cterm.y, cterm.z);
+    glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
     glCreateArrowPrimitive(width, height, length);
-    f->glPopMatrix();
+    glPopMatrix();
 
 }
 
@@ -197,7 +195,6 @@ void glDrawHalfWorm(const Vector3D& p0, const Vector3D& p1,
                                   double radius, bool cap1, bool cap2,
                                   double tension, float renderDetailLevel)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     int i, j, k, m, offset=0;
     Vector3D R1, R2, Qt, p, dQt, H, V;
     double len, MG[4][3], T[4], t, prevlen=0.0, cosj, sinj;
@@ -355,42 +352,42 @@ void glDrawHalfWorm(const Vector3D& p0, const Vector3D& p1,
 
             /* create triangles from points along this and previous circle */
             if (i > 0) {
-                f->glBegin(GL_TRIANGLE_STRIP);
+                glBegin(GL_TRIANGLE_STRIP);
                 for (j = 0; j < wormSides; ++j) {
                     k = j + offset;
                     if (k >= wormSides) k -= wormSides;
-                    f->glNormal3d(Nx[k], Ny[k], Nz[k]);
-                    f->glVertex3d(Cx[k], Cy[k], Cz[k]);
-                    f->glNormal3d(pNx[j], pNy[j], pNz[j]);
-                    f->glVertex3d(pCx[j], pCy[j], pCz[j]);
+                    glNormal3d(Nx[k], Ny[k], Nz[k]);
+                    glVertex3d(Cx[k], Cy[k], Cz[k]);
+                    glNormal3d(pNx[j], pNy[j], pNz[j]);
+                    glVertex3d(pCx[j], pCy[j], pCz[j]);
                 }
-                f->glNormal3d(Nx[offset], Ny[offset], Nz[offset]);
-                f->glVertex3d(Cx[offset], Cy[offset], Cz[offset]);
-                f->glNormal3d(pNx[0], pNy[0], pNz[0]);
-                f->glVertex3d(pCx[0], pCy[0], pCz[0]);
-                f->glEnd();
+                glNormal3d(Nx[offset], Ny[offset], Nz[offset]);
+                glVertex3d(Cx[offset], Cy[offset], Cz[offset]);
+                glNormal3d(pNx[0], pNy[0], pNz[0]);
+                glVertex3d(pCx[0], pCy[0], pCz[0]);
+                glEnd();
             }
 
             /* put caps on the end */
             if (cap1 && i == 0) {
                 dQt.normalize();
-                f->glBegin(GL_POLYGON);
-                f->glNormal3d(-dQt.x, -dQt.y, -dQt.z);
+                glBegin(GL_POLYGON);
+                glNormal3d(-dQt.x, -dQt.y, -dQt.z);
                 for (j = wormSides - 1; j >= 0; --j) {
-                        f->glVertex3d(Cx[j], Cy[j], Cz[j]);
+                        glVertex3d(Cx[j], Cy[j], Cz[j]);
                 }
-                f->glEnd();
+                glEnd();
             }
             else if (cap2 && i == wormSegments) {
                 dQt.normalize();
-                f->glBegin(GL_POLYGON);
-                f->glNormal3d(dQt.x, dQt.y, dQt.z);
+                glBegin(GL_POLYGON);
+                glNormal3d(dQt.x, dQt.y, dQt.z);
                 for (j = 0; j < wormSides; ++j) {
                     k = j + offset;
                     if (k >= wormSides) k -= wormSides;
-                        f->glVertex3d(Cx[k], Cy[k], Cz[k]);
+                        glVertex3d(Cx[k], Cy[k], Cz[k]);
                 }
-                f->glEnd();
+                glEnd();
             }
 
             /* store this circle as previous for next round; instead of copying
@@ -416,12 +413,11 @@ void glDrawHalfBond( GLUquadric *pObj, const Vector3D& p1, const Vector3D&p2, do
 
 void glDrawAtom( GLUquadric* pObj, const Vector3D& pos, double r, float renderDetailLevel)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     int numSlices = 10  * renderDetailLevel;
-    f->glPushMatrix();
-    f->glTranslatef(pos.x, pos.y, pos.z);
+    glPushMatrix();
+    glTranslatef(pos.x, pos.y, pos.z);
     gluSphere(pObj, r, numSlices, numSlices);
-    f->glPopMatrix();
+    glPopMatrix();
 }
 
 /*
@@ -491,7 +487,6 @@ Vector3D projectPointOnAxis( const Vector3D& point, const Vector3D& axisUnitVect
 
 void glCreateArrowPrimitive( float width, float height, float length )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     float widthOffset = 1;
     float heightOffset = 1;
 
@@ -521,77 +516,77 @@ void glCreateArrowPrimitive( float width, float height, float length )
     static GLfloat n07[3] = { 0.7071f, 0, 0.7071f } ;
 
 
-    f->glBegin(GL_QUADS);
+    glBegin(GL_QUADS);
 
     // Draw arrow body as brick
 
-    f->glNormal3fv(n02);
-    f->glVertex3fv(b05);
-    f->glVertex3fv(b06); //glNormal3fv(n02);
-    f->glVertex3fv(b02); //glNormal3fv(n02);
-    f->glVertex3fv(b01); //glNormal3fv(n02);
+    glNormal3fv(n02);
+    glVertex3fv(b05);
+    glVertex3fv(b06); //glNormal3fv(n02);
+    glVertex3fv(b02); //glNormal3fv(n02);
+    glVertex3fv(b01); //glNormal3fv(n02);
 
-    f->glNormal3fv(n01);
-    f->glVertex3fv(b04);
-    f->glVertex3fv(b05); //glNormal3fv(n01);
-    f->glVertex3fv(b01); //glNormal3fv(n01);
-    f->glVertex3fv(b00); //glNormal3fv(n01);
+    glNormal3fv(n01);
+    glVertex3fv(b04);
+    glVertex3fv(b05); //glNormal3fv(n01);
+    glVertex3fv(b01); //glNormal3fv(n01);
+    glVertex3fv(b00); //glNormal3fv(n01);
 
-    f->glNormal3fv(n03);
-    f->glVertex3fv(b07);
-    f->glVertex3fv(b04); //glNormal3fv(n03);
-    f->glVertex3fv(b00); //glNormal3fv(n03);
-    f->glVertex3fv(b03); //glNormal3fv(n03);
+    glNormal3fv(n03);
+    glVertex3fv(b07);
+    glVertex3fv(b04); //glNormal3fv(n03);
+    glVertex3fv(b00); //glNormal3fv(n03);
+    glVertex3fv(b03); //glNormal3fv(n03);
 
-    f->glNormal3fv(n00);
-    f->glVertex3fv(b06);
-    f->glVertex3fv(b07); //glNormal3fv(n00);
-    f->glVertex3fv(b03); //glNormal3fv(n00);
-    f->glVertex3fv(b02); //glNormal3fv(n00);
+    glNormal3fv(n00);
+    glVertex3fv(b06);
+    glVertex3fv(b07); //glNormal3fv(n00);
+    glVertex3fv(b03); //glNormal3fv(n00);
+    glVertex3fv(b02); //glNormal3fv(n00);
 
-    f->glNormal3fv(n05);
-    f->glVertex3fv(b00);
-    f->glVertex3fv(b01); //glNormal3fv(n05);
-    f->glVertex3fv(b02); //glNormal3fv(n05);
-    f->glVertex3fv(b03); //glNormal3fv(n05);
+    glNormal3fv(n05);
+    glVertex3fv(b00);
+    glVertex3fv(b01); //glNormal3fv(n05);
+    glVertex3fv(b02); //glNormal3fv(n05);
+    glVertex3fv(b03); //glNormal3fv(n05);
 
     // Draw arrow head
 
-    f->glNormal3fv(n05);
-    f->glVertex3fv(b09);
-    f->glVertex3fv(b08);
-    f->glVertex3fv(b10);
-    f->glVertex3fv(b11);
+    glNormal3fv(n05);
+    glVertex3fv(b09);
+    glVertex3fv(b08);
+    glVertex3fv(b10);
+    glVertex3fv(b11);
 
-    f->glNormal3fv(n06);
-    f->glVertex3fv(b08);
-    f->glVertex3fv(b09);
-    f->glVertex3fv(b13);
-    f->glVertex3fv(b12);
+    glNormal3fv(n06);
+    glVertex3fv(b08);
+    glVertex3fv(b09);
+    glVertex3fv(b13);
+    glVertex3fv(b12);
 
-    f->glNormal3fv(n07);
-    f->glVertex3fv(b12);
-    f->glVertex3fv(b13);
-    f->glVertex3fv(b11);
-    f->glVertex3fv(b10);
+    glNormal3fv(n07);
+    glVertex3fv(b12);
+    glVertex3fv(b13);
+    glVertex3fv(b11);
+    glVertex3fv(b10);
 
-    f->glEnd();
+    glEnd();
 
-    f->glBegin(GL_TRIANGLES);
+    glBegin(GL_TRIANGLES);
 
     // Continue arrow head
 
-    f->glNormal3fv(n02);
-    f->glVertex3fv(b08);
-    f->glVertex3fv(b12); //glNormal3fv(n02);
-    f->glVertex3fv(b10); //glNormal3fv(n02);
+    glNormal3fv(n02);
+    glVertex3fv(b08);
+    glVertex3fv(b12); //glNormal3fv(n02);
+    glVertex3fv(b10); //glNormal3fv(n02);
 
-    f->glNormal3fv(n03);
-    f->glVertex3fv(b13);
-    f->glVertex3fv(b09); //glNormal3fv(n03);
-    f->glVertex3fv(b11); //glNormal3fv(n03);
+    glNormal3fv(n03);
+    glVertex3fv(b13);
+    glVertex3fv(b09); //glNormal3fv(n03);
+    glVertex3fv(b11); //glNormal3fv(n03);
 
-    f->glEnd();
+    glEnd();
 
 }
 
@@ -600,24 +595,23 @@ void accFrustum(GLdouble left, GLdouble right, GLdouble bottom,
                 GLdouble pixdy, GLdouble eyedx, GLdouble eyedy,
                 GLdouble focus)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     GLdouble xwsize, ywsize;
     GLdouble dx, dy;
     GLint viewport[4];
 
-    f->glGetIntegerv (GL_VIEWPORT, viewport);
+    glGetIntegerv (GL_VIEWPORT, viewport);
 
     xwsize = right - left;
     ywsize = top - bottom;
     dx = -( pixdx*xwsize / (GLdouble) viewport[2] + eyedx * _near / focus );
     dy = -(pixdy*ywsize/(GLdouble) viewport[3] + eyedy * _near/ focus);
 
-    f->glMatrixMode(GL_PROJECTION);
-    f->glLoadIdentity();
-    f->glFrustum (left + dx, right + dx, bottom + dy, top + dy, _near, _far);
-    f->glMatrixMode(GL_MODELVIEW);
-    f->glLoadIdentity();
-    f->glTranslatef (-eyedx, -eyedy, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum (left + dx, right + dx, bottom + dy, top + dy, _near, _far);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef (-eyedx, -eyedy, 0.0);
 }
 
 void accPerspective(GLdouble fovy, GLdouble aspect,

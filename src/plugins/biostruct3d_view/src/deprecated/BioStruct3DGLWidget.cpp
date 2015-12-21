@@ -25,8 +25,8 @@
 #include <QImageWriter>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QOpenGLFunctions_2_0>
 #include <QTime>
+#include <QtOpenGL>
 
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
@@ -93,7 +93,7 @@ const QString BioStruct3DGLWidget::RENDER_DETAIL_LEVEL_NAME("RenderDetailLevel")
 const QString BioStruct3DGLWidget::ANAGLYPH_STATUS_NAME("AnaglyphStatus");
 
 BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const AnnotatedDNAView *_dnaView, GLFrameManager* manager, QWidget *parent /* = 0*/)
-        : QOpenGLWidget(parent),
+        : QGLWidget(parent),
         dnaView(_dnaView), contexts(),
         rendererSettings(DEFAULT_RENDER_DETAIL_LEVEL),
         frameManager(manager), glFrame(new GLFrame(this)),
@@ -158,6 +158,10 @@ void BioStruct3DGLWidget::setupFrame() {
     Vector3D pos = glFrame->getCameraPosition();
     pos.z = camZ;
     glFrame->setCameraPosition(pos);
+
+    glFrame->makeCurrent();
+    glFrame->updateViewPort();
+    glFrame->updateGL();
 }
 
 float BioStruct3DGLWidget::getSceneRadius() const {
@@ -189,23 +193,21 @@ Vector3D BioStruct3DGLWidget::getSceneCenter() const {
 }
 
 void BioStruct3DGLWidget::initializeGL() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
-    f->initializeOpenGLFunctions();
     setLightPosition(Vector3D(0, 0.0, 1.0));
     GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0 };
     GLfloat light_specular[] = { 0.6f, 0.6f, 0.6f, 1.0 };
     GLfloat mat_specular[] = { 0.6f, 0.6f, 0.6f, 1.0 };
     GLfloat mat_shininess[] = { 90.0 };
 
-    f->glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
-    f->glShadeModel (GL_SMOOTH);
-    f->glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    f->glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-    f->glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    f->glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    f->glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-    f->glEnable(GL_BLEND);                                         // Enable Blending
-    f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    qglClearColor(backgroundColor);
+    glShadeModel (GL_SMOOTH);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    glEnable(GL_BLEND);                                         // Enable Blending
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     updateAllRenderers();
 
@@ -229,7 +231,6 @@ void BioStruct3DGLWidget::resizeGL(int width, int height) {
 }
 
 void BioStruct3DGLWidget::paintGL() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     if (!isVisible()) {
         return;
     }
@@ -238,10 +239,10 @@ void BioStruct3DGLWidget::paintGL() {
 
         // Clear buffers, setup modelview matrix
         // Scene render unable to do this since it used by anaglyph renderer
-        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        f->glMatrixMode(GL_MODELVIEW);
-        f->glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
         gluLookAt(0.0, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
@@ -260,48 +261,53 @@ void BioStruct3DGLWidget::paintGL() {
 }
 
 void BioStruct3DGLWidget::draw() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 
-    f->glEnable(GL_DEPTH_TEST);
-    f->glEnable(GL_LIGHTING);
-    f->glEnable(GL_LIGHT0);
-
-    f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Vector3D rotCenter = getSceneCenter();
 
-    f->glTranslatef(glFrame->getCameraPosition().x, glFrame->getCameraPosition().y, 0);
+    glTranslatef(glFrame->getCameraPosition().x, glFrame->getCameraPosition().y, 0);
 
-    f->glMultMatrixf(glFrame->getRotationMatrix());
-    f->glTranslatef(-rotCenter.x ,-rotCenter.y, -rotCenter.z);
+    glMultMatrixf(glFrame->getRotationMatrix());
+    glTranslatef(-rotCenter.x ,-rotCenter.y, -rotCenter.z);
 
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
-        f->glPushMatrix();
+        glPushMatrix();
 
+#if defined(GL_VERSION_1_3) && (QT_VERSION < 0x050000)
+        // glMultTransposeMatrixf is deprecated since Qt 5
+        glMultTransposeMatrixf(ctx.biostruct->getTransform().data());
+#else
+        // on OpenGL versions below 1.3 glMultTransposeMatrix not suported
+        // see http://www.opengl.org/resources/faq/technical/extensions.htm
         Matrix44 colmt = ctx.biostruct->getTransform();
         colmt.transpose();
-        f->glMultMatrixf(colmt.data());
+        glMultMatrixf(colmt.data());
+#endif
 
         ctx.renderer->drawBioStruct3D();
-        f->glPopMatrix();
+        glPopMatrix();
     }
 
     if(!molSurface.isNull()) {
-        f->glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
 
-        f->glCullFace(GL_FRONT);
+        glCullFace(GL_FRONT);
         surfaceRenderer->drawSurface(*molSurface);
 
-        f->glCullFace(GL_BACK);
+        glCullFace(GL_BACK);
         surfaceRenderer->drawSurface(*molSurface);
 
-        f->glDisable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
         CHECK_GL_ERROR;
     }
 
-    f->glDisable(GL_LIGHTING);
-    f->glDisable(GL_LIGHT0);
-    f->glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+    glDisable(GL_DEPTH_TEST);
 }
 
 Vector3D BioStruct3DGLWidget::getTrackballMapping(int x, int y)
@@ -425,7 +431,7 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
     }
 
     resizeGL(width(), height());
-    update();
+    updateGL();
 }
 
 void BioStruct3DGLWidget::setupColorScheme(const QString &name) {
@@ -474,9 +480,8 @@ void BioStruct3DGLWidget::updateAllRenderers() {
 
 void BioStruct3DGLWidget::setBackgroundColor(QColor backgroundColor)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     this->backgroundColor=backgroundColor;
-    f->glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
+    qglClearColor(backgroundColor);
 }
 
 void BioStruct3DGLWidget::zoom( float delta )
@@ -564,13 +569,12 @@ void BioStruct3DGLWidget::sl_selectModels() {
         ctx.renderer->setShownModelsIndexes(dlg->getSelectedModelsIndexes());
 
         contexts.first().renderer->updateShownModels();
-        update();
+        updateGL();
     }
 }
 
 void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol, const char *fileName )
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     FILE *fp = NULL;
     const char* FOPEN_ARGS = "wb";
     const QByteArray title(fileName);
@@ -585,7 +589,7 @@ void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol
         return;
     }
 
-    f->glGetIntegerv(GL_VIEWPORT,viewport);
+    glGetIntegerv(GL_VIEWPORT,viewport);
 
     if (format == GL2PS_EPS) {
         // hack -> make widget aspect ratio 1:1
@@ -899,7 +903,7 @@ void BioStruct3DGLWidget::sl_acitvateSpin()
         animationTimer->stop();
     }
 
-    update();
+    updateGL();
 
 }
 
@@ -916,7 +920,7 @@ void BioStruct3DGLWidget::sl_updateAnnimation()
         frame->rotateCamera(rotAxis, spinAngle);
         frame->updateGL();
     }
-    update();
+    updateGL();
 }
 
 void BioStruct3DGLWidget::sl_selectGLRenderer(QAction* action)
@@ -967,7 +971,7 @@ void BioStruct3DGLWidget::sl_settings()
         this->makeCurrent();
         setBackgroundColor(backgroundColor);
 
-        update();
+        updateGL();
     }
     else
     {
@@ -999,7 +1003,7 @@ void BioStruct3DGLWidget::sl_hideSurface()
     molSurface.reset();
 
     makeCurrent();
-    update();
+    updateGL();
 }
 
 void BioStruct3DGLWidget::sl_selectSurfaceRenderer(QAction*  action)
@@ -1008,7 +1012,7 @@ void BioStruct3DGLWidget::sl_selectSurfaceRenderer(QAction*  action)
     surfaceRenderer.reset(MolecularSurfaceRendererRegistry::createMSRenderer(msRendererName));
 
     makeCurrent();
-    update();
+    updateGL();
 }
 
 void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
@@ -1020,7 +1024,7 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
     molSurface.reset(surfaceCalcTask->getCalculatedSurface());
 
     makeCurrent();
-    update();
+    updateGL();
 }
 
 /** Convert modelId's list to modelIndexes list */

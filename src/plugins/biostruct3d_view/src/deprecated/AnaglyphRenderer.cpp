@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QOpenGLFunctions_2_0>
-
 #include "AnaglyphRenderer.h"
 
 #include "BioStruct3DGLWidget.h"
@@ -68,18 +66,17 @@ void AnaglyphRenderer::resize(int _width, int _height) {
 }
 
 void AnaglyphRenderer::draw() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     CHECK_GL_ERROR
 
     GLFrame *glFrame = renderer->getGLFrame();
     float eyesShift = 5.0 * settings.eyesShift * glFrame->getCameraPosition().z / 200.0;
 
-    f->glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_MODELVIEW);
 
     // Prepare anaglyph textures
-    f->glPushMatrix();
+    glPushMatrix();
         //glTranslatef(eyesShift, 0, 0);
-        f->glLoadIdentity();
+        glLoadIdentity();
         gluLookAt(eyesShift, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
         // at this moment buffer must be clean glClear omitted as a slow operation
@@ -88,90 +85,88 @@ void AnaglyphRenderer::draw() {
         // isolate errors from main scene renderer
         CHECK_GL_ERROR
         renderer->draw();
-        f->glGetError();
+        glGetError();
 
-        f->glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureRight);
-        f->glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
-    f->glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureRight);
+        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+    glPopMatrix();
 
-    f->glPushMatrix();
+    glPushMatrix();
         //glTranslatef(-eyesShift, 0, 0);
-        f->glLoadIdentity();
+        glLoadIdentity();
         gluLookAt(-eyesShift, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // isolate errors from main scene renderer
         CHECK_GL_ERROR
         renderer->draw();
-        f->glGetError();
+        glGetError();
 
-        f->glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureLeft);
-        f->glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
-    f->glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureLeft);
+        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+    glPopMatrix();
 
     // Draw anaglyph textures in ortho projection
-    f->glMatrixMode(GL_MODELVIEW);
-    f->glPushMatrix();
-    f->glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
 
-    f->glMatrixMode(GL_PROJECTION);
-    f->glPushMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
 
         setOrthoProjection();
 
-        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawTexturesAnaglyph();
 
-    f->glMatrixMode(GL_PROJECTION);
-    f->glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
 
-    f->glMatrixMode(GL_MODELVIEW);
-    f->glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
 
     CHECK_GL_ERROR
 }
 
 void AnaglyphRenderer::setOrthoProjection() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     CHECK_GL_ERROR
 
-    f->glMatrixMode(GL_PROJECTION);
-    f->glLoadIdentity();
-    f->glOrtho(0, 1, 1, 0, -1, 1);
-    f->glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 1, 1, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
 
     CHECK_GL_ERROR
 }
 
 void AnaglyphRenderer::createEmptyTextures() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     CHECK_GL_ERROR
 
     if(anaglyphRenderTextureLeft != 0) {
-        f->glDeleteTextures(1, &anaglyphRenderTextureLeft);
+        glDeleteTextures(1, &anaglyphRenderTextureLeft);
     }
     if(anaglyphRenderTextureRight != 0) {
-        f->glDeleteTextures(1, &anaglyphRenderTextureRight);
+        glDeleteTextures(1, &anaglyphRenderTextureRight);
     }
     if(tempAnaglyphRenderTexture != 0) {
-        f->glDeleteTextures(1, &tempAnaglyphRenderTexture);
+        glDeleteTextures(1, &tempAnaglyphRenderTexture);
     }
 
     // TODO : check for NPOT sizes
     GLuint texwidth = width, texheight = height;
 
     GLuint txtnumbers[3] = {0};
-    f->glGenTextures(3, txtnumbers);
+    glGenTextures(3, txtnumbers);
 
     char *txtdata = new char[texwidth * texheight * 4];
 
     for (GLuint *txtnumber = txtnumbers; txtnumber < txtnumbers + 3; ++txtnumber) {
-        f->glBindTexture(GL_TEXTURE_2D, *txtnumber);
-        f->glTexImage2D(GL_TEXTURE_2D, 0, 4, texwidth, texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*) txtdata);
+        glBindTexture(GL_TEXTURE_2D, *txtnumber);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, texwidth, texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*) txtdata);
 
-        f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-        f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     }
 
     delete[] txtdata;
@@ -184,13 +179,12 @@ void AnaglyphRenderer::createEmptyTextures() {
 }
 
 void AnaglyphRenderer::drawTexturesAnaglyph() {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     CHECK_GL_ERROR
 
     drawTexture(anaglyphRenderTextureLeft, settings.rightEyeColor.red(), settings.rightEyeColor.green(), settings.rightEyeColor.blue(), 0.5f, false); // colored left image
 
-    f->glBindTexture(GL_TEXTURE_2D, tempAnaglyphRenderTexture);
-    f->glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);    // Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)
+    glBindTexture(GL_TEXTURE_2D, tempAnaglyphRenderTexture);
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);    // Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)
 
     drawTexture(anaglyphRenderTextureRight, settings.leftEyeColor.red(), settings.leftEyeColor.green(), settings.leftEyeColor.blue(), 0.5f, false); // colored right image
     drawTexture(tempAnaglyphRenderTexture, 255, 255, 255, 1.0f, true);
@@ -200,39 +194,38 @@ void AnaglyphRenderer::drawTexturesAnaglyph() {
 
 void AnaglyphRenderer::drawTexture(GLuint anaglyphRenderTexture, int red, int green, int blue, float alpha, bool alphaOnly)
 {
-    QOpenGLFunctions_2_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_2_0>();
     CHECK_GL_ERROR
 
-    f->glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
 
     if (alphaOnly){
         // the second image is this, it has needed alpha color
-        f->glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA);
+        glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA);
     }
     else {
-        f->glBlendFunc(GL_ONE, GL_ONE);
+        glBlendFunc(GL_ONE, GL_ONE);
     }
 
-    f->glBindTexture(GL_TEXTURE_2D, anaglyphRenderTexture);
+    glBindTexture(GL_TEXTURE_2D, anaglyphRenderTexture);
 
-    f->glColor4ub(red, green, blue, (GLubyte) (alpha * 255.0));
-    f->glBegin(GL_QUADS);
-        f->glTexCoord2f(0, 1);
-        f->glVertex2f(0,0);
+    glColor4ub(red, green, blue, (GLubyte) (alpha * 255.0));
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);
+        glVertex2f(0,0);
 
-        f->glTexCoord2f(0, 0);
-        f->glVertex2f(0, 1);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 1);
 
-        f->glTexCoord2f(1, 0);
-        f->glVertex2f(1, 1);
+        glTexCoord2f(1, 0);
+        glVertex2f(1, 1);
 
-        f->glTexCoord2f(1, 1);
-        f->glVertex2f(1, 0);
-    f->glEnd();
+        glTexCoord2f(1, 1);
+        glVertex2f(1, 0);
+    glEnd();
 
     // Unbind the blur texture
-    f->glBindTexture(GL_TEXTURE_2D, 0);
-    f->glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 
     CHECK_GL_ERROR
 }
