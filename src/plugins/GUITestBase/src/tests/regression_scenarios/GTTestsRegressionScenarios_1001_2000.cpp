@@ -4859,7 +4859,7 @@ GUI_TEST_CLASS_DEFINITION(test_1443){
 GUI_TEST_CLASS_DEFINITION(test_1445) {
 /*  1. Open "data/samples/CLUSTALW/COI.aln"
     2. Choose last sequence (i.e. in bottom) with mouse in sequences area
-    3. Choose { Edit -> Remove current sequence } in context menu
+    3. Choose { Edit -> Remove sequence } in context menu
     Expected state: UGENE doesn't crash
 */
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
@@ -4869,7 +4869,7 @@ GUI_TEST_CLASS_DEFINITION(test_1445) {
     int numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
     CHECK_SET_ERR(numSelectedSequences == 1, "There is no selection in MSA, but expected");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove current sequence", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove sequence", GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
@@ -6116,8 +6116,8 @@ GUI_TEST_CLASS_DEFINITION( test_1600_5 ){
 
 //    3. Choose some sequence by left mouse button
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 1));
-//    4. Use the context menu in the name list area { Edit -> Remove current sequence }
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove current sequence"));
+//    4. Use the context menu in the name list area { Edit -> Remove sequence }
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
 //    Expected state: The chosen sequence has been removed from alignment, collapsing mode has been switched off
     QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);

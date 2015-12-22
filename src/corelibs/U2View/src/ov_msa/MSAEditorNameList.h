@@ -65,7 +65,7 @@ private slots:
     void sl_copyCurrentSequence();
     void sl_editSequenceName();
     void sl_lockedStateChanged();
-    void sl_removeCurrentSequence();
+    void sl_removeSequence();
     void sl_selectReferenceSequence();
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_onScrollBarActionTriggered( int scrollAction );
@@ -142,7 +142,7 @@ private:
     QRubberBand*        rubberBand;
     QAction*            editSequenceNameAction;
     QAction*            copyCurrentSequenceAction;
-    QAction*            removeCurrentSequenceAction;
+    QAction*            removeSequenceAction;
     QPixmap*            cachedView;
 
     static const int CROSS_SIZE = 9;

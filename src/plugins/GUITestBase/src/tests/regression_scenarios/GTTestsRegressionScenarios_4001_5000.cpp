@@ -4652,6 +4652,53 @@ GUI_TEST_CLASS_DEFINITION(test_4833_8) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4839_1) {
+    //1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: document are opened in the project view; MSA Editor are shown with test_alignment.
+    GTUtilsProjectTreeView::findIndex(os, "COI.aln");
+    QWidget *msaView = GTUtilsMdi::activeWindow(os);
+    CHECK(NULL != msaView, );
+
+    //2. Select some sequences on sequence view.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 4), QPoint(2, 6));
+    QStringList originalNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    //3. Call context menu on the name list area, select the {Edit -> Remove sequence} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    //Expected state: the sequences are removed.
+    QStringList modifiedNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    CHECK_SET_ERR(originalNames.length() - modifiedNames.length() == 3, "The number of sequences remained unchanged.");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4839_2) {
+    //1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: document are opened in the project view; MSA Editor are shown with test_alignment.
+    GTUtilsProjectTreeView::findIndex(os, "COI.aln");
+    QWidget *msaView = GTUtilsMdi::activeWindow(os);
+    CHECK(NULL != msaView, );
+
+    //2. Select some sequences on sequence view.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 4), QPoint(2, 6));
+    QStringList originalNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    //3. Use main menu item {Actions -> Edit -> Remove sequence}.
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Remove sequence");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    //Expected state: the sequences are removed.
+    QStringList modifiedNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    CHECK_SET_ERR(originalNames.length() - modifiedNames.length() == 3, "The number of sequences remained unchanged.");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4852) {
     //1. Open _common_data/genome_aligner/chrY.fa
     GTFileDialog::openFile(os, testDir + "_common_data/genome_aligner", "chrY.fa");

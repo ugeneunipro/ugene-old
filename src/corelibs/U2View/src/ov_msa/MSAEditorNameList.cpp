@@ -71,9 +71,12 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     copyCurrentSequenceAction->setObjectName("Copy current sequence");
     connect(copyCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_copyCurrentSequence()));
 
-    removeCurrentSequenceAction = new QAction("Remove current sequence", this);
-    removeCurrentSequenceAction->setObjectName("Remove current sequence");
-    connect(removeCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_removeCurrentSequence()));
+    removeSequenceAction = new QAction(tr("Remove sequence"), this);
+    removeSequenceAction->setObjectName("Remove sequence");
+    removeSequenceAction->setShortcut(QKeySequence(Qt::Key_Delete));
+    removeSequenceAction->setShortcutContext(Qt::WidgetShortcut);
+    connect(removeSequenceAction, SIGNAL(triggered()), SLOT(sl_removeSequence()));
+    addAction(removeSequenceAction);
 
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
     if (editor->getMSAObject()) {
@@ -150,7 +153,7 @@ void MSAEditorNameList::updateActions() {
 
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj){
-        removeCurrentSequenceAction->setEnabled(!maObj->isStateLocked() && maObj->getNumRows() > 1);
+        removeSequenceAction->setEnabled(!maObj->isStateLocked() && getSelectedRow() != -1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
         addAction(ui->getCopySelectionAction());
         addAction(ui->getPasteAction());
@@ -204,20 +207,19 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
 }
 
 void MSAEditorNameList::buildMenu(QMenu* m) {
+    QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
+    SAFE_POINT(editMenu != NULL, "editMenu not found", );
+    editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
         return;
     }
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
-    SAFE_POINT(copyMenu != NULL, "copyMenu", );
+    SAFE_POINT(copyMenu != NULL, "copyMenu not found", );
     copyMenu->addAction(copyCurrentSequenceAction);
 
     copyCurrentSequenceAction->setDisabled(getSelectedRow() == -1);
-
-    QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
-    SAFE_POINT(editMenu != NULL, "copyMenu", );
     editMenu->insertAction(editMenu->actions().first(), editSequenceNameAction);
-    editMenu->insertAction(editMenu->actions().last(), removeCurrentSequenceAction);
 }
 
 int MSAEditorNameList::getSelectedRow() const {
@@ -257,20 +259,12 @@ void MSAEditorNameList::sl_nameBarMoved(int) {
     update();
 }
 
-void MSAEditorNameList::sl_removeCurrentSequence() {
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if (maObj) {
-        int n = getSelectedRow();
-        if (n < 0) {
-            return;
-        }
-        assert(!maObj->isStateLocked());
-        // UGENE cannot show empty alignment
-        if (maObj->getNumRows() > 1) {
-            editor->resetCollapsibleModel();
-            maObj->removeRow(n);
-        }
-    }
+void MSAEditorNameList::sl_removeSequence() {
+    int width = editor->getAlignmentLen();
+    MSAEditorSelection oldSelection = ui->seqArea->getSelection();
+    MSAEditorSelection selection(0, oldSelection.y(), width, oldSelection.height());
+    ui->seqArea->setSelection(selection);
+    ui->seqArea->sl_delCurrentSelection();
 }
 
 void MSAEditorNameList::sl_selectReferenceSequence() {
@@ -303,9 +297,6 @@ void MSAEditorNameList::keyPressEvent(QKeyEvent *e) {
     int key = e->key();
     static int newSeq = 0;
     switch(key) {
-    case Qt::Key_Delete:
-        ui->seqArea->sl_delCurrentSelection();
-        break;
     case Qt::Key_Up:
         if (0 != (Qt::ShiftModifier & e->modifiers()) && ui->seqArea->isSeqInRange(newSeq - 1)) {
             newSeq--;
@@ -576,6 +567,7 @@ void MSAEditorNameList::sl_selectionChanged(const MSAEditorSelection& current, c
     }
     completeRedraw = true;
     update();
+    updateActions();
 }
 
 void MSAEditorNameList::focusInEvent(QFocusEvent* fe) {
