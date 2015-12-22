@@ -4898,6 +4898,23 @@ GUI_TEST_CLASS_DEFINITION(test_4936) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4966) {
+    //GTLogTracer l;
+    //    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //    2. Open sample "Align sequences with MUSCLE"
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    //    3. Align "_common_data\clustal\big.aln"
+    GTUtilsWorkflowDesigner::click(os, "Read alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/clustal", "big.aln");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //    Expected state:
+    //    Workflow finished with error "Not enough resources for the task"
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Not enough resources for the task");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

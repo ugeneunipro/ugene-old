@@ -36,6 +36,7 @@
 #include <QtCore/QMutexLocker>
 #include <QtCore/QSemaphore>
 
+#include <limits>
 #include "muscle/scorehistory.h"
 
 namespace U2 {
@@ -69,12 +70,14 @@ int MuscleParallelTask::estimateMemoryUsageInMb(const MAlignment& ma) {
 
     qint64 usedBytes = 0;
     int availableThreads = workpool->nThreads;
-    for(int i = 0; i < rowsLengths.size() && availableThreads > 0; i++) {
-        for(int j = 0; j < rowsLengths.size() && availableThreads > 0; j++, availableThreads--) {
-            usedBytes += (rowsLengths[i] + 1025) * (rowsLengths[j] + 1025);
+    for (int i = 0; i < rowsLengths.size() && availableThreads > 0; i++) {
+        for (int j = 0; j < rowsLengths.size() && availableThreads > 0; j++, availableThreads--) {
+            usedBytes += qint64((rowsLengths[i] + 1025)) * (rowsLengths[j] + 1025);
         }
     }
-    return usedBytes / 1024 / 1024;
+    const int maxInt = std::numeric_limits<int>::max();
+    usedBytes = usedBytes >= 0 ? usedBytes : maxInt;
+    return qMin(usedBytes / 1024 / 1024, qint64(maxInt));
 }
 
 QList<Task*> MuscleParallelTask::onSubTaskFinished(Task* subTask) {
