@@ -34,6 +34,8 @@ public:
     static bool hasDatabaseUrl();
     static QString getDatabaseUrl();
     static QString getDumpUrl();
+    static bool hasSilentModeFlag();
+    static QString getFailedTestName();
     static QString loadReportFromUrl(const QString &url);
 
     static bool isSystem64bit();

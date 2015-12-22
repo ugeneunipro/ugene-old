@@ -31,7 +31,7 @@ class QNetworkReply;
 class ReportSender:public QObject {
     Q_OBJECT
 public:
-    ReportSender(): report("") {}
+    ReportSender(bool addGuiTestInfo = false);
     void parse(const QString &str, const QString &dumpUrl);
     bool send(const QString &additionalInfo, const QString &dumpUrl);
     QString getOSVersion();
@@ -39,6 +39,7 @@ public:
     int getTotalPhysicalMemory();
     QString getCPUInfo();
     QString getUgeneBitCount() const;
+    void setFailedTest(const QString &failedTestStr);
 
 private slots:
     void sl_replyFinished(QNetworkReply*);
@@ -46,6 +47,8 @@ private slots:
 private:
     QString report;
     QEventLoop loop;
+    bool addGuiTestInfo;
+    QString failedTest;
 };
 
 class SendReportDialog:public QDialog, public Ui_Dialog {

@@ -35,6 +35,7 @@
 #include <QDate>
 #include <QDir>
 #include <QEventLoop>
+#include <QHostInfo>
 #include <QFile>
 #include <QHttpPart>
 #include <QMessageBox>
@@ -66,6 +67,8 @@
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad.html"
 #endif
 
+ReportSender::ReportSender(bool addGuiTestInfo) : report(""), addGuiTestInfo(addGuiTestInfo), failedTest("UNKNOWN TEST") {}
+
 void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
     report = "Exception with code ";
 
@@ -85,6 +88,14 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
 
         report += "Memory Info: ";
         report += QString::number(getTotalPhysicalMemory()) + "Mb\n\n";
+
+        if (addGuiTestInfo) {
+            report += "Local Host name: ";
+            report += QHostInfo::localHostName() + "\n\n";
+
+            report += "Failed test: ";
+            report += failedTest + "\n\n";
+        }
 
         report += "UGENE version: ";
 #ifdef UGENE_VERSION_SUFFIX
@@ -113,6 +124,14 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
         report += list.takeLast();
 #endif
     } else {
+        if (addGuiTestInfo) {
+            report += "\n\n";
+            report += "Local Host name: ";
+            report += QHostInfo::localHostName() + "\n\n";
+
+            report += "Failed test: ";
+            report += failedTest + "\n\n";
+        }
         foreach(const QString& str, list) {
             report += str + "\n";
         }
@@ -515,6 +534,10 @@ QString ReportSender::getCPUInfo() {
     result="unknown";
 #endif
     return result;
+}
+
+void ReportSender::setFailedTest(const QString &failedTestStr) {
+    failedTest = failedTestStr;
 }
 
 QString ReportSender::getUgeneBitCount() const {

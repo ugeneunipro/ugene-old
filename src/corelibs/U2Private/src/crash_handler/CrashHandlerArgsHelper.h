@@ -57,6 +57,8 @@ private:
     static const QString REPORT_FILE_ARG;
     static const int MAX_PLAIN_LOG = 70;
     static const int MAX_FILE_LOG = 500;
+    static const QString SILENT_SEND_FILE_ARG;
+    static const QString FAILED_TEST_FILE_ARG;
 };
 
 }   // namespace U2

@@ -20,6 +20,8 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/CMDLineRegistry.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -32,6 +34,8 @@ namespace U2 {
 const QString CrashHandlerArgsHelper::SESSION_DB_FILE_ARG = "-d";
 const QString CrashHandlerArgsHelper::DUMP_FILE_ARG = "-dump";
 const QString CrashHandlerArgsHelper::REPORT_FILE_ARG = "-f";
+const QString CrashHandlerArgsHelper::SILENT_SEND_FILE_ARG = "--silent-sending";
+const QString CrashHandlerArgsHelper::FAILED_TEST_FILE_ARG = "--failed-test";
 
 CrashHandlerArgsHelper::CrashHandlerArgsHelper()
     : useFile(false)
@@ -72,6 +76,16 @@ QStringList CrashHandlerArgsHelper::getArguments() const {
     } else {
         args << report.toUtf8().toBase64();
     }
+
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1) {
+        CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
+        if (NULL != cmdLine) {
+            QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
+            args << SILENT_SEND_FILE_ARG;
+            args << FAILED_TEST_FILE_ARG + "=" + testName;
+        }
+    }
+
     return args;
 }
 

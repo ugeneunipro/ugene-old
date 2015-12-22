@@ -60,6 +60,16 @@ int main(int argc, char *argv[]) {
 
     const QString message = loadReport(argc, argv);
     const QString dumpUrl = Utils::getDumpUrl();
+    bool silentSending = Utils::hasSilentModeFlag();
+
+    if (silentSending) {
+        ReportSender sender(true);
+        sender.setFailedTest(Utils::getFailedTestName());
+        sender.parse(message, dumpUrl);
+        sender.send("", dumpUrl);
+        return 0;
+    }
+    
 
     if (useGui) {
         SendReportDialog dlg(message, dumpUrl);
