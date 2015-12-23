@@ -103,7 +103,7 @@
 #include <U2Remote/DistributedComputingUtil.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 #include <U2Test/GUITestService.h>
 #include <U2Test/XMLTestFormat.h>
 
@@ -670,7 +670,7 @@ int main(int argc, char **argv)
     AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
     appContext->setAutoAnnotationsSupport(aaSupport);
 
-    GUITestBase *tb = new GUITestBase();
+    UGUITestBase *tb = new UGUITestBase();
     appContext->setGUITestBase(tb);
 
     AppFileStorage *appFileStorage = new AppFileStorage();

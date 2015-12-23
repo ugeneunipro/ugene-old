@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 #include <U2Test/GUITestThread.h>
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 #include <U2Test/GUITestService.h>
 
 #include "GUITestRunner.h"
@@ -34,7 +34,7 @@ namespace U2 {
 #define ULOG_CAT_TEST_RUNNER "GUI Test Runner Log"
 static Logger log(ULOG_CAT_TEST_RUNNER);
 
-GUITestRunner::GUITestRunner(GUITestBase* _guiTestBase, QWidget *parent) :
+GUITestRunner::GUITestRunner(UGUITestBase* _guiTestBase, QWidget *parent) :
     guiTestBase(_guiTestBase), QWidget(parent)
 {
     setupUi(this);

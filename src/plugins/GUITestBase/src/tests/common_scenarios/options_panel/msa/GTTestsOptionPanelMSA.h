@@ -22,7 +22,7 @@
 #ifndef U2_GTTESTS_OPTION_PANEL_MSA_H
 #define U2_GTTESTS_OPTION_PANEL_MSA_H
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2{
 

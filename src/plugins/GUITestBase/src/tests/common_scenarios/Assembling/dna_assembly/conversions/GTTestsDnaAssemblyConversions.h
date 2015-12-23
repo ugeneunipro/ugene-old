@@ -23,7 +23,7 @@
 #define _U2_GUITEST_DNA_ASSEMBLY_CONVERSIONS_H_
 
 #include <U2Core/global.h>
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 namespace GUITest_dna_assembly_conversions {

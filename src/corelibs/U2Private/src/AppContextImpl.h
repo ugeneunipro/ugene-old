@@ -335,7 +335,7 @@ public:
         workingDirectoryPath = path;
     }
 
-    void setGUITestBase(GUITestBase *_tb) {assert(tb == NULL || _tb == NULL); tb = _tb;}
+    void setGUITestBase(UGUITestBase *_tb) {assert(tb == NULL || _tb == NULL); tb = _tb;}
 
     static AppContextImpl* getApplicationContext();
 
@@ -395,7 +395,7 @@ protected:
     virtual CDSearchFactoryRegistry*        _getCDSFactoryRegistry() const { return cdsfr; }
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
     virtual UdrSchemaRegistry *             _getUdrSchemaRegistry() const { return udrSchemaRegistry; }
-    virtual GUITestBase*                    _getGUITestBase() const {return tb;}
+    virtual UGUITestBase*                    _getGUITestBase() const {return tb;}
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
     virtual OPCommonWidgetFactoryRegistry*  _getOPCommonWidgetFactoryRegistry() const { return opCommonWidgetFactoryRegistry; }
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
@@ -473,7 +473,7 @@ private:
     AutoAnnotationsSupport* aaSupport;
     U2DbiRegistry *dbiRegistry;
     UdrSchemaRegistry *udrSchemaRegistry;
-    GUITestBase *tb;
+    UGUITestBase *tb;
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
     OPCommonWidgetFactoryRegistry* opCommonWidgetFactoryRegistry;
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;

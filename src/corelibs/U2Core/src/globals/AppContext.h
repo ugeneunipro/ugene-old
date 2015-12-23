@@ -80,7 +80,7 @@ class QDActorPrototypeRegistry;
 class StructuralAlignmentAlgorithmRegistry;
 class AutoAnnotationsSupport;
 class CDSearchFactoryRegistry;
-class GUITestBase;
+class UGUITestBase;
 class SplicedAlignmentTaskRegistry;
 class OPCommonWidgetFactoryRegistry;
 class OPWidgetFactoryRegistry;
@@ -235,7 +235,7 @@ public:
 
     static QString getActiveWindowName() {return getInstance()->_getActiveWindowName();}
     static void setActiveWindowName(const QString &name) {getInstance()->_setActiveWindowName(name);}
-    static GUITestBase *getGUITestBase() {return getInstance()->_getGUITestBase();}
+    static UGUITestBase *getGUITestBase() {return getInstance()->_getGUITestBase();}
 
     static AppFileStorage *getAppFileStorage() {return getInstance()->_getAppFileStorage();}
 
@@ -313,7 +313,7 @@ protected:
     virtual U2DbiRegistry *             _getDbiRegistry() const = 0;
     virtual UdrSchemaRegistry *         _getUdrSchemaRegistry() const = 0;
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
-    virtual GUITestBase* _getGUITestBase() const = 0;
+    virtual UGUITestBase* _getGUITestBase() const = 0;
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
     virtual OPCommonWidgetFactoryRegistry* _getOPCommonWidgetFactoryRegistry() const = 0;
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;

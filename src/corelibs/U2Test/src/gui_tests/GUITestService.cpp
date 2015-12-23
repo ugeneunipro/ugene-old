@@ -35,7 +35,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <core/MainThreadRunnable.h>
-#include "GUITestBase.h"
+#include "UGUITestBase.h"
 #include <core/GUITestOpStatus.h>
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
@@ -219,10 +219,10 @@ Task* GUITestService::createTestSuiteLauncherTask() const {
 
 GUITests GUITestService::preChecks() {
 
-    GUITestBase* tb = AppContext::getGUITestBase();
+    UGUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->takeTests(GUITestBase::PreAdditional);
+    GUITests additionalChecks = tb->takeTests(UGUITestBase::PreAdditional);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -230,10 +230,10 @@ GUITests GUITestService::preChecks() {
 
 GUITests GUITestService::postChecks() {
 
-    GUITestBase* tb = AppContext::getGUITestBase();
+    UGUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalChecks);
+    GUITests additionalChecks = tb->takeTests(UGUITestBase::PostAdditionalChecks);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -241,10 +241,10 @@ GUITests GUITestService::postChecks() {
 
 GUITests GUITestService::postActions() {
 
-    GUITestBase* tb = AppContext::getGUITestBase();
+    UGUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalActions);
+    GUITests additionalChecks = tb->takeTests(UGUITestBase::PostAdditionalActions);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -325,7 +325,7 @@ void GUITestService::runGUITest() {
     SAFE_POINT(NULL != cmdLine,"",);
     QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
 
-    GUITestBase *tb = AppContext::getGUITestBase();
+    UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",);
     HI::GUITest *t = tb->takeTest(testName.split(":").first(), testName.split(":").last());
 
@@ -333,7 +333,7 @@ void GUITestService::runGUITest() {
 }
 
 void GUITestService::runGUICrazyUserTest() {
-    GUITestBase *tb = AppContext::getGUITestBase();
+    UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(tb,"",);
     HI::GUITest *t = tb->takeTest("","simple_crazy_user");
 

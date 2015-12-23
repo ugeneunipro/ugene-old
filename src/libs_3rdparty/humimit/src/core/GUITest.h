@@ -75,6 +75,29 @@ public slots:
 
 typedef QList<GUITest*> GUITests;
 
+#define TESTNAME(className) #className
+#define SUITENAME(className) QString(GUI_TEST_SUITE)
+
+#define TEST_CLASS_DECLARATION(className) \
+    class className : public GUITest { \
+    public: \
+        className () : GUITest(TESTNAME(className), SUITENAME(className)){} \
+    protected: \
+        virtual void run(GUITestOpStatus &os); \
+    };
+
+#define TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
+    class className : public GUITest { \
+    public: \
+        className () : GUITest(TESTNAME(className), SUITENAME(className), timeout){} \
+    protected: \
+        virtual void run(GUITestOpStatus &os); \
+    };
+
+#define TEST_CLASS_DEFINITION(className) \
+    void className::run(GUITestOpStatus &os)
+
+
 } //HI
 
 #endif

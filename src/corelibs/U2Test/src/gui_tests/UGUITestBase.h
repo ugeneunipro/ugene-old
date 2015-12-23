@@ -15,53 +15,21 @@
 
 namespace U2 {
 
-#define TESTNAME(className) #className
-#define SUITENAME(className) QString(GUI_TEST_SUITE)
-
-#define DIALOG_FILLER_DECLARATION(className, DialogName) \
-    class className : public Filler { \
-    public: \
-        className(HI::GUITestOpStatus& os):Filler(os, DialogName){} \
-        virtual void run(); \
-    }
-
-#define DIALOG_FILLER_DEFFINITION(className) \
-    void className::run()
-
-#define GUI_TEST_CLASS_DECLARATION(className) \
-    class className : public UGUITest { \
-    public: \
-        className () : UGUITest(TESTNAME(className), SUITENAME(className)){} \
-    protected: \
-        virtual void run(HI::GUITestOpStatus &os); \
-    };
-
-#define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
-    class className : public UGUITest { \
-    public: \
-        className () : UGUITest(TESTNAME(className), SUITENAME(className), timeout){} \
-    protected: \
-        virtual void run(HI::GUITestOpStatus &os); \
-    };
-
-#define GUI_TEST_CLASS_DEFINITION(className) \
-    void className::run(HI::GUITestOpStatus &os)
-
 typedef QMap<QString, HI::GUITest*> GUITestMap;
 typedef QList<HI::GUITest*> GUITests;
 
-class U2TEST_EXPORT GUITestBase {
+class U2TEST_EXPORT UGUITestBase {
 public:
     enum TestType {Normal, PreAdditional, PostAdditionalChecks, PostAdditionalActions} type;
 
-    virtual ~GUITestBase();
+    virtual ~UGUITestBase();
 
     bool registerTest(HI::GUITest *test, TestType testType = Normal);
     HI::GUITest *getTest(const QString &suite, const QString &name, TestType testType = Normal);
-    HI::GUITest *takeTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from GUITestBase
+    HI::GUITest *takeTest(const QString &suite, const QString &name, TestType testType = Normal); // removes item from UGUITestBase
 
     GUITests getTests(TestType testType = Normal);
-    GUITests takeTests(TestType testType = Normal); // removes items from GUITestBase
+    GUITests takeTests(TestType testType = Normal); // removes items from UGUITestBase
 
     GUITests getTestsWithoutRemoving(TestType testType = Normal);
 

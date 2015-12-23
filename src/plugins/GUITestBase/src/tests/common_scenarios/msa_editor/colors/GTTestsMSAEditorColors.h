@@ -23,7 +23,7 @@ k
 #ifndef GTTESTS_MSA_EDITOR_COLORS_H_
 #define GTTESTS_MSA_EDITOR_COLORS_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 #include "utils/GTUtilsDialog.h"
 
 namespace U2 {

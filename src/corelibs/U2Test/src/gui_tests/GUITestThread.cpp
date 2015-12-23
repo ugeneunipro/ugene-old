@@ -30,7 +30,7 @@
 #include "core/MainThreadRunnable.h"
 
 #include <core/GUITest.h>
-#include "GUITestBase.h"
+#include "UGUITestBase.h"
 #include <core/GUITestOpStatus.h>
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
@@ -110,33 +110,33 @@ QString GUITestThread::launchTest(const GUITests &tests) {
 }
 
 GUITests GUITestThread::preChecks() {
-    GUITestBase *tb = AppContext::getGUITestBase();
+    UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
 //    GUITests additionalChecks = tb->takeTests(GUITestBase::PreAdditional);
-    GUITests additionalChecks = tb->getTests(GUITestBase::PreAdditional);
+    GUITests additionalChecks = tb->getTests(UGUITestBase::PreAdditional);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
     return additionalChecks;
 }
 
 GUITests GUITestThread::postChecks() {
-    GUITestBase *tb = AppContext::getGUITestBase();
+    UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
 //    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalChecks);
-    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalChecks);
+    GUITests additionalChecks = tb->getTests(UGUITestBase::PostAdditionalChecks);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
     return additionalChecks;
 }
 
 GUITests GUITestThread::postActions() {
-    GUITestBase *tb = AppContext::getGUITestBase();
+    UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb, "GUITestBase is NULL", GUITests());
 
 //    GUITests additionalChecks = tb->takeTests(GUITestBase::PostAdditionalActions);
-    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalActions);
+    GUITests additionalChecks = tb->getTests(UGUITestBase::PostAdditionalActions);
     SAFE_POINT(!additionalChecks.isEmpty(), "additionalChecks is empty", GUITests());
 
     return additionalChecks;

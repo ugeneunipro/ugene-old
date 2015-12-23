@@ -22,7 +22,7 @@
 #ifndef GTTESTS_WORKFLOW_ESTIMATING_H_
 #define GTTESTS_WORKFLOW_ESTIMATING_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

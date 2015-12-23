@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-class GUITestBase;
+class UGUITestBase;
 
 class GUITestBasePlugin : public Plugin {
     Q_OBJECT
@@ -37,8 +37,8 @@ public:
 private slots:
     void sl_showWindow();
 private:
-    void registerTests(GUITestBase *guiTestBase);
-    void registerAdditionalChecks(GUITestBase *guiTestBase);
+    void registerTests(UGUITestBase *guiTestBase);
+    void registerAdditionalChecks(UGUITestBase *guiTestBase);
 
     QAction*        openGUITestRunnerAction;
     GUITestRunner*  view;

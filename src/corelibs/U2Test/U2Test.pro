@@ -5,7 +5,7 @@ HEADERS += src/GTest.h \
            src/GTestFrameworkComponents.h \
            src/TestRunnerSettings.h \
            src/TestRunnerTask.h \
-           src/gui_tests/GUITestBase.h \
+           src/gui_tests/UGUITestBase.h \
            src/gui_tests/GUITestLauncher.h \
            src/gui_tests/GUITestService.h \
            src/gui_tests/GUITestTeamcityLogger.h \
@@ -18,7 +18,7 @@ HEADERS += src/GTest.h \
 SOURCES += src/GTest.cpp \
            src/GTestFrameworkComponents.cpp \
            src/TestRunnerTask.cpp \
-           src/gui_tests/GUITestBase.cpp \
+           src/gui_tests/UGUITestBase.cpp \
            src/gui_tests/GUITestLauncher.cpp \
            src/gui_tests/GUITestService.cpp \
            src/gui_tests/GUITestTeamcityLogger.cpp \

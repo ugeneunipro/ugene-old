@@ -26,6 +26,28 @@ public:
 
 typedef QList<UGUITest*> UGUITests;
 
+#define TESTNAME(className) #className
+#define SUITENAME(className) QString(GUI_TEST_SUITE)
+
+#define GUI_TEST_CLASS_DECLARATION(className) \
+    class className : public UGUITest { \
+    public: \
+        className () : UGUITest(TESTNAME(className), SUITENAME(className)){} \
+    protected: \
+        virtual void run(HI::GUITestOpStatus &os); \
+    };
+
+#define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
+    class className : public UGUITest { \
+    public: \
+        className () : UGUITest(TESTNAME(className), SUITENAME(className), timeout){} \
+    protected: \
+        virtual void run(HI::GUITestOpStatus &os); \
+    };
+
+#define GUI_TEST_CLASS_DEFINITION(className) \
+    void className::run(HI::GUITestOpStatus &os)
+
 }
 
 #endif

@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_TEST_PROJECT_BOOKMARKS_H_
 #define _U2_GUI_TEST_PROJECT_BOOKMARKS_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

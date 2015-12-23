@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_TESTS_PROJECT_SEQUENCE_EXPORTING_H_
 #define _U2_GUI_TESTS_PROJECT_SEQUENCE_EXPORTING_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

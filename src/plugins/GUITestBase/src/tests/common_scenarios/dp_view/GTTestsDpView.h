@@ -23,7 +23,7 @@ k
 #ifndef GTTESTS_DP_VIEW_H_
 #define GTTESTS_DP_VIEW_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 #include "utils/GTUtilsDialog.h"
 
 namespace U2 {

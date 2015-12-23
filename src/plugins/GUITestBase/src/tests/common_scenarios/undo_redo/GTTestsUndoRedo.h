@@ -23,7 +23,7 @@ k
 #ifndef GTTESTSUNDOREDO_H
 #define GTTESTSUNDOREDO_H
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2{
 

@@ -23,7 +23,7 @@ k
 #ifndef GTTESTS_QUERY_DESIGNER_H_
 #define GTTESTS_QUERY_DESIGNER_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

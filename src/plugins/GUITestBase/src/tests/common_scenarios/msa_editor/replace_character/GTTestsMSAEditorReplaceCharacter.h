@@ -23,7 +23,7 @@ k
 #ifndef GTTESTS_MSA_EDITOR_REPLACE_CHARACTER_H_
 #define GTTESTS_MSA_EDITOR_REPLACE_CHARACTER_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

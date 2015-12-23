@@ -24,7 +24,7 @@
 
 #include <QWidget>
 #include "ui_GUITestRunner.h"
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 
@@ -33,7 +33,7 @@ class GUITestRunner : public QWidget, public Ui_GUITestRunner
     Q_OBJECT
 
 public:
-    explicit GUITestRunner(GUITestBase* guiTestBase, QWidget *parent = 0);
+    explicit GUITestRunner(UGUITestBase* guiTestBase, QWidget *parent = 0);
     ~GUITestRunner();
 
 private slots:
@@ -46,7 +46,7 @@ private slots:
 private:
     void revisible(const QString &nameFilter);
 
-    GUITestBase*    guiTestBase;
+    UGUITestBase*    guiTestBase;
     QAction*        delTextAction;
 };
 

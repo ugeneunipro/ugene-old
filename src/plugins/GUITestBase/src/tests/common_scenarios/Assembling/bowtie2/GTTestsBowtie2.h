@@ -22,7 +22,7 @@
 #ifndef _U2_GUITEST_BOWTIE2_H_
 #define _U2_GUITEST_BOWTIE2_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 namespace GUITest_Bowtie2 {

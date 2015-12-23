@@ -22,7 +22,7 @@
 #ifndef _GTTESTS_PRIMER_LIBRARY_H_
 #define _GTTESTS_PRIMER_LIBRARY_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 namespace GUITest_common_scenarios_primer_library {

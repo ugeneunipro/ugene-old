@@ -111,6 +111,17 @@ private:
     void releaseMouseButtons();
 };
 
+#define DIALOG_FILLER_DECLARATION(className, DialogName) \
+    class className : public Filler { \
+    public: \
+        className(HI::GUITestOpStatus& os):Filler(os, DialogName){} \
+        virtual void run(); \
+    }
+
+#define DIALOG_FILLER_DEFFINITION(className) \
+    void className::run()
+
+
 class HI_EXPORT HangChecker: public QObject{
     Q_OBJECT
 public:

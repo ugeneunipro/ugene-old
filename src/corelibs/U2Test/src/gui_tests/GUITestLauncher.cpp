@@ -31,7 +31,7 @@
 
 #include <U2Gui/MainWindow.h>
 
-#include "GUITestBase.h"
+#include "UGUITestBase.h"
 #include "GUITestLauncher.h"
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
@@ -128,7 +128,7 @@ void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 }
 
 bool GUITestLauncher::initGUITestBase() {
-    GUITestBase* b = AppContext::getGUITestBase();
+    UGUITestBase* b = AppContext::getGUITestBase();
     SAFE_POINT(NULL != b, "Test base is NULL", false);
     QList<HI::GUITest *> list = b->getTests();
     if (list.isEmpty()) {

@@ -22,7 +22,7 @@
 #ifndef _U2_GT_TESTS_DOCUMENT_FROM_TEXT_H_
 #define _U2_GT_TESTS_DOCUMENT_FROM_TEXT_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 namespace U2 {
 

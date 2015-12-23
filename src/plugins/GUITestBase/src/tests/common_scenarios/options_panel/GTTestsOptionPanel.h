@@ -25,7 +25,7 @@ k
 
 #include <QApplication>
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 
 #include "utils/GTUtilsDialog.h"
 #include <drivers/GTKeyboardDriver.h>

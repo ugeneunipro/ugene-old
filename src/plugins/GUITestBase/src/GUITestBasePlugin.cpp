@@ -21,7 +21,7 @@
 
 #include <U2Core/AppContext.h>
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/UGUITestBase.h>
 #include <U2Gui/ToolsMenu.h>
 
 #include "GUITestBasePlugin.h"
@@ -134,7 +134,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test Base")) {
 
-    GUITestBase *guiTestBase = AppContext::getGUITestBase();
+    UGUITestBase *guiTestBase = AppContext::getGUITestBase();
 
     registerTests(guiTestBase);
     registerAdditionalChecks(guiTestBase);
@@ -154,7 +154,7 @@ void GUITestBasePlugin::sl_showWindow() {
     view->show();
 }
 
-void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
+void GUITestBasePlugin::registerTests(UGUITestBase *guiTestBase) {
 
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/
@@ -2658,24 +2658,24 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_start_page::test_0008);
 }
 
-void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
+void GUITestBasePlugin::registerAdditionalChecks(UGUITestBase *guiTestBase) {
     if (guiTestBase) {
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0000, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0001, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0002, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0003, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0004, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0005, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0006, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0000, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0001, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0002, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0003, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0004, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0005, UGUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::pre_action_0006, UGUITestBase::PreAdditional);
 
-        guiTestBase->registerTest(new GUITest_initial_checks::post_check_0000, GUITestBase::PostAdditionalChecks);
-        //guiTestBase->registerTest(new GUITest_initial_checks::post_check_0001, GUITestBase::PostAdditionalChecks);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_check_0000, UGUITestBase::PostAdditionalChecks);
+        //guiTestBase->registerTest(new GUITest_initial_checks::post_check_0001, UGUITestBase::PostAdditionalChecks);
         //temporary ignored. Causes problems on mac
 
-        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0000, GUITestBase::PostAdditionalActions);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0001, GUITestBase::PostAdditionalActions);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0002, GUITestBase::PostAdditionalActions);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0003, GUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0000, UGUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0001, UGUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0002, UGUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_action_0003, UGUITestBase::PostAdditionalActions);
     }
 }
 
