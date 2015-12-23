@@ -64,8 +64,8 @@ void ExportAnnotationsFiller::init(const QString &exportToFile) {
     comboBoxItems[csv] = "csv";
 }
 
-#define GT_METHOD_NAME "run"
-void ExportAnnotationsFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ExportAnnotationsFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

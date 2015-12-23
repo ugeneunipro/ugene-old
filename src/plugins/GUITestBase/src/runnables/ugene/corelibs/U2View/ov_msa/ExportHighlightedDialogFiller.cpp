@@ -36,8 +36,8 @@ ExportHighlightedDialogFiller::ExportHighlightedDialogFiller(HI::GUITestOpStatus
 {
 }
 
-#define GT_METHOD_NAME "run"
-void ExportHighlightedDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportHighlightedDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "dialog not found");
 

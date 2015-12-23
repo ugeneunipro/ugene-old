@@ -32,7 +32,7 @@ class CreateElementWithScriptDialogFiller : public Filler
 public:
     CreateElementWithScriptDialogFiller(HI::GUITestOpStatus& os, QString _name):Filler(os, "CreateScriptBlockDialog"),
         name(_name){}
-    virtual void run();
+    void commonScenario();
 private:
     QString name;
 };
@@ -45,7 +45,7 @@ public:
         text(_text),
         checkSyntaxResult(_checkSyntaxResult),
         checkSyntax(_checkSyntax) {}
-    virtual void run();
+    void commonScenario();
 private:
     QString url;
     QString text;
@@ -59,7 +59,7 @@ public:
     ScriptEditorDialogSyntaxChecker(HI::GUITestOpStatus& os, QString _text = "", QString _message = ""): Filler(os, "ScriptEditorDialog"),
         text(_text),
         message(_message){}
-    virtual void run();
+    void commonScenario();
 private:
     QString text, message;
 };

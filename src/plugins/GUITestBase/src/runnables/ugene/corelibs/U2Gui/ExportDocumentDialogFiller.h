@@ -33,7 +33,7 @@ using namespace HI;
         ExportDocumentDialogFiller(HI::GUITestOpStatus &_os, const QString &_path = "", const QString &_name = "",
             ExportDocumentDialogFiller::FormatToUse _format = ExportDocumentDialogFiller::Genbank, bool compressFile = false,
                                  bool addToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+        void commonScenario();
 
         static QString defaultExportString;
     private:

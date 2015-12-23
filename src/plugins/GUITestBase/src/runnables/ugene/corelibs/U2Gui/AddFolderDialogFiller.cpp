@@ -42,9 +42,9 @@ AddFolderDialogFiller::AddFolderDialogFiller(HI::GUITestOpStatus &os, const QStr
 }
 
 #define GT_CLASS_NAME "U2::AddFolderDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void AddFolderDialogFiller::run() {
+void AddFolderDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "active modal widget is invalid");
 

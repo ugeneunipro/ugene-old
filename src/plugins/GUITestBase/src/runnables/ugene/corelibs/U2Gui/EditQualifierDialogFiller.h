@@ -30,7 +30,7 @@ class EditQualifierFiller : public Filler {
 public:
     EditQualifierFiller(HI::GUITestOpStatus &_os, const QString &_qualifierName, const QString &_valueName, bool _noCheck = false, bool _closeErrorMessageBox = false)
         :Filler(_os, "EditQualifierDialog"), qualifierName(_qualifierName), valueName(_valueName), noCheck(_noCheck), closeErrormessageBox(_closeErrorMessageBox){}
-    virtual void run();
+    void commonScenario();
 private:
     QString qualifierName;
     QString valueName;
@@ -42,7 +42,7 @@ class RenameQualifierFiller : public Filler {
 public:
     RenameQualifierFiller(HI::GUITestOpStatus &_os, const QString &_newName)
         :Filler(_os, ""), newName(_newName) {}
-    virtual void run();
+    void commonScenario();
 private:
     QString newName;
 };

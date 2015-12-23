@@ -33,7 +33,7 @@ GTUtilsEscClicker::GTUtilsEscClicker( HI::GUITestOpStatus &_os, const QString &m
 
 }
 
-void GTUtilsEscClicker::run( )
+void GTUtilsEscClicker::commonScenario( )
 {
     GTGlobals::sleep( 1000 );
     if ( mouse ) {

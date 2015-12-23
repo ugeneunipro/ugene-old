@@ -32,7 +32,7 @@ public:
     ExportHighlightedDialogFiller(HI::GUITestOpStatus &os, const QString &filePath,
                                   bool invertredExport = true);
 
-    void run();
+    void commonScenario();
 
 private:
     const QString filePath;

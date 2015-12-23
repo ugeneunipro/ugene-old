@@ -48,8 +48,8 @@ namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditQualifierFiller"
-#define GT_METHOD_NAME "run"
-void EditQualifierFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void EditQualifierFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
@@ -83,8 +83,8 @@ void EditQualifierFiller::run()
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::RenameQualifierFiller"
-#define GT_METHOD_NAME "run"
-void RenameQualifierFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void RenameQualifierFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

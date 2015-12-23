@@ -35,7 +35,7 @@ using namespace HI;
             Filler(_os, "AssemblyToSamDialog"),
             databasePath(_dbPath),
             databaseFileName(_dbFileName){}
-        virtual void run();
+        void commonScenario();
     private:
         const QString databasePath;
         const QString databaseFileName;

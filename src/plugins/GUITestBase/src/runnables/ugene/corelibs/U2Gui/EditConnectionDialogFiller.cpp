@@ -87,9 +87,9 @@ AuthenticationDialogFiller::AuthenticationDialogFiller(HI::GUITestOpStatus &os, 
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::AuthenticationDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void AuthenticationDialogFiller::run() {
+void AuthenticationDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

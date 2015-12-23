@@ -43,7 +43,7 @@ public:
         indFileName(_indFileName),
         method(_method),
         useDefaultIndexName(_useDefaultIndexName) {}
-    virtual void run();
+    void commonScenario();
 private:
     QString refPath;
     QString refFileName;

@@ -40,8 +40,8 @@
 namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::BranchSettingsDialogFiller"
-#define GT_METHOD_NAME "run"
-void BranchSettingsDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void BranchSettingsDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog!=NULL, "Active modal widget not found");
 

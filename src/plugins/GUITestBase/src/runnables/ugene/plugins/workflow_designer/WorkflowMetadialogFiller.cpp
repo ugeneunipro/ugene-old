@@ -36,8 +36,8 @@
 
 namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
-#define GT_METHOD_NAME "run"
-void WorkflowMetaDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void WorkflowMetaDialogFiller::commonScenario(){
      QWidget* dialog = QApplication::activeModalWidget();
      GT_CHECK(dialog, "activeModalWidget is NULL");
 

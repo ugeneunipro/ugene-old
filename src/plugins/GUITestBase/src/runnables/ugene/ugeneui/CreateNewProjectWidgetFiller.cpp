@@ -38,8 +38,8 @@
 namespace U2 {
 using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
-#define GT_METHOD_NAME "run"
-void SaveProjectAsDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void SaveProjectAsDialogFiller::commonScenario() {
 
     GTGlobals::sleep();
     QWidget* dialog = QApplication::activeModalWidget();

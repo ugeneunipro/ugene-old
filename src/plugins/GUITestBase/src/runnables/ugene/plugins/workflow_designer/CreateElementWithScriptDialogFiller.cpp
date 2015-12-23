@@ -33,8 +33,8 @@
 namespace U2{
 
 #define GT_CLASS_NAME "CreateElementWithScriptDialogFiller"
-#define GT_METHOD_NAME "run"
-void CreateElementWithScriptDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void CreateElementWithScriptDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -48,8 +48,8 @@ void CreateElementWithScriptDialogFiller::run(){
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "ScriptEditorDialogFiller"
-#define GT_METHOD_NAME "run"
-void ScriptEditorDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void ScriptEditorDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -83,8 +83,8 @@ void ScriptEditorDialogFiller::run(){
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "ScriptEditorDialogFiller"
-#define GT_METHOD_NAME "run"
-void ScriptEditorDialogSyntaxChecker::run(){
+#define GT_METHOD_NAME "commonScenario"
+void ScriptEditorDialogSyntaxChecker::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

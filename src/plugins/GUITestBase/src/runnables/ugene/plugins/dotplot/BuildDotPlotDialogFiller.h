@@ -41,7 +41,7 @@ using namespace HI;
             secondFileEdit(_secondFileEdit),
             gapFirstVal(_gapFirstVal),gapSecondVal(_gapSecondVal),
             cancel(cancel){}
-        virtual void run();
+        void commonScenario();
     private:
         bool mergeFirstBoxChecked, oneSequenceBoxChecked,mergeSecondBoxChecked;
         const QString firstFileEdit;

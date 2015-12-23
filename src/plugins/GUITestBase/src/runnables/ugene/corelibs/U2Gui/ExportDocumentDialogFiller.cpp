@@ -66,8 +66,8 @@ path(_path), name(_name), useMethod(method), format(_format), compressFile(compr
     comboBoxItems[VectorNTI] = "Vector NTI sequence";
 }
 
-#define GT_METHOD_NAME "run"
-void ExportDocumentDialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ExportDocumentDialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

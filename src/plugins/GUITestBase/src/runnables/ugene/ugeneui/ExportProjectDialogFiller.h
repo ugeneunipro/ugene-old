@@ -31,7 +31,7 @@ using namespace HI;
     public:
         ExportProjectDialogFiller(HI::GUITestOpStatus &_os, const QString &_projectFolder, const QString &_projectName = "")
             :Filler(_os, "ExportProjectDialog"), projectFolder(_projectFolder), projectName(_projectName){}
-        virtual void run();
+        void commonScenario();
     private:
         const QString projectFolder;
         const QString projectName;
@@ -41,7 +41,7 @@ using namespace HI;
     public:
         ExportProjectDialogChecker(HI::GUITestOpStatus &_os, const QString &_projectName)
             :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
-        virtual void run();
+        void commonScenario();
     private:
         const QString projectName;
     };
@@ -50,7 +50,7 @@ using namespace HI;
     public:
         ExportProjectDialogSizeChecker(HI::GUITestOpStatus &_os, const QString &_projectName)
             :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
-        virtual void run();
+        void commonScenario();
     private:
         const QString projectName;
     };

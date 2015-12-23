@@ -70,12 +70,11 @@ namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "GTSequenceReader"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 class GTSequenceReader : public Filler {
 public:
     GTSequenceReader(HI::GUITestOpStatus &_os, QString *_str):Filler(_os, "EditSequenceDialog"), str(_str){}
-    void run()
-    {
+    void commonScenario() {
         QWidget *widget = QApplication::activeModalWidget();
         GT_CHECK(widget != NULL, "active widget not found");
 

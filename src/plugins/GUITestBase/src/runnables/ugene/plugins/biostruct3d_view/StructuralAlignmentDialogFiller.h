@@ -31,7 +31,7 @@ class StructuralAlignmentDialogFiller : public Filler {
 public:
     StructuralAlignmentDialogFiller(HI::GUITestOpStatus &os, const QStringList& chainIndex = QStringList());
 
-    void run();
+    void commonScenario();
 private:
     QStringList chainIndexes;
 };

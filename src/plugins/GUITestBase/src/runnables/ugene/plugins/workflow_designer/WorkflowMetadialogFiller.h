@@ -33,7 +33,7 @@ public:
     WorkflowMetaDialogFiller(HI::GUITestOpStatus& os, QString _url, QString _name): Filler(os, "WorkflowMetaDialog"),
         url(_url),
         name(_name){}
-    virtual void run();
+    void commonScenario();
 private:
     QString url, name;
 };

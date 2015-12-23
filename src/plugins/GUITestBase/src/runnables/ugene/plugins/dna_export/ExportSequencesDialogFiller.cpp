@@ -129,8 +129,8 @@ ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFi
     mergeRadioButtons[Merge] = "mergeButton";
 }
 
-#define GT_METHOD_NAME "run"
-void ExportSequenceOfSelectedAnnotationsFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ExportSequenceOfSelectedAnnotationsFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

@@ -36,7 +36,7 @@ class SaveProjectDialogFiller: public Filler{
 public:
     SaveProjectDialogFiller(HI::GUITestOpStatus &os, QDialogButtonBox::StandardButton _b):
         Filler(os,"SaveProjectDialog"),b(_b){}
-    virtual void run();
+    void commonScenario();
 private:
     QDialogButtonBox::StandardButton b;
 };

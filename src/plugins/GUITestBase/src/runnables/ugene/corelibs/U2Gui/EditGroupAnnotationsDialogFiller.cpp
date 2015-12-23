@@ -44,8 +44,8 @@ namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditGroupAnnotationsFiller"
-#define GT_METHOD_NAME "run"
-void EditGroupAnnotationsFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void EditGroupAnnotationsFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

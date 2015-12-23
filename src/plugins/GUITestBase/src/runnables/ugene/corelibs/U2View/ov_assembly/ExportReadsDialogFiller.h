@@ -30,7 +30,7 @@ using namespace HI;
 class ExportReadsDialogFiller : public Filler {
 public:
     ExportReadsDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, const QString format = "fasta", bool addToProject = true);
-    virtual void run();
+    void commonScenario();
 private:
     QString filePath;
     QString format;

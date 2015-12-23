@@ -36,7 +36,7 @@
 namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
 TCoffeeDailogFiller::TCoffeeDailogFiller(HI::GUITestOpStatus &os, int gapOpen, int gapExt, int numOfIters) :
     Filler(os, "TCoffeeSupportRunDialog"),
@@ -47,7 +47,7 @@ TCoffeeDailogFiller::TCoffeeDailogFiller(HI::GUITestOpStatus &os, int gapOpen, i
 
 }
 
-void TCoffeeDailogFiller::run(){
+void TCoffeeDailogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

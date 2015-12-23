@@ -30,7 +30,7 @@ class ItemToImportEditDialogFiller : public Filler {
 public:
     ItemToImportEditDialogFiller(HI::GUITestOpStatus& os, const QVariantMap& data);
 
-    void run();
+    void commonScenario();
 
 private:
     QVariantMap data;

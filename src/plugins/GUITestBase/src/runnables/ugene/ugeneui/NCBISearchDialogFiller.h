@@ -54,7 +54,7 @@ public:
 
     NcbiSearchDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
 
-    void run();
+    void commonScenario();
 
 private:
     void setField(const QVariant &actionData);
@@ -89,7 +89,7 @@ public:
         query(_query),
         doubleEnter(_doubleEnter),
         resultLimit(_resultLimit){}
-    virtual void run();
+    void commonScenario();
 
 private:
     QString query;

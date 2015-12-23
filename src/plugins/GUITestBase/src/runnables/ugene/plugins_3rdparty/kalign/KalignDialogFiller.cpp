@@ -41,8 +41,8 @@ namespace U2 {
 KalignDialogFiller::KalignDialogFiller(HI::GUITestOpStatus &_os, int _gapOpenVal, bool _toAmino) : Filler(_os, "KalignDialog"),
     gapOpenVal(_gapOpenVal), toAmino(_toAmino) {}
 
-#define GT_METHOD_NAME "run"
-void KalignDialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void KalignDialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

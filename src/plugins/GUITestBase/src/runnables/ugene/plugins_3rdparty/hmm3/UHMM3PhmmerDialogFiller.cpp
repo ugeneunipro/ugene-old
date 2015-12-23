@@ -31,9 +31,9 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "UHMM3PhmmerDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void UHMM3PhmmerDialogFiller::run(){
+void UHMM3PhmmerDialogFiller::commonScenario(){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 

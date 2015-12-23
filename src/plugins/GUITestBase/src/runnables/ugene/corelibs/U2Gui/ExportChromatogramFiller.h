@@ -33,7 +33,7 @@ using namespace HI;
         ExportChromatogramFiller(HI::GUITestOpStatus &_os, const QString &_path, const QString &_name,
                                         ExportChromatogramFiller::FormatToUse _format, bool reversed, bool complement, 
                                         bool addDocumentToProject, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+        void commonScenario();
     private:
         QString path, name;
         GTGlobals::UseMethod useMethod;

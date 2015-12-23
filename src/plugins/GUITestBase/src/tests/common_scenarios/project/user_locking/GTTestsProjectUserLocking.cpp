@@ -65,7 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     class CreateAnnnotationDialogComboBoxChecker : public Filler {
     public:
         CreateAnnnotationDialogComboBoxChecker(HI::GUITestOpStatus &_os, const QString &radioButtonName): Filler(_os, "CreateAnnotationDialog"), buttonName(radioButtonName){}
-        void run() {
+        void commonScenario() {
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
 
@@ -119,7 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     class CreateAnnnotationDialogComboBoxChecker : public Filler {
     public:
         CreateAnnnotationDialogComboBoxChecker(HI::GUITestOpStatus &_os, const QString &radioButtonName): Filler(_os, "CreateAnnotationDialog"), buttonName(radioButtonName){}
-        void run() {
+        void commonScenario() {
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
 

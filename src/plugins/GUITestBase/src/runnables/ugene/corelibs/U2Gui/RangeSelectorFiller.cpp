@@ -34,8 +34,8 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ZoomToRangeDialogFiller"
-#define GT_METHOD_NAME "run"
-void ZoomToRangeDialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ZoomToRangeDialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

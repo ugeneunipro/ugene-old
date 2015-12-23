@@ -34,8 +34,8 @@
 namespace HI{
 
 #define GT_CLASS_NAME "GTUtilsDialog::ColorDialog filler"
-#define GT_METHOD_NAME "run"
-void ColorDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void ColorDialogFiller::commonScenario() {
     GTGlobals::sleep();
 #ifdef Q_OS_LINUX
     setWithQt = true;

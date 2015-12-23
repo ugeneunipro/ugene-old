@@ -31,7 +31,7 @@ using namespace HI;
         EditGroupAnnotationsFiller(HI::GUITestOpStatus &_os, const QString &_groupName):
           Filler(_os, ""), groupName(_groupName) {}
 
-        virtual void run();
+        void commonScenario();
     private:
         QString groupName;
     };

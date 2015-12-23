@@ -35,8 +35,8 @@ StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(HI::GUITestOpSt
 {
 }
 
-#define GT_METHOD_NAME "run"
-void StructuralAlignmentDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void StructuralAlignmentDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 

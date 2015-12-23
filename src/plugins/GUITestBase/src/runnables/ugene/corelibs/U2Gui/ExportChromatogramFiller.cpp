@@ -49,8 +49,8 @@ Filler(_os, "ExportChromatogramDialog"), name(_name), useMethod(method), format(
     comboBoxItems[SCF] = "SCF";
 }
 
-#define GT_METHOD_NAME "run"
-void ExportChromatogramFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ExportChromatogramFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

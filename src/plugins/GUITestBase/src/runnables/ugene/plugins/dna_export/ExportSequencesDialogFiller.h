@@ -51,7 +51,7 @@ using namespace HI;
         enum MergeOptions {SaveAsSeparate, Merge};
         ExportSequenceOfSelectedAnnotationsFiller(HI::GUITestOpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+        void commonScenario();
     private:
         QString path;
         int gapLength;

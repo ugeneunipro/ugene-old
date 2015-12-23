@@ -51,9 +51,9 @@ FormatDBSupportRunDialogFiller::FormatDBSupportRunDialogFiller(HI::GUITestOpStat
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::FormatDBSupportRunDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void FormatDBSupportRunDialogFiller::run() {
+void FormatDBSupportRunDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

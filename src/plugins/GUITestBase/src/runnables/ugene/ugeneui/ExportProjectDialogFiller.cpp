@@ -39,8 +39,8 @@ namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogChecker"
-#define GT_METHOD_NAME "run"
-void ExportProjectDialogChecker::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportProjectDialogChecker::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -55,8 +55,8 @@ void ExportProjectDialogChecker::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogSizeChecker"
-#define GT_METHOD_NAME "run"
-void ExportProjectDialogSizeChecker::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportProjectDialogSizeChecker::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -75,8 +75,8 @@ void ExportProjectDialogSizeChecker::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogFiller"
-#define GT_METHOD_NAME "run"
-void ExportProjectDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportProjectDialogFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

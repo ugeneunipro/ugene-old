@@ -55,7 +55,7 @@ public:
             CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");
     }
 
-virtual void run();
+void commonScenario();
 
 private:
 

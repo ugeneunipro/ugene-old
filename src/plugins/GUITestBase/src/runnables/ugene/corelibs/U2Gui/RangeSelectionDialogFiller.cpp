@@ -99,8 +99,8 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
     multipleRange = QString();
 }
 
-#define GT_METHOD_NAME "run"
-void selectSequenceRegionDialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void selectSequenceRegionDialogFiller::commonScenario()
 {
     GTGlobals::sleep(500);
     QWidget *dialog = QApplication::activeModalWidget();

@@ -50,7 +50,7 @@ public:
 
 
     FormatDBSupportRunDialogFiller(HI::GUITestOpStatus &os, const Parameters &parameters);
-    void run();
+    void commonScenario();
 
 private:
     Parameters parameters;

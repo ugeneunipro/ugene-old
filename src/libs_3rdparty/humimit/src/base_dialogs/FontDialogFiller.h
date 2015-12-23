@@ -30,7 +30,7 @@ class HI_EXPORT FontDialogFiller : public Filler {
     public:
         FontDialogFiller(GUITestOpStatus &_os)
             :Filler(_os, ""){}
-        virtual void run();
+        void commonScenario();
     };
 }
 #endif //_HI_GT_FONT_DIALOG_FILLER_H_

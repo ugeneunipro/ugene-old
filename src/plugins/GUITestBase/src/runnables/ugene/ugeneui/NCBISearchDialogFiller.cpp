@@ -48,8 +48,8 @@ NcbiSearchDialogFiller::NcbiSearchDialogFiller(HI::GUITestOpStatus &os, const QL
 {
 }
 
-#define GT_METHOD_NAME "run"
-void NcbiSearchDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void NcbiSearchDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -311,8 +311,8 @@ void NcbiSearchDialogFiller::waitTasksFinish() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::NCBISearchDialogFillerDeprecated"
-#define GT_METHOD_NAME "run"
-void NCBISearchDialogFillerDeprecated::run(){
+#define GT_METHOD_NAME "commonScenario"
+void NCBISearchDialogFillerDeprecated::commonScenario(){
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

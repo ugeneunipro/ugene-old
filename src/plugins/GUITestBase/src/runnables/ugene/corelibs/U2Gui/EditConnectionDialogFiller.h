@@ -43,7 +43,7 @@ private:
 class AuthenticationDialogFiller : public Filler {
 public:
     AuthenticationDialogFiller(HI::GUITestOpStatus &os, const QString &login, const QString &password);
-    void run();
+    void commonScenario();
 
 private:
     QString login;

@@ -105,7 +105,7 @@ public:
           exportCurrentSelection(exportCurrentSelection),
           region(region) {}
 
-    virtual void run();
+    void commonScenario();
 
 private:
     Settings    settings;
@@ -140,7 +140,7 @@ public:
         : ExportImage(os, filePath, comboValue, spinValue),
           settings(settings) {}
 
-    virtual void run();
+    void commonScenario();
 
 private:
     Settings    settings;
@@ -151,7 +151,7 @@ public:
     SelectSubalignmentFiller(HI::GUITestOpStatus &_os, const RegionMsa &regionMsa)
         : Filler(_os, "SelectSubalignmentDialog"),
           msaRegion(regionMsa) {}
-    virtual void run();
+    void commonScenario();
 private:
     RegionMsa   msaRegion;
 };
@@ -173,7 +173,7 @@ public:
     };
 
     ImageExportFormFiller(HI::GUITestOpStatus &os, const Parameters &parameters);
-    void run();
+    void commonScenario();
 
 private:
     Parameters parameters;

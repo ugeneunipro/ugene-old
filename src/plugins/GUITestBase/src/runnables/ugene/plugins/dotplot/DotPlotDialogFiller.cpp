@@ -37,8 +37,8 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
-#define GT_METHOD_NAME "run"
-void DotPlotFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void DotPlotFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

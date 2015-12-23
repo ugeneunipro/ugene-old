@@ -31,7 +31,7 @@ class UHMM3PhmmerDialogFiller: public Filler
 {
 public:
     UHMM3PhmmerDialogFiller(HI::GUITestOpStatus &os, QString _input):Filler(os, "UHMM3PhmmerDialog"), input(_input){}
-    virtual void run();
+    void commonScenario();
 private:
     QString input;
 };

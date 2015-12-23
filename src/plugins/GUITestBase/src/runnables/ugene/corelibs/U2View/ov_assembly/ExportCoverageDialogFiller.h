@@ -54,7 +54,7 @@ public:
 
     ExportCoverageDialogFiller(HI::GUITestOpStatus &os, const QList<Action> &actions);
 
-    void run();
+    void commonScenario();
 
 private:
     void enterFilePath(const QVariant &actionData);

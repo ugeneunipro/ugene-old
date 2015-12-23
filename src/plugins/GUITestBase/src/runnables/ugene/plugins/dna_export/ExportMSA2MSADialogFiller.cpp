@@ -46,8 +46,8 @@ ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(HI::GUITestOpStatus &_os, i
     formatVal(_formatVal),
     path(_path){}
 
-#define GT_METHOD_NAME "run"
-void ExportMSA2MSADialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void ExportMSA2MSADialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

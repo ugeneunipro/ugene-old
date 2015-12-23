@@ -32,7 +32,7 @@ class DatasetNameEditDialogFiller : public Filler
 public:
     DatasetNameEditDialogFiller(HI::GUITestOpStatus& os, QString _datasetName = ""):Filler(os, ""),
         datasetName(_datasetName){}
-    virtual void run();
+    void commonScenario();
 private:
     QString datasetName;
 };

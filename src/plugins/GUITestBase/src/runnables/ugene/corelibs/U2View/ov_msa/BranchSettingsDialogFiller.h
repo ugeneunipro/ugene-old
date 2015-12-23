@@ -31,7 +31,7 @@ class BranchSettingsDialogFiller : public Filler
 {
 public:
     BranchSettingsDialogFiller(HI::GUITestOpStatus &os) : Filler(os,"BranchSettingsDialog"){}
-    virtual void run();
+    void commonScenario();
 };
 
 }

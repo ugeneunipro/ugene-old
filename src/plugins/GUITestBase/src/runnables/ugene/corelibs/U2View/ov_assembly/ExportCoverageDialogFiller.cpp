@@ -48,8 +48,8 @@ ExportCoverageDialogFiller::ExportCoverageDialogFiller(HI::GUITestOpStatus &os, 
 {
 }
 
-#define GT_METHOD_NAME "run"
-void ExportCoverageDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportCoverageDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "Active modal widget not found");
 

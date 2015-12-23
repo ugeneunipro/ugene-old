@@ -32,7 +32,7 @@ class TCoffeeDailogFiller : public Filler {
 public:
     TCoffeeDailogFiller(HI::GUITestOpStatus& os, int gapOpen = INT_MAX, int gapExt = INT_MAX, int numOfIters = INT_MAX);
 
-    virtual void run();
+    void commonScenario();
 
 private:
     int gapOpen;

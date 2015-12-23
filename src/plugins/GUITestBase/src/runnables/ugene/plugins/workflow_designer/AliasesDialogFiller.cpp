@@ -38,9 +38,9 @@
 namespace U2{
 using namespace HI;
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void AliasesDialogFiller::run(){
+void AliasesDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     GTGlobals::sleep(500);

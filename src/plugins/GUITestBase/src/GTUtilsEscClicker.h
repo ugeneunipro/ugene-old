@@ -31,7 +31,7 @@ using namespace HI;
 class GTUtilsEscClicker : public Filler {
 public:
     GTUtilsEscClicker( HI::GUITestOpStatus &_os, const QString &menuObjectName, bool _mouse = false );
-    virtual void run();
+    void commonScenario();
 
 private:
     bool mouse;

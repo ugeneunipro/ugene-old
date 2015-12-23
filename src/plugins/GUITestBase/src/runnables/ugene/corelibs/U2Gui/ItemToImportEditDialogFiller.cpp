@@ -42,8 +42,8 @@ ItemToImportEditDialogFiller::ItemToImportEditDialogFiller(HI::GUITestOpStatus& 
 {
 }
 
-#define GT_METHOD_NAME "run"
-void ItemToImportEditDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ItemToImportEditDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 

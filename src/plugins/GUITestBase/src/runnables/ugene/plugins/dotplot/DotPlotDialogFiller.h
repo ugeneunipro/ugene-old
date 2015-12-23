@@ -30,7 +30,7 @@ using namespace HI;
     class DotPlotFiller : public Filler {
     public:
         DotPlotFiller(HI::GUITestOpStatus &_os, int _minLen=100, int _identity = 0, bool _invertedRepeats = false, bool _but1kpressed=false) : Filler(_os, "DotPlotDialog"), minLen(_minLen), identity(_identity), invertedRepeats(_invertedRepeats), but1kpressed(_but1kpressed) {}
-        virtual void run();
+        void commonScenario();
     private:
         int minLen, identity;
         bool invertedRepeats, but1kpressed;

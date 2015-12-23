@@ -41,8 +41,8 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::DeleteGapsDialogFiller"
-#define GT_METHOD_NAME "run"
-void DeleteGapsDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void DeleteGapsDialogFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -66,8 +66,8 @@ void DeleteGapsDialogFiller::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemoveGapColsDialogFiller"
-#define GT_METHOD_NAME "run"
-void RemoveGapColsDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void RemoveGapColsDialogFiller::commonScenario() {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

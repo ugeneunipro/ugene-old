@@ -21,8 +21,8 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::BuildIndexDialogFiller"
-#define GT_METHOD_NAME "run"
-void BuildIndexDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void BuildIndexDialogFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

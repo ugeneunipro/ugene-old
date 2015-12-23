@@ -36,7 +36,7 @@ using namespace HI;
         selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range);
         selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin = true);
 
-        virtual void run();
+        void commonScenario();
     private:
         RangeType rangeType;
         bool selectAll, fromBegin;

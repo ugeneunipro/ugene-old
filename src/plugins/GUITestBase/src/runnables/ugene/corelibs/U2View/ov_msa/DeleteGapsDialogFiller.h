@@ -31,7 +31,7 @@ class DeleteGapsDialogFiller : public Filler {
 public:
     DeleteGapsDialogFiller(HI::GUITestOpStatus &os, int _radioButNum=0) : Filler(os, "DeleteGapsDialog"),
         radioButNum(_radioButNum){}
-    virtual void run();
+    void commonScenario();
 private:
     int radioButNum;
 };
@@ -45,7 +45,7 @@ public:
         radioMap[Percent] = "relativeRadioButton";
         radioMap[Column] = "allRadioButton";
     }
-    virtual void run();
+    void commonScenario();
 private:
     Radio button;
     int spinValue;

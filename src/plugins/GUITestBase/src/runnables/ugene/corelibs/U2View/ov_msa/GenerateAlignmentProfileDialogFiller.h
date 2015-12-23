@@ -54,7 +54,7 @@ public:
         format(NONE)
         {}
 
-    virtual void run();
+    void commonScenario();
 private:
     bool counts, gapScore,symdolScore, skipGaps;
     saveFormat format;

@@ -32,7 +32,7 @@ class AliasesDialogFiller : public Filler
 public:
     AliasesDialogFiller(HI::GUITestOpStatus &_os, QMap<QPoint*,QString> _map):Filler(_os,"SchemaAliasesConfigurationDialog"),
         map(_map){}
-    void run();
+    void commonScenario();
 private:
     QMap<QPoint*,QString> map;
 };

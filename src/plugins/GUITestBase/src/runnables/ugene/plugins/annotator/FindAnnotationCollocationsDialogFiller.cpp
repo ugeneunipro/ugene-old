@@ -37,8 +37,8 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::FindAnnotationCollocationsDialogFiller"
 
-#define GT_METHOD_NAME "run"
-void FindAnnotationCollocationsDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void FindAnnotationCollocationsDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

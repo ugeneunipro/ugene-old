@@ -115,8 +115,8 @@ void CircularViewExportImage::commonScenario() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportMsaImage"
-#define GT_METHOD_NAME "run"
-void ExportMsaImage::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportMsaImage::commonScenario() {
     GT_CHECK( (exportWholeAlignment && exportCurrentSelection) != true, "Wrong filler parameters");
 
     QWidget* dialog = QApplication::activeModalWidget();
@@ -163,8 +163,8 @@ void ExportMsaImage::run() {
 
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceImage"
-#define GT_METHOD_NAME "run"
-void ExportSequenceImage::run() {
+#define GT_METHOD_NAME "commonScenario"
+void ExportSequenceImage::commonScenario() {
     GTGlobals::sleep(500);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -217,8 +217,8 @@ void ExportSequenceImage::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::SelectSubalignmentFiller"
-#define GT_METHOD_NAME "run"
-void SelectSubalignmentFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void SelectSubalignmentFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -270,9 +270,9 @@ ImageExportFormFiller::ImageExportFormFiller(HI::GUITestOpStatus &os, const Para
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImageExportFormFiller"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 
-void ImageExportFormFiller::run() {
+void ImageExportFormFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

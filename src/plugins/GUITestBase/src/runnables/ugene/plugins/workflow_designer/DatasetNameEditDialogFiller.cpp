@@ -33,8 +33,8 @@ namespace U2{
 using namespace HI;
 
 #define GT_CLASS_NAME "DatasetNameEditDialogFiller"
-#define GT_METHOD_NAME "run"
-void DatasetNameEditDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void DatasetNameEditDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
