@@ -90,6 +90,7 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
         report += QString::number(getTotalPhysicalMemory()) + "Mb\n\n";
 
         if (addGuiTestInfo) {
+            report += "User email: ugene@unipro.ru\n\n";
             report += "Local Host name: ";
             report += QHostInfo::localHostName() + "\n\n";
 
@@ -126,6 +127,7 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
     } else {
         if (addGuiTestInfo) {
             report += "\n\n";
+            report += "User email: ugene@unipro.ru\n\n";
             report += "Local Host name: ";
             report += QHostInfo::localHostName() + "\n\n";
 

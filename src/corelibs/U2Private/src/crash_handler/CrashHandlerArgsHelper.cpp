@@ -82,7 +82,7 @@ QStringList CrashHandlerArgsHelper::getArguments() const {
         if (NULL != cmdLine) {
             QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
             args << SILENT_SEND_FILE_ARG;
-            args << FAILED_TEST_FILE_ARG + "=" + testName;
+            args << FAILED_TEST_FILE_ARG << testName;
         }
     }
 
