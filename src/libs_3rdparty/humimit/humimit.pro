@@ -50,7 +50,9 @@ HEADERS += \
            src/core/GUITest.h \
            src/core/MainThreadRunnable.h \
            src/core/MainThreadTimer.h \
-    src/core/GUITestBase.h
+    src/core/GUITestBase.h \
+    src/core/TestThread.h \
+    src/core/GUITestsLauncher.h
 SOURCES += \
            src/GTGlobals.cpp \
            src/base_dialogs/ColorDialogFiller.cpp \
@@ -104,7 +106,9 @@ SOURCES += \
            src/core/GUITest.cpp \
            src/core/MainThreadRunnable.cpp \
            src/core/MainThreadTimer.cpp \
-    src/core/GUITestBase.cpp
+    src/core/GUITestBase.cpp \
+    src/core/TestThread.cpp \
+    src/core/GUITestsLauncher.cpp
 
 macx {
 OBJECTIVE_HEADERS += src/primitives/private/GTMenuPrivateMac.h
