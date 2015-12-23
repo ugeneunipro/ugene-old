@@ -11,7 +11,7 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 
 #include <QtGui>
-#include <core/GUITest.h>
+#include <U2Test/UGUITest.h>
 
 namespace U2 {
 
@@ -29,17 +29,17 @@ namespace U2 {
     void className::run()
 
 #define GUI_TEST_CLASS_DECLARATION(className) \
-    class className : public HI::GUITest { \
+    class className : public UGUITest { \
     public: \
-        className () : HI::GUITest(TESTNAME(className), SUITENAME(className)){} \
+        className () : UGUITest(TESTNAME(className), SUITENAME(className)){} \
     protected: \
         virtual void run(HI::GUITestOpStatus &os); \
     };
 
 #define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
-    class className : public HI::GUITest { \
+    class className : public UGUITest { \
     public: \
-        className () : HI::GUITest(TESTNAME(className), SUITENAME(className), timeout){} \
+        className () : UGUITest(TESTNAME(className), SUITENAME(className), timeout){} \
     protected: \
         virtual void run(HI::GUITestOpStatus &os); \
     };

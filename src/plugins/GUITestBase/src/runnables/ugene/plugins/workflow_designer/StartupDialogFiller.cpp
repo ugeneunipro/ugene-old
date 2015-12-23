@@ -47,7 +47,7 @@ void StartupDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    if (path != GUITest::sandBoxDir) {
+    if (path != UGUITest::sandBoxDir) {
         QLineEdit *pathEdit = GTWidget::findExactWidget<QLineEdit *>(os, "pathEdit", dialog);
         CHECK(NULL != pathEdit, );
 

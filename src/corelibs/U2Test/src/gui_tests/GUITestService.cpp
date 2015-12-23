@@ -41,6 +41,7 @@
 #include "GUITestTeamcityLogger.h"
 #include "GUITestThread.h"
 #include "GUITestWindow.h"
+#include "UGUITest.h"
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
@@ -408,7 +409,7 @@ void GUITestService::clearSandbox()
 {
     log.trace("GUITestService __ clearSandbox");
 
-    QString pathToSandbox = HI::GUITest::testDir + "_common_data/scenarios/sandbox/";
+    QString pathToSandbox = UGUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 
     foreach (QString fileName, sandbox.entryList()) {

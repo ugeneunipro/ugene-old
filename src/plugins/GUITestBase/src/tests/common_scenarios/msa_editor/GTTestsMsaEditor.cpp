@@ -75,6 +75,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/ADVConstants.h>
+#include <U2Test/UGUITest.h>
 
 
 namespace U2 {
@@ -3556,7 +3557,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 
 void test_0039_function(HI::GUITestOpStatus &os, int comboNum, QString extention){
     //1. open document samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, GUITest::dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTFileDialog::openFile(os, UGUITest::dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
@@ -3567,7 +3568,7 @@ void test_0039_function(HI::GUITestOpStatus &os, int comboNum, QString extention
     //    Amino translation: Standart genetic code
     //    Add document to project: checked
     GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, comboNum, GUITest::testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, comboNum, UGUITest::testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
     GTMouseDriver::click(os,Qt::RightButton);
     GTGlobals::sleep(500);

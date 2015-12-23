@@ -59,10 +59,7 @@ public:
     void setName(const QString &n) { name = n; }
     void setTimeout(int _timeout) { timeout = _timeout; }
 
-    static const QString testDir;
-    static const QString dataDir;
     static const QString screenshotDir;
-    static const QString sandBoxDir;
 
     virtual void run(GUITestOpStatus &os) = 0;
 private:

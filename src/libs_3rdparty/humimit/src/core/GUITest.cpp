@@ -9,43 +9,7 @@
 
 namespace HI {
 
-QString getTestDir(){
-    bool ok;
-    int i = qgetenv("UGENE_GUI_TEST_SUITE_NUMBER").toInt(&ok);
-#ifdef Q_OS_MAC
-    if ( ok && i>1){
-        return QString("../../../../../../test%1/").arg(i-1);
-    }else{
-        return QString("../../../../../../test/");
-    }
-#else
-    if ( ok && i>1){
-        return QString("../../test%1/").arg(i-1);
-    }else{
-        return QString("../../test/");
-    }
-#endif
-}
-
-QString getDataDir(){
-    bool ok;
-    int i = qgetenv("UGENE_GUI_TEST_SUITE_NUMBER").toInt(&ok);
-#ifdef Q_OS_MAC
-    if ( ok && i>1 ){
-        return QString("data%1/").arg(i-1);
-    }else{
-        return QString("data/");
-    }
-#else
-    if ( ok && i>1){
-        return QString("../../data%1/").arg(i-1);
-    }else{
-        return QString("../../data/");
-    }
-#endif
-}
-
-QString getScreenshotDir(){
+QString getScreenshotDir(){ //TODO:rewrite to use working directory /screenshots
     QString result;
 #ifdef Q_OS_MAC
     result = "../../../../../../screenshotFol/";
@@ -62,9 +26,6 @@ QString getScreenshotDir(){
     return result;
 }
 
-const QString GUITest::testDir = getTestDir();
-const QString GUITest::dataDir = getDataDir();
-const QString GUITest::sandBoxDir = testDir + "_common_data/scenarios/sandbox/";
 const QString GUITest::screenshotDir = getScreenshotDir();
 
 void GUITest::sl_fail(){

@@ -2173,7 +2173,7 @@ GUI_TEST_CLASS_DEFINITION(test_3328) {
 
         void run() {
         //    1. Open "test/_common_data/fasta/human_T1_cutted.fa".
-            GTFileDialog::openFile(os, GUITest::testDir + "/_common_data/fasta/", "human_T1_cutted.fa");
+            GTFileDialog::openFile(os, testDir + "/_common_data/fasta/", "human_T1_cutted.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
         //    2. Click the "Find restriction sites" button on the main toolbar.

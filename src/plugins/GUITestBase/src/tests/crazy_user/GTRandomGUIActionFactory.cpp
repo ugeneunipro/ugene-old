@@ -30,6 +30,7 @@
 #endif
 #include <QtCore/QDirIterator>
 #include <U2Core/U2SafePoints.h>
+#include <U2Test/UGUITest.h>
 
 namespace U2 {
 
@@ -89,7 +90,7 @@ public:
         QFileDialog* objCasted = qobject_cast<QFileDialog*>(obj);
         SAFE_POINT(NULL != objCasted, "", );
 
-        QString findPath = GUITest::dataDir;
+        QString findPath = UGUITest::dataDir;
         QDir dir(findPath);
 
         QStringList files;

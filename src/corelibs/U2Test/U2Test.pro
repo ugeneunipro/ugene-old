@@ -12,7 +12,8 @@ HEADERS += src/GTest.h \
            src/gui_tests/GUITestThread.h \
            src/gui_tests/GUITestWindow.h \
            src/xmltest/XMLTestFormat.h \
-           src/xmltest/XMLTestUtils.h
+           src/xmltest/XMLTestUtils.h \
+           src/gui_tests/UGUITest.h
 
 SOURCES += src/GTest.cpp \
            src/GTestFrameworkComponents.cpp \
@@ -24,7 +25,8 @@ SOURCES += src/GTest.cpp \
            src/gui_tests/GUITestThread.cpp \
            src/gui_tests/GUITestWindow.cpp \
            src/xmltest/XMLTestFormat.cpp \
-           src/xmltest/XMLTestUtils.cpp
+           src/xmltest/XMLTestUtils.cpp \
+           src/gui_tests/UGUITest.cpp
 
 TRANSLATIONS += transl/english.ts \
                 transl/russian.ts

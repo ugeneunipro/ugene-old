@@ -35,6 +35,7 @@
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
 #include "GUITestThread.h"
+#include "UGUITest.h"
 
 namespace U2 {
 
@@ -144,7 +145,7 @@ GUITests GUITestThread::postActions() {
 void GUITestThread::clearSandbox() {
     log.trace("GUITestThread __ clearSandbox");
 
-    const QString pathToSandbox = HI::GUITest::testDir + "_common_data/scenarios/sandbox/";
+    const QString pathToSandbox = UGUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 
     foreach (const QString &fileName, sandbox.entryList()) {
