@@ -36,7 +36,7 @@ public:
     RemovePartFromSequenceDialogFiller(HI::GUITestOpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format);
     RemovePartFromSequenceDialogFiller(HI::GUITestOpStatus &_os, RemoveType _removeType);
 
-    void run();
+    void commonScenario();
 
 private:
     QString range;

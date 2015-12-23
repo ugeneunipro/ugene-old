@@ -61,8 +61,8 @@ RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(HI::GUITe
 
 }
 
-#define GT_METHOD_NAME "run"
-void RemovePartFromSequenceDialogFiller::run()
+#define GT_METHOD_NAME "commonScenario"
+void RemovePartFromSequenceDialogFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
