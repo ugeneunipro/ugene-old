@@ -6,11 +6,10 @@ UGENE_RELATIVE_DESTDIR = ''
 TARGET = humimit
 TEMPLATE = lib
 CONFIG += thread debug_and_release warn_off qt dll
-INCLUDEPATH += src _tmp ../../include
-LIBS += -L../../_release
-QT += testlib 
+INCLUDEPATH += src _tmp
+QT += testlib
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets 
+greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
 
 DEFINES += BUILDING_HUMIMIT_DLL
 DEFINES += QT_DLL
@@ -23,8 +22,6 @@ DEFINES += QT_DLL
         CONFIG +=console
         DESTDIR=../../_debug/
         OBJECTS_DIR=_tmp/obj/debug
-        LIBS -= -L../../_release
-        LIBS += -L../../_debug
     }
 
     CONFIG(release, debug|release) {
@@ -38,32 +35,26 @@ DEFINES += QT_DLL
 
 unix {
     !macx {
-    LIBS += -lXtst
+        LIBS += -lXtst
     }
     macx {
-    QMAKE_LFLAGS += -framework ApplicationServices
+        QMAKE_LFLAGS += -framework ApplicationServices
+        LIBS += -framework AppKit
     }
+    target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
+    INSTALLS += target
 }
-
-win32 {
-    LIBS += User32.lib Gdi32.lib
-}
-
-macx {
-    LIBS += -framework AppKit
-}
-
 
 win32 {
     QMAKE_CXXFLAGS_WARN_ON = -W3
     QMAKE_CFLAGS_WARN_ON = -W3
 
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_humimit
+
+    LIBS += User32.lib Gdi32.lib
+    LIBS += psapi.lib
+    DEFINES += "PSAPI_VERSION=1"
 }
 
 
-unix {
-    target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
-    INSTALLS += target
-}
 
