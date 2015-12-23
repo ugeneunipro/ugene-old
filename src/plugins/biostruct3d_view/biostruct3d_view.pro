@@ -22,14 +22,14 @@ HEADERS += src/deprecated/AnaglyphRenderer.h \
            src/deprecated/WormsGLRenderer.h \
            src/gl2ps/gl2ps.h
 
-SOURCES += src/BioStruct3DColorScheme.cpp \
-           src/BioStruct3DGLRender.cpp \
-           src/BioStruct3DSplitter.cpp \
-           src/BioStruct3DSubsetEditor.cpp \
-           src/BioStruct3DViewPlugin.cpp \
-           src/SelectModelsDialog.cpp \
-           src/SettingsDialog.cpp \
-           src/StructuralAlignmentDialog.cpp \
+SOURCES += src/deprecated/BioStruct3DColorScheme.cpp \
+           src/deprecated/BioStruct3DGLRender.cpp \
+           src/deprecated/BioStruct3DSplitter.cpp \
+           src/deprecated/BioStruct3DSubsetEditor.cpp \
+           src/deprecated/BioStruct3DViewPlugin.cpp \
+           src/deprecated/SelectModelsDialog.cpp \
+           src/deprecated/SettingsDialog.cpp \
+           src/deprecated/StructuralAlignmentDialog.cpp \
            src/deprecated/AnaglyphRenderer.cpp \
            src/deprecated/BallAndStickGLRenderer.cpp \
            src/deprecated/BioStruct3DGLImageExportTask.cpp \
