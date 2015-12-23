@@ -236,8 +236,16 @@ void MSAImageExportController::initSettingsWidget() {
     CHECK( !selection.isNull(), );
     msaSettings.region = U2Region( selection.x(), selection.width());
     msaSettings.seqIdx.clear();
-    for (qint64 i = selection.y(); i < selection.height() + selection.y(); i++) {
-        msaSettings.seqIdx.append( i );
+    if (!ui->isCollapsibleMode()) {
+        for (qint64 i = selection.y(); i < selection.height() + selection.y(); i++) {
+            msaSettings.seqIdx.append( i );
+        }
+    } else {
+        MSACollapsibleItemModel* model = ui->getCollapseModel();
+        SAFE_POINT(model != NULL, tr("MSA Collapsible Model is NULL"), );
+        for (qint64 i = selection.y(); i < selection.height() + selection.y(); i++) {
+                msaSettings.seqIdx.append(model->mapToRow(i));
+        }
     }
 }
 
@@ -245,6 +253,7 @@ Task* MSAImageExportController::getExportToBitmapTask(const ImageExportTaskSetti
     msaSettings.includeConsensus = settingsUi->exportConsensus->isChecked();
     msaSettings.includeRuler = settingsUi->exportRuler->isChecked();
     msaSettings.includeSeqNames = settingsUi->exportSeqNames->isChecked();
+    updateSeqIdx();
 
     return new MSAImageExportToBitmapTask(ui, msaSettings, settings);
 }
@@ -253,6 +262,7 @@ Task* MSAImageExportController::getExportToSvgTask(const ImageExportTaskSettings
     msaSettings.includeConsensus = settingsUi->exportConsensus->isChecked();
     msaSettings.includeRuler = settingsUi->exportRuler->isChecked();
     msaSettings.includeSeqNames = settingsUi->exportSeqNames->isChecked();
+    updateSeqIdx();
 
     return new MSAImageExportToSvgTask(ui, msaSettings, settings);
 }
@@ -289,7 +299,7 @@ bool MSAImageExportController::fitsInLimits() const {
     qint64 imageHeight = (msaSettings.exportAll ? editor->getNumSequences() : msaSettings.seqIdx.size()) * editor->getRowHeight();
     if (imageWidth > IMAGE_SIZE_LIMIT || imageHeight > IMAGE_SIZE_LIMIT) {
         return false;
-    } 
+    }
     if (format.contains("svg", Qt::CaseInsensitive) && imageWidth * imageHeight > MaxSvgImageSize) {
         return false;
     }
@@ -301,6 +311,28 @@ bool MSAImageExportController::canExportToSvg() const {
     SAFE_POINT(editor != NULL, L10N::nullPointerError("MSAEditor"), false);
     int charactersNumber = msaSettings.exportAll ? (editor->getNumSequences() * editor->getAlignmentLen()) : (msaSettings.region.length * msaSettings.seqIdx.size());
     return charactersNumber < MaxSvgCharacters;
+}
+
+void MSAImageExportController::updateSeqIdx() const {
+    CHECK(msaSettings.exportAll, );
+    if (!ui->isCollapsibleMode() && msaSettings.seqIdx.size() != ui->getEditor()->getNumSequences()) {
+        msaSettings.seqIdx.clear();
+        for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
+            msaSettings.seqIdx.append(i);
+        }
+        msaSettings.region = U2Region(0, ui->getEditor()->getAlignmentLen());
+    }
+
+    CHECK(ui->isCollapsibleMode(), );
+
+    MSACollapsibleItemModel* model = ui->getCollapseModel();
+    SAFE_POINT(model != NULL, tr("MSA Collapsible Model is NULL"), );
+    msaSettings.seqIdx.clear();
+    for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
+        if (model->rowToMap(i, true) != -1) {
+            msaSettings.seqIdx.append(i);
+        }
+    }
 }
 
 } // namespace

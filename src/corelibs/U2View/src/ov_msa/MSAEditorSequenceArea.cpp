@@ -234,7 +234,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     useDotsAction->setCheckable(true);
     useDotsAction->setChecked(false);
     connect(useDotsAction, SIGNAL(triggered()), SLOT(sl_useDots()));
-    connect(editor->getMSAObject(), SIGNAL(si_alphabetChanged(const MAlignmentModInfo &, const DNAAlphabet*)), 
+    connect(editor->getMSAObject(), SIGNAL(si_alphabetChanged(const MAlignmentModInfo &, const DNAAlphabet*)),
         SLOT(sl_alphabetChanged(const MAlignmentModInfo &, const DNAAlphabet*)));
 
     updateColorAndHighlightSchemes();
@@ -447,17 +447,25 @@ bool MSAEditorSequenceArea::hasAminoAlphabet() {
 }
 
 bool MSAEditorSequenceArea::drawContent(QPainter &p) {
-    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
+    qint64 seqNum = editor->getNumSequences();
+    if (ui->isCollapsibleMode()) {
+        seqNum = ui->getCollapseModel()->rowToMap(seqNum);
+    }
+    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), seqNum));
 }
 
 bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap) {
     CHECK(editor->getColumnWidth() * editor->getAlignmentLen() < 32768 &&
            editor->getRowHeight() * editor->getNumSequences() < 32768, false);
 
+    qint64 seqNum = editor->getNumSequences();
+    if (ui->isCollapsibleMode()) {
+        seqNum = ui->getCollapseModel()->rowToMap(seqNum);
+    }
     pixmap = QPixmap(editor->getColumnWidth() * editor->getAlignmentLen(),
-                      editor->getRowHeight() * editor->getNumSequences());
+                      editor->getRowHeight() * seqNum);
     QPainter p(&pixmap);
-    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
+    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), seqNum));
 }
 
 bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap,
@@ -2958,7 +2966,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QList<QStringList>& co
 void MSAEditorSequenceArea::sl_changeSelectionColor() {
     QColor black(Qt::black);
     selectionColor = (black == selectionColor) ? Qt::darkGray : Qt::black;
-    update(); 
+    update();
 }
 
 int MSAEditorSequenceArea::getHeight(){

@@ -86,12 +86,6 @@ protected:
         if (msaSettings.includeSeqNames) {
             MSAEditorNameList* namesArea = ui->getEditorNameList();
             SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
-            if (msaSettings.exportAll && msaSettings.seqIdx.size() != ui->getEditor()->getNumSequences()) {
-                msaSettings.seqIdx.clear();
-                for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
-                    msaSettings.seqIdx.append(i);
-                }
-            }
             namesArea->drawNames(p, msaSettings.seqIdx);
         }
     }
@@ -112,10 +106,6 @@ protected:
     void paintRuler(P& p) {
         if (msaSettings.includeRuler) {
             MSAEditorConsensusArea* consArea = ui->getConsensusArea();
-            if (msaSettings.exportAll) {
-                SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
-                msaSettings.region = U2Region(0, ui->getEditor()->getAlignmentLen());
-            }
             consArea->paintRulerPart(p, msaSettings.region);
         }
     }
@@ -123,11 +113,7 @@ protected:
     template<class P>
     bool paintContent(P& p) {
         MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
-        if (msaSettings.exportAll) {
-            return seqArea->drawContent(p);
-        } else {
             return seqArea->drawContent(p, msaSettings.region, msaSettings.seqIdx);
-        }
     }
 
     MSAEditorUI* ui;
@@ -178,6 +164,7 @@ private:
     void checkRegionToExport();
     bool fitsInLimits() const;
     bool canExportToSvg() const;
+    void updateSeqIdx() const;
 
     MSAEditorUI* ui;
     Ui_MSAExportSettings    *settingsUi;
