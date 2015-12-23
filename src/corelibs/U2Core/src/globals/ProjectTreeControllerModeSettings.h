@@ -63,10 +63,19 @@ public:
 
 class U2CORE_EXPORT ProjectTreeControllerModeSettings {
 public:
-    ProjectTreeControllerModeSettings()
-        : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL),
-        groupMode(ProjectTreeGroupMode_ByDocument), allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL),
-        markActive(false), ignoreRemoteObjects(false) {}
+    ProjectTreeControllerModeSettings() :
+        allowMultipleSelection(true),
+        readOnlyFilter(TriState_Unknown),
+        loadTaskProvider(NULL),
+        groupMode(ProjectTreeGroupMode_ByDocument),
+        allowSelectUnloaded(false),
+        ignoreRemoteObjects(false),
+        objectFilter(NULL),
+        documentFilter(NULL),
+        markActive(false)
+    {
+
+    }
 
     QSet<GObjectType>          objectTypesToShow;  // show only objects of specified type
     QSet<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
