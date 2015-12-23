@@ -52,7 +52,7 @@ void GTMenuPrivateMac::clickMainMenuItem(GUITestOpStatus &os, const QStringList 
     foreach (const QString &itemTitle, itemPath) {
         GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
         menu = clickMenuItem(os, menu, itemTitle, matchFlag);
-        GTGlobals::sleep(500);
+        GTGlobals::sleep(1000);
     }
 }
 #undef GT_METHOD_NAME
@@ -67,6 +67,7 @@ void GTMenuPrivateMac::checkMainMenuItemState(GUITestOpStatus &os, const QString
     foreach (const QString &itemTitle, itemContainerMenuPath) {
         GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
         menu = clickMenuItem(os, menu, itemTitle, Qt::MatchExactly);
+        GTGlobals::sleep(500);
     }
 
     checkMenuItemState(os, menu, itemPath.last(), expectedState);
