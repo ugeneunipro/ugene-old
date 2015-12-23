@@ -4718,6 +4718,37 @@ GUI_TEST_CLASS_DEFINITION(test_4852) {
     CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 0, "Running task count should be 0");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4871) {
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //2. Open OP and select pairwice alignment tab, select sequences to align, set "in new window" parameter to "false"
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+    //3. Set pairwise algorithm "Smith-Waterman"
+    GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(os, "Smith-Waterman");
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTGlobals::sleep(500);
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+
+    QWidget* widget = GTWidget::findWidget(os, "outputContainerWidget");
+    CHECK_SET_ERR(widget != NULL, QString("%1 not found").arg("outputContainerWidget"));
+    if (widget->isHidden()) {
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+    }
+    QCheckBox* inNewWindowCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
+    CHECK_SET_ERR(inNewWindowCheckBox != NULL, "inNewWindowCheckBox not found");
+    GTCheckBox::setChecked(os, inNewWindowCheckBox, false);
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+
+    //4. Undo changes
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected state "Undo" button is disabled
+    QAbstractButton *undo = GTAction::button(os, "msa_action_undo");
+    CHECK_SET_ERR(!undo->isEnabled(), "Button should be disabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4885_1) {
 //    1. Open "data/samples/CLUSTALW/ty3.aln.gz".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
