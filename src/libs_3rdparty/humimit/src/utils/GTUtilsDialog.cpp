@@ -48,17 +48,20 @@ GUIDialogWaiter::GUIDialogWaiter(GUITestOpStatus &_os, Runnable* _r, const WaitS
 }
 
 GUIDialogWaiter::~GUIDialogWaiter() {
-
     finishWaiting();
 }
 
 void GUIDialogWaiter::finishWaiting() {
-    delete timer; timer = NULL;
-    delete runnable; runnable = NULL;
+    delete timer;
+    timer = NULL;
+    delete runnable;
+    runnable = NULL;
 }
 
-void GUIDialogWaiter::stopTimer(){
-    timer->stop();
+void GUIDialogWaiter::stopTimer() {
+    if (NULL != timer) {
+        timer->stop();
+    }
 }
 
 bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName) {
