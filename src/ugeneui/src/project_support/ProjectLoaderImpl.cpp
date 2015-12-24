@@ -49,6 +49,7 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/PasteController.h>
+#include <U2Gui/ProjectUtils.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/SharedConnectionsDialog.h>
@@ -475,9 +476,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
         Document * doc = project == NULL ? NULL : project->findDocumentByURL(url);
         if (doc != NULL) {
             QWidget *p = AppContext::getMainWindow()->getQMainWindow();
-            QString message = tr("The document with the same URL is already added to the project");
-            coreLog.details(message);
-            QMessageBox::warning(p, tr("warning"), message);
+            coreLog.details(tr("The document with the same URL is already added to the project"));
             if (doc->isLoaded()) {
                 const QList<GObject*>& docObjects = doc->getObjects();
                 QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);
@@ -488,6 +487,13 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                 }
                 coreLog.info(tr("The document is already loaded and added to project: %1").arg(url.fileName()));
             } else if(!doc->isLoaded() && AppContext::getProjectView()) {
+                Task *loadDocumentTask = ProjectUtils::findLoadTask(url.getURLString());
+                if (NULL == loadDocumentTask) {
+                    loadDocumentTask = new LoadUnloadedDocumentTask(ProjectUtils::findDocument(url.getURLString()));
+                    AppContext::getTaskScheduler()->registerTopLevelTask(loadDocumentTask);
+                } else {
+                    coreLog.details(tr("The document with the same URL is already loading"));
+                }
                 AppContext::getProjectView()->highlightItem(doc);
             }
         } else {
