@@ -84,6 +84,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
+#include "GTUtilsStartPage.h"
 #include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWizard.h"
@@ -5068,6 +5069,14 @@ GUI_TEST_CLASS_DEFINITION(test_4966) {
     //    Expected state:
     //    Workflow finished with error "Not enough resources for the task"
     GTUtilsWorkflowDesigner::checkErrorList(os, "Not enough resources for the task");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4969) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsStartPage::openStartPage(os);
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Recent files" << QFileInfo(dataDir + "samples/Genbank/murine.gb").absoluteFilePath());
+    QString title = GTUtilsMdi::activeWindowTitle(os);
+    CHECK_SET_ERR(title.contains("NC_"), "Wrong MDI window is active");
 }
 
 } // namespace GUITest_regression_scenarios
