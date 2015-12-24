@@ -100,6 +100,7 @@ void AnnotHighlightWidget::initLayout() {
     annotTree = new AnnotHighlightTree();
 
     showAllLabel = new ShowAllAnnotTypesLabel();
+    showAllLabel->setObjectName("show_all_annotation_types");
 
     treeLayout->addWidget(annotTree);
     treeLayout->addWidget(showAllLabel);
@@ -551,31 +552,46 @@ void AnnotHighlightWidget::sl_onAnnotationsAdded(const QList<Annotation *> & /* 
 }
 
 void AnnotHighlightWidget::sl_onAnnotationsRemoved(const QList<Annotation *> &annotations) {
+    CHECK(!showAllLabel->isShowAllSelected(), );
+
     const QString selectedAnnotName = annotTree->getCurrentItemAnnotName();
 
-    QList<QTreeWidgetItem *> removedItems;
-    bool isSelectedItemRemoved = false;
+    QMap<QString, int> observedAnnNames;
     foreach (Annotation *a, annotations) {
         const QString annotName = a->getName();
-        if (selectedAnnotName == annotName) {
-            isSelectedItemRemoved = true;
+        if (observedAnnNames.contains(annotName)) {
+            observedAnnNames[annotName]++;
+            continue;
         }
-        removedItems << annotTree->findItems(annotName, Qt::MatchExactly);
+        observedAnnNames.insert(annotName, 1);
     }
 
-    updateAnnotationNames();
+    bool isSelectedItemRemoved = false;
+    QList<AnnotationTableObject*> annTables = annotatedDnaView->getAnnotationObjects(true);
+    foreach (const QString& annotName, observedAnnNames.keys()) {
+        int count = 0;
+        foreach (AnnotationTableObject* t, annTables) {
+            count += t->getAnnotationsByName(annotName).size();
+        }
+        if (count == observedAnnNames[annotName]) {
+            QList<QTreeWidgetItem*> itemList = annotTree->findItems(annotName, Qt::MatchExactly);
+            SAFE_POINT(itemList.size() == 1, "Annotation Highlight tree should contain only one item per annotation type", );
+            QTreeWidgetItem* item = itemList.first();
+            delete annotTree->takeTopLevelItem(annotTree->indexOfTopLevelItem(item));
+            annotNamesWithAminoInfo.remove(annotName);
+            if (selectedAnnotName == annotName) {
+                isSelectedItemRemoved = true;
+            }
+        }
+    }
 
-    if (annotNamesWithAminoInfo.count() == removedItems.count()) { // all annotations were removed
+    if (annotNamesWithAminoInfo.count() == 0) {
         annotTree->clear();
         setNoAnnotsLayout();
         nextAnnotationButton->setDisabled(true);
     } else {
         setLayoutWithAnnotsSelection();
-        foreach (QTreeWidgetItem *item, removedItems) {
-            delete annotTree->takeTopLevelItem(annotTree->indexOfTopLevelItem(item));
-        }
-
-        if (isSelectedItemRemoved) {
+        if (isSelectedItemRemoved || selectedAnnotName.isEmpty()) {
             annotTree->setFirstItemSelected();
         } else {
             annotTree->setItemSelectedWithAnnotName(selectedAnnotName);

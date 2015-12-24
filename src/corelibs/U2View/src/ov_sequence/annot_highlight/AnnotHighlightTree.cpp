@@ -139,6 +139,7 @@ QString AnnotHighlightTree::getCurrentItemAnnotName()
 
 void AnnotHighlightTree::setItemSelectedWithAnnotName(QString annotName)
 {
+    CHECK(!annotName.isEmpty(), );
     QList<QTreeWidgetItem*> items = findItems(annotName, Qt::MatchExactly, COL_NUM_ANNOT_NAME);
     SAFE_POINT(1 == items.count(), "Exactly one tree item with the specified annotation name should have been found.",);
 

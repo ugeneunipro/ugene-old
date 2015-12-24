@@ -1066,6 +1066,7 @@ void AnnotationsTreeView::sl_removeAnnsAndQs() {
 
     //remove selected annotations now
     QList<AVAnnotationItem *> annotationItemsToRemove = selectAnnotationItems(tree->selectedItems(), TriState_No);
+
     QMultiMap<AnnotationGroup *, Annotation *> annotationsByGroup;
     foreach (AVAnnotationItem *aItem, annotationItemsToRemove) {
         SAFE_POINT(!aItem->annotation->getGObject()->isStateLocked(), "Attempting to remove annotations from locked table!", );
@@ -1080,8 +1081,7 @@ void AnnotationsTreeView::sl_removeAnnsAndQs() {
     }
 
     //now remove selected groups
-    QList<AVGroupItem*> groupItemsToRemove = selectGroupItems(tree->selectedItems(), TriState_No,
-        TriState_No);
+    QList<AVGroupItem*> groupItemsToRemove = selectGroupItems(tree->selectedItems(), TriState_No, TriState_No);
 
     qSort(groupItemsToRemove.begin(), groupItemsToRemove.end(), groupDepthInverseComparator);
     //now remove all groups

@@ -3848,7 +3848,7 @@ GUI_TEST_CLASS_DEFINITION(test_4712) {
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
-    
+
     //    1. Open "data/samples/ABIF/A01.abi".
     GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4404,7 +4404,7 @@ GUI_TEST_CLASS_DEFINITION(test_4803_3) {
     GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
 
     //6. Call context menu on tree tab. Press "Close tab".
-    //Expected state: tree tab widget is closed 
+    //Expected state: tree tab widget is closed
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Close tab"));
     GTTabWidget::clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, "MsaEditorTreeTab"), 0, Qt::RightButton);
 
@@ -4493,7 +4493,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_4) {
     //    1. Open _common_data/scenarios/_regression/4804/standard_dna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_dna.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    //    2. Check what MAFFT tool is set up 
+    //    2. Check what MAFFT tool is set up
     //    3. Use 'Align sequence to this alignment' toolbar button to align Extended rna sequence to alignment
     //Expected state: corresponding notification message has appeared
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4804", "ext_rna.fa");
@@ -4508,7 +4508,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_4) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4804_5) {
-    //    1. Check what MAFFT tool is not set up  
+    //    1. Check what MAFFT tool is not set up
     //    2. Open _common_data/scenarios/_regression/4804/standard_rna.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4804", "standard_rna.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4541,7 +4541,7 @@ GUI_TEST_CLASS_DEFINITION(test_4804_6) {
     GTUtilsMsaEditor::undo(os);
     GTThread::waitForMainThread(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    
+
     //   5. Redo changes and check appearing notifications
     GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\". Use \"Undo\", if you'd like to restore the original alignment.");
     GTUtilsMsaEditor::redo(os);
@@ -4708,14 +4708,42 @@ GUI_TEST_CLASS_DEFINITION(test_4852) {
     QDir().mkpath(sandBoxDir + "test_4852");
     GTUtilsDialog::waitForDialog(os, new FindRepeatsDialogFiller(os, sandBoxDir + "test_4852"));
     GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find repeats"));
-    
+
     //3. Delete chrY.fa document from project view
     GTUtilsProjectTreeView::click(os, "chrY.fa");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-    
+
     //Expected state: 'find repeats' task cancelled
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 0, "Running task count should be 0");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4860) {
+    // 1. Open murine.gb
+    // 2. Open Find Pattern tab
+    // 3. Input pattern
+    // 4. Click Next a few times
+    // Expected state: the results are selected one by one from left to right, no random selection
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAA");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QWidget* next = GTWidget::findWidget(os, "nextPushButton");
+    CHECK_SET_ERR(GTUtilsSequenceView::getSelection(os).size() == 1, "Incorrect selection: selected region should be only one");
+    int startPosPrev = GTUtilsSequenceView::getSelection(os).first().startPos;
+    int startPosNext = -1;
+    for (int i = 0; i < 10; i++) {
+        GTWidget::click(os, next);
+
+        CHECK_SET_ERR(GTUtilsSequenceView::getSelection(os).size() == 1, "Incorrect selection: selected region should be only one");
+        startPosNext = GTUtilsSequenceView::getSelection(os).first().startPos;
+
+        CHECK_SET_ERR(startPosPrev < startPosNext, "Search results are disordered");
+        startPosPrev = startPosNext;
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4871) {
@@ -4975,6 +5003,55 @@ GUI_TEST_CLASS_DEFINITION(test_4936) {
     GTUtilsProjectTreeView::findIndex(os, "00VTW9_9INFA");
     GTUtilsLog::check(os, logTracer);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4938) {
+    // 1. Open murine.gb
+    // 2. Open Annotations Highlighting tab
+    // 3. Remove all annotation groups one by one
+    // Expected state: annotations table from Options Panel is not visible, no errors
+    // 4. Add annotation
+    // Expected state: annotation table is visible
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    QWidget* annTree = GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(annTree != NULL, "Cannot find OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(annTree->isVisible(), "OP_ANNOT_HIGHLIGHT_TREE is not visible")
+
+    GTUtilsAnnotationsTreeView::deleteItem(os, "CDS  (0, 4)");
+    GTUtilsAnnotationsTreeView::deleteItem(os, "misc_feature  (0, 2)");
+    GTUtilsAnnotationsTreeView::deleteItem(os, "comment  (0, 1)");
+    GTUtilsAnnotationsTreeView::deleteItem(os, "source  (0, 1)");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!annTree->isVisible(), "OP_ANNOT_HIGHLIGHT_TREE is still visible")
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group", "feature", "50..60"));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Add" << "New annotation...");
+    CHECK_SET_ERR(annTree->isVisible(), "OP_ANNOT_HIGHLIGHT_TREE is not visible")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4938_1) {
+    // 1. Open murine.gb
+    // 2. Open Annotations Highlighting tab
+    // 3. Click "Show all annotations"
+    // 4. Remove annotation group, e.g. CDS
+    // Expected state: CDS is still peresent in annotation table on Options Panel
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    QTreeWidget* annTree = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT_TREE"));
+    CHECK_SET_ERR(annTree != NULL, "Cannot find OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(annTree->isVisible(), "OP_ANNOT_HIGHLIGHT_TREE is not visible");
+    GTWidget::click(os, GTWidget::findWidget(os, "show_all_annotation_types"));
+    CHECK_SET_ERR(!annTree->findItems("CDS", Qt::MatchExactly).isEmpty(), "Cannot find CDS item in OP_ANNOT_HIGHLIGHT_TREE");
+
+    GTUtilsAnnotationsTreeView::deleteItem(os, "CDS  (0, 4)");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!annTree->findItems("CDS", Qt::MatchExactly).isEmpty(), "CDS item is missing in OP_ANNOT_HIGHLIGHT_TREE");
+}
+
 
 GUI_TEST_CLASS_DEFINITION(test_4966) {
     //GTLogTracer l;
