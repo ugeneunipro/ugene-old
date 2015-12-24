@@ -78,7 +78,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 
 //Expected state: Dot plot view has closed.
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
 
     CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
@@ -99,7 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     GTGlobals::sleep(500);
 
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
 
     CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
@@ -117,7 +117,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
     GTGlobals::sleep(500);
 
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
 
     CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
@@ -134,7 +134,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3){
     GTGlobals::sleep(500);
 
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
 
     CHECK_SET_ERR(w==NULL, "Dotplot not deleted");

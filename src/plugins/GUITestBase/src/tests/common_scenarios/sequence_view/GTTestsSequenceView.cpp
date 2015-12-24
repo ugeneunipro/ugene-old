@@ -101,7 +101,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
 
     GTGlobals::FindOptions f;
-    f.failIfNull=false;
+    f.failIfNotFound = false;
 
     QWidget *button0 = GTWidget::findWidget(os,"CircularViewAction",w0,f);
     QWidget *button1 = GTWidget::findWidget(os,"CircularViewAction",w1,f);

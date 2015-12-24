@@ -305,7 +305,7 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(HI::GUITestOp
 
     ADVSingleSequenceWidget *seqWidget = qobject_cast<ADVSingleSequenceWidget*>(widget);
 
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         GT_CHECK_RESULT(NULL != widget, QString("Sequence widget %1 was not found!").arg(number), NULL);
     }
 
@@ -316,14 +316,14 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(HI::GUITestOp
 #define GT_METHOD_NAME "getPanViewByNumber"
 PanView* GTUtilsSequenceView::getPanViewByNumber(HI::GUITestOpStatus &os, int number, const GTGlobals::FindOptions &options){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
     }else {
         return NULL;
     }
 
     PanView* result = seq->findChild<PanView*>();
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         GT_CHECK_RESULT(seq != NULL, QString("pan view with number %1 not fount").arg(number), NULL)
     }
 
@@ -334,14 +334,14 @@ PanView* GTUtilsSequenceView::getPanViewByNumber(HI::GUITestOpStatus &os, int nu
 #define GT_METHOD_NAME "getOverViewByNumber"
 Overview* GTUtilsSequenceView::getOverviewByNumber(HI::GUITestOpStatus &os, int number, const GTGlobals::FindOptions &options){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
     }else {
         return NULL;
     }
 
     Overview* result = seq->findChild<Overview*>();
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         GT_CHECK_RESULT(seq != NULL, QString("pan view with number %1 not fount").arg(number), NULL)
     }
 

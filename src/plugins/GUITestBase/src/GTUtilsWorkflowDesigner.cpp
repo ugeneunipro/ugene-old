@@ -462,7 +462,7 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(HI::GUITestOpStatus &os,
             }
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item '" + itemName + "' not found at scene", NULL);
+    GT_CHECK_RESULT(options.failIfNotFound == false, "Item '" + itemName + "' not found at scene", NULL);
 
     return NULL;
 }

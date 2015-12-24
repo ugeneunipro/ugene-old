@@ -177,7 +177,7 @@ QTreeWidgetItem * GTUtilsAnnotationsTreeView::findFirstAnnotation(HI::GUITestOpS
             return item;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "No items in tree widget", NULL);
+    GT_CHECK_RESULT(options.failIfNotFound == false, "No items in tree widget", NULL);
     return NULL;
 }
 #undef GT_METHOD_NAME
@@ -197,7 +197,7 @@ QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(HI::GUITestOpStatus &os, 
             return item;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, QString("Item '%1' not found in tree widget").arg(itemName), NULL);
+    GT_CHECK_RESULT(options.failIfNotFound == false, QString("Item '%1' not found in tree widget").arg(itemName), NULL);
 
     return NULL;
 }
@@ -218,7 +218,7 @@ QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(HI::GUITestOpStatus &os, 
             return item;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+    GT_CHECK_RESULT(options.failIfNotFound == false, "Item " + itemName + " not found in tree widget", NULL);
 
     return NULL;
 }
@@ -240,7 +240,7 @@ QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::findItems(HI::GUITestOpStatu
             result.append(item);
         }
     }
-    GT_CHECK_RESULT(!options.failIfNull || !result.isEmpty(), "Item " + itemName + " not found in tree widget", result);
+    GT_CHECK_RESULT(!options.failIfNotFound || !result.isEmpty(), "Item " + itemName + " not found in tree widget", result);
 
     return result;
 }

@@ -127,7 +127,7 @@ QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(HI::GUITestOpStatus &os,
 
     GTGlobals::FindOptions options;
     options.depth = 1;
-    options.failIfNull = mustExist;
+    options.failIfNotFound = mustExist;
     foreach (const QString& folder, folders) {
         itemIndex = GTUtilsProjectTreeView::findIndex(os, folder, itemIndex, options);
         CHECK_OP_BREAK(os);

@@ -4552,7 +4552,7 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
 //    Expected state: the annotation object is removed from the document.
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 

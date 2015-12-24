@@ -114,7 +114,7 @@ void GTUtilsOptionPanelSequenceView::closeTab(HI::GUITestOpStatus &os, GTUtilsOp
 #define GT_METHOD_NAME "isTabOpened"
 bool GTUtilsOptionPanelSequenceView::isTabOpened(HI::GUITestOpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], GTUtilsMdi::activeWindow(os), options);
     return NULL != innerTabWidget && innerTabWidget->isVisible();
 }

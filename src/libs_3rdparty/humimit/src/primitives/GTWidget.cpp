@@ -87,7 +87,7 @@ QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QW
                 list.append(parent->findChild<QWidget*>(widgetName));
             }
         }
-        if (options.failIfNull) {
+        if (options.failIfNotFound) {
             GT_CHECK_RESULT(list.count()!=0,"Widget " + widgetName + " not found", NULL);
         }
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
@@ -99,7 +99,7 @@ QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QW
     }
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
-    if (options.failIfNull) {
+    if (options.failIfNotFound) {
         GT_CHECK_RESULT(widget != NULL, "Widget " + widgetName + " not found", NULL);
     }
 
@@ -128,7 +128,7 @@ QAbstractButton* GTWidget::findButtonByText(GUITestOpStatus &os, const QString &
             }
         }
 
-        if (options.failIfNull) {
+        if (options.failIfNotFound) {
             GT_CHECK_RESULT(resultList.count()!=0,"button not found", NULL);
         }
         GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 buttons with this text").arg(resultList.count()), NULL);
@@ -151,7 +151,7 @@ QAbstractButton* GTWidget::findButtonByText(GUITestOpStatus &os, const QString &
 
     GT_CHECK_RESULT(foundButtonList.count()<=1, QString("there are %1 buttons with such text").arg(foundButtonList.count()), NULL);
 
-    if (options.failIfNull) {
+    if (options.failIfNotFound) {
         GT_CHECK_RESULT(foundButtonList.count() != 0, QString("button with this text <%1> not found").arg(text), NULL);
     }
 

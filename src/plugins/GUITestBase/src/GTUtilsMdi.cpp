@@ -108,7 +108,7 @@ QWidget * GTUtilsMdi::findWindow(HI::GUITestOpStatus &os, const QString &windowN
         }
     }
 
-    if (options.failIfNull) {
+    if (options.failIfNotFound) {
         GT_CHECK_RESULT(false, "Widget " + windowName + " not found", NULL);
     }
 
@@ -201,7 +201,7 @@ QWidget* GTUtilsMdi::activeWindow(HI::GUITestOpStatus &os, const GTGlobals::Find
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
     QWidget* w = mw->getMDIManager()->getActiveWindow();
-    if (options.failIfNull) {
+    if (options.failIfNotFound) {
         GT_CHECK_RESULT(w != NULL, "Active window is not found", NULL);
     }
     return w;
@@ -279,7 +279,7 @@ bool isWidgetPartVisible(QWidget *widget) {
 #define GT_METHOD_NAME "isAnyPartOfWindowVisible"
 bool GTUtilsMdi::isAnyPartOfWindowVisible(HI::GUITestOpStatus &os, const QString &windowName) {
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *window = findWindow(os, windowName, options);
     CHECK(NULL != window, false);
     return isWidgetPartVisible(window);

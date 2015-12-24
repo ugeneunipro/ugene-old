@@ -1352,7 +1352,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
     const QModelIndex dstFolderIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, dstFolderPath);
 
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
 
     const QModelIndex notImportedFolderIndexIndex = GTUtilsProjectTreeView::findIndex(os, notImportedFolderName, dstFolderIndex, options);
     CHECK_SET_ERR(!notImportedFolderIndexIndex.isValid(), "The inner folder is unexpectedly imported");

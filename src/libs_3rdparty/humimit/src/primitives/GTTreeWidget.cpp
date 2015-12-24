@@ -190,7 +190,7 @@ QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget
 #define GT_METHOD_NAME "findItem"
 QTreeWidgetItem * GTTreeWidget::findItem(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     QTreeWidgetItem* result = findItemPrivate(os, tree, text, parent, column, options);
-    if(options.failIfNull){
+    if(options.failIfNotFound){
         CHECK_SET_ERR_RESULT(result != NULL, QString("Item '%1' not found").arg(text), NULL);
     }
     return result;

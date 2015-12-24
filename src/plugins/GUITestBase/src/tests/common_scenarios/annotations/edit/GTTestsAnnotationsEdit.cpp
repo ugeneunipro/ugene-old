@@ -590,7 +590,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     //6. CHECK if misc_feature annotation is removed
     //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QTreeWidgetItem *annotationItem = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", options);
     CHECK_SET_ERR(NULL == annotationItem, "The annotation 'misc_feature' unexpectedly was not removed");
     GTGlobals::sleep();

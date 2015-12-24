@@ -4228,7 +4228,7 @@ GUI_TEST_CLASS_DEFINITION(test_3639) {
     //Expected state: the document is removed, the folder is not removed, no message boxes appear.
     CHECK_SET_ERR(!logTracer.hasError(), "Error message");
     GTUtilsProjectTreeView::getItemCenter(os, "Recycle bin");
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
 }
@@ -4266,7 +4266,7 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     //Expected state: the document is removed, the folder is not removed.
     CHECK_SET_ERR(!logTracer.hasError(), "Error message");
     GTUtilsProjectTreeView::findIndex(os, "genomes");
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
 }

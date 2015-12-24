@@ -39,7 +39,7 @@ QAbstractButton* GTAction::button(GUITestOpStatus &os, const QString &actionName
     if (!a) {
         a = findAction(os, actionName, NULL, GTGlobals::FindOptions(false));
     }
-    if (options.failIfNull) {
+    if (options.failIfNotFound) {
         GT_CHECK_RESULT(NULL != a, "Action " + actionName + " is NULL!", NULL);
     } else if (NULL == a) {
             return NULL;
@@ -101,7 +101,7 @@ QAction* GTAction::findAction(GUITestOpStatus &os, const QString &actionName, QO
             }
         }
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 actions with this text").arg(list.count()), NULL);
-        if(options.failIfNull){
+        if(options.failIfNotFound){
             GT_CHECK_RESULT(list.count()!=0,"action not found", NULL);
             return list.takeFirst();
         }

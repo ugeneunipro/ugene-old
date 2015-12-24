@@ -47,7 +47,7 @@ Task* GTUtilsTask::getSubTaskByName(HI::GUITestOpStatus &os, QString taskName, G
     foreach (Task* t, tasks) {
         result = getSubTaskByName(os, t, taskName, false);
     }
-    if(options.failIfNull == true){
+    if(options.failIfNotFound == true){
         GT_CHECK_RESULT(result != NULL, "no subtask with name " + taskName, NULL);
     }
     return result;
@@ -65,7 +65,7 @@ Task* GTUtilsTask::getSubTaskByName(HI::GUITestOpStatus &os, Task *parent, QStri
         }
     }
 
-    if(options.failIfNull == true){
+    if(options.failIfNotFound == true){
         GT_CHECK_RESULT(result != NULL, "no subtask with name " + taskName, NULL);
     }
     return result;
@@ -81,7 +81,7 @@ Task* GTUtilsTask::getTaskByName(HI::GUITestOpStatus &os, QString taskName, GTGl
             return t;
         }
     }
-    if(options.failIfNull == true){
+    if(options.failIfNotFound == true){
         GT_CHECK_RESULT(false, "task " + taskName + " not found", NULL);
     }
     return NULL;

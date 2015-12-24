@@ -53,7 +53,7 @@ const QString GTUtilsProjectTreeView::widgetName = "documentTreeWidget";
 void GTUtilsProjectTreeView::openView(HI::GUITestOpStatus& os, GTGlobals::UseMethod method) {
 
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
 
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
@@ -257,7 +257,7 @@ QModelIndex GTUtilsProjectTreeView::findIndex(HI::GUITestOpStatus &os, QTreeView
 
     QModelIndexList foundIndexes = findIndecies(os, treeView, itemName, parent, 0, options);
     if (foundIndexes.isEmpty()) {
-        if(options.failIfNull){
+        if(options.failIfNotFound){
             GT_CHECK_RESULT(foundIndexes.size() != 0, QString("Item with name %1 not found").arg(itemName), QModelIndex());
         } else {
             return QModelIndex();
@@ -527,7 +527,7 @@ void GTUtilsProjectTreeView::itemActiveCheck(HI::GUITestOpStatus &os, QModelInde
 #define GT_METHOD_NAME "isVisible"
 bool GTUtilsProjectTreeView::isVisible( HI::GUITestOpStatus &os ){
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (documentTreeWidget) {
         return true;

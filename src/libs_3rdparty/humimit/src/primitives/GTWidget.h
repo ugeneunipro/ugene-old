@@ -71,7 +71,7 @@ public:
         T result = NULL;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
         result = qobject_cast<T>(w);
-        if(options.failIfNull == true){
+        if(options.failIfNotFound == true){
             GT_CHECK_RESULT(w != NULL, "widget " + widgetName + " not found", result);
             GT_CHECK_RESULT(result != NULL, "widget of specefied class not found, but there is another widget with the same name, its class is: " + QString(w->metaObject()->className()), result);
         }

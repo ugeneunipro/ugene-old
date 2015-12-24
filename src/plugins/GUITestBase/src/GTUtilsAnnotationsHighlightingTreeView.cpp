@@ -75,7 +75,7 @@ QTreeWidgetItem* GTUtilsAnnotHighlightingTreeView::findItem(HI::GUITestOpStatus 
             return vi;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+    GT_CHECK_RESULT(options.failIfNotFound == false, "Item " + itemName + " not found in tree widget", NULL);
 
     return NULL;
 }

@@ -77,7 +77,7 @@ QString GTUtilsTaskTreeView::getTasksInfo(QList<Task *> tasks, int level){
 }
 void GTUtilsTaskTreeView::openView(HI::GUITestOpStatus& os) {
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
 
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
@@ -122,7 +122,7 @@ QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( QTreeWidget* tree, cons
 
 QTreeWidget* GTUtilsTaskTreeView::getTreeWidget(HI::GUITestOpStatus &os) {
     GTGlobals::FindOptions options;
-    options.failIfNull = false;
+    options.failIfNotFound = false;
 
     QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName, NULL, options));
     return treeWidget;

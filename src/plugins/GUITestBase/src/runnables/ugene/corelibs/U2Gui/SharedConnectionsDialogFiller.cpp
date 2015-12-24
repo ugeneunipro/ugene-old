@@ -75,7 +75,7 @@ QListWidgetItem * findConnection(HI::GUITestOpStatus &os, QListWidget *list, con
     GTGlobals::sleep(1000);
     QList<QListWidgetItem*> items = list->findItems(name, Qt::MatchExactly);
     if (1 != items.size()) {
-        if (options.failIfNull) {
+        if (options.failIfNotFound) {
             CHECK_SET_ERR_RESULT(false, QString("List item %1 not found").arg(name), NULL);
         }
         return NULL;
