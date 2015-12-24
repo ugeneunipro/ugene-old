@@ -97,6 +97,7 @@ private slots:
     void sl_onRegionValueEdited();
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();
+    void sl_onMaxResultChanged(int);
 
     void sl_onFileSelectorClicked();
     void sl_onFileSelectorToggled(bool on);
@@ -227,6 +228,7 @@ private:
     int iterPos;
     Task *searchTask;
     QString previousPatternString;
+    int previousMaxResult;
     QStringList patternList;
     QStringList nameList;
     bool usePatternNames;

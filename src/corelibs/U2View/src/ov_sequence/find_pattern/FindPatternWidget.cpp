@@ -223,6 +223,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
     annotatedDnaView(_annotatedDnaView),
     iterPos(1),
     searchTask(NULL),
+    previousMaxResult(-1),
     usePatternNames(false),
     savableWidget(this, GObjectViewUtils::findViewByName(_annotatedDnaView->getName()))
 {
@@ -462,12 +463,12 @@ void FindPatternWidget::connectSlots()
     connect(editStart, SIGNAL(textChanged(QString)), SLOT(sl_onRegionValueEdited()));
     connect(editEnd, SIGNAL(textChanged(QString)), SLOT(sl_onRegionValueEdited()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
+    connect(boxMaxResult, SIGNAL(valueChanged(int)), SLOT(sl_onMaxResultChanged(int)));
 
     connect(boxStrand, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
 
     connect(removeOverlapsBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
-    connect(boxMaxResult, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
 
     // A sequence has been selected in the Sequence View
     connect(annotatedDnaView, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
@@ -845,6 +846,14 @@ void FindPatternWidget::sl_onSearchPatternChanged()
     }
 }
 
+void FindPatternWidget::sl_onMaxResultChanged(int newMaxResult) {
+    bool limitResult = !findPatternResults.isEmpty() && newMaxResult < findPatternResults.size();
+    bool widenResult = newMaxResult > previousMaxResult && findPatternResults.size() == previousMaxResult;
+    if (limitResult || widenResult) {
+        sl_activateNewSearch();
+    }
+}
+
 void FindPatternWidget::setCorrectPatternsString() {
     QTextCursor cursorInTextEdit = textPattern->textCursor();
 
@@ -1178,6 +1187,7 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
 
     // Limit results number to the specified value
     settings.maxResult2Find =  boxMaxResult->value();
+    previousMaxResult = settings.maxResult2Find;
 
     // Region
     bool regionIsCorrectRef = false;
