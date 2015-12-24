@@ -5071,12 +5071,28 @@ GUI_TEST_CLASS_DEFINITION(test_4966) {
     GTUtilsWorkflowDesigner::checkErrorList(os, "Not enough resources for the task");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4969) {
+GUI_TEST_CLASS_DEFINITION(test_4969_1) {
+    //1. Open "samples/Genbank/murine.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    //2. Open Start Page.
     GTUtilsStartPage::openStartPage(os);
+    //3. Click the main menu item: "File" -> "Recent files" -> ".../samples/Genbank/murine.gb".
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Recent files" << QFileInfo(dataDir + "samples/Genbank/murine.gb").absoluteFilePath());
+    //Expected: sequence view is activated.
     QString title = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(title.contains("NC_"), "Wrong MDI window is active");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4969_2) {
+    //1. Open "samples/Genbank/murine.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    //2. Unload the sequence.
+    GTUtilsDocument::unloadDocument(os, "murine.gb");
+    //3. Click the main menu item: "File" -> "Recent files" -> ".../samples/Genbank/murine.gb".
+    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Recent files" << QFileInfo(dataDir + "samples/Genbank/murine.gb").absoluteFilePath());
+    //Expected: The file is loaded.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(GTUtilsDocument::isDocumentLoaded(os, "murine.gb"), "The file is not loaded");
 }
 
 } // namespace GUITest_regression_scenarios
