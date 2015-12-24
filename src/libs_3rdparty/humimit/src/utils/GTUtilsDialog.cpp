@@ -110,16 +110,16 @@ void GUIDialogWaiter::checkDialog() {
             runnable->run();
             hadRun = true;
         } catch(GUITestOpStatus *) {
-            GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
-            QWidget* w = QApplication::activeModalWidget();
-            while (w != NULL){
-                w->close();
-                w = QApplication::activeModalWidget();
+            QWidget *popupWidget = QApplication::activePopupWidget();
+            while (popupWidget != NULL) {
+                GTWidget::close(os, popupWidget);
+                popupWidget = QApplication::activePopupWidget();
             }
-            w = QApplication::activePopupWidget();
-            while (w != NULL){
-                w->close();
-                w = QApplication::activePopupWidget();
+
+            QWidget *modalWidget = QApplication::activeModalWidget();
+            while (modalWidget != NULL) {
+                GTWidget::close(os, modalWidget);
+                modalWidget = QApplication::activeModalWidget();
             }
         }
     }
