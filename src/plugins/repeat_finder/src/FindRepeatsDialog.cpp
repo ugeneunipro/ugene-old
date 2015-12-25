@@ -301,7 +301,7 @@ void FindRepeatsDialog::accept() {
 
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart,
         cam.data->name, cam.groupName, cam.description, cam.annotationObjectRef);
-    TaskWatchdog::trackResourceExistence(sc->getSequenceObject(), t);
+    TaskWatchdog::trackResourceExistence(sc->getSequenceObject(), t, tr("A problem occurred during finding repeats. The sequence is no more available."));
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
