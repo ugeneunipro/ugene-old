@@ -32,7 +32,8 @@
         <tr>
             <td class="header_block" colspan="2">
                 <div class="welcome_header">
-                    Welcome to UGENE
+                    <div class="englishElement">Welcome to UGENE</div>
+                    <div class="russianElement">Добро пожаловать в UGENE</div>
                 </div>
             </td>
         </tr>
@@ -47,7 +48,8 @@
                                         <img align="middle" src="qrc:ugene/images/welcome_page/welcome_btn_open.png"/>
                                     </div>
                                     <div class="button_caption">
-                                        Open File(s)
+                                        <div class="englishElement">Open File(s)</div>
+                                        <div class="russianElement">Открыть файл(ы)</div>
                                     </div>
                                 </a>
                             </div>
@@ -59,7 +61,8 @@
                                         <img src="qrc:ugene/images/welcome_page/welcome_btn_create_seq.png"/>
                                     </div>
                                     <div class="button_caption">
-                                        Create Sequence
+                                        <div class="englishElement">Create Sequence</div>
+                                        <div class="russianElement">Создать последовательность</div>
                                     </div>
                                 </a>
                             </div>
@@ -73,7 +76,8 @@
                                         <img src="qrc:ugene/images/welcome_page/welcome_btn_workflow.png"/>
                                     </div>
                                     <div class="button_caption">
-                                        Create Workflow
+                                        <div class="englishElement">Create Workflow</div>
+                                        <div class="russianElement">Создать схему</div>
                                     </div>
                                 </a>
                             </div>
@@ -85,7 +89,8 @@
                                         <img src="qrc:ugene/images/welcome_page/welcome_btn_help.png"/>
                                     </div>
                                     <div class="button_caption">
-                                        Quick Start Guide
+                                        <div class="englishElement">Quick Start Guide</div>
+                                        <div class="russianElement">Краткое руководство</div>
                                     </div>
                                 </a>
                             </div>
@@ -98,14 +103,16 @@
                     <div class="recent_items_wrapper">
                         <div id="recentFilesBlock" class="half_height">
                             <div class="recent_items_header">
-                                Recent files
+                                <div class="englishElement">Recent files</div>
+                                <div class="russianElement">Недавние файлы</div>
                             </div>
                             <div id="recent_files" class="recent_items_content">
                             </div>
                         </div>
                         <div id="recentProjectsBlock" class="half_height">
                             <div class="recent_items_header">
-                                Recent projects
+                                <div class="englishElement">Recent projects</div>
+                                <div class="russianElement">Недавние проекты</div>
                             </div>
                             <div id="recent_projects" class="recent_items_content">
                             </div>
@@ -124,7 +131,8 @@
                     <tr>
                         <td class="cite_ugene_block">
                             <div class="footer_header">
-                                Cite UGENE:
+                                <div class="englishElement">Cite UGENE:</div>
+                                <div class="russianElement">Статьи о UGENE:</div>
                             </div>
                             <div class="footer_content">
                                 "Unipro UGENE: a unified bioinformatics toolkit"<br/>
@@ -134,7 +142,8 @@
                         </td>
                         <td class="follow_ugene_block">
                             <div class="footer_header">
-                                Follow UGENE:
+                                <div class="englishElement">Follow UGENE:</div>
+                                <div class="russianElement">Присоединяйтесь к UGENE:</div>
                             </div>
                             <div class="footer_content">
                                 <div class="social_icon">
@@ -169,6 +178,22 @@
         </tr>
     </table>
     <script type="text/javascript">
+        function updateLanguage(lang) {
+            if (lang == 0) {
+                lang = "english";
+            }
+                
+            var ruLabels = document.getElementsByClassName("russianElement");
+            var enLabels = document.getElementsByClassName("englishElement");
+        
+            for (var i = 0; i < ruLabels.length; i++) {
+                ruLabels[i].style.visibility = (lang.substr(0, 2) == 'ru') ? 'visible' : 'hidden';
+            }
+            for (var i = 0; i < enLabels.length; i++) {
+                enLabels[i].style.visibility = (lang.substr(0, 2) != 'ru') ? 'visible' : 'hidden';
+            }
+        }
+    
         function isVisible(el, p) {
             var elRect = el.getBoundingClientRect();
             var pRect = p.getBoundingClientRect();

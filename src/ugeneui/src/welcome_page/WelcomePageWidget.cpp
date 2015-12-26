@@ -28,6 +28,8 @@
 #include <QWebElement>
 #include <QWebFrame>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "WelcomePageController.h"
@@ -60,6 +62,13 @@ void WelcomePageWidget::sl_loaded(bool ok) {
     SAFE_POINT(ok, "Can not load page", );
     loaded = true;
     webView->page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
+
+    QString lang;
+    Settings* s = AppContext::getSettings();
+    SAFE_POINT(s != NULL, "AppContext settings is NULL", );
+    lang = s->getValue("UGENE_CURR_TRANSL", "en").toString();
+    webView->page()->mainFrame()->evaluateJavaScript(QString("updateLanguage('%1')").arg(lang));
+
     controller->onPageLoaded();
 }
 

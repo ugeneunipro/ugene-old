@@ -188,7 +188,7 @@ static void setDataSearchPaths() {
 
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );
     //now data files may be opened using QFile( "data:some_data_file" )
-} 
+}
 
 static void setSearchPaths() {
     setDataSearchPaths();
@@ -338,7 +338,7 @@ void fixMacFonts() {
 #endif
 }
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
     if (CrashHandler::isEnabled()) {
         CrashHandler::setupHandler();
@@ -351,7 +351,7 @@ int main(int argc, char **argv)
 #ifdef Q_OS_MACX
     fixMacFonts();
 #endif
-    
+
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
 
@@ -378,18 +378,18 @@ int main(int argc, char **argv)
 #ifdef Q_OS_WIN
 #ifdef _DEBUG
     QString devPluginsPath = QDir(AppContext::getWorkingDirectoryPath() + "/../../extras/windows/dotnet_style/_debug").absolutePath();
-#else 
+#else
     QString devPluginsPath = QDir(AppContext::getWorkingDirectoryPath() + "/../../extras/windows/dotnet_style/_release").absolutePath();
 #endif
     QCoreApplication::addLibraryPath(devPluginsPath); //dev version
 #endif
 
     setSearchPaths();
-    
+
     // parse all cmdline arguments
-    CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments()); 
+    CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments());
     appContext->setCMDLineRegistry(cmdLineRegistry);
-    
+
     //1 create settings
     SettingsImpl* globalSettings = new SettingsImpl(QSettings::SystemScope);
     appContext->setGlobalSettings(globalSettings);
@@ -401,7 +401,7 @@ int main(int argc, char **argv)
     appContext->setAppSettings(appSettings);
 
     UserAppsSettings* userAppSettings = AppContext::getAppSettings()->getUserAppsSettings();
-    
+
 
     bool trOK = false;
     QTranslator translator;
@@ -409,6 +409,7 @@ int main(int argc, char **argv)
     QString envTranslation = findKey(envList, "UGENE_TRANSLATION");
     if (!envTranslation.isEmpty()) {
         trOK = translator.load(QString("transl_") + envTranslation, AppContext::getWorkingDirectoryPath());
+        settings->setValue("UGENE_CURR_TRANSL", envTranslation);
     }
 
     if (!trOK) {
@@ -422,13 +423,14 @@ int main(int argc, char **argv)
             if (!translator.load(transFile[i], AppContext::getWorkingDirectoryPath())) {
                 fprintf(stderr, "Translation not found: %s\n", transFile[i].toLatin1().constData());
             } else {
+                settings->setValue("UGENE_CURR_TRANSL", transFile[i].right(2));
                 trOK = true;
                 break;
             }
         }
         if (!trOK) {
             fprintf(stderr, "No translations found, exiting\n");
-            return 1;   
+            return 1;
         }
     }
 
@@ -466,8 +468,8 @@ int main(int argc, char **argv)
         } else {
             uiLog.details(AppContextImpl::tr("Style not available %1").arg(style));
         }
-    } 
-    
+    }
+
     ResourceTracker* resTrack = new ResourceTracker();
     appContext->setResourceTracker(resTrack);
 
@@ -483,7 +485,7 @@ int main(int argc, char **argv)
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
     QList<XMLTestFactory*> fs = ProjectTests::createTestFactories();
-    foreach(XMLTestFactory* f, fs) { 
+    foreach(XMLTestFactory* f, fs) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res); Q_UNUSED(res);
     }
@@ -491,18 +493,18 @@ int main(int argc, char **argv)
     MainWindowImpl* mw = new MainWindowImpl();
     appContext->setMainWindow(mw);
     mw->prepare();
-  
+
     AppSettingsGUI* appSettingsGUI = new AppSettingsGUIImpl();
     appContext->setAppSettingsGUI(appSettingsGUI);
 
     AppContext::getMainWindow()->getDockManager()->registerDock(MWDockArea_Bottom, new TaskViewDockWidget(), QKeySequence(Qt::ALT | Qt::Key_2));
-    
+
     // Initialize logged log view
     LogViewWidget* logView = new LogViewWidget(&logsCache);
     logView->setObjectName(DOCK_LOG_VIEW);
     AppContext::getAppSettingsGUI()->registerPage(new LogSettingsPageController(logView));
     AppContext::getMainWindow()->getDockManager()->registerDock(MWDockArea_Bottom, logView, QKeySequence(Qt::ALT | Qt::Key_3));
-    
+
     GObjectViewFactoryRegistry* ovfr = new GObjectViewFactoryRegistry();
     appContext->setObjectViewFactoryRegistry(ovfr);
 
@@ -511,11 +513,11 @@ int main(int argc, char **argv)
 
     U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
     appContext->setDbiRegistry(dbiRegistry);
-    
+
     DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
     appContext->setDocumentFormatRegistry(dfr);
     ImportDialogFactories::registerFactories();
-    
+
     IOAdapterRegistryImpl* io = new IOAdapterRegistryImpl();
     appContext->setIOAdapterRegistry(io);
 
@@ -720,7 +722,7 @@ int main(int argc, char **argv)
     coreLog.info( QObject::tr( "UGENE started" ));
     coreLog.info( QObject::tr( "UGENE version: %1 %2-bit").arg( v.text ).arg( Version::appArchitecture ) );
     coreLog.info( QObject::tr( "UGENE distribution: %1").arg( v.distributionInfo ));
-    
+
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), splashScreen, SLOT(sl_close()));
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), mw, SLOT(sl_show()));
 
@@ -765,7 +767,7 @@ int main(int argc, char **argv)
 
     appContext->setGUITestBase(NULL);
     delete tb;
-    
+
     appContext->setRecentlyDownloadedCache(NULL);
     delete rdc;
 
@@ -931,7 +933,7 @@ int main(int argc, char **argv)
 
     bool deleteSettingsFile = userAppSettings->resetSettings();
     QString iniFile = AppContext::getSettings()->fileName();
-    
+
     appContext->setAppSettingsGUI(NULL);
     delete appSettingsGUI;
 
@@ -951,6 +953,6 @@ int main(int argc, char **argv)
 
     CrashHandler::shutdown();
 
-    return rc;   
+    return rc;
 }
 

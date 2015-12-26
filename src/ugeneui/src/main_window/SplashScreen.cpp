@@ -80,7 +80,7 @@ void SplashScreen::sl_close(){
 bool SplashScreen::eventFilter(QObject * /*obj*/, QEvent *ev){
     if(ev->type() == QEvent::Close){
         ev->ignore();
-        return true;    
+        return true;
     }
     return false;
 }
@@ -161,7 +161,7 @@ void SplashScreenWidget::drawInfo(){
     font.setPixelSize(VERSION_HEIGHT_PX);
     p.setFont( font );
     p.setPen(QColor(0, 46, 59));
-    QString text = "Version " + version + " is loading";
+    QString text = tr("Version ") + version + tr(" is loading");
     for (int i = 0; i < dots_number; i++) {
         text.append(".");
     }
