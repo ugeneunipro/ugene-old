@@ -470,8 +470,6 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
-
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
 
     GTGlobals::sleep();
