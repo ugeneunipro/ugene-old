@@ -53,7 +53,7 @@ html, body {
     background-color: #B2C4C9;
 }
 
-.welcome_header div {
+.welcome_header span {
     vertical-align: middle;
     padding-left: 40px;
     color: #145774;
@@ -82,7 +82,7 @@ html, body {
     line-height: 90px;
 }
 
-.button_caption div {
+.button_caption span {
     color: #145774;
     font-size: 18px;
 }
@@ -113,7 +113,7 @@ html, body {
     overflow: hidden;
 }
 
-.recent_items_header div {
+.recent_items_header span {
     color: #145774;
     font-size: 20px;
 }
@@ -152,7 +152,7 @@ html, body {
     vertical-align: top;
 }
 
-.footer_header div {
+.footer_header span {
     text-align: left;
     padding-top: 6px;
     font-size: 16px;
