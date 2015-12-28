@@ -4163,7 +4163,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     CHECK_SET_ERR(simple->isVisible(), "simple overveiw is not visiable");
 
     //Check empty simple overview gray color
-    QPixmap pixmap = QPixmap::grabWidget(simple, simple->rect());
+    QPixmap pixmap = GTWidget::getPixmap(os, simple);
     QImage img = pixmap.toImage();
     QRgb rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
     QColor c(rgb);
@@ -4177,7 +4177,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //check not empty overview color
-    pixmap = QPixmap::grabWidget(simple, simple->rect());
+    pixmap = GTWidget::getPixmap(os, simple);
     img = pixmap.toImage();
     rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
     c = QColor(rgb);
@@ -4189,7 +4189,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
     GTThread::waitForMainThread(os);
 
     //Check empty simple overview gray color again
-    pixmap = QPixmap::grabWidget(simple, simple->rect());
+    pixmap = GTWidget::getPixmap(os, simple);
     img = pixmap.toImage();
     rgb = img.pixel(simple->rect().topLeft() + QPoint(5, 5));
     c = QColor(rgb);
