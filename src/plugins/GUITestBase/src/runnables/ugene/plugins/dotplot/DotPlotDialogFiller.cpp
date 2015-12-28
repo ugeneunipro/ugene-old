@@ -46,6 +46,7 @@ void DotPlotFiller::commonScenario() {
     QSpinBox *minLenBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "minLenBox", dialog));
     if(but1kpressed){
         GTWidget::click(os, GTWidget::findWidget(os, "minLenHeuristicsButton", dialog));
+        GTGlobals::sleep();
         GT_CHECK(minLenBox->value()==2,"minLem not 2, 1k button works wrong");
     }
     else
