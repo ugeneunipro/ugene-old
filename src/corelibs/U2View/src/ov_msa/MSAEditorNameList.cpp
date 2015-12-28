@@ -261,6 +261,7 @@ void MSAEditorNameList::sl_nameBarMoved(int) {
 
 void MSAEditorNameList::sl_removeSequence() {
     int width = editor->getAlignmentLen();
+	editor->resetCollapsibleModel();
     MSAEditorSelection oldSelection = ui->seqArea->getSelection();
     MSAEditorSelection selection(0, oldSelection.y(), width, oldSelection.height());
     ui->seqArea->setSelection(selection);
