@@ -851,7 +851,6 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1044) {
-    /*
     //1. Open "data/samples/COI.aln".
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -866,9 +865,6 @@ GUI_TEST_CLASS_DEFINITION(test_1044) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
-    */
-    volatile int *killer = NULL;
-    *killer = 0;
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1047){
