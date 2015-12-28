@@ -47,7 +47,7 @@ IOAdapter* GzippedLocalFileAdapterFactory::createIOAdapter() {
 const quint64 LocalFileAdapter::BUF_SIZE = DocumentFormat::READ_BUFF_SIZE;
 
 LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o, bool b)
-    : IOAdapter(factory, o), f(NULL), bufferOptimization(b), fileSize(0)
+    : IOAdapter(factory, o), f(NULL), fileSize(0), bufferOptimization(b)
 {
     bufferOptimization = true;
     if (bufferOptimization) {

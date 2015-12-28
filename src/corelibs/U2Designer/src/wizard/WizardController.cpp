@@ -532,13 +532,13 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
 /* WidgetCreator */
 /************************************************************************/
 WidgetCreator::WidgetCreator(WizardController *_wc)
-: wc(_wc), labelSize(0), result(NULL), layout(NULL), fullWidth(false), widgetsArea(NULL)
+: wc(_wc), labelSize(0), result(NULL), layout(NULL), widgetsArea(NULL), fullWidth(false)
 {
 
 }
 
 WidgetCreator::WidgetCreator(WizardController *_wc, int _labelSize)
-: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL), fullWidth(false), widgetsArea(NULL)
+: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL), widgetsArea(NULL), fullWidth(false)
 {
 
 }

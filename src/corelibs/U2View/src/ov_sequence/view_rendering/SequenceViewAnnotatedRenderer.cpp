@@ -87,9 +87,6 @@ SequenceViewAnnotatedRenderer::SequenceViewAnnotatedRenderer(ADVSequenceObjectCo
 void SequenceViewAnnotatedRenderer::drawAnnotations(QPainter &p, const QSize &canvasSize, const U2Region &visibleRange, const AnnotationDisplaySettings& displaySettings) {
     foreach (const AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
         foreach (Annotation *a, ao->getAnnotationsByRegion(visibleRange)) {
-            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
-            AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
-
             drawAnnotation(p, canvasSize, visibleRange, a, displaySettings);
         }
     }

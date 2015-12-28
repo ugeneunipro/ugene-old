@@ -35,7 +35,8 @@ namespace U2 {
 static Logger log(ULOG_CAT_TEST_RUNNER);
 
 GUITestRunner::GUITestRunner(UGUITestBase* _guiTestBase, QWidget *parent) :
-    guiTestBase(_guiTestBase), QWidget(parent)
+    QWidget(parent),
+    guiTestBase(_guiTestBase)
 {
     setupUi(this);
     setWindowIcon(QIcon(QString(":gui_test/images/open_gui_test_runner.png")));
