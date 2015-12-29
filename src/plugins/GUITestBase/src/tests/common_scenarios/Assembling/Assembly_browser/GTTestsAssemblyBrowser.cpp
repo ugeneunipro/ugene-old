@@ -157,6 +157,8 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
 //    8. Create a file it the same folder as you set in the point 6 with name "chrM_coverage.bedgraph".
     GTFile::create(os, sandBoxDir + "/common_assembly_browser/chrM_coverage.bedgraph");
 
