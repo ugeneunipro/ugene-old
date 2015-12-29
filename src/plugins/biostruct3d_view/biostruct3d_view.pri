@@ -1,6 +1,7 @@
 # include (biostruct3d_view.pri)
 
 defineTest( use_deprecated_view ) {
+    !macx: return (true);
     equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 4) {
         return (true)
     }
