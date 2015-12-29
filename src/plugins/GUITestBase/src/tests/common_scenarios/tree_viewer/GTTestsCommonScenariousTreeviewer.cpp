@@ -865,7 +865,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
 //    2. Do context menu {Collapse} for any node
     GTMouseDriver::moveTo(os, globalCoord);
+    GTGlobals::sleep(1000);
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(1000);
 
     QList<QGraphicsSimpleTextItem *> branchList;
     foreach (QGraphicsItem* item, list) {
@@ -886,7 +888,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
 //    3. Do context menu {Expand} for same
     GTMouseDriver::moveTo(os, globalCoord);
+    GTGlobals::sleep(1000);
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(1000);
 
     foreach (QGraphicsSimpleTextItem *item, branchList) {
         if (item->text() == "0.011") {
