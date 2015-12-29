@@ -2437,13 +2437,14 @@ GUI_TEST_CLASS_DEFINITION(test_0868){
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+
 //    2. Zoom to any covered
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
-    for (int i = 0;i < 24;i++){
+    for (int i = 0; i < 24; i++){
         GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
         GTGlobals::sleep(100);
     }
+
 //    3. Add bookmark
     GTUtilsBookmarksTreeView::addBookmark(os, GTUtilsMdi::activeWindow(os)->objectName(), "bookmark");
     GTGlobals::sleep();
@@ -2452,18 +2453,21 @@ GUI_TEST_CLASS_DEFINITION(test_0868){
     GTGlobals::sleep();
 
     QWidget* assembly_reads_area = GTWidget::findWidget(os, "assembly_reads_area");
-    QPixmap pixmap = QPixmap::grabWidget(assembly_reads_area, assembly_reads_area->rect());
+    QPixmap pixmap = GTWidget::getPixmap(os, assembly_reads_area);
     QImage initImg = pixmap.toImage();
+
 //    4. Go to any other region
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+
 //    5. Double click on the bookmark
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "bookmark"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
+
 //    Expected state: it shows the location that you saved before
     assembly_reads_area = GTWidget::findWidget(os, "assembly_reads_area");
-    pixmap = QPixmap::grabWidget(assembly_reads_area, assembly_reads_area->rect());
+    pixmap = GTWidget::getPixmap(os, assembly_reads_area);
     QImage finalImg = pixmap.toImage();
     CHECK_SET_ERR(initImg == finalImg, "bookmark does not work");
 }

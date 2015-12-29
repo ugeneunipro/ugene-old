@@ -119,6 +119,7 @@ void GTUtilsBookmarksTreeView::addBookmark(HI::GUITestOpStatus &os, const QStrin
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK));
     GTMouseDriver::moveTo(os, getItemCenter(os, viewName));
     GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(500);
 
     QWidget *bookmarkLineEdit = getTreeWidget(os)->itemWidget(getTreeWidget(os)->currentItem(), 0);
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(bookmarkLineEdit), bookmarkName);
