@@ -514,6 +514,8 @@ void Document::loadFrom(Document* sourceDoc) {
             foreach(const QString& k, info.hints.keys()) {
                 if (!mergedHints.contains(k)) {
                     mergedHints.insert(k, info.hints.value(k));
+                } else if (k == GObjectHint_RelatedObjects) {
+                    mergedHints[k] = info.hints[k];
                 }
             }
             obj->getGHints()->setMap(mergedHints);

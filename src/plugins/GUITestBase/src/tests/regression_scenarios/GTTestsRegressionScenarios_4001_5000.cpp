@@ -2769,6 +2769,38 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
     CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4434) {
+    GTLogTracer l;
+    //1. Open murine.gb and human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Drag the annotations from murine to human_t1
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "NC_001363 features"), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findFirstAnnotation(os) != NULL, "Annotations are connected to human_T1.fa");
+
+    //3. Save the project
+    GTUtilsProject::saveProjectAs(os, sandBoxDir + "test_4434.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Close the project.
+    GTUtilsProject::closeProject(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //5. Open the saved project.
+    GTFileDialog::openFile(os, sandBoxDir + "test_4434.uprj");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //6. Current state : human_t1 is loaded with annotations
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findFirstAnnotation(os) != NULL, "Annotations are connected to human_T1.fa");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4439) {
 //    1. Open "data/samples/Genbank/sars.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
