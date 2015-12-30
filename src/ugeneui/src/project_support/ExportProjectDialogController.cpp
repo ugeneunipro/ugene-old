@@ -61,7 +61,6 @@ ExportProjectDialogController::ExportProjectDialogController(QWidget *p, const Q
     projectFile = fixProjectFile(defaultProjectFileName);
     projectFileEdit->setText(projectFile);
     Project* proj = AppContext::getProject();
-    setFixedHeight(height());
     if (proj == NULL || !proj->isItemModified() || proj->getProjectURL().isEmpty()) {
         warningLabel->setVisible(false);
     }
