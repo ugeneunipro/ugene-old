@@ -114,7 +114,7 @@ signals:
 private:
     bool isRowInSelection(int row);
     void updateActions();
-    void buildMenu(QMenu* m);
+    void buildMenu(QMenu* m, bool staticMenu = false);
     void updateSelection(int newSeqNum);
     void moveSelectedRegion( int shift );
     void drawAll();

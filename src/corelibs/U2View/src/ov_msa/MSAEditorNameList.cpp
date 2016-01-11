@@ -198,7 +198,7 @@ void MSAEditorNameList::updateScrollBar() {
 
 void MSAEditorNameList::sl_buildStaticMenu(GObjectView* v, QMenu* m) {
     Q_UNUSED(v);
-    buildMenu(m);
+    buildMenu(m, true);
 }
 
 void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
@@ -206,13 +206,17 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
     buildMenu(m);
 }
 
-void MSAEditorNameList::buildMenu(QMenu* m) {
+void MSAEditorNameList::buildMenu(QMenu* m, bool staticMenu) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu not found", );
-    editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
+        if (staticMenu) {
+            editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
+        }
         return;
     }
+
+    editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu not found", );
