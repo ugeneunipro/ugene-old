@@ -301,6 +301,7 @@ GUI_TEST_CLASS_DEFINITION(test_4013) {
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keySequence(os, "ACCCTATTTTATACCAACAAACTare");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTThread::waitForMainThread(os);
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, oldRect);
 }
 

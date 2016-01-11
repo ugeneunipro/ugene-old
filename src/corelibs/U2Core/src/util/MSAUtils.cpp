@@ -42,10 +42,12 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
     int sLen = row.getCoreEnd();
     int pLen = pat.size();
     int i = startPos;
+    int gapsCounter = 0;
     for (int j = 0; i  < sLen && j < pLen; i++, j++) {
         char c1 = row.charAt(i);
         char c2 = pat[j];
         while(c1 == MAlignment_GapChar && ++i < sLen) {
+            gapsCounter++;
             c1 = row.charAt(i);
         }
         if (c1 != c2) {
@@ -54,7 +56,7 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
         }
     }
     alternateLen = i - startPos;
-    if (alternateLen < pLen) {
+    if (alternateLen - gapsCounter < pLen) {
         return false;
     }
     return true;
