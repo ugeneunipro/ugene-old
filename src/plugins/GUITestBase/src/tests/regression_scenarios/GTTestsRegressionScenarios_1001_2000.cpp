@@ -3354,6 +3354,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 //    Expected state: the sequecne view opens. There are two MSA Editors and one sequence view (active).
 //    5.1 document
     GTUtilsProjectTreeView::doubleClickItem(os, "murine.gb");
+    GTThread::waitForMainThread(os);
 
     sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
     CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
@@ -3367,6 +3368,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 //    5.2 sequence
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363");
+    GTThread::waitForMainThread(os);
 
     sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
     CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
@@ -3380,6 +3382,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 //    5.3 sequence
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363 features");
+    GTThread::waitForMainThread(os);
 
     sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
     CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
@@ -3394,6 +3397,7 @@ GUI_TEST_CLASS_DEFINITION(test_1300_2) {
 //    Expected state: a popup menu is shown to select a MSA Editor to show. Select the first. There are two MSA Editors (the first one is active) and one sequence view.
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Activate view: COI [m] COI"));
     GTUtilsProjectTreeView::doubleClickItem(os, "COI");
+    GTThread::waitForMainThread(os);
 
     sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
     CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
@@ -5097,7 +5101,7 @@ GUI_TEST_CLASS_DEFINITION(test_1499) {
 
     const QStringList msaSequences1 = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(msaSequences1 != msaSequences0, "MSA is not changed");
-GTGlobals::sleep(5000);
+    GTGlobals::sleep(5000);
     QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
                                                           GTWidget::findWidget(os, "COI [m] COI"), GTGlobals::FindOptions(false));
     if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
@@ -5830,7 +5834,7 @@ GUI_TEST_CLASS_DEFINITION(test_1586) {
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default));
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with MUSCLE..."));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
-    
+
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsMsaEditor::undo(os);
