@@ -315,7 +315,7 @@ bool MSAImageExportController::canExportToSvg() const {
 
 void MSAImageExportController::updateSeqIdx() const {
     CHECK(msaSettings.exportAll, );
-    if (!ui->isCollapsibleMode() && msaSettings.seqIdx.size() != ui->getEditor()->getNumSequences()) {
+    if (!ui->isCollapsibleMode()) {
         msaSettings.seqIdx.clear();
         for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
             msaSettings.seqIdx.append(i);
