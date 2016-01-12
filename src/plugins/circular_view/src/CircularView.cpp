@@ -653,7 +653,10 @@ void CircularViewRenderArea::drawAnnotationsSelection(QPainter& p) {
     }
 }
 
-#define RULER_PAD 40
+namespace {
+    const int RULER_PAD = 40;
+    const int DEFAULT_SYMBOLS_ALLOWED = 20;
+}
 void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     QPen boldPen(Qt::black);
     boldPen.setWidth(3);
@@ -670,7 +673,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     p.setFont(font);
     QFontMetrics fm(font, this);
     int cw = fm.width('O');
-    int symbolsAlowed = (rulerEllipseSize - RULER_PAD)/cw;
+    int symbolsAlowed = (0 == cw) ? DEFAULT_SYMBOLS_ALLOWED : (rulerEllipseSize - RULER_PAD) / cw;
     if(symbolsAlowed<docNameFullLength) {
         docName=docName.mid(0,symbolsAlowed - 2);
         docName+="..";
