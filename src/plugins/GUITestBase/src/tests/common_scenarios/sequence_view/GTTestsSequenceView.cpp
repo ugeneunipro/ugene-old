@@ -1723,10 +1723,12 @@ GUI_TEST_CLASS_DEFINITION(test_0053){
 //    Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+
 //    Open any graph
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "GC Content (%)", GTGlobals::UseMouse));
     GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
-    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
 //    Add label with shift+left mouse
     QWidget* graphView = GTUtilsSequenceView::getGraphView(os);
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
