@@ -26,42 +26,21 @@ namespace HI {
 #ifdef __OBJC__
 
 #define GT_CLASS_NAME "GTMenuPrivateMac"
-class U2CocoaAutoReleasePool {
-public:
-    U2CocoaAutoReleasePool();
-    ~U2CocoaAutoReleasePool();
-
-private:
-    NSAutoreleasePool *pool;
-};
-
-U2CocoaAutoReleasePool::U2CocoaAutoReleasePool() {
-    pool = [[NSAutoreleasePool alloc] init];
-}
-
-U2CocoaAutoReleasePool::~U2CocoaAutoReleasePool() {
-    [pool release];
-}
 
 #define GT_METHOD_NAME "clickMainMenuItem"
 void GTMenuPrivateMac::clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag) {
-    U2CocoaAutoReleasePool pool;
-    Q_UNUSED(pool);
-
     NSMenu *menu = [NSApp mainMenu];
     foreach (const QString &itemTitle, itemPath) {
         GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
         menu = clickMenuItem(os, menu, itemTitle, matchFlag);
         GTGlobals::sleep(1000);
     }
+    [menu cancelTrackingWithoutAnimation];
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkMainMenuItemState"
 void GTMenuPrivateMac::checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState) {
-    U2CocoaAutoReleasePool pool;
-    Q_UNUSED(pool);
-
     const QStringList itemContainerMenuPath = itemPath.mid(0, itemPath.size() - 1);
     NSMenu *menu = [NSApp mainMenu];
     foreach (const QString &itemTitle, itemContainerMenuPath) {
@@ -71,6 +50,7 @@ void GTMenuPrivateMac::checkMainMenuItemState(GUITestOpStatus &os, const QString
     }
 
     checkMenuItemState(os, menu, itemPath.last(), expectedState);
+    [menu cancelTrackingWithoutAnimation];
 }
 #undef GT_METHOD_NAME
 
