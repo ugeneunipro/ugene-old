@@ -221,7 +221,8 @@ void GTUtilsOptionPanelSequenceView::setReversePrimer(HI::GUITestOpStatus &os, c
 #define GT_METHOD_NAME "showPrimersDetails"
 void GTUtilsOptionPanelSequenceView::showPrimersDetails(HI::GUITestOpStatus &os) {
     openTab(os, InSilicoPcr);
-    GTWidget::clickLabelLink(os, GTWidget::findWidget(os, "detailsLinkLabel"));
+    QWidget *label = GTWidget::findWidget(os, "detailsLinkLabel");
+    GTWidget::click(os, GTWidget::findWidget(os, "detailsLinkLabel"), Qt::LeftButton, QPoint(20, label->geometry().height()/2));
 }
 #undef GT_METHOD_NAME
 
