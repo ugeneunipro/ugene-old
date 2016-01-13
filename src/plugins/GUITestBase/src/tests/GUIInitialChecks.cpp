@@ -92,12 +92,14 @@ GUI_TEST_CLASS_DEFINITION(pre_action_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(pre_action_0003) {
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj1.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
+    if(QDir(testDir).exists()){
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj1.uprj");
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2.uprj");
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+        GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(pre_action_0004) {
@@ -109,11 +111,13 @@ GUI_TEST_CLASS_DEFINITION(pre_action_0004) {
 }
 
 GUI_TEST_CLASS_DEFINITION(pre_action_0005) {
-    PermissionsSetter::setReadWrite(os, sandBoxDir);
-    GTGlobals::sleep();
-    QDir sandBox = QDir(sandBoxDir);
-    foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
-        GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+    if(QDir(sandBoxDir).exists()){
+        PermissionsSetter::setReadWrite(os, sandBoxDir);
+        GTGlobals::sleep();
+        QDir sandBox = QDir(sandBoxDir);
+        foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
+            GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+        }
     }
 }
 
@@ -203,18 +207,21 @@ GUI_TEST_CLASS_DEFINITION(post_action_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(post_action_0003) {
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
-
-    PermissionsSetter::setReadWrite(os, sandBoxDir);
-    GTGlobals::sleep();
-    QDir sandBox = QDir(sandBoxDir);
-    foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
-        GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+    if(QDir(testDir).exists()){
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+        GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
+    }
+    if(QDir(sandBoxDir).exists()){
+        PermissionsSetter::setReadWrite(os, sandBoxDir);
+        GTGlobals::sleep();
+        QDir sandBox = QDir(sandBoxDir);
+        foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
+            GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+        }
     }
 }
 
