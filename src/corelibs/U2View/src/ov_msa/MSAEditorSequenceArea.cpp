@@ -731,6 +731,7 @@ bool MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
     p.fillRect(QRect(0, 0, editor->getColumnWidth() * region.length,
                       editor->getRowHeight() * seqIdx.size()),
                Qt::white);
+    p.setPen(Qt::black);
     p.setFont(editor->getFont());
 
     MAlignmentObject* maObj = editor->getMSAObject();
