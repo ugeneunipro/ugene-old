@@ -19,42 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsToggleView.h"
-#include "GTGlobals.h"
+#include <QApplication>
+#include <QClipboard>
+#include <QMainWindow>
+
+#include <GTGlobals.h>
+#include <base_dialogs/GTFileDialog.h>
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
-#include "primitives/GTMenu.h"
-#include "primitives/GTAction.h"
-#include <base_dialogs/GTFileDialog.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTMenu.h>
 #include <primitives/GTTreeWidget.h>
-#include "GTUtilsProject.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsLog.h"
-#include "utils/GTUtilsApp.h"
-#include "utils/GTUtilsToolTip.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsMdi.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "primitives/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
+#include <primitives/PopupChooser.h>
+#include <utils/GTUtilsApp.h>
+#include <utils/GTUtilsToolTip.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+
+#include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
-#include <U2View/ADVConstants.h>
-#include <QtGui/QClipboard>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#endif
+
+#include "GTTestsToggleView.h"
+#include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsDocument.h"
+#include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsTask.h"
+#include "GTUtilsTaskTreeView.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 namespace U2 {
 
@@ -1449,14 +1447,12 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "GC Content (%)");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, circularViewSe1);
-    GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 1, "Calculation task didn't start");
-    GTGlobals::sleep();
+    GTUtilsTask::waitTaskStart(os, "Calculate graph points", 10000);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
     GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, circularViewSe1);
-    GTGlobals::sleep();
+    GTGlobals::sleep(500);
     CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task was not cancelled");
 }
 
