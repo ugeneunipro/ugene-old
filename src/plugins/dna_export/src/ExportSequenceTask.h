@@ -133,6 +133,7 @@ public:
     void run();
 
 private:
+    U2Sequence importAnnotatedSeq2Dbi(const SharedAnnotationData &ad, const ExportSequenceAItem &ei, const U2DbiRef &resultDbiRef, QVector<U2Region> &resultRegions, U2OpStatus &os);
     ExportAnnotationSequenceTaskSettings &config;
 };
 

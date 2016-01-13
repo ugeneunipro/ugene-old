@@ -5128,6 +5128,43 @@ GUI_TEST_CLASS_DEFINITION(test_4969_2) {
     CHECK_SET_ERR(GTUtilsDocument::isDocumentLoaded(os, "murine.gb"), "The file is not loaded");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4986) {
+//    1. Open "data/samples/Genbank/murine.gb".
+//    2. Open "data/samples/GFF/5prime_utr_intron_A20.gff".
+//    3. Drag and drop any annotation table object from the GFF document to the sequence.
+//    Expected state: you are notified, that some annotations are out of boundaries.
+//    4. Select an annotation which is outside the sequence.
+//    5. Call a context menu, select "Export > Export sequence of selected annotations".
+//    6. Accept the export dialog.
+//    Expected state: there is an error in the log
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QPoint p = GTWidget::getWidgetCenter(os, GTWidget::findWidget(os, "render_area_NC_001363"));
+    GTUtilsProjectTreeView::click(os, "Ca20Chr1 features");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::release(os);
+
+    GTThread::waitForMainThread(os);
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceOfSelectedAnnotationsFiller(os, sandBoxDir + "test_4986.fa", ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+                                                                                   ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "action_export_sequence_of_selected_annotations"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, GTUtilsAnnotationsTreeView::findItem(os, "5_prime_UTR_intron"));
+
+    GTThread::waitForMainThread(os);
+    CHECK_SET_ERR(l.hasError(), "There is no error in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4990) {
     //1. Open file "_common_data/clustal/big.aln"
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/big.aln");

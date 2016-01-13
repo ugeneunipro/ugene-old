@@ -499,11 +499,15 @@ ExportAnnotationSequenceTask::ExportAnnotationSequenceTask(const ExportAnnotatio
 
 QList<Task*> ExportAnnotationSequenceTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (subTask == extractSubTask && !extractSubTask->hasError() && !isCanceled()) {
+    CHECK(!isCanceled(), res);
+
+    if (subTask == extractSubTask && !extractSubTask->hasError()) {
         exportSubTask = new ExportSequenceTask(config.exportSequenceSettings);
         res.append(exportSubTask);
     }
-    resultDocument = exportSubTask->takeDocument();
+    if (subTask == exportSubTask && !exportSubTask->hasError()) {
+        resultDocument = exportSubTask->takeDocument();
+    }
     return res;
 }
 
@@ -523,7 +527,9 @@ int totalAnnotationCount(const ExportAnnotationSequenceTaskSettings &config) {
     return result;
 }
 
-U2Sequence importAnnotatedSeq2Dbi(const SharedAnnotationData &ad, const ExportSequenceAItem &ei, const U2DbiRef &resultDbiRef,
+}
+
+U2Sequence ExportAnnotationSequenceSubTask::importAnnotatedSeq2Dbi(const SharedAnnotationData &ad, const ExportSequenceAItem &ei, const U2DbiRef &resultDbiRef,
     QVector<U2Region> &resultRegions, U2OpStatus &os)
 {
     U2SequenceImporter importer(QVariantMap(), true);
@@ -537,6 +543,9 @@ U2Sequence importAnnotatedSeq2Dbi(const SharedAnnotationData &ad, const ExportSe
             const U2Region chunkRegion(pos, currentChunkSize);
             QByteArray chunkContent = ei.sequence->getSequenceData(chunkRegion, os);
             CHECK_OP(os, U2Sequence());
+            if (chunkContent.isEmpty()) {
+                continue;
+            }
 
             if (ad->getStrand().isCompementary() && NULL != ei.complTT) {
                 TextUtils::reverse(chunkContent.data(), currentChunkSize);
@@ -554,11 +563,12 @@ U2Sequence importAnnotatedSeq2Dbi(const SharedAnnotationData &ad, const ExportSe
             CHECK_OP(os, U2Sequence());
             currentRegionLength += chunkContent.length();
         }
+        CHECK_EXT(currentRegionLength == annotatedRegion.length,
+                  os.setError(tr("Sequences of the selected annotations can't be exported. At least one of the annotations is out of boundaries")),
+                  U2Sequence());
         resultRegions.append(U2Region(resultRegions.isEmpty() ? 0 : resultRegions.last().endPos(), currentRegionLength));
     }
     return importer.finalizeSequence(os);
-}
-
 }
 
 void ExportAnnotationSequenceSubTask::run() {
