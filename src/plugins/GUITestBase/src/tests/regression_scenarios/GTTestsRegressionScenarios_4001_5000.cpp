@@ -5137,7 +5137,9 @@ GUI_TEST_CLASS_DEFINITION(test_4990) {
     //2. Open "Export Consensus" OP tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
 
-    //3. Press "Export" button
+    //3. Press "Export" button 3x times
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
 
     //4. Remove "big.aln" document
