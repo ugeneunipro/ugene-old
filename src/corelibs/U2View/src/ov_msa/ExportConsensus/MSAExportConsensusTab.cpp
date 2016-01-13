@@ -29,6 +29,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2IdTypes.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/TaskWatchdog.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -89,7 +90,9 @@ void MSAExportConsensusTab::sl_exportClicked(){
     settings.name = msa->getMSAObject()->getGObjectName() + "_consensus";
 
     settings.url = pathLe->text();
-    AppContext::getTaskScheduler()->registerTopLevelTask(new ExportMSAConsensusTask(settings));
+    Task *t = new ExportMSAConsensusTask(settings);
+    TaskWatchdog::trackResourceExistence(msa->getMSAObject(), t, tr("A problem occurred during export consensus. The multiple alignment is no more available."));
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void MSAExportConsensusTab::sl_formatChanged(){

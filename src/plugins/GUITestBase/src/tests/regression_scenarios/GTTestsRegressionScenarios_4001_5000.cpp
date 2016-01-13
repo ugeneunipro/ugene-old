@@ -5128,6 +5128,22 @@ GUI_TEST_CLASS_DEFINITION(test_4969_2) {
     CHECK_SET_ERR(GTUtilsDocument::isDocumentLoaded(os, "murine.gb"), "The file is not loaded");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4990) {
+    //1. Open file "_common_data/clustal/big.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //2. Open "Export Consensus" OP tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+
+    //3. Press "Export" button
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+
+    //4. Remove "big.aln" document
+    GTUtilsDocument::removeDocument(os, "big.aln");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

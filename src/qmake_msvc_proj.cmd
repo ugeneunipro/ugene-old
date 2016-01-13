@@ -1,3 +1,3 @@
 cd ..
-qmake -tp vc -r ugene.pro
+qmake CONFIG+=x64 -tp vc -r ugene.pro
 cd src
