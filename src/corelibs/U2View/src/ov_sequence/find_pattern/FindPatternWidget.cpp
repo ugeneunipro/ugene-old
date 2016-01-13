@@ -285,6 +285,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
     getAnnotationsPushButton->setDisabled(true);
     showCurrentResultAndStopProgress(0, 0);
     setUpTabOrder();
+    previousMaxResult = boxMaxResult->value();
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
@@ -849,7 +850,8 @@ void FindPatternWidget::sl_onSearchPatternChanged()
 void FindPatternWidget::sl_onMaxResultChanged(int newMaxResult) {
     bool limitResult = !findPatternResults.isEmpty() && newMaxResult < findPatternResults.size();
     bool widenResult = newMaxResult > previousMaxResult && findPatternResults.size() == previousMaxResult;
-    if (limitResult || widenResult) {
+    bool prevSearchIsNotComplete = findPatternResults.isEmpty() && searchTask != NULL;
+    if (limitResult || widenResult || prevSearchIsNotComplete) {
         sl_activateNewSearch();
     }
 }
