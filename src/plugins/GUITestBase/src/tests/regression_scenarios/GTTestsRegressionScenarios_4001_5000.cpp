@@ -4328,6 +4328,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_4) {
     GTUtilsNotifications::waitForNotification(os, true, "The sequence is no more available");
     GTUtilsDocument::removeDocument(os, "regression_test_4784_4.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4785) {
@@ -5032,7 +5033,7 @@ GUI_TEST_CLASS_DEFINITION(test_4936) {
     file.write(data);
     file.close();
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
 //    3. Accept the offer.
 //    Expected state: the document is successfully reloaded, there are no errors in the log.
