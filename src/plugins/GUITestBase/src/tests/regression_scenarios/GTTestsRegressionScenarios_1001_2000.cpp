@@ -19,26 +19,52 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios_1001_2000.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
 
-#include <primitives/GTRadioButton.h>
-#include "primitives/GTAction.h"
-#include <primitives/GTCheckBox.h>
-#include "system/GTClipboard.h"
-#include <primitives/GTComboBox.h>
-#include "api/GTGraphicsItem.h"
-#include "system/GTFile.h"
+#include <U2Gui/ProjectViewModel.h>
+#include <U2Gui/ToolsMenu.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/AnnotationsTreeView.h>
+#include <U2View/AssemblyBrowser.h>
+#include <U2View/AssemblyModel.h>
+#include <U2View/AssemblyNavigationWidget.h>
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
+#include <U2View/MSAEditorNameList.h>
+
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QMenu>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QWebElement>
+#include <QWebFrame>
+#include <QWebView>
+#include <QWizard>
+
+#include <GTGlobals.h>
+#include <base_dialogs/DefaultDialogFiller.h>
 #include <base_dialogs/GTFileDialog.h>
-#include "GTGlobals.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include <drivers/GTKeyboardDriver.h>
-#include "utils/GTKeyboardUtils.h"
-#include "utils/GTThread.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTListWidget.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
-#include "api/GTSequenceReadingModeDialog.h"
-#include "api/GTSequenceReadingModeDialogUtils.h"
+#include <primitives/GTMenu.h>
+#include <primitives/GTRadioButton.h>
 #include <primitives/GTSlider.h>
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTTabWidget.h>
@@ -48,15 +74,23 @@
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWebView.h>
 #include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <system/GTClipboard.h>
+#include <system/GTFile.h>
+#include <utils/GTKeyboardUtils.h>
+#include <utils/GTThread.h>
+#include <utils/GTUtilsDialog.h>
+#include <utils/GTUtilsToolTip.h>
 
+#include "../../workflow_designer/src/WorkflowViewItems.h"
 #include "GTDatabaseConfig.h"
+#include "GTTestsRegressionScenarios_1001_2000.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDashboard.h"
-#include "utils/GTUtilsDialog.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
@@ -74,14 +108,12 @@
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
-#include "utils/GTUtilsToolTip.h"
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
-
-#include <base_dialogs/DefaultDialogFiller.h>
+#include "api/GTGraphicsItem.h"
+#include "api/GTSequenceReadingModeDialog.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
 #include "runnables/qt/EscapeClicker.h"
-#include <base_dialogs/MessageBoxFiller.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
@@ -129,8 +161,8 @@
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
-#include "runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
@@ -147,13 +179,13 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3SearchDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
@@ -162,41 +194,6 @@
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/U2ObjectDbi.h>
-
-#include <U2Gui/ProjectViewModel.h>
-#include <U2Gui/ToolsMenu.h>
-
-#include "../../workflow_designer/src/WorkflowViewItems.h"
-
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include <U2View/AnnotationsTreeView.h>
-#include <U2View/AssemblyBrowser.h>
-#include <U2View/AssemblyModel.h>
-#include <U2View/AssemblyNavigationWidget.h>
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorFactory.h>
-#include <U2View/MSAEditorNameList.h>
-
-#include <QDialogButtonBox>
-#include <QFileDialog>
-#include <QHeaderView>
-#include <QListWidget>
-#include <QMainWindow>
-#include <QMenu>
-#include <QPlainTextEdit>
-#include <QProgressBar>
-#include <QPushButton>
-#include <QTableWidget>
-#include <QWebElement>
-#include <QWebFrame>
-#include <QWebView>
-#include <QWizard>
 
 namespace U2 {
 
@@ -3811,17 +3808,12 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep(4000);
-#ifdef Q_OS_UNIX
-    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
-        << "Custom Elements with CMD Tools" << settings.elementName, PopupChecker::NotExists));
-#endif // Q_OS_UNIX
 
-#ifdef Q_OS_WIN
-    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
-        << "Custom Elements with CMD Tools", PopupChecker::NotExists));
-#endif // Q_OS_UNIX
-
-    GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
+    const QString groupName = "Custom Elements with CMD Tools";
+    const QStringList groups = GTUtilsWorkflowDesigner::getPaletteGroupNames(os);
+    if (groups.contains(groupName)) {
+        CHECK_SET_ERR(!GTUtilsWorkflowDesigner::getPaletteGroupEntriesNames(os, groupName).contains(settings.elementName), "Element was not removed");
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1358) {

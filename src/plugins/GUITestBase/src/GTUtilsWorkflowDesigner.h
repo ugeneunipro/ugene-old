@@ -19,18 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef GT_UTILS_WORKFLOW_DESIGNER_H
-#define GT_UTILS_WORKFLOW_DESIGNER_H
+#ifndef _U2_GT_UTILS_WORKFLOW_DESIGNER_H_
+#define _U2_GT_UTILS_WORKFLOW_DESIGNER_H_
 
-#include "GTGlobals.h"
+#include <QTreeWidget>
+#include <QGraphicsItem>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#include <QtGui/QGraphicsItem>
-#else
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QGraphicsItem>
-#endif
+#include <GTGlobals.h>
 
 class QTableView;
 class QTableWidget;
@@ -81,6 +76,7 @@ public:
     static QStringList getPaletteGroupNames(HI::GUITestOpStatus &os);
     static QList<QTreeWidgetItem *> getPaletteGroupEntries(HI::GUITestOpStatus &os, QTreeWidgetItem *groupItem);
     static QList<QTreeWidgetItem *> getPaletteGroupEntries(HI::GUITestOpStatus &os, const QString &groupName);
+    static QStringList getPaletteGroupEntriesNames(HI::GUITestOpStatus &os, const QString &groupName);
 
     //add to scene
     static void addSample(HI::GUITestOpStatus &os, const QString &sampName);
@@ -177,4 +173,4 @@ private:
 
 } // namespace
 Q_DECLARE_METATYPE( QAction* )
-#endif // GT_UTILS_WORKFLOW_DESIGNER_H
+#endif // _U2_GT_UTILS_WORKFLOW_DESIGNER_H_

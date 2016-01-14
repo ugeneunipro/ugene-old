@@ -31,6 +31,25 @@
 #include <QToolButton>
 #include <QTreeWidget>
 
+#include <base_dialogs/GTFileDialog.h>
+#include <base_dialogs/MessageBoxFiller.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTDoubleSpinBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTMenu.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTTabWidget.h>
+#include <primitives/GTTableView.h>
+#include <primitives/GTToolbar.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <utils/GTThread.h>
+
 #include <U2Core/AppContext.h>
 
 #include <U2View/MSAEditor.h>
@@ -38,29 +57,11 @@
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
-#include "primitives/GTAction.h"
-#include <primitives/GTCheckBox.h>
-#include <primitives/GTComboBox.h>
-#include <primitives/GTDoubleSpinBox.h>
-#include <base_dialogs/GTFileDialog.h>
 #include "api/GTGraphicsItem.h"
-#include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTLineEdit.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
-#include <primitives/GTSpinBox.h>
-#include <primitives/GTTabWidget.h>
-#include <primitives/GTTableView.h>
-#include <primitives/GTToolbar.h>
-#include <primitives/GTTreeWidget.h>
-#include <primitives/GTWidget.h>
-#include <base_dialogs/MessageBoxFiller.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
-#include "utils/GTThread.h"
 
 namespace U2 {
 using namespace HI;
@@ -367,6 +368,16 @@ QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroupEntries(HI::GUI
 #define GT_METHOD_NAME "getPaletteGroupEntries"
 QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroupEntries(HI::GUITestOpStatus &os, const QString &groupName) {
     return getPaletteGroupEntries(os, getPaletteGroup(os, groupName));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPaletteGroupEntriesNames"
+QStringList GTUtilsWorkflowDesigner::getPaletteGroupEntriesNames(GUITestOpStatus &os, const QString &groupName) {
+    QStringList entriesNames;
+    foreach (QTreeWidgetItem *entryItem, getPaletteGroupEntries(os, groupName)) {
+        entriesNames << entryItem->text(0);
+    }
+    return entriesNames;
 }
 #undef GT_METHOD_NAME
 
