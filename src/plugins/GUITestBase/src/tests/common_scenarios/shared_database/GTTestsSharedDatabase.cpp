@@ -22,6 +22,19 @@
 #include <QTreeWidgetItem>
 #include <QListWidget>
 
+#include <base_dialogs/GTFileDialog.h>
+#include <base_dialogs/MessageBoxFiller.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTListWidget.h>
+#include <primitives/GTMenu.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <system/GTFile.h>
+#include <utils/GTThread.h>
+
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>
 
@@ -41,17 +54,6 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
-#include "system/GTFile.h"
-#include <base_dialogs/GTFileDialog.h>
-#include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTLineEdit.h>
-#include <primitives/GTListWidget.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
-#include <primitives/GTTreeWidget.h>
-#include <primitives/GTWidget.h>
-#include <base_dialogs/MessageBoxFiller.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
@@ -410,11 +412,13 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0006) {
 
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "is not initialized"));
             GTWidget::click(os, GTWidget::findWidget(os, "pbConnect", dialog));
+            GTGlobals::sleep();
 
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "is not initialized"));
             GTWidget::click(os, GTWidget::findWidget(os, "pbConnect", dialog));
 
             GTUtilsTaskTreeView::waitTaskFinished(os);
+            GTGlobals::sleep();
         }
     };
 
