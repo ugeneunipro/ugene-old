@@ -58,6 +58,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/TaskWatchdog.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
@@ -706,8 +707,9 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
                     U2OpStatusImpl os;
                     DNASequence seq = dnaObj->getWholeSequence(os);
                     seq.alphabet = dnaObj->getAlphabet();
-                    AppContext::getTaskScheduler()->registerTopLevelTask(
-                        new AddSequenceObjectsToAlignmentTask(msaObject, QList<DNASequence>() << seq));
+                    Task *task = new AddSequenceObjectsToAlignmentTask(msaObject, QList<DNASequence>() << seq);
+                    TaskWatchdog::trackResourceExistence(msaObject, task, tr("A problem occurred during adding sequences. The multiple alignment is no more available."));
+                    AppContext::getTaskScheduler()->registerTopLevelTask(task);
                 }
             }
         }

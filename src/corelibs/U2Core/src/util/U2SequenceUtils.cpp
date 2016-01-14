@@ -76,6 +76,10 @@ U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiR
 
     TmpDbiObjects tmpObjects(dstDbi, os);
 
+    if (os.isCoR()) {
+        return res;
+    }
+
     DbiConnection dstCon(dstDbi, os);
     CHECK_OP(os, res);
     dstCon.dbi->getSequenceDbi()->createSequenceObject(res, dstFolder, os);

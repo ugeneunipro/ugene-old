@@ -68,6 +68,9 @@ void AddSequenceObjectsToAlignmentTask::prepare() {
 void AddSequenceObjectsToAlignmentTask::run() {
     QList<U2MsaRow> rows;
     qint64 maxLength = createRows(rows);
+    if (isCanceled() || hasError()) {
+        return;
+    }
     CHECK_OP(stateInfo, );
     addRows(rows, maxLength);
     CHECK_OP(stateInfo, );
@@ -109,6 +112,9 @@ qint64 AddSequenceObjectsToAlignmentTask::createRows(QList<U2MsaRow> &rows) {
     qint64 maxLength = 0;
     U2EntityRef entityRef = maObj->getEntityRef();
     foreach (const DNASequence& seqObj, seqList) {
+        if (isCanceled() || hasError()) {
+            return 0;
+        }
         U2MsaRow row = MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
         if (0 < row.gend) {
             rows << row;

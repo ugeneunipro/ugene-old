@@ -50,6 +50,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/TaskWatchdog.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -2646,6 +2647,7 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
         lod.url = urls.first();
         cancelSelection();
         AddSequencesFromFilesToAlignmentTask *task = new AddSequencesFromFilesToAlignmentTask(msaObject, urls);
+        TaskWatchdog::trackResourceExistence(msaObject, task, tr("A problem occurred during adding sequences. The multiple alignment is no more available."));
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 
