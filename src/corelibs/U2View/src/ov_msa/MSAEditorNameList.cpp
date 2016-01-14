@@ -78,6 +78,9 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     connect(removeSequenceAction, SIGNAL(triggered()), SLOT(sl_removeSequence()));
     addAction(removeSequenceAction);
 
+    removeSequenceMainMenuAction = new QAction(tr("Remove sequence"), this);
+    connect(removeSequenceMainMenuAction, SIGNAL(triggered()), SLOT(sl_removeSequence()));
+
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
     if (editor->getMSAObject()) {
         connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
@@ -154,6 +157,7 @@ void MSAEditorNameList::updateActions() {
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj){
         removeSequenceAction->setEnabled(!maObj->isStateLocked() && getSelectedRow() != -1);
+        removeSequenceMainMenuAction->setEnabled(!maObj->isStateLocked() && getSelectedRow() != -1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
         addAction(ui->getCopySelectionAction());
         addAction(ui->getPasteAction());
@@ -209,14 +213,16 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
 void MSAEditorNameList::buildMenu(QMenu* m, bool staticMenu) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu not found", );
+    if (staticMenu) {
+        editMenu->insertAction(editMenu->actions().last(), removeSequenceMainMenuAction);
+    }
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
-        if (staticMenu) {
-            editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
-        }
         return;
     }
 
-    editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
+    if (!staticMenu) {
+        editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
+    }
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu not found", );

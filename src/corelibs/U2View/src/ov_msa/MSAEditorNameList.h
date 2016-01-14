@@ -143,6 +143,7 @@ private:
     QAction*            editSequenceNameAction;
     QAction*            copyCurrentSequenceAction;
     QAction*            removeSequenceAction;
+    QAction*            removeSequenceMainMenuAction;
     QPixmap*            cachedView;
 
     static const int CROSS_SIZE = 9;
