@@ -256,7 +256,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #            src/api/GTFileDialog.h \
 #            src/GTGlobals.h \
             src/api/GTGraphicsItem.h \ #\
-    src/test_runner/GUITestRunner.h
+    src/test_runner/GUITestRunner.h \
+    src/tests/regression_scenarios/GTTestsRegressionScenarios_5001_6000.h
 #            src/api/GTGroupBox.h \
 #            src/drivers/GTKeyboardDriver.h \
 #            src/api/GTKeyboardUtils.h \
@@ -538,7 +539,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #            src/api/GTFileDialog.cpp \
 #            src/api/GTGlobals.cpp \
             src/api/GTGraphicsItem.cpp \ #\
-    src/test_runner/GUITestRunner.cpp
+    src/test_runner/GUITestRunner.cpp \
+    src/tests/regression_scenarios/GTTestsRegressionScenarios_5001_6000.cpp
 #            src/api/GTGroupBox.cpp \
 #            src/api/GTKeyboardDriver.cpp \
 #            src/api/GTKeyboardDriverLinux.cpp \

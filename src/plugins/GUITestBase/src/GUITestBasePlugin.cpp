@@ -88,6 +88,7 @@
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_2001_3000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_5001_6000.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_WITH_TIMEOUT(X, TIMEOUT) \
@@ -1227,6 +1228,8 @@ void GUITestBasePlugin::registerTests(UGUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4969_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_4986);
     REGISTER_TEST(GUITest_regression_scenarios::test_4990);
+
+    REGISTER_TEST(GUITest_regression_scenarios::test_5029);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
