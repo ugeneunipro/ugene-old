@@ -44,7 +44,6 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QProcess>
-#include <QProcess>
 #include <QSysInfo>
 #include <QThread>
 #include <QTime>
@@ -448,6 +447,7 @@ int ReportSender::getTotalPhysicalMemory() {
     totalPhysicalMemory = (int)(numpages * (pagesize / 1024) / 1024);
 
 #elif defined(Q_OS_MAC)
+    return 0;   // a temporary plug for UGENE-5028
 // TODO
      QProcess p;
      p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");

@@ -80,6 +80,7 @@ QString Utils::loadReportFromUrl(const QString &url) {
 
 bool Utils::isSystem64bit() {
 #ifdef Q_OS_MAC
+    return true;    // a temporary plug for UGENE-5028
     QProcess p;
     p.start("sysctl", QStringList() << "-n" << "hw.optional.x86_64");
     p.waitForFinished();
