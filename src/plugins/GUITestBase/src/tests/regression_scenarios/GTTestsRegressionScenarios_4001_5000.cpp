@@ -5155,6 +5155,7 @@ GUI_TEST_CLASS_DEFINITION(test_4986) {
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, p);
     GTMouseDriver::release(os);
+    GTGlobals::sleep();
 
     GTThread::waitForMainThread(os);
 
