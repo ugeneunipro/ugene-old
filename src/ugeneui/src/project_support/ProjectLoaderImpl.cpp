@@ -724,7 +724,7 @@ void ProjectLoaderImpl::sl_paste( ){
     PasteFactory* pasteFactory = AppContext::getPasteFactory();
     SAFE_POINT(pasteFactory != NULL, "PasteFactory is null", );
 
-    PasteTask* task = pasteFactory->pasteTask(false);
+    PasteTask* task = pasteFactory->pasteTask(true);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }

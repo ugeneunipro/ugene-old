@@ -129,11 +129,10 @@ PasteFactoryImpl::PasteFactoryImpl(QObject *parent)
     excludedFilenames = QSet<QString>();
 }
 
-PasteTask* PasteFactoryImpl::pasteTask(bool useInSequenceWidget){
+PasteTask* PasteFactoryImpl::pasteTask(bool addToProject) {
     PasteTask* res = NULL;
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mdata = clipboard->mimeData();
-    bool addToProject = !useInSequenceWidget;
     if (mdata->hasUrls()) {
         res = new PasteUrlsTask(mdata->urls(), addToProject);
     }else{

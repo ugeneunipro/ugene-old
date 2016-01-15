@@ -912,9 +912,9 @@ void AnnotationsTreeView::sl_paste(){
     SAFE_POINT(pasteFactory != NULL, "adFactory is null", );
 
 
-    bool pasteToWidget = tree && tree->hasFocus();
-    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
-    if (pasteToWidget){
+    bool addToProject = !(tree && tree->hasFocus());
+    PasteTask* task = pasteFactory->pasteTask(addToProject);
+    if (!addToProject){
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

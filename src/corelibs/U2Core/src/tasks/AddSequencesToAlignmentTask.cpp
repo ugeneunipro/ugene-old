@@ -66,6 +66,9 @@ void AddSequenceObjectsToAlignmentTask::prepare() {
 }
 
 void AddSequenceObjectsToAlignmentTask::run() {
+    if (seqList.isEmpty()) {
+        return;
+    }
     QList<U2MsaRow> rows;
     qint64 maxLength = createRows(rows);
     if (isCanceled() || hasError()) {
@@ -95,7 +98,7 @@ Task::ReportResult AddSequenceObjectsToAlignmentTask::report() {
     delete modStep;
     releaseLock();
 
-    if (isCanceled() || hasError()) {
+    if (isCanceled() || hasError() || seqList.size() == 0) {
         return ReportResult_Finished;
     }
 

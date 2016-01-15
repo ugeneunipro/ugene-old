@@ -2458,13 +2458,8 @@ void MSAEditorSequenceArea::sl_paste(){
     PasteFactory* pasteFactory = AppContext::getPasteFactory();
     SAFE_POINT(pasteFactory != NULL, "PasteFactory is null", );
 
-    bool pasteToWidget = hasFocus();
-    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
-
-    if (pasteToWidget){
-        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
-    }
-
+    PasteTask* task = pasteFactory->pasteTask(false);
+    connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
@@ -2480,7 +2475,6 @@ void MSAEditorSequenceArea::sl_pasteFinished(Task* _pasteTask){
     }
     const QList<Document*>& docs = pasteTask->getDocuments();
 
-    cancelSelection();
     AddSequencesFromDocumentsToAlignmentTask *task = new AddSequencesFromDocumentsToAlignmentTask(msaObject, docs);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }

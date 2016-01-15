@@ -1330,9 +1330,9 @@ void AnnotatedDNAView::sl_paste(){
             }
         }
     }
-    bool pasteToWidget = focus;
-    PasteTask* task = pasteFactory->pasteTask(pasteToWidget);
-    if (pasteToWidget){
+    
+    PasteTask* task = pasteFactory->pasteTask(!focus);
+    if (focus){
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
     }
     ADVSequenceObjectContext *seqCtx = getSequenceInFocus();

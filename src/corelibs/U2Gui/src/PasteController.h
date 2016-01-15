@@ -56,7 +56,7 @@ class U2GUI_EXPORT PasteFactoryImpl : public PasteFactory {
 public:
     PasteFactoryImpl(QObject *parent=0);
 
-    PasteTask* pasteTask(bool useInSequenceWidget);
+    PasteTask* pasteTask(bool addToProject);
 
 protected:
     void connectExclude(PasteTask* task);
