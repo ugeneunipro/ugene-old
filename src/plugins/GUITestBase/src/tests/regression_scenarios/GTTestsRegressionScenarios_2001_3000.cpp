@@ -5815,8 +5815,9 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
     public:
         CancelClicker(HI::GUITestOpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
         virtual void run() {
-            QWidget *w = QApplication::activeWindow();
-            CHECK(NULL != w, );
+            GTGlobals::sleep(1000);
+            QWidget *w = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != w, "active modal widget is null");
             QRadioButton *multipleButton = w->findChild<QRadioButton*>("miltipleButton");
             CHECK_SET_ERR(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
             GTRadioButton::click(os, multipleButton);
@@ -5826,9 +5827,9 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
             GTLineEdit::setText(os, regionEdit, "0..5000");
 
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
-            CHECK(NULL != buttonBox, );
+            CHECK_SET_ERR(NULL != buttonBox, "button box is null");
             QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
-            CHECK(NULL != button, );
+            CHECK_SET_ERR(NULL != button, "cancel button is null");
             QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
             CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
             GTWidget::click(os, button);
@@ -5837,7 +5838,6 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
     GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
-
 }
 GUI_TEST_CLASS_DEFINITION(test_2910_3) {
     // 1. Open {data/samples/FASTA/human_T1.fa}.
@@ -5853,8 +5853,9 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
     public:
         CancelClicker(HI::GUITestOpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
         virtual void run() {
-            QWidget *w = QApplication::activeWindow();
-            CHECK(NULL != w, );
+            GTGlobals::sleep(1000);
+            QWidget *w = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != w, "active modal widget is null");
             QRadioButton *multipleButton = w->findChild<QRadioButton*>("miltipleButton");
             CHECK_SET_ERR(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
             GTRadioButton::click(os, multipleButton);
@@ -5865,9 +5866,9 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
             GTLineEdit::setText(os, regionEdit, "1..199951");
 
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
-            CHECK(NULL != buttonBox, );
+            CHECK_SET_ERR(NULL != buttonBox, "button box is null");
             QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
-            CHECK(NULL != button, );
+            CHECK_SET_ERR(NULL != button, "cancel button is null");
             QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
             CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
             GTWidget::click(os, button);
