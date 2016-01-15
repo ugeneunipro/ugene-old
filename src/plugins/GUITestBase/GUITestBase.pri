@@ -8,7 +8,7 @@ QT += testlib
 greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
 
 INCLUDEPATH += ../../corelibs/U2View/_tmp/ ../../libs_3rdparty/humimit/src
-LIBS +=-L../../_release -lhumimit
+LIBS +=-L../../_release -L../../libs_3rdparty/humimit/ -lhumimit
 
 !debug_and_release|build_pass {
 

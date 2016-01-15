@@ -152,6 +152,7 @@ defineTest( exclude_list_enabled ) {
 if(exclude_list_enabled()|!exists( ./libs_3rdparty/humimit/humimit.pro )) {
     DEFINES += HI_EXCLUDED
 }
+
 #Variable enabling exclude list for ugene non-free modules
 defineTest( without_non_free ) {
     contains( UGENE_WITHOUT_NON_FREE, 1 ) : return (true)

@@ -16,7 +16,7 @@ DEFINES+= QT_DLL QT_FATAL_ASSERT
 INCLUDEPATH += src _tmp ../include ../corelibs/U2Private/src ../libs_3rdparty/humimit/src
 macx : INCLUDEPATH += /System/Library/Frameworks/Security.framework/Headers
 
-LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
+LIBS += -L../_release -L../libs_3rdparty/humimit/ -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
 macx: LIBS += /System/Library/Frameworks/Security.framework/Security
 if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
     LIBS -= -lhumimit

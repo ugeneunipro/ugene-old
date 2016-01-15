@@ -106,7 +106,11 @@ exclude_list_enabled() {
 }
 
 if(exists( ./src/libs_3rdparty/humimit/humimit.pro ):!exclude_list_enabled()) {
-      message( "HumImit exists, enable GUI testing..." )
+    message( "HumImit exists, enable GUI testing..." )
+    !exists( ./src/libs_3rdparty/humimit/custom.pri) {
+        unix: system( cp ./installer/_common_data/humimit_custom.pri ./src/libs_3rdparty/humimit/custom.pri )
+        win32: system (copy /B installer\_common_data\humimit_custom.pri src\libs_3rdparty\humimit\custom.pri)
+    }
 }
 !exists( ./src/libs_3rdparty/humimit/humimit.pro ){
     DEFINES += HI_EXCLUDED
