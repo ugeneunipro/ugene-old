@@ -19,41 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WELCOME_PAGE_WIDGET_H_
-#define _U2_WELCOME_PAGE_WIDGET_H_
+#ifndef _U2_MULTILINGUAL_HTML_VIEW_H_
+#define _U2_MULTILINGUAL_HTML_VIEW_H_
 
-#include "utils/MultilingualHtmlView.h"
+#include <QWebView>
 
 namespace U2 {
 
-class WelcomePageController;
-
-class WelcomePageWidget : public MultilingualHtmlView {
+class MultilingualHtmlView : public QWebView {
     Q_OBJECT
 public:
-    WelcomePageWidget(QWidget *parent, WelcomePageController *controller);
+    MultilingualHtmlView(const QString& htmlPath, QWidget* parent = NULL);
 
-    void updateRecent(const QStringList &recentProjects, const QStringList &recentFiles);
-    bool isLoaded() const;
-    bool eventFilter(QObject *watched, QEvent *event);
+protected slots:
+    virtual void sl_loaded(bool ok);
+    virtual void sl_linkActivated(const QUrl& url);
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-
-private slots:
-    void sl_loaded(bool ok);
+signals:
+    void si_loaded(bool ok);
 
 private:
-    void loadPage();
-    void updateRecentFilesContainer(const QString &id, const QStringList &files, const QString &message);
-
-private:
-    bool loaded;
-    WelcomePageController *controller;
+    void loadPage(const QString& htmlPath);
 };
 
-} // U2
+} // namespace
 
-#endif // _U2_WELCOME_PAGE_WIDGET_H_
+#endif // _U2_MULTILINGUAL_HTML_VIEW_H_

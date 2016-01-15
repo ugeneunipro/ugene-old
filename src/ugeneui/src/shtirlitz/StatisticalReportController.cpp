@@ -20,35 +20,33 @@
  */
 
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFile>
+#include <QMainWindow>
 #include <QScrollBar>
+#include <QWebFrame>
 
 #include <U2Core/Version.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/MainWindow.h>
 
 #include "StatisticalReportController.h"
+
+#include "utils/MultilingualHtmlView.h"
 
 namespace U2 {
 
 StatisticalReportController::StatisticalReportController(const QString &newHtmlFilepath) : QDialog() {
     setupUi(this);
-
     lblStat->setText(tr("<b>Optional:</b> Help make UGENE better by automatically sending anonymous usage statistics."));
 
     Version v = Version::appVersion();
     setWindowTitle(tr("Welcome to UGENE %1.%2").arg(v.major).arg(v.minor));
-    QFile file(newHtmlFilepath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        newsTextBrowser->setText(tr("Error loading release new from file"));
-        return;
-    }
 
-    QString htmlText;
-    while (!file.atEnd()) {
-        htmlText += file.readLine();
-    }
-
-    newsTextBrowser->setText(htmlText);
-    connect(newsTextBrowser, SIGNAL(anchorClicked(const QUrl &)), SLOT(sl_onAnchorClicked(const QUrl &)));
+    htmlView = new MultilingualHtmlView(newHtmlFilepath, this);
+    frameLayout->addWidget(htmlView);
+    htmlView->setMinimumSize(400, 10);
 }
 
 bool StatisticalReportController::isInfoSharingAccepted() const {
@@ -57,19 +55,14 @@ bool StatisticalReportController::isInfoSharingAccepted() const {
 
 void StatisticalReportController::paintEvent(QPaintEvent *event) {
     QWidget::paintEvent(event);
-    QScrollBar *vBar = newsTextBrowser->verticalScrollBar();
-    if(vBar->maximum() == vBar->value()){
-        return;
-    }
-    //adjust QTextEditor size
-    while(vBar->maximum() != vBar->value()){
-        newsTextBrowser->setMinimumHeight(newsTextBrowser->size().height() + 1);
-    }
-    newsTextBrowser->setMinimumHeight(newsTextBrowser->size().height() + 10);
-}
+    CHECK(!htmlView->page()->mainFrame()->scrollBarGeometry(Qt::Vertical).isEmpty(), );
 
-void StatisticalReportController::sl_onAnchorClicked(const QUrl &url) {
-    QDesktopServices::openUrl(url);
+    // adjust size to avoid scroll bars
+    while (!htmlView->page()->mainFrame()->scrollBarGeometry(Qt::Vertical).isEmpty()) {
+        htmlView->setMinimumHeight(htmlView->size().height() + 1);
+    }
+    htmlView->setMinimumHeight(htmlView->size().height() + 10);
+    move(x(), (qApp->desktop()->screenGeometry().height() / 2) - htmlView->minimumHeight());
 }
 
 }

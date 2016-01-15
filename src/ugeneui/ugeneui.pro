@@ -4,6 +4,12 @@ include (ugeneui.pri)
 HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/app_settings/AppSettingsDialogTree.h \
            src/app_settings/AppSettingsGUIImpl.h \
+           src/app_settings/directories_settings/DirectoriesSettingsGUIController.h \
+           src/app_settings/format_settings/FormatSettingsGUIController.h \
+           src/app_settings/logview_settings/LogSettingsGUIController.h \
+           src/app_settings/network_settings/NetworkSettingsGUIController.h \
+           src/app_settings/resource_settings/ResourceSettingsGUIController.h \
+           src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.h \
            src/main_window/AboutDialogController.h \
            src/main_window/SplashScreen.h \
            src/main_window/CheckUpdatesTask.h \
@@ -12,6 +18,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/main_window/MDIManagerImpl.h \
            src/main_window/MenuManager.h \
            src/main_window/ShutdownTask.h \
+           src/main_window/TmpDirChangeDialogController.h \
            src/main_window/ToolBarManager.h \
            src/plugin_viewer/PluginViewerController.h \
            src/plugin_viewer/PluginViewerImpl.h \
@@ -31,13 +38,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/shtirlitz/StatisticalReportController.h \
            src/task_view/TaskStatusBar.h \
            src/task_view/TaskViewController.h \
-           src/app_settings/directories_settings/DirectoriesSettingsGUIController.h \
-           src/app_settings/format_settings/FormatSettingsGUIController.h \
-           src/app_settings/logview_settings/LogSettingsGUIController.h \
-           src/app_settings/network_settings/NetworkSettingsGUIController.h \
-           src/app_settings/resource_settings/ResourceSettingsGUIController.h \
-           src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.h \
-           src/main_window/TmpDirChangeDialogController.h \
+           src/utils/MultilingualHtmlView.h \
            src/welcome_page/WelcomePageController.h \
            src/welcome_page/WelcomePageMdi.h \
            src/welcome_page/WelcomePageWidget.h
@@ -59,11 +60,16 @@ FORMS += src/app_settings/directories_settings/ui/DirectoriesSettingsWidget.ui \
          src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
          src/project_support/ui/SaveProjectDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
-         src/shtirlitz/ui/StatisticalReport.ui \
-         src/welcome_page/ui/WelcomePageWidget.ui
+         src/shtirlitz/ui/StatisticalReport.ui
 SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
            src/app_settings/AppSettingsGUIImpl.cpp \
+           src/app_settings/directories_settings/DirectoriesSettingsGUIController.cpp \
+           src/app_settings/format_settings/FormatSettingsGUIController.cpp \
+           src/app_settings/logview_settings/LogSettingsGUIController.cpp \
+           src/app_settings/network_settings/NetworkSettingsGUIController.cpp \
+           src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \
+           src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp \
            src/main_window/AboutDialogController.cpp \
            src/main_window/SplashScreen.cpp \
            src/main_window/CheckUpdatesTask.cpp \
@@ -72,6 +78,7 @@ SOURCES += src/Main.cpp \
            src/main_window/MDIManagerImpl.cpp \
            src/main_window/MenuManager.cpp \
            src/main_window/ShutdownTask.cpp \
+           src/main_window/TmpDirChangeDialogController.cpp \
            src/main_window/ToolBarManager.cpp \
            src/plugin_viewer/PluginViewerController.cpp \
            src/plugin_viewer/PluginViewerImpl.cpp \
@@ -92,13 +99,7 @@ SOURCES += src/Main.cpp \
            src/shtirlitz/StatisticalReportController.cpp \
            src/task_view/TaskStatusBar.cpp \
            src/task_view/TaskViewController.cpp \
-           src/app_settings/directories_settings/DirectoriesSettingsGUIController.cpp \
-           src/app_settings/format_settings/FormatSettingsGUIController.cpp \
-           src/app_settings/logview_settings/LogSettingsGUIController.cpp \
-           src/app_settings/network_settings/NetworkSettingsGUIController.cpp \
-           src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \
-           src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp \
-           src/main_window/TmpDirChangeDialogController.cpp \
+           src/utils/MultilingualHtmlView.cpp \
            src/welcome_page/WelcomePageController.cpp \
            src/welcome_page/WelcomePageMdi.cpp \
            src/welcome_page/WelcomePageWidget.cpp

@@ -20,8 +20,9 @@
  */
 
 #include "WelcomePageWidget.h"
-
 #include "WelcomePageMdi.h"
+
+#include <QVBoxLayout>
 
 namespace U2 {
 

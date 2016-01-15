@@ -26,15 +26,19 @@
 
 namespace U2 {
 
+class MultilingualHtmlView;
+
 class StatisticalReportController : public QDialog, public Ui_StatisticalReport {
     Q_OBJECT
 public:
     StatisticalReportController(const QString &newHtmlFilepath);
     bool isInfoSharingAccepted() const;
+
 protected:
     void paintEvent(QPaintEvent *event);
-private slots:
-void sl_onAnchorClicked(const QUrl &url);
+
+private:
+    MultilingualHtmlView*   htmlView;
 };
 
 }

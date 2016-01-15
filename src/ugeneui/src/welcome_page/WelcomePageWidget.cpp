@@ -44,13 +44,11 @@ namespace {
 }
 
 WelcomePageWidget::WelcomePageWidget(QWidget *parent, WelcomePageController *controller)
-: QWidget(parent), loaded(false), controller(controller)
+    : MultilingualHtmlView(":ugene/html/welcome_page.html", parent),
+      loaded(false),
+      controller(controller)
 {
-    setupUi(this);
-    webView->setContextMenuPolicy(Qt::NoContextMenu);
-    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    loadPage();
-    webView->installEventFilter(this);
+    installEventFilter(this);
 }
 
 bool WelcomePageWidget::isLoaded() const {
@@ -58,45 +56,24 @@ bool WelcomePageWidget::isLoaded() const {
 }
 
 void WelcomePageWidget::sl_loaded(bool ok) {
-    disconnect(webView, SIGNAL(loadFinished(bool)), this, SLOT(sl_loaded(bool)));
-    SAFE_POINT(ok, "Can not load page", );
+    MultilingualHtmlView::sl_loaded(ok);
     loaded = true;
-    webView->page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
 
-    QString lang;
-    Settings* s = AppContext::getSettings();
-    SAFE_POINT(s != NULL, "AppContext settings is NULL", );
-    lang = s->getValue("UGENE_CURR_TRANSL", "en").toString();
-    webView->page()->mainFrame()->evaluateJavaScript(QString("updateLanguage('%1')").arg(lang));
-
+    page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
     controller->onPageLoaded();
-}
-
-void WelcomePageWidget::loadPage() {
-    QFile file(":ugene/html/welcome_page.html");
-    bool opened = file.open(QIODevice::ReadOnly);
-    SAFE_POINT(opened, "Can not load Welcome Page", );
-
-    QTextStream stream(&file);
-    stream.setCodec("UTF-8");
-    QString html = stream.readAll();
-    file.close();
-
-    connect(webView, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
-    webView->page()->mainFrame()->setHtml(html);
 }
 
 void WelcomePageWidget::updateRecent(const QStringList &recentProjects, const QStringList &recentFiles) {
     updateRecentFilesContainer("recent_projects", recentProjects, tr("No opened projects yet"));
     updateRecentFilesContainer("recent_files", recentFiles, tr("No opened files yet"));
-    webView->page()->mainFrame()->evaluateJavaScript("updateLinksVisibility()");
+    page()->mainFrame()->evaluateJavaScript("updateLinksVisibility()");
 }
 
 void WelcomePageWidget::updateRecentFilesContainer(const QString &id, const QStringList &files, const QString &message) {
     static const QString divTemplate = "<div id=\"%1\" class=\"recent_items_content\">%2</div>";
     static const QString linkTemplate = "<a class=\"recentLink\" href=\"#\" onclick=\"ugene.openFile('%1')\" title=\"%1\">- %2</a>";
 
-    QWebElement doc = webView->page()->mainFrame()->documentElement();
+    QWebElement doc = page()->mainFrame()->documentElement();
     QWebElement recentFilesDiv = doc.findFirst("#" + id);
     SAFE_POINT(!recentFilesDiv.isNull(), "No recent files container", );
     recentFilesDiv.removeAllChildren();
@@ -128,7 +105,7 @@ void WelcomePageWidget::dragMoveEvent(QDragMoveEvent *event) {
 }
 
 bool WelcomePageWidget::eventFilter(QObject *watched, QEvent *event) {
-    CHECK(webView == watched, false);
+    CHECK(this == watched, false);
     switch (event->type()) {
         case QEvent::DragEnter:
             dragEnterEvent(dynamic_cast<QDragEnterEvent*>(event));
