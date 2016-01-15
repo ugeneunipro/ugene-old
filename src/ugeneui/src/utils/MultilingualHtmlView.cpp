@@ -27,6 +27,7 @@
 
 #include <QDesktopServices>
 #include <QFile>
+#include <QTextStream>
 #include <QWebElement>
 #include <QWebElementCollection>
 #include <QWebFrame>
