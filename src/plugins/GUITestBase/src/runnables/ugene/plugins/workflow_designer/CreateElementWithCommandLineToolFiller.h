@@ -22,22 +22,17 @@
 #ifndef _U2_GT_CREATE_ELEMENT_WITH_COMMAND_LINE_TOOL_FILLER_H_
 #define _U2_GT_CREATE_ELEMENT_WITH_COMMAND_LINE_TOOL_FILLER_H_
 
-#include "utils/GTUtilsDialog.h"
+#include <QApplication>
+#include <QTableView>
 
-#include <primitives/GTComboBox.h>
 #include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTLineEdit.h>
 #include <drivers/GTMouseDriver.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
 #include <primitives/GTTableView.h>
 #include <primitives/GTWidget.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTableView>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTableView>
-#endif
+#include <utils/GTThread.h>
+#include <utils/GTUtilsDialog.h>
 
 namespace U2 {
 using namespace HI;
@@ -99,6 +94,7 @@ private:
     void setType(QTableView *table, int row, const DataType &type) {
         GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os, table, 1, row));
         GTMouseDriver::doubleClick(os);
+        GTThread::waitForMainThread(os);
 
         QComboBox* box = qobject_cast<QComboBox*>(QApplication::focusWidget());
         GTComboBox::setIndexWithText(os, box, dataTypeToString(type));
