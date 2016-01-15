@@ -10,12 +10,19 @@ DEFINES+= QT_FATAL_ASSERT BUILDING_U2TEST_DLL
 LIBS += -L../../_release -lU2Core -lhumimit
 INCLUDEPATH += ../../libs_3rdparty/humimit/src
 
+if(exclude_list_enabled()|!exists( ../../libs_3rdparty/humimit/humimit.pro )) {
+    LIBS -= -lhumimit
+}
+
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
         LIBS -= -L../../_release -lU2Core -lhumimit
         LIBS += -L../../_debug -lU2Cored -lhumimitd
+        if(exclude_list_enabled()|!exists( ../../libs_3rdparty/humimit/humimit.pro ))  {
+            LIBS -= -lhumimitd
+        }
     }
 
     CONFIG(release, debug|release) {

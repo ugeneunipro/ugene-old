@@ -103,8 +103,10 @@
 #include <U2Remote/DistributedComputingUtil.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
+#ifndef HI_EXCLUDED
 #include <U2Test/UGUITestBase.h>
 #include <U2Test/GUITestService.h>
+#endif //HI_EXCLUDED
 #include <U2Test/XMLTestFormat.h>
 
 #include <U2View/AnnotHighlightWidgetFactory.h>
@@ -671,9 +673,10 @@ int main(int argc, char **argv)
 
     AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
     appContext->setAutoAnnotationsSupport(aaSupport);
-
+#ifndef HI_EXCLUDED
     UGUITestBase *tb = new UGUITestBase();
     appContext->setGUITestBase(tb);
+#endif //HI_EXCLUDED
 
     AppFileStorage *appFileStorage = new AppFileStorage();
     U2OpStatusImpl os;
@@ -705,11 +708,12 @@ int main(int argc, char **argv)
     }
 
     registerCoreServices();
-
+#ifndef HI_EXCLUDED
     if ( envList.contains(ENV_GUI_TEST+QString("=1")) ) {
         GUITestService *guiTestService = new GUITestService();
         Q_UNUSED(guiTestService);
     }
+#endif //HI_EXCLUDED
 
     GReportableCounter launchCounter("ugeneui launch", "", 1);
     ++launchCounter.totalCount;
@@ -765,8 +769,10 @@ int main(int argc, char **argv)
     appContext->setProjectFilterTaskRegistry(NULL);
     delete projectFilterTaskRegistry;
 
+#ifndef HI_EXCLUDED
     appContext->setGUITestBase(NULL);
     delete tb;
+#endif //HI_EXCLUDED
 
     appContext->setRecentlyDownloadedCache(NULL);
     delete rdc;

@@ -18,6 +18,9 @@ macx : INCLUDEPATH += /System/Library/Frameworks/Security.framework/Headers
 
 LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
 macx: LIBS += /System/Library/Frameworks/Security.framework/Security
+if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
+    LIBS -= -lhumimit
+}
 
 !debug_and_release|build_pass {
 
@@ -30,6 +33,9 @@ macx: LIBS += /System/Library/Frameworks/Security.framework/Security
         OBJECTS_DIR=_tmp/obj/debug
         LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
         LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Viewd -lU2Testd -lU2Remoted -lU2Langd -lU2Privated -lugenedbd -lbreakpadd -lhumimitd
+        if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
+            LIBS -= -lhumimitd
+        }
     }
 
     CONFIG(release, debug|release) {

@@ -102,7 +102,18 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/perf_monitor
     SUBDIRS -= src/plugins/GUITestBase
     SUBDIRS -= src/plugins/api_tests
+    SUBDIRS -= src/libs_3rdparty/humimit
 }
+
+if(exists( ./src/libs_3rdparty/humimit/humimit.pro ):!exclude_list_enabled()) {
+      message( "HumImit exists, enable GUI testing..." )
+}
+!exists( ./src/libs_3rdparty/humimit/humimit.pro ){
+    DEFINES += HI_EXCLUDED
+    SUBDIRS -= src/plugins/GUITestBase
+    SUBDIRS -= src/libs_3rdparty/humimit
+}
+
 without_non_free() {
     SUBDIRS -= src/plugins_3rdparty/psipred
     SUBDIRS -= src/plugins_3rdparty/phylip
