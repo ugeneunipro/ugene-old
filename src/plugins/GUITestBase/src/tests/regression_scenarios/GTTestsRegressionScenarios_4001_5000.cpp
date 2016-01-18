@@ -21,6 +21,7 @@
 
 #include <QFile>
 #include <QListWidget>
+#include <QMainWindow>
 #include <QPlainTextEdit>
 #include <QTableView>
 #include <QWebElement>
@@ -33,6 +34,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/DetView.h>
+#include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/MSAGraphOverview.h>
 
@@ -4240,6 +4242,52 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
 #else
     CHECK_SET_ERR(c.name() == "#ededed", "Second check: simple overview has wrong color. Expected: #ededed, Found: " + c.name());
 #endif
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4764) {
+    //1. Open "COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Add some gaps
+    GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(5, 5));
+    GTKeyboardDriver::keyClick(os, ' ');
+    GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(5, 6));
+    GTKeyboardDriver::keyClick(os, ' ');
+    GTKeyboardDriver::keyClick(os, ' ');
+    GTKeyboardDriver::keyClick(os, ' ');
+
+    //3. Select region with edited sequences, one of sequences should starts with gap
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5,5), QPoint(16, 9));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy formatted"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+    
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    QWidget *nameListWidget = editor->getUI()->getEditorNameList();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Paste"));
+    GTWidget::click(os, nameListWidget, Qt::RightButton);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getNameList(os).size() == 23, "Number of sequences should be 26");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 18), QPoint(11, 27));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy selection"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+
+    QString expectedClipboard = "-CTACTAATTCG\n---TTATTAATT\nTTGCTAATTCGA\nTTATTAATCCGG\nCTATTAATTCGA";
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    QString clipboardText = GTClipboard::text(os);
+    GTWidget::click(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(clipboardText == expectedClipboard, "expected test didn't equal to actual");
+
+    GTGlobals::sleep(11000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4784_1) {
