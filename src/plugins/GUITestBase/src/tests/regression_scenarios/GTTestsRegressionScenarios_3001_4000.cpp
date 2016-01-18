@@ -3060,7 +3060,7 @@ GUI_TEST_CLASS_DEFINITION(test_3472) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);//needed for windows
 
     GTWidget::setFocus(os, outputFilePathEdit);
 #ifndef Q_OS_MAC
