@@ -213,10 +213,8 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
 void MSAEditorNameList::buildMenu(QMenu* m, bool staticMenu) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu not found", );
-    if (staticMenu) {
-        editMenu->insertAction(editMenu->actions().last(), removeSequenceMainMenuAction);
-    }
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
+        editMenu->insertAction(editMenu->actions().last(), removeSequenceMainMenuAction);
         return;
     }
 
