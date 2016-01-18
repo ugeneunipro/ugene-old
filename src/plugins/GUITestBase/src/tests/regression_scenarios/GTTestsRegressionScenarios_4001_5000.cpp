@@ -4260,7 +4260,8 @@ GUI_TEST_CLASS_DEFINITION(test_4764) {
 
     //3. Select region with edited sequences, one of sequences should starts with gap
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5,5), QPoint(16, 9));
-
+    
+    //4. Copy this subalignment
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy formatted"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     GTGlobals::sleep();
@@ -4269,6 +4270,7 @@ GUI_TEST_CLASS_DEFINITION(test_4764) {
     MSAEditor* editor = mw->findChild<MSAEditor*>();
     QWidget *nameListWidget = editor->getUI()->getEditorNameList();
 
+    //5. Open conext menu by right clicking "Name list area". Paste this subaliment throu context menu {Copy/Paste->Paste}
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Paste"));
     GTWidget::click(os, nameListWidget, Qt::RightButton);
     GTGlobals::sleep();
@@ -4280,6 +4282,7 @@ GUI_TEST_CLASS_DEFINITION(test_4764) {
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     GTGlobals::sleep();
 
+    //Expected state subalignment pasted correctly
     QString expectedClipboard = "-CTACTAATTCG\n---TTATTAATT\nTTGCTAATTCGA\nTTATTAATCCGG\nCTATTAATTCGA";
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
