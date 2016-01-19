@@ -4990,14 +4990,24 @@ GUI_TEST_CLASS_DEFINITION(test_4886) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4908) {
-    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0));
-    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
+    //1. Open s file with multiple sequences
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "DNA.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
+    //2. Select the first sequence and add data to the clipboard
+    ADVSingleSequenceWidget *firstSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 0);
+    GTWidget::click(os, firstSeqWidget);
+    GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
-    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os, 1));
+
+    //3. While the data is been pasted, select the second sequence
+    ADVSingleSequenceWidget *secondSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 1);
+    GTWidget::click(os, secondSeqWidget);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Check if the data is pasted to the first sequence
     int len = GTUtilsSequenceView::getSequenceAsString(os, 0).length();
     CHECK_SET_ERR(len > 199950, "No sequences pasted");
 }
