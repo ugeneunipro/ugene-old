@@ -268,6 +268,7 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
         setError("Unknown format");
         return;
     }
+    TaskWatchdog::trackResourceExistence(maObj, this, tr("A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available."));
     DocumentFormat* format = detectedFormats.first().format;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileWithSequencesOrProfile));
     loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesOrProfile, iof);
@@ -393,8 +394,6 @@ void MuscleGObjectTask::prepare() {
         stateInfo.setError("object_is_state_locked");
         return;
     }
-
-    TaskWatchdog::trackResourceExistence(obj, this, tr("A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available."));
 
     lock = new StateLock(MUSCLE_LOCK_REASON);
     obj->lockState(lock);
