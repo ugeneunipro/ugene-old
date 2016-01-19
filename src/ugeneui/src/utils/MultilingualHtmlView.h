@@ -30,6 +30,7 @@ class MultilingualHtmlView : public QWebView {
     Q_OBJECT
 public:
     MultilingualHtmlView(const QString& htmlPath, QWidget* parent = NULL);
+    bool isLoaded() const;
 
 protected slots:
     virtual void sl_loaded(bool ok);
@@ -40,6 +41,7 @@ signals:
 
 private:
     void loadPage(const QString& htmlPath);
+    bool loaded;
 };
 
 } // namespace

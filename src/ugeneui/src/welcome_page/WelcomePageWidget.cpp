@@ -45,22 +45,16 @@ namespace {
 
 WelcomePageWidget::WelcomePageWidget(QWidget *parent, WelcomePageController *controller)
     : MultilingualHtmlView(":ugene/html/welcome_page.html", parent),
-      loaded(false),
       controller(controller)
 {
     installEventFilter(this);
-}
-
-bool WelcomePageWidget::isLoaded() const {
-    return loaded;
+    setObjectName("webView");
+    addController();
 }
 
 void WelcomePageWidget::sl_loaded(bool ok) {
     MultilingualHtmlView::sl_loaded(ok);
-    loaded = true;
-
-    page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
-    controller->onPageLoaded();
+    addController();
 }
 
 void WelcomePageWidget::updateRecent(const QStringList &recentProjects, const QStringList &recentFiles) {
@@ -90,6 +84,11 @@ void WelcomePageWidget::updateRecentFilesContainer(const QString &id, const QStr
         result = links.join("\n");
     }
     recentFilesDiv.setOuterXml(divTemplate.arg(id).arg(result));
+}
+
+void WelcomePageWidget::addController() {
+    page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
+    controller->onPageLoaded();
 }
 
 void WelcomePageWidget::dragEnterEvent(QDragEnterEvent *event) {

@@ -36,15 +36,21 @@
 namespace U2 {
 
 MultilingualHtmlView::MultilingualHtmlView(const QString& htmlPath, QWidget* parent)
-    : QWebView(parent) {
+    : QWebView(parent),
+      loaded(false) {
     setContextMenuPolicy(Qt::NoContextMenu);
     loadPage(htmlPath);
     page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 }
 
+bool MultilingualHtmlView::isLoaded() const {
+    return loaded;
+}
+
 void MultilingualHtmlView::sl_loaded(bool ok) {
     disconnect(this, SIGNAL(loadFinished(bool)), this, SLOT(sl_loaded(bool)));
     SAFE_POINT(ok, "Can not load page", );
+    loaded = true;
 
     Settings* s = AppContext::getSettings();
     SAFE_POINT(s != NULL, "AppContext settings is NULL", );

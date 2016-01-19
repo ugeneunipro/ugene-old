@@ -34,7 +34,6 @@ public:
     WelcomePageWidget(QWidget *parent, WelcomePageController *controller);
 
     void updateRecent(const QStringList &recentProjects, const QStringList &recentFiles);
-    bool isLoaded() const;
     bool eventFilter(QObject *watched, QEvent *event);
 
 protected:
@@ -46,8 +45,8 @@ private slots:
     void sl_loaded(bool ok);
 
 private:
-    void loadPage();
     void updateRecentFilesContainer(const QString &id, const QStringList &files, const QString &message);
+    void addController();
 
 private:
     bool loaded;
