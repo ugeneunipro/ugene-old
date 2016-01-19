@@ -217,6 +217,7 @@ void GTUtilsWorkflowDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algN
     GT_CHECK(tabs!=NULL, "tabs widget not found");
 
     GTTabWidget::setCurrentIndex(os,tabs,0);
+    GTGlobals::sleep(500);
 
     QTreeWidgetItem *alg = findTreeItem(os, algName, algoriths, exactMatch);
     GTGlobals::sleep(100);
@@ -246,6 +247,7 @@ void GTUtilsWorkflowDesigner::selectAlgorithm(HI::GUITestOpStatus &os, QTreeWidg
     GTGlobals::sleep(500);
 
     algorithm->treeWidget()->scrollToItem(algorithm, QAbstractItemView::PositionAtCenter);
+    GTGlobals::sleep(200);
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
 }
 #undef GT_METHOD_NAME

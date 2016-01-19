@@ -3843,6 +3843,8 @@ GUI_TEST_CLASS_DEFINITION(test_4710){
 
     GTGlobals::sleep();
     CHECK_SET_ERR(initTabName == finalTabName, "tab name changed. Initial: " + initTabName + ", actual: " + finalTabName);
+    AppContext::getTaskScheduler()->cancelAllTasks();
+    GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4710_1){

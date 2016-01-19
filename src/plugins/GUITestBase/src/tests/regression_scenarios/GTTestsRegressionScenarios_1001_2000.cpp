@@ -4467,6 +4467,7 @@ GUI_TEST_CLASS_DEFINITION(test_1432) {
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Sequence Marker");
+    GTGlobals::sleep(1000);
 
     QToolButton* addButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "addButton"));
     CHECK_SET_ERR( addButton != NULL, "AddButton not found!");
