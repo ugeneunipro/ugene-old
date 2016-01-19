@@ -58,20 +58,22 @@ using namespace HI;
 
 GUI_TEST_CLASS_DEFINITION(pre_action_0000) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
+
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
+
     GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
+
 #ifndef Q_OS_WIN
     GTMouseDriver::release(os, Qt::RightButton);
     GTMouseDriver::release(os);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
+    uiLog.trace(QString("pre_action_0000: next keyboard modifiers are pressed before test: %1").arg(QGuiApplication::queryKeyboardModifiers()));
 #endif
-#ifdef Q_OS_MAC
-    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-#endif
+
     GTUtilsDialog::startHangChecking(os);
 }
 
@@ -156,6 +158,8 @@ GUI_TEST_CLASS_DEFINITION(post_action_0000) {
     if (modifiers & Qt::AltModifier) {
         GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
     }
+
+    uiLog.trace(QString("post_action_0000: next keyboard modifiers are pressed after test: %1").arg(QGuiApplication::queryKeyboardModifiers()));
 }
 
 GUI_TEST_CLASS_DEFINITION(post_action_0001) {
