@@ -1952,11 +1952,11 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     SAFE_POINT(editMenu != NULL, "editMenu", );
 
     QList<QAction*> actions;
-    actions << delSelectionAction << insSymAction << replaceCharacterAction << reverseComplementAction << reverseAction << complementAction << delColAction << removeAllGapsAction;
+    actions << insSymAction << replaceCharacterAction << reverseComplementAction << reverseAction << complementAction << delColAction << removeAllGapsAction;
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
-
+    editMenu->insertAction(editMenu->actions().first(), delSelectionAction);
     if (rect().contains(mapFromGlobal(QCursor::pos()))) {
         editMenu->addActions(actions);
         copyMenu->addAction(ui->getCopySelectionAction());
