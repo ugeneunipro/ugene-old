@@ -53,7 +53,7 @@ namespace U2 {
 namespace LocalWorkflow {
 
 
-const QString CallVariantsWorkerFactory::ACTOR_ID("call_variants"); 
+const QString CallVariantsWorkerFactory::ACTOR_ID("call_variants");
 
 static const QString REF_SEQ_PORT_ID("ref-seq-port-id");
 static const QString ASSEMBLY_PORT_ID("assembly-port-id");
@@ -133,7 +133,7 @@ public:
                 }
             }
         }
-            
+
         return true;
     }
 protected:
@@ -143,12 +143,12 @@ protected:
 
 void CallVariantsWorkerFactory::init() {
     //port descriptor
-    QList<PortDescriptor*> p; 
+    QList<PortDescriptor*> p;
     {
         QMap<Descriptor, DataTypePtr> refSeqMap;
         refSeqMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr inSet(new MapDataType(REF_SEQ_PORT_ID, refSeqMap));
-        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), CallVariantsWorker::tr("Input sequences"), 
+        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), CallVariantsWorker::tr("Input sequences"),
             CallVariantsWorker::tr("A nucleotide reference sequence."));
         p << new PortDescriptor(id, inSet, true);
 
@@ -156,7 +156,7 @@ void CallVariantsWorkerFactory::init() {
         assMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         assMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr inAssemblySet(new MapDataType(ASSEMBLY_PORT_ID, assMap));
-        Descriptor idA(BasePorts::IN_ASSEMBLY_PORT_ID(), CallVariantsWorker::tr("Input assembly"), 
+        Descriptor idA(BasePorts::IN_ASSEMBLY_PORT_ID(), CallVariantsWorker::tr("Input assembly"),
             CallVariantsWorker::tr("Position sorted alignment file"));
         p << new PortDescriptor(idA, inAssemblySet, true, false, IntegralBusPort::BLIND_INPUT);
 
@@ -164,13 +164,13 @@ void CallVariantsWorkerFactory::init() {
         varMap[BaseSlots::VARIATION_TRACK_SLOT()] = BaseTypes::VARIATION_TRACK_TYPE();
         varMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outVariants(new MapDataType("variants", varMap));
-        Descriptor idV(BasePorts::OUT_VARIATION_TRACK_PORT_ID(), CallVariantsWorker::tr("Output variations"), 
+        Descriptor idV(BasePorts::OUT_VARIATION_TRACK_PORT_ID(), CallVariantsWorker::tr("Output variations"),
             CallVariantsWorker::tr("Output tracks with SNPs and short INDELs"));
         p << new PortDescriptor(idV, outVariants, false, true);
 
     }
 
-    Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMtools"), 
+    Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMtools"),
         CallVariantsWorker::tr("Calls SNPs and INDELS with SAMtools mpileup and bcftools.")
         );
 
@@ -231,7 +231,7 @@ void CallVariantsWorkerFactory::init() {
     Descriptor extq(EXTQ,
         CallVariantsWorker::tr("Gap extension error"),
         CallVariantsWorker::tr("Phred-scaled gap extension sequencing error probability. Reducing INT leads to longer indels (mpileup)(-e)."));
- 
+
     Descriptor tandemq(TANDEMQ,
         CallVariantsWorker::tr("Homopolymer errors coefficient"),
         CallVariantsWorker::tr("Coefficient for modeling homopolymer errors. Given an l-long homopolymer run, the sequencing error of an indel of size s is modeled as INT*s/l (mpileup)(-h)."));
@@ -292,7 +292,7 @@ void CallVariantsWorkerFactory::init() {
     Descriptor callGt(CALL_GT,
         CallVariantsWorker::tr("Per-sample genotypes"),
         CallVariantsWorker::tr("Call per-sample genotypes at variant sites (bcf view)(-g)."));
-    
+
     Descriptor indelFrac(INDEL_FRAC,
         CallVariantsWorker::tr("INDEL-to-SNP Ratio"),
         CallVariantsWorker::tr("Ratio of INDEL-to-SNP mutation rate (bcf view)(-i)."));
@@ -706,9 +706,14 @@ bool CallVariantsWorker::isReady() const {
     bool assemblyEnded = assemblyPort->isEnded();
     bool assemblyHasMes = (assemblyPort->hasMessage() > 0);
 
-    if (seqHasMes || assemblyHasMes) {
+    if (seqHasMes && assemblyHasMes) {
         return true;
     }
+
+    if ((seqEnded && assemblyHasMes) || (assemblyEnded && seqHasMes)) {
+        return true;
+    }
+
     return seqEnded && assemblyEnded;
 }
 
@@ -750,7 +755,6 @@ Task* CallVariantsWorker::tick() {
 
         return t;
     }
-
     return NULL;
 }
 
@@ -773,7 +777,7 @@ void CallVariantsWorker::cleanup() {
 }
 
 void CallVariantsWorker::takeAssembly(U2OpStatus &os) {
-    Message m = getMessageAndSetupScriptValues(assemblyPort);
+    Message m = assemblyPort->lookMessage();
     CHECK(!m.isEmpty(), );
 
     QVariantMap data = m.getData().toMap();
@@ -783,12 +787,18 @@ void CallVariantsWorker::takeAssembly(U2OpStatus &os) {
     }
 
     QString dataset = data[BaseSlots::DATASET_SLOT().getId()].toString();
-    if (dataset != currentDatasetName) {
+    if (currentDatasetName.isEmpty()) {
+        currentDatasetName = dataset;
+    }
+    if (currentDatasetName == dataset) {
+        assemblyUrls << data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
+        assemblyPort->get();
+    }
+    if (dataset != currentDatasetName && settings.assemblyUrls.isEmpty()) {
         settings.assemblyUrls = assemblyUrls;
         assemblyUrls.clear();
         currentDatasetName = dataset;
     }
-    assemblyUrls << data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
 }
 
 void CallVariantsWorker::takeReference(U2OpStatus &os) {
