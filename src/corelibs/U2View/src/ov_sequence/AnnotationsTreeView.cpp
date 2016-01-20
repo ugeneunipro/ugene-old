@@ -883,7 +883,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     m->insertAction(first, searchQualifierAction);
     m->insertAction(first, invertAnnotationSelectionAction);
     m->insertAction(first, renameAction);
-    m->insertAction(first, pasteAction);
+    //m->insertAction(first, pasteAction);
 
     m->insertSeparator(first);
     foreach(QAction* a, contextActions) {
