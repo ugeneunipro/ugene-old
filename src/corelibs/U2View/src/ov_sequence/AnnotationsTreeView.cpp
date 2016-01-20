@@ -163,12 +163,14 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     addColumnIcon = QIcon(":core/images/add_column.png");
     removeColumnIcon = QIcon(":core/images/remove_column.png");
 
+    /*
     pasteAction = new QAction(QIcon(":/core/images/paste.png"), tr("Paste annotations"), this);
     pasteAction->setObjectName("Paste annotations");
     pasteAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_V | Qt::ControlModifier));
     pasteAction->setShortcutContext(Qt::WidgetShortcut);
     connect(pasteAction, SIGNAL(triggered()), SLOT(sl_paste()));
     tree->addAction(pasteAction);
+    */
 
     addAnnotationObjectAction = new QAction(tr("Objects with annotations..."), this);
     connect(addAnnotationObjectAction, SIGNAL(triggered()), SLOT(sl_onAddAnnotationObjectToView()));

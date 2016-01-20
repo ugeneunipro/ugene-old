@@ -177,7 +177,7 @@ private:
     AnnotationsTreeWidget* tree;
 
     AnnotatedDNAView*   ctx;
-    QAction*            pasteAction;
+    //QAction*            pasteAction;
     QAction*            addAnnotationObjectAction;
     QAction*            removeObjectsFromViewAction;
     QAction*            removeAnnsAndQsAction;
