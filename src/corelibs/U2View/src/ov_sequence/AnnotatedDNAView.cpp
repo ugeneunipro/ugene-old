@@ -177,6 +177,12 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     SecStructPredictViewAction::createAction(this);
 }
 
+QAction * AnnotatedDNAView::createPasteAction() {
+    QAction *action = ADVClipboard::createPasteSequenceAction(this);
+    connect(action, SIGNAL(triggered()), this, SLOT(sl_paste()));
+    return action;
+}
+
 QWidget* AnnotatedDNAView::createWidget() {
     GTIMER(c1,t1,"AnnotatedDNAView::createWidget");
     assert(scrollArea == NULL);
@@ -217,6 +223,7 @@ QWidget* AnnotatedDNAView::createWidget() {
         connect(block, SIGNAL(si_titleClicked(ADVSequenceWidget*)), SLOT(sl_onSequenceWidgetTitleClicked(ADVSequenceWidget*)));
         block->setObjectName("ADV_single_sequence_widget_"+QString::number(i));
         addSequenceWidget(block);
+        block->addAction(createPasteAction());
     }
 
     mainSplitter->addWidget(annotationsView);

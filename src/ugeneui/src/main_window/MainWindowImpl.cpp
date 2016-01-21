@@ -232,6 +232,21 @@ void MainWindowImpl::close() {
     mw = NULL;
 }
 
+bool MainWindowImpl::eventFilter(QObject *object, QEvent *event) {
+    CHECK(mw == object, false);
+    CHECK(NULL != event, false);
+    CHECK(event->type() == QEvent::KeyPress, false);
+
+    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
+    CHECK(NULL != keyEvent, false);
+
+    if (keyEvent->matches(QKeySequence::Paste)) {
+        uiLog.details(tr("Application paste shortcut is triggered"));
+        emit si_paste();
+    }
+    return false;
+}
+
 void MainWindowImpl::createActions() {
     exitAction = new QAction(tr("Exit"), this);
     exitAction->setShortcutContext(Qt::WindowShortcut);
@@ -321,6 +336,7 @@ void MainWindowImpl::prepareGUI() {
     mw->setCentralWidget(mdi);
     mw->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     mw->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    mw->installEventFilter(this);
 
     toolbarManager = new MWToolBarManagerImpl(mw);
 

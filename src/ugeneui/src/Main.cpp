@@ -663,6 +663,7 @@ int main(int argc, char **argv)
 
     ProjectLoaderImpl* pli = new ProjectLoaderImpl();
     appContext->setProjectLoader(pli);
+    QObject::connect(mw, SIGNAL(si_paste()), pli, SLOT(sl_paste()));
 
     CMDLineUtils::init();
 

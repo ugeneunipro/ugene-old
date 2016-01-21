@@ -95,6 +95,7 @@ public:
 signals:
     void si_show();
     void si_showWelcomePage();
+    void si_paste();
 public slots:
     void sl_tempDirPathCheckFailed(QString  path);
 
@@ -112,7 +113,8 @@ private slots:
 #ifdef _INSTALL_TO_PATH_ACTION
     void sl_installToPathAction();
 #endif
-
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
 private:
     void createActions();
     void prepareGUI();

@@ -103,7 +103,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     pasteAction = new QAction(QIcon(":ugene/images/paste.png"), tr("Open from clipboard..."), this);
     pasteAction->setObjectName(ACTION_PROJECTSUPPORT__PASTE);
     pasteAction->setShortcut(QKeySequence::Paste);
-    pasteAction->setShortcutContext(Qt::ApplicationShortcut);
+    pasteAction->setShortcutContext(Qt::WidgetShortcut);
     connect(pasteAction, SIGNAL(triggered()), SLOT(sl_paste()));
 
     openProjectAction = new QAction(QIcon(":ugene/images/project_open.png"), tr("Open..."), this);

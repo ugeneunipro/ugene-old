@@ -235,6 +235,8 @@ private:
 
     void reverseComplementSequence(bool reverse = true, bool complement = true);
 
+    QAction * createPasteAction();
+
     QSplitter*          mainSplitter;
     QScrollArea*        scrollArea;
     QWidget*            scrolledWidget;

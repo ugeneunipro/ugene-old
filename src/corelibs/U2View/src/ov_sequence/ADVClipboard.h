@@ -52,6 +52,8 @@ public:
 
     void addCopyMenu(QMenu* m);
 
+    static QAction* createPasteSequenceAction(QObject *parent);
+
 public slots:
 
     void sl_onDNASelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
