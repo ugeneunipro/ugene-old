@@ -123,7 +123,7 @@
         <location filename="../src/ui/DotPlotFilesDialog.ui" line="62"/>
         <location filename="../src/ui/DotPlotFilesDialog.ui" line="130"/>
         <source>Gap size:</source>
-        <translation>Длина пропуска:</translation>
+        <translation>Длина пробела:</translation>
     </message>
     <message>
         <location filename="../src/ui/DotPlotFilesDialog.ui" line="79"/>
