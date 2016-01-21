@@ -120,7 +120,7 @@ RenameChomosomeInVariationWorkerFactory::RenameChomosomeInVariationWorkerFactory
 
 void RenameChomosomeInVariationWorkerFactory::init() {
     Descriptor desc(ACTOR_ID, RenameChomosomeInVariationWorker::tr("Change Chromosome Notation for VCF"),
-        RenameChomosomeInVariationWorker::tr("Changes chromosome notation for each variant from the input, VCF or other variation files."));
+        RenameChomosomeInVariationWorker::tr("Changes chromosome notation for each variant from the input VCF or other variation files."));
 
     QList<PortDescriptor*> p;
     {
@@ -142,7 +142,7 @@ void RenameChomosomeInVariationWorkerFactory::init() {
     QList<Attribute*> a;
     {
         Descriptor prefixesToReplace(TO_REPLACE_ATTR, RenameChomosomeInVariationWorker::tr("Replace prefixes"),
-            RenameChomosomeInVariationWorker::tr("Input the list of chromosome prefixes that you would like to replace. For example \"NC_000\". Separate different prefixes by semicolons."));
+            RenameChomosomeInVariationWorker::tr("Input the list of chromosome prefixes that you would like to replace, for example \"NC_000\". Separate different prefixes by semicolons."));
 
         Descriptor prefixReplaceWith(REPLACE_WITH_ATTR, RenameChomosomeInVariationWorker::tr("Replace by"),
             RenameChomosomeInVariationWorker::tr("Input the prefix that should be set instead, for example \"chr\"."));

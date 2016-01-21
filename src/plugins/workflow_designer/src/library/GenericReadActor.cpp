@@ -109,7 +109,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
             "This is helpful, for example, to avoid finding false positives at the merge boundaries."));
         Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"),
             SeqReadPrompter::tr("Reports only sequences containing the specified regular expression."
-                                "<p><i>Leave it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
+                                "<p><i>Leave it empty to switch off this filter. Use <b>*</b> to mask many symbol and use <b>?</b> to mask one symbol.</i></p>"));
         Descriptor ld(LIMIT_ATTR, SeqReadPrompter::tr("Sequence count limit"),
             SeqReadPrompter::tr("<i>Split mode</i> only."
             "<p>Read only first N sequences from each file."
@@ -147,7 +147,7 @@ GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstant
 
     setDisplayName(U2::Workflow::CoreLib::tr("Read Alignment"));
     desc = U2::Workflow::CoreLib::tr("Reads multiple sequence alignments (MSAs) from local or remote files."
-        "<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).");
+        "<p>Besides recognized alignment formats, it supports aligning from a set of sequences in a corresponding file (e.g. FASTA or Genbank).");
 
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();

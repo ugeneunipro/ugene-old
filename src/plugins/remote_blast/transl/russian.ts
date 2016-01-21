@@ -9,7 +9,7 @@
         <translation>Неудалось открыть адаптер</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="96"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="95"/>
         <source>Cannot get the request ID</source>
         <translation>Не удалось получить ID для поиска</translation>
     </message>
@@ -19,7 +19,7 @@
         <translation>Не удалось получить время ожидания</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="127"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="129"/>
         <source>The response is empty</source>
         <translation>Пустой ответ</translation>
     </message>
@@ -29,44 +29,44 @@
         <translation>Не удалось загрузить страницу. %1</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="144"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="146"/>
         <source>Database couldn&apos;t prepare the response. You can increase timeout and perform search again.</source>
         <translation>База данных не готова для запроса. Вы можете увеличить таймаут и запустить снова.</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="149"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="151"/>
         <source>CPU usage limit in BLAST was exceeded, probably query sequence is too large</source>
         <translation>Был превышен предел использования CPU в BLAST, вероятно, последовательность слишком большая</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="167"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="169"/>
         <source>Cannot read the response</source>
         <translation>Не удалось прочитать ответ</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="235"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="243"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="261"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="237"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="245"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="263"/>
         <source>Cannot get the location</source>
         <translation>Не удалось получитьь локацию</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="272"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="274"/>
         <source>Cannot get the identity</source>
         <translation>Не удалось получить идентификатор последовательности</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="280"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="282"/>
         <source>Cannot evaluate the gaps</source>
-        <translation>Не удалось вычислить пропуски</translation>
+        <translation>Не удалось вычислить пробелы</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="288"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="290"/>
         <source>Cannot get the alignment length</source>
         <translation>Не удалось получить длину выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="302"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="304"/>
         <source>Cannot evaluate the location</source>
         <translation>Не удалось вычислить локацию</translation>
     </message>
@@ -269,7 +269,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="459"/>
         <source>Gap costs</source>
-        <translation>Вес пропуска</translation>
+        <translation>Вес пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="476"/>
@@ -649,12 +649,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="85"/>
         <source>Gap costs</source>
-        <translation>Вес пропуска</translation>
+        <translation>Вес пробела</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="86"/>
         <source>Cost to create and extend a gap in an alignment.</source>
-        <translation>Стоимость создания и расширения пропуска.</translation>
+        <translation>Стоимость создания и расширения пробела.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="87"/>
@@ -894,7 +894,7 @@ p, li { white-space: pre-wrap; }
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="400"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="402"/>
         <source>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</source>
         <translation>Вы выбрали поиск нуклеотидной последовательности в протеиновой базе данных. Эта последовательность будет сконвертирована в 6 последовательностей(3 трансляции для обоих направлений).Этот поиск может занять некоторое время. Продолжить?</translation>
     </message>

@@ -557,9 +557,8 @@
         <translation>Force download the appropriate sequence</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="160"/>
         <source>DAS features</source>
-        <translation>DAS features</translation>
+        <translation type="vanished">DAS features</translation>
     </message>
 </context>
 <context>
@@ -800,8 +799,8 @@
         <translation>...</translation>
     </message>
     <message>
-        <source> export settings</source>
-        <translation type="obsolete">Export settings</translation>
+        <source>Export settings</source>
+        <translation type="vanished">Export settings</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ExportImageDialog.ui" line="56"/>
@@ -1091,24 +1090,24 @@ Remove it from the project first.</translation>
         <translation>Error! No object DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1082"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1098"/>
         <source>Confirm Deletion</source>
         <translation>Confirm Deletion</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1083"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1099"/>
         <source>Are you sure you want to delete items in Recycle Bin?
 The items cannot be recovered once deleted.</source>
         <translation>Are you sure you want to delete items in Recycle Bin?
 The items cannot be recovered once deleted.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1096"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1112"/>
         <source>Unable to Remove</source>
         <translation>Unable to Remove</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="1097"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="1113"/>
         <source>Some of selected objects are being used by the other users of the database. Try to remove them later.</source>
         <translation>Some of selected objects are being used by the other users of the database. Try to remove them later.</translation>
     </message>
@@ -1491,24 +1490,24 @@ To append data to existing file press &apos;Append&apos;.</translation>
 <context>
     <name>U2::AddDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="313"/>
-        <location filename="../src/OpenViewTask.cpp" line="327"/>
+        <location filename="../src/OpenViewTask.cpp" line="311"/>
+        <location filename="../src/OpenViewTask.cpp" line="325"/>
         <source>Opening view for document: &apos;NONAME&apos;</source>
         <translation>Opening view for document: &apos;NONAME&apos;</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="317"/>
-        <location filename="../src/OpenViewTask.cpp" line="330"/>
+        <location filename="../src/OpenViewTask.cpp" line="315"/>
+        <location filename="../src/OpenViewTask.cpp" line="328"/>
         <source>Opening view for document: %1</source>
         <translation>Opening view for document: %1</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="319"/>
+        <location filename="../src/OpenViewTask.cpp" line="317"/>
         <source>Provided document is NULL</source>
         <translation>Provided document is NULL</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="332"/>
+        <location filename="../src/OpenViewTask.cpp" line="330"/>
         <source>Document provider is NULL</source>
         <translation>Document provider is NULL</translation>
     </message>
@@ -1759,37 +1758,37 @@ complement(5..15)</translation>
 <context>
     <name>U2::DownloadRemoteFileDialog</name>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="137"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="124"/>
         <source>Select directory to save</source>
         <translation>Select directory to save</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="178"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="165"/>
         <source>Resource id is empty!</source>
         <translation>Resource id is empty!</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="184"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="171"/>
         <source>No directory selected for saving file!</source>
         <translation>No directory selected for saving file!</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="215"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="201"/>
         <source>Download remote documents</source>
         <translation>Download remote documents</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="312"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="241"/>
         <source>Hint: </source>
         <translation>Hint: </translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="313"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="242"/>
         <source>Use database unique identifier.</source>
         <translation>Use database unique identifier.</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="315"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="244"/>
         <source>You can download multiple items by separating IDs with space or semicolon.</source>
         <translation>You can download multiple items by separating IDs with space or semicolon.</translation>
     </message>
@@ -1816,23 +1815,33 @@ complement(5..15)</translation>
 <context>
     <name>U2::EditQualifierDialog</name>
     <message>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="45"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
         <location filename="../src/util/EditQualifierDialog.cpp" line="46"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="49"/>
         <source>View Qualifier</source>
         <translation>View Qualifier</translation>
     </message>
     <message>
-        <location filename="../src/util/EditQualifierDialog.cpp" line="97"/>
-        <location filename="../src/util/EditQualifierDialog.cpp" line="101"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="100"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="104"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/util/EditQualifierDialog.cpp" line="97"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="100"/>
         <source>Illegal qualifier name</source>
         <translation>Illegal qualifier name</translation>
     </message>
     <message>
-        <location filename="../src/util/EditQualifierDialog.cpp" line="101"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="104"/>
         <source>Illegal qualifier value</source>
         <translation>Illegal qualifier value</translation>
     </message>
@@ -1952,8 +1961,8 @@ complement(5..15)</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="25"/>
-        <source>Export to file:</source>
-        <translation>Export to file:</translation>
+        <source>Export to file</source>
+        <translation>Export to file</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="37"/>
@@ -1962,8 +1971,8 @@ complement(5..15)</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="49"/>
-        <source>File format:</source>
-        <translation>File format:</translation>
+        <source>File format</source>
+        <translation>File format</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="58"/>
@@ -1976,7 +1985,17 @@ complement(5..15)</translation>
         <translation>Save sequence names</translation>
     </message>
     <message>
-        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="140"/>
+        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="48"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="49"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ExportAnnotationsDialog.cpp" line="143"/>
         <source>Select file to save annotations</source>
         <translation>Select file to save annotations</translation>
     </message>
@@ -2304,52 +2323,45 @@ complement(5..15)</translation>
 <context>
     <name>U2::LoadDASDocumentsAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="355"/>
         <source>Load DAS documents and open view</source>
-        <translation>Load DAS documents and open view</translation>
+        <translation type="vanished">Load DAS documents and open view</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="373"/>
         <source>Resource ID: %1</source>
-        <translation>Resource ID: %1</translation>
+        <translation type="vanished">Resource ID: %1</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="379"/>
         <source>Converted resource ID: %2</source>
-        <translation>Converted resource ID: %2</translation>
+        <translation type="vanished">Converted resource ID: %2</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="384"/>
         <source>Resolution: </source>
-        <translation>Resolution: </translation>
+        <translation type="vanished">Resolution: </translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="386"/>
         <source>&lt;font color=&apos;%1&apos;&gt;cancelled&lt;/font&gt;</source>
-        <translation>&lt;font color=&apos;%1&apos;&gt;cancelled&lt;/font&gt;</translation>
+        <translation type="vanished">&lt;font color=&apos;%1&apos;&gt;cancelled&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="388"/>
         <source>&lt;font color=&apos;%1&apos;&gt;error&lt;/font&gt;</source>
-        <translation>&lt;font color=&apos;%1&apos;&gt;error&lt;/font&gt;</translation>
+        <translation type="vanished">&lt;font color=&apos;%1&apos;&gt;error&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="392"/>
         <source>&lt;font color=&apos;%1&apos;&gt;success&lt;/font&gt;</source>
-        <translation>&lt;font color=&apos;%1&apos;&gt;success&lt;/font&gt;</translation>
+        <translation type="vanished">&lt;font color=&apos;%1&apos;&gt;success&lt;/font&gt;</translation>
     </message>
 </context>
 <context>
     <name>U2::LoadRemoteDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="269"/>
+        <location filename="../src/OpenViewTask.cpp" line="267"/>
         <source>Cannot find %1 in %2 database</source>
         <translation>Cannot find %1 in %2 database</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="225"/>
-        <location filename="../src/OpenViewTask.cpp" line="232"/>
-        <location filename="../src/OpenViewTask.cpp" line="239"/>
+        <location filename="../src/OpenViewTask.cpp" line="223"/>
+        <location filename="../src/OpenViewTask.cpp" line="230"/>
+        <location filename="../src/OpenViewTask.cpp" line="237"/>
         <source>Load remote document and open view</source>
         <translation>Load remote document and open view</translation>
     </message>
@@ -2357,7 +2369,7 @@ complement(5..15)</translation>
 <context>
     <name>U2::LoadUnloadedDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="71"/>
+        <location filename="../src/OpenViewTask.cpp" line="69"/>
         <source>Load document: &apos;%1&apos;</source>
         <translation>Load document: &apos;%1&apos;</translation>
     </message>
@@ -2477,7 +2489,7 @@ complement(5..15)</translation>
         <translation>Rename bookmark</translation>
     </message>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="395"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="397"/>
         <source>New bookmark</source>
         <translation>New bookmark</translation>
     </message>
@@ -2485,12 +2497,12 @@ complement(5..15)</translation>
 <context>
     <name>U2::OpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="153"/>
+        <location filename="../src/OpenViewTask.cpp" line="151"/>
         <source>State is NULL</source>
         <translation>State is NULL</translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="155"/>
+        <location filename="../src/OpenViewTask.cpp" line="153"/>
         <source>GObject factory is NULL</source>
         <translation>GObject factory is NULL</translation>
     </message>
@@ -2511,7 +2523,7 @@ complement(5..15)</translation>
 <context>
     <name>U2::PasteTextTask</name>
     <message>
-        <location filename="../src/PasteController.cpp" line="205"/>
+        <location filename="../src/PasteController.cpp" line="204"/>
         <source>Cannot detect file format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2519,7 +2531,7 @@ complement(5..15)</translation>
 <context>
     <name>U2::PasteUrlsTask</name>
     <message>
-        <location filename="../src/PasteController.cpp" line="179"/>
+        <location filename="../src/PasteController.cpp" line="178"/>
         <source>Pasting of directories is not supported:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2592,108 +2604,108 @@ complement(5..15)</translation>
 <context>
     <name>U2::ProjectTreeController</name>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="946"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="962"/>
         <source>Load selected documents</source>
         <translation>Load selected documents</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="956"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="972"/>
         <source>Lock document for editing</source>
         <translation>Lock document for editing</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="960"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="976"/>
         <source>Unlock document for editing</source>
         <translation>Unlock document for editing</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="953"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="969"/>
         <source>Unload selected document</source>
         <translation>Unload selected document</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="314"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="318"/>
         <source>Import to the database...</source>
         <translation>Import to the database...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="315"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="319"/>
         <source>Import to the folder...</source>
         <translation>Import to the folder...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="721"/>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="755"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="726"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="760"/>
         <source>Unable to Restore</source>
         <translation>Unable to Restore</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="722"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="727"/>
         <source>UGENE is unable to restore some object from Recycle Bin because its original location does not exist. You can still restore the objects by dragging them with mouse from Recycle Bin.</source>
         <translation>UGENE is unable to restore some object from Recycle Bin because its original location does not exist. You can still restore the objects by dragging them with mouse from Recycle Bin.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="756"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="761"/>
         <source>UGENE is unable to restore some folder from Recycle Bin because its original location does not exist. You can still restore the folders by dragging them with mouse from Recycle Bin.</source>
         <translation>UGENE is unable to restore some folder from Recycle Bin because its original location does not exist. You can still restore the folders by dragging them with mouse from Recycle Bin.</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="822"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="827"/>
         <source>Select a database to import anything</source>
         <translation>Select a database to import anything</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="936"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="952"/>
         <source>Add object to document...</source>
         <translation>Add object to document...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="941"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="957"/>
         <source>Import...</source>
         <translation>Import...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="964"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="980"/>
         <source>Rename...</source>
         <translation>Rename...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="968"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="984"/>
         <source>Remove selected items</source>
         <translation>Remove selected items</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="974"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="990"/>
         <source>Add folder...</source>
         <translation>Add folder...</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="979"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="995"/>
         <source>Restore selected items</source>
         <translation>Restore selected items</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="983"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="999"/>
         <source>Empty recycle bin</source>
         <translation>Empty recycle bin</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="540"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="544"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="555"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="559"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="863"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="868"/>
         <source>No object to add to view</source>
         <translation>No object to add to view</translation>
     </message>
     <message>
-        <location filename="../src/util/project/ProjectTreeController.cpp" line="869"/>
+        <location filename="../src/util/project/ProjectTreeController.cpp" line="874"/>
         <source>No object to remove from view</source>
         <translation>No object to remove from view</translation>
     </message>
@@ -3052,42 +3064,42 @@ check connection settings</translation>
 <context>
     <name>U2::ToolsMenu</name>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="106"/>
+        <location filename="../src/ToolsMenu.cpp" line="108"/>
         <source>Sanger data analysis</source>
         <translation>Sanger data analysis</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="116"/>
+        <location filename="../src/ToolsMenu.cpp" line="118"/>
         <source>NGS data analysis</source>
         <translation>NGS data analysis</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="143"/>
+        <location filename="../src/ToolsMenu.cpp" line="145"/>
         <source>BLAST</source>
         <translation>BLAST</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="157"/>
+        <location filename="../src/ToolsMenu.cpp" line="159"/>
         <source>Multiple sequence alignment</source>
         <translation>Multiple sequence alignment</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="169"/>
+        <location filename="../src/ToolsMenu.cpp" line="171"/>
         <source>Cloning</source>
         <translation>Cloning</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="177"/>
+        <location filename="../src/ToolsMenu.cpp" line="179"/>
         <source>Primer</source>
         <translation>Primer</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="183"/>
+        <location filename="../src/ToolsMenu.cpp" line="185"/>
         <source>Search for TFBS</source>
         <translation>Search for TFBS</translation>
     </message>
     <message>
-        <location filename="../src/ToolsMenu.cpp" line="192"/>
+        <location filename="../src/ToolsMenu.cpp" line="194"/>
         <source>HMMER tools</source>
         <translation>HMMER tools</translation>
     </message>

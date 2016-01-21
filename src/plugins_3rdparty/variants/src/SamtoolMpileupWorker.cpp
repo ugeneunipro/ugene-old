@@ -194,12 +194,12 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Disable BAQ computation"),
         CallVariantsWorker::tr("Disable probabilistic realignment for the computation of base "
         "alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. "
-        "Applying this option greatly helps to reduce false SNPs caused by misalignments (mpileup)(-B)."));
+        "Applying this option greatly helps to reduce false SNPs caused by misalignments. (mpileup)(-B)."));
 
     Descriptor capqThres(CAPQ_THRES,
         CallVariantsWorker::tr("Mapping quality downgrading coefficient"),
         CallVariantsWorker::tr("Coefficient for downgrading mapping quality for reads containing excessive mismatches. "
-        "Given a read with a phred-scaled probability q of being generated from the mapped position, the new mapping quality "
+        "Given a read with a phred-scaled mapping quality q of being generated from the mapped position, the new mapping quality "
         "is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C)."));
 
     Descriptor maxDepth(MAX_DEPTH,
@@ -328,7 +328,7 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Number of permutations for association test (effective only with -1) (bcf view)(-U)."));
 
     Descriptor min_perm_p(MIN_PERM_P,
-        CallVariantsWorker::tr("Min P(chi^2)"),
+        CallVariantsWorker::tr("Max P(chi^2)"),
         CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations) (bcf view)(-X)."));
 
     //varFilter

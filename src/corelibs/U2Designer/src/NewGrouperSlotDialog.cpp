@@ -20,6 +20,7 @@
 */
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Lang/BaseTypes.h>
 
@@ -35,6 +36,8 @@ NewGrouperSlotDialog::NewGrouperSlotDialog(QWidget *parent, QList<Descriptor> &i
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466484");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     foreach (const Descriptor &d, inSlots) {
         slotBox->addItem(d.getDisplayName(), d.getId());
@@ -103,8 +106,10 @@ AnnsActionDialog::AnnsActionDialog(QWidget *parent, GrouperSlotAction *action, Q
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466484");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    slotBox->addItem(tr("<Don't shift>"));
+    slotBox->addItem(tr("Don't shift"));
     foreach (const QString &slot, mergeSeqSlots) {
         slotBox->addItem(slot);
     }
@@ -148,6 +153,8 @@ SequeceActionDialog::SequeceActionDialog(QWidget *parent, GrouperSlotAction *act
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466484");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     if (NULL != action) {
         if (ActionTypes::MERGE_SEQUENCE == action->getType()) {
@@ -211,6 +218,8 @@ MsaActionDialog::MsaActionDialog(QWidget *parent, GrouperSlotAction *action)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466484");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (NULL != action) {
         assert(ActionTypes::MERGE_MSA == action->getType());
         if (action->hasParameter(ActionParameters::MSA_NAME)) {
@@ -243,6 +252,8 @@ StringActionDialog::StringActionDialog(QWidget *parent, GrouperSlotAction *actio
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466484");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (NULL != action) {
         assert(ActionTypes::MERGE_STRING == action->getType());
         if (action->hasParameter(ActionParameters::SEPARATOR)) {

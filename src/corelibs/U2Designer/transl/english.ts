@@ -635,9 +635,23 @@ Set up the directory:</translation>
 <context>
     <name>U2::AnnsActionDialog</name>
     <message>
-        <location filename="../src/NewGrouperSlotDialog.cpp" line="107"/>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="109"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="110"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="112"/>
+        <source>Don&apos;t shift</source>
+        <translation>Don&apos;t shift</translation>
+    </message>
+    <message>
         <source>&lt;Don&apos;t shift&gt;</source>
-        <translation>&lt;Don&apos;t shift&gt;</translation>
+        <translation type="vanished">&lt;Don&apos;t shift&gt;</translation>
     </message>
 </context>
 <context>
@@ -754,34 +768,34 @@ bowtie index file</translation>
 <context>
     <name>U2::DatasetsListWidget</name>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="50"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="51"/>
         <source>Add dataset</source>
         <translation>Add dataset</translation>
     </message>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="91"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="94"/>
         <source>Enter Dataset Name</source>
         <translation>Enter Dataset Name</translation>
     </message>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="92"/>
-        <location filename="../src/DatasetsListWidget.cpp" line="123"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="95"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="127"/>
         <source>New dataset name:</source>
         <translation>New dataset name:</translation>
     </message>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="102"/>
-        <location filename="../src/DatasetsListWidget.cpp" line="132"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="105"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="136"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="122"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="126"/>
         <source>Rename Dataset</source>
         <translation>Rename Dataset</translation>
     </message>
     <message>
-        <location filename="../src/DatasetsListWidget.cpp" line="142"/>
+        <location filename="../src/DatasetsListWidget.cpp" line="146"/>
         <source>Rename dataset</source>
         <translation>Rename dataset</translation>
     </message>
@@ -813,13 +827,23 @@ bowtie index file</translation>
 <context>
     <name>U2::EditMarkerDialog</name>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="405"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="401"/>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="402"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="410"/>
         <source>Create Marker</source>
         <translation>Create Marker</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="443"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="448"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="453"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -827,53 +851,63 @@ bowtie index file</translation>
 <context>
     <name>U2::EditMarkerGroupDialog</name>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="81"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="46"/>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="47"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="84"/>
         <source>Create Marker Group</source>
         <translation>Create Marker Group</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="184"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="285"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="292"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="297"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="187"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="288"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="295"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="300"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="184"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="187"/>
         <source>You can not remove the required marker &quot;rest&quot;</source>
         <translation>You can not remove the required marker &quot;rest&quot;</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="203"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="206"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="203"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="206"/>
         <source>Are you really want to change marker&apos;s type? Some data can be lost!</source>
         <translation>Are you really want to change marker&apos;s type? Some data can be lost!</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="235"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="259"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="238"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="262"/>
         <source>Marker&apos;s name contains a comma symbol: &quot;%1&quot;. It is not permitted for marker names</source>
         <translation>Marker&apos;s name contains a comma symbol: &quot;%1&quot;. It is not permitted for marker names</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="241"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="264"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="244"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="267"/>
         <source>Duplicate marker&apos;s value: %1</source>
         <translation>Duplicate marker&apos;s value: %1</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="248"/>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="269"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="251"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="272"/>
         <source>Duplicate marker&apos;s name: %1</source>
         <translation>Duplicate marker&apos;s name: %1</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="285"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="288"/>
         <source>Parameter &apos;%1&apos; is not set</source>
         <translation>Parameter &apos;%1&apos; is not set</translation>
     </message>
@@ -967,35 +1001,58 @@ bowtie index file</translation>
 <context>
     <name>U2::MarkerListCfgModel</name>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="346"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="349"/>
         <source>Marker name</source>
         <translation>Marker name</translation>
     </message>
     <message>
-        <location filename="../src/EditMarkerGroupDialog.cpp" line="348"/>
+        <location filename="../src/EditMarkerGroupDialog.cpp" line="351"/>
         <source>Marker value</source>
         <translation>Marker value</translation>
     </message>
 </context>
 <context>
+    <name>U2::MsaActionDialog</name>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="221"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="222"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+</context>
+<context>
     <name>U2::NewGrouperSlotDialog</name>
     <message>
-        <location filename="../src/NewGrouperSlotDialog.cpp" line="50"/>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="39"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="40"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="53"/>
         <source>Empty output slot name.</source>
         <translation>Empty output slot name.</translation>
     </message>
     <message>
-        <location filename="../src/NewGrouperSlotDialog.cpp" line="52"/>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="55"/>
         <source>Invalid symbols in the output slot name. Use letters and digits only.</source>
         <translation>Invalid symbols in the output slot name. Use letters and digits only.</translation>
     </message>
     <message>
-        <location filename="../src/NewGrouperSlotDialog.cpp" line="54"/>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="57"/>
         <source>This output out slot already exists.</source>
         <translation>This output out slot already exists.</translation>
     </message>
     <message>
-        <location filename="../src/NewGrouperSlotDialog.cpp" line="60"/>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="63"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -1064,7 +1121,7 @@ bowtie index file</translation>
     <message>
         <location filename="../src/dashboard/ProblemsWidget.cpp" line="62"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../src/dashboard/ProblemsWidget.cpp" line="118"/>
@@ -1220,6 +1277,19 @@ bowtie index file</translation>
     </message>
 </context>
 <context>
+    <name>U2::SequeceActionDialog</name>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="156"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="157"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+</context>
+<context>
     <name>U2::StatisticsWidget</name>
     <message>
         <location filename="../src/dashboard/StatisticsWidget.cpp" line="61"/>
@@ -1235,6 +1305,19 @@ bowtie index file</translation>
         <location filename="../src/dashboard/StatisticsWidget.cpp" line="61"/>
         <source>Output messages</source>
         <translation>Output messages</translation>
+    </message>
+</context>
+<context>
+    <name>U2::StringActionDialog</name>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="255"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../src/NewGrouperSlotDialog.cpp" line="256"/>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>

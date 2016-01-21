@@ -132,14 +132,14 @@ void SnpEffFactory::init() {
         Descriptor updownLength(SnpEffWorker::UPDOWN_LENGTH, SnpEffWorker::tr("Upstream/downstream length"),
             SnpEffWorker::tr("Upstream and downstream interval size. Eliminate any upstream and downstream effect by using 0 length"));
 
-        Descriptor canon(SnpEffWorker::CANON, SnpEffWorker::tr("Cannonical transcripts"),
-            SnpEffWorker::tr("Use only cannonical transcripts"));
+        Descriptor canon(SnpEffWorker::CANON, SnpEffWorker::tr("Canonical transcripts"),
+            SnpEffWorker::tr("Use only canonical transcripts"));
 
         Descriptor hgvs(SnpEffWorker::HGVS, SnpEffWorker::tr("HGVS nomenclature"),
             SnpEffWorker::tr("Annotate using HGVS nomenclature"));
 
-        Descriptor lof(SnpEffWorker::LOF, SnpEffWorker::tr("Annotate Loss of function"),
-            SnpEffWorker::tr("Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)"));
+        Descriptor lof(SnpEffWorker::LOF, SnpEffWorker::tr("Annotate Loss of function variations"),
+            SnpEffWorker::tr("Annotate Loss of function variations (LOF) and Nonsense mediated decay (NMD)"));
 
         Descriptor motif(SnpEffWorker::MOTIF, SnpEffWorker::tr("Annotate TFBSs motifs"),
             SnpEffWorker::tr("Annotate transcription factor binding site motifs (only available for latest GRCh37)"));

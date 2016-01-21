@@ -14,37 +14,37 @@
         <translation>Plugin provides support for OpenCL-enabled GPUs.</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="78"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="88"/>
         <source>Cannot load OpenCL driver dynamic library.&lt;p&gt;                        Install the latest video GPU driver.</source>
         <translation>Cannot load OpenCL driver dynamic library.&lt;p&gt;                        Install the latest video GPU driver.</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="82"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="92"/>
         <source>An error has occurred while obtaining information                       about installed OpenCL GPUs.&lt;br&gt;                      See OpenCL Support plugin log for details.</source>
         <translation>An error has occurred while obtaining information                       about installed OpenCL GPUs.&lt;br&gt;                      See OpenCL Support plugin log for details.</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="101"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="110"/>
         <source>Initializing OpenCL</source>
         <translation>Initializing OpenCL</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="112"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="121"/>
         <source>Number of OpenCL platforms: %1</source>
         <translation>Number of OpenCL platforms: %1</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="127"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="136"/>
         <source>Number of OpenCL devices: %1</source>
         <translation>Number of OpenCL devices: %1</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="228"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="237"/>
         <source>Registering OpenCL-enabled GPU: %1, global mem: %2 Mb,                              local mem: %3 Kb, max compute units: %4,                              max work group size: %5, max frequency: %6 Hz</source>
         <translation>Registering OpenCL-enabled GPU: %1, global mem: %2 Mb,                              local mem: %3 Kb, max compute units: %4,                              max work group size: %5, max frequency: %6 Hz</translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="246"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="255"/>
         <source>OpenCL error code (%1)</source>
         <translation>OpenCL error code (%1)</translation>
     </message>

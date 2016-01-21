@@ -37,58 +37,58 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="150"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="151"/>
         <source>START SmithWatermanAlgorithmOPENCL::launch</source>
         <translation>START SmithWatermanAlgorithmOPENCL::launch</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="306"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="310"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="314"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="318"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="322"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="326"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="331"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="335"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="339"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="343"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="347"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="352"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="356"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="360"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="364"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="368"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="372"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="377"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="382"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="386"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="390"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="394"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="398"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="402"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="406"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="410"/>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="414"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="308"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="312"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="316"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="320"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="324"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="328"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="333"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="337"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="341"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="345"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="349"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="354"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="358"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="362"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="366"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="370"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="374"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="379"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="384"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="388"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="392"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="396"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="400"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="404"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="408"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="412"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="416"/>
         <source>Kernel::setArg(%1) failed</source>
         <translation>Kernel::setArg(%1) failed</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="421"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="423"/>
         <source>OPENCL: Running CL program</source>
         <translation>OPENCL: Running CL program</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="603"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="605"/>
         <source>FINISH SmithWatermanAlgorithmOPENCL::launch</source>
         <translation>FINISH SmithWatermanAlgorithmOPENCL::launch</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="607"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="609"/>
         <source>Starting cleanup OpenCL resources</source>
         <translation>Starting cleanup OpenCL resources</translation>
     </message>
     <message>
-        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="675"/>
+        <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="678"/>
         <source>Finish cleanup OpenCL resources</source>
         <translation>Finish cleanup OpenCL resources</translation>
     </message>

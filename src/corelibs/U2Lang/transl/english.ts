@@ -1398,27 +1398,27 @@
         <translation>Workflow process</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="586"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="587"/>
         <source>Cannot start process &apos;%1&apos;</source>
         <translation>Cannot start process &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="593"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="594"/>
         <source>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</source>
         <translation>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="597"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="598"/>
         <source>The process &apos;%1&apos; crashed some time after starting successfully</source>
         <translation>The process &apos;%1&apos; crashed some time after starting successfully</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="601"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="602"/>
         <source>Error occurred while reading from or writing to channel</source>
         <translation>Error occurred while reading from or writing to channel</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="604"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="605"/>
         <source>Unknown error occurred</source>
         <translation>Unknown error occurred</translation>
     </message>
@@ -1466,27 +1466,28 @@
     <name>U2::SimpleMSAWorkflow4GObjectTask</name>
     <message>
         <location filename="../src/support/SimpleWorkflowTask.cpp" line="164"/>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="185"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="184"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="200"/>
         <source>Object &apos;%1&apos; removed</source>
         <translation>Object &apos;%1&apos; removed</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="186"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="185"/>
         <source>Object &apos;%1&apos; is locked</source>
         <translation>Object &apos;%1&apos; is locked</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="206"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="212"/>
         <source>Result document not found!</source>
         <translation>Result document not found!</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="207"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="213"/>
         <source>Result document content not matched! %1</source>
         <translation>Result document content not matched! %1</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="209"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="215"/>
         <source>Result document contains no MSA! %1</source>
         <translation>Result document contains no MSA! %1</translation>
     </message>

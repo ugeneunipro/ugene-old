@@ -33,7 +33,7 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="114"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пробел</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="160"/>
@@ -43,7 +43,7 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="206"/>
         <source>Terminal gap penalty</source>
-        <translation>Штраф за закрывающий пробел</translation>
+        <translation>Штраф за закрытие пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="252"/>
@@ -66,7 +66,7 @@
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="37"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пробел</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="57"/>
@@ -76,7 +76,7 @@
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="77"/>
         <source>Terminate gap penalty</source>
-        <translation>Штраф за закрывающий пробел</translation>
+        <translation>Штраф за закрытие пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="97"/>
@@ -252,32 +252,32 @@
     <message>
         <location filename="../src/KalignWorker.cpp" line="69"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пробел</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="70"/>
         <source>The penalty for opening/closing a gap. Half the value will be subtracted from the alignment score when opening, and half when closing a gap.</source>
-        <translation>Штраф за открытие/закрытие пропуска. Половина значения будет вычитаться из результата выравнивания при открытии, и половина при закрытии разрыва.</translation>
+        <translation>Штраф за открытие/закрытие пробела. Половина значения будет вычитаться из результата выравнивания при открытии, и половина при закрытии пробела.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="71"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="72"/>
         <source>The penalty for extending a gap.</source>
-        <translation>Штраф за открытие пропуска.</translation>
+        <translation>Штраф за открытие пробела.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="73"/>
         <source>Terminal gap penalty</source>
-        <translation>Штраф за закрывающий пропуск</translation>
+        <translation>Штраф за закрытие пробела</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="74"/>
         <source>The penalty to extend gaps from the N/C terminal of protein or 5&apos;/3&apos; terminal of nucleotide sequences.</source>
-        <translation>Штраф за расширение пропуска терминала N/C для белков или терминала 5&apos;/3&apos; для нуклеотидных последовательностей.</translation>
+        <translation>Штраф за расширение пробела терминала N/C для белков или терминала 5&apos;/3&apos; для нуклеотидных последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="75"/>

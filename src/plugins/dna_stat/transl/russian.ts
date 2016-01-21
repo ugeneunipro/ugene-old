@@ -31,7 +31,7 @@
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="52"/>
         <source>Show scores for gaps</source>
-        <translation>Включить в отчет статистику для пропусков</translation>
+        <translation>Включить в отчет статистику для пробелов</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="59"/>
@@ -41,7 +41,7 @@
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="66"/>
         <source>Skip gaps in consensus position increments</source>
-        <translation>Не учитывать пропуске в шкале позиций</translation>
+        <translation>Не учитывать пробелы в шкале позиций</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="76"/>
@@ -135,7 +135,7 @@
 <context>
     <name>U2::DNAStatMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="75"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="71"/>
         <source>Generate grid profile</source>
         <translation>Представить выравнивание в виде таблицы частот</translation>
     </message>
@@ -328,15 +328,14 @@
 <context>
     <name>U2::DNAViewStatsContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="162"/>
         <source>Statistics</source>
-        <translation>Статистика</translation>
+        <translation type="vanished">Статистика</translation>
     </message>
 </context>
 <context>
     <name>U2::DistanceMatrixMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="112"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="108"/>
         <source>Generate distance matrix</source>
         <translation>Рассчитать матрицу расстояний</translation>
     </message>

@@ -156,8 +156,8 @@
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="195"/>
-        <source>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments (mpileup)(-B).</source>
-        <translation>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments (mpileup)(-B).</translation>
+        <source>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments. (mpileup)(-B).</source>
+        <translation>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments. (mpileup)(-B).</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="200"/>
@@ -166,8 +166,8 @@
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="201"/>
-        <source>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled probability q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</source>
-        <translation>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled probability q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</translation>
+        <source>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled mapping quality q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</source>
+        <translation>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled mapping quality q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="206"/>
@@ -455,8 +455,8 @@
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="331"/>
-        <source>Min P(chi^2)</source>
-        <translation>Min P(chi^2)</translation>
+        <source>Max P(chi^2)</source>
+        <translation>Max P(chi^2)</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="332"/>

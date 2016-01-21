@@ -1857,12 +1857,12 @@
     <message>
         <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="217"/>
         <source>Gap open probability</source>
-        <translation>Вероятность открытия пропуска</translation>
+        <translation>Вероятность открытия пробела</translation>
     </message>
     <message>
         <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="247"/>
         <source>Gap extend probability</source>
-        <translation>Вероятность продления пропуска</translation>
+        <translation>Вероятность продления пробела</translation>
     </message>
     <message>
         <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="285"/>

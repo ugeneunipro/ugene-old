@@ -93,7 +93,7 @@ QString WorkflowUtils::getRichDoc(const Descriptor& d) {
         if(d.getDocumentation().isEmpty()) {
             return QString("<b>%1</b>").arg(d.getDisplayName());
         } else {
-            return QString("<b>%1</b> : %2").arg(d.getDisplayName()).arg(d.getDocumentation());
+            return QString("<b>%1</b>: %2").arg(d.getDisplayName()).arg(d.getDocumentation());
         }
     }
 }

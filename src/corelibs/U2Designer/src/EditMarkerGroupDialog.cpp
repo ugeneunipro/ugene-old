@@ -20,6 +20,7 @@
  */
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Designer/MarkerEditor.h>
 #include <U2Designer/MarkerEditorWidget.h>
@@ -42,6 +43,8 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, Workflo
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466486");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     {
         QStringList types;
         types << MarkerTypes::SEQ_LENGTH().getDisplayName(); typeIds << MarkerTypes::SEQ_LENGTH().getId();
@@ -395,6 +398,8 @@ EditMarkerDialog::EditMarkerDialog(bool isNew, const QString &type, const QStrin
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17466486");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (!isNew) {
         markerNameEdit->setText(name);
 

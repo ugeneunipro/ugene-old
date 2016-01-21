@@ -117,7 +117,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="174"/>
         <source>Calls SNPs and INDELS with SAMtools mpileup and bcftools.</source>
-        <translation>Вызов SNP и INDELS при помощи SAMtools mpileup и bcftools.</translation>
+        <translation>этот элемент ищет однонуклеотидные вариации (SNP) и короткие вставки или выпадения (indels) при помощи SAMtools mpileup и bcftools.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="182"/>
@@ -137,167 +137,167 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="187"/>
         <source>Assume the quality is in the Illumina 1.3+ encoding (mpileup)(-6).</source>
-        <translation>Допустимое качество в кодировании Illumina 1.3+ (-6).</translation>
+        <translation>значения качества в кодировке Illumina 1.3+. Соответствует опции mpileup -6.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="190"/>
         <source>Count anomalous read pairs</source>
-        <translation>Количество аномальных пар ридов</translation>
+        <translation>Учитывать аномальные пары прочтений</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="191"/>
         <source>Do not skip anomalous read pairs in variant calling(mpileup)(-A).</source>
-        <translation>Не упускать аномальные пары ридов в вызове вариаций (-A).</translation>
+        <translation>не пропускать аномальные пары прочтений при поиске вариаций. Соответствует опции mpileup -A.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="194"/>
         <source>Disable BAQ computation</source>
-        <translation>Отключить вычисление BAQ</translation>
+        <translation>Отключить расчет BAQ</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="195"/>
-        <source>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments (mpileup)(-B).</source>
-        <translation>Отключить вероятностную перестройку для расчета базового качества (BAQ) (- В).</translation>
+        <source>Disable probabilistic realignment for the computation of base alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. Applying this option greatly helps to reduce false SNPs caused by misalignments. (mpileup)(-B).</source>
+        <translation>не выполнять выравнивание для расчета качества выравнивания каждого нуклеотида (base alignment quality, BAQ). BAQ - это приведенная к шкале Phred вероятность того, что данный нуклеотид выровнен неверно. Расчет BAQ сильно снижает вероятность ложного нахождения SNP из-за неверного выравнивания. Соответствует опции mpileup -B.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="200"/>
         <source>Mapping quality downgrading coefficient</source>
-        <translation>Отображение коэффициента понижения качества</translation>
+        <translation>Коэффициент снижения качества выравнивания</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="201"/>
-        <source>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled probability q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</source>
-        <translation>Коэффициент для понижения качества отображения для ридов, содержащих большое количество несовпадений (- С).</translation>
+        <source>Coefficient for downgrading mapping quality for reads containing excessive mismatches. Given a read with a phred-scaled mapping quality q of being generated from the mapped position, the new mapping quality is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C).</source>
+        <translation>применить коэффициент, отражающий снижение качества выравнивания прочтений, содержащих много замен. Если прочтение обладает качеством выравнивания q, новое значение качества выравнивания составит около sqrt[(INT-q)/INT]*INT. Значение 0 отключает эту опцию. Рекомендуемым значением для BWA является 50. Cjjndtncndetn jgwbb ьзшдугз -C INT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="206"/>
         <source>Max number of reads per input BAM</source>
-        <translation>Максимальное число ридов для входного BAM файла</translation>
+        <translation>Максимальное число прочтений для входного BAM-файла</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="207"/>
         <source>At a position, read maximally the number of reads per input BAM (mpileup)(-d).</source>
-        <translation>Максимальное число ридов для входного BAM файла (-d).</translation>
+        <translation>максимальное число прочтений, которое следует прочитать для каждой позиции из входного BAM-файла. Соответствует опции mpileup -d.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="210"/>
         <source>Extended BAQ computation</source>
-        <translation>Расширенные вычисления BAQ</translation>
+        <translation>Расширенный расчет BAQ</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="211"/>
         <source>Extended BAQ computation. This option helps sensitivity especially for MNPs, but may hurt specificity a little bit (mpileup)(-E).</source>
-        <translation>Расширенные вычисления BAQ.</translation>
+        <translation>Расширенные расчет BAQ. Эта опция увеличивает чувствительность, особенно в случае множественных замен (MNPs), однако может снижать специфичность.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="215"/>
         <source>BED or position list file</source>
-        <translation>BED или файл со списком позиций</translation>
+        <translation>BED-файл или файл со списком позиций</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="216"/>
         <source>BED or position list file containing a list of regions or sites where pileup or BCF should be generated (mpileup)(-l).</source>
-        <translation>BED или файл со списком позиций регионов или сайтов где должно быть сгенерировано множество или BCF(-l).</translation>
+        <translation>BED-файл или файл со списком позиций или участков, для которых необходимо сгенерировать pileup или BCF. Соответствует опции mpileup -l.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="220"/>
         <source>Pileup region</source>
-        <translation>Регион скопления</translation>
+        <translation>Pileup для участка</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="221"/>
         <source>Only generate pileup in region STR (mpileup)(-r).</source>
-        <translation>Генерировать множество только в регионе STR (-r).</translation>
+        <translation>генерировать pileup только для участка STR. Соответствует опции mpileup -r STR.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="224"/>
         <source>Minimum mapping quality</source>
-        <translation>Минимальное качество отображения</translation>
+        <translation>Минимальное качество выравнивания</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="225"/>
         <source>Minimum mapping quality for an alignment to be used (mpileup)(-q).</source>
-        <translation>Минимальное качество отображения для выравнивания(-q).</translation>
+        <translation>использовать выравнивания только с таким или более хорошим качеством. Соответствует опции mpileup -q.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="228"/>
         <source>Minimum base quality</source>
-        <translation>Минимальное качество базы</translation>
+        <translation>Минимальное качество нуклеотида</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="229"/>
         <source>Minimum base quality for a base to be considered (mpileup)(-Q).</source>
-        <translation>Минимальное качество базы(-Q).</translation>
+        <translation>учитывать нуклеотиды только с таким или более хорошим качеством. Соответствует опции mpileup -Q.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="232"/>
         <source>Gap extension error</source>
-        <translation>Ошибка расширения промежутка</translation>
+        <translation>Ошибка расширения пробела</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="233"/>
         <source>Phred-scaled gap extension sequencing error probability. Reducing INT leads to longer indels (mpileup)(-e).</source>
-        <translation>Вероятность ошибки расширения пропуска. (-e).</translation>
+        <translation>Вероятность ошибки расширения пробела. (-e).</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="236"/>
         <source>Homopolymer errors coefficient</source>
-        <translation>Коэффициент гомополимерных ошибок</translation>
+        <translation>Коэффициент ошибок в гомополимерных участках</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="237"/>
         <source>Coefficient for modeling homopolymer errors. Given an l-long homopolymer run, the sequencing error of an indel of size s is modeled as INT*s/l (mpileup)(-h).</source>
-        <translation>Коэффициент для моделирования гомополимерных ошибок (-h).</translation>
+        <translation>Коэффициент для моделирования ошибок в участках гомополимеров. Для гомополимера длиной l ошибка секвенирования для вставки/выпадения длиной s рассчитывается как INT*s/l. Соответствует опции mpileup -h.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="240"/>
         <source>No INDELs</source>
-        <translation>Нет INDEL</translation>
+        <translation>Не искать INDELs</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="241"/>
         <source>Do not perform INDEL calling (mpileup)(-I).</source>
-        <translation>Не выполнять вызов INDEL (-I).</translation>
+        <translation>не выполнять поиск вставок/выпадений. Соответствует опции mpileup -l.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="244"/>
         <source>Max INDEL depth</source>
-        <translation>Максимальная глубина INDEL</translation>
+        <translation>Максимальное покрытие для поиска INDELs</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="245"/>
         <source>Skip INDEL calling if the average per-sample depth is above INT (mpileup)(-L).</source>
-        <translation>Не выполнять вызов INDEL если средняя глубина больше указанного значения (-L).</translation>
+        <translation>не выполнять поиск вставок/выпадений если среднее покрытие образца превышает INT. Соответствует опции mpileup -L INT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="248"/>
         <source>Gap open error</source>
-        <translation>Ошибка открытия пропуска</translation>
+        <translation>Ошибка открытия пробела</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="249"/>
         <source>Phred-scaled gap open sequencing error probability. Reducing INT leads to more indel calls (mpileup)(-o).</source>
-        <translation>Вероятность ошибки открытия пропуска (-e).</translation>
+        <translation>вероятность ошибки секвенирования, приводящей к открытию пробела, в шкале Phred. Снижение значения INT приводит к увеличению числа найденных вставок/выпадений. Соответствует опции mpileup -o INT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="252"/>
         <source>List of platforms for indels</source>
-        <translation>Список платворм для вставок/удалений</translation>
+        <translation>Список платформ для поиска вставок/выпадений</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="253"/>
         <source>Comma dilimited list of platforms (determined by @RG-PL) from which indel candidates are obtained.It is recommended to collect indel candidates from sequencing technologies that have low indel error rate such as ILLUMINA (mpileup)(-P).</source>
-        <translation>Список платворм для вставок/удалений.</translation>
+        <translation>список через запятую названий платформ в формате @RG-PL, для которых необходимо проводить поиск возможных вставок/выпадений. Этот анализ рекомендуется проводить для данных платформ секвенирования, обладающих низким уровнем ошибок типа вставка/выпадение (например, ILLUMINA). Соответствует опции mpileup -P.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="258"/>
         <source>Retain all possible alternate</source>
-        <translation>Сохранить все возможные альтернативы</translation>
+        <translation>Сохранять все альтернативные варианты</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="259"/>
         <source>Retain all possible alternate alleles at variant sites. By default, the view command discards unlikely alleles (bcf view)(-A).</source>
-        <translation>Сохранить все возможные альтернативные аллели вариационных сайтов (-A).</translation>
+        <translation>сохранять все аллельные варианты в вариабельных позициях. По умолчанию команда view отбрасывает аллели с низкой вероятностью. Соответствует опции bcftools view -A.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="262"/>
@@ -307,17 +307,17 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="263"/>
         <source>Indicate PL is generated by r921 or before (ordering is different) (bcf view)(-F).</source>
-        <translation>Указать PL сгенерированный r921 или до (-F).</translation>
+        <translation>указать, получены ли данные с помощью r921 или более ранней версии платформы (отличаются сортировкой). Соответствует опции bcftools view -F.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="266"/>
         <source>No genotype information</source>
-        <translation>Нет информации генотипа</translation>
+        <translation>Не отображать информацию о генотипе</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="267"/>
         <source>Suppress all individual genotype information (bcf view)(-G).</source>
-        <translation>Подавить всю индивидуальную информацию о генотипе (- G).</translation>
+        <translation>отключить отображение всей информации о генотипе индивидуума. Соответствует опции bcftools view -G.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="270"/>
@@ -327,57 +327,57 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="271"/>
         <source>Skip sites where the REF field is not A/C/G/T (bcf view)(-N).</source>
-        <translation>Отбрасывать сайты где REF поля не A/C/G/T (-N).</translation>
+        <translation>отбрасывать сайты, где поле REF содержит значение не из списка A/C/G/T. Соответствует опции bcftools view -N.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="274"/>
         <source>List of sites</source>
-        <translation>Список сайтов</translation>
+        <translation>Список позиций</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="275"/>
         <source>List of sites at which information are outputted (bcf view)(-l).</source>
-        <translation>Список сайтов, на которых выводится информация (-l).</translation>
+        <translation>список позиций, для которых необходимо вывести информацию. Соответствует опции bcftools view -l STR.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="278"/>
         <source>QCALL likelihood</source>
-        <translation>Вероятность QCALL</translation>
+        <translation>Вероятность в QCALL</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="279"/>
         <source>Output the QCALL likelihood format (bcf view)(-Q).</source>
-        <translation>Вывести формат вероятности QCALL (-Q).</translation>
+        <translation>выводить значения вероятности в формате QCALL. Соответствует опции bcftools view -Q.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="282"/>
         <source>List of samples</source>
-        <translation>Список примеров</translation>
+        <translation>Список образцов</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="283"/>
         <source>List of samples to use. The first column in the input gives the sample names and the second gives the ploidy, which can only be 1 or 2. When the 2nd column is absent, the sample ploidy is assumed to be 2. In the output, the ordering of samples will be identical to the one in FILE (bcf view)(-s).</source>
-        <translation>Список примеров для использования (-s).</translation>
+        <translation>список образцов, которые необходимо использовать. В первом столбце необходимо перечислить названия образцов, во втором - плоидность. Если второй столбец отсутствует, плоидность считается равной 2. Порядок образцов в выходном файле будет соответствовать порядку во входном файле. Соответствует опции bcftools view -s.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="289"/>
         <source>Min samples fraction</source>
-        <translation>Минимальная доля примеров</translation>
+        <translation>Минимальная доля образцов</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="290"/>
         <source>skip loci where the fraction of samples covered by reads is below FLOAT (bcf view)(-d).</source>
-        <translation>пропустить те места, где доля примеров ниже указанного значения(-d).</translation>
+        <translation>пропустить участок если доля образцов, у которых этот участок покрыт прочтениями, ниже указанного значения. Соответствует опции bcftools view -d FLOAT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="293"/>
         <source>Per-sample genotypes</source>
-        <translation>Генотипы примеров</translation>
+        <translation>Генотип для каждого образца</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="294"/>
         <source>Call per-sample genotypes at variant sites (bcf view)(-g).</source>
-        <translation>Вызов генотипов примеров на сайты вариаций (- g).</translation>
+        <translation>отобразить генотип для каждого образца и каждой вариабельной позиции. Соответствует опции bcftools view -g.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="297"/>
@@ -387,7 +387,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="298"/>
         <source>Ratio of INDEL-to-SNP mutation rate (bcf view)(-i).</source>
-        <translation>Соотношение INDEL-to-SNP скорости мутаций (-i).</translation>
+        <translation>указать отношение скоростей появления вставок/выпадений и замен. Соответствует опции bcftools view -i FLOAT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="301"/>
@@ -397,37 +397,37 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="302"/>
         <source>A site is considered to be a variant if P(ref|D)&lt;FLOAT (bcf view)(-p).</source>
-        <translation>Сайт считается вариацией если P(ref|D)меньше указанного значения (-p).</translation>
+        <translation>считать позицию вариабельной, если вероятность совпадения с референсом (P(ref|D)) меньше указанного значения. Соответствует опции bcftools view -p FLOAT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="305"/>
         <source>Prior allele frequency spectrum</source>
-        <translation>Приоритетный спектр частот аллелей</translation>
+        <translation>Априорное распределение частот аллелей</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="306"/>
         <source>If STR can be full, cond2, flat or the file consisting of error output from a previous variant calling run (bcf view)(-P).</source>
-        <translation>Приоритетный спектр частот аллелей (-P).</translation>
+        <translation>значение из следующего списка: full, cond2, flat - или файл, содержащий список ошибок в предыдущем запуске. Соответствует опции bcftools view -P STR.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="309"/>
         <source>Mutation rate</source>
-        <translation>Скорость мутации</translation>
+        <translation>Скорость накоплений мутаций</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="310"/>
         <source>Scaled mutation rate for variant calling (bcf view)(-t).</source>
-        <translation>Скорость мутации для вызова вариаций (-t).</translation>
+        <translation>нормализованная скорость накопления мутаций для поиска вариаций. Соответствует опции bcftools view -t.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="313"/>
         <source>Pair/trio calling</source>
-        <translation>Парный/тройной вызов</translation>
+        <translation>Поиск вариаций в парных образцах или трио</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="314"/>
         <source>Enable pair/trio calling. For trio calling, option -s is usually needed to be applied to configure the trio members and their ordering. In the file supplied to the option -s, the first sample must be the child, the second the father and the third the mother. The valid values of STR are &apos;pair&apos;, &apos;trioauto&apos;, &apos;trioxd&apos; and &apos;trioxs&apos;, where &apos;pair&apos; calls differences between two input samples, and &apos;trioxd&apos; (&apos;trioxs&apos;)specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T).</source>
-        <translation type="unfinished"></translation>
+        <translation>включить поиск вариаций в парах или трио образцов. Для работы с трио необходимо также применить опцию -s для настройки входящих в трио образцов и порядка их сортировки. В файле, переданном опции -s, первому образцу должны соответствовать данные для ребенка, второму - для отца, третьему - для матери. Корректными значениями этого параметра являются &apos;pair&apos;, &apos;trioauto&apos;, &apos;trioxd&apos; и &apos;trioxs&apos;, где &apos;pair&apos; позволяет найти различия между двумя образцами, а &apos;trioxd&apos; или &apos;trioxs&apos; указывает на то, что на вход поданы данные для X - хромосомы за вычетом псевдоаутосомного участка, а ребенок женского (мужского) пола. Соответствует опции bcftools view -T.</translation>
     </message>
     <message>
         <source>Enable pair/trio calling. For trio calling, option -s is usually needed to be applied to configure the trio members and their ordering. In the file supplied to the option -s, the first sample must be the child, the second the father and the third the mother. The valid values of STR are &apos;ÂpairÂ&apos;, &apos;ÂtrioautoÂ&apos;, &apos;ÂtrioxdÂ&apos; and &apos;ÂtrioxsÂ&apos;, where &apos;ÂpairÂ&apos; calls differences between two input samples, and &apos;ÂtrioxdÂ&apos; (&apos;ÂtrioxsÂ&apos;)specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T).</source>
@@ -436,32 +436,32 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="321"/>
         <source>N group-1 samples</source>
-        <translation>Примеры N group-1</translation>
+        <translation>Число образцов в группе 1</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="322"/>
         <source>Number of group-1 samples. This option is used for dividing the samples into two groups for contrast SNP calling or association test. When this option is in use, the followingVCF INFO will be outputted: PC2, PCHI2 and QCHI2 (bcf view)(-1).</source>
-        <translation>Число примеров group-1 (-1).</translation>
+        <translation>число образцов в первой группе. Эта опция используется для разделения образцов на две группы для поиска различающихся SNP или проведения анализа ассоциаций. Если эта опция включена, в выходном файле будут добавлены следующие значения VCF INFO: PC2, PCHI2 и QCHI2. Соответствует опции bcftools view -1.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="327"/>
         <source>N permutations</source>
-        <translation>Перестановки N</translation>
+        <translation>Число перестановок</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="328"/>
         <source>Number of permutations for association test (effective only with -1) (bcf view)(-U).</source>
-        <translation>Число перестановок для ассоциативного теста (-U).</translation>
+        <translation>число перестановок для анализа ассоциаций. Работает только в том случае, если включена опция -1. Соответствует опции bcftools view -U.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="331"/>
-        <source>Min P(chi^2)</source>
-        <translation>Минимальное P(chi^2)</translation>
+        <source>Max P(chi^2)</source>
+        <translation>Максимальное P(chi^2)</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="332"/>
         <source>Only perform permutations for P(chi^2)&lt;FLOAT (N permutations) (bcf view)(-X).</source>
-        <translation>Выполнять перестановки только для (chi^2) меньше чем указанное значение(-X).</translation>
+        <translation>выполнять перестановки только для меньших  значений P(chi^2), чем указанное значение. Соответствует опции bcftools view -X FLOAT.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="336"/>
@@ -471,47 +471,47 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="337"/>
         <source>Minimum RMS mapping quality for SNPs (varFilter) (-Q).</source>
-        <translation>Минимальное качество отображения RMS для SNP (-Q).</translation>
+        <translation>минимальное качество выравнивания RMS для SNP. Соответствует опции varFilter -Q.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="339"/>
         <source>Minimum read depth</source>
-        <translation>Минимальная глубина рида</translation>
+        <translation>Минимальная глубина покрытия</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="340"/>
         <source>Minimum read depth (varFilter) (-d).</source>
-        <translation>Минимальная глубина рида (-d).</translation>
+        <translation>Минимальная глубина покрытия для прочтения. Соответствует опции varFilter -d.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="342"/>
         <source>Maximum read depth</source>
-        <translation>Максимальная глубина рида</translation>
+        <translation>Максимальная глубина покрытия</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="343"/>
         <source>Maximum read depth (varFilter) (-D).</source>
-        <translation>Максимальная глубина рида (-D).</translation>
+        <translation>Максимальная глубина покрытия для прочтения. Соответствует опции varFilter -d.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="345"/>
         <source>Alternate bases</source>
-        <translation>Альтернативные основания</translation>
+        <translation>Альтернативные нуклеотиды</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="346"/>
         <source>Minimum number of alternate bases (varFilter) (-a).</source>
-        <translation>Минимальное число альтернативных основания (-a).</translation>
+        <translation>минимальное число прочтений, содержащих в этой позиции не соответствующий референсному вариант. Соответствует опции varFilter -a.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="348"/>
         <source>Gap size</source>
-        <translation>Размер пропуска</translation>
+        <translation>Длина пробела</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="349"/>
         <source>SNP within INT bp around a gap to be filtered (varFilter) (-w).</source>
-        <translation>Размер пропуска (-w).</translation>
+        <translation>длина участка, включающего вставку/выпадение, на котором следует отбросить SNP. Соответствует опции varFilter -w.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="351"/>
@@ -521,17 +521,17 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="352"/>
         <source>Window size for filtering adjacent gaps (varFilter) (-W).</source>
-        <translation>Размер окна для фильтрации смежных пропусков (-W).</translation>
+        <translation>Размер окна для фильтрации смежных пробелов. Соответствует опции varFilter -W.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="354"/>
         <source>Strand bias</source>
-        <translation>Напрвление смещения</translation>
+        <translation>Смещение по разным цепям</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="355"/>
         <source>Minimum P-value for strand bias (given PV4) (varFilter) (-1).</source>
-        <translation>Минимальное P-значение для направления смещения (-1).</translation>
+        <translation>минимальное P-значение для добавления информации о неравномерном распределении вариаций по двум цепям. Соответствует опции varFilter -1.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="357"/>
@@ -541,7 +541,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="358"/>
         <source>Minimum P-value for baseQ bias (varFilter) (-2).</source>
-        <translation>Минимальное P-значение для смещения baseQ (-2).</translation>
+        <translation>минимальное P-значение для добавления информации о неравномерном распределении качества нуклеотида (baseQ). Соответствует опции varFilter -2.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="360"/>
@@ -551,17 +551,17 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="361"/>
         <source>Minimum P-value for mapQ bias (varFilter) (-3).</source>
-        <translation>Минимальное P-значение для смещения mapQ (-3).</translation>
+        <translation>минимальное P-значение для добавления информации о неравномерном распределении качества выравнивания (mapQ). Соответствует опции varFilter -3.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="363"/>
         <source>End distance bias</source>
-        <translation>Концевое смещение</translation>
+        <translation>Смещение расстояния до конца прочтения</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="364"/>
         <source>Minimum P-value for end distance bias (varFilter) (-4).</source>
-        <translation>Минимальное P-значение для концевого смещения (-4).</translation>
+        <translation>минимальное P-значение для добавления информации о неравномерном распределении расстояния от вариабельного сайта до конца прочтения. Соответствует опции varFilter -4.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="366"/>
@@ -571,7 +571,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="367"/>
         <source>Minimum P-value for HWE (plus F&lt;0) (varFilter) (-e).</source>
-        <translation>Минимальное P-значение для HWE (-e).</translation>
+        <translation>минимальное P-значение для добавления информации о распределении Харди-Вайнберга (HWE). Соответствует опции varFilter -e.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="369"/>
@@ -581,7 +581,7 @@
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="370"/>
         <source>Print filtered variants into the log (varFilter) (-p).</source>
-        <translation>Выдает отфильтрованные вариации в лог (-p).</translation>
+        <translation>записывать отфильтрованные вариации в лог-файл. Соответствует опции varFilter -p.</translation>
     </message>
     <message>
         <location filename="../src/SamtoolMpileupWorker.cpp" line="781"/>

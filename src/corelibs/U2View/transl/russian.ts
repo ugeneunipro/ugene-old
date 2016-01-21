@@ -410,172 +410,139 @@ Probably the data is too big.</source>
 <context>
     <name>DasBlastSettingsWidget</name>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="20"/>
         <source>Form</source>
-        <translation>Форма</translation>
+        <translation type="vanished">Форма</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="41"/>
         <source>Threshold:</source>
-        <translation>Порог:</translation>
+        <translation type="vanished">Порог:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="60"/>
         <source>Number of expected matches in a random database. The lower the value, the more likely the match is to be significant</source>
-        <translation>Количество ожидаемых совпадений в случайной базе данных. Чем ниже значение, тем больше вероятность совпадения будет значимой</translation>
+        <translation type="vanished">Количество ожидаемых совпадений в случайной базе данных. Чем ниже значение, тем больше вероятность совпадения будет значимой</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="70"/>
         <source>Matrix:</source>
-        <translation>Матрица:</translation>
+        <translation type="vanished">Матрица:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="89"/>
         <source>Assigns a probability score for each position in an alignment</source>
-        <translation>Назначает вероятностный счет для каждой позиции в выравнивании</translation>
+        <translation type="vanished">Назначает вероятностный счет для каждой позиции в выравнивании</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="102"/>
         <source>Filtering:</source>
-        <translation>Фильтрация:</translation>
+        <translation type="vanished">Фильтрация:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="121"/>
         <source>Filtering low-complexity regions replaces the regions with X&apos;s during the search to filter biologically unrelated results</source>
-        <translation>Фильтрация простых регионов заменяет регионы с Х символами во время поиска для фильтрации биологически несвязанных результатов</translation>
+        <translation type="vanished">Фильтрация простых регионов заменяет регионы с Х символами во время поиска для фильтрации биологически несвязанных результатов</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="131"/>
         <source>Gapped:</source>
-        <translation>Промежуток:</translation>
+        <translation type="vanished">Пробел:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="150"/>
         <source>Allows gaps to be introduced in the sequences when the comparison is done</source>
-        <translation>Позволяет вставлять пробелы в последовательностях в процессе сравнения</translation>
+        <translation type="vanished">Позволяет вставлять пробелы в последовательностях в процессе сравнения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="160"/>
         <source>Maximum results:</source>
-        <translation>Максимальное число результатов:</translation>
+        <translation type="vanished">Максимальное число результатов:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui" line="179"/>
         <source>Limits the number of returned results</source>
-        <translation>Предел на число возвращаемых результатов</translation>
+        <translation type="vanished">Предел на число возвращаемых результатов</translation>
     </message>
 </context>
 <context>
     <name>DasOptionsPanelWidget</name>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="20"/>
         <source>Form</source>
-        <translation>Форма</translation>
+        <translation type="vanished">Форма</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="73"/>
         <source>Database:</source>
-        <translation>База данных:</translation>
+        <translation type="vanished">База данных:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="86"/>
         <source>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity</source>
-        <translation>База данных, по которой производится поиск: UniProtKB или кластеры последовательностей со 100%, 90% или 50% степенью совпадения</translation>
+        <translation type="vanished">База данных, по которой производится поиск: UniProtKB или кластеры последовательностей со 100%, 90% или 50% степенью совпадения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="109"/>
         <source>Minimum Identity:</source>
-        <translation>Минимальная степень совпадения:</translation>
+        <translation type="vanished">Минимальная степень совпадения:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="125"/>
         <source>Minimum percent identity between the input sequence region and BLAST results</source>
-        <translation>Минимальная степень совпадения между регионом входной последовательности и результатами BLAST</translation>
+        <translation type="vanished">Минимальная степень совпадения между регионом входной последовательности и результатами BLAST</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="131"/>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="vanished">%</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="141"/>
         <source>Show more option...</source>
-        <translation>Показать дополнительные настройки...</translation>
+        <translation type="vanished">Показать дополнительные настройки...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="241"/>
         <source>IDs of similar sequences:</source>
-        <translation>Идентификаторы схожих последовательностей:</translation>
+        <translation type="vanished">Идентификаторы схожих последовательностей:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="269"/>
         <source>Select ID(s) to fetch annotations from DAS</source>
-        <translation>Выберите идентификатор(ы) для извлечения аннотаций из DAS</translation>
+        <translation type="vanished">Выберите идентификатор(ы) для извлечения аннотаций из DAS</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="294"/>
         <source>ID</source>
-        <translation>Идентификатор</translation>
+        <translation type="vanished">Идентификатор</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="299"/>
         <source>Identity</source>
-        <translation>Схожесть</translation>
+        <translation type="vanished">Схожесть</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="345"/>
         <source>Fetch annotations</source>
-        <translation>Извлечь аннотации</translation>
+        <translation type="vanished">Извлечь аннотации</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="218"/>
         <source>Send request to Uniprot BLAST to get IDs of similar sequences</source>
-        <translation>Отправить запрос в Uniprot BLAST для получения ID схожих последовательностей</translation>
+        <translation type="vanished">Отправить запрос в Uniprot BLAST для получения ID схожих последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="221"/>
         <source>Fetch IDs</source>
-        <translation>Получить идентификаторы</translation>
+        <translation type="vanished">Получить идентификаторы</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui" line="362"/>
         <source>Info: Searching for annotations with DAS is available for amino acid sequences only</source>
-        <translation>Информация: Поиск для аннотаций в DAS доступен только для аминных последовательностей</translation>
+        <translation type="vanished">Информация: Поиск для аннотаций в DAS доступен только для аминных последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="60"/>
         <source>BLAST</source>
-        <translation>BLAST</translation>
+        <translation type="vanished">BLAST</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="61"/>
         <source>Algorithm settings</source>
-        <translation>Настройки алгоритма</translation>
+        <translation type="vanished">Настройки алгоритма</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="62"/>
         <source>Annotations settings</source>
-        <translation>Настройки аннотаций</translation>
+        <translation type="vanished">Настройки аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="63"/>
         <source>DAS features sources</source>
-        <translation>Источники аннотаций DAS</translation>
+        <translation type="vanished">Источники аннотаций DAS</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="64"/>
         <source>Whole sequence</source>
-        <translation>Вся последовательность</translation>
+        <translation type="vanished">Вся последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="65"/>
         <source>Selected region</source>
-        <translation>Выделенный регион</translation>
+        <translation type="vanished">Выделенный регион</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="66"/>
         <source>Custom region</source>
-        <translation>Указанный регион</translation>
+        <translation type="vanished">Указанный регион</translation>
     </message>
 </context>
 <context>
@@ -859,12 +826,12 @@ Probably the data is too big.</source>
         <translation>Искать:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="415"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="433"/>
         <source>Search in</source>
         <translation>Искать в</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="524"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="526"/>
         <source>-</source>
         <translation>-</translation>
     </message>
@@ -889,27 +856,27 @@ Probably the data is too big.</source>
         <translation>Возврат</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="428"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="446"/>
         <source>Strand</source>
         <translation>Прямая</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="441"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="459"/>
         <source>Region</source>
         <translation>Регион</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="657"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="668"/>
         <source>Create annotations</source>
         <translation>Создать аннотации</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="585"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="596"/>
         <source>Remove overlapped results</source>
         <translation>Удалить перекрывающиеся результаты</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="602"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="613"/>
         <source>Limit results number to:</source>
         <translation>Ограничить число результатов:</translation>
     </message>
@@ -934,7 +901,7 @@ Probably the data is too big.</source>
         <translation>Путь:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="286"/>
+        <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="295"/>
         <source>Algorithm</source>
         <translation>Алгоритм</translation>
     </message>
@@ -1615,9 +1582,8 @@ Double-click to collapse the branch</source>
         <translation>Выделение аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasWidgetFactory.cpp" line="36"/>
         <source>DAS Annotations</source>
-        <translation>Аннотации DAS</translation>
+        <translation type="vanished">Аннотации DAS</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="218"/>
@@ -1933,12 +1899,12 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="358"/>
         <source>Gap open</source>
-        <translation>Открытие</translation>
+        <translation>Открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="365"/>
         <source>Gap  extension </source>
-        <translation>Продление</translation>
+        <translation>Продление пробела</translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="398"/>
@@ -2257,14 +2223,23 @@ Double-click to collapse the branch</source>
         <translation>Копировать транслированную обратно-комплементарную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="145"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="90"/>
+        <source>Paste sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="150"/>
         <source>An error occurred during getting sequence data: %1</source>
         <translation>В процессе получения данных последовательности произошла ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="302"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="307"/>
+        <source>Copy/Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Copy</source>
-        <translation>Копирование</translation>
+        <translation type="vanished">Копирование</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ADVClipboard.cpp" line="85"/>
@@ -2293,17 +2268,17 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::ADVSequenceObjectContext</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="202"/>
+        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="206"/>
         <source>Incorrect signal sender!</source>
         <translation>Incorrect signal sender!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="213"/>
+        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="217"/>
         <source>Amino translation</source>
         <translation>Таблицы трансляции</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="214"/>
+        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="218"/>
         <source>Translation frames</source>
         <translation>Рамки трансляций</translation>
     </message>
@@ -2311,52 +2286,52 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::ADVSingleSequenceHeaderWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="966"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="967"/>
         <source>Alphabet: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Алфавит: &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="967"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="968"/>
         <source> Sequence size: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Размер последовательности: &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="968"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="969"/>
         <source> File:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Файл:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1053"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1054"/>
         <source>raw</source>
         <translation>raw</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1057"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1058"/>
         <source>amino ext</source>
         <translation>amino ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1059"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1060"/>
         <source>amino</source>
         <translation>амино</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1064"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1065"/>
         <source>dna</source>
         <translation>днк</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1066"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1067"/>
         <source>dna ext</source>
         <translation>dna ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1070"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1071"/>
         <source>rna ext</source>
         <translation>rna ext</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1068"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="1069"/>
         <source>rna</source>
         <translation>rna</translation>
     </message>
@@ -2364,12 +2339,12 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::ADVSingleSequenceWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="448"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="449"/>
         <source>Zoom</source>
         <translation>Масштаб</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="702"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="703"/>
         <source>Zoom to range</source>
         <translation>Выбор масштаба</translation>
     </message>
@@ -2379,12 +2354,12 @@ Double-click to collapse the branch</source>
         <translation>Создать новую шкалу...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="540"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="541"/>
         <source>Rulers...</source>
         <translation>Шкала обзора...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="551"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="552"/>
         <source>Remove &apos;%1&apos;</source>
         <translation>Удалить &quot;%1&quot;</translation>
     </message>
@@ -2414,63 +2389,63 @@ Double-click to collapse the branch</source>
         <translation>Выбрать масштаб...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="208"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="209"/>
         <source>Export image</source>
         <translation>Экспорт изображения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="224"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="225"/>
         <source>Remove sequence</source>
         <translation>Удалить последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="525"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="526"/>
         <source>Select</source>
         <translation>Выделить</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="314"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="315"/>
         <source>Show all views</source>
         <translation>Показать всё</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="314"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="315"/>
         <source>Hide all views</source>
         <translation>Скрыть всё</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="242"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="920"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="243"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="921"/>
         <source>Show zoom view</source>
         <translation>Показать масштабируемое представление</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="242"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="920"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="243"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="921"/>
         <source>Hide zoom view</source>
         <translation>Скрыть масштабируемое представление</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="243"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="925"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="244"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="926"/>
         <source>Show details view</source>
         <translation>Показать детали</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="243"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="925"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="244"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="926"/>
         <source>Hide details view</source>
         <translation>Скрыть детали</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="244"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="930"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="245"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="931"/>
         <source>Show overview</source>
         <translation>Показать панораму</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="244"/>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="930"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="245"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="931"/>
         <source>Hide overview</source>
         <translation>Скрыть панораму</translation>
     </message>
@@ -2630,32 +2605,32 @@ Double-click to collapse the branch</source>
         <translation>Выбрать имя аннотации:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="113"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="114"/>
         <source>Configure the annotations:</source>
         <translation>Задать аннотации:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="125"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="126"/>
         <source>Previous annotation</source>
         <translation>Предыдущая аннотация</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="133"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="134"/>
         <source>Next annotation</source>
         <translation>Следующая аннотация</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="211"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="212"/>
         <source>Sequence context is NULL</source>
         <translation>Sequence context is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="322"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="323"/>
         <source>The sequence doesn&apos;t have any annotations.</source>
         <translation>Последовательность не имеет аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="325"/>
+        <location filename="../src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp" line="326"/>
         <source>The sequences do not have any annotations.</source>
         <translation>Последовательности не имеют аннотаций.</translation>
     </message>
@@ -2663,112 +2638,117 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::AnnotatedDNAView</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="135"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="142"/>
         <source>Find pattern...</source>
         <translation>Поиск подстроки...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="113"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="120"/>
         <source>Go to position...</source>
         <translation>Перейти...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="126"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="133"/>
         <source>Rename item</source>
         <translation>Переименовать элемент</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="140"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="147"/>
         <source>Insert subsequence...</source>
         <translation>Вставить подпоследовательность...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="145"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="152"/>
         <source>Remove subsequence...</source>
         <translation>Удалить подпоследовательность...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="149"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="156"/>
         <source>Replace subsequence...</source>
         <translation>Заменить подпоследовательность...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="154"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="161"/>
         <source>Selected sequence from view</source>
         <translation>Удалить выделенную последовательность из отображения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="158"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="165"/>
         <source>Reverse-complement sequence</source>
         <translation>Заменить на обратно-комплементарную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="166"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="173"/>
         <source>Complement sequence</source>
         <translation>Заменить на комплементарную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="350"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="358"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="530"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="539"/>
         <source>Analyze</source>
         <translation>Анализ</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="540"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="549"/>
         <source>Add</source>
         <translation>Аннотация</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="546"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="555"/>
         <source>Export</source>
         <translation>Экспорт</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="552"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="561"/>
         <source>Align</source>
         <translation>Выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="558"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="567"/>
         <source>Remove</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="571"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="580"/>
         <source>Edit</source>
         <translation>Редактирование</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="162"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1339"/>
+        <source>No sequence in focus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="169"/>
         <source>Reverse sequence</source>
         <translation>Заменить на обратную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="809"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="818"/>
         <source>Select sequence to associate annotations with:</source>
         <translation>Установить связь аннотаций с последовательностью:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="827"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="836"/>
         <source>No sequence object found for annotations</source>
         <translation>Не найдена связанная с аннотациями последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="754"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="763"/>
         <source>Disable &apos;%1&apos; highlighting</source>
         <translation>Не использовать подсветку для &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="756"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="765"/>
         <source>Enable &apos;%1&apos; highlighting</source>
         <translation>Задействовать подсветку для &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="896"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="905"/>
         <source>Go To</source>
         <translation>Выбор позиции</translation>
     </message>
@@ -2784,159 +2764,164 @@ Double-click to collapse the branch</source>
 <context>
     <name>U2::AnnotationsTreeView</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="121"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="123"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="121"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="266"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="123"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="275"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="167"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="176"/>
         <source>Selected objects with annotations from view</source>
         <translation>Удалить выбранные объекты с аннотациями</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="180"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1076"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="189"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1119"/>
         <source>Copy qualifier text</source>
         <translation>Копировать значение квалификатора</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="183"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1080"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="192"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1123"/>
         <source>Copy qualifier URL</source>
         <translation>Копировать ссылку</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="186"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1085"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="195"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1128"/>
         <source>Toggle column</source>
         <translation>Переключить столбец</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="190"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="199"/>
         <source>Hide column</source>
         <translation>Убрать столбец</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="194"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="203"/>
         <source>Find qualifier...</source>
         <translation>Поиск квалификатора...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="199"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="208"/>
         <source>Invert annotation selection</source>
         <translation>Инвертировать выделенную аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="203"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="779"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="212"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="788"/>
         <source>Copy column text</source>
         <translation>Копировать значение</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="206"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="793"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="215"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="802"/>
         <source>copy column URL</source>
         <translation>Копировать ссылку</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="164"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="173"/>
         <source>Objects with annotations...</source>
         <translation>Добавить объекты с аннотациями...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="121"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="123"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="174"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="166"/>
+        <source>Paste annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="183"/>
         <source>Selected annotations and qualifiers</source>
         <translation>Удалить выбранные аннотации и квалификаторы</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="209"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="218"/>
         <source>Rename item</source>
         <translation>Переименовать элемент</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="216"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="225"/>
         <source>Edit qualifier</source>
         <translation>Редактировать квалификатор</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="223"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="232"/>
         <source>View qualifier</source>
         <translation>Просмотреть квалификатор</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="229"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="238"/>
         <source>Qualifier...</source>
         <translation>Добавить квалификатор...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="236"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="245"/>
         <source>Make auto-annotations persistent</source>
         <translation>Сделать автоаннотации постоянными</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="550"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="559"/>
         <source>At least one dragged annotation is out of the sequence range!</source>
         <translation>Как минимум одна из аннотаций вне диапазона последовательности!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="785"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="794"/>
         <source>Copy column &apos;%1&apos; text</source>
         <translation>Копировать значение &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="788"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="797"/>
         <source>Copy &apos;%1&apos; annotation location</source>
         <translation>Копировать позицию аннотации &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="797"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="806"/>
         <source>Copy column &apos;%1&apos; URL</source>
         <translation>Копировать ссылку &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="819"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1086"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="828"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1129"/>
         <source>Hide &apos;%1&apos; column</source>
         <translation>Скрыть столбец &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1076"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1119"/>
         <source>Copy qualifier &apos;%1&apos; value</source>
         <translation>Копировать значение &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1080"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1123"/>
         <source>Copy qualifier &apos;%1&apos; URL</source>
         <translation>Копировать ссылку &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1086"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1129"/>
         <source>Add &apos;%1&apos; column</source>
         <translation>Добавить столбец &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1805"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1848"/>
         <source>Rename Group</source>
         <translation>Переименовать группу</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1846"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1889"/>
         <source>Rename Qualifier</source>
         <translation>Переименовать квалификатор</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1905"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1948"/>
         <source>Create Permanent Annotation</source>
         <translation>Создать постоянную аннотацию</translation>
     </message>
@@ -4032,7 +4017,7 @@ You don&apos;t have enough rights to change file</source>
 <context>
     <name>U2::CurrentViewPainter</name>
     <message>
-        <location filename="../src/ov_sequence/image_export/SequencePainter.cpp" line="77"/>
+        <location filename="../src/ov_sequence/image_export/SequencePainter.cpp" line="79"/>
         <source>Warning: SVG is not supported for the currently viewed area. Please, choose another export area.</source>
         <translation>Warning: SVG is not supported for the currently viewed area. Please, choose another export area.</translation>
     </message>
@@ -4059,24 +4044,20 @@ You don&apos;t have enough rights to change file</source>
 <context>
     <name>U2::DasOptionsPanelWidget</name>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="561"/>
         <source>Show more options</source>
-        <translation>Показать дополнительные настройки</translation>
+        <translation type="vanished">Показать дополнительные настройки</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="561"/>
         <source>Show less options</source>
-        <translation>Скрыть дополнительные настройки</translation>
+        <translation type="vanished">Скрыть дополнительные настройки</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="619"/>
         <source>Warning: Selected region is too short. It should be from 4 to 1900 amino acids.</source>
-        <translation>Предупреждение: Выделенный регион слишком короткий. Он должен быть от 4 до 1900 аминокислот.</translation>
+        <translation type="vanished">Предупреждение: Выделенный регион слишком короткий. Он должен быть от 4 до 1900 аминокислот.</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Das/DasOptionsPanelWidget.cpp" line="622"/>
         <source>Warning: Selected region is too long. It should be from 4 to 1900 amino acids.</source>
-        <translation>Предупреждение: Выделенный регион слишком длинный. Он должен быть от 4 до 1900 аминокислот.</translation>
+        <translation type="vanished">Предупреждение: Выделенный регион слишком длинный. Он должен быть от 4 до 1900 аминокислот.</translation>
     </message>
 </context>
 <context>
@@ -4095,14 +4076,19 @@ You don&apos;t have enough rights to change file</source>
 <context>
     <name>U2::DetView</name>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="55"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="62"/>
         <source>Show complement strand</source>
         <translation>Показывать комплeментарную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="60"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="67"/>
         <source>Show amino translations</source>
         <translation>Показывать транслированную последовательность</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/DetView.cpp" line="72"/>
+        <source>Wrap sequence</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4589,17 +4575,17 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::ExportHighligtningTask</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3029"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3069"/>
         <source>Export highlighting</source>
         <translation>Экспорт подсвеченного</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3057"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3097"/>
         <source>Export highligtning finished successfully</source>
         <translation>Export highligtning finished successfully</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3057"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="3097"/>
         <source>Result file:</source>
         <translation>Выходной файл:</translation>
     </message>
@@ -4677,182 +4663,182 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::FindPatternWidget</name>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="326"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="328"/>
         <source>Exact</source>
         <translation>Точный</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="328"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="330"/>
         <source>InsDel</source>
         <translation>Инсерции/делеции</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="329"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="331"/>
         <source>Substitute</source>
         <translation>Замены</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="331"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="333"/>
         <source>Regular expression</source>
         <translation>Регулярные выражения</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="335"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="337"/>
         <source>Should match</source>
         <translation>Точное совпадение</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="412"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="414"/>
         <source>Search with ambiguous bases</source>
         <translation>Поиск с неоднозначными базами</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="360"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="362"/>
         <source>Both</source>
         <translation>Оба</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="361"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="363"/>
         <source>Direct</source>
         <translation>Прямое</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="362"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="364"/>
         <source>Reverse-coml.</source>
         <translation>Обратно-компл.</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="368"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="370"/>
         <source>Sequence</source>
         <translation>Последовательности</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="369"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="371"/>
         <source>Translation</source>
         <translation>Трансляции</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="375"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="377"/>
         <source>Whole sequence</source>
         <translation>Вся последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="376"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="378"/>
         <source>Custom region</source>
         <translation>Указанный регион</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="377"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="379"/>
         <source>Selected region</source>
         <translation>Выделенный регион</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="435"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="437"/>
         <source>Results no longer than:</source>
         <translation>Результаты не длиннее чем:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="710"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="712"/>
         <source>The value is longer than the search region. Please input a shorter value or select another region!</source>
         <translation>Значение длинее чем регион поиска. Ввведите более короткое значение или выберите другой регион!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="717"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="719"/>
         <source>Warning: input value contains characters that do not match the active alphabet!</source>
         <translation>Предупреждение: входное значение содержит символы, которые не входят в текущий алфавит!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="725"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="727"/>
         <source>Warning: file contains patterns that do not match the active alphabet! Those patterns were ignored </source>
         <translation>Предупреждение: файл содержит паттерны, которые не совпадают с текущим алфавитом! Эти паттерны были проигнорированы </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="732"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="734"/>
         <source>Warning: file contains patterns that longer than the search region! Those patterns were ignored. Please input a shorter value or select another region! </source>
         <translation>Предупреждение: файл содержит паттерны, которые длиннее чем регион поиска! Эти паттерны были проигнорированы. Введите более короткое значение или выберите другой регион! </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="787"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="789"/>
         <source>Warning: current sequence is too long to search in.</source>
         <translation>Предупреждение: текущая последовательность слишком длинная для поиска.</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1458"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1469"/>
         <source>Warning: can not get valid pattern name, annotation will be named &apos;misc_feature&apos;</source>
         <translation>Warning: can not get valid pattern name, annotation will be named &apos;misc_feature&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1596"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1607"/>
         <source>Results:</source>
         <translation>Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="748"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="759"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="750"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="761"/>
         <source>Reason: </source>
         <translation>Причина: </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="739"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="741"/>
         <source>Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns. Alternatively, load patterns from a FASTA file.</source>
         <translation>Инфрмация: добавьте как минимум одну подстроку для поиска. Используйте %1, чтобы ввести несколько подстрок. Также вы можете загрузить подстроки из FASTA файла.
         </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="751"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="753"/>
         <source> Please input valid annotation names </source>
         <translation>Введите корректные имена аннотаций </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="757"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="759"/>
         <source>Warning: annotation names are invalid. </source>
         <translation>Внимание: имена аннотаций некорректны. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="762"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="764"/>
         <source> It will be automatically changed to acceptable name if &apos;Get annotations&apos; button is pressed. </source>
         <translation> Они будут автоматически изменены на доступные имена после того как кнопка &apos;Получить аннотации&apos; будет нажата. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="768"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="775"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="770"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="777"/>
         <source>Warning: there is no pattern to search. </source>
         <translation>Предупреждение: нет паттернов для поиска. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="769"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="776"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="771"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="778"/>
         <source> Please input a valid pattern or choose a file with patterns </source>
         <translation>Введите паттерн или выберите файл с паттернами </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="782"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="784"/>
         <source>Warning: invalid regexp. </source>
         <translation>Предупреждение: некорректное регулярное выражение. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1113"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1124"/>
         <source>Select file to open...</source>
         <translation>Выберите файл...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1165"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1176"/>
         <source>Unable to search on the reverse-complement strand, searching on the direct strand only!</source>
         <translation>Невозможно выполнить поиск в обратно-комплементарной цепи, поиск только в прямой цепи!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="295"/>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1510"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="297"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1521"/>
         <source>Results: %1/%2</source>
         <translation>Результаты: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="746"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="748"/>
         <source>Warning: annotation name or annotation group name are invalid. </source>
         <translation>Внимание: имя аннотации или имя группы аннотаций некорректно. </translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1313"/>
+        <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="1324"/>
         <source>Sequence in focus is NULL</source>
         <translation>Sequence in focus is NULL</translation>
     </message>
@@ -4860,7 +4846,7 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::FindQualifierTask</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="2266"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="2309"/>
         <source>Searching for a qualifier</source>
         <translation>Поиск квалификатора</translation>
     </message>
@@ -4942,7 +4928,7 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::GSequenceLineViewAnnotated</name>
     <message>
-        <location filename="../src/ov_sequence/GSequenceLineViewAnnotated.cpp" line="743"/>
+        <location filename="../src/ov_sequence/GSequenceLineViewAnnotated.cpp" line="440"/>
         <source>etc ...</source>
         <translation>Прочие ...</translation>
     </message>
@@ -5145,125 +5131,134 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::MSAEditor</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="132"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="133"/>
         <source>Zoom In</source>
         <translation>Приблизить</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="136"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="137"/>
         <source>Zoom Out</source>
         <translation>Отдалить</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="140"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="141"/>
         <source>Zoom To Selection</source>
         <translation>Приблизить выбранный регион</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="144"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="145"/>
         <source>Reset Zoom</source>
         <translation>Вернуться к приближению &quot;по умолчанию&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="504"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="505"/>
         <source>Export as image</source>
         <translation>Экспортировать выравнивание в изображение</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="429"/>
         <source>Copy</source>
-        <translation>Копирование</translation>
+        <translation type="vanished">Копирование</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="124"/>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="220"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="125"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="221"/>
         <source>Save alignment</source>
         <translation>Сохранить выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="128"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="129"/>
         <source>Save alignment as</source>
         <translation>Сохранить выравнивание как</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="180"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="181"/>
         <source>Export highlighted</source>
         <translation>Экспортировать выравнивание с выделенными нуклеотидами</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="434"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="430"/>
+        <source>Copy/Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="435"/>
         <source>Edit</source>
         <translation>Редактирование</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="439"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="440"/>
         <source>Export</source>
         <translation>Экспорт</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="460"/>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="508"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="461"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="509"/>
         <source>Align</source>
         <translation>Выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="466"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="467"/>
         <source>Tree</source>
         <translation>Дерево</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="473"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="474"/>
         <source>Advanced</source>
         <translation>Дополнительные операции</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="484"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="485"/>
         <source>Add</source>
         <translation>Добавление</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="512"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="513"/>
         <source>Align sequence to this alignment</source>
         <translation>Выровнять последовательность на это выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="516"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="517"/>
         <source>Set this sequence as reference</source>
         <translation>Сделать референсной</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="520"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="521"/>
         <source>Unset reference sequence</source>
         <translation>Отменить референсную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="792"/>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="795"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="711"/>
+        <source>A problem occurred during adding sequences. The multiple alignment is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="797"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="800"/>
         <source>Open file with sequences</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="452"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="453"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="148"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="149"/>
         <source>Change Font</source>
         <translation>Изменить шрифт</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="152"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="153"/>
         <source>Build Tree</source>
         <translation>Построить дерево</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="366"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="367"/>
         <source>Select font for alignment</source>
         <translation>Выбрать шрифт</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="478"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="479"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
@@ -5286,17 +5281,17 @@ Please, check external tools in the settings.</source>
         <translation>Алгоритм построения консенсуса...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="151"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="152"/>
         <source>MSA consensus algorothm is NULL</source>
         <translation>MSA consensus algorothm is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="152"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="153"/>
         <source>MSA object is NULL</source>
         <translation>MSA object is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="172"/>
+        <location filename="../src/ov_msa/MSAEditorConsensusArea.cpp" line="173"/>
         <source>Percent value is out of [0..100] interval</source>
         <translation>Percent value is out of [0..100] interval</translation>
     </message>
@@ -5335,34 +5330,40 @@ Please, check external tools in the settings.</source>
         <translation>Копировать текущую последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="116"/>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="145"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="74"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="81"/>
+        <source>Remove sequence</source>
+        <translation type="unfinished">Удалить последовательность</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="122"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="151"/>
         <source>MSA Editor UI is NULL</source>
         <translation>MSA Editor UI is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="118"/>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="147"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="124"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="153"/>
         <source>MSA Editor sequence area is NULL</source>
         <translation>MSA Editor sequence area is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="133"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="139"/>
         <source>MSA Object is NULL</source>
         <translation>MSA Object is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="138"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="144"/>
         <source>Invalid sequence index</source>
         <translation>Invalid sequence index</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="866"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="868"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="867"/>
+        <location filename="../src/ov_msa/MSAEditorNameList.cpp" line="869"/>
         <source>New sequence name:</source>
         <translation>Новое имя:</translation>
     </message>
@@ -5378,296 +5379,301 @@ Please, check external tools in the settings.</source>
 <context>
     <name>U2::MSAEditorSequenceArea</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="117"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="120"/>
         <source>Remove selection</source>
         <translation>Удалить выделение</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="128"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="133"/>
         <source>Remove columns of gaps...</source>
         <translation>Удалить столбцы пробелов...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="151"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="154"/>
         <source>Go to position...</source>
         <translation>Перейти...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="158"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="161"/>
         <source>Remove all gaps</source>
         <translation>Удалить все пробелы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="162"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="165"/>
         <source>Sequence from file...</source>
         <translation>Добавить последовательность из файла...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="166"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="169"/>
         <source>Sequence from current project...</source>
         <translation>Добавить последовательность из проекта...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="170"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="173"/>
         <source>Sort sequences by name</source>
         <translation>Отсортировать последовательности по имени</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="184"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="187"/>
         <source>Replace selected rows with reverse-complement</source>
         <translation>Заменить выделенные строки обратно-комплементарными</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="188"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="191"/>
         <source>Replace selected character</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="194"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="198"/>
         <source>Replace selected rows with reverse</source>
         <translation>Заменить выделенные строки обратными</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="198"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="202"/>
         <source>Replace selected rows with complement</source>
         <translation>Заменить выделенные строки комплементарными</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="230"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="348"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="234"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="352"/>
         <source>Use dots</source>
         <translation>Использовать точки</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="294"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="565"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="621"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="298"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="577"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="633"/>
         <source>Unknown alphabet</source>
         <translation>Неизвестный алфавит</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="440"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="444"/>
         <source>MAlignmentObject is null in MSAEditorSequenceArea::hasAminoAlphabet()</source>
         <translation>MAlignmentObject is null in MSAEditorSequenceArea::hasAminoAlphabet()</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="442"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="446"/>
         <source>DNAAlphabet is null in MSAEditorSequenceArea::hasAminoAlphabet()</source>
         <translation>DNAAlphabet is null in MSAEditorSequenceArea::hasAminoAlphabet()</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="603"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="615"/>
         <source>No reference sequence selected</source>
         <translation>Не выбрана референсная последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="726"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="739"/>
         <source>Alignment object is NULL</source>
         <translation>Alignment object is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="865"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="960"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="878"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="973"/>
         <source>Position is out of range: %1</source>
         <translation>Позиция выходит за рамки региона: %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="891"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="969"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="904"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="982"/>
         <source>Sequence is out of range: %1</source>
         <translation>Последовательность выходит за рамки региона: %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="928"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="941"/>
         <source>Negative startPos with non-empty alignment</source>
         <translation>Negative startPos with non-empty alignment</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="929"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="942"/>
         <source>startPos is too big</source>
         <translation>startPos is too big</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="950"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="963"/>
         <source>Negative startSeq with non-empty alignment</source>
         <translation>Negative startSeq with non-empty alignment</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="951"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="964"/>
         <source>startSeq is too big</source>
         <translation>startSeq is too big</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="983"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="996"/>
         <source>Horizontal scrollbar appears unexpectedly: numVisibleBases is too small</source>
         <translation>Horizontal scrollbar appears unexpectedly: numVisibleBases is too small</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1008"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1021"/>
         <source>Vertical scrollbar appears unexpectedly: numVisibleSequences is too small</source>
         <translation>Vertical scrollbar appears unexpectedly: numVisibleSequences is too small</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1055"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1068"/>
         <source>Alignment object is not available</source>
         <translation>Alignment object is not available</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1086"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1099"/>
         <source>Last visible base is less than startPos</source>
         <translation>Last visible base is less than startPos</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1087"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1100"/>
         <source>Last visible base is out of range</source>
         <translation>Last visible base is out of range</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1120"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1133"/>
         <source>Last visible sequence is less than startSeq</source>
         <translation>Last visible sequence is less than startSeq</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1121"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1134"/>
         <source>Last visible sequence is out of range</source>
         <translation>Last visible sequence is out of range</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1144"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1157"/>
         <source>Invalid collapsible item model!</source>
         <translation>Invalid collapsible item model!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1781"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1792"/>
         <source>Cursor position is out of range</source>
         <translation>Cursor position is out of range</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2001"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2013"/>
         <source>Custom schemes</source>
         <translation>Пользовательские схемы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2012"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2024"/>
         <source>Create new color scheme</source>
         <translation>Создать новую цветовую схему</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2020"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2032"/>
         <source>Highlighting</source>
         <translation>Выделение</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2043"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2055"/>
         <source>The alignment has been modified, so that its alphabet has been switched from &quot;%1&quot; to &quot;%2&quot;. Use &quot;Undo&quot;, if you&apos;d like to restore the original alignment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2062"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2161"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2222"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2677"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2074"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2173"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2234"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2717"/>
         <source>NULL collapsible model!</source>
         <translation>NULL collapsible model!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2157"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2169"/>
         <source>NULL msa object!</source>
         <translation>NULL msa object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2270"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2282"/>
         <source>Warning!</source>
         <translation>Внимание!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2270"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2282"/>
         <source>You must select only one sequence for export.</source>
         <translation>Необходимо выбрать только одну последовательность для экспорта.</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2312"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2324"/>
         <source>warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2312"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2324"/>
         <source>The document already in the project</source>
         <translation>Документ уже содержится в проекте</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2539"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2579"/>
         <source>It is not possible to insert the character into the alignment.Please use a character from set A-Z (upper-case or lower-case) or the gap character (&apos;Space&apos;, &apos;-&apos; or &apos;%1&apos;).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2595"/>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2598"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2635"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2638"/>
         <source>Open file with sequences</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2694"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2644"/>
+        <source>A problem occurred during adding sequences. The multiple alignment is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2734"/>
         <source>NULL Msa Object!</source>
         <translation>NULL Msa Object!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2699"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2739"/>
         <source>NULL document!</source>
         <translation>NULL document!</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2722"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2762"/>
         <source>Top left corner of the selection has incorrect coords</source>
         <translation>Top left corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2724"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2764"/>
         <source>Bottom right corner of the selection has incorrect coords</source>
         <translation>Bottom right corner of the selection has incorrect coords</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2883"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2923"/>
         <source>Incorrect pointer to MSACollapsibleItemModel</source>
         <translation>Incorrect pointer to MSACollapsibleItemModel</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2116"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2128"/>
         <source>Go To</source>
         <translation>Выбор позиции</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="134"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="140"/>
         <source>Fill selection with gaps</source>
         <translation>Заполнить пробелами</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="141"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="146"/>
         <source>Save subalignment</source>
         <translation>Сохранить область выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="146"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="150"/>
         <source>Save sequence</source>
         <translation>Сохранить последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="174"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="177"/>
         <source>Switch on/off collapsing</source>
         <translation>Включить/выключить режим схлопывания</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="179"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="182"/>
         <source>Update collapsed groups</source>
         <translation>Обновить схлопнутые группы</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="604"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="616"/>
         <source>Reference sequence for current highlighting scheme is not selected. Use context menu or Highlighting tab on Options panel to select it</source>
         <translation>Референсная последовательность для текущей схемы подсветки не задана. Используйте контекстное меню или панель опций, чтобы задать референсную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1994"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="2006"/>
         <source>Colors</source>
         <translation>Раскраска</translation>
     </message>
@@ -5838,22 +5844,27 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
 <context>
     <name>U2::MSAEditorUI</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="909"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="914"/>
         <source>Copy selection</source>
         <translation>Копировать выделенное</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="918"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="923"/>
         <source>Copy formatted</source>
         <translation>Копировать выделенное с учетом формата</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="1052"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="932"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="1066"/>
         <source>Tree view</source>
         <translation>Дерево</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="977"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="991"/>
         <source>Consensus</source>
         <translation>Консенсус</translation>
     </message>
@@ -5868,9 +5879,14 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
 <context>
     <name>U2::MSAExportConsensusTab</name>
     <message>
-        <location filename="../src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp" line="77"/>
+        <location filename="../src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp" line="78"/>
         <source>Save file</source>
         <translation>Сохранить файл</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp" line="94"/>
+        <source>A problem occurred during export consensus. The multiple alignment is no more available.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5923,17 +5939,17 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
 <context>
     <name>U2::MSAGraphOverview</name>
     <message>
-        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="100"/>
+        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="102"/>
         <source>Multiple sequence alignment is too big. Overview is unavailable.</source>
         <translation>Множественное выравнивание слишком большое. Обзорные график недоступен.</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="105"/>
+        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="107"/>
         <source>Waiting...</source>
         <translation>Ожидание...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="114"/>
+        <location filename="../src/ov_msa/Overview/MSAGraphOverview.cpp" line="116"/>
         <source>Overview is rendering...</source>
         <translation>Панорама рассчитывается...</translation>
     </message>
@@ -6024,12 +6040,18 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
         <translation>MSA sequence area is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="268"/>
+        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="245"/>
+        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="329"/>
+        <source>MSA Collapsible Model is NULL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="278"/>
         <source>Warning: selected region is too big to be exported. You can try to zoom out the alignment or select another region.</source>
         <translation>Предупреждение: выделенный регион слишком большой для экспорта. Вы можете попробовать приблизить выравнивание или выделить другой регион.</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="271"/>
+        <location filename="../src/ov_msa/Export/MSAImageExportTask.cpp" line="281"/>
         <source>Warning: selected region is too big to be exported. You can try to select another region.</source>
         <translation>Предупреждение: выделенный регион слишком большой для экспорта. Вы можете попробовать выделить другой регион.</translation>
     </message>
@@ -6043,12 +6065,11 @@ If you confirm the modification, all phylogenetic tree(s), opened in the same vi
     </message>
     <message>
         <location filename="../src/ov_msa/Export/MSAImageExportTask.h" line="88"/>
-        <location filename="../src/ov_msa/Export/MSAImageExportTask.h" line="116"/>
         <source>MSA Editor is NULL</source>
         <translation>MSA Editor is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/Export/MSAImageExportTask.h" line="103"/>
+        <location filename="../src/ov_msa/Export/MSAImageExportTask.h" line="97"/>
         <source>MSA Consensus area is NULL</source>
         <translation>MSA Consensus area is NULL</translation>
     </message>
@@ -6334,7 +6355,7 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OpenAssemblyBrowserTask</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowserTasks.cpp" line="79"/>
+        <location filename="../src/ov_assembly/AssemblyBrowserTasks.cpp" line="87"/>
         <source>Assembly object not found</source>
         <translation>Assembly object not found</translation>
     </message>
@@ -6368,7 +6389,7 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OpenSavedAssemblyBrowserTask</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowserTasks.cpp" line="155"/>
+        <location filename="../src/ov_assembly/AssemblyBrowserTasks.cpp" line="170"/>
         <source>Assembly object not found: %1</source>
         <translation>Assembly object not found: %1</translation>
     </message>
@@ -6442,12 +6463,12 @@ Simple overview is unavailable.</source>
         <translation>Показать диаграмму плотности аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="359"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="354"/>
         <source>Position </source>
         <translation>Позиция</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="369"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="364"/>
         <source>Annotation density </source>
         <translation>Плотность аннотаций</translation>
     </message>
@@ -6455,12 +6476,12 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::OverviewRenderArea</name>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="483"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="478"/>
         <source>Overview is NULL</source>
         <translation>Overview is NULL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="485"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="480"/>
         <source>ADVSingleSequenceWidget is NULL</source>
         <translation>ADVSingleSequenceWidget is NULL</translation>
     </message>
@@ -6525,42 +6546,42 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::PanView</name>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="120"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="161"/>
         <source>Zoom In</source>
         <translation>Приблизить</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="124"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="165"/>
         <source>Zoom Out</source>
         <translation>Отдалить</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="128"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="169"/>
         <source>Zoom to Selection</source>
         <translation>Масштабировать по выделению</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="132"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="173"/>
         <source>Zoom to Whole Sequence</source>
         <translation>Масштабировать ко всей последовательности</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="136"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="177"/>
         <source>Show Main Ruler</source>
         <translation>Показывать основную шкалу</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="142"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="183"/>
         <source>Show Custom Rulers</source>
         <translation>Показывать дополнительные шкалы</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="439"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="485"/>
         <source>range change request: [%1, %2]</source>
         <translation>Изменён видимый диапазон: [%1, %2]</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="916"/>
+        <location filename="../src/ov_sequence/view_rendering/PanViewRenderer.cpp" line="421"/>
         <source>empty</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
@@ -6568,9 +6589,16 @@ Simple overview is unavailable.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="966"/>
         <source>[%1 %2]</source>
-        <translation>[%1 %2]</translation>
+        <translation type="vanished">[%1 %2]</translation>
+    </message>
+</context>
+<context>
+    <name>U2::PanViewRenderer</name>
+    <message>
+        <location filename="../src/ov_sequence/view_rendering/PanViewRenderer.cpp" line="266"/>
+        <source>[%1 %2]</source>
+        <translation type="unfinished">[%1 %2]</translation>
     </message>
 </context>
 <context>

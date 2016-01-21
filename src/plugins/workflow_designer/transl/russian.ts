@@ -693,7 +693,7 @@ p, li { white-space: pre-wrap; }
         <translation>Выходная директория</translation>
     </message>
     <message>
-        <location filename="../src/ui/StartupDialog.ui" line="41"/>
+        <location filename="../src/ui/StartupDialog.ui" line="33"/>
         <source>Note: you can change this option in the UGENE Application Settings
 (Settings &gt; Preferences &gt; Workflow Designer)</source>
         <translation>Замечание: вы можете изменить эти настройки в общих настройках UGENE
@@ -1474,12 +1474,12 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="186"/>
         <source>Build index (BAM only)</source>
-        <translation>Построение индекса (только BAM)</translation>
+        <translation>Построение индекса (применимо только к файлам BAM)</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="187"/>
         <source>Build BAM index for the target BAM file. The file .bai will be created in the same directory.</source>
-        <translation>Построение индекса для BAM файла. Файл с расширением .bai будет создан в той же директории.</translation>
+        <translation>построение индекса для BAM-файла. Файл с расширением .bai будет создан в той же директории.</translation>
     </message>
 </context>
 <context>
@@ -1559,7 +1559,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="98"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="102"/>
@@ -1750,7 +1750,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="119"/>
         <source>File of selected format</source>
-        <translation>Файл выбранного формата</translation>
+        <translation>Файл заданного формата</translation>
     </message>
     <message>
         <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="132"/>
@@ -1770,7 +1770,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="136"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="140"/>
@@ -1826,288 +1826,233 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::DASAnnotationPrompter</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="241"/>
         <source>unset</source>
-        <translation>не указан</translation>
+        <translation type="vanished">не указан</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="242"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
-        <translation>из &lt;u&gt;%1&lt;/u&gt;</translation>
+        <translation type="vanished">из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="245"/>
         <source>For each protein sequence %1, finds IDs of similar sequences using remote BLAST.&lt;br&gt;Loads annotations for DAS sources using the first %2 ID(s).</source>
-        <translation>Для каждой протеиновой последовательности %1, ищутся идентификаторы похожих последовательносетй используя удаленный BLAST.&lt;br&gt;Загружает аннотации для DAS используя первые %2 идентификаторы.</translation>
+        <translation type="vanished">Для каждой протеиновой последовательности %1, ищутся идентификаторы похожих последовательносетй используя удаленный BLAST.&lt;br&gt;Загружает аннотации для DAS используя первые %2 идентификаторы.</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASAnnotationWorker</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="72"/>
         <source>Input sequences</source>
-        <translation>Входные последовательности</translation>
+        <translation type="vanished">Входные последовательности</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="73"/>
         <source>Protein sequences for annotation. Nucleotide sequences are skipped.</source>
-        <translation>Протеиновые последовательности для аннотации. Нуклеотидные последовательности будут проигнорированы.</translation>
+        <translation type="vanished">Протеиновые последовательности для аннотации. Нуклеотидные последовательности будут проигнорированы.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="74"/>
         <source>DAS annotations</source>
-        <translation>DAS аннотации</translation>
+        <translation type="vanished">DAS аннотации</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="75"/>
         <source>A set of annotations loaded from DAS sources using IDs of similar sequences.</source>
-        <translation>Набор аннотаций загружаемый из DAS источников используя идентификаторы похожих последовательностей.</translation>
+        <translation type="vanished">Набор аннотаций загружаемый из DAS источников используя идентификаторы похожих последовательностей.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Max result IDs</source>
-        <translation>Максимальное количество идентификаторов</translation>
+        <translation type="vanished">Максимальное количество идентификаторов</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Use first IDs of similar sequences to load annotations.</source>
-        <translation>Использовать первый идентификатор похожей последовательности для загрузки аннотаций.</translation>
+        <translation type="vanished">Использовать первый идентификатор похожей последовательности для загрузки аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database</source>
-        <translation>База данных</translation>
+        <translation type="vanished">База данных</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.</source>
-        <translation>База данных, по которым выполняется поиск: UniProtKB или кластеры последовательностей с 100%, 90% или 50% идентичностью.</translation>
+        <translation type="vanished">База данных, по которым выполняется поиск: UniProtKB или кластеры последовательностей с 100%, 90% или 50% идентичностью.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Min identity</source>
-        <translation>Минимальная идентификация</translation>
+        <translation type="vanished">Минимальная идентификация</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Minimum identity of a BLAST result and an input sequence.</source>
-        <translation>Минимальная идентификация результатов BLAST и входная последовательность.</translation>
+        <translation type="vanished">Минимальная идентификация результатов BLAST и входная последовательность.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>Feature sources</source>
-        <translation>Тематические источники</translation>
+        <translation type="vanished">Тематические источники</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>The DAS sources to read features from.</source>
-        <translation>DAS источники для чтения тем.</translation>
+        <translation type="vanished">DAS источники для чтения тем.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>Threshold</source>
-        <translation>Порог</translation>
+        <translation type="vanished">Порог</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.</source>
-        <translation>Среднее значение (E) порога является статистической мерой из числа ожидаемых соответствий в случайной базе данных. Чем ниже это значение, тем больше вероятность того, что соответствие должно быть значимым.</translation>
+        <translation type="vanished">Среднее значение (E) порога является статистической мерой из числа ожидаемых соответствий в случайной базе данных. Чем ниже это значение, тем больше вероятность того, что соответствие должно быть значимым.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>Matrix</source>
-        <translation>Матрица</translation>
+        <translation type="vanished">Матрица</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>The matrix assigns a probability score for each position in an alignment.</source>
-        <translation>Матрица определяет счет вероятности для каждой позиции в выравнивании. </translation>
+        <translation type="vanished">Матрица определяет счет вероятности для каждой позиции в выравнивании. </translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Filtering</source>
-        <translation>Фильтрация</translation>
+        <translation type="vanished">Фильтрация</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to producespurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically. If &apos;Filter low complexity regions&apos; is selected, the query sequence will be run through the program SEG, and all amino acids in low-complexity regions will be replaced by X&apos;s.</source>
-        <translation>Регионы простой сложности (т.е. участки цистеина в Q03751, или гидрофобные регионы в мембранах белков) как правило производят ложные, незначительные по поиску с последовательностями в базе данных, которые имеют тот же самый вид с простыми регионами, но не имеют биологического смысла. Если &apos;Фильтр простых регионов&apos; выбран, поиск последовательности будет работать в рамках программы SEG, и все аминокислоты в простых регионах будут заменены на X.</translation>
+        <translation type="vanished">Регионы простой сложности (т.е. участки цистеина в Q03751, или гидрофобные регионы в мембранах белков) как правило производят ложные, незначительные по поиску с последовательностями в базе данных, которые имеют тот же самый вид с простыми регионами, но не имеют биологического смысла. Если &apos;Фильтр простых регионов&apos; выбран, поиск последовательности будет работать в рамках программы SEG, и все аминокислоты в простых регионах будут заменены на X.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>Gapped</source>
-        <translation>Пробелы</translation>
+        <translation type="vanished">Пробелы</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>This will allow gaps to be introduced in the sequences when the comparison is done.</source>
-        <translation>Это позволит ввести пробелы в последовательность, когда сравнение будет завершено.</translation>
+        <translation type="vanished">Это позволит ввести пробелы в последовательность, когда сравнение будет завершено.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Hits</source>
-        <translation>Попадания</translation>
+        <translation type="vanished">Попадания</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Limits the number of returned alignments.</source>
-        <translation>Ограничивает число возвращенных выравниваний.</translation>
+        <translation type="vanished">Ограничивает число возвращенных выравниваний.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="106"/>
         <source>Annotate with DAS</source>
-        <translation>Аннотирование с помощью DAS</translation>
+        <translation type="vanished">Аннотирование с помощью DAS</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="107"/>
         <source>Finds similar protein sequence using remote BLAST.&lt;p&gt;Using IDs of sequences found loads annotation for DAS sources.&lt;p&gt;Nucleotide sequences are skipped if any supplied to input.&lt;/p&gt;</source>
-        <translation>Ищет схожие протеиновые последовательности используя удаленный remote BLAST.&lt;p&gt;Используя идентификаторы последовательностей находятся аннотации для источников DAS.&lt;p&gt;Нуклеотидные последовательности игнориурются если есть другие входные последовательности.&lt;/p&gt;</translation>
+        <translation type="vanished">Ищет схожие протеиновые последовательности используя удаленный remote BLAST.&lt;p&gt;Используя идентификаторы последовательностей находятся аннотации для источников DAS.&lt;p&gt;Нуклеотидные последовательности игнориурются если есть другие входные последовательности.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="150"/>
         <source>No DAS registry</source>
-        <translation>Нет DAS реестра</translation>
+        <translation type="vanished">Нет DAS реестра</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="153"/>
         <source>No DAS feature sources</source>
-        <translation>Нет источников DAS тем</translation>
+        <translation type="vanished">Нет источников DAS тем</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="286"/>
         <source>Internal error: no DAS Registry.</source>
-        <translation>Внутренняя ошибка: нет DAS реестра.</translation>
+        <translation type="vanished">Внутренняя ошибка: нет DAS реестра.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="313"/>
         <source>Sequence %1 is %2 amino acids long. Only sequences from %3 to %4 amino acids are processed.</source>
-        <translation>Последовательность %1 это %2 длинная аминокслотная. Только последовательности из %3 в %4 аминокислоты обрабатываются.</translation>
+        <translation type="vanished">Последовательность %1 это %2 длинная аминокслотная. Только последовательности из %3 в %4 аминокислоты обрабатываются.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="333"/>
         <source>Bad sequence supplied to DASAnnotationWorker: %1</source>
-        <translation>Плохая последовательность прилагаемая в DAS елементе: %1</translation>
+        <translation type="vanished">Плохая последовательность прилагаемая в DAS елементе: %1</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="363"/>
         <source>Number of similar sequences: %1.</source>
-        <translation>Число схожих последовательностей: %1.</translation>
+        <translation type="vanished">Число схожих последовательностей: %1.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="362"/>
         <source> IDs: </source>
-        <translation>Идентификаторы:</translation>
+        <translation type="vanished">Идентификаторы:</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASFetcherPrompter</name>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="69"/>
         <source>unset</source>
-        <translation>не указан</translation>
+        <translation type="vanished">не указан</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASFetcherWorker</name>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="72"/>
         <source>sequences identified with</source>
-        <translation>последовательности с идентификаторами</translation>
+        <translation type="vanished">последовательности с идентификаторами</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="73"/>
         <source>sequence identified with</source>
-        <translation>последовательность с идентификатором</translation>
+        <translation type="vanished">последовательность с идентификатором</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="87"/>
         <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory.</source>
-        <translation>Сохранить результат в директорию &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation type="vanished">Сохранить результат в директорию &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="89"/>
         <source>Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; DAS source. %4</source>
-        <translation>Риды %1 %2 из &lt;u&gt;%3&lt;/u&gt; DAS источник. %4</translation>
+        <translation type="vanished">Риды %1 %2 из &lt;u&gt;%3&lt;/u&gt; DAS источник. %4</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="128"/>
         <source>Cannot create directory &apos;%1&apos;</source>
-        <translation>Не удается создать директорию &apos;%1&apos;</translation>
+        <translation type="vanished">Не удается создать директорию &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="188"/>
         <source>failed to load item from DAS source : %3</source>
-        <translation>ошибка при загрузке элемента из DAS источника: %3</translation>
+        <translation type="vanished">ошибка при загрузке элемента из DAS источника: %3</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="280"/>
         <source>Read from DAS</source>
-        <translation>Чтение аннотаций из DAS</translation>
+        <translation type="vanished">Чтение аннотаций из DAS</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="281"/>
         <source>Reads sequences and annotations if any from the Distributed Annotation System.</source>
-        <translation>Читает последовательности и аннотации из распределенной системы аннотаций.</translation>
+        <translation type="vanished">Читает последовательности и аннотации из распределенной системы аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="285"/>
         <source>Sequence</source>
-        <translation>Последовательность</translation>
+        <translation type="vanished">Последовательность</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="290"/>
         <source>No DAS registry</source>
-        <translation>Нет DAS реестра</translation>
+        <translation type="vanished">Нет DAS реестра</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="293"/>
         <source>No DAS sources</source>
-        <translation>Нет DAS источника</translation>
+        <translation type="vanished">Нет DAS источника</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="295"/>
         <source>No DAS feature sources</source>
-        <translation>Нет источника тем DAS</translation>
+        <translation type="vanished">Нет источника тем DAS</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="312"/>
         <source>Feature Sources</source>
-        <translation>Источники тем</translation>
+        <translation type="vanished">Источники тем</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="313"/>
         <source>The DAS sources to read features from.</source>
-        <translation>Источники DAS для чтения тем.</translation>
+        <translation type="vanished">Источники DAS для чтения тем.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="317"/>
         <source>Reference Source</source>
-        <translation>Референсный источник</translation>
+        <translation type="vanished">Референсный источник</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="318"/>
         <source>The DAS source to read reference from.</source>
-        <translation>DAS источник для чтения референса.</translation>
+        <translation type="vanished">DAS источник для чтения референса.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="328"/>
         <source>Resource ID(s)</source>
-        <translation>Идентификаторы</translation>
+        <translation type="vanished">Идентификаторы</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="329"/>
         <source>Semicolon-separated list of resource ID`s in the source.</source>
-        <translation>Разделенные запятой идентификаторы в источнике.</translation>
+        <translation type="vanished">источник - список идентификаторов через точку с запятой.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="335"/>
         <source>Save file to directory</source>
-        <translation>Сохранить в директорию</translation>
+        <translation type="vanished">Сохранить в директорию</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="336"/>
         <source>The directory to store sequence files loaded from the source.</source>
-        <translation>Директория для сохранения файлов последовательносетй из источника.</translation>
+        <translation type="vanished">папка для сохранения файлов последовательностей из источника.</translation>
     </message>
 </context>
 <context>
@@ -2770,7 +2715,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FilterBamWorker.cpp" line="142"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/FilterBamWorker.cpp" line="146"/>
@@ -3089,7 +3034,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GetFileListWorker.cpp" line="133"/>
         <source>Gets paths of files: &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Получает пути файлов: &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Получить пути файлов из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
@@ -3113,7 +3058,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GetFileListWorker.cpp" line="110"/>
         <source>Produces URL(s) to files from specified directories.</source>
-        <translation>Производит пути до файлов из указанных директорий.</translation>
+        <translation>этот элемент производит пути до файлов из указанных директорий.</translation>
     </message>
     <message>
         <location filename="../src/library/GetFileListWorker.cpp" line="109"/>
@@ -3126,12 +3071,12 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GroupWorker.cpp" line="259"/>
         <source>Groups all incoming messages into one message.</source>
-        <translation>Группирует все входящие сообщения в одно сообщение.</translation>
+        <translation>Сгруппировать все входящие сообщения в одно сообщение.</translation>
     </message>
     <message>
         <location filename="../src/library/GroupWorker.cpp" line="261"/>
         <source>Groups all incoming messages &lt;u&gt;%1&lt;/u&gt; of &lt;u&gt;%2&lt;/u&gt; slot data.</source>
-        <translation>Группирует все входящие сообщения &lt;u&gt;%1&lt;/u&gt; от &lt;u&gt;%2&lt;/u&gt; слота.</translation>
+        <translation>Сгруппировать все входящие сообщения &lt;u&gt;%1&lt;/u&gt; от &lt;u&gt;%2&lt;/u&gt; слота.</translation>
     </message>
     <message>
         <location filename="../src/library/GroupWorker.cpp" line="267"/>
@@ -3194,7 +3139,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GroupWorker.cpp" line="214"/>
         <source>Groups data supplied to the specified slot by the specified property (for example, by value). Additionally, it is possible to merge data from another slots associated with the specified one.</source>
-        <translation>Группирует данные, передаваемые по указанному слоту по заданному свойству (например, по значению). Кроме того, можно объединить данные из других слотов, ассоциированных с указанным.</translation>
+        <translation>этот элемент группирует данные, передаваемые по указанному слоту по заданному свойству (например, по значению). Кроме того, можно объединить данные из других слотов, ассоциированных с указанным.</translation>
     </message>
 </context>
 <context>
@@ -3348,7 +3293,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="169"/>
         <source>Adds one or several marks to the input sequence.</source>
-        <translation>Маркирует входную последовательность.</translation>
+        <translation>Промаркировать входную последовательность.</translation>
     </message>
 </context>
 <context>
@@ -3381,7 +3326,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="146"/>
         <source>Adds one or several marks to the input sequence depending on the sequence properties. Use this element, for example, in conjunction with the Filter element.</source>
-        <translation>Маркирует входную последовательность в зависимости от ее свойств. Используйте данный элемент, например, в сочетании с элементом &quot;Фильтрация&quot;.</translation>
+        <translation>этот элемент маркирует входную последовательность в зависимости от ее свойств. Используйте данный элемент, например, в сочетании с элементом &quot;Фильтрация&quot;.</translation>
     </message>
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="148"/>
@@ -3452,7 +3397,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MergeBamWorker.cpp" line="103"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/MergeBamWorker.cpp" line="107"/>
@@ -3553,7 +3498,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="443"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="447"/>
@@ -3601,7 +3546,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="344"/>
         <source>Gets one message from &lt;u&gt;%1&lt;/u&gt; and one message from &lt;u&gt;%2&lt;/u&gt;, joins them into a single message, and transfers it to the output. Repeats this while there are available messages in both input ports.</source>
-        <translation>Принимает по одному сообщению от каждого из элементов &lt;u&gt;%1&lt;/u&gt; и &lt;u&gt;%2&lt;/u&gt;, объединяет эти сообщения в одно и передает его дальше. Процедура повторяется до тех пор, пока в обоих входных портах имеются сообщения.</translation>
+        <translation>Принять по одному сообщению от каждого из элементов &lt;u&gt;%1&lt;/u&gt; и &lt;u&gt;%2&lt;/u&gt;, объединить эти сообщения в одно и передать его дальше. Повторять процедуру до тех пор, пока в обоих входных портах имеются сообщения.</translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="348"/>
@@ -3654,7 +3599,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="280"/>
         <source>Specifies how to multiplex the input messages: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - the multiplexer gets one message from the first input port and one message from the second input port, joins them into a single message, and transfers it to the output. This procedure is repeated while there are available messages in both input ports.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - the multiplexer gets one message from the first input port, joins it with each message from the second input port, and transfers the joined messages to the output. This procedure is repeated for each message from the first input port.&lt;/li&gt; &lt;br/&gt;</source>
-        <translation>Данный параметр определяет способ объединения сообщений из двух входных портов: &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; - одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения.&lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; - одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения отправляются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;</translation>
+        <translation>данный параметр определяет способ объединения сообщений из двух входных портов: значение &lt;li&gt;&lt;b&gt;1 to 1&lt;/b&gt; означает, что одно сообщение из первого входного порта объединяется с одним сообщением из второго входного порта. Полученное мультиплексированное сообщение передается на выход. Данная процедура повторяется до тех пор, пока в обоих портах имеются сообщения. Значение &lt;/li&gt; &lt;li&gt;&lt;b&gt;1 to many&lt;/b&gt; означает, что одно сообщение из первого входного порта по очереди объединяется с каждым сообщением из второго входного порта. Мультиплексированные сообщения передаются на выход. Процедура повторяется до тех пор, пока в первом порте имеются сообщения. &lt;/li&gt; &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="296"/>
@@ -3674,7 +3619,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/MultiplexerWorker.cpp" line="304"/>
         <source>The element allows one to join two data flows into a single data flow, i.e. to join messages from two input ports into concatenated messages and send them to the output. The concatenation approach is determined by the &lt;i&gt;Multiplexing rule&lt;/i&gt; parameter.</source>
-        <translation>Данный элемент позволяет объединять данные из двух различных источников, а именно объединять сообщения, пришедшие во входные порты, в комплексные мультиплексированные сообщения. Способ объединения сообщений задается с помощью параметра &lt;i&gt;Правило мультиплексирования&lt;/i&gt;.</translation>
+        <translation>этот элемент позволяет объединять данные из двух различных источников, а именно объединять сообщения, пришедшие во входные порты, в комплексные мультиплексированные сообщения. Способ объединения сообщений задается с помощью параметра &lt;i&gt;Правило мультиплексирования&lt;/i&gt;.</translation>
     </message>
 </context>
 <context>
@@ -3700,7 +3645,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="132"/>
         <source>Filters input data from %1 by value(s) %2.</source>
-        <translation>Отфильтровывает входные данные из %1 по значениям %2.</translation>
+        <translation>Отфильтровать входные данные из %1 по значениям %2.</translation>
     </message>
 </context>
 <context>
@@ -3728,7 +3673,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="101"/>
         <source>Semicolon-separated list of values used to filter the input data.</source>
-        <translation>Список значений, разделенных &apos;;&apos;, используемых для фильтрации входных данных.</translation>
+        <translation>принимает на вход список значений, разделенных точкой с запятой, который будет использован для фильтрации входных данных.</translation>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="105"/>
@@ -3738,7 +3683,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="106"/>
         <source>Passes through only data that matches the input filter value (or values).</source>
-        <translation>Отфильтровывает входные данные по заданному значению (или значениям).</translation>
+        <translation>этот элемент отфильтровывает входные данные по заданному значению (или значениям).</translation>
     </message>
 </context>
 <context>
@@ -3799,7 +3744,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="250"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/FASTQWorkersLibrary.cpp" line="254"/>
@@ -3990,7 +3935,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadAnnotationsWorker.cpp" line="134"/>
         <source>Reads annotations from files.</source>
-        <translation>Читает аннотации из файлов.</translation>
+        <translation>этот элемент считывает аннотации из файлов.</translation>
     </message>
     <message>
         <location filename="../src/library/ReadAnnotationsWorker.cpp" line="144"/>
@@ -4030,7 +3975,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadAnnotationsWorker.cpp" line="170"/>
         <source>Reads annotations from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Читает аннотации из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать аннотации из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
@@ -4043,7 +3988,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadAssemblyWorker.cpp" line="123"/>
         <source>Reads assembly from files.</source>
-        <translation>Читает сборки из файлов.</translation>
+        <translation>этот элемент считывает сборки из файлов.</translation>
     </message>
     <message>
         <location filename="../src/library/ReadAssemblyWorker.cpp" line="133"/>
@@ -4054,7 +3999,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadAssemblyWorker.cpp" line="139"/>
         <source>Reads assembly from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Читает сборку из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать сборку из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
@@ -4095,7 +4040,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="188"/>
         <source>Reads variations from files and produces variations tracks.</source>
-        <translation>Читает вариации из файлов и производит вариационные треки.</translation>
+        <translation>этот элемент читает вариации из файлов и производит наборы вариаций.</translation>
     </message>
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="197"/>
@@ -4111,7 +4056,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="204"/>
         <source>If the file contains variations with multiple alleles (chr1 100 C G,A), &lt;i&gt;No split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Split&lt;/i&gt; splits them into two variations (chr1 100 C G and chr1 100 C A).</source>
-        <translation>Если файл содержит вариации с несколькими аллелями (chr1 100 C G,A), &lt;i&gt;Не разбивать&lt;/i&gt; подает как есть на выход, &lt;i&gt;Разбиение&lt;/i&gt; разбивает их на две вариации (chr1 100 C G and chr1 100 C A).</translation>
+        <translation>если файл содержит вариации с несколькими аллелями (chr1 100 C G,A), режим &lt;i&gt;без разбиенияа&lt;/i&gt; подает такую строку на выход без изменений, в то время как режим &lt;i&gt;разбиение&lt;/i&gt; разбивает строку на две (chr1 100 C G и chr1 100 C A).</translation>
     </message>
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="212"/>
@@ -4126,7 +4071,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="219"/>
         <source>Reads variations from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Читает вариации из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать вариации из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
@@ -4187,7 +4132,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="302"/>
         <source>Reads sequences and annotations if any from a remote database.</source>
-        <translation>Загружает последовательности (вместе с аннотациями) из удаленной базы данных.</translation>
+        <translation>этот элемент загружает последовательности, а также аннотации в случае их наличия, из удаленной базы данных.</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="306"/>
@@ -4203,7 +4148,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="318"/>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="559"/>
         <source>The database to read from.</source>
-        <translation>Выберите удаленную базу данных, из которой требуется загрузить данные.</translation>
+        <translation>выберите удаленную базу данных, из которой требуется загрузить данные.</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="322"/>
@@ -4213,7 +4158,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="323"/>
         <source>The source to read resource IDs from: the list or a local file.</source>
-        <translation>Источник идентификаторов из: список или локальный файл.</translation>
+        <translation>источник идентификаторов (список или локальный файл).</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="327"/>
@@ -4291,8 +4236,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="123"/>
-        <source>Changes chromosome notation for each variant from the input, VCF or other variation files.</source>
-        <translation>Изменяет обозначения хромосомы для каждой вариации из входного файла, VCF или другие файлы.</translation>
+        <source>Changes chromosome notation for each variant from the input VCF or other variation files.</source>
+        <translation>этот элемент изменяет обозначения хромосом для каждой вариации из входного VCF-файла или других файлов.</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="127"/>
@@ -4327,22 +4272,22 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="144"/>
         <source>Replace prefixes</source>
-        <translation>Переписать префиксы</translation>
+        <translation>Заменить префиксы</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="145"/>
-        <source>Input the list of chromosome prefixes that you would like to replace. For example &quot;NC_000&quot;. Separate different prefixes by semicolons.</source>
-        <translation>Введите список префиксов, которые необходимо переписать. Например &quot;NC_000&quot;. Отделите разные префиксы точкой с запятой.</translation>
+        <source>Input the list of chromosome prefixes that you would like to replace, for example &quot;NC_000&quot;. Separate different prefixes by semicolons.</source>
+        <translation>введите список префиксов, которые необходимо переписать, например &quot;NC_000&quot;. Разделяйте префиксы точкой с запятой.</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="147"/>
         <source>Replace by</source>
-        <translation>Переписать при помощи</translation>
+        <translation>Заменить</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="148"/>
         <source>Input the prefix that should be set instead, for example &quot;chr&quot;.</source>
-        <translation>Введите префикс, на который нужно заменить указанные префиксы, например &quot;chr&quot;.</translation>
+        <translation>введите префикс, на который нужно заменить указанные префиксы, например &quot;chr&quot;.</translation>
     </message>
 </context>
 <context>
@@ -4403,7 +4348,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/RmdupBamWorker.cpp" line="105"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/RmdupBamWorker.cpp" line="109"/>
@@ -4845,7 +4790,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/SortBamWorker.cpp" line="103"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/SortBamWorker.cpp" line="107"/>
@@ -5145,7 +5090,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="396"/>
         <source>Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
-        <translation>Имя для сохранения аннотаций. Этот параметр доступен только для форматов, которые поддерживают сохранение имен аннотаций.</translation>
+        <translation>имя для сохранения аннотаций. Этот параметр доступен только для форматов, которые поддерживают сохранение имен аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="401"/>
@@ -5165,7 +5110,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="407"/>
         <source>String which separates values in CSV files.</source>
-        <translation>Строка, которая разделяет значения в CSV файлах.</translation>
+        <translation>символ, который разделяет значения в файлах CSV.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="412"/>
@@ -5175,7 +5120,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="413"/>
         <source>Add names of sequences into CSV file.</source>
-        <translation>Добавить имена последовательностей в CSV файл.</translation>
+        <translation>добавить имена последовательностей в CSV-файл.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="429"/>
@@ -5185,7 +5130,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteAnnotationsWorker.cpp" line="430"/>
         <source>Writes all supplied annotations to file(s) in selected format.</source>
-        <translation>Записывает все аннотации в файл в выбранном формате.</translation>
+        <translation>этот элемент записывает все аннотации в файл заданного формата.</translation>
     </message>
 </context>
 <context>
@@ -5204,7 +5149,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="163"/>
         <source>Writes all supplied assemblies to file(s) in selected format.</source>
-        <translation>Записывает все сборки в файл(ы) в указанном формате.</translation>
+        <translation>этот элемент записывает все сборки в файл(ы) заданного формата.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="169"/>
@@ -5243,7 +5188,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/WriteVariationWorker.cpp" line="117"/>
         <source>Writes all supplied variations to file(s) in selected format.</source>
-        <translation>Записывает все прилагаемые вариации в файл или файлы в указанном формате.</translation>
+        <translation>этот элемент записывает все прилагаемые вариации в файл(ы) заданного формата.</translation>
     </message>
     <message>
         <location filename="../src/library/WriteVariationWorker.cpp" line="123"/>
@@ -5337,7 +5282,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::StartupDialog</name>
     <message>
-        <location filename="../src/StartupDialog.cpp" line="68"/>
+        <location filename="../src/StartupDialog.cpp" line="65"/>
         <source>You have no write access to the directory. Please choose another one.</source>
         <translation>Вы не имеете прав на запись в директорию. Выберите другую директорию.</translation>
     </message>
@@ -5345,101 +5290,101 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::Workflow::CoreLib</name>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="154"/>
+        <location filename="../src/library/CoreLib.cpp" line="152"/>
         <source>Write FASTA</source>
         <translation>Запись FASTA</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="175"/>
+        <location filename="../src/library/CoreLib.cpp" line="173"/>
         <source>Read Plain Text</source>
         <translation>Чтение текста</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="175"/>
+        <location filename="../src/library/CoreLib.cpp" line="173"/>
         <source>Reads text from local or remote files.</source>
-        <translation>Считывает текстовые данные из файлов, расположенных локально или удаленно.</translation>
+        <translation>этот элемент считывает текстовые данные из файлов, расположенных локально или удаленно.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="195"/>
+        <location filename="../src/library/CoreLib.cpp" line="193"/>
         <source>Write Plain Text</source>
         <translation>Запись текста</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="195"/>
+        <location filename="../src/library/CoreLib.cpp" line="193"/>
         <source>Write strings to a file.</source>
-        <translation>Запись текстовых данных в файл.</translation>
+        <translation>этот элемент записывает текстовые данные в файл.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="252"/>
+        <location filename="../src/library/CoreLib.cpp" line="250"/>
         <source>Writes all supplied sequences to file(s) in selected format.</source>
-        <translation>Записывает последовательности в файл (ы) в заданном формате.</translation>
+        <translation>этот элемент записывает последовательности в файл(ы) заданного формата.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="283"/>
+        <location filename="../src/library/CoreLib.cpp" line="281"/>
         <source>Save all sequences from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Сохранить все последовательности из &lt;u&gt;%1&lt;/u&gt; в &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="430"/>
+        <location filename="../src/library/CoreLib.cpp" line="426"/>
         <source>Another worker with this name is already registered: %1</source>
         <translation>Другой эелемент с таким именем уже был зарегистрирован: %1</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="432"/>
+        <location filename="../src/library/CoreLib.cpp" line="428"/>
         <source>The actor &apos;%1&apos; has been already registered</source>
         <translation>Метка &apos;%1&apos; уже была зарегистрирована</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="155"/>
-        <location filename="../src/library/CoreLib.cpp" line="253"/>
+        <location filename="../src/library/CoreLib.cpp" line="153"/>
+        <location filename="../src/library/CoreLib.cpp" line="251"/>
         <location filename="../src/library/GenericReadActor.cpp" line="100"/>
         <source>Sequence</source>
         <translation>Последовательность</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="176"/>
-        <location filename="../src/library/CoreLib.cpp" line="196"/>
+        <location filename="../src/library/CoreLib.cpp" line="174"/>
+        <location filename="../src/library/CoreLib.cpp" line="194"/>
         <source>Plain text</source>
         <translation>Текстовые данные</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="127"/>
+        <location filename="../src/library/CoreLib.cpp" line="125"/>
         <source>Location</source>
         <translation>Путь к файлу</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="179"/>
+        <location filename="../src/library/CoreLib.cpp" line="177"/>
         <source>Reads text from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Прочитать текст из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="202"/>
+        <location filename="../src/library/CoreLib.cpp" line="200"/>
         <source>Save text from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Сохранить текст из &lt;u&gt;%1&lt;/u&gt; в &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="217"/>
+        <location filename="../src/library/CoreLib.cpp" line="215"/>
         <location filename="../src/library/GenericReadActor.cpp" line="160"/>
         <source>Multiple sequence alignment</source>
         <translation>Множественное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="230"/>
+        <location filename="../src/library/CoreLib.cpp" line="228"/>
         <source>Save all MSAs from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Сохранить множественные выравнивания из &lt;u&gt;%1&lt;/u&gt; в &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="216"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Write Alignment</source>
         <translation>Запись множественного выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="216"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Writes all supplied alignments to file(s) in selected format.</source>
-        <translation>Запись всех входных выравниваний в файл(ы) в выбранном формате.</translation>
+        <translation>этот элемент записывает все входные выравнивания в файл(ы) заданного формата.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="252"/>
+        <location filename="../src/library/CoreLib.cpp" line="250"/>
         <source>Write Sequence</source>
         <translation>Запись последовательности</translation>
     </message>
@@ -5461,7 +5406,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="163"/>
         <source>Reads MSA(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Прочитать множественные выравнивания из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать множественное(ые) выравнивание(я) из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="101"/>
@@ -5469,30 +5414,30 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
         <translation>Биологические последовательности разных видов (ДНК, РНК, протеины).</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="127"/>
+        <location filename="../src/library/CoreLib.cpp" line="125"/>
         <source>Location for writing data</source>
         <translation>Путь к файлу для записи данных</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="155"/>
+        <location filename="../src/library/CoreLib.cpp" line="153"/>
         <source>A sequence along with FASTA header line.</source>
         <translation>Последовательность вместе с заголовком FASTA.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="154"/>
+        <location filename="../src/library/CoreLib.cpp" line="152"/>
         <source>Writes all supplied sequences to file(s) in FASTA format.</source>
-        <translation>Запись всех входящих данных в файл(ы) в формате FASTA.</translation>
+        <translation>этот элемент записывает все входные данные в файл(ы) в формате FASTA.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="149"/>
-        <source>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</source>
-        <translation>Считывает множественные выравнивания из файлов, расположенных локально или удаленно.
+        <source>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides recognized alignment formats, it supports aligning from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</source>
+        <translation>этот элемент считывает множественные выравнивания из файлов, расположенных локально или удаленно.
 &lt;p&gt;Помимо чтения готовых выравниваний известных форматов, поддерживается автоматическое составление выравниваний из наборов последовательностей, которые могут быть прочитаны из файла любого подходящего формата (например,  FASTA или Genbank).</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="89"/>
         <source>Reads sequences and annotations if any from local or remote files.</source>
-        <translation>Считывает последовательности (вместе с аннотациями) из файлов, расположенных локально или удаленно.</translation>
+        <translation>этот элемент загружает последовательности, а также аннотации в случае их наличия, из файлов, расположенных локально или удаленно.</translation>
     </message>
 </context>
 <context>
@@ -5598,17 +5543,17 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="105"/>
         <source>If the file contains more than one sequence, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the sequences and outputs the sole merged sequence.</source>
-        <translation>При наличии более одной последовательности в файле режим &lt;i&gt;Разбиение&lt;/i&gt; отправляет их в исходном виде на выходной порт по одной,  в то время как режим &lt;i&gt;Сшивка&lt;/i&gt; соединяет все последовательности в одну и отправляет ее на выходной порт.</translation>
+        <translation>при наличии более одной последовательности в файле режим &lt;i&gt;Разбиение&lt;/i&gt; отправляет их в исходном виде на выходной порт по одной, в то время как режим &lt;i&gt;Сшивка&lt;/i&gt; соединяет все последовательности в одну и отправляет ее на выходной порт.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="107"/>
         <source>Merging gap</source>
-        <translation>Сшивка пропусками</translation>
+        <translation>Сшивка с помощью пробелов</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="108"/>
         <source>In &lt;i&gt;Merge&lt;/i&gt; mode, the specified number of gaps are inserted between the original sequences. This is helpful, for example, to avoid finding false positives at the merge boundaries.</source>
-        <translation>В режиме &lt;i&gt;Сшивка&lt;/i&gt; добавляется указанное число пропусков между исходными последовательностиями. Это, в частности, помогает избежать нахождения ложных совпадений или сигналов на границах сшивки исходных последовательностей.</translation>
+        <translation>в режиме &lt;i&gt;Сшивка&lt;/i&gt; между исходными последовательностями добавляется указанное число пробелов. В частности, это помогает избежать нахождения ложноположительных сигналов на границах, по которым шла сшивка исходных последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="110"/>
@@ -5617,8 +5562,12 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="111"/>
-        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; and &lt;b&gt;?&lt;/b&gt; to mask some symbols.&lt;/i&gt;&lt;/p&gt;</source>
-        <translation>Указывает только на те последовательности, которые содержат указанное регулярное выражение.&lt;p&gt;&lt;i&gt;Оставьте его пустым, чтобы отключить этот фильтр. Используйте &lt;b&gt;*&lt;/b&gt; и &lt;b&gt;?&lt;/b&gt; чтобы пометить некоторые символы.&lt;/i&gt;&lt;/p&gt;</translation>
+        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; to mask many symbol and use &lt;b&gt;?&lt;/b&gt; to mask one symbol.&lt;/i&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; to mask many symbols and &lt;b&gt;?&lt;/b&gt; to mask one symbol.&lt;/i&gt;&lt;/p&gt;</source>
+        <translation type="vanished">выбирает только те последовательности, названия которых содержат указанное регулярное выражение. &lt;p&gt;&lt;i&gt;Оставьте его пустым, чтобы отключить этот фильтр. Используйте &lt;b&gt;*&lt;/b&gt; чтобы заменить несколько символов и &lt;b&gt;?&lt;/b&gt; чтобы заменить один символ.&lt;/i&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="113"/>
@@ -5628,7 +5577,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="114"/>
         <source>&lt;i&gt;Split mode&lt;/i&gt; only.&lt;p&gt;Read only first N sequences from each file.&lt;br&gt;Set 0 value for reading all sequences.&lt;/p&gt;</source>
-        <translation>&lt;i&gt;Разделительная мода&lt;/i&gt; только.&lt;p&gt;Читает только первые N последовательностей из каждого файла.&lt;br&gt;Установите нулевое значение чтобы прочитать все последовательности.&lt;/p&gt;</translation>
+        <translation>работает только в режиме &lt;i&gt;Разбиение&lt;/i&gt;. &lt;p&gt;В этом случае из каждого файла считываются только первые N последовательностей. &lt;br&gt;Чтобы прочитать все последовательности, установите нулевое значение чтобы прочитать все последовательности установите нулевое значение N.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="127"/>
@@ -5664,7 +5613,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     <message>
         <location filename="../src/library/DocActors.cpp" line="200"/>
         <source>Writes sequence(s) in %1 format to &lt;u&gt;%2&lt;/u&gt;.</source>
-        <translation>Запись последовательностей в формате %1 в &lt;u&gt;%2&lt;/u&gt;.</translation>
+        <translation>Сохранить последовательности в формате %1 в &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/library/DocActors.cpp" line="204"/>

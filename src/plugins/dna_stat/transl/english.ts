@@ -135,7 +135,7 @@
 <context>
     <name>U2::DNAStatMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="75"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="71"/>
         <source>Generate grid profile</source>
         <translation>Generate grid profile</translation>
     </message>
@@ -328,15 +328,14 @@
 <context>
     <name>U2::DNAViewStatsContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="162"/>
         <source>Statistics</source>
-        <translation>Statistics</translation>
+        <translation type="vanished">Statistics</translation>
     </message>
 </context>
 <context>
     <name>U2::DistanceMatrixMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="112"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="108"/>
         <source>Generate distance matrix</source>
         <translation>Generate distance matrix</translation>
     </message>

@@ -228,83 +228,88 @@
 <context>
     <name>U2::FindRepeatsDialog</name>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="82"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="83"/>
         <source>Start</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="83"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="84"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="102"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="103"/>
         <source>Auto</source>
         <translation>Автовыбор</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="103"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="104"/>
         <source>Suffix index</source>
         <translation>Суффиксный индекс</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="104"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="105"/>
         <source>Diagonals</source>
         <translation>Диагональный</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="106"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="107"/>
         <source>Disjoint repeats</source>
         <translation>Непересекающиеся повторы</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="107"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="108"/>
         <source>No filtering</source>
         <translation>Без фильтрации</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="108"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="109"/>
         <source>Unique repeats</source>
         <translation>Уникальные повторы</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="279"/>
-        <location filename="../src/FindRepeatsDialog.cpp" line="286"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="280"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="287"/>
         <source>Error</source>
         <translation>Проблема</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="223"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="224"/>
         <source>No annotations found: %1</source>
         <translation>Аннотации не найдены: %1</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="279"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="280"/>
         <source>Not enough memory error ocurred while preparing data. Try to set smaller region.</source>
         <translation>Недостаточно памяти, возникла ошибка в процессе подготовки данных. Попробуйте указать меньший регион.</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="286"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="287"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="294"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="295"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="295"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="296"/>
         <source>Search with given identity %1% and length more then 80m bps can take very long time. Approximate repeat searching time for 80m bp with 95% identity is 40 minutes on Intel Core 2 Quad Q9500. Do you want to continue?</source>
         <translation>Поиск с указанной схожестью %1% и длиной более 80m bps может занять длительное время. Примерное время поиска для 80m bp с 95% схожестью занимает 40 минут на Intel Core 2 Quad Q9500. Хотите продолжить?</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="381"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="304"/>
+        <source>A problem occurred during finding repeats. The sequence is no more available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="383"/>
         <source>Estimated repeats count: %1</source>
         <translation>Оценка возможного кол-ва результатов: %1</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="382"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="384"/>
         <source>Estimated repeats count hint is based on the active settings and random sequence model</source>
         <translation>Оценка основана на текущих параметрах поиска и модели случайной последовательности</translation>
     </message>

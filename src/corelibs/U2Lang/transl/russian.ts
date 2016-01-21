@@ -1398,27 +1398,27 @@
         <translation>Процесс схемы</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="586"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="587"/>
         <source>Cannot start process &apos;%1&apos;</source>
         <translation>Cannot start process &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="593"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="594"/>
         <source>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</source>
         <translation>The process &apos;%1&apos; failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="597"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="598"/>
         <source>The process &apos;%1&apos; crashed some time after starting successfully</source>
         <translation>The process &apos;%1&apos; crashed some time after starting successfully</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="601"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="602"/>
         <source>Error occurred while reading from or writing to channel</source>
         <translation>Error occurred while reading from or writing to channel</translation>
     </message>
     <message>
-        <location filename="../src/support/WorkflowRunTask.cpp" line="604"/>
+        <location filename="../src/support/WorkflowRunTask.cpp" line="605"/>
         <source>Unknown error occurred</source>
         <translation>Unknown error occurred</translation>
     </message>
@@ -1466,27 +1466,28 @@
     <name>U2::SimpleMSAWorkflow4GObjectTask</name>
     <message>
         <location filename="../src/support/SimpleWorkflowTask.cpp" line="164"/>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="185"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="184"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="200"/>
         <source>Object &apos;%1&apos; removed</source>
         <translation>Object &apos;%1&apos; removed</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="186"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="185"/>
         <source>Object &apos;%1&apos; is locked</source>
         <translation>Object &apos;%1&apos; is locked</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="206"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="212"/>
         <source>Result document not found!</source>
         <translation>Result document not found!</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="207"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="213"/>
         <source>Result document content not matched! %1</source>
         <translation>Result document content not matched! %1</translation>
     </message>
     <message>
-        <location filename="../src/support/SimpleWorkflowTask.cpp" line="209"/>
+        <location filename="../src/support/SimpleWorkflowTask.cpp" line="215"/>
         <source>Result document contains no MSA! %1</source>
         <translation>Result document contains no MSA! %1</translation>
     </message>
@@ -1604,7 +1605,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="48"/>
         <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used.</source>
-        <translation>Путь до выходного файла данных. Если даный атрибут задан, то слот &quot;Путь к файлу&quot; порта не будет задействован.</translation>
+        <translation>путь до выходного файла данных. Если даный атрибут задан, то слот &quot;Путь к файлу&quot; порта не будет задействован.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="53"/>
@@ -1614,7 +1615,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="53"/>
         <source>This suffix will be used for generating the output file name.</source>
-        <translation>Этот суффикс будет использован для создания имени выходного файла.</translation>
+        <translation>этот суффикс будет использован для создания имени выходного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="57"/>
@@ -1634,7 +1635,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="61"/>
         <source>Place to store workflow results</source>
-        <translation>Место для хранения результатов схемы</translation>
+        <translation>место для хранения результатов выполнения схемы</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="82"/>
@@ -1664,7 +1665,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="90"/>
         <source>Document format of output file.</source>
-        <translation>Формат выходного файла.</translation>
+        <translation>формат выходного файла.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="94"/>
@@ -1674,7 +1675,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="95"/>
         <source>Accumulate all incoming data in one file or create separate files for each input.In the latter case, an incremental numerical suffix is added to the file name.</source>
-        <translation>Объединить все данные в один файли или создать отдельные файлы. В последнем случае к имени файлов будет добавлен порядковый суффикс.</translation>
+        <translation>объединить все данные в один файл или создать отдельные файлы. В последнем случае к имени файлов будет добавлен порядковый суффикс.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="100"/>
@@ -1684,7 +1685,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="100"/>
         <source>Split each incoming sequence on several parts.</source>
-        <translation>Разделить каждую входную последовательность на несколько частей.</translation>
+        <translation>разделить каждую входную последовательность на несколько частей.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="104"/>
@@ -1694,7 +1695,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="104"/>
         <source>Reads the input file line by line.</source>
-        <translation>Выдает на выходной порт каждую строку входного файла по отдельности.</translation>
+        <translation>этот параметр выдает на выходной порт каждую строку входного файла по отдельности.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="108"/>
@@ -1704,7 +1705,7 @@
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="108"/>
         <source>If a target file already exists, you can specify how it should be handled: either overwritten, renamed or appended (if supported by file format). If Rename option is chosen existing file will be renamed.</source>
-        <translation>Если указанный файл уже существует, вы можете указать как его обработать: переписать, переименовать или добавить к нему данные (если поддерживается форматом). Если выбрана опция переименовать, будет переименован существующий файл.</translation>
+        <translation>если указанный файл уже существует, вы можете указать как его обработать (переписать, переименовать или добавить к нему данные, если формат файла допускает добавление данных). Если выбрана опция переименовать, существующий файл будет переименован.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="114"/>

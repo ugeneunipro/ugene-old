@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="26"/>
         <source>DNA Flexibility</source>
-        <translation>ДНК флексибильность</translation>
+        <translation>ДНК гибкость</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="32"/>
         <source>The DNA Flexibility plugin allows searching for high DNA flexibility regions.</source>
-        <translation>Модуль &quot;ДНК флексибильность&quot; позволяет искать в ДНК районы высокой флексибильности.</translation>
+        <translation>Модуль &quot;ДНК гибкость&quot; позволяет искать в ДНК районы повышенной гибкости.</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="42"/>
@@ -21,7 +21,7 @@
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="48"/>
         <source>High DNA Flexibility Regions Settings</source>
-        <translation>Параметры районов высокой флексибильности</translation>
+        <translation>Параметры районов повышенной гибкости</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="56"/>
@@ -41,12 +41,12 @@
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="150"/>
         <source>Remember Settings</source>
-        <translation>Запомнить</translation>
+        <translation>Запомнить настройки</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="157"/>
         <source>Restore Defaults</source>
-        <translation>По умолчанию</translation>
+        <translation>Настройки по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="185"/>
@@ -101,7 +101,7 @@
     <message>
         <location filename="../src/DNAFlexGraph.cpp" line="40"/>
         <source>DNA Flexibility</source>
-        <translation>ДНК флексибильность</translation>
+        <translation>ДНК гибкость</translation>
     </message>
 </context>
 <context>
@@ -109,7 +109,7 @@
     <message>
         <location filename="../src/DNAFlexPlugin.cpp" line="49"/>
         <source>DNA Flexibility</source>
-        <translation>ДНК флексибильность</translation>
+        <translation>ДНК гибкость</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexPlugin.cpp" line="50"/>

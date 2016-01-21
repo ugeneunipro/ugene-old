@@ -86,7 +86,7 @@
     <message>
         <location filename="../src/ui/BlastAllSupportDialog.ui" line="528"/>
         <source>Gap costs</source>
-        <translation>Вес пропуска</translation>
+        <translation>Вес пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/BlastAllSupportDialog.ui" line="307"/>
@@ -906,7 +906,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="454"/>
         <source>Gap open penalty (-O)</source>
-        <translation>Штраф за открывающий пропуск (-O)</translation>
+        <translation>Штраф за открытие пробела (-O)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="557"/>
@@ -936,7 +936,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="499"/>
         <source>Gap extension penalty; a gap of size k cost {-O} + {-E}*k</source>
-        <translation>Штраф за расширение пропуска; пропуск размера k стоит {-O} + {-E}*k</translation>
+        <translation>Штраф за расширение пробела; пробел размера k стоит {-O} + {-E}*k</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="512"/>
@@ -946,7 +946,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="483"/>
         <source>Gap extention penalty (-E)</source>
-        <translation>Штраф за расширение пропуска (-E)</translation>
+        <translation>Штраф за расширение пробела (-E)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaMemSettings.ui" line="570"/>
@@ -1107,7 +1107,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="336"/>
         <source>Max gap extensions (-e)</source>
-        <translation>Максимальное расширение пропуска (-e)</translation>
+        <translation>Максимальное расширение пробела (-e)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="346"/>
@@ -1137,7 +1137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="356"/>
         <source>Enable long gaps</source>
-        <translation>Допустимы длинные пропуски</translation>
+        <translation>Допустимы длинные пробелы</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="171"/>
@@ -1152,7 +1152,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="42"/>
         <source>Long-scaled gap penalty for long deletions (-L)</source>
-        <translation>Долгосрочный штраф за длительный промежуток (-L)</translation>
+        <translation>Долгосрочный штраф за длительный пробел (-L)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="241"/>
@@ -1162,7 +1162,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="395"/>
         <source>Gap open penalty (-O)</source>
-        <translation>Штраф за открывающий пропуск (-O)</translation>
+        <translation>Штраф за открытие пробела (-O)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="303"/>
@@ -1182,7 +1182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="415"/>
         <source>Gap extension penalty (-E)</source>
-        <translation>Штраф за расширение пропуска (-E)</translation>
+        <translation>Штраф за расширение пробела (-E)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="462"/>
@@ -1197,7 +1197,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="72"/>
         <source>Max gap opens (-o)</source>
-        <translation>Максимальное число пропусков (-o)</translation>
+        <translation>Максимальное число пробелов (-o)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSettings.ui" line="30"/>
@@ -1280,7 +1280,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSwSettings.ui" line="159"/>
         <source>Gap extention penalty (-r)</source>
-        <translation>Штраф за расширение пропуска (-r)</translation>
+        <translation>Штраф за расширение пробела (-r)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSwSettings.ui" line="113"/>
@@ -1310,7 +1310,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BwaSwSettings.ui" line="136"/>
         <source>Gap open penalty (-q)</source>
-        <translation>Штраф за открывающий пропуск (-q)</translation>
+        <translation>Штраф за открытие пробела (-q)</translation>
     </message>
     <message>
         <location filename="../src/ui/BwaSwSettings.ui" line="182"/>
@@ -1466,12 +1466,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="318"/>
         <source>Max gap length in any overlap (-f)</source>
-        <translation>Максимальная длина пропуска в перекрытии (-f)</translation>
+        <translation>Максимальная длина пробела в перекрытии (-f)</translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="338"/>
         <source>Assembly reverse reads (-r)</source>
-        <translation>Сборка обратных ридов (-r)</translation>
+        <translation>Сборка обратных прочтений (-r)</translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="364"/>
@@ -1491,7 +1491,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="410"/>
         <source>Gap penalty factor (-g)</source>
-        <translation>Фактор штрафа за пропуск (-g)</translation>
+        <translation>Фактор штрафа за пробел (-g)</translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="417"/>
@@ -1599,12 +1599,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="98"/>
         <source>Gap opening penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="141"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="184"/>
@@ -1669,22 +1669,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="398"/>
         <source>Gap separation distance</source>
-        <translation>Расстояние между пропусками</translation>
+        <translation>Расстояние между пробелами</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="456"/>
         <source>Residue-specific gaps off</source>
-        <translation>Откл. специфические для остатков пропуски</translation>
+        <translation>Откл. специфические для остатков пробелы</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="442"/>
         <source>Hydrophilic gaps off</source>
-        <translation>Отключить гидрофильные пропуски</translation>
+        <translation>Отключить гидрофильные пробелы</translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="449"/>
         <source>No end gap separation penalty</source>
-        <translation>Не вводить штраф за разделение пропусков</translation>
+        <translation>Не вводить штраф за разделение пробелов</translation>
     </message>
 </context>
 <context>
@@ -1911,7 +1911,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="131"/>
         <source>Offset (works like gap extension penalty)</source>
-        <translation>Смещение (работает как штраф за промежуточный пропуск)</translation>
+        <translation>Смещение (работает как штраф за промежуточный пробел)</translation>
     </message>
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="174"/>
@@ -2344,7 +2344,7 @@ Uncheck to get the maximum likelihood estimate.</source>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="122"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="158"/>
@@ -3618,12 +3618,12 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
 <context>
     <name>U2::ConductGOTask</name>
     <message>
-        <location filename="../src/conduct_go/ConductGOTask.cpp" line="154"/>
+        <location filename="../src/conduct_go/ConductGOTask.cpp" line="107"/>
         <source>Conduct GO warning: Can not find a required output file %1.</source>
         <translation>Conduct GO warning: Can not find a required output file %1.</translation>
     </message>
     <message>
-        <location filename="../src/conduct_go/ConductGOTask.cpp" line="165"/>
+        <location filename="../src/conduct_go/ConductGOTask.cpp" line="118"/>
         <source>Can not copy the result file to: %1</source>
         <translation>Can not copy the result file to: %1</translation>
     </message>
@@ -4274,6 +4274,24 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     </message>
 </context>
 <context>
+    <name>U2::Gene2PeakFormatLoader</name>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="98"/>
+        <source>Incorrect start position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="102"/>
+        <source>Incorrect end position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="117"/>
+        <source>Incorrect NA value at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::GffreadSupportTask</name>
     <message>
         <location filename="../src/cufflinks/GffreadSupportTask.cpp" line="34"/>
@@ -4452,7 +4470,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/bigWigTools/BedGraphToBigWigWorker.cpp" line="118"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/bigWigTools/BedGraphToBigWigWorker.cpp" line="122"/>
@@ -4750,22 +4768,22 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="119"/>
         <source>Gapped alignment</source>
-        <translation>Выравнивание с пропусками</translation>
+        <translation>Выравнивание с пробелами</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="120"/>
         <source>Perform gapped alignment.</source>
-        <translation>Выполняет выравнивание с пропусками.</translation>
+        <translation>Выполняет выравнивание с пробелами.</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="122"/>
         <source>Gap costs</source>
-        <translation>Вес пропуска</translation>
+        <translation>Вес пробела</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="123"/>
         <source>Cost to create and extend a gap in an alignment.</source>
-        <translation>Стоимость создания и расширения пропуска в выравнивании.</translation>
+        <translation>Стоимость создания и расширения пробела в выравнивании.</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="124"/>
@@ -4911,7 +4929,7 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="116"/>
         <source>Gapped alignment</source>
-        <translation>Выравнивание с пропусками</translation>
+        <translation>Выравнивание с пробелами</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="97"/>
@@ -4966,17 +4984,17 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="117"/>
         <source>Perform gapped alignment.</source>
-        <translation>Выполняет выравнивание с пропусками.</translation>
+        <translation>Выполняет выравнивание с пробелами.</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="119"/>
         <source>Gap costs</source>
-        <translation>Вес пропуска</translation>
+        <translation>Вес пробела</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="120"/>
         <source>Cost to create and extend a gap in an alignment.</source>
-        <translation>Стоимость создания и расширения пропуска в выравнивании.</translation>
+        <translation>Стоимость создания и расширения пробела в выравнивании.</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="121"/>
@@ -5482,22 +5500,22 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bwa/BwaMemWorker.cpp" line="189"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaMemWorker.cpp" line="190"/>
         <source>Gap open penalty (-O).</source>
-        <translation>Штраф за открывающий пропуск (-O).</translation>
+        <translation>Штраф за открытие пробела (-O).</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaMemWorker.cpp" line="193"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaMemWorker.cpp" line="194"/>
         <source>Gap extension penalty; a gap of size k cost {-O} (-E).</source>
-        <translation>Штраф за расширение пропуска; пропуск размера k стоит {-O} (-E).</translation>
+        <translation>Штраф за расширение пробела; пробел размера k стоит {-O} (-E).</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaMemWorker.cpp" line="197"/>
@@ -5585,12 +5603,12 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="155"/>
         <source>Max gap opens</source>
-        <translation>Максимальное число пропусков</translation>
+        <translation>Максимальное число пробелов</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="156"/>
         <source>Max gap opens (-o).</source>
-        <translation>Максимальное число пропусков (-o).</translation>
+        <translation>Максимальное число пробелов (-o).</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="159"/>
@@ -5615,12 +5633,12 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="167"/>
         <source>Long-scaled gap penalty for long deletions</source>
-        <translation>Долгосрочный штраф за длительный промежуток</translation>
+        <translation>Долгосрочный штраф за длительный пробел</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="168"/>
         <source>Long-scaled gap penalty for long deletions (-L)</source>
-        <translation>Долгосрочный штраф за длительный промежуток (-L)</translation>
+        <translation>Долгосрочный штраф за длительный пробел (-L)</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="171"/>
@@ -5636,17 +5654,17 @@ bowtie медленнее, когда указан режим --best.</translati
         <location filename="../src/bwa/BwaWorker.cpp" line="175"/>
         <location filename="../src/bwa/BwaWorker.cpp" line="176"/>
         <source>Enable long gaps</source>
-        <translation>Допустимы длинные пропуски</translation>
+        <translation>Допустимы длинные пробелы</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="179"/>
         <source>Max gap extensions</source>
-        <translation>Максимальное расширение пропуска</translation>
+        <translation>Максимальное расширение пробела</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="180"/>
         <source>Max gap extensions (-e)</source>
-        <translation>Максимальное расширение пропуска (-e)</translation>
+        <translation>Максимальное расширение пробела (-e)</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="183"/>
@@ -5721,22 +5739,22 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="211"/>
         <source>Gap open penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="212"/>
         <source>Gap open penalty (-O).</source>
-        <translation>Штраф за открывающий пропуск (-O).</translation>
+        <translation>Штраф за открытие пробела (-O).</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="215"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="216"/>
         <source>Gap extension penalty; a gap of size k cost (-E).</source>
-        <translation>Штраф за расширение пропуска; пропуск размера k стоит (-E).</translation>
+        <translation>Штраф за расширение пробела; пробел размера k стоит (-E).</translation>
     </message>
     <message>
         <location filename="../src/bwa/BwaWorker.cpp" line="219"/>
@@ -5872,7 +5890,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="162"/>
         <source>Gap penalty factor (-g) is one of the parameters that affects similarity score of an overlap. See &lt;i&gt;Overlap similarity score cutoff&lt;/i&gt; description for details.</source>
-        <translation>Фактор штрафа за пропуск (-g) - один из параметров, который влияет на оценку схожести перекрытия.</translation>
+        <translation>Фактор штрафа за пробел (-g) - один из параметров, который влияет на оценку схожести перекрытия.</translation>
     </message>
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="167"/>
@@ -5932,7 +5950,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="219"/>
         <source>The maximum length of gaps allowed in any overlap (-f)&lt;p&gt;I.e. overlaps with longer gaps are rejected.&lt;/p&gt;&lt;p&gt;Note that a small value for this parameter may cause the program to remove true overlaps and to produce incorrect results.&lt;/p&gt;&lt;p&gt;The parameter may be used to split reads from alternative splicing forms into separate contigs.&lt;/p&gt;</source>
-        <translation>Максимальная длина пропуска допустимая в перекрытии (-f)</translation>
+        <translation>Максимальная длина пробела допустимая в перекрытии (-f)</translation>
     </message>
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="227"/>
@@ -6290,57 +6308,57 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="76"/>
         <source>The penalty for opening a gap.</source>
-        <translation>Штраф за открывающий пропуск.</translation>
+        <translation>Штраф за открытие пробела.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="77"/>
         <source>Gap extension penalty</source>
-        <translation>Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пробел</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="78"/>
         <source>The penalty for extending a gap.</source>
-        <translation>Штраф за расширение пропуска.</translation>
+        <translation>Штраф за расширение пробел.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="79"/>
         <source>Gap distance</source>
-        <translation>Расстояние пропуска</translation>
+        <translation>Расстояние пробела</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="80"/>
         <source>The gap separation penalty. Tries to decrease the chances of gaps being too close to each other.</source>
-        <translation>Штраф за разделение пропуска. Пытается уменьшить изменение пропусков располагая их близко друг к другу.</translation>
+        <translation>Штраф за разделение пробела. Пытается уменьшить изменение пробелов располагая их близко друг к другу.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="81"/>
         <source>End gaps</source>
-        <translation>Убрать пропуск</translation>
+        <translation>Убрать пробел</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="82"/>
         <source>The penalty for closing a gap.</source>
-        <translation>Штраф за закрытие пропуска.</translation>
+        <translation>Штраф за закрытие пробела.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="83"/>
         <source>Residue-specific gaps off</source>
-        <translation>Откл. спецефические для остатков пропуски</translation>
+        <translation>Откл. спецефические для остатков пробелы</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="84"/>
         <source>Residue-specific penalties are amino specific gap penalties that reduce or increase the gap opening penalties at each position in the alignment.</source>
-        <translation>Отключение спецефические для остатков пропусков - штрафы за специфические белковые остатки которые увеличивают или уменьшают штрафы за открытие пропуска в каждой позиции.</translation>
+        <translation>Отключение спецефические для остатков пробелы - штрафы за специфические белковые остатки которые увеличивают или уменьшают штрафы за открытие пробела в каждой позиции.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="85"/>
         <source>Hydrophilic gaps off</source>
-        <translation>Отключить гидрофильные пропуски</translation>
+        <translation>Отключить гидрофильные пробелы</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="86"/>
         <source>Hydrophilic gap penalties are used to increase the chances of a gap within a run (5 or more residues) of hydrophilic amino acids.</source>
-        <translation>Штрафы за гидрофильные пропуски используются для увеличения изменения пропуска гидрофильных амино кислот.</translation>
+        <translation>Штрафы за гидрофильные пробелы используются для увеличения изменения пробела гидрофильных амино кислот.</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="87"/>
@@ -6439,10 +6457,14 @@ bowtie медленнее, когда указан режим --best.</translati
         <translation>Контрольные гены</translation>
     </message>
     <message>
+        <source>Gene list to identify over represented GO terms.</source>
+        <translation type="vanished">Список генов для выявления терминов GO.</translation>
+    </message>
+    <message>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="142"/>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="147"/>
-        <source>Gene list to identify over represented GO terms.</source>
-        <translation>Список генов для выявления терминов GO.</translation>
+        <source>URL to file with genes to identify over represented GO terms.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="146"/>
@@ -7147,7 +7169,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/cutadapt/CutadaptWorker.cpp" line="114"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/cutadapt/CutadaptWorker.cpp" line="118"/>
@@ -7263,7 +7285,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/fastqc/FastqcWorker.cpp" line="104"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/fastqc/FastqcWorker.cpp" line="108"/>
@@ -7377,7 +7399,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="499"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="503"/>
@@ -7950,12 +7972,12 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="71"/>
         <source>Gap Open Penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="72"/>
         <source>Gap Open Penalty.</source>
-        <translation>Штраф за открывающий пропуск.</translation>
+        <translation>Штраф за открытие пробела.</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="73"/>
@@ -7965,7 +7987,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="74"/>
         <source>Works like gap extension penalty.</source>
-        <translation>Работает как штраф за расширение пропуска.</translation>
+        <translation>Работает как штраф за расширение пробела.</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="76"/>
@@ -8021,17 +8043,17 @@ bowtie медленнее, когда указан режим --best.</translati
 <context>
     <name>U2::LocalWorkflow::Peak2GenePrompter</name>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="316"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="327"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="321"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="332"/>
         <source>Uses annotations from &lt;u&gt;%1&lt;/u&gt; as peak regions </source>
         <translation>Использует аннотации из &lt;u&gt;%1&lt;/u&gt; в качестве пиковых регионов </translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="322"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="333"/>
         <source> to annotate with genes nearby from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation> для аннотации генов рядом с  to &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
@@ -8039,102 +8061,122 @@ bowtie медленнее, когда указан режим --best.</translati
 <context>
     <name>U2::LocalWorkflow::Peak2GeneWorker</name>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="194"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="198"/>
         <source>Treatment features</source>
         <translation>Treatment особенности</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="195"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="199"/>
         <source>Result peaks of MACS.</source>
         <translation>MACS пики.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="199"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="203"/>
         <source>Peak2gene data</source>
         <translation>Данные Peak2gene</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="200"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="204"/>
         <source>MACS peaks to get the refgenes near the peak summit/center.</source>
         <translation>Пики MACS, чтобы получить refgenes вблизи пика в центре.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="208"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="212"/>
         <source>Gene regions</source>
         <translation>Регионы гена</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="209"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="213"/>
         <source>Annotation for each gene, containing all the peaks nearby.</source>
         <translation>Аннотация для каждого гена, содержащая все близлежащие пики.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="211"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="215"/>
         <source>Peak regions</source>
         <translation>Пиковые регионы</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="212"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="216"/>
         <source>Annotation for each peak, containing all the genes nearby.</source>
         <translation>Аннотрация для каждого пика, содержащая все близлежащие гены.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="215"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="218"/>
+        <source>Gene regions URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="219"/>
+        <source>URL to file with annotation for each gene, containing all the peaks nearby.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="221"/>
+        <source>Peak regions URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="222"/>
+        <source>URL to file with annotation for each peak, containing all the genes nearby.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="225"/>
         <source>Peak2gene output data</source>
         <translation>Выходные данные Peak2gene</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="216"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="226"/>
         <source>Genes containing all the peaks nearby and peaks containing all the genes nearby.</source>
         <translation>Гены, содержащие все близлежащие пики и пики, содержащие все близлежащие гены.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="228"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="239"/>
         <source>Output type</source>
         <translation>Тип выходного файла</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="229"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="240"/>
         <source>Select which type of genes need to output. &lt;b&gt;up&lt;/b&gt; for genes upstream to peak summit, &lt;b&gt;down&lt;/b&gt; for genes downstream to peak summit, &lt;b&gt;all&lt;/b&gt; for both &lt;b&gt;up&lt;/b&gt; and &lt;b&gt;down&lt;/b&gt; (--op).</source>
         <translation>Выберите тип генов для выходных файлов &lt;b&gt;up&lt;/b&gt; для вышележащих генов, &lt;b&gt;down&lt;/b&gt; для нижележащих генов, &lt;b&gt;all&lt;/b&gt; для обоих &lt;b&gt;up&lt;/b&gt; и &lt;b&gt;down&lt;/b&gt; (--op).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="234"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="245"/>
         <source>Official gene symbols</source>
         <translation>Официальные символы генов</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="235"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="246"/>
         <source>Output &lt;b&gt;official gene symbol&lt;/b&gt; instead of &lt;b&gt;refseq name&lt;/b&gt; (--symbol).</source>
         <translation>Выходной &lt;b&gt;официальный символ гена&lt;/b&gt; вместо &lt;b&gt;имени refseq&lt;/b&gt; (--symbol).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="237"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="248"/>
         <source>Distance</source>
         <translation>Расстояние</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="238"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="249"/>
         <source>Set a number which unit is base. It will get the refGenes in n bases from peak center (--distance).</source>
         <translation>Установите число, которое является базовым. Он будет получать refGenes в n базах из центра пика (--distance).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="240"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="251"/>
         <source>Genome file</source>
         <translation>Файл генома</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="241"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="252"/>
         <source>Select a genome file (sqlite3 file) to search refGenes (--genome).</source>
         <translation>Выберите файл генома для (sqlite3 файл) для поиска refGenes (--genome).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="296"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="307"/>
         <source>Annotate Peaks with peak2gene</source>
         <translation>Аннотация пиков с помощью peak2gene</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="297"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="308"/>
         <source>Gets refGenes near the ChIP regions identified by a peak-caller.</source>
         <translation>Получает refGenes рядом с регионами ChIP найденными поиском пиков.</translation>
     </message>
@@ -8365,7 +8407,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="111"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/bedtools/BedToolsWorkersLibrary.cpp" line="115"/>
@@ -8515,7 +8557,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="94"/>
         <source>Annotates and filters variations with SnpEff.</source>
-        <translation>Аннотирует и фильтрует вариации при помощи SnpEff.</translation>
+        <translation>этот элемент аннотирует и фильтрует вариации при помощи SnpEff.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="98"/>
@@ -8541,7 +8583,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="116"/>
         <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
-        <translation>Выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
+        <translation>выберите выходную директорию. &lt;b&gt;Частная&lt;/b&gt; - укажите директорию в параметре &apos;Частная директория&apos;. &lt;b&gt;Заданная&lt;/b&gt; - внутренняя директория дизайнера. &lt;b&gt;Входной файл&lt;/b&gt; - директория входного файла.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="120"/>
@@ -8561,7 +8603,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="124"/>
         <source>Select the input format of variations.</source>
-        <translation>Выберите входной формат вариаций.</translation>
+        <translation>выберите входной формат вариаций.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="126"/>
@@ -8571,7 +8613,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="127"/>
         <source>Select the format of annotated output files.</source>
-        <translation>Выберите формат выходных аннотированных файлов.</translation>
+        <translation>выберите формат выходных аннотированных файлов.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="129"/>
@@ -8581,7 +8623,7 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="130"/>
         <source>Select the target genome. Genome data will be downloaded if it is not found.</source>
-        <translation>Выберите нужный геном. Данные генома будет скачаны, если он не будет найден.</translation>
+        <translation>выберите референсный геном. Если он не найден, данные генома будут загружены из сети Интернет.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="132"/>
@@ -8591,17 +8633,17 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="133"/>
         <source>Upstream and downstream interval size. Eliminate any upstream and downstream effect by using 0 length</source>
-        <translation>Верхний и нижний размеры интервала</translation>
+        <translation>верхний и нижний размеры интервала.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="135"/>
-        <source>Cannonical transcripts</source>
-        <translation>Канонические транскрипции</translation>
+        <source>Canonical transcripts</source>
+        <translation>Канонические транскрипты</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="136"/>
-        <source>Use only cannonical transcripts</source>
-        <translation>Использовать только канонические транскрипции</translation>
+        <source>Use only canonical transcripts</source>
+        <translation>использовать только канонические транскрипты.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="138"/>
@@ -8611,27 +8653,27 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="139"/>
         <source>Annotate using HGVS nomenclature</source>
-        <translation>Аннотировать при помощи номенклатуры HGVS</translation>
+        <translation>аннотировать при помощи номенклатуры HGVS.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="141"/>
-        <source>Annotate Loss of function</source>
-        <translation>Аннотировать Loss of function</translation>
+        <source>Annotate Loss of function variations</source>
+        <translation>Аннотировать варианты loss of function</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="142"/>
-        <source>Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)</source>
-        <translation>Аннотирует Loss of function (LOF) и Nonsense mediated decay (NMD)</translation>
+        <source>Annotate Loss of function variations (LOF) and Nonsense mediated decay (NMD)</source>
+        <translation>аннотирует варианты, связанные с потерей функции (loss of function) и изменением деградации, связанной с преждевременным стоп-кодоном (NMD).</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="144"/>
         <source>Annotate TFBSs motifs</source>
-        <translation>Аннотировать TFBS мотивы</translation>
+        <translation>Аннотировать мотивы TFBS</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="145"/>
         <source>Annotate transcription factor binding site motifs (only available for latest GRCh37)</source>
-        <translation>Аннотирует сайты связывания транскрипционных факторов</translation>
+        <translation>аннотирует сайты связывания транскрипционных факторов (опция доступна только для последней версии сборки GRCh37).</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="167"/>
@@ -8828,22 +8870,22 @@ bowtie медленнее, когда указан режим --best.</translati
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="69"/>
         <source>Gap Open Penalty</source>
-        <translation>Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открытие пробела</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="70"/>
         <source>Gap Open Penalty. Must be negative, best matches get a score of 1000.</source>
-        <translation>Штраф за открытие пропуска. Должно быть отрицательным, лучшие совпадения оцениваются в 1000.</translation>
+        <translation>Штраф за открытие пробела. Должно быть отрицательным, лучшие совпадения оцениваются в 1000.</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="71"/>
         <source>Gap Extension Penalty</source>
-        <translation>Штраф за расширение пропуска</translation>
+        <translation>Штраф за расширение пробела</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="72"/>
         <source>Gap Extension Penalty. Positive values give rewards to gaps and prevent the alignment of unrelated segments.</source>
-        <translation>Штраф за расширение пропуска. Положительные значения дают дополнительные очки для пробелов и предотвращают выравнивание не связанных между собой сегментов.</translation>
+        <translation>Штраф за расширение пробела. Положительные значения дают дополнительные очки для пробелов и предотвращают выравнивание не связанных между собой сегментов.</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="73"/>
@@ -9344,12 +9386,12 @@ Set it empty if you want to run Tophat once for all input reads</source>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="144"/>
         <source>Output FASTA consensus</source>
-        <translation>Выходной FASTA консенсус</translation>
+        <translation>Записать консенсус в формате FASTA</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="145"/>
-        <source>The url to the output file with the result consensus.</source>
-        <translation>Путь до выходного файла с консенсусом.</translation>
+        <source>The path to the output file with the result consensus.</source>
+        <translation>путь до выходного файла с консенсусом.</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="155"/>
@@ -9359,7 +9401,7 @@ Set it empty if you want to run Tophat once for all input reads</source>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="156"/>
         <source>Apply VCF variants to a fasta file to create consensus sequence.</source>
-        <translation>Применяет VCF вариации для файла fasta для создания консенсуса.</translation>
+        <translation>этот элемент применяет список вариаций в формате VCF к файлу в формате FASTA для создания консенсуса.</translation>
     </message>
 </context>
 <context>
@@ -9651,6 +9693,29 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <location filename="../src/ExternalToolSupportSettingsController.cpp" line="672"/>
         <source>Select a file</source>
         <translation>Выберите файл</translation>
+    </message>
+</context>
+<context>
+    <name>U2::Peak2GeneFormatLoader</name>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="101"/>
+        <source>Incorrect start position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="105"/>
+        <source>Incorrect end position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="120"/>
+        <source>Incorrect peak score at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="128"/>
+        <source>Incorrect NA value at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10283,6 +10348,14 @@ Set it empty if you want to run Tophat once for all input reads</source>
         <location filename="../src/samtools/TabixSupportTask.cpp" line="61"/>
         <source>Saving data to file &apos;%1&apos;</source>
         <translation>Saving data to file &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
+    <name>U2::TabulatedFormatReader</name>
+    <message>
+        <location filename="../src/peak2gene/TabulatedFormatReader.cpp" line="36"/>
+        <source>IO adapter is not opened</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

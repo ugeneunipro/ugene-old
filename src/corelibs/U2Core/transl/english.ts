@@ -206,12 +206,12 @@
         <translation>Unsupported object type: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="405"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="409"/>
         <source>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</source>
         <translation>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="560"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="564"/>
         <source>Invalid number of symbols: %1</source>
         <translation>Invalid number of symbols: %1</translation>
     </message>
@@ -671,7 +671,7 @@
         <translation>Unexpected number of sequences in a multiple alignment</translation>
     </message>
     <message>
-        <location filename="../src/util/MAlignmentImporter.cpp" line="82"/>
+        <location filename="../src/util/MAlignmentImporter.cpp" line="83"/>
         <source>Unexpected error on MSA rows import</source>
         <translation>Unexpected error on MSA rows import</translation>
     </message>
@@ -719,22 +719,22 @@
 <context>
     <name>U2::AddSequenceObjectsToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="45"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="49"/>
         <source>Object is empty.</source>
         <translation>Object is empty.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="50"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="54"/>
         <source>Object is locked for modifications.</source>
         <translation>Object is locked for modifications.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="136"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="155"/>
         <source>Some sequences have wrong alphabet: </source>
         <translation>Some sequences have wrong alphabet: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="139"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="158"/>
         <source> and others</source>
         <translation> and others</translation>
     </message>
@@ -959,37 +959,31 @@ The session database file is removed after closing of UGENE.</translation>
 <context>
     <name>U2::ConvertDasIdTask</name>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="279"/>
         <source>Convert resource id: %1</source>
-        <translation>Convert resource id: %1</translation>
+        <translation type="vanished">Convert resource id: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="361"/>
         <source>undefined error (code %1)</source>
-        <translation>undefined error (code %1)</translation>
+        <translation type="vanished">undefined error (code %1)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="383"/>
         <source>Remote server does not respond</source>
-        <translation>Remote server does not respond</translation>
+        <translation type="vanished">Remote server does not respond</translation>
     </message>
 </context>
 <context>
     <name>U2::ConvertIdAndLoadDasFeaturesTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="783"/>
         <source>Convert ID and load DAS features for: %1</source>
-        <translation>Convert ID and load DAS features for: %1</translation>
+        <translation type="vanished">Convert ID and load DAS features for: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="799"/>
         <source>Convert IDs task</source>
-        <translation>Convert IDs task</translation>
+        <translation type="vanished">Convert IDs task</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="819"/>
         <source>&quot;%1&quot; was converted into &quot;%2&quot;</source>
-        <translation>&quot;%1&quot; was converted into &quot;%2&quot;</translation>
+        <translation type="vanished">&quot;%1&quot; was converted into &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -1034,113 +1028,94 @@ The session database file is removed after closing of UGENE.</translation>
 <context>
     <name>U2::DASSourceRegistry</name>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="113"/>
         <source>UniProt (DAS)</source>
-        <translation>UniProt (DAS)</translation>
+        <translation type="vanished">UniProt (DAS)</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="114"/>
-        <location filename="../src/datatype/DASSource.cpp" line="123"/>
         <source>http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/</source>
-        <translation>http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/</translation>
+        <translation type="vanished">http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="116"/>
         <source>Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: %1</source>
-        <translation>Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: %1</translation>
+        <translation type="vanished">Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: %1</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="117"/>
         <source>UniProt database of protein sequences and features.</source>
-        <translation>UniProt database of protein sequences and features.</translation>
+        <translation type="vanished">UniProt database of protein sequences and features.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="122"/>
         <source>UniProt</source>
-        <translation>UniProt</translation>
+        <translation type="vanished">UniProt</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="125"/>
         <source>DAS 1 reference server for sequence and features from UniProt.
 UniProt (Universal Protein Resource) is the worlds most comprehensive catalog of information on proteins.
 It is a central repository of protein sequence and function created by joining the information contained
 in Swiss-Prot, TrEMBL, and PIR.</source>
-        <translation>DAS 1 reference server for sequence and features from UniProt.
+        <translation type="vanished">DAS 1 reference server for sequence and features from UniProt.
 UniProt (Universal Protein Resource) is the worlds most comprehensive catalog of information on proteins.
 It is a central repository of protein sequence and function created by joining the information contained
 in Swiss-Prot, TrEMBL, and PIR.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="134"/>
         <source>Pride DAS 1.6</source>
-        <translation>Pride DAS 1.6</translation>
+        <translation type="vanished">Pride DAS 1.6</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="135"/>
         <source>http://www.ebi.ac.uk/pride-das/das/PrideDataSource/</source>
-        <translation>http://www.ebi.ac.uk/pride-das/das/PrideDataSource/</translation>
+        <translation type="vanished">http://www.ebi.ac.uk/pride-das/das/PrideDataSource/</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="137"/>
         <source>The PRIDE database is a centralized, public data repository for proteomics data. 
 It has been developed to provide the proteomics community with a public repository 
 for protein and peptide identifications together with the evidence supporting these 
 identifications. In addition to identifications, PRIDE is able to capture details of 
 post-translational modifications coordinated relative to the peptides in which they have been found.</source>
-        <translation>The PRIDE database is a centralized, public data repository for proteomics data. 
+        <translation type="vanished">The PRIDE database is a centralized, public data repository for proteomics data. 
 It has been developed to provide the proteomics community with a public repository 
 for protein and peptide identifications together with the evidence supporting these 
 identifications. In addition to identifications, PRIDE is able to capture details of 
 post-translational modifications coordinated relative to the peptides in which they have been found.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="147"/>
         <source>cbs_sort</source>
-        <translation>cbs_sort</translation>
+        <translation type="vanished">cbs_sort</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="148"/>
         <source>http://das.cbs.dtu.dk:9000/das/cbs_sort/</source>
-        <translation>http://das.cbs.dtu.dk:9000/das/cbs_sort/</translation>
+        <translation type="vanished">http://das.cbs.dtu.dk:9000/das/cbs_sort/</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="150"/>
         <source>The combined result of the signalp, secretomep, targetp, netnes &amp; lipop server for the given id.</source>
-        <translation>The combined result of the signalp, secretomep, targetp, netnes &amp; lipop server for the given id.</translation>
+        <translation type="vanished">The combined result of the signalp, secretomep, targetp, netnes &amp; lipop server for the given id.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="156"/>
         <source>signalp</source>
-        <translation>signalp</translation>
+        <translation type="vanished">signalp</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="157"/>
         <source>http://das.cbs.dtu.dk:9000/das/signalp/</source>
-        <translation>http://das.cbs.dtu.dk:9000/das/signalp/</translation>
+        <translation type="vanished">http://das.cbs.dtu.dk:9000/das/signalp/</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="159"/>
         <source>SignalP (http://www.cbs.dtu.dk/services/SignalP) predictions for UniProt.</source>
-        <translation>SignalP (http://www.cbs.dtu.dk/services/SignalP) predictions for UniProt.</translation>
+        <translation type="vanished">SignalP (http://www.cbs.dtu.dk/services/SignalP) predictions for UniProt.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="165"/>
         <source>InterPro-Matches-Overview</source>
-        <translation>InterPro-Matches-Overview</translation>
+        <translation type="vanished">InterPro-Matches-Overview</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="166"/>
         <source>http://www.ebi.ac.uk/das-srv/interpro/das/InterPro-matches-overview/</source>
-        <translation>http://www.ebi.ac.uk/das-srv/interpro/das/InterPro-matches-overview/</translation>
+        <translation type="vanished">http://www.ebi.ac.uk/das-srv/interpro/das/InterPro-matches-overview/</translation>
     </message>
     <message>
-        <location filename="../src/datatype/DASSource.cpp" line="168"/>
         <source>Shows the maximum extent of the matches from all signatures that are 
 integrated into a single InterPro entry against UniProtKB protein sequences 
 (i.e. if an InterPro entry contains 2 signatures, A and B, and both of 
 these match a protein, A between residue 3 and 125 and B between residue 
 5 and 127, the overview supermatch of these signatures is between 3 and 127).</source>
-        <translation>Shows the maximum extent of the matches from all signatures that are 
+        <translation type="vanished">Shows the maximum extent of the matches from all signatures that are 
 integrated into a single InterPro entry against UniProtKB protein sequences 
 (i.e. if an InterPro entry contains 2 signatures, A and B, and both of 
 these match a protein, A between residue 3 and 125 and B between residue 
@@ -1163,9 +1138,13 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::DNAAlphabetRegistryImpl</name>
     <message>
-        <location filename="../src/datatype/BaseAlphabets.cpp" line="63"/>
         <source>All symbols</source>
-        <translation>All symbols</translation>
+        <translation type="vanished">All symbols</translation>
+    </message>
+    <message>
+        <location filename="../src/datatype/BaseAlphabets.cpp" line="63"/>
+        <source>Raw</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/datatype/BaseAlphabets.cpp" line="71"/>
@@ -1189,13 +1168,21 @@ these match a protein, A between residue 3 and 125 and B between residue
     </message>
     <message>
         <location filename="../src/datatype/BaseAlphabets.cpp" line="114"/>
-        <source>Standard amino</source>
-        <translation>Standard amino</translation>
+        <source>Standard amino acid</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/datatype/BaseAlphabets.cpp" line="133"/>
+        <source>Extended amino acid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard amino</source>
+        <translation type="vanished">Standard amino</translation>
+    </message>
+    <message>
         <source>Extended amino</source>
-        <translation>Extended amino</translation>
+        <translation type="vanished">Extended amino</translation>
     </message>
     <message>
         <location filename="../src/datatype/BaseTranslations.cpp" line="270"/>
@@ -1504,27 +1491,27 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::Document</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="542"/>
+        <location filename="../src/models/DocumentModel.cpp" line="546"/>
         <source>Document is not loaded</source>
         <translation>Document is not loaded</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="555"/>
+        <location filename="../src/models/DocumentModel.cpp" line="559"/>
         <source>IO adapter does not support write operation</source>
         <translation>IO adapter does not support write operation</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="561"/>
+        <location filename="../src/models/DocumentModel.cpp" line="565"/>
         <source>No write support for document format</source>
         <translation>No write support for document format</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="631"/>
+        <location filename="../src/models/DocumentModel.cpp" line="635"/>
         <source>Locked by user</source>
         <translation>Locked by user</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="655"/>
+        <location filename="../src/models/DocumentModel.cpp" line="659"/>
         <source>Lock is NULL</source>
         <translation>Lock is NULL</translation>
     </message>
@@ -1532,8 +1519,8 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::DocumentFormat</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="123"/>
-        <location filename="../src/models/DocumentModel.cpp" line="128"/>
+        <location filename="../src/models/DocumentModel.cpp" line="125"/>
+        <location filename="../src/models/DocumentModel.cpp" line="130"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
         <translation>Writing is not supported for this format (%1). Feel free to send a feature request though.</translation>
     </message>
@@ -1820,14 +1807,12 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::GetDasIdsBySequenceTask</name>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="423"/>
         <source>Get an ID for the sequence</source>
-        <translation>Get an ID for the sequence</translation>
+        <translation type="vanished">Get an ID for the sequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="494"/>
         <source>undefined error (code %1)</source>
-        <translation>undefined error (code %1)</translation>
+        <translation type="vanished">undefined error (code %1)</translation>
     </message>
 </context>
 <context>
@@ -1841,7 +1826,7 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::GzippedLocalFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/LocalFileAdapter.cpp" line="38"/>
+        <location filename="../src/io/LocalFileAdapter.cpp" line="40"/>
         <source>GZIP file</source>
         <translation>GZIP file</translation>
     </message>
@@ -2123,17 +2108,17 @@ these match a protein, A between residue 3 and 125 and B between residue
         <translation>&apos;%1&apos; does not match database folder URL format</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="96"/>
+        <location filename="../src/globals/L10n.h" line="100"/>
         <source>Direct</source>
         <translation>Direct</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="97"/>
+        <location filename="../src/globals/L10n.h" line="101"/>
         <source>Reverse-complementary</source>
         <translation>Reverse-complementary</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="99"/>
+        <location filename="../src/globals/L10n.h" line="103"/>
         <source>Required</source>
         <translation>Required</translation>
     </message>
@@ -2198,8 +2183,8 @@ these match a protein, A between residue 3 and 125 and B between residue
         <translation> bp</translation>
     </message>
     <message>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="97"/>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="105"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="98"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="106"/>
         <source>Failed to detect IO adapter for %1</source>
         <translation>Failed to detect IO adapter for %1</translation>
     </message>
@@ -2207,65 +2192,54 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::LoadDasDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="110"/>
         <source>Cannot load cached document: %1</source>
-        <translation>Cannot load cached document: %1</translation>
+        <translation type="vanished">Cannot load cached document: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="116"/>
         <source>Cannot save document: %1</source>
-        <translation>Cannot save document: %1</translation>
+        <translation type="vanished">Cannot save document: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="128"/>
         <source>Cannot find DAS reference sequence: %1</source>
-        <translation>Cannot find DAS reference sequence: %1</translation>
+        <translation type="vanished">Cannot find DAS reference sequence: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="147"/>
         <source>Cannot find DAS features for &apos;%1&apos; on %2</source>
-        <translation>Cannot find DAS features for &apos;%1&apos; on %2</translation>
+        <translation type="vanished">Cannot find DAS features for &apos;%1&apos; on %2</translation>
     </message>
 </context>
 <context>
     <name>U2::LoadDasFeaturesTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="391"/>
         <source>Load DAS annotations for current sequence</source>
-        <translation>Load DAS annotations for current sequence</translation>
+        <translation type="vanished">Load DAS annotations for current sequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="416"/>
         <source>Can not receive response from the server &quot;</source>
-        <translation>Can not receive response from the server</translation>
+        <translation type="vanished">Can not receive response from the server</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="424"/>
         <source>&lt;font size=&quot;5&quot; color=&quot;green&quot;&gt;Received %1 annotations from the server &quot;%2&quot;&lt;/font&gt;&lt;br&gt;</source>
-        <translation>&lt;font size=&quot;5&quot; color=&quot;green&quot;&gt;Received %1 annotations from the server &quot;%2&quot;&lt;/font&gt;&lt;br&gt;</translation>
+        <translation type="vanished">&lt;font size=&quot;5&quot; color=&quot;green&quot;&gt;Received %1 annotations from the server &quot;%2&quot;&lt;/font&gt;&lt;br&gt;</translation>
     </message>
 </context>
 <context>
     <name>U2::LoadDasObjectTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="242"/>
         <source>Load DAS data for &apos;%1&apos; from %2</source>
-        <translation>Load DAS data for &apos;%1&apos; from %2</translation>
+        <translation type="vanished">Load DAS data for &apos;%1&apos; from %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="301"/>
         <source>Sequence with ID=%1 is not found.</source>
-        <translation>Sequence with ID=%1 is not found.</translation>
+        <translation type="vanished">Sequence with ID=%1 is not found.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="353"/>
         <source>undefined error (code %1)</source>
-        <translation>undefined error (code %1)</translation>
+        <translation type="vanished">undefined error (code %1)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="375"/>
         <source>Remote server does not respond</source>
-        <translation>Remote server does not respond</translation>
+        <translation type="vanished">Remote server does not respond</translation>
     </message>
 </context>
 <context>
@@ -2374,7 +2348,7 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::LocalFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/LocalFileAdapter.cpp" line="29"/>
+        <location filename="../src/io/LocalFileAdapter.cpp" line="31"/>
         <source>Local file</source>
         <translation>Local file</translation>
     </message>
@@ -2415,28 +2389,28 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="181"/>
+        <location filename="../src/util/MSAUtils.cpp" line="183"/>
         <source>Alphabets of the alignment and the sequence cannot be derived</source>
         <translation>Alphabets of the alignment and the sequence cannot be derived</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="189"/>
+        <location filename="../src/util/MSAUtils.cpp" line="191"/>
         <source>Sequences have different alphabets.</source>
         <translation>Sequences have different alphabets.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="217"/>
-        <location filename="../src/util/MSAUtils.cpp" line="222"/>
+        <location filename="../src/util/MSAUtils.cpp" line="219"/>
+        <location filename="../src/util/MSAUtils.cpp" line="224"/>
         <source>Alignment is empty!</source>
         <translation>Alignment is empty!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="229"/>
+        <location filename="../src/util/MSAUtils.cpp" line="231"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Sequences in alignment have different sizes!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="338"/>
+        <location filename="../src/util/MSAUtils.cpp" line="340"/>
         <source>Can&apos;t find a row in an alignment!</source>
         <translation>Can&apos;t find a row in an alignment!</translation>
     </message>
@@ -2520,7 +2494,7 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::PasteTask</name>
     <message>
-        <location filename="../src/globals/ClipboardController.cpp" line="36"/>
+        <location filename="../src/globals/ClipboardController.cpp" line="38"/>
         <source>Paste data</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2572,29 +2546,24 @@ these match a protein, A between residue 3 and 125 and B between residue
 <context>
     <name>U2::ReplyHandler</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="90"/>
         <source>Can&apos;t receive result from the server: nothing to download</source>
-        <translation>Can&apos;t receive result from the server: nothing to download</translation>
+        <translation type="vanished">Can&apos;t receive result from the server: nothing to download</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="139"/>
         <source>Unexpected server response</source>
-        <translation>Unexpected server response</translation>
+        <translation type="vanished">Unexpected server response</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="169"/>
         <source>undefined error (code %1)</source>
-        <translation>undefined error (code %1)</translation>
+        <translation type="vanished">undefined error (code %1)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="171"/>
         <source>Network error: %1</source>
-        <translation>Network error: %1</translation>
+        <translation type="vanished">Network error: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="189"/>
         <source>Remote server doesn&apos;t respond</source>
-        <translation>Remote server doesn&apos;t respond</translation>
+        <translation type="vanished">Remote server doesn&apos;t respond</translation>
     </message>
 </context>
 <context>
@@ -2959,14 +2928,14 @@ UGENE contains unsaved modifications.</translation>
         <translation>Alphabet is not found!</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="98"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="111"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="102"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="115"/>
         <source>Invalid sequence DBI</source>
         <translation>Invalid sequence DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="370"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="549"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="374"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="553"/>
         <source>Failed to derive sequence alphabet!</source>
         <translation>Failed to derive sequence alphabet!</translation>
     </message>
@@ -2974,37 +2943,31 @@ UGENE contains unsaved modifications.</translation>
 <context>
     <name>U2::UniprotBlastAndLoadDASAnnotations</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="602"/>
         <source>BLAST IDs and DAS annotations</source>
-        <translation>BLAST IDs and DAS annotations</translation>
+        <translation type="vanished">BLAST IDs and DAS annotations</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="657"/>
         <source>Server &quot;%1&quot; is not available!</source>
-        <translation>Server &quot;%1&quot; is not available!</translation>
+        <translation type="vanished">Server &quot;%1&quot; is not available!</translation>
     </message>
 </context>
 <context>
     <name>U2::UniprotBlastTask</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="504"/>
         <source>Get an ID for the sequence</source>
-        <translation>Get an ID for the sequence</translation>
+        <translation type="vanished">Get an ID for the sequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="544"/>
         <source>Reply from the BLAST server is empty. Similar sequences not found</source>
-        <translation>Reply from the BLAST server is empty. Similar sequences not found</translation>
+        <translation type="vanished">Reply from the BLAST server is empty. Similar sequences not found</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="586"/>
         <source>An empty sequence is searched</source>
-        <translation>An empty sequence is searched</translation>
+        <translation type="vanished">An empty sequence is searched</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="587"/>
         <source>Settings are invalid</source>
-        <translation>Settings are invalid</translation>
+        <translation type="vanished">Settings are invalid</translation>
     </message>
 </context>
 <context>
@@ -3026,7 +2989,7 @@ UGENE contains unsaved modifications.</translation>
 <context>
     <name>U2SequenceImporter</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="292"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="296"/>
         <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
         <translation>Sequence was not imported. Probably, this is because the sequence is empty.</translation>
     </message>

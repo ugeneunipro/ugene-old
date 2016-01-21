@@ -812,12 +812,17 @@
 <context>
     <name>U2::ExportAnnotationSequenceSubTask</name>
     <message>
-        <location filename="../src/ExportSequenceTask.cpp" line="511"/>
+        <location filename="../src/ExportSequenceTask.cpp" line="515"/>
         <source>Extract annotation regions</source>
         <translation>Извлечь регионы аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceTask.cpp" line="575"/>
+        <location filename="../src/ExportSequenceTask.cpp" line="567"/>
+        <source>Sequences of the selected annotations can&apos;t be exported. At least one of the annotations is out of boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportSequenceTask.cpp" line="585"/>
         <source>Exported sequence has been deleted unexpectedly</source>
         <translation>Exported sequence has been deleted unexpectedly</translation>
     </message>
@@ -995,7 +1000,7 @@
     <message>
         <location filename="../src/ui/ExportMSA2SequencesDialog.ui" line="64"/>
         <source>Gap characters (&apos;-&apos;)</source>
-        <translation>Символы пропуска (&quot;-&quot;)</translation>
+        <translation>Символы пробела (&quot;-&quot;)</translation>
     </message>
     <message>
         <location filename="../src/ui/ExportMSA2SequencesDialog.ui" line="70"/>

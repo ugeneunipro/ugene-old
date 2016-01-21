@@ -14,7 +14,7 @@
         <translation>Cannot load a page. %1</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="96"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="95"/>
         <source>Cannot get the request ID</source>
         <translation>Cannot get the request ID</translation>
     </message>
@@ -24,49 +24,49 @@
         <translation>Cannot get the waiting time</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="127"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="129"/>
         <source>The response is empty</source>
         <translation>The response is empty</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="144"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="146"/>
         <source>Database couldn&apos;t prepare the response. You can increase timeout and perform search again.</source>
         <translation>Database couldn&apos;t prepare the response. You can increase timeout and perform search again.</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="149"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="151"/>
         <source>CPU usage limit in BLAST was exceeded, probably query sequence is too large</source>
         <translation>CPU usage limit in BLAST was exceeded, probably query sequence is too large</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="167"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="169"/>
         <source>Cannot read the response</source>
         <translation>Cannot read the response</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="235"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="243"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="261"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="237"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="245"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="263"/>
         <source>Cannot get the location</source>
         <translation>Cannot get the location</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="272"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="274"/>
         <source>Cannot get the identity</source>
         <translation>Cannot get the identity</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="280"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="282"/>
         <source>Cannot evaluate the gaps</source>
         <translation>Cannot evaluate the gaps</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="288"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="290"/>
         <source>Cannot get the alignment length</source>
         <translation>Cannot get the alignment length</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="302"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="304"/>
         <source>Cannot evaluate the location</source>
         <translation>Cannot evaluate the location</translation>
     </message>
@@ -894,7 +894,7 @@ p, li { white-space: pre-wrap; }
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="400"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="402"/>
         <source>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</source>
         <translation>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</translation>
     </message>

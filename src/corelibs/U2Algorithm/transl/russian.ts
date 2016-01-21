@@ -63,12 +63,12 @@
         <translation>очистка OpenCL ресурсов</translation>
     </message>
     <message>
-        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="169"/>
+        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="173"/>
         <source>GPU memory usage: %1 Mb</source>
         <translation>Использование памяти: %1 Mb</translation>
     </message>
     <message>
-        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="183"/>
+        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="188"/>
         <source>Device&apos;s preferred work group size multiple is %1</source>
         <translation>Предпочтительный размер рабочей группы кратен %1</translation>
     </message>
@@ -664,10 +664,10 @@ For every column selects the most rare symbol in the whole alignment with percen
         <translation>Неудачная попытка получения msa из dbi</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="393"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="395"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="396"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="398"/>
         <source>Failed to update row gap model</source>
-        <translation>Неудачная попытка обновить модель пропусков строк</translation>
+        <translation>Неудачная попытка обновить модель пробелов строк</translation>
     </message>
 </context>
 <context>

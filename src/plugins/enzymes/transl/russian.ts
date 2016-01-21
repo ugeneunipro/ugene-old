@@ -823,35 +823,35 @@ Choose another region.</translation>
 <context>
     <name>U2::EnzymesIO</name>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="41"/>
+        <location filename="../src/EnzymesIO.cpp" line="42"/>
         <source>Bairoch format</source>
         <translation>Формат Bairoch</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="50"/>
-        <location filename="../src/EnzymesIO.cpp" line="100"/>
-        <location filename="../src/EnzymesIO.cpp" line="107"/>
+        <location filename="../src/EnzymesIO.cpp" line="51"/>
+        <location filename="../src/EnzymesIO.cpp" line="101"/>
+        <location filename="../src/EnzymesIO.cpp" line="108"/>
         <source>Unsupported URI type</source>
         <translation>Неподдерживаемый протокол</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="63"/>
-        <location filename="../src/EnzymesIO.cpp" line="120"/>
+        <location filename="../src/EnzymesIO.cpp" line="64"/>
+        <location filename="../src/EnzymesIO.cpp" line="121"/>
         <source>Unsupported enzymes file format</source>
         <translation>Неподдерживаемый формат базы</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="72"/>
+        <location filename="../src/EnzymesIO.cpp" line="73"/>
         <source>The enzyme &apos;%1&apos; has unknown sequence</source>
         <translation>Фермент &apos;%1&apos; имеет неизвестную последовательность</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="78"/>
+        <location filename="../src/EnzymesIO.cpp" line="79"/>
         <source>No enzyme alphabet: &apos;%1&apos;, sequence &apos;%2&apos;</source>
         <translation>Нет алфавита: &apos;%1&apos;, последовательность &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="82"/>
+        <location filename="../src/EnzymesIO.cpp" line="83"/>
         <source>Non-nucleic enzyme alphabet: &apos;%1&apos;, alphabet: %2, sequence &apos;%3&apos;</source>
         <translation>Ненуклеотидный алфавит ферменты: %1 %2, последовательность &quot;%3&quot;</translation>
     </message>

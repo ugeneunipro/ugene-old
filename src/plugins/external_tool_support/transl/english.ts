@@ -3621,12 +3621,12 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
 <context>
     <name>U2::ConductGOTask</name>
     <message>
-        <location filename="../src/conduct_go/ConductGOTask.cpp" line="154"/>
+        <location filename="../src/conduct_go/ConductGOTask.cpp" line="107"/>
         <source>Conduct GO warning: Can not find a required output file %1.</source>
         <translation>Conduct GO warning: Can not find a required output file %1.</translation>
     </message>
     <message>
-        <location filename="../src/conduct_go/ConductGOTask.cpp" line="165"/>
+        <location filename="../src/conduct_go/ConductGOTask.cpp" line="118"/>
         <source>Can not copy the result file to: %1</source>
         <translation>Can not copy the result file to: %1</translation>
     </message>
@@ -4274,6 +4274,24 @@ To save under other name press &apos;Cancel&apos; and change name in &apos;Resul
         <location filename="../src/blast/FormatDBSupportTask.cpp" line="119"/>
         <source>Blast database creation has been failed</source>
         <translation>Blast database creation has been failed</translation>
+    </message>
+</context>
+<context>
+    <name>U2::Gene2PeakFormatLoader</name>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="98"/>
+        <source>Incorrect start position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="102"/>
+        <source>Incorrect end position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Gene2PeakFormatLoader.cpp" line="117"/>
+        <source>Incorrect NA value at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6427,10 +6445,14 @@ Default: 64.</translation>
         <translation>Target genes</translation>
     </message>
     <message>
+        <source>Gene list to identify over represented GO terms.</source>
+        <translation type="vanished">Gene list to identify over represented GO terms.</translation>
+    </message>
+    <message>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="142"/>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="147"/>
-        <source>Gene list to identify over represented GO terms.</source>
-        <translation>Gene list to identify over represented GO terms.</translation>
+        <source>URL to file with genes to identify over represented GO terms.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/conduct_go/ConductGOWorker.cpp" line="146"/>
@@ -8016,17 +8038,17 @@ Default: 64.</translation>
 <context>
     <name>U2::LocalWorkflow::Peak2GenePrompter</name>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="316"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="327"/>
         <source>unset</source>
         <translation>unset</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="321"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="332"/>
         <source>Uses annotations from &lt;u&gt;%1&lt;/u&gt; as peak regions </source>
         <translation>Uses annotations from &lt;u&gt;%1&lt;/u&gt; as peak regions </translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="322"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="333"/>
         <source> to annotate with genes nearby from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation> to annotate with genes nearby from &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
@@ -8034,102 +8056,122 @@ Default: 64.</translation>
 <context>
     <name>U2::LocalWorkflow::Peak2GeneWorker</name>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="194"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="198"/>
         <source>Treatment features</source>
         <translation>Treatment features</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="195"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="199"/>
         <source>Result peaks of MACS.</source>
         <translation>Result peaks of MACS.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="199"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="203"/>
         <source>Peak2gene data</source>
         <translation>Peak2gene data</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="200"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="204"/>
         <source>MACS peaks to get the refgenes near the peak summit/center.</source>
         <translation>MACS peaks to get the refgenes near the peak summit/center.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="208"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="212"/>
         <source>Gene regions</source>
         <translation>Gene regions</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="209"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="213"/>
         <source>Annotation for each gene, containing all the peaks nearby.</source>
         <translation>Annotation for each gene, containing all the peaks nearby.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="211"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="215"/>
         <source>Peak regions</source>
         <translation>Peak regions</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="212"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="216"/>
         <source>Annotation for each peak, containing all the genes nearby.</source>
         <translation>Annotation for each peak, containing all the genes nearby.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="215"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="218"/>
+        <source>Gene regions URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="219"/>
+        <source>URL to file with annotation for each gene, containing all the peaks nearby.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="221"/>
+        <source>Peak regions URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="222"/>
+        <source>URL to file with annotation for each peak, containing all the genes nearby.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="225"/>
         <source>Peak2gene output data</source>
         <translation>Peak2gene output data</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="216"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="226"/>
         <source>Genes containing all the peaks nearby and peaks containing all the genes nearby.</source>
         <translation>Genes containing all the peaks nearby and peaks containing all the genes nearby.</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="228"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="239"/>
         <source>Output type</source>
         <translation>Output type</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="229"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="240"/>
         <source>Select which type of genes need to output. &lt;b&gt;up&lt;/b&gt; for genes upstream to peak summit, &lt;b&gt;down&lt;/b&gt; for genes downstream to peak summit, &lt;b&gt;all&lt;/b&gt; for both &lt;b&gt;up&lt;/b&gt; and &lt;b&gt;down&lt;/b&gt; (--op).</source>
         <translation>Select which type of genes need to output. &lt;b&gt;up&lt;/b&gt; for genes upstream to peak summit, &lt;b&gt;down&lt;/b&gt; for genes downstream to peak summit, &lt;b&gt;all&lt;/b&gt; for both &lt;b&gt;up&lt;/b&gt; and &lt;b&gt;down&lt;/b&gt; (--op).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="234"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="245"/>
         <source>Official gene symbols</source>
         <translation>Official gene symbols</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="235"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="246"/>
         <source>Output &lt;b&gt;official gene symbol&lt;/b&gt; instead of &lt;b&gt;refseq name&lt;/b&gt; (--symbol).</source>
         <translation>Output &lt;b&gt;official gene symbol&lt;/b&gt; instead of &lt;b&gt;refseq name&lt;/b&gt; (--symbol).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="237"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="248"/>
         <source>Distance</source>
         <translation>Distance</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="238"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="249"/>
         <source>Set a number which unit is base. It will get the refGenes in n bases from peak center (--distance).</source>
         <translation>Set a number which unit is base. It will get the refGenes in n bases from peak center (--distance).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="240"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="251"/>
         <source>Genome file</source>
         <translation>Genome file</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="241"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="252"/>
         <source>Select a genome file (sqlite3 file) to search refGenes (--genome).</source>
         <translation>Select a genome file (sqlite3 file) to search refGenes (--genome).</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="296"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="307"/>
         <source>Annotate Peaks with peak2gene</source>
         <translation>Annotate Peaks with peak2gene</translation>
     </message>
     <message>
-        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="297"/>
+        <location filename="../src/peak2gene/Peak2GeneWorker.cpp" line="308"/>
         <source>Gets refGenes near the ChIP regions identified by a peak-caller.</source>
         <translation>Gets refGenes near the ChIP regions identified by a peak-caller.</translation>
     </message>
@@ -8593,13 +8635,13 @@ Default: 64.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="135"/>
-        <source>Cannonical transcripts</source>
-        <translation>Cannonical transcripts</translation>
+        <source>Canonical transcripts</source>
+        <translation>Canonical transcripts</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="136"/>
-        <source>Use only cannonical transcripts</source>
-        <translation>Use only cannonical transcripts</translation>
+        <source>Use only canonical transcripts</source>
+        <translation>Use only canonical transcripts</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="138"/>
@@ -8613,13 +8655,13 @@ Default: 64.</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="141"/>
-        <source>Annotate Loss of function</source>
-        <translation>Annotate Loss of function</translation>
+        <source>Annotate Loss of function variations</source>
+        <translation>Annotate Loss of function variations</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="142"/>
-        <source>Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)</source>
-        <translation>Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)</translation>
+        <source>Annotate Loss of function variations (LOF) and Nonsense mediated decay (NMD)</source>
+        <translation>Annotate Loss of function variations (LOF) and Nonsense mediated decay (NMD)</translation>
     </message>
     <message>
         <location filename="../src/snpeff/SnpEffWorker.cpp" line="144"/>
@@ -9347,8 +9389,8 @@ Set it empty if you want to run Tophat once for all input reads</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="145"/>
-        <source>The url to the output file with the result consensus.</source>
-        <translation>The url to the output file with the result consensus.</translation>
+        <source>The path to the output file with the result consensus.</source>
+        <translation>The path to the output file with the result consensus.</translation>
     </message>
     <message>
         <location filename="../src/vcftools/VcfConsensusWorker.cpp" line="155"/>
@@ -9650,6 +9692,29 @@ Set it empty if you want to run Tophat once for all input reads</translation>
         <location filename="../src/ExternalToolSupportSettingsController.cpp" line="672"/>
         <source>Select a file</source>
         <translation>Select a file</translation>
+    </message>
+</context>
+<context>
+    <name>U2::Peak2GeneFormatLoader</name>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="101"/>
+        <source>Incorrect start position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="105"/>
+        <source>Incorrect end position at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="120"/>
+        <source>Incorrect peak score at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/peak2gene/Peak2GeneFormatLoader.cpp" line="128"/>
+        <source>Incorrect NA value at line %1: &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10282,6 +10347,14 @@ Set it empty if you want to run Tophat once for all input reads</translation>
         <location filename="../src/samtools/TabixSupportTask.cpp" line="61"/>
         <source>Saving data to file &apos;%1&apos;</source>
         <translation>Saving data to file &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
+    <name>U2::TabulatedFormatReader</name>
+    <message>
+        <location filename="../src/peak2gene/TabulatedFormatReader.cpp" line="36"/>
+        <source>IO adapter is not opened</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -686,7 +686,7 @@ p, li { white-space: pre-wrap; }
         <translation>Output Directory</translation>
     </message>
     <message>
-        <location filename="../src/ui/StartupDialog.ui" line="41"/>
+        <location filename="../src/ui/StartupDialog.ui" line="33"/>
         <source>Note: you can change this option in the UGENE Application Settings
 (Settings &gt; Preferences &gt; Workflow Designer)</source>
         <translation>Note: you can change this option in the UGENE Application Settings
@@ -1823,288 +1823,233 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::LocalWorkflow::DASAnnotationPrompter</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="241"/>
         <source>unset</source>
-        <translation>unset</translation>
+        <translation type="vanished">unset</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="242"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
-        <translation> from &lt;u&gt;%1&lt;/u&gt;</translation>
+        <translation type="vanished"> from &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="245"/>
         <source>For each protein sequence %1, finds IDs of similar sequences using remote BLAST.&lt;br&gt;Loads annotations for DAS sources using the first %2 ID(s).</source>
-        <translation>For each protein sequence %1, finds IDs of similar sequences using remote BLAST.&lt;br&gt;Loads annotations for DAS sources using the first %2 ID(s).</translation>
+        <translation type="vanished">For each protein sequence %1, finds IDs of similar sequences using remote BLAST.&lt;br&gt;Loads annotations for DAS sources using the first %2 ID(s).</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASAnnotationWorker</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="72"/>
         <source>Input sequences</source>
-        <translation>Input sequences</translation>
+        <translation type="vanished">Input sequences</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="73"/>
         <source>Protein sequences for annotation. Nucleotide sequences are skipped.</source>
-        <translation>Protein sequences for annotation. Nucleotide sequences are skipped.</translation>
+        <translation type="vanished">Protein sequences for annotation. Nucleotide sequences are skipped.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="74"/>
         <source>DAS annotations</source>
-        <translation>DAS annotations</translation>
+        <translation type="vanished">DAS annotations</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="75"/>
         <source>A set of annotations loaded from DAS sources using IDs of similar sequences.</source>
-        <translation>A set of annotations loaded from DAS sources using IDs of similar sequences.</translation>
+        <translation type="vanished">A set of annotations loaded from DAS sources using IDs of similar sequences.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Max result IDs</source>
-        <translation>Max result IDs</translation>
+        <translation type="vanished">Max result IDs</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Use first IDs of similar sequences to load annotations.</source>
-        <translation>Use first IDs of similar sequences to load annotations.</translation>
+        <translation type="vanished">Use first IDs of similar sequences to load annotations.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database</source>
-        <translation>Database</translation>
+        <translation type="vanished">Database</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.</source>
-        <translation>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.</translation>
+        <translation type="vanished">Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Min identity</source>
-        <translation>Min identity</translation>
+        <translation type="vanished">Min identity</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Minimum identity of a BLAST result and an input sequence.</source>
-        <translation>Minimum identity of a BLAST result and an input sequence.</translation>
+        <translation type="vanished">Minimum identity of a BLAST result and an input sequence.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>Feature sources</source>
-        <translation>Feature sources</translation>
+        <translation type="vanished">Feature sources</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>The DAS sources to read features from.</source>
-        <translation>The DAS sources to read features from.</translation>
+        <translation type="vanished">The DAS sources to read features from.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>Threshold</source>
-        <translation>Threshold</translation>
+        <translation type="vanished">Threshold</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.</source>
-        <translation>The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.</translation>
+        <translation type="vanished">The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>Matrix</source>
-        <translation>Matrix</translation>
+        <translation type="vanished">Matrix</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>The matrix assigns a probability score for each position in an alignment.</source>
-        <translation>The matrix assigns a probability score for each position in an alignment.</translation>
+        <translation type="vanished">The matrix assigns a probability score for each position in an alignment.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Filtering</source>
-        <translation>Filtering</translation>
+        <translation type="vanished">Filtering</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to producespurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically. If &apos;Filter low complexity regions&apos; is selected, the query sequence will be run through the program SEG, and all amino acids in low-complexity regions will be replaced by X&apos;s.</source>
-        <translation>Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to producespurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically. If &apos;Filter low complexity regions&apos; is selected, the query sequence will be run through the program SEG, and all amino acids in low-complexity regions will be replaced by X&apos;s.</translation>
+        <translation type="vanished">Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to producespurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically. If &apos;Filter low complexity regions&apos; is selected, the query sequence will be run through the program SEG, and all amino acids in low-complexity regions will be replaced by X&apos;s.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>Gapped</source>
-        <translation>Gapped</translation>
+        <translation type="vanished">Gapped</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>This will allow gaps to be introduced in the sequences when the comparison is done.</source>
-        <translation>This will allow gaps to be introduced in the sequences when the comparison is done.</translation>
+        <translation type="vanished">This will allow gaps to be introduced in the sequences when the comparison is done.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Hits</source>
-        <translation>Hits</translation>
+        <translation type="vanished">Hits</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Limits the number of returned alignments.</source>
-        <translation>Limits the number of returned alignments.</translation>
+        <translation type="vanished">Limits the number of returned alignments.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="106"/>
         <source>Annotate with DAS</source>
-        <translation>Annotate with DAS</translation>
+        <translation type="vanished">Annotate with DAS</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="107"/>
         <source>Finds similar protein sequence using remote BLAST.&lt;p&gt;Using IDs of sequences found loads annotation for DAS sources.&lt;p&gt;Nucleotide sequences are skipped if any supplied to input.&lt;/p&gt;</source>
-        <translation>Finds similar protein sequence using remote BLAST.&lt;p&gt;Using IDs of sequences found loads annotation for DAS sources.&lt;p&gt;Nucleotide sequences are skipped if any supplied to input.&lt;/p&gt;</translation>
+        <translation type="vanished">Finds similar protein sequence using remote BLAST.&lt;p&gt;Using IDs of sequences found loads annotation for DAS sources.&lt;p&gt;Nucleotide sequences are skipped if any supplied to input.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="150"/>
         <source>No DAS registry</source>
-        <translation>No DAS registry</translation>
+        <translation type="vanished">No DAS registry</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="153"/>
         <source>No DAS feature sources</source>
-        <translation>No DAS feature sources</translation>
+        <translation type="vanished">No DAS feature sources</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="286"/>
         <source>Internal error: no DAS Registry.</source>
-        <translation>Internal error: no DAS Registry.</translation>
+        <translation type="vanished">Internal error: no DAS Registry.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="313"/>
         <source>Sequence %1 is %2 amino acids long. Only sequences from %3 to %4 amino acids are processed.</source>
-        <translation>Sequence %1 is %2 amino acids long. Only sequences from %3 to %4 amino acids are processed.</translation>
+        <translation type="vanished">Sequence %1 is %2 amino acids long. Only sequences from %3 to %4 amino acids are processed.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="333"/>
         <source>Bad sequence supplied to DASAnnotationWorker: %1</source>
-        <translation>Bad sequence supplied to DASAnnotationWorker: %1</translation>
+        <translation type="vanished">Bad sequence supplied to DASAnnotationWorker: %1</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="363"/>
         <source>Number of similar sequences: %1.</source>
-        <translation>Number of similar sequences: %1.</translation>
+        <translation type="vanished">Number of similar sequences: %1.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="362"/>
         <source> IDs: </source>
-        <translation> IDs: </translation>
+        <translation type="vanished"> IDs: </translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASFetcherPrompter</name>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="69"/>
         <source>unset</source>
-        <translation>unset</translation>
+        <translation type="vanished">unset</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::DASFetcherWorker</name>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="72"/>
         <source>sequences identified with</source>
-        <translation>sequences identified with</translation>
+        <translation type="vanished">sequences identified with</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="73"/>
         <source>sequence identified with</source>
-        <translation>sequence identified with</translation>
+        <translation type="vanished">sequence identified with</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="87"/>
         <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory.</source>
-        <translation>Save result to &lt;u&gt;%1&lt;/u&gt; directory.</translation>
+        <translation type="vanished">Save result to &lt;u&gt;%1&lt;/u&gt; directory.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="89"/>
         <source>Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; DAS source. %4</source>
-        <translation>Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; DAS source. %4</translation>
+        <translation type="vanished">Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; DAS source. %4</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="128"/>
         <source>Cannot create directory &apos;%1&apos;</source>
-        <translation>Cannot create directory &apos;%1&apos;</translation>
+        <translation type="vanished">Cannot create directory &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="188"/>
         <source>failed to load item from DAS source : %3</source>
-        <translation>failed to load item from DAS source : %3</translation>
+        <translation type="vanished">failed to load item from DAS source : %3</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="280"/>
         <source>Read from DAS</source>
-        <translation>Read from DAS</translation>
+        <translation type="vanished">Read from DAS</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="281"/>
         <source>Reads sequences and annotations if any from the Distributed Annotation System.</source>
-        <translation>Reads sequences and annotations if any from the Distributed Annotation System.</translation>
+        <translation type="vanished">Reads sequences and annotations if any from the Distributed Annotation System.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="285"/>
         <source>Sequence</source>
-        <translation>Sequence</translation>
+        <translation type="vanished">Sequence</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="290"/>
         <source>No DAS registry</source>
-        <translation>No DAS registry</translation>
+        <translation type="vanished">No DAS registry</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="293"/>
         <source>No DAS sources</source>
-        <translation>No DAS sources</translation>
+        <translation type="vanished">No DAS sources</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="295"/>
         <source>No DAS feature sources</source>
-        <translation>No DAS feature sources</translation>
+        <translation type="vanished">No DAS feature sources</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="312"/>
         <source>Feature Sources</source>
-        <translation>Feature Sources</translation>
+        <translation type="vanished">Feature Sources</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="313"/>
         <source>The DAS sources to read features from.</source>
-        <translation>The DAS sources to read features from.</translation>
+        <translation type="vanished">The DAS sources to read features from.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="317"/>
         <source>Reference Source</source>
-        <translation>Reference Source</translation>
+        <translation type="vanished">Reference Source</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="318"/>
         <source>The DAS source to read reference from.</source>
-        <translation>The DAS source to read reference from.</translation>
+        <translation type="vanished">The DAS source to read reference from.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="328"/>
         <source>Resource ID(s)</source>
-        <translation>Resource ID(s)</translation>
+        <translation type="vanished">Resource ID(s)</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="329"/>
         <source>Semicolon-separated list of resource ID`s in the source.</source>
-        <translation>Semicolon-separated list of resource ID`s in the source.</translation>
+        <translation type="vanished">Semicolon-separated list of resource ID`s in the source.</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="335"/>
         <source>Save file to directory</source>
-        <translation>Save file to directory</translation>
+        <translation type="vanished">Save file to directory</translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="336"/>
         <source>The directory to store sequence files loaded from the source.</source>
-        <translation>The directory to store sequence files loaded from the source.</translation>
+        <translation type="vanished">The directory to store sequence files loaded from the source.</translation>
     </message>
 </context>
 <context>
@@ -4287,8 +4232,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="123"/>
-        <source>Changes chromosome notation for each variant from the input, VCF or other variation files.</source>
-        <translation>Changes chromosome notation for each variant from the input, VCF or other variation files.</translation>
+        <source>Changes chromosome notation for each variant from the input VCF or other variation files.</source>
+        <translation>Changes chromosome notation for each variant from the input VCF or other variation files.</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="127"/>
@@ -4327,8 +4272,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="145"/>
-        <source>Input the list of chromosome prefixes that you would like to replace. For example &quot;NC_000&quot;. Separate different prefixes by semicolons.</source>
-        <translation>Input the list of chromosome prefixes that you would like to replace. For example &quot;NC_000&quot;. Separate different prefixes by semicolons.</translation>
+        <source>Input the list of chromosome prefixes that you would like to replace, for example &quot;NC_000&quot;. Separate different prefixes by semicolons.</source>
+        <translation>Input the list of chromosome prefixes that you would like to replace, for example &quot;NC_000&quot;. Separate different prefixes by semicolons.</translation>
     </message>
     <message>
         <location filename="../src/library/RenameChromosomeInVariationWorker.cpp" line="147"/>
@@ -5333,7 +5278,7 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::StartupDialog</name>
     <message>
-        <location filename="../src/StartupDialog.cpp" line="68"/>
+        <location filename="../src/StartupDialog.cpp" line="65"/>
         <source>You have no write access to the directory. Please choose another one.</source>
         <translation>You have no write access to the directory. Please choose another one.</translation>
     </message>
@@ -5341,116 +5286,116 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
 <context>
     <name>U2::Workflow::CoreLib</name>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="127"/>
+        <location filename="../src/library/CoreLib.cpp" line="125"/>
         <source>Location</source>
         <translation>Location</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="127"/>
+        <location filename="../src/library/CoreLib.cpp" line="125"/>
         <source>Location for writing data</source>
         <translation>Location for writing data</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="154"/>
+        <location filename="../src/library/CoreLib.cpp" line="152"/>
         <source>Write FASTA</source>
         <translation>Write FASTA</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="154"/>
+        <location filename="../src/library/CoreLib.cpp" line="152"/>
         <source>Writes all supplied sequences to file(s) in FASTA format.</source>
         <translation>Writes all supplied sequences to file(s) in FASTA format.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="155"/>
-        <location filename="../src/library/CoreLib.cpp" line="253"/>
+        <location filename="../src/library/CoreLib.cpp" line="153"/>
+        <location filename="../src/library/CoreLib.cpp" line="251"/>
         <location filename="../src/library/GenericReadActor.cpp" line="100"/>
         <source>Sequence</source>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="155"/>
+        <location filename="../src/library/CoreLib.cpp" line="153"/>
         <source>A sequence along with FASTA header line.</source>
         <translation>A sequence along with FASTA header line.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="175"/>
+        <location filename="../src/library/CoreLib.cpp" line="173"/>
         <source>Read Plain Text</source>
         <translation>Read Plain Text</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="175"/>
+        <location filename="../src/library/CoreLib.cpp" line="173"/>
         <source>Reads text from local or remote files.</source>
         <translation>Reads text from local or remote files.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="176"/>
-        <location filename="../src/library/CoreLib.cpp" line="196"/>
+        <location filename="../src/library/CoreLib.cpp" line="174"/>
+        <location filename="../src/library/CoreLib.cpp" line="194"/>
         <source>Plain text</source>
         <translation>Plain text</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="179"/>
+        <location filename="../src/library/CoreLib.cpp" line="177"/>
         <source>Reads text from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Reads text from &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="195"/>
+        <location filename="../src/library/CoreLib.cpp" line="193"/>
         <source>Write Plain Text</source>
         <translation>Write Plain Text</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="195"/>
+        <location filename="../src/library/CoreLib.cpp" line="193"/>
         <source>Write strings to a file.</source>
         <translation>Write strings to a file.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="202"/>
+        <location filename="../src/library/CoreLib.cpp" line="200"/>
         <source>Save text from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Save text from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="430"/>
+        <location filename="../src/library/CoreLib.cpp" line="426"/>
         <source>Another worker with this name is already registered: %1</source>
         <translation>Another worker with this name is already registered: %1</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="432"/>
+        <location filename="../src/library/CoreLib.cpp" line="428"/>
         <source>The actor &apos;%1&apos; has been already registered</source>
         <translation>The actor &apos;%1&apos; has been already registered</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="217"/>
+        <location filename="../src/library/CoreLib.cpp" line="215"/>
         <location filename="../src/library/GenericReadActor.cpp" line="160"/>
         <source>Multiple sequence alignment</source>
         <translation>Multiple sequence alignment</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="230"/>
+        <location filename="../src/library/CoreLib.cpp" line="228"/>
         <source>Save all MSAs from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Save all MSAs from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="216"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Write Alignment</source>
         <translation>Write Alignment</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="216"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Writes all supplied alignments to file(s) in selected format.</source>
         <translation>Writes all supplied alignments to file(s) in selected format.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="252"/>
+        <location filename="../src/library/CoreLib.cpp" line="250"/>
         <source>Write Sequence</source>
         <translation>Write Sequence</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="252"/>
+        <location filename="../src/library/CoreLib.cpp" line="250"/>
         <source>Writes all supplied sequences to file(s) in selected format.</source>
         <translation>Writes all supplied sequences to file(s) in selected format.</translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="283"/>
+        <location filename="../src/library/CoreLib.cpp" line="281"/>
         <source>Save all sequences from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Save all sequences from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
@@ -5481,8 +5426,8 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="149"/>
-        <source>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</source>
-        <translation>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</translation>
+        <source>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides recognized alignment formats, it supports aligning from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</source>
+        <translation>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides recognized alignment formats, it supports aligning from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="163"/>
@@ -5614,8 +5559,12 @@ TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="111"/>
-        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; and &lt;b&gt;?&lt;/b&gt; to mask some symbols.&lt;/i&gt;&lt;/p&gt;</source>
-        <translation>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; and &lt;b&gt;?&lt;/b&gt; to mask some symbols.&lt;/i&gt;&lt;/p&gt;</translation>
+        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; to mask many symbol and use &lt;b&gt;?&lt;/b&gt; to mask one symbol.&lt;/i&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; to mask many symbols and &lt;b&gt;?&lt;/b&gt; to mask one symbol.&lt;/i&gt;&lt;/p&gt;</source>
+        <translation type="vanished">Reports only sequences containing the specified regular expression.&lt;p&gt;&lt;i&gt;Leave it empty to switch off this filter. Use &lt;b&gt;*&lt;/b&gt; to mask many symbols and &lt;b&gt;?&lt;/b&gt; to mask one symbol.&lt;/i&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="113"/>

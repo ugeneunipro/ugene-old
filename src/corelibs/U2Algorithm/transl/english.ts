@@ -63,12 +63,12 @@
         <translation>clear OpenCL resources</translation>
     </message>
     <message>
-        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="169"/>
+        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="173"/>
         <source>GPU memory usage: %1 Mb</source>
         <translation>GPU memory usage: %1 Mb</translation>
     </message>
     <message>
-        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="183"/>
+        <location filename="../src/misc/BinaryFindOpenCL.cpp" line="188"/>
         <source>Device&apos;s preferred work group size multiple is %1</source>
         <translation>Device&apos;s preferred work group size multiple is %1</translation>
     </message>
@@ -662,8 +662,8 @@ For every column selects the most rare symbol in the whole alignment with percen
         <translation>Failed to get msa from dbi</translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="393"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="395"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="396"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="398"/>
         <source>Failed to update row gap model</source>
         <translation>Failed to update row gap model</translation>
     </message>
