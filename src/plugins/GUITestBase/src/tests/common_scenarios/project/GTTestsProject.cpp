@@ -1014,7 +1014,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTGlobals::sleep();
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
@@ -1024,17 +1024,17 @@ GUI_TEST_CLASS_DEFINITION(test_0059) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0060) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTGlobals::sleep();
     GTClipboard::setText(os, "ACGT");
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTUtilsProjectTreeView::findIndex(os, "sequence");
+    GTUtilsProjectTreeView::findIndex(os, "clipboard", GTGlobals::FindOptions(true, Qt::MatchContains));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0061) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
@@ -1043,7 +1043,7 @@ GUI_TEST_CLASS_DEFINITION(test_0061) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0062) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa" << dataDir + "samples/HMM/aligment15900.hmm");
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
@@ -1054,7 +1054,7 @@ GUI_TEST_CLASS_DEFINITION(test_0062) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0063) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");
     GTGlobals::sleep();
@@ -1068,7 +1068,7 @@ GUI_TEST_CLASS_DEFINITION(test_0063) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0064) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
 
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
@@ -1083,7 +1083,7 @@ GUI_TEST_CLASS_DEFINITION(test_0064) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0065) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
 
     GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n");
@@ -1097,7 +1097,7 @@ GUI_TEST_CLASS_DEFINITION(test_0065) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0066) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
 
     GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n");
@@ -1112,7 +1112,7 @@ GUI_TEST_CLASS_DEFINITION(test_0066) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0067) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
 
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
 
@@ -1124,7 +1124,7 @@ GUI_TEST_CLASS_DEFINITION(test_0067) {
 
 //seq
 GUI_TEST_CLASS_DEFINITION(test_0068) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/FASTA/human_T1.fa");
 
@@ -1136,7 +1136,7 @@ GUI_TEST_CLASS_DEFINITION(test_0068) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0069) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
     GTClipboard::setText(os, ">human_T1\r\nACGTACGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n");
 
@@ -1148,7 +1148,7 @@ GUI_TEST_CLASS_DEFINITION(test_0069) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0070) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 2);
     GTClipboard::setText(os, ">human_T1\r\nACGTACGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n");
 
@@ -1161,7 +1161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0070) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0071) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
 
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/Genbank/sars.gb");
 
@@ -1202,7 +1202,7 @@ GUI_TEST_CLASS_DEFINITION(test_0073) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0074) {
-    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/murine.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
 
     GTClipboard::setUrls(os, QList<QString>() << dataDir + "samples/Genbank/sars.gb");
 

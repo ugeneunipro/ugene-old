@@ -280,6 +280,15 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(HI::GUITestOpStatus &os, co
 }
 #undef GT_METHOD_NAME
 
+namespace {
+    bool compareStrings(const QString &pattern, const QString &data, Qt::MatchFlags matchPolicy) {
+        if (matchPolicy.testFlag(Qt::MatchContains)) {
+            return data.contains(pattern);
+        }
+        return (data == pattern);
+    }
+}
+
 #define GT_METHOD_NAME "findIndecies"
 QModelIndexList GTUtilsProjectTreeView::findIndecies(HI::GUITestOpStatus &os,
                                                      QTreeView* treeView,
@@ -319,7 +328,7 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(HI::GUITestOpStatus &os,
         }
 
         if (!itemName.isEmpty()) {
-            if (s == itemName) {
+            if (compareStrings(itemName, s, options.matchPolicy)) {
                 foundIndecies << index;
             } else {
                 foundIndecies << findIndecies(os, treeView, itemName, index, parentDepth + 1, options);
