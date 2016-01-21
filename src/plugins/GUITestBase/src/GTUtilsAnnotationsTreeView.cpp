@@ -22,26 +22,28 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTTreeWidget.h>
+#include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <utils/GTKeyboardUtils.h>
+#include <utils/GTThread.h>
+#include <utils/GTUtilsDialog.h>
+
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationGroup.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/MainWindow.h>
 
 #include <U2View/AnnotationsTreeView.h>
-#include <U2Core/U2SafePoints.h>
 
 #include "GTUtilsAnnotationsTreeView.h"
-#include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include <drivers/GTKeyboardDriver.h>
-#include "utils/GTKeyboardUtils.h"
-#include <drivers/GTMouseDriver.h>
-#include <primitives/GTTreeWidget.h>
-#include <primitives/GTWidget.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
@@ -63,6 +65,7 @@ QTreeWidget* GTUtilsAnnotationsTreeView::getTreeWidget(HI::GUITestOpStatus &os) 
 void GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(HI::GUITestOpStatus &os, const QString &tableName) {
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
     GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, tableName), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 

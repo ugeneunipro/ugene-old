@@ -5246,17 +5246,8 @@ GUI_TEST_CLASS_DEFINITION(test_4986) {
     GTFileDialog::openFile(os, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QPoint p = GTWidget::getWidgetCenter(os, GTWidget::findWidget(os, "render_area_NC_001363"));
-    GTUtilsProjectTreeView::click(os, "Ca20Chr1 features");
-
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
-    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
-    GTMouseDriver::press(os);
-    GTMouseDriver::moveTo(os, p);
-    GTMouseDriver::release(os);
-    GTGlobals::sleep();
-
-    GTThread::waitForMainThread(os);
+    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "Ca20Chr1 features");
 
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ExportSequenceOfSelectedAnnotationsFiller(os, sandBoxDir + "test_4986.fa", ExportSequenceOfSelectedAnnotationsFiller::Fasta,
