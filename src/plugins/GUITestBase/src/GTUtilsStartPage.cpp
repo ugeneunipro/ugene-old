@@ -30,7 +30,6 @@
 #include "GTUtilsStartPage.h"
 
 namespace U2 {
-
 #define GT_CLASS_NAME "GTUtilsStartPage"
 
 void GTUtilsStartPage::openStartPage(HI::GUITestOpStatus &os){
@@ -44,7 +43,7 @@ QWebView* GTUtilsStartPage::getStartPage(HI::GUITestOpStatus &os){
 }
 
 #define GT_METHOD_NAME "getButton"
-QWebElement GTUtilsStartPage::getButton(HI::GUITestOpStatus &os, Buttons button) {
+HIWebElement GTUtilsStartPage::getButton(HI::GUITestOpStatus &os, Buttons button) {
     switch (button) {
     case OpenFile:
         return GTWebView::findElement(os, getStartPage(os), "Open File(s)", "DIV");
@@ -62,13 +61,13 @@ QWebElement GTUtilsStartPage::getButton(HI::GUITestOpStatus &os, Buttons button)
 #undef GT_METHOD_NAME
 
 void GTUtilsStartPage::clickButton(HI::GUITestOpStatus &os, Buttons b) {
-    QWebElement but = getButton(os, b);
+    HIWebElement but = getButton(os, b);
     QWebView* start = getStartPage(os);
     GTWebView::click(os, start, but);
 }
 
 void GTUtilsStartPage::clickResentDocument(HI::GUITestOpStatus &os, QString text){
-    QWebElement el = GTWebView::findElement(os, getStartPage(os), "- " + text, "A");
+    HIWebElement el = GTWebView::findElement(os, getStartPage(os), "- " + text, "A");
     GTWebView::click(os, getStartPage(os), el);
 }
 

@@ -24,6 +24,7 @@
 #define _U2_GT_UTILS_START_PAGE_
 
 #include "GTGlobals.h"
+#include <primitives/GTWebView.h>
 
 class QWebView;
 class QWebElement;
@@ -37,7 +38,7 @@ public:
     enum Buttons{OpenFile, CreateSequence, CreateWorkflow, QuickStartGuide};
     static void openStartPage(HI::GUITestOpStatus &os);
     static QWebView* getStartPage(HI::GUITestOpStatus &os);
-    static QWebElement getButton(HI::GUITestOpStatus &os, Buttons button);
+    static HIWebElement getButton(HI::GUITestOpStatus &os, Buttons button);
     static void clickButton(HI::GUITestOpStatus &os, Buttons button);
     static void clickResentDocument(HI::GUITestOpStatus &os, QString text);
     static void clickResentProject(HI::GUITestOpStatus &os, QString text);

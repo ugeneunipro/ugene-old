@@ -757,7 +757,7 @@ GUI_TEST_CLASS_DEFINITION( test_2053 ){
 //    Expected state: after scheme finish there is the hint on the dashboard -
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
-    QWebElement button = GTUtilsDashboard::findElement(os, "OK, got it!", "BUTTON");
+    HIWebElement button = GTUtilsDashboard::findElement(os, "OK, got it!", "BUTTON");
 //    "You can always open the original workflow for your results by clicking on this button."
     GTUtilsDashboard::click(os, button);
     GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
@@ -1532,7 +1532,7 @@ GUI_TEST_CLASS_DEFINITION( test_2192 ){
 //       Expected state: correct data was copied.
 //    8. Select some amount of text on a tree and click on "Copy selected text" which is now should be available.
     GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "SAMtools run 1"));
-    QWebElement el = GTUtilsDashboard::findElement(os, samtoolsPath, "SPAN");
+    HIWebElement el = GTUtilsDashboard::findElement(os, samtoolsPath, "SPAN");
     GTWebView::selectElementText(os, GTUtilsDashboard::getDashboard(os), el);
     GTUtilsDashboard::click(os, el, Qt::RightButton);
     GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy selected text"));

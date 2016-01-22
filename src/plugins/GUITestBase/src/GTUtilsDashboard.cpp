@@ -50,19 +50,19 @@ QTabWidget* GTUtilsDashboard::getTabWidget(HI::GUITestOpStatus &os){
     return GTWidget::findExactWidget<QTabWidget*>(os, "WorkflowTabView");
 }
 
-QWebElement GTUtilsDashboard::findElement(HI::GUITestOpStatus &os, QString text, QString tag, bool exactMatch){
+HIWebElement GTUtilsDashboard::findElement(HI::GUITestOpStatus &os, QString text, QString tag, bool exactMatch){
     return GTWebView::findElement(os, getDashboard(os), text, tag, exactMatch);
 }
 
-QWebElement GTUtilsDashboard::findTreeElement(HI::GUITestOpStatus &os, QString text){
+HIWebElement GTUtilsDashboard::findTreeElement(HI::GUITestOpStatus &os, QString text){
     return GTWebView::findTreeElement(os, getDashboard(os), text);
 }
 
-QWebElement GTUtilsDashboard::findContextMenuElement(HI::GUITestOpStatus &os, QString text){
+HIWebElement GTUtilsDashboard::findContextMenuElement(HI::GUITestOpStatus &os, QString text){
     return GTWebView::findContextMenuElement(os, getDashboard(os), text);
 }
 
-void GTUtilsDashboard::click(HI::GUITestOpStatus &os, QWebElement el, Qt::MouseButton button){
+void GTUtilsDashboard::click(HI::GUITestOpStatus &os, HIWebElement el, Qt::MouseButton button){
     GTWebView::click(os, getDashboard(os), el, button);
 }
 
@@ -73,7 +73,7 @@ bool GTUtilsDashboard::areThereProblems(HI::GUITestOpStatus &os) {
 
 #define GT_METHOD_NAME "openTab"
 void GTUtilsDashboard::openTab(HI::GUITestOpStatus &os, Tabs tab){
-    QWebElement el = GTWebView::findElement(os, getDashboard(os), tabMap.key(tab), "A");
+    HIWebElement el = GTWebView::findElement(os, getDashboard(os), tabMap.key(tab), "A");
     GTWebView::click(os, getDashboard(os), el);
 }
 

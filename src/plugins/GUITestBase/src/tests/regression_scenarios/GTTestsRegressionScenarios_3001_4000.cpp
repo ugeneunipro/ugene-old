@@ -1498,7 +1498,7 @@ GUI_TEST_CLASS_DEFINITION(test_3229){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: there is a single result file on the WD dashboard.
     //QString text = "test.fa\"
-    QWebElement table = GTUtilsDashboard::findElement(os, "test.fa", "TABLE");
+    HIWebElement table = GTUtilsDashboard::findElement(os, "test.fa", "TABLE");
     QString s = table.toInnerXml();
     int i = s.count("test.fa");
 
@@ -2696,10 +2696,10 @@ GUI_TEST_CLASS_DEFINITION(test_3414){
     //    Launch pipeline
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTGlobals::sleep(1000);
-    QWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    HIWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
     QString s = initEl.toPlainText();
     GTGlobals::sleep(5000);
-    QWebElement finalEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    HIWebElement finalEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
     QString s1 = finalEl.toPlainText();
     CHECK_SET_ERR(s!=s1, "timer not changed");
 }

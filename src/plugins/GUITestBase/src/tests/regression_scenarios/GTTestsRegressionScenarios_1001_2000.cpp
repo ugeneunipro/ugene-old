@@ -5897,7 +5897,7 @@ GUI_TEST_CLASS_DEFINITION(test_1588) {
 //    4. Go to dashboard, click "External tools" button
     GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
 //    Expected state: A tree appeared, it contains information about every tool launch including errors
-    QWebElement topHat = GTUtilsDashboard::findElement(os, "TopHat run 1", "SPAN");
+    HIWebElement topHat = GTUtilsDashboard::findElement(os, "TopHat run 1", "SPAN");
     GTUtilsDashboard::findElement(os, "Cufflinks run 1", "SPAN");
 
     GTUtilsDashboard::click(os, topHat);
@@ -7758,7 +7758,7 @@ GUI_TEST_CLASS_DEFINITION(test_1738){
     GTWidget::click(os,GTAction::button(os,"Stop workflow"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    HIWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
     GTGlobals::sleep(500);
 }
 
@@ -7918,7 +7918,7 @@ GUI_TEST_CLASS_DEFINITION(test_1764){
 //    4) Run workflow, click on dashboard "readed_fasta.fa"
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    QWebElement button = GTUtilsDashboard::findElement(os, "readed_fasta.fa", "BUTTON");
+    HIWebElement button = GTUtilsDashboard::findElement(os, "readed_fasta.fa", "BUTTON");
     GTUtilsDashboard::click(os, button);
     GTGlobals::sleep();
     //GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
@@ -8169,7 +8169,7 @@ GUI_TEST_CLASS_DEFINITION(test_1834) {
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QWebElement button = GTUtilsDashboard::findElement(os, "COI.aln.meg", "BUTTON");
+    HIWebElement button = GTUtilsDashboard::findElement(os, "COI.aln.meg", "BUTTON");
     GTUtilsDashboard::click(os, button);
     GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "COI.aln.meg");

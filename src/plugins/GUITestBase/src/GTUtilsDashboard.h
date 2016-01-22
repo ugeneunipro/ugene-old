@@ -24,6 +24,7 @@
 #define GTUTILSDASHBOARD_H
 
 #include "GTGlobals.h"
+#include <primitives/GTWebView.h>
 
 class QWebView;
 class QWebElement;
@@ -39,10 +40,10 @@ public:
     static QWebView* getDashboard(HI::GUITestOpStatus &os);
     static QTabWidget* getTabWidget(HI::GUITestOpStatus &os);
 
-    static QWebElement findElement(HI::GUITestOpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
-    static QWebElement findTreeElement(HI::GUITestOpStatus &os, QString text);
-    static QWebElement findContextMenuElement(HI::GUITestOpStatus &os, QString text);
-    static void click(HI::GUITestOpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
+    static HIWebElement findElement(HI::GUITestOpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
+    static HIWebElement findTreeElement(HI::GUITestOpStatus &os, QString text);
+    static HIWebElement findContextMenuElement(HI::GUITestOpStatus &os, QString text);
+    static void click(HI::GUITestOpStatus &os, HIWebElement el, Qt::MouseButton button = Qt::LeftButton);
     static bool areThereProblems(HI::GUITestOpStatus &os);
     static void openTab(HI::GUITestOpStatus &os, Tabs tab);
 

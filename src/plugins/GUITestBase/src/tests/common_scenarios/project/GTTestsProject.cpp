@@ -770,7 +770,7 @@ GUI_TEST_CLASS_DEFINITION(test_0046){
 
     GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "clipboard.pdb"), false);
     GTUtilsStartPage::openStartPage(os);
-    QWebElement recentDocElement = GTWebView::findElement(os, GTUtilsStartPage::getStartPage(os), "- clipboard.pdb", "A");
+    HIWebElement recentDocElement = GTWebView::findElement(os, GTUtilsStartPage::getStartPage(os), "- clipboard.pdb", "A");
     QString elem = recentDocElement.toPlainText();
     CHECK_SET_ERR(elem == "- clipboard.pdb", "Recent doc not found");
 }

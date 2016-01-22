@@ -1004,7 +1004,7 @@ GUI_TEST_CLASS_DEFINITION(test_4104) {
     //Current state : the "Write Sequence" worker gives the "Nothing to write" error in the log.
     GTUtilsLog::check(os, l);
 
-    QWebElement button = GTUtilsDashboard::findElement(os, "Dataset 1.gb", "BUTTON");
+    HIWebElement button = GTUtilsDashboard::findElement(os, "Dataset 1.gb", "BUTTON");
     GTUtilsDashboard::click(os, button);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
