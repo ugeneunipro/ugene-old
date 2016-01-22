@@ -9,6 +9,9 @@ set SYMBOLS_DIR=%U_ROOT%\installer\windows\%SYMBOLS_DIR_NAME%
 set SYMBOLS_DIR_ZIPFILE=%SYMBOLS_DIR%.zip
 set DUMP_SYMBOLS_LOG=%INSTALL_DIR%\dump_symbols_log.txt
 
+IF NOT DEFINED UGENE_TEST set UGENE_TEST=0
+
+
 IF EXIST %OUTPUT_DIR% del /F /S /Q %OUTPUT_DIR%
 IF EXIST %SYMBOLS_DIR% del /F /S /Q %SYMBOLS_DIR%
 IF EXIST %SYMBOLS_DIR% del /F /S /Q %DUMP_SYMBOLS_LOG%
@@ -133,6 +136,12 @@ call %INSTALL_DIR%\copy_plugin.cmd ptools
 call %INSTALL_DIR%\copy_plugin.cmd dna_flexibility
 call %INSTALL_DIR%\copy_plugin.cmd variants
 
+if %UGENE_TEST%==1 (
+    call %INSTALL_DIR%\copy_plugin.cmd CoreTests
+    call %INSTALL_DIR%\copy_plugin.cmd GUITestBase
+    call %INSTALL_DIR%\copy_plugin.cmd api_tests
+    call %INSTALL_DIR%\copy_plugin.cmd test_runner
+}
 
 cd %INSTALL_DIR%
 
