@@ -280,8 +280,12 @@ void CreateExternalProcessDialog::accept() {
     CfgExternalToolModel *model;
     cfg = new ExternalProcessConfig();
     cfg->name = ui.nameLineEdit->text();
-    cfg->description = ui.descriptionTextEdit->toPlainText();
-    cfg->templateDescription = ui.prompterTextEdit->toPlainText();
+    if (!ui.descriptionTextEdit->toPlainText().trimmed().isEmpty()) {
+        cfg->description = ui.descriptionTextEdit->toPlainText();
+    }
+    if (!ui.prompterTextEdit->toPlainText().trimmed().isEmpty()) {
+        cfg->templateDescription = ui.prompterTextEdit->toPlainText();
+    }
 
     model = static_cast<CfgExternalToolModel*>(ui.inputTableView->model());
     foreach(CfgExternalToolItem *item, model->getItems()) {

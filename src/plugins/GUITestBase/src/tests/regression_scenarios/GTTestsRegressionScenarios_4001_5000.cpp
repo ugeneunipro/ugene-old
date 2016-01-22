@@ -124,6 +124,7 @@
 #include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
@@ -3322,6 +3323,45 @@ GUI_TEST_CLASS_DEFINITION(test_4588_2) {
         testDir + "_common_data/scenarios/sandbox/4588_1_fetched.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "fetchMenu" << "fetchSequenceById"));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4606) {
+    //1. Create custom WD element
+    //2. Do not fill "Description" and "Parameters description" fields
+    //3. Create workflow with created element and tun it
+    //Expected state: no safepoint triggered
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
+    settings.elementName = "Element_4606";
+
+    QList<CreateElementWithCommandLineToolFiller::InOutData> input;
+    CreateElementWithCommandLineToolFiller::InOutDataType inOutDataType;
+    inOutDataType.first = CreateElementWithCommandLineToolFiller::Sequence;
+    inOutDataType.second = "FASTA";
+    input << CreateElementWithCommandLineToolFiller::InOutData("in1",
+        inOutDataType);
+    settings.input = input;
+    settings.executionString = "./ugene";
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Continue"));
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+    QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
+    GTWidget::click(os, createElement);
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    CHECK_SET_ERR(read != NULL, "Failed to add an element");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+
+    WorkflowProcessItem* customWorker = GTUtilsWorkflowDesigner::getWorker(os, "Element_4606");
+
+    GTUtilsWorkflowDesigner::connect(os, read, customWorker);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4620) {
