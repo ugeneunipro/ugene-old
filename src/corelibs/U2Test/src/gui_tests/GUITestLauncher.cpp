@@ -192,7 +192,7 @@ void GUITestLauncher::updateProgress(int finishedCount) {
 }
 
 QString GUITestLauncher::testOutFile(const QString &testName) {
-    return "ugene_"+testName+".out";
+    return QString("ugene_"+testName+".out").replace(':', '_');
 }
 
 QString GUITestLauncher::getTestOutDir(){
@@ -328,7 +328,7 @@ QString GUITestLauncher::getScreenRecorderString(const QString &testName){
 #elif defined Q_OS_MAC
     result = QString("ffmpeg -f avfoundation -r 5 -i \"1:none\" \"%1\"").arg(getVideoPath(testName));
 #elif defined Q_OS_WIN
-    result = QString("ffmpeg -f dshow -i video=\"UScreenCapture\" -r 5 %1").arg(getVideoPath(testName));
+    result = QString("ffmpeg -f dshow -i video=\"UScreenCapture\" -r 5 %1").arg(getVideoPath(testName)).replace(':', '_');
 #endif
     return result;
 }
