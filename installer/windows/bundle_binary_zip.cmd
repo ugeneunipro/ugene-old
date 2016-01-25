@@ -141,7 +141,7 @@ if %UGENE_TEST%==1 (
     call %INSTALL_DIR%\copy_plugin.cmd GUITestBase
     call %INSTALL_DIR%\copy_plugin.cmd api_tests
     call %INSTALL_DIR%\copy_plugin.cmd test_runner
-}
+)
 
 cd %INSTALL_DIR%
 
