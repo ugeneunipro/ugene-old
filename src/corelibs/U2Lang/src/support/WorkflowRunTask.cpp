@@ -577,12 +577,8 @@ void RunCmdlineWorkflowTask::prepare() {
     coreLog.details("Starting UGENE workflow: " + line);
 
     proc->start(cmdlineUgenePath, args);
-#if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
-    QString processId = NULL != proc->pid() ? QString::number(proc->pid()->dwProcessId) : "unknown";
-    processLogPrefix = QString("process: %1>").arg(processId);
-#else
+
     processLogPrefix = QString("process:%1>").arg(proc->pid());
-#endif
     bool startedSuccessfully = proc->waitForStarted();
     CHECK_EXT(startedSuccessfully, setError(tr("Cannot start process '%1'").arg(cmdlineUgenePath)), );
 }

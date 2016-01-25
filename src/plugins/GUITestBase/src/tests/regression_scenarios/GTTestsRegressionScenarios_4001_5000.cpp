@@ -4439,7 +4439,7 @@ GUI_TEST_CLASS_DEFINITION(test_4784_4) {
 GUI_TEST_CLASS_DEFINITION(test_4785_1) {
     //1. Open "COI.aln"
     //Expected state : a file browser appeared
-    GTFile::copy(os, testDir + "_common_data/clustal/1000_sequences.aln", sandBoxDir + "test_4785.aln");
+    GTFile::copy(os, testDir + "_common_data/clustal/3000_sequences.aln", sandBoxDir + "test_4785.aln");
     GTFileDialog::openFile(os, sandBoxDir, "test_4785.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();

@@ -61,7 +61,7 @@ private:
     bool initGUITestBase();
     void updateProgress(int finishedCount);
 
-    QString getScreenRecorderString(const QString &testName);
+    QString getScreenRecorderString(QString testName);
     QString getVideoPath(const QString &testName);
 };
 
