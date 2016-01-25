@@ -149,6 +149,7 @@ GUI_TEST_CLASS_DEFINITION(test_5012_1) {
     GTUtilsWorkflowDesigner::setParameter(os, "Output variants file", QDir(sandBoxDir).absoluteFilePath("test_5012_1.vcf"), GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
 }
 
@@ -172,6 +173,7 @@ GUI_TEST_CLASS_DEFINITION(test_5012_2) {
     GTUtilsWorkflowDesigner::setParameter(os, "Output variants file", QDir(sandBoxDir).absoluteFilePath("test_5012_2.vcf"), GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
 }
 
