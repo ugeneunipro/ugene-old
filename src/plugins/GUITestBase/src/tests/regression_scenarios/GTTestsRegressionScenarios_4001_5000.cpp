@@ -3343,7 +3343,7 @@ GUI_TEST_CLASS_DEFINITION(test_4606) {
     input << CreateElementWithCommandLineToolFiller::InOutData("in1",
         inOutDataType);
     settings.input = input;
-    settings.executionString = "./ugene";
+    settings.executionString = "echo";
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Continue"));
 
@@ -3351,18 +3351,20 @@ GUI_TEST_CLASS_DEFINITION(test_4606) {
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
     GTWidget::click(os, createElement);
     GTGlobals::sleep();
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
 
     WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
     CHECK_SET_ERR(read != NULL, "Failed to add an element");
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     WorkflowProcessItem* customWorker = GTUtilsWorkflowDesigner::getWorker(os, "Element_4606");
 
     GTUtilsWorkflowDesigner::connect(os, read, customWorker);
+    GTLogTracer l;
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4620) {
