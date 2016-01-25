@@ -2268,6 +2268,7 @@ GUI_TEST_CLASS_DEFINITION(test_4308) {
 
     GTUtilsNotifications::waitForNotification(os, true, "Subtask {Load '10000_sequences.aln'} is canceled Document was removed");
     GTUtilsDocument::removeDocument(os, "10000_sequences.aln");
+    GTGlobals::sleep(500);
 
 //    Expected state: the document is removed from the project, the loading task is canceled, a notification about the canceled task appears.
     const bool itemExists = GTUtilsProjectTreeView::checkItem(os, "10000_sequences.aln");
@@ -5287,7 +5288,9 @@ GUI_TEST_CLASS_DEFINITION(test_4986) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
-    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "Ca20Chr1 features");
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "Ca20Chr1 features"), GTWidget::findWidget(os, "render_area_NC_001363"));
+    GTGlobals::sleep();
 
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ExportSequenceOfSelectedAnnotationsFiller(os, sandBoxDir + "test_4986.fa", ExportSequenceOfSelectedAnnotationsFiller::Fasta,
@@ -5315,8 +5318,10 @@ GUI_TEST_CLASS_DEFINITION(test_4990) {
 
     //4. Remove "big.aln" document
     GTUtilsDocument::removeDocument(os, "big.aln");
+    qDebug()<<QString("");
 }
 
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
+

@@ -1869,6 +1869,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
 //    In dialog select any value
     int labelsNum = GTUtilsSequenceView::getGraphLabels(os, graphView).size();
     CHECK_SET_ERR(labelsNum == 81, QString("unexpected labels number: %1").arg(labelsNum))
+    GTUtilsProject::closeProject(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0058){
