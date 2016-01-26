@@ -33,6 +33,7 @@ class MAlignment;
 class MAlignmentModInfo;
 class MSAConsensusAlgorithm;
 class MSAConsensusAlgorithmFactory;
+class U2OpStatus;
 
 class MSAEditorConsensusCache : public QObject {
     Q_OBJECT
@@ -53,6 +54,7 @@ public:
 
     QByteArray getConsensusLine(bool withGaps);
 
+    static QByteArray calculateConsensusLine(const MAlignment &ma, MSAConsensusAlgorithm*  algorithm, bool withGaps, U2OpStatus *os);
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_thresholdChanged(int newValue);

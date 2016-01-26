@@ -286,13 +286,8 @@ void ExtractConsensusTask::run() {
     if(!cache->getConsensusAlgorithm()->getFactory()->isSequenceLikeResult()){
         keepGaps = true;
     }
-    QByteArray consensusLine = cache->getConsensusLine(true);
-    foreach(QChar c, consensusLine){
-        if(c == '-' && !keepGaps){
-            continue;
-        }
-        filteredConsensus.append(c);
-    }
+    MAlignment ma = msa->getMSAObject()->getMAlignment();
+    filteredConsensus = MSAEditorConsensusCache::calculateConsensusLine(ma, cache->getConsensusAlgorithm(), keepGaps, &stateInfo);
 }
 
 const QByteArray& ExtractConsensusTask::getExtractedConsensus() const {

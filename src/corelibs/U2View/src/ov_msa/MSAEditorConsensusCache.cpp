@@ -82,6 +82,24 @@ void MSAEditorConsensusCache::updateCacheItem(int pos) {
     }
 }
 
+QByteArray MSAEditorConsensusCache::calculateConsensusLine(const MAlignment &ma, MSAConsensusAlgorithm*  algorithm, bool withGaps, U2OpStatus *os) {
+    QByteArray res;
+    for (int i = 0, n = ma.getLength(); i < n; i++) {
+        if (os->isCoR()) {
+            return res;
+        }
+        int count = 0;
+        int nSeq = ma.getNumRows();
+        SAFE_POINT(0 != nSeq, tr("No sequences in alignment"), res);
+
+        QChar c = algorithm->getConsensusCharAndScore(ma, i, count);
+        if (c != MAlignment_GapChar || withGaps) {
+            res.append(c);
+        }
+    }
+    return res;
+}
+
 char MSAEditorConsensusCache::getConsensusChar(int pos) {
     updateCacheItem(pos);
     const CacheItem& ci = cache[pos];
