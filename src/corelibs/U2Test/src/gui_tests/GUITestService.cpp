@@ -73,7 +73,8 @@ const qint64 GUITestService::TIMER_INTERVAL = 100;
 GUITestService::GUITestService(QObject *) :
     Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
     runTestsAction(NULL),
-    testLauncher(NULL)
+    testLauncher(NULL),
+    needTeamcityLog(false)
 {
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_allStartUpPluginsLoaded()));
     setQtFileDialogView();
@@ -324,6 +325,7 @@ void GUITestService::runGUITest() {
     CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
     SAFE_POINT(NULL != cmdLine,"",);
     QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
+    needTeamcityLog = cmdLine->hasParameter(CMDLineCoreOptions::TEAMCITY_OUTPUT);
 
     UGUITestBase *tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",);
@@ -342,6 +344,11 @@ void GUITestService::runGUICrazyUserTest() {
 
 void GUITestService::runGUITest(HI::GUITest *test) {
     SAFE_POINT(NULL != test, "GUITest is NULL", );
+    if(needTeamcityLog){
+        QString testNameForTeamCity = test->getSuite() +"_"+ test->getName();
+        GUITestTeamcityLogger::testStarted(testNameForTeamCity);
+    }
+
     GUITestThread *testThread = new GUITestThread(test, log);
     connect(testThread, SIGNAL(finished()), SLOT(sl_testThreadFinish()));
     testThread->start();
@@ -448,6 +455,14 @@ void GUITestService::removeDir(QString dirName)
 }
 
 void GUITestService::sl_testThreadFinish() {
+    GUITestThread* testThread = qobject_cast<GUITestThread*>(sender());
+    SAFE_POINT(NULL != testThread, "testThread is NULL", );
+    HI::GUITest* test = testThread->getTest();
+    SAFE_POINT(NULL != test, "GUITest is NULL", );
+    if(needTeamcityLog){
+        QString testNameForTeamCity = test->getSuite() +"_"+ test->getName();
+        GUITestTeamcityLogger::teamCityLogResult(testNameForTeamCity, testThread->getTestResult(), -1);
+    }
     sender()->deleteLater();
     AppContext::getMainWindow()->getQMainWindow()->close();
 }

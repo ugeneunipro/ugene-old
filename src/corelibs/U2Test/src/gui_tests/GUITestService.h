@@ -96,6 +96,7 @@ private:
     QAction *runTestsAction;
     Task *testLauncher;
     HI::GUITests testsToRun;
+    bool needTeamcityLog;
 //    MainThreadTimer timer;
 };
 
