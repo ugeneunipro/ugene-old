@@ -6116,12 +6116,12 @@ GUI_TEST_CLASS_DEFINITION( test_1600_5 ){
 //    4. Use the context menu in the name list area { Edit -> Remove sequence }
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
-//    Expected state: The chosen sequence has been removed from alignment, collapsing mode has been switched off
+//    Expected state: The chosen sequence has been removed from alignment, collapsing mode has been switched on
     QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
     int num = names.size();
     CHECK_SET_ERR(num == 9, QString("unexpected sequence number: %1").arg(num));
     CHECK_SET_ERR(!names.contains("Isophya_altaica_EF540820"), "Isophya_altaica_EF540820 was not removed");
-    CHECK_SET_ERR(!collapce->isChecked(), "collapce button unexpectidly checked");
+    CHECK_SET_ERR(collapce->isChecked(), "collapce button unexpectidly checked");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1600_6 ){
