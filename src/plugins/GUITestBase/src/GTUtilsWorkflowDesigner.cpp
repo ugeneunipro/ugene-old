@@ -765,7 +765,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(HI::GUITestOpStatus &os, QStri
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addFileButton);
-    GTGlobals::sleep();
+    GTGlobals::sleep(3000);
 }
 #undef GT_METHOD_NAME
 
@@ -789,6 +789,7 @@ void GTUtilsWorkflowDesigner::createDataset(HI::GUITestOpStatus &os, QString dat
     GTUtilsDialog::waitForDialog(os, new DatasetNameEditDialogFiller(os, datasetName));
 
     GTWidget::click(os, plusButton);
+    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 
