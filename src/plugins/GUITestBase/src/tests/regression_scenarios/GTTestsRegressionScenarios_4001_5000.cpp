@@ -4288,7 +4288,7 @@ GUI_TEST_CLASS_DEFINITION(test_4735) {
 #endif
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4764) {
+GUI_TEST_CLASS_DEFINITION(test_4764_1) {
     //1. Open "COI.aln"
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4335,6 +4335,52 @@ GUI_TEST_CLASS_DEFINITION(test_4764) {
     CHECK_SET_ERR(clipboardText == expectedClipboard, "expected test didn't equal to actual");
 
     GTGlobals::sleep(11000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4764_2) {
+    //1. Select one sequence in the alignment
+    //2. Copy and paste it
+    //3. Expected state : sequence added to the end of file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4764", "4764.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    QWidget *sequenceAreaWidget = editor->getUI()->getSequenceArea();
+    
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(15, 0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy selection"));
+    GTWidget::click(os, sequenceAreaWidget, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Paste"));
+    GTWidget::click(os, sequenceAreaWidget, Qt::RightButton);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 7, "Sequence count should be 7");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4764_3) {
+    //1. Select sub - alignment with a few lines full of gaps
+    //2. Copy and paste it
+    //3. Expected state : gapped only sequences not added to msa
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4764", "4764.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    QWidget *sequenceAreaWidget = editor->getUI()->getSequenceArea();
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3, 0), QPoint(5, 4));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy selection"));
+    GTWidget::click(os, sequenceAreaWidget, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Paste"));
+    GTWidget::click(os, sequenceAreaWidget, Qt::RightButton);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 8, "Sequence count should be 7");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4784_1) {
