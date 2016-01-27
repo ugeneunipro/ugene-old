@@ -644,6 +644,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
     GTClipboard::setText(os, ">human_T1 (UCS\r\nACGT\r\nACG");
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCS");
 }
