@@ -2126,11 +2126,18 @@ GUI_TEST_CLASS_DEFINITION(test_3318) {
     // 7. Drag the reference sequence in the list of sequences
     const QPoint mouseDragPosition(-5, 18);
     GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition);
+//    GTMouseDriver::click(os);
+//    GTGlobals::sleep();
+    //GTMouseDriver::dragAndDrop(os, GTMouseDriver::getMousePosition(), GTMouseDriver::getMousePosition() + QPoint(0, -200));
+
     GTMouseDriver::click(os);
     GTGlobals::sleep(1000);
     GTMouseDriver::press(os);
+    for(int i = 0; i<50; i++){
+        GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0, -5));
+    }
     GTGlobals::sleep(200);
-    GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition + QPoint(0, -10));
+    //GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition + QPoint(0, -10));
     GTMouseDriver::release(os);
     GTGlobals::sleep(200);
 

@@ -42,7 +42,11 @@
 
 namespace U2 {
 using namespace HI;
+#ifdef Q_OS_WIN
+const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9c9ace";
+#else
 const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9999cc";
+#endif
 
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
 

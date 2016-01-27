@@ -3351,7 +3351,6 @@ GUI_TEST_CLASS_DEFINITION(test_4606) {
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
     GTWidget::click(os, createElement);
     GTGlobals::sleep();
-    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
 
     WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
     CHECK_SET_ERR(read != NULL, "Failed to add an element");
@@ -4460,6 +4459,7 @@ GUI_TEST_CLASS_DEFINITION(test_4785_1) {
     GTUtilsNotifications::waitForNotification(os, true, "A problem occurred during aligning profile to profile with MUSCLE. The original alignment is no more available.");
     QFile::remove(sandBoxDir + "test_4785.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4785_2) {
