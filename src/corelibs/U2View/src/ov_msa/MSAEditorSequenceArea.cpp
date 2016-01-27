@@ -2458,8 +2458,11 @@ void MSAEditorSequenceArea::sl_paste(){
     PasteFactory* pasteFactory = AppContext::getPasteFactory();
     SAFE_POINT(pasteFactory != NULL, "PasteFactory is null", );
 
-    PasteTask* task = pasteFactory->pasteTask(false);
-    connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
+    bool focus = ui->isAncestorOf(QApplication::focusWidget());
+    PasteTask* task = pasteFactory->pasteTask(!focus);
+    if (focus) {
+        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task *)), SLOT(sl_pasteFinished(Task*)));
+    }
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
