@@ -282,12 +282,25 @@ void ExtractConsensusTask::run() {
     CHECK(msa->getUI()->getConsensusArea(), );
     CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),);
 
-    QSharedPointer <MSAEditorConsensusCache> cache(msa->getUI()->getConsensusArea()->getConsensusCache());
-    if(!cache->getConsensusAlgorithm()->getFactory()->isSequenceLikeResult()){
+    MSAConsensusAlgorithm *algorithm = msa->getUI()->getConsensusArea()->getConsensusAlgorithm();
+    if(algorithm->getFactory()->isSequenceLikeResult()){
         keepGaps = true;
     }
+
     MAlignment ma = msa->getMSAObject()->getMAlignment();
-    filteredConsensus = MSAEditorConsensusCache::calculateConsensusLine(ma, cache->getConsensusAlgorithm(), keepGaps, &stateInfo);
+    for (int i = 0, n = ma.getLength(); i < n; i++) {
+        if (stateInfo.isCoR()) {
+            return;
+        }
+        int count = 0;
+        int nSeq = ma.getNumRows();
+        SAFE_POINT(0 != nSeq, tr("No sequences in alignment"), );
+
+        QChar c = algorithm->getConsensusCharAndScore(ma, i, count);
+        if (c != MAlignment_GapChar || keepGaps) {
+            filteredConsensus.append(c);
+        }
+    }
 }
 
 const QByteArray& ExtractConsensusTask::getExtractedConsensus() const {

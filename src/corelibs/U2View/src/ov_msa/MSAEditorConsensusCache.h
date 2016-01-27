@@ -53,8 +53,6 @@ public:
     MSAConsensusAlgorithm* getConsensusAlgorithm() const {return algorithm;}
 
     QByteArray getConsensusLine(bool withGaps);
-
-    static QByteArray calculateConsensusLine(const MAlignment &ma, MSAConsensusAlgorithm*  algorithm, bool withGaps, U2OpStatus *os);
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_thresholdChanged(int newValue);
