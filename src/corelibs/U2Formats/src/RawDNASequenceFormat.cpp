@@ -71,7 +71,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     QByteArray readBuffer(DocumentFormat::READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
-    const QBitArray& ALPHAS = TextUtils::ALPHA_NUMS;
+    QBitArray ALPHAS = TextUtils::ALPHA_NUMS;
+    ALPHAS['-'] = true;
 
     QByteArray seq;
     QString seqName(io->getURL().baseFileName());
@@ -146,7 +147,7 @@ Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiR
 FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
-    if(QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
+    if(QRegExp("[a-zA-Z\r\n-]*").exactMatch(rawData)) {
         return FormatDetection_VeryHighSimilarity;
     }
     bool hasBinaryData = TextUtils::contains(TextUtils::BINARY, data, size);
