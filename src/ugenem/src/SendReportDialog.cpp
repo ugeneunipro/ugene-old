@@ -51,6 +51,7 @@
 
 #include "SendReportDialog.h"
 #include "Utils.h"
+#include "getMemorySize.c"
 
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1:80"
@@ -418,50 +419,11 @@ QString ReportSender::getOSVersion() {
     result = "Unsupported OS";
 #endif
 
-#ifdef Q_OS_MAC
-    result += (Utils::isSystem64bit() ? " x64" :" x86");
-#endif
-
     return result;
 }
 
 int ReportSender::getTotalPhysicalMemory() {
-    int totalPhysicalMemory = 0;
-
-#if defined(Q_OS_WIN32)
-    MEMORYSTATUSEX memory_status;
-    ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
-    memory_status.dwLength = sizeof(memory_status);
-    if (GlobalMemoryStatusEx(&memory_status)) {
-        totalPhysicalMemory = memory_status.ullTotalPhys / (1024 * 1024);
-    }
-
-#elif defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
-    long pagesize = sysconf(_SC_PAGESIZE);
-    long numpages = sysconf(_SC_PHYS_PAGES);
-
-    // Assume that page size is always a multiple of 1024, so it can be
-    // divided without losing any precision.  On the other hand, number
-    // of pages would hardly overflow `long' when multiplied by a small
-    // number (number of pages / 1024), so we should be safe here.
-    totalPhysicalMemory = (int)(numpages * (pagesize / 1024) / 1024);
-
-#elif defined(Q_OS_MAC)
-    return 0;   // a temporary plug for UGENE-5028
-// TODO
-     QProcess p;
-     p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");
-     p.waitForFinished();
-     QString system_info = p.readAllStandardOutput();
-     p.close();
-     bool ok = false;
-     qlonglong output_mem = system_info.toLongLong(&ok);
-     if (ok) {
-         totalPhysicalMemory = output_mem / (1024 * 1024);
-     }
-#endif
-
-    return totalPhysicalMemory;
+    return getMemorySize() / (1024 * 1024);
 }
 
 #ifndef Q_OS_MAC

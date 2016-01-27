@@ -78,23 +78,6 @@ QString Utils::loadReportFromUrl(const QString &url) {
     return QString::fromUtf8(data);
 }
 
-bool Utils::isSystem64bit() {
-#ifdef Q_OS_MAC
-    return true;    // a temporary plug for UGENE-5028
-    QProcess p;
-    p.start("sysctl", QStringList() << "-n" << "hw.optional.x86_64");
-    p.waitForFinished();
-    const QString systemInfo = p.readAllStandardOutput();
-    p.close();
-
-    bool ok = false;
-    int is64bit = systemInfo.toInt(&ok);
-    return is64bit != 0;
-#endif
-
-    return false;
-}
-
 bool Utils::hasArgument(const QString &key) {
     QStringList args = QCoreApplication::arguments();
     int idx = args.indexOf(key);

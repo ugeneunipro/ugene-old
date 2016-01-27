@@ -56,6 +56,7 @@ FORMS += src/ui/SendReportDialog.ui
 
 SOURCES += src/main.cpp \
            src/SendReportDialog.cpp \
-           src/Utils.cpp
+           src/Utils.cpp \
+           src/getMemorySize.c
 
 RESOURCES += ugenem.qrc

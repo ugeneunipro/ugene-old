@@ -38,8 +38,6 @@ public:
     static QString getFailedTestName();
     static QString loadReportFromUrl(const QString &url);
 
-    static bool isSystem64bit();
-
     static const QString SESSION_DB_UGENE_ARG;
 
 private:

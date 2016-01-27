@@ -345,3 +345,10 @@ The algorithm "Unique repeats filter"
 Packaging:
     Copyright (C) 2008-2012 by Ivan Efremov <iefremov@unipro.ru>
     released under the GPL.
+
+
+The File src/ugenem/src/getMemorySize.c
+    Author:  David Robert Nadeau
+    Site:    http://NadeauSoftware.com/
+    License: Creative Commons Attribution 3.0 Unported License
+             http://creativecommons.org/licenses/by/3.0/deed.en_US
