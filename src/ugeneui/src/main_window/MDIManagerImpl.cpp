@@ -384,7 +384,7 @@ void MWMDIManagerImpl::sl_onSubWindowActivated(QMdiSubWindow *w) {
     }
     if (w == NULL) { // currentWindow is NULL here, mdiContentOwner & it's content cleaned in eventFilter(CloseEvent)
         uiLog.trace(QString("Closing active window"));
-        clearMDIContent(false);
+        clearMDIContent(true); //UGENE-4987 workaround. It must be 'false' here
         emit si_windowActivated(NULL);
         return;
     }
