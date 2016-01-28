@@ -71,15 +71,10 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     copyCurrentSequenceAction->setObjectName("Copy current sequence");
     connect(copyCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_copyCurrentSequence()));
 
-    removeSequenceAction = new QAction(tr("Remove sequence"), this);
+    removeSequenceAction = new QAction(tr("Remove sequence(s)"), this);
     removeSequenceAction->setObjectName("Remove sequence");
-    removeSequenceAction->setShortcut(QKeySequence(Qt::Key_Delete));
-    removeSequenceAction->setShortcutContext(Qt::WidgetShortcut);
     connect(removeSequenceAction, SIGNAL(triggered()), SLOT(sl_removeSequence()));
     addAction(removeSequenceAction);
-
-    removeSequenceMainMenuAction = new QAction(tr("Remove sequence"), this);
-    connect(removeSequenceMainMenuAction, SIGNAL(triggered()), SLOT(sl_removeSequence()));
 
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
     if (editor->getMSAObject()) {
@@ -157,7 +152,6 @@ void MSAEditorNameList::updateActions() {
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj){
         removeSequenceAction->setEnabled(!maObj->isStateLocked() && getSelectedRow() != -1);
-        removeSequenceMainMenuAction->setEnabled(!maObj->isStateLocked() && getSelectedRow() != -1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
         addAction(ui->getCopySelectionAction());
         addAction(ui->getPasteAction());
@@ -202,7 +196,7 @@ void MSAEditorNameList::updateScrollBar() {
 
 void MSAEditorNameList::sl_buildStaticMenu(GObjectView* v, QMenu* m) {
     Q_UNUSED(v);
-    buildMenu(m, true);
+    buildMenu(m);
 }
 
 void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
@@ -210,16 +204,14 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
     buildMenu(m);
 }
 
-void MSAEditorNameList::buildMenu(QMenu* m, bool staticMenu) {
+void MSAEditorNameList::buildMenu(QMenu* m) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu not found", );
-    if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
-        editMenu->insertAction(editMenu->actions().last(), removeSequenceMainMenuAction);
-        return;
-    }
 
-    if (!staticMenu) {
-        editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
+    editMenu->insertAction(editMenu->actions().last(), removeSequenceAction);
+
+    if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
+        return;
     }
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);

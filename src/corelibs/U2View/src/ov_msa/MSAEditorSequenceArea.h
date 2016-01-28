@@ -498,7 +498,6 @@ private:
     int                 msaVersionBeforeShifting;
 
     QAction*        copySelectionAction;
-    QAction*        delSelectionAction;
     QAction*        delColAction;
     QAction*        insSymAction;
     QAction*        removeAllGapsAction;

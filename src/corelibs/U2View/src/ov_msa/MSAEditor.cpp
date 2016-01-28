@@ -911,6 +911,11 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 
     collapseModel = new MSACollapsibleItemModel(this);
 
+    delSelectionAction = new QAction(tr("Remove selection"), this);
+    delSelectionAction->setObjectName("Remove selection");
+    delSelectionAction->setShortcut(QKeySequence::Delete);
+    delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
+
     copySelectionAction = new QAction(tr("Copy selection"), this);
     copySelectionAction->setObjectName("copy_selection");
     copySelectionAction->setShortcut(QKeySequence::Copy);
@@ -1017,6 +1022,11 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 
     connect(collapseModel, SIGNAL(toggled()), offsetsView, SLOT(sl_modelChanged()));
     connect(collapseModel, SIGNAL(toggled()), seqArea,     SLOT(sl_modelChanged()));
+
+    connect(delSelectionAction, SIGNAL(triggered()), seqArea, SLOT(sl_delCurrentSelection()));
+
+    seqArea->addAction(delSelectionAction);
+    nameList->addAction(delSelectionAction);
 }
 
 QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali){

@@ -383,6 +383,7 @@ private:
     MsaEditorAlignmentDependentWidget* similarityStatistics;
     MSAEditorTreeViewer*               treeViewer;
 
+    QAction                         *delSelectionAction;
     QAction                         *copySelectionAction;
     QAction                         *copyFormattedSelectionAction;
     QAction                         *pasteAction;

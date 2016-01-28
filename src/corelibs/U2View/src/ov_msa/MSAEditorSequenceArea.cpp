@@ -117,10 +117,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 
-    delSelectionAction = new QAction(tr("Remove selection"), this);
-    delSelectionAction->setObjectName("Remove selection");
-    connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
-
     connect(ui->getCopySelectionAction(), SIGNAL(triggered()), SLOT(sl_copyCurrentSelection()));
     addAction(ui->getCopySelectionAction());
 
@@ -664,7 +660,8 @@ void MSAEditorSequenceArea::updateActions() {
 //Update actions of "Edit" group
     bool canEditAlignment = !readOnly && !isAlignmentEmpty();
     bool canEditSelectedArea = canEditAlignment && !selection.isNull();
-    delSelectionAction->setEnabled(canEditSelectedArea);
+    ui->delSelectionAction->setEnabled(canEditSelectedArea);
+
     insSymAction->setEnabled(canEditSelectedArea);
     bool oneCharacterIsSelected = selection.width() == 1 && selection.height() == 1;
     replaceCharacterAction->setEnabled(canEditSelectedArea && oneCharacterIsSelected);
@@ -1574,12 +1571,6 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 setCursorPos(QPoint(cp, cursorPos.y()));
             }
             break;
-        case Qt::Key_Delete:
-            if (!isAlignmentLocked() && !shift) {
-                emit si_startMsaChanging();
-                deleteCurrentSelection();
-            }
-            break;
         case Qt::Key_Backspace:
             removeGapsPrecedingSelection(genuineCtrl ? 1 : -1);
             break;
@@ -1956,7 +1947,7 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
 
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
-    editMenu->insertAction(editMenu->actions().first(), delSelectionAction);
+    editMenu->insertAction(editMenu->actions().first(), ui->delSelectionAction);
     if (rect().contains(mapFromGlobal(QCursor::pos()))) {
         editMenu->addActions(actions);
         copyMenu->addAction(ui->getCopySelectionAction());

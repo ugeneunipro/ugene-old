@@ -114,7 +114,7 @@ signals:
 private:
     bool isRowInSelection(int row);
     void updateActions();
-    void buildMenu(QMenu* m, bool staticMenu = false);
+    void buildMenu(QMenu* m);
     void updateSelection(int newSeqNum);
     void moveSelectedRegion( int shift );
     void drawAll();
@@ -143,7 +143,6 @@ private:
     QAction*            editSequenceNameAction;
     QAction*            copyCurrentSequenceAction;
     QAction*            removeSequenceAction;
-    QAction*            removeSequenceMainMenuAction;
     QPixmap*            cachedView;
 
     static const int CROSS_SIZE = 9;
