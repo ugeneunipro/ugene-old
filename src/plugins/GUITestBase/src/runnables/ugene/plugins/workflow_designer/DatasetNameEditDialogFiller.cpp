@@ -19,17 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "DatasetNameEditDialogFiller.h"
-#include <primitives/GTLineEdit.h>
+#include <QApplication>
+
 #include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
+#include "DatasetNameEditDialogFiller.h"
 
-namespace U2{
+namespace U2 {
 using namespace HI;
 
 #define GT_CLASS_NAME "DatasetNameEditDialogFiller"
@@ -43,10 +41,9 @@ void DatasetNameEditDialogFiller::commonScenario(){
         GT_CHECK(line, "lineEdit not found");
         GTLineEdit::setText(os, line, datasetName);
     }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTWidget::click(os, GTWidget::findButtonByText(os, "OK", dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
-
 
 }

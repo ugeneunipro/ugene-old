@@ -276,6 +276,7 @@ void GTUtilsWorkflowDesigner::selectSample(HI::GUITestOpStatus &os, QTreeWidgetI
 
     QTreeWidget *paletteTree = qobject_cast<QTreeWidget *>(GTWidget::findWidget(os,"samples"));
     paletteTree->scrollToItem(sample);
+    GTThread::waitForMainThread(os);
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, sample));
     GTMouseDriver::doubleClick(os);
     GTThread::waitForMainThread(os);

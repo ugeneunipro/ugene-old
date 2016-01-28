@@ -22,7 +22,7 @@
 #ifndef DATASETNAMEEDITDIALOGFILLER_H
 #define DATASETNAMEEDITDIALOGFILLER_H
 
-#include "utils/GTUtilsDialog.h"
+#include <utils/GTUtilsDialog.h>
 
 namespace U2 {
 using namespace HI;
