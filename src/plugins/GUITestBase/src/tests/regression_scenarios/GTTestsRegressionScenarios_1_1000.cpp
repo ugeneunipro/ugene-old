@@ -2459,6 +2459,7 @@ GUI_TEST_CLASS_DEFINITION(test_0868){
 //    4. Go to any other region
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep();
 
 //    5. Double click on the bookmark
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "bookmark"));
@@ -2517,6 +2518,7 @@ GUI_TEST_CLASS_DEFINITION( test_0873 ){
 
     HIWebElement button = GTUtilsDashboard::findElement(os, "merged.fa", "BUTTON");
     GTUtilsDashboard::click(os, button);
+    GTThread::waitForMainThread(os);
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 35594, "Sequence length is " + QString::number(sequenceLength) + ", expected 35594");
