@@ -78,7 +78,7 @@ QTreeWidgetItem* GTUtilsQueryDesigner::findAlgorithm(HI::GUITestOpStatus &os,QSt
 
 void GTUtilsQueryDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algName){
     QTreeWidgetItem *w = findAlgorithm(os, algName);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep(500);
     CHECK_SET_ERR(w!=NULL,"algorithm is NULL");
 
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,w));
