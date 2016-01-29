@@ -149,7 +149,7 @@ defineTest( exclude_list_enabled ) {
     contains( UGENE_EXCLUDE_LIST_ENABLED, 1 ) : return (true)
     return (false)
 }
-if(exclude_list_enabled()|!exists( ./libs_3rdparty/humimit/humimit.pro )) {
+if(exclude_list_enabled()|!exists( ./libs_3rdparty/QSpec/QSpec.pro )) {
     DEFINES += HI_EXCLUDED
 }
 
