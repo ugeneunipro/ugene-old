@@ -33,7 +33,7 @@ TRANSLATIONS += transl/english.ts \
 
 FORMS += GUITestingWindow.ui
 
-if(exclude_list_enabled()|!exists( ../../libs_3rdparty/humimit/humimit.pro )) {
+if(exclude_list_enabled()|!exists( ../../libs_3rdparty/QSpec/QSpec.pro )) {
 
 HEADERS -= src/gui_tests/UGUITest.h \
            src/gui_tests/UGUITestBase.h \

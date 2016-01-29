@@ -15,7 +15,7 @@ DEFINES+= QT_DLL QT_FATAL_ASSERT
 INCLUDEPATH += src _tmp ../include ../corelibs/U2Private/src
 
 LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
-if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
+if(exclude_list_enabled()|!exists( ../libs_3rdparty/QSpec/QSpec.pro )) {
     LIBS -= -lhumimit
 }
 !debug_and_release|build_pass {
@@ -28,7 +28,7 @@ if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
         OBJECTS_DIR=_tmp/obj/debug
         LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad -lhumimit
         LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Testd -lU2Remoted -lU2Langd -lU2Privated -lugenedbd -lbreakpadd -lhumimitd
-        if(exclude_list_enabled()|!exists( ../libs_3rdparty/humimit/humimit.pro )) {
+        if(exclude_list_enabled()|!exists( ../libs_3rdparty/QSpec/QSpec.pro )) {
             LIBS -= -lhumimitd
         }
 
