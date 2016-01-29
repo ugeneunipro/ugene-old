@@ -715,9 +715,8 @@ GUI_TEST_CLASS_DEFINITION(test_0598) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "DNA Flexibility");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, graphAction);
-    GTGlobals::sleep(500);
+    GTUtilsTask::waitTaskStart(os, "Calculate graph points", 30000);
 
-    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "'Calculate graph points' task is not started");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 3. Zoom graph

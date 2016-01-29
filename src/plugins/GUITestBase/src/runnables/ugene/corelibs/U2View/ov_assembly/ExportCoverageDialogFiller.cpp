@@ -138,6 +138,7 @@ void ExportCoverageDialogFiller::selectFile(const QVariant &actionData) {
                                                            QFileInfo(actionData.toString()).fileName(),
                                                            GTFileDialogUtils::Save));
     GTWidget::click(os, GTWidget::findWidget(os, "tbFilePath", dialog));
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 

@@ -5384,6 +5384,7 @@ GUI_TEST_CLASS_DEFINITION(test_3829){
 //    Expected state: UGENE warning about annotation is out of range.
     class scenario : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
+            GTGlobals::sleep();
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
 
@@ -5397,7 +5398,7 @@ GUI_TEST_CLASS_DEFINITION(test_3829){
         }
     };
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os, new scenario()));
-    GTUtilsProjectTreeView::dragAndDrop(os, index, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0));
+    GTUtilsProjectTreeView::dragAndDrop(os, index, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0)->getDetView());
     GTGlobals::sleep(2000);
 //    Expected state: there is a sequence with attached annotation table object, there is an annotation that is located beyond the sequence.
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "5_prime_UTR_intron"));
