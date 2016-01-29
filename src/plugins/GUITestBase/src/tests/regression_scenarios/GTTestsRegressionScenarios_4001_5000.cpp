@@ -5379,6 +5379,11 @@ GUI_TEST_CLASS_DEFINITION(test_4990) {
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
 
     //4. Remove "big.aln" document
     GTUtilsDocument::removeDocument(os, "big.aln");

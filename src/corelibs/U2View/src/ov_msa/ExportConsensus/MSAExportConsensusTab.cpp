@@ -85,7 +85,7 @@ void MSAExportConsensusTab::sl_exportClicked(){
     checkEmptyFilepath();
     ExportMSAConsensusTaskSettings settings;
     settings.format = formatCb->itemData(formatCb->currentIndex()).toString();
-    settings.keepGaps = keepGapsChb->isChecked();
+    settings.keepGaps = keepGapsChb->isChecked() || keepGapsChb->isHidden();
     settings.msa = msa;
     settings.name = msa->getMSAObject()->getGObjectName() + "_consensus";
 
