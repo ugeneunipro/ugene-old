@@ -25,7 +25,7 @@ SUBDIRS += \
           src/libs_3rdparty/sqlite3 \
           src/libs_3rdparty/gtest \
           src/libs_3rdparty/samtools \
-          src/libs_3rdparty/humimit \
+          src/libs_3rdparty/QSpec \
           src/corelibs/U2Core \
           src/corelibs/U2Test \
           src/corelibs/U2Algorithm \
@@ -102,20 +102,20 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/perf_monitor
     SUBDIRS -= src/plugins/GUITestBase
     SUBDIRS -= src/plugins/api_tests
-    SUBDIRS -= src/libs_3rdparty/humimit
+    SUBDIRS -= src/libs_3rdparty/QSpec
 }
 
-if(exists( ./src/libs_3rdparty/humimit/humimit.pro ):!exclude_list_enabled()) {
-    message( "HumImit exists, enable GUI testing..." )
-    !exists( ./src/libs_3rdparty/humimit/custom.pri) {
-        unix: system( cp ./installer/_common_data/humimit_custom.pri ./src/libs_3rdparty/humimit/custom.pri )
-        win32: system (copy /B installer\_common_data\humimit_custom.pri src\libs_3rdparty\humimit\custom.pri)
+if(exists( ./src/libs_3rdparty/QSpec/QSpec.pro ):!exclude_list_enabled()) {
+    message( "QSpec exists, enable GUI testing..." )
+    !exists( ./src/libs_3rdparty/QSpec/custom.pri) {
+        unix: system( cp ./installer/_common_data/humimit_custom.pri ./src/libs_3rdparty/QSpec/custom.pri )
+        win32: system (copy /B installer\_common_data\humimit_custom.pri src\libs_3rdparty\QSpec\custom.pri)
     }
 }
-!exists( ./src/libs_3rdparty/humimit/humimit.pro ){
+!exists( ./src/libs_3rdparty/QSpec/QSpec.pro ){
     DEFINES += HI_EXCLUDED
     SUBDIRS -= src/plugins/GUITestBase
-    SUBDIRS -= src/libs_3rdparty/humimit
+    SUBDIRS -= src/libs_3rdparty/QSpec
 }
 
 without_non_free() {
