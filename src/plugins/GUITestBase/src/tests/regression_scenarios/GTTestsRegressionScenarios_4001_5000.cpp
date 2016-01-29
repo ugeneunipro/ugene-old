@@ -5319,6 +5319,22 @@ GUI_TEST_CLASS_DEFINITION(test_4969_2) {
     CHECK_SET_ERR(GTUtilsDocument::isDocumentLoaded(os, "murine.gb"), "The file is not loaded");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4983) {
+    //1. Open file : "data/samples/PDB/1CF7.PDB"
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.PDB");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    //2. Use context menu on 3D view : {"Coloring schemes"->"Molecular chains"}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Coloring Scheme" << "Molecular Chains"));
+    QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
+    GTWidget::click(os, widget3d, Qt::RightButton);
+    GTGlobals::sleep();
+
+    //Expected: the color scheme is changed without errors.
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4986) {
 //    1. Open "data/samples/Genbank/murine.gb".
 //    2. Open "data/samples/GFF/5prime_utr_intron_A20.gff".

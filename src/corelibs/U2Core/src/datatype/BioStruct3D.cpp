@@ -249,8 +249,17 @@ QByteArray BioStruct3D::getRawSequenceByChainIndex(int id) const {
 
 char BioStruct3D::getChainIdByIndex(int index) const {
     SAFE_POINT(moleculeMap.contains(index), QString("Can't find chain identifier for index: %1").arg(index), 0);
-    const SharedMolecule molecule = moleculeMap.value(index);
     return moleculeMap.value(index)->chainId;
+}
+
+int BioStruct3D::getIndexByChainId(char chainId) const {
+    foreach(int curIndex, moleculeMap.keys()) {
+        const SharedMolecule molecule = moleculeMap.value(curIndex);
+        if (molecule->chainId == chainId) {
+            return curIndex;
+        }
+    }
+    return -1;
 }
 
 const QList<int> BioStruct3D::getModelsNames() const {

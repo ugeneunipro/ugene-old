@@ -198,6 +198,7 @@ public:
 
     QByteArray getRawSequenceByChainIndex(int id) const;
     char getChainIdByIndex(int id) const;
+    int getIndexByChainId(char chainId) const;
     int getNumberOfAtoms() const;
     QList<SharedAtom> getAllAtoms() const;
     int getNumberOfResidues() const;
