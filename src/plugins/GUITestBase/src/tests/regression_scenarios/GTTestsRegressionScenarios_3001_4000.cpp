@@ -5395,8 +5395,13 @@ GUI_TEST_CLASS_DEFINITION(test_3829){
             //    Agree with warning.
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
             GTWidget::click(os, okButton);
+            GTGlobals::sleep(500);
+            if(QApplication::activeModalWidget()){
+                GTWidget::click(os, okButton);
+            }
         }
     };
+
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os, new scenario()));
     GTUtilsProjectTreeView::dragAndDrop(os, index, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0)->getDetView());
     GTGlobals::sleep(2000);

@@ -4905,7 +4905,7 @@ GUI_TEST_CLASS_DEFINITION(test_4839_2) {
     QStringList originalNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
 
     //3. Use main menu item {Actions -> Edit -> Remove sequence}.
-    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Remove sequence");
+    GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Remove sequence(s)");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     //Expected state: the sequences are removed.
