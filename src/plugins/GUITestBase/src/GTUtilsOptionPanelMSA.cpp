@@ -33,6 +33,7 @@
 #include <drivers/GTKeyboardDriver.h>
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWidget.h>
+#include "utils/GTThread.h"
 
 namespace U2 {
 using namespace HI;
@@ -119,6 +120,7 @@ void GTUtilsOptionPanelMsa::addReference(HI::GUITestOpStatus &os, QString seqNam
         GTBaseCompleter::click(os, completer, seqName);
         break;
     }
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 
