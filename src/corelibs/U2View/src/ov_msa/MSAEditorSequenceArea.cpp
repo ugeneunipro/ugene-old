@@ -1514,6 +1514,12 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 }
             }
             break;
+        case Qt::Key_Delete:
+            if (!isAlignmentLocked() && !shift) {
+                emit si_startMsaChanging();
+                deleteCurrentSelection();
+            }
+            break;
         case Qt::Key_Home:
             cancelSelection();
             if (shift) { //scroll namelist

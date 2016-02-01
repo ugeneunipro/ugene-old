@@ -1025,7 +1025,6 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 
     connect(delSelectionAction, SIGNAL(triggered()), seqArea, SLOT(sl_delCurrentSelection()));
 
-    seqArea->addAction(delSelectionAction);
     nameList->addAction(delSelectionAction);
 }
 
