@@ -61,7 +61,7 @@ const QStringList SnpEffSupport::getToolRunnerAdditionalOptions() {
     AppResourcePool* s = AppContext::getAppSettings()->getAppResourcePool();
     CHECK(s != NULL, result);
     //java VM can't allocate whole free memory, Xmx size should be lesser than free memory
-    result << "-Xmx" + QString::number(s->getMaxMemorySizeInMB() - 150) + "g";
+    result << "-Xmx" + QString::number(s->getMaxMemorySizeInMB() - 150) + "M";
     return result;
 }
 
