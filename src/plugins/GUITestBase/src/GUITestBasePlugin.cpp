@@ -1233,7 +1233,7 @@ void GUITestBasePlugin::registerTests(UGUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4969_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_4983);
     REGISTER_TEST(GUITest_regression_scenarios::test_4986);
-    REGISTER_TEST(GUITest_regression_scenarios::test_4990);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_4990, "Required \"slow\" machine");
 
     REGISTER_TEST(GUITest_regression_scenarios::test_5012);
     REGISTER_TEST(GUITest_regression_scenarios::test_5012_1);
