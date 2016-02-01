@@ -48,8 +48,16 @@ SnpEffParser::SnpEffParser()
 
 }
 
-void SnpEffParser::parseOutput( const QString& partOfLog ){
-    ExternalToolLogParser::parseOutput(partOfLog);
+void SnpEffParser::parseOutput( const QString& partOfLog ) {
+    lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first() = lastErrLine + lastPartOfLog.first();
+    lastErrLine = lastPartOfLog.takeLast();
+
+    foreach(const QString &buf, lastPartOfLog) {
+        if (buf.contains("Could not reserve enough space for object heap", Qt::CaseInsensitive)) {
+            setLastError(tr("There is not enough memory to complete the SnpEff execution."));
+        }
+    }
 }
 
 void SnpEffParser::parseErrOutput( const QString& partOfLog ) {
@@ -81,6 +89,8 @@ QStringList SnpEffParser::initStringsToIgnore() {
     result << "Warning type\tNumber of warnings";
     result << "ERRORS: Some errors were detected";
     result << "Error type\tNumber of errors";
+    result << "Error: A fatal exception has occurred. Program will exit.";
+    result << "Error: Could not create the Java Virtual Machine.";
 
     return result;
 }
@@ -116,7 +126,7 @@ void SnpEffTask::prepare(){
     const QStringList args = getParameters(stateInfo);
     CHECK_OP(stateInfo, );
 
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_SNPEFF, args, new SnpEffParser(), settings.outDir);
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_SNPEFF, args, new SnpEffParser(), settings.outDir, QStringList(), QString(), true);
     setListenerForTask(etTask);
     etTask->setStandartOutputFile( getResFileUrl() );
     addSubTask(etTask);

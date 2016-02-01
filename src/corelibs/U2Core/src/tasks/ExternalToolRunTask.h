@@ -55,7 +55,8 @@ public:
      * Don't delete logParser, it will be deleted automatically.
      */
     ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser,
-        const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList(), const QString &additionalProcessToKill = QString());
+        const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList(), 
+        const QString &additionalProcessToKill = QString(), bool parseOutputFile = false);
     ~ExternalToolRunTask();
 
     void addOutputListener(ExternalToolListener* outputListener);
@@ -69,6 +70,7 @@ public:
 private:
     void killProcess() const;
     QList<long> getChildPidsRecursive(long parentPid) const;
+    void parseStandartOutputFile(QString &filepath);
 
     QStringList             arguments;
     ExternalToolLogParser*  logParser;
@@ -82,6 +84,7 @@ private:
     QScopedPointer<ExternalToolRunTaskHelper> helper;
     ExternalToolListener*   listener;
     QString                 additionalProcessToKill;
+    bool                    parseOutputFile;
 };
 
 class U2CORE_EXPORT ExternalToolSupportTask: public Task{

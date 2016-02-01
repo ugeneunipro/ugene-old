@@ -55,7 +55,7 @@ namespace U2 {
 
 ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments,
 ExternalToolLogParser *_logParser, const QString &_workingDirectory, const QStringList &_additionalPaths,
-const QString &_additionalProcessToKill)
+const QString &_additionalProcessToKill, bool parseOutputFile)
 : Task(_toolName + tr(" tool"), TaskFlag_None),
   arguments(_arguments),
   logParser(_logParser),
@@ -65,7 +65,8 @@ const QString &_additionalProcessToKill)
   externalToolProcess(NULL),
   helper(NULL),
   listener(NULL),
-  additionalProcessToKill(_additionalProcessToKill)
+  additionalProcessToKill(_additionalProcessToKill),
+  parseOutputFile(parseOutputFile)
 {
     coreLog.trace("Creating run task for: " + toolName);
     if (NULL != logParser) {
@@ -130,7 +131,12 @@ void ExternalToolRunTask::run(){
     {
         int exitCode = externalToolProcess->exitCode();
         if(exitCode != EXIT_SUCCESS && !hasError()) {
-            setError(tr("%1 tool exited with code %2").arg(toolName).arg(exitCode));
+            QString error;
+            if (parseOutputFile) {
+                parseStandartOutputFile(outputFile);
+                error = logParser->getLastError();
+            }
+            setError(error.isEmpty() ? tr("%1 tool exited with code %2").arg(toolName).arg(exitCode) : error);
         } else {
             algoLog.details(tr("Tool %1 finished successfully").arg(toolName));
         }
@@ -196,6 +202,19 @@ void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener
         helper->addOutputListener(outputListener);
     }
     listener = outputListener;
+}
+
+void ExternalToolRunTask::parseStandartOutputFile(QString &filepath) {
+    QFile f(filepath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QString output;
+    for (QByteArray line = f.readLine(); line.length() > 0; line = f.readLine()) {
+        output += line;
+    }
+    f.close();
+    logParser->parseOutput(output);
 }
 
 ////////////////////////////////////////
