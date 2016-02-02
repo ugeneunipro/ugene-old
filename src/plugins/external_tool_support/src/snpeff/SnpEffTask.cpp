@@ -54,7 +54,8 @@ void SnpEffParser::parseOutput( const QString& partOfLog ) {
     foreach(const QString &buf, lastPartOfLog) {
         if (buf.contains("Could not reserve enough space for object heap", Qt::CaseInsensitive) ||
             buf.contains("Invalid maximum heap size", Qt::CaseInsensitive) ||
-            buf.contains("Unable to allocate", Qt::CaseInsensitive)) {
+            buf.contains("Unable to allocate", Qt::CaseInsensitive) ||
+            buf.contains("Failed to allocate", Qt::CaseInsensitive)) {
             setLastError(tr("A problem occurred during allocating memory for running SnpEff. Check the \"Tasks memory limit\" parameter in the UGENE Application Settings.It is recommended to set this value to the available RAM on the computer."));
         }
     }
