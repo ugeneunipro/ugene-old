@@ -177,11 +177,13 @@ const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObjec
             SAFE_POINT(NULL != ao, "Invalid annotation table!", colorMap);
 
             foreach (Annotation *a, ao->getAnnotationsByName(BioStruct3D::MoleculeAnnotationTag)) {
-                bool ok = false;
-                const int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
-                SAFE_POINT(ok && chainId != 0, "Invalid type conversion", colorMap);
-                const QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
-                colorMap.insert(chainId, color);
+                const QString chainQualifier = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName);
+                SAFE_POINT(!chainQualifier.isEmpty(), "Invalid chain id qualifier", colorMap);
+                const char chainId = chainQualifier.toLatin1().at(0);
+                const int index = biostructObj->getBioStruct3D().getIndexByChainId(chainId);
+                SAFE_POINT(index >= 0, QString("Invalid chain id: %1").arg(chainId), colorMap);
+                const QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(index));
+                colorMap.insert(index, color);
             }
         }
     }
