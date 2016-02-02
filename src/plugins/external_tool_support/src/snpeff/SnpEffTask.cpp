@@ -50,11 +50,10 @@ SnpEffParser::SnpEffParser()
 
 void SnpEffParser::parseOutput( const QString& partOfLog ) {
     lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
-    lastPartOfLog.first() = lastErrLine + lastPartOfLog.first();
-    lastErrLine = lastPartOfLog.takeLast();
 
     foreach(const QString &buf, lastPartOfLog) {
-        if (buf.contains("Could not reserve enough space for object heap", Qt::CaseInsensitive)) {
+        if (buf.contains("Could not reserve enough space for object heap", Qt::CaseInsensitive) ||
+            buf.contains("Invalid maximum heap size", Qt::CaseInsensitive)) {
             setLastError(tr("There is not enough memory to complete the SnpEff execution."));
         }
     }
@@ -75,6 +74,9 @@ void SnpEffParser::parseErrOutput( const QString& partOfLog ) {
                 coreLog.details("SnpEff notificates about genome database error: " + buf);
             } else {
                 coreLog.error("SnpEff: " + buf);
+            }
+            if (buf.contains("java.lang.OutOfMemoryError")) {
+                setLastError(tr("There is not enough memory to complete the SnpEff execution."));
             }
         } else if (buf.contains("warning", Qt::CaseInsensitive) && buf.startsWith("#")) {
             coreLog.details("SnpEff notificates about genome database error: " + buf);
