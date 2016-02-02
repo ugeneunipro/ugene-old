@@ -78,6 +78,9 @@ void SnpEffParser::parseErrOutput( const QString& partOfLog ) {
             if (buf.contains("java.lang.OutOfMemoryError")) {
                 setLastError(tr("There is not enough memory to complete the SnpEff execution."));
             }
+            if (buf.contains("Invalid maximum heap size", Qt::CaseInsensitive)) {
+                setLastError(tr("There is not enough memory to complete the SnpEff execution."));
+            }
         } else if (buf.contains("warning", Qt::CaseInsensitive) && buf.startsWith("#")) {
             coreLog.details("SnpEff notificates about genome database error: " + buf);
         }
