@@ -2386,9 +2386,9 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_1);
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_2);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_querry_designer::test_0001, "breaks testing on mac");
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_querry_designer::test_0001_1, "breaks testing on mac");
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_querry_designer::test_0001_2, "breaks testing on mac");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
