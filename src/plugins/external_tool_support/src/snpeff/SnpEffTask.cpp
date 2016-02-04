@@ -81,6 +81,12 @@ void SnpEffParser::parseErrOutput( const QString& partOfLog ) {
             setLastError(tr("A problem occurred during allocating memory for running SnpEff. Check the \"Tasks memory limit\" parameter in the UGENE Application Settings.It is recommended to set this value to the available RAM on the computer."));
             continue;
         }
+
+        if (buf.contains("ERROR while connecting to http://downloads.sourceforge.net/project/snpeff/", Qt::CaseInsensitive)) {
+            setLastError(tr("Failed to download SnpEff database. Check your internet connection."));
+            continue;
+        }
+
         if (buf.contains("ERROR", Qt::CaseInsensitive)) {
             if (buf.startsWith("#")) {
                 coreLog.details("SnpEff notificates about genome database error: " + buf);

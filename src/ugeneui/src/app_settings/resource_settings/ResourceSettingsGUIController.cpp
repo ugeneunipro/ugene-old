@@ -79,6 +79,7 @@ void ResourceSettingsGUIPageWidget::setState(AppSettingsGUIPageState* s) {
     cpuBox->setValue(state->nCpus);
     threadBox->setValue(state->nThreads);
     memBox->setValue(state->maxMem);
+    memBox->setObjectName("memorySpinBox");
 }
 
 AppSettingsGUIPageState* ResourceSettingsGUIPageWidget::getState(QString& err) const {

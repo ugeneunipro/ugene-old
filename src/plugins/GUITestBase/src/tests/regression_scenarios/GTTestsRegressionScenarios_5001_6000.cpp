@@ -177,6 +177,78 @@ GUI_TEST_CLASS_DEFINITION(test_5012_2) {
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_5027_1) {
+    class MemorySetter : public CustomScenario {
+    public:
+        MemorySetter(int memValue)
+            : memValue(memValue) {}
+        void run(HI::GUITestOpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+
+            QSpinBox* memSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "memorySpinBox"));
+            CHECK_SET_ERR(memSpinBox != NULL, "No memorySpinBox");
+            GTSpinBox::setValue(os, memSpinBox, memValue, GTGlobals::UseKeyBoard);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        int memValue;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemorySetter(500000)));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
+    GTThread::waitForMainThread(os);
+    GTUtilsWorkflowDesigner::click(os, "Input Variations File");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/vcf", "valid.vcf");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTWebView::findElement(os, GTUtilsDashboard::getDashboard(os), "A problem occurred during allocating memory for running SnpEff.");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_5027_2) {
+    class MemorySetter : public CustomScenario {
+    public:
+        MemorySetter(int memValue)
+            : memValue(memValue) {}
+        void run(HI::GUITestOpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+
+            QSpinBox* memSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "memorySpinBox"));
+            CHECK_SET_ERR(memSpinBox != NULL, "No memorySpinBox");
+            GTSpinBox::setValue(os, memSpinBox, memValue, GTGlobals::UseKeyBoard);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        int memValue;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemorySetter(512)));
+    GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
+    GTThread::waitForMainThread(os);
+    GTUtilsWorkflowDesigner::click(os, "Input Variations File");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/vcf", "valid.vcf");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTWebView::findElement(os, GTUtilsDashboard::getDashboard(os), "There is not enough memory to complete the SnpEff execution.");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_5029) {
     GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Plugins...");
     GTGlobals::sleep();
