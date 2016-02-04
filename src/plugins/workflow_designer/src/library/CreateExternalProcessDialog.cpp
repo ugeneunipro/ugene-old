@@ -276,16 +276,22 @@ void CreateExternalProcessDialog::showEvent(QShowEvent *event) {
     }
 }
 
+QString removeEmptyLines(const QString &str) {
+    QStringList res;
+    foreach(const QString &s, str.split(QRegExp("(\n|\r)"))) {
+        if (!s.trimmed().isEmpty()) {
+            res.append(s);
+        }
+    }
+    return res.join("\r\n");
+}
+
 void CreateExternalProcessDialog::accept() {
     CfgExternalToolModel *model;
     cfg = new ExternalProcessConfig();
     cfg->name = ui.nameLineEdit->text();
-    if (!ui.descriptionTextEdit->toPlainText().trimmed().isEmpty()) {
-        cfg->description = ui.descriptionTextEdit->toPlainText();
-    }
-    if (!ui.prompterTextEdit->toPlainText().trimmed().isEmpty()) {
-        cfg->templateDescription = ui.prompterTextEdit->toPlainText();
-    }
+    cfg->description = removeEmptyLines(ui.descriptionTextEdit->toPlainText());
+    cfg->templateDescription = removeEmptyLines(ui.prompterTextEdit->toPlainText());
 
     model = static_cast<CfgExternalToolModel*>(ui.inputTableView->model());
     foreach(CfgExternalToolItem *item, model->getItems()) {
