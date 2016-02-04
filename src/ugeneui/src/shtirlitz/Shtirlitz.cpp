@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QBuffer>
 #include <QDate>
+#include <QMainWindow>
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QProcess>
@@ -107,7 +108,9 @@ QList<Task*> Shtirlitz::wakeup() {
     // and user did not enabled stats before -> ask to enable
     // Do not ask to enable it twice for different versions!
     if(minorVersionFirstLaunch) {
-        QObjectScopedPointer<StatisticalReportController> dialog = new StatisticalReportController(":ugene/html/version_news.html");
+        MainWindow *mainWindow = AppContext::getMainWindow();
+        CHECK(NULL != mainWindow, result);
+        QObjectScopedPointer<StatisticalReportController> dialog = new StatisticalReportController(":ugene/html/version_news.html", mainWindow->getQMainWindow());
         dialog->exec();
         CHECK(!dialog.isNull(), result);
 

@@ -22,14 +22,11 @@
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QFile>
-#include <QMainWindow>
 #include <QScrollBar>
 #include <QWebFrame>
 
 #include <U2Core/Version.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <U2Gui/MainWindow.h>
 
 #include "StatisticalReportController.h"
 
@@ -37,7 +34,7 @@
 
 namespace U2 {
 
-StatisticalReportController::StatisticalReportController(const QString &newHtmlFilepath) : QDialog() {
+StatisticalReportController::StatisticalReportController(const QString &newHtmlFilepath, QWidget *parent) : QDialog(parent) {
     setupUi(this);
     lblStat->setText(tr("<b>Optional:</b> Help make UGENE better by automatically sending anonymous usage statistics."));
 

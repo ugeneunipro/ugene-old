@@ -31,7 +31,7 @@ class MultilingualHtmlView;
 class StatisticalReportController : public QDialog, public Ui_StatisticalReport {
     Q_OBJECT
 public:
-    StatisticalReportController(const QString &newHtmlFilepath);
+    StatisticalReportController(const QString &newHtmlFilepath, QWidget *parent);
     bool isInfoSharingAccepted() const;
 
 protected:
