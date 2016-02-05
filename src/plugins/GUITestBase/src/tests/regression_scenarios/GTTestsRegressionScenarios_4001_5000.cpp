@@ -5312,11 +5312,13 @@ GUI_TEST_CLASS_DEFINITION(test_4969_2) {
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
     //2. Unload the sequence.
     GTUtilsDocument::unloadDocument(os, "murine.gb");
-    //3. Click the main menu item: "File" -> "Recent files" -> ".../samples/Genbank/murine.gb".
-    GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Recent files" << QFileInfo(dataDir + "samples/Genbank/murine.gb").absoluteFilePath());
-    //Expected: The file is loaded.
+    //3. Click "murine.gb" on Start Page.
+    GTUtilsStartPage::clickResentDocument(os, "murine.gb");
+    //Expected: The file is loaded, the view is opened.
     GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(GTUtilsDocument::isDocumentLoaded(os, "murine.gb"), "The file is not loaded");
+    QString title = GTUtilsMdi::activeWindowTitle(os);
+    CHECK_SET_ERR(title.contains("NC_"), "Wrong MDI window is active");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4983) {

@@ -479,21 +479,18 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
             if (doc->isLoaded()) {
                 const QList<GObject*>& docObjects = doc->getObjects();
                 QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);
-                if (!viewsList.isEmpty()) {
-                    AppContext::getMainWindow()->getMDIManager()->activateWindow(viewsList.first());
+                if (viewsList.isEmpty()) {
+                    AppContext::getTaskScheduler()->registerTopLevelTask(new OpenViewTask(doc));
                 } else {
-                    AppContext::getProjectView()->highlightItem(doc);
+                    AppContext::getMainWindow()->getMDIManager()->activateWindow(viewsList.first());
                 }
                 coreLog.info(tr("The document is already loaded and added to project: %1").arg(url.fileName()));
             } else if(!doc->isLoaded() && AppContext::getProjectView()) {
-                Task *loadDocumentTask = ProjectUtils::findLoadTask(url.getURLString());
-                if (NULL == loadDocumentTask) {
-                    loadDocumentTask = new LoadUnloadedDocumentTask(ProjectUtils::findDocument(url.getURLString()));
-                    AppContext::getTaskScheduler()->registerTopLevelTask(loadDocumentTask);
+                if (NULL == ProjectUtils::findLoadTask(url.getURLString())) {
+                    AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
                 } else {
                     coreLog.details(tr("The document with the same URL is already loading"));
                 }
-                AppContext::getProjectView()->highlightItem(doc);
             }
         } else {
             QList<FormatDetectionResult> formats;
