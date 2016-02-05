@@ -178,6 +178,10 @@ GUI_TEST_CLASS_DEFINITION(test_5012_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_5027_1) {
+    //1. Open preferences and set memory limit per task 500000MB
+    //2. Open WD and compose next scheme "File list" -> "SnpEff annotation and filtration"
+    //3. Run schema.
+    //Expected state : there is problem on dashboard "A problem occurred during allocating memory for running SnpEff."
     class MemorySetter : public CustomScenario {
     public:
         MemorySetter(int memValue)
@@ -214,6 +218,10 @@ GUI_TEST_CLASS_DEFINITION(test_5027_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_5027_2) {
+    //1. Open preferences and set memory limit per task 512MB
+    //2. Open WD and compose next scheme "File list" -> "SnpEff annotation and filtration"
+    //3. Run schema.
+    //Expected state : there is problem on dashboard "There is not enough memory to complete the SnpEff execution."
     class MemorySetter : public CustomScenario {
     public:
         MemorySetter(int memValue)
