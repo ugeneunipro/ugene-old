@@ -301,7 +301,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Execution string and element's description. To substitute input, output data or parameter, use it's name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters substitution with prefix $. If file paths in the execution string contain spaces, they must be enclosed with quotes.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Execution string and element's description. To substitute input, output data or parameter, use it's name with prefix $ in execution string. You can set parameterized description for new element(description that appears not in property editor but on element itself). In parameterized description you also can use parameters substitution with prefix $. If file paths in the execution string contain spaces, they must be enclosed with single quotes.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
