@@ -1643,8 +1643,8 @@ GUI_TEST_CLASS_DEFINITION(test_4156) {
 
             AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
 
-            QSpinBox* memBox = dialog->findChild<QSpinBox*>("memBox");
-            CHECK_SET_ERR(memBox != NULL, "memBox not found");
+            QSpinBox* memBox = dialog->findChild<QSpinBox*>("memorySpinBox");
+            CHECK_SET_ERR(memBox != NULL, "memorySpinBox not found");
             GTSpinBox::setValue(os, memBox, 256, GTGlobals::UseKeyBoard);
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
