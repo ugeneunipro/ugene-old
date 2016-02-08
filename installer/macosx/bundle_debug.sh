@@ -73,9 +73,9 @@ add-library U2Test
 add-library U2View
 add-library ugenedb
 add-library breakpad
-add-library humimit
 if [ "$1" == "-test" ]
    then
+      add-library humimit
       add-library gtest
 fi
 
