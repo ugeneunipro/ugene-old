@@ -5101,6 +5101,123 @@ GUI_TEST_CLASS_DEFINITION(test_0078){
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0079) {
+    // Open an alignment with some alphabet.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // Do the action for a sequence (or sequences) of the same alphabet.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // The sequence was added to the bottom of the alignment.
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T1", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0080) {
+    // Open an alignment with some alphabet.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // Use a sequence of another alphabet.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTACS\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+
+    // A warning notification appears:
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // The sequence was added to the bottom of the alignment.
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T1", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0081) {
+    // Open an alignment with some alphabet.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // Use a sequence of another alphabet.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTACS\r\n>human_T2\r\nACGTAC\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+
+    // A warning notification appears:
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // The sequence was added to the bottom of the alignment.
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T2", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0082) {
+    // Open an alignment with some alphabet.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // Use a sequence of another alphabet.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTAC\r\n>human_T2\r\nACGTACS\r\n>human_T3\r\nACGTAC\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+
+    // A warning notification appears:
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Extended DNA\"");
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // The sequence was added to the bottom of the alignment.
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T3", "No pasted sequences");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0083) {
+    // Open an alignment with some alphabet.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // Use a sequence of another alphabet.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+
+    GTClipboard::setText(os, ">human_T1\r\nACGTAC\r\n>human_T2\r\nACGTACS\r\n>human_T3\r\nQQ\r\n");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "paste"));
+
+    // A warning notification appears:
+    GTUtilsNotifications::waitForNotification(os, true, "from \"Standard DNA\" to \"Raw\"");
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // The sequence was added to the bottom of the alignment.
+    CHECK_SET_ERR(sequencesNameList.length() > 0, "No sequences");
+    CHECK_SET_ERR(sequencesNameList.last() == "human_T3", "No pasted sequences");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_fake) {
     Q_UNUSED(os);
 }
