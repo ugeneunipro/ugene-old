@@ -40,7 +40,7 @@ namespace U2 {
 
 GetSequenceByIdDialog::GetSequenceByIdDialog(QWidget *w): QDialog(w) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466180");
+    new HelpButton(this, buttonBox, "17467727");
 
     connect(toolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
     QString defaultPath = AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath();

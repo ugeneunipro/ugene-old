@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-const QString InSilicoPcrOPWidgetFactory::GROUP_DOC_PAGE = "17466275";
+const QString InSilicoPcrOPWidgetFactory::GROUP_DOC_PAGE = "17467821";
 
 InSilicoPcrOPWidgetFactory::InSilicoPcrOPWidgetFactory()
 : OPWidgetFactory()

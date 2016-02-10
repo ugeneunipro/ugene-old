@@ -54,7 +54,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(U2SequenceObject *seqObj, QWidget *
     assert(NULL != seqObj);
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466220");
+    new HelpButton(this, buttonBox, "17467767");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

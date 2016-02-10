@@ -42,7 +42,7 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, Workflo
 : QDialog(parent), isNew(isNew), marker(NULL), allModel(_allModel)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466486");
+    new HelpButton(this, buttonBox, "17468029");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     {
@@ -397,7 +397,7 @@ EditMarkerDialog::EditMarkerDialog(bool isNew, const QString &type, const QStrin
 : QDialog(parent), isNew(isNew), type(type), name(name), values(values), editWidget(NULL)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466486");
+    new HelpButton(this, buttonBox, "17468029");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (!isNew) {

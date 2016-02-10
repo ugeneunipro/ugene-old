@@ -65,7 +65,7 @@ AppSettingsGUIPageWidget* NetworkSettingsPageController::createWidget(AppSetting
     return r;
 }
 
-const QString NetworkSettingsPageController::helpPageId = QString("17465973");
+const QString NetworkSettingsPageController::helpPageId = QString("17467520");
 
 NetworkSettingsPageWidget::NetworkSettingsPageWidget() {
     setupUi( this );

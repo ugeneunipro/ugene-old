@@ -145,7 +145,7 @@ QString EnzymesSelectorDialogHandler::getSelectedString(QDialog* dlg) {
 EnzymesSelectorDialog::EnzymesSelectorDialog(EnzymesSelectorDialogHandler* parent)
 : factory(parent) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466186");
+    new HelpButton(this, buttonBox, "17467733");
 
     QVBoxLayout* vl = new QVBoxLayout();
     enzSel = new EnzymesSelectorWidget();

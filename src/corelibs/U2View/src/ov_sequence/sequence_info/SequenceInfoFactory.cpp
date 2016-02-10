@@ -34,7 +34,7 @@ namespace U2 {
 const QString SequenceInfoFactory::GROUP_ID = "OP_SEQ_INFO";
 const QString SequenceInfoFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
 const QString SequenceInfoFactory::GROUP_TITLE = QObject::tr("Statistics");
-const QString SequenceInfoFactory::GROUP_DOC_PAGE = "17465992";
+const QString SequenceInfoFactory::GROUP_DOC_PAGE = "17467539";
 
 SequenceInfoFactory::SequenceInfoFactory() {
     objectViewOfWidget = ObjViewType_SequenceView;

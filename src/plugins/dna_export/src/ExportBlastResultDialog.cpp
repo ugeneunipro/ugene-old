@@ -43,7 +43,7 @@ namespace U2 {
 
 ExportBlastResultDialog::ExportBlastResultDialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466181");
+    new HelpButton(this, buttonBox, "17467728");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

@@ -54,7 +54,7 @@ HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAl
 :QDialog(p), ma(_ma), profileName(_pn)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466215");
+    new HelpButton(this, buttonBox, "17467762");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 

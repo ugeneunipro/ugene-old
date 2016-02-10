@@ -42,7 +42,7 @@ EditAnnotationDialogController::EditAnnotationDialogController(const SharedAnnot
     : QDialog(p), seqRange(seqRange)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466020");
+    new HelpButton(this, buttonBox, "17467567");
 
     nameEdit->setText(a->name);
     locationEdit->setText(U1AnnotationUtils::buildLocationString(a));

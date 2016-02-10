@@ -49,7 +49,7 @@ namespace BAM {
 
 ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
-    new HelpButton(this, ui.buttonBox, "17466121");
+    new HelpButton(this, ui.buttonBox, "17467668");
     ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
     ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -58,7 +58,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     } else {
         setWindowTitle(tr("Import BAM File"));
     }
-    this->setObjectName(tr("Import BAM File"));
+    this->setObjectName("Import BAM File");
 
     const QString warningMessageStyleSheet( "color: " + L10N::successColorLabelStr( )
         + "; font: bold;" );

@@ -51,7 +51,7 @@ ClustalOSupportRunDialog::ClustalOSupportRunDialog(const MAlignment& _ma, Clusta
         QDialog(_parent), ma(_ma), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466260");
+    new HelpButton(this, buttonBox, "17467807");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -87,7 +87,7 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466242");
+    new HelpButton(this, buttonBox, "17467789");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

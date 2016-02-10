@@ -49,7 +49,7 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
 {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466201");
+    new HelpButton(this, buttonBox, "17467748");
 
     connect(lBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onLeftBluntButtonToogled(bool)));
     connect(rBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onRightBluntButtonToggled(bool)));

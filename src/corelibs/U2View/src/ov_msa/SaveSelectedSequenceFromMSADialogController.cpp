@@ -38,7 +38,7 @@ namespace U2 {
 
 SaveSelectedSequenceFromMSADialogController::SaveSelectedSequenceFromMSADialogController(QWidget* p): QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466106");
+    new HelpButton(this, buttonBox, "17467653");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

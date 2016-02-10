@@ -35,7 +35,7 @@ NewGrouperSlotDialog::NewGrouperSlotDialog(QWidget *parent, QList<Descriptor> &i
 : QDialog(parent), inSlots(inSlots), names(names)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466484");
+    new HelpButton(this, buttonBox, "17468027");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -105,7 +105,7 @@ AnnsActionDialog::AnnsActionDialog(QWidget *parent, GrouperSlotAction *action, Q
 : ActionDialog(parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466484");
+    new HelpButton(this, buttonBox, "17468027");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -152,7 +152,7 @@ SequeceActionDialog::SequeceActionDialog(QWidget *parent, GrouperSlotAction *act
 : ActionDialog(parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466484");
+    new HelpButton(this, buttonBox, "17468027");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
@@ -217,7 +217,7 @@ MsaActionDialog::MsaActionDialog(QWidget *parent, GrouperSlotAction *action)
 : ActionDialog(parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466484");
+    new HelpButton(this, buttonBox, "17468027");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (NULL != action) {
@@ -251,7 +251,7 @@ StringActionDialog::StringActionDialog(QWidget *parent, GrouperSlotAction *actio
 : ActionDialog(parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466484");
+    new HelpButton(this, buttonBox, "17468027");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     if (NULL != action) {

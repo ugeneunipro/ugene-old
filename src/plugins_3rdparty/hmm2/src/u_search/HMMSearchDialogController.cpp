@@ -57,7 +57,7 @@ HMMSearchDialogController::HMMSearchDialogController(const DNASequence& sequence
 
     searchTask = NULL;
     setupUi(this);
-    new HelpButton(this, buttonBox, "17466217");
+    new HelpButton(this, buttonBox, "17467764");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 

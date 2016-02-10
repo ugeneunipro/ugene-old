@@ -50,7 +50,7 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
 : QDialog(p)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17465998");
+    new HelpButton(this, buttonBox, "17467545");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

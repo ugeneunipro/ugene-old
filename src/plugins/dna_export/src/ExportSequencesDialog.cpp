@@ -48,7 +48,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
     : QDialog( p ), sequenceName( sourceFileBaseName )
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "17465960");
+    new HelpButton(this, buttonBox, "17467507");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
