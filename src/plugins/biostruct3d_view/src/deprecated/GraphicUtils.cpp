@@ -26,7 +26,7 @@
 #include <U2Core/Log.h>
 
 #include <U2Core/BioStruct3D.h>
-#include <BioStruct3DColorScheme.h>
+#include "BioStruct3DColorScheme.h"
 
 
 namespace U2 {

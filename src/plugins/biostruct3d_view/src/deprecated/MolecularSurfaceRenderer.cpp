@@ -20,7 +20,7 @@
  */
 
 #include "MolecularSurfaceRenderer.h"
-#include <GraphicUtils.h>
+#include "GraphicUtils.h"
 #include <U2Algorithm/MolecularSurface.h>
 #include <QtOpenGL>
 
