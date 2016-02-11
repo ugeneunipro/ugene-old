@@ -227,6 +227,7 @@ QList<U2AuxData> SamtoolsAdapter::samString2aux(const QByteArray &auxString) {
 }
 
 QList<U2AuxData> SamtoolsAdapter::string2aux(const QByteArray &auxString) {
+    CHECK(!auxString.isEmpty(), QList<U2AuxData>());
     // Adapted samtools code:
     QList<U2AuxData> result;
     const char *s = auxString.data();
