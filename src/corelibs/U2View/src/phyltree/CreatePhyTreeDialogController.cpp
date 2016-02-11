@@ -81,7 +81,12 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     ui->fileNameEdit->setText(url);
 
     const QString defaultAlgorithm = "PHYLIP Neighbor Joining";
-    ui->algorithmBox->setCurrentIndex(ui->algorithmBox->findText(defaultAlgorithm));
+    int defaultIndex = ui->algorithmBox->findText(defaultAlgorithm);
+    if (defaultIndex == -1) {
+        defaultIndex = 0;
+    }
+    ui->algorithmBox->setCurrentIndex(defaultIndex);
+    sl_comboIndexChaged(defaultIndex);
 }
 
 void CreatePhyTreeDialogController::accept() {
@@ -89,6 +94,7 @@ void CreatePhyTreeDialogController::accept() {
 
     CHECK(checkLicense(), );
     CHECK(checkFileName(), );
+    SAFE_POINT(NULL != settingsWidget, "Settings widget is NULL", );
     settingsWidget->fillSettings(settings);
     CHECK(checkSettings(), );
     CHECK(checkMemory(), );
