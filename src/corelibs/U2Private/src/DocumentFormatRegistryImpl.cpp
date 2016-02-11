@@ -125,9 +125,6 @@ void DocumentFormatRegistryImpl::init() {
     RawDataUdrSchema::init(os);
     SAFE_POINT_OP(os, );
 
-    RawDNASequenceFormat* rsf = new RawDNASequenceFormat(this);
-    registerFormat(rsf);
-
     PlainTextFormat* text = new PlainTextFormat(this);
     registerFormat(text);
 
@@ -148,6 +145,9 @@ void DocumentFormatRegistryImpl::init() {
 
     SCFFormat* scf = new SCFFormat(this);
     registerFormat(scf);
+
+    RawDNASequenceFormat* rsf = new RawDNASequenceFormat(this);
+    registerFormat(rsf);
 
     ClustalWAlnFormat* aln = new ClustalWAlnFormat(this);
     registerFormat(aln);
