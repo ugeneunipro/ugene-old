@@ -281,6 +281,38 @@ GUI_TEST_CLASS_DEFINITION(test_5052) {
     CHECK_SET_ERR(title.contains("NC_"), "Wrong MDI window is active");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_5079) {
+    //1. Open "COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Set the consensus type to "Levitsky".
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+    QComboBox *consensusCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "consensusType"));
+    CHECK_SET_ERR(consensusCombo != NULL, "consensusCombo is NULL");
+    GTComboBox::setIndexWithText(os, consensusCombo, "Levitsky");
+
+    //3. Add an additional sequence from file : "test/_common_data/fasta/amino_ext.fa".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/amino_ext.fa"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Open the "Export consensus" OP tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+
+    GTLogTracer l;
+
+    //5. Press "Undo" button.
+    GTUtilsMsaEditor::undo(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //6. Press "Redo" button.
+    GTUtilsMsaEditor::redo(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected state : the tab is successfully updated. No error in log.
+    CHECK_SET_ERR(!l.hasError(), "unexpected errors in log");
+}
 
 } // namespace GUITest_regression_scenarios
 

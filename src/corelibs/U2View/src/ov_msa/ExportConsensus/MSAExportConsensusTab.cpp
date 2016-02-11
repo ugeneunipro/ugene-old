@@ -134,9 +134,9 @@ void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
         }
     }else{
         if(formatCb->count() == 3 ){ //all possible formats
-            formatCb->setCurrentIndex(formatCb->findText(BaseDocumentFormats::PLAIN_TEXT));
-            formatCb->removeItem(formatCb->findText(BaseDocumentFormats::FASTA));
-            formatCb->removeItem(formatCb->findText(BaseDocumentFormats::PLAIN_GENBANK));
+            formatCb->setCurrentIndex(formatCb->findData(BaseDocumentFormats::PLAIN_TEXT));
+            formatCb->removeItem(formatCb->findData(BaseDocumentFormats::FASTA));
+            formatCb->removeItem(formatCb->findData(BaseDocumentFormats::PLAIN_GENBANK));
             showHint(true);
         }else{
             SAFE_POINT(formatCb->count() == 1, "Count of supported 'text' formats is not equal one", );
