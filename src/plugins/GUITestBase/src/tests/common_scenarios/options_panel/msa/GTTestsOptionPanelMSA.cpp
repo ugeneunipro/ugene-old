@@ -1396,8 +1396,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
     bool created = f.open(QFile::ReadWrite);
     CHECK_SET_ERR(created, "file not created");
     f.close();
-    PermissionsSetter p;
-    p.setReadOnly(os, s);
+    GTFile::setReadOnly(os, s);
 
     setOutputPath(os, sandBoxDir,  fileName);
     align(os);
@@ -1431,8 +1430,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
     bool ok = QDir().mkpath(s);
     CHECK_SET_ERR(ok, "subdirectory not created");
 
-    PermissionsSetter p;
-    p.setReadOnly(os, s);
+    GTFile::setReadOnly(os, s);
 
     setOutputPath(os, sandBoxDir + dirName,  fileName);
     align(os);
@@ -1933,8 +1931,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
     CHECK_SET_ERR(created, "file not created");
     f.close();
 
-    PermissionsSetter p;
-    p.setReadOnly(os, s);
+    GTFile::setReadOnly(os, s);
 
     setConsensusOutputPath(os, sandBoxDir + fileName);
 //    4. Press export button
@@ -1964,8 +1961,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
     QString s = sandBoxDir + dirName;
     bool ok = QDir().mkpath(s);
     CHECK_SET_ERR(ok, "subdirectory not created");
-    PermissionsSetter p;
-    p.setReadOnly(os, s);
+    GTFile::setReadOnly(os, s);
 
     setConsensusOutputPath(os, sandBoxDir + dirName + '/' + fileName);
 //    4. Press export button

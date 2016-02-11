@@ -1739,8 +1739,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 
 //    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
     // Permissions will be returned to the original state, if UGENE won't crash.
-    PermissionsSetter p;
-    p.setReadOnly(os, toolDir.path());
+    GTFile::setReadOnly(os, toolDir.path());
 
 //    2. Open "sample/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
@@ -3568,8 +3567,7 @@ GUI_TEST_CLASS_DEFINITION( test_2540 ){
 //    1. Forbid to write to the dir with the source bam(sam) file.
     QDir().mkpath(sandBoxDir + "test_2540");
     GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", sandBoxDir + "test_2540/chrM.sorted.bam");
-    PermissionsSetter p;
-    p.setReadOnly(os, sandBoxDir + "test_2540");
+    GTFile::setReadOnly(os, sandBoxDir + "test_2540");
 //    2. Try to open this file with UGENE.
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, sandBoxDir + "test_2540/chrM.sorted.bam");
@@ -3643,8 +3641,7 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     const QString outputFilePath = testDir + "_common_data/scenarios/sandbox/gui_regr_2543";
     QDir sandboxDir( testDir + "_common_data/scenarios/sandbox" );
     sandboxDir.mkdir( "gui_regr_2543" );
-    PermissionsSetter p;
-    p.setReadOnly(os, outputFilePath);
+    GTFile::setReadOnly(os, outputFilePath);
     GTGlobals::sleep( 2000 );
 
     GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller_test_2543( os, outputFilePath + "/test.nwk") );
@@ -3672,8 +3669,7 @@ GUI_TEST_CLASS_DEFINITION( test_2544 ){
 //    Expected state: the dialog has disappeared, subsequence has been removed
 
 //    4. Change permissions to the file to read-only
-    PermissionsSetter p;
-    p.setReadOnlyFlag(os, sandBoxDir + "test_2544.fa");
+    GTFile::setReadOnly(os, sandBoxDir + "test_2544.fa");
 //    5. Use context menu on the document item in project view { Save selected documents }
 
     class innerMessageBoxFiller: public MessageBoxDialogFiller{
@@ -4938,8 +4934,7 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
 GUI_TEST_CLASS_DEFINITION(test_2761_1) {
 //    1. Open "samples/CLUSTALW/COI.aln".
     QDir().mkpath(sandBoxDir + "test_2761_1");
-    PermissionsSetter p;
-    p.setReadOnly(os, sandBoxDir + "test_2761_1");
+    GTFile::setReadOnly(os, sandBoxDir + "test_2761_1");
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Select some area in the MSA.

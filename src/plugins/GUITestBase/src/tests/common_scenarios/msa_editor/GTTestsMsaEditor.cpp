@@ -4604,8 +4604,7 @@ GUI_TEST_CLASS_DEFINITION(test_0062){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QDir().mkpath(sandBoxDir + "read_only_dir");
-    PermissionsSetter p;
-    p.setReadOnly(os, sandBoxDir + "read_only_dir");
+    GTFile::setReadOnly(os, sandBoxDir + "read_only_dir");
 //    Open "Export subalignment" dialog
     class custom: public CustomScenario{
     public:

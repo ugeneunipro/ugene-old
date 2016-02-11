@@ -114,7 +114,7 @@ GUI_TEST_CLASS_DEFINITION(pre_action_0004) {
 
 GUI_TEST_CLASS_DEFINITION(pre_action_0005) {
     if(QDir(sandBoxDir).exists()){
-        PermissionsSetter::setReadWrite(os, sandBoxDir);
+        GTFile::setReadWrite(os, sandBoxDir);
         GTGlobals::sleep();
         QDir sandBox = QDir(sandBoxDir);
         foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
@@ -220,7 +220,7 @@ GUI_TEST_CLASS_DEFINITION(post_action_0003) {
         GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
     }
     if(QDir(sandBoxDir).exists()){
-        PermissionsSetter::setReadWrite(os, sandBoxDir);
+        GTFile::setReadWrite(os, sandBoxDir);
         GTGlobals::sleep();
         QDir sandBox = QDir(sandBoxDir);
         foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {

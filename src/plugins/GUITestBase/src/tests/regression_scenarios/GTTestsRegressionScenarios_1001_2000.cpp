@@ -5348,13 +5348,13 @@ GUI_TEST_CLASS_DEFINITION(test_1528){
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Make the "chrM.sorted.bam.ugenedb" read-only
-    PermissionsSetter p;
+
 //    3. Open "chrM.fa" in UGENE
 
 //    4. Drag and drop "chrM.fa" sequence object to the assembly
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "This action requires changing file:"));
     GTUtilsProjectTreeView::click(os, "chrM", "chrM.fa");
-    p.setReadOnlyFlag(os, sandBoxDir + "chrM.sorted.bam.ugenedb");
+    GTFile::setReadOnly(os, sandBoxDir + "chrM.sorted.bam.ugenedb");
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Set reference");
 
 //    Expected state: This action requires changing file:
@@ -8219,8 +8219,7 @@ GUI_TEST_CLASS_DEFINITION( test_1859 ) {
     GTGlobals::sleep( );
 
     // 6) Block file for writing
-    PermissionsSetter p;
-    p.setReadOnly(os, outputFilePath);
+    GTFile::setReadOnly(os, outputFilePath);
 
     // 7) Run workflow again
     GTWidget::click( os,GTAction::button( os,"Run workflow" ) );

@@ -282,8 +282,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     QDir().mkpath(sandBoxDir + "common_assembly_browser/test_0012");
 
-    PermissionsSetter p;
-    p.setReadOnly(os, sandBoxDir + "common_assembly_browser/test_0012");
+    GTFile::setReadOnly(os, sandBoxDir + "common_assembly_browser/test_0012");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0012/test_0012.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
