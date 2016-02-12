@@ -314,6 +314,18 @@ GUI_TEST_CLASS_DEFINITION(test_5079) {
     CHECK_SET_ERR(!l.hasError(), "unexpected errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_5128) {
+    //1. Open any 3D structure.
+    GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.PDB");
+
+    //2. Context menu: { Molecular Surface -> * }.
+    //3. Select any model.
+    //Current state: crash
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Molecular Surface" << "SAS"));
+    GTWidget::click(os, GTWidget::findWidget(os, "1-1CF7"), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
