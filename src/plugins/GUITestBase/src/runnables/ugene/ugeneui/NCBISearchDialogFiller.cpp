@@ -327,6 +327,10 @@ void NCBISearchDialogFillerDeprecated::commonScenario(){
     GTGlobals::sleep(5000);
 
 
+    if (term != ""){
+        QComboBox* term_box = GTWidget::findExactWidget<QComboBox*>(os, "term_box", dialog);
+        GTComboBox::setIndexWithText(os, term_box, term);
+    }
     if (resultLimit!=-1){
         QSpinBox* resultLimitBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "resultLimitBox", dialog));
         GTSpinBox::setValue(os, resultLimitBox, resultLimit, GTGlobals::UseKeyBoard);

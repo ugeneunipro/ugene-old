@@ -84,11 +84,12 @@ private:
 // use NCBISearchDialogFillerDeprecated instead
 class NCBISearchDialogFillerDeprecated : public Filler {
 public:
-    NCBISearchDialogFillerDeprecated(HI::GUITestOpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
+    NCBISearchDialogFillerDeprecated(HI::GUITestOpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1, QString _term = "") :
         Filler(os, "SearchGenbankSequenceDialog"),
         query(_query),
         doubleEnter(_doubleEnter),
-        resultLimit(_resultLimit){}
+        resultLimit(_resultLimit),
+        term(_term){}
     void commonScenario();
 
 private:
@@ -96,6 +97,7 @@ private:
 
     bool doubleEnter;
     int resultLimit;
+    QString term;
 
     bool shownCorrect();
     int getResultNumber();
