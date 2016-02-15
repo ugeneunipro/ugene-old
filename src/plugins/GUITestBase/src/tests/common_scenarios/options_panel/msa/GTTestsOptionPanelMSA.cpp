@@ -1404,11 +1404,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
 //    Expected state: error in log: Task {Pairwise alignment task} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
     QString expected;
-#ifdef Q_OS_WIN
-    expected = "Task {Pairwise alignment task} finished with error: Failed to rename";
-#else
     expected = QString("Task {Pairwise alignment task} finished with error: No permission to write to \'%1\' file.").arg(fileName);
-#endif
     CHECK_SET_ERR(error.contains(expected), QString("enexpected error: %1").arg(error));
 }
 
@@ -1940,11 +1936,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
 //    Expected state: error in log: Task {Save document} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
     QString expected;
-#ifdef Q_OS_WIN
-    expected = "Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: Failed to rename";
-#else
     expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
-#endif
     CHECK_SET_ERR(error.contains(expected), QString("enexpected error: %1").arg(error));
 }
 
