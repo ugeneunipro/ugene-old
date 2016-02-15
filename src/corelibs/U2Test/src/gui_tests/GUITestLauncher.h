@@ -49,7 +49,7 @@ private:
     QString testOutDir;
 
     static QStringList getTestProcessArguments(const QString &testName);
-    QProcessEnvironment getProcessEnvironment(const QString &testName);
+    QProcessEnvironment getProcessEnvironment(QString testName);
     static QString testOutFile(const QString &testName);
     static QString getTestOutDir();
 
