@@ -25,6 +25,7 @@
 #include <drivers/GTMouseDriver.h>
 #include <primitives/GTWidget.h>
 #include "primitives/PopupChooser.h"
+#include "utils/GTThread.h"
 
 #include <U2Core/Task.h>
 #include <U2Gui/MainWindow.h>
@@ -83,6 +84,7 @@ void GTUtilsTaskTreeView::openView(HI::GUITestOpStatus& os) {
     if (!documentTreeWidget) {
         toggleView(os);
         GTGlobals::sleep(500);
+        GTThread::waitForMainThread(os);
     }
 }
 
