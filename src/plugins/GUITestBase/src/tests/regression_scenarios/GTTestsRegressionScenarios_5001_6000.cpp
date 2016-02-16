@@ -242,7 +242,7 @@ GUI_TEST_CLASS_DEFINITION(test_5027_2) {
         int memValue;
     };
 
-    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemorySetter(512)));
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemorySetter(256)));
     GTMenu::clickMainMenuItem(os, QStringList() << "Settings" << "Preferences...");
     GTGlobals::sleep();
 
