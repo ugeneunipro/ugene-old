@@ -96,7 +96,6 @@ add-plugin dna_graphpack
 add-plugin dna_stat
 add-plugin dotplot
 add-plugin enzymes
-add-plugin expert_discovery
 add-plugin external_tool_support
 add-plugin genome_aligner
 add-plugin gor4

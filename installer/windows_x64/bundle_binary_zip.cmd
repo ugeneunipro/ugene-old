@@ -133,7 +133,6 @@ call %INSTALL_DIR%\copy_plugin.cmd umuscle
 call %INSTALL_DIR%\copy_plugin.cmd weight_matrix
 call %INSTALL_DIR%\copy_plugin.cmd workflow_designer
 call %INSTALL_DIR%\copy_plugin.cmd dbi_bam
-call %INSTALL_DIR%\copy_plugin.cmd expert_discovery
 call %INSTALL_DIR%\copy_plugin.cmd pcr
 call %INSTALL_DIR%\copy_plugin.cmd ptools
 call %INSTALL_DIR%\copy_plugin.cmd dna_flexibility

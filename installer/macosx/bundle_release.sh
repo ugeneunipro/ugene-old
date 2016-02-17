@@ -95,7 +95,6 @@ PLUGIN_LIST="annotator \
             dna_stat \
             dotplot \
             enzymes \
-            expert_discovery \
             external_tool_support \
             genome_aligner \
             gor4 \

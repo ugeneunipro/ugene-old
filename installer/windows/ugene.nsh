@@ -212,7 +212,6 @@ Section "Build"
     !insertmacro AddPlugin dna_stat
     !insertmacro AddPlugin dotplot
     !insertmacro AddPlugin enzymes
-    !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin external_tool_support
     !insertmacro AddPlugin genome_aligner
     !insertmacro AddPlugin gor4

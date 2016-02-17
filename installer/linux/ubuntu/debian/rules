@@ -85,8 +85,6 @@ install-arch:
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/dotplot.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/enzymes.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/enzymes.plugin
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/expert_discovery.license
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/expert_discovery.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/external_tool_support.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/external_tool_support.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/genome_aligner.license
