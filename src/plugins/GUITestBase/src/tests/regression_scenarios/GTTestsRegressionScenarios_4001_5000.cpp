@@ -1902,6 +1902,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
 
     GTUtilsNotifications::waitForNotification(os, true, "It seems that sequence");
     GTUtilsProjectTreeView::dragAndDrop(os, sequenceObjIndex, GTWidget::findWidget(os, "assembly_reads_area"));
+    GTGlobals::sleep();
 
     // Expected state: sequence object and document are highlighted in the Project view
     QFont itemFont = GTUtilsProjectTreeView::getFont(os, sequenceObjIndex);
