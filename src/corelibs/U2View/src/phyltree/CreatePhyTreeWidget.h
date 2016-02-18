@@ -45,7 +45,7 @@ public:
     virtual bool checkMemoryEstimation(QString &message, const MAlignment &ma, const CreatePhyTreeSettings &settings);
     virtual bool insertOutputOptionWidget(PhyTreeDisplayOptionsWidget *outputOptionsWidget);
 
-    static const QString settingsPath;
+    static QString settingsPath();
 };
 
 }   // namespace U2

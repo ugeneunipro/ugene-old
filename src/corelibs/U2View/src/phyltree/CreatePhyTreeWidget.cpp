@@ -21,9 +21,13 @@
 
 #include "CreatePhyTreeWidget.h"
 
+#define PHY_TREE_SETTINGS "phytree_dialog_settings"
+
 namespace U2 {
 
-const QString CreatePhyTreeWidget::settingsPath = "phytree_dialog_settings";
+QString CreatePhyTreeWidget::settingsPath(){
+    return QString(PHY_TREE_SETTINGS);
+}
 
 CreatePhyTreeWidget::CreatePhyTreeWidget(QWidget *parent) :
     QWidget(parent)
