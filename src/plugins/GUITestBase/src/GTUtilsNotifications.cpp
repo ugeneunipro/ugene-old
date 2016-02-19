@@ -76,6 +76,7 @@ NotificationDialogFiller::NotificationDialogFiller(HI::GUITestOpStatus &os, cons
 
 #define GT_METHOD_NAME "commonScenario"
 void NotificationDialogFiller::commonScenario() {
+    GTGlobals::sleep(1000);
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "active modal widget is invalid");
 
