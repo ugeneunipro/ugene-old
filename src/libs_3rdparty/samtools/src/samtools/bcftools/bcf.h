@@ -31,7 +31,7 @@
 #define BCF_VERSION "0.1.17-dev (r973:277)"
 
 #include <stdint.h>
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 
 #ifndef BCF_LITE
 #include "bgzf.h"

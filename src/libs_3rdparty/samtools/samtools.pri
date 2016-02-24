@@ -10,8 +10,9 @@ win32 : DEFINES += _USE_MATH_DEFINES "inline=__inline" "__func__=__FUNCTION__" "
 LIBS += -L../../_release
 
 use_bundled_zlib() {
-    INCLUDEPATH += ../zlib/src
     LIBS += -lzlib
+} else {
+    LIBS += -lz
 }
 
 macx {

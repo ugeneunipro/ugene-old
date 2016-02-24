@@ -25,7 +25,7 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <sqlite3.h>
+#include <3rdparty/sqlite3/sqlite3.h>
 
 namespace U2 {
 

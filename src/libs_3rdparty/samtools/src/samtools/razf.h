@@ -35,7 +35,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "zlib.h"
+#include <3rdparty/zlib/zlib.h>
 
 #ifdef _USE_KNETFILE
 #include "knetfile.h"

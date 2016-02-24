@@ -72,7 +72,7 @@
 #endif
 
 #if defined(GL2PS_HAVE_ZLIB)
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 #endif
 
 #if defined(GL2PS_HAVE_LIBPNG)

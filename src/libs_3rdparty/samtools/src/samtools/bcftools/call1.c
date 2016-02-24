@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <math.h>
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 #include <errno.h>
 #include "bcf.h"
 #include "prob1.h"

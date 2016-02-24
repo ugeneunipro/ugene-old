@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <math.h>
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 #include "bam.h"
 #include "errmod.h"
 
