@@ -354,7 +354,7 @@ Task::ReportResult GTest_CheckAnnotationLocation::report() {
     int n = location.size();
     const QVector<U2Region>& alocation = annotation->location->regions;
     if (n!=alocation.size()) {
-        stateInfo.setError(QString("number of regions not matched: %1, expected %2").arg(n).arg(alocation.size()));
+        stateInfo.setError(QString("number of regions not matched: expected: %1, actual %2").arg(n).arg(alocation.size()));
         QString msg = "Check location regions:\n";
         foreach(const U2Region& r, alocation) {
             msg+=QString::number(r.startPos+1)+".." + QString::number(r.endPos())+",\n";
