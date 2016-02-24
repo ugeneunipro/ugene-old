@@ -33,8 +33,7 @@ For *nix users:
 ===================================
 0) installation paths may be corrected in ugene_globals.pri
 
-1) 
-   for 32 bit: qmake -r
+1) for 32 bit: qmake -r
    for 64 bit: qmake CONFIG+=x64 -r
 
 2) make
