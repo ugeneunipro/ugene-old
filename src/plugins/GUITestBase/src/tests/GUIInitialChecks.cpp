@@ -33,6 +33,7 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #include "utils/GTUtilsDialog.h"
+#include "utils/GTThread.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
@@ -190,6 +191,7 @@ GUI_TEST_CLASS_DEFINITION(post_action_0002) {
         GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
         GTUtilsDialog::waitForDialog(os, new AppCloseMessageBoxDialogFiller(os));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTThread::waitForMainThread(os);
         GTGlobals::sleep(500);
 #ifdef Q_OS_MAC
         GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Close project");

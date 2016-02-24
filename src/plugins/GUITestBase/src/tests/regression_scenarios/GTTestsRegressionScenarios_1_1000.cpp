@@ -2261,6 +2261,7 @@ GUI_TEST_CLASS_DEFINITION(test_0846) {
 
 //    2. Add any annotations;
     GTUtilsAnnotationsTreeView::createAnnotation(os, "", "", "1..100");
+    GTGlobals::sleep(1000);
 
 //    3. Use popup menu {Export->Export annotations}
 //    4. Chose "csv" in combobox "File format"
@@ -2451,9 +2452,26 @@ GUI_TEST_CLASS_DEFINITION(test_0868){
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    QWidget* assembly_reads_area = GTWidget::findWidget(os, "assembly_reads_area");
-    QPixmap pixmap = GTWidget::getPixmap(os, assembly_reads_area);
-    QImage initImg = pixmap.toImage();
+
+    QWidget* assemblyBrowser = GTWidget::findWidget(os, "assembly_browser_chrM.sorted.bam [as] chrM");
+    QList<QScrollBar*> scrollList = assemblyBrowser->findChildren<QScrollBar*>();
+    int size = scrollList.size();
+    CHECK_SET_ERR(size == 2, QString("unexpected scrollbars nubmer: %1").arg(size));
+    QScrollBar* vertical;
+    QScrollBar* horizontal;
+    foreach (QScrollBar* b, scrollList) {
+        if(b->orientation() == Qt::Horizontal){
+            horizontal = b;
+            continue;
+        }
+        if(b->orientation() == Qt::Vertical){
+            vertical = b;
+            continue;
+        }
+    }
+
+    int initvVal = vertical->value();
+    int inithVal = horizontal->value();
 
 //    4. Go to any other region
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
@@ -2465,11 +2483,10 @@ GUI_TEST_CLASS_DEFINITION(test_0868){
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-//    Expected state: it shows the location that you saved before
-    assembly_reads_area = GTWidget::findWidget(os, "assembly_reads_area");
-    pixmap = GTWidget::getPixmap(os, assembly_reads_area);
-    QImage finalImg = pixmap.toImage();
-    CHECK_SET_ERR(initImg == finalImg, "bookmark does not work");
+    int finalvVal = vertical->value();
+    int finalhVal = horizontal->value();
+    CHECK_SET_ERR(finalhVal == inithVal, QString("horizontal scroll value does not match. Ecpected: %1, actual: %2").arg(inithVal).arg(finalhVal))
+    CHECK_SET_ERR(finalvVal == initvVal, QString("vertical scroll value does not match. Ecpected: %1, actual: %2").arg(initvVal).arg(finalvVal))
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0871) {

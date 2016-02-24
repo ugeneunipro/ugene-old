@@ -26,6 +26,7 @@
 #include "GTTestsMSAEditorOverview.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "primitives/GTAction.h"
@@ -477,7 +478,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     QPixmap pixmap = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmap.toImage();
 //    4. Go to Highlighting tab on Options panel.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTGlobals::sleep(500);
 //    5. Select Highlighting to "Gaps"
     QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
@@ -488,7 +489,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Calculation method"
                                                       << "Highlighting"));
     GTMenu::showContextMenu(os, overviewGraph);
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTGlobals::sleep(1000);
 //    Expected state: graph didn't change.
 
@@ -514,7 +515,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019){
     QPixmap pixmap = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmap.toImage();
 
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTUtilsMSAEditorSequenceArea::selectSequence(os, "sf170");
     GTWidget::click(os, GTWidget::findWidget(os,"addSeq"));
 //    5. Change Highlighting.

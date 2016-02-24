@@ -28,6 +28,7 @@
 #include <primitives/GTTreeWidget.h>
 #include "GTUtilsTaskTreeView.h"
 #include "utils/GTUtilsApp.h"
+#include "utils/GTThread.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Gui/MainWindow.h>
@@ -58,6 +59,7 @@ void GTUtilsOptionsPanel::runFindPatternWithHotKey( const QString& pattern, HI::
     GTKeyboardDriver::keySequence(os, pattern);
     GTGlobals::sleep(1000);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTThread::waitForMainThread(os);
 }
 #undef GT_METHOD_NAME
 

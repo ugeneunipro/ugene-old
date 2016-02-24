@@ -1511,7 +1511,7 @@ GUI_TEST_CLASS_DEFINITION(test_3245) {
 
     // 2. Ensure that there is a single menu item (Create new color scheme) in the {Colors -> Custom schemes}
     // submenu of the context menu. Click it.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
     QComboBox *combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
     const int initialItemsNumber = combo->count();
@@ -1859,7 +1859,7 @@ GUI_TEST_CLASS_DEFINITION(test_3277){
     QColor before = GTWidget::getColor(os, seqArea, QPoint(1,1));
     QString bName = before.name();
 //    Open the "Highlighting" options panel tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    Set any reference sequence.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
     GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
@@ -2862,7 +2862,7 @@ GUI_TEST_CLASS_DEFINITION(test_3450) {
 
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
     GTKeyboardDriver::keySequence(os, "Montana_montana");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
@@ -2920,7 +2920,7 @@ GUI_TEST_CLASS_DEFINITION(test_3451) {
 
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
     GTKeyboardDriver::keySequence(os, "Montana_montana");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
@@ -4852,7 +4852,7 @@ GUI_TEST_CLASS_DEFINITION(test_3755){
     QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
     QColor before = GTWidget::getColor(os, seqArea, QPoint(2,1));
     //    Open the "Highlighting" options panel tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     //    Select different highlighting schemes.
     QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::setIndexWithText(os, highlightingScheme, "Conservation level");
@@ -6074,7 +6074,7 @@ GUI_TEST_CLASS_DEFINITION(test_3994){
     GTWidget::findWidget(os, "msa_editor_sequence_area");
     QColor before = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(1,0));
     //    Open the "Highlighting" options panel tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     //    Select different highlighting schemes.
     QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     GTComboBox::setIndexWithText(os, highlightingScheme, "Conservation level");

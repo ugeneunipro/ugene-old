@@ -67,7 +67,7 @@ const QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::innerWid
 #define GT_METHOD_NAME "toggleTab"
 void GTUtilsOptionPanelMsa::toggleTab(HI::GUITestOpStatus &os, GTUtilsOptionPanelMsa::Tabs tab) {
     GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 

@@ -2174,9 +2174,9 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0002){
     GTCheckBox::setChecked(os, useDots, true);
 
     //close and open option panel
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTGlobals::sleep(500);
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTGlobals::sleep(500);
 
     //checks

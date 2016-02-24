@@ -3950,7 +3950,7 @@ GUI_TEST_CLASS_DEFINITION( test_2578 ) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Open options panel 'Highlighting' tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
 //    3. Select 'agreements' highlighting scheme.
     QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
@@ -3972,7 +3972,7 @@ GUI_TEST_CLASS_DEFINITION( test_2578 ) {
 //    5. Select 'General' tab, then select 'Highlighting' tab again.
 //    Expected state: the "Export" button is active.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
     exportButton = GTWidget::findWidget(os, "exportHighlightning");
     CHECK_SET_ERR(NULL != exportButton, "exportButton not found");
@@ -5615,7 +5615,7 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //    2. Open options panel 'Highlighting' tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 
     QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
