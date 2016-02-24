@@ -211,7 +211,7 @@ QList<QTreeWidgetItem*> GTUtilsWorkflowDesigner::getVisibleSamples(HI::GUITestOp
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addAlgorithm"
-void GTUtilsWorkflowDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algName, bool exactMatch){
+void GTUtilsWorkflowDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algName, bool exactMatch, bool useDragAndDrop){
     expandTabs(os);
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
     GT_CHECK(tabs!=NULL, "tabs widget not found");
@@ -228,7 +228,11 @@ void GTUtilsWorkflowDesigner::addAlgorithm(HI::GUITestOpStatus &os, QString algN
 
     int workerNum = getWorkers(os).size();
     QPoint p(w->rect().topLeft() + QPoint(100+300*(workerNum-(workerNum/2)*2),100 + 200*(workerNum/2)));//shifting workers position
-    GTWidget::click(os, w,Qt::LeftButton, p);
+    if(useDragAndDrop){
+        GTMouseDriver::dragAndDrop(os, GTMouseDriver::getMousePosition(), w->mapToGlobal(p));
+    }else{
+        GTWidget::click(os, w,Qt::LeftButton, p);
+    }
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME

@@ -80,7 +80,7 @@ public:
 
     //add to scene
     static void addSample(HI::GUITestOpStatus &os, const QString &sampName);
-    static void addAlgorithm(HI::GUITestOpStatus &os, QString algName, bool exactMatch = false);
+    static void addAlgorithm(HI::GUITestOpStatus &os, QString algName, bool exactMatch = false, bool useDragAndDrop = false);
     static WorkflowProcessItem * addElement(HI::GUITestOpStatus &os, const QString &algName, bool exactMatch = false);
 
     //returns center of worker on workflow scene in global coordinates

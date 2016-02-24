@@ -535,6 +535,13 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     CHECK_SET_ERR(!l.hasError(), "There are error messages about write access in WD directory");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0018){
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "read alignment", false, true);
+    GTGlobals::sleep();
+    GTUtilsWorkflowDesigner::getWorker(os, "Read Alignment");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0058){
     //1. Click the menu {File -> New workflow}
     //Expected: Workflow Designer is opened.
