@@ -43,6 +43,8 @@ public:
     double tm;
 
     static const int MAX_LEN = 1024;
+    static const double INVALID_TM = -1;
+    static const double INVALID_GC = -1;
 };
 
 } // U2

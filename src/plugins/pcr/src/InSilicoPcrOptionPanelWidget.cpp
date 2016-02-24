@@ -53,8 +53,11 @@ namespace {
 }
 
 InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView)
-    : QWidget(), annotatedDnaView(annotatedDnaView), pcrTask(NULL), resultTableShown(false),
-    savableWidget(this, GObjectViewUtils::findViewByName(annotatedDnaView->getName()))
+    : QWidget(),
+      annotatedDnaView(annotatedDnaView),
+      pcrTask(NULL),
+      resultTableShown(false),
+      savableWidget(this, GObjectViewUtils::findViewByName(annotatedDnaView->getName()))
 {
     GCOUNTER(cvar, tvar, "PCR options panel");
     setupUi(this);
@@ -64,6 +67,9 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     annsComboBox->addItem(tr("Inner"), ExtractProductSettings::Inner);
     annsComboBox->addItem(tr("All intersected"), ExtractProductSettings::All);
     annsComboBox->addItem(tr("None"), ExtractProductSettings::None);
+
+    forwardPrimerBox->setAnnotatedDnaView(annotatedDnaView);
+    reversePrimerBox->setAnnotatedDnaView(annotatedDnaView);
 
     connect(forwardPrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
     connect(reversePrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));

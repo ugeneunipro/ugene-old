@@ -19,29 +19,84 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceUtils.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/L10n.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "Primer.h"
 #include "PrimerGroupBox.h"
 
 #include "PrimerStatistics.h"
 
 namespace U2 {
 
-bool PrimerStatistics::checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &error) {
+bool PrimerStatistics::checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &message) {
+    bool forwardIsValid = validate(forward);
+    bool reverseIsValid = validate(reverse);
+    if (!forwardIsValid && !reverseIsValid) {
+        message = tr("Primers contain non-ACGTN symbols");
+    } else if (!forwardIsValid) {
+        message = tr("Forward primer contains non-ACGTN symbol");
+    } else if (!reverseIsValid) {
+        message = tr("Reverse primer contains non-ACGTN symbol");
+    }
+    if (!message.isEmpty()) {
+        return false;
+    }
+
     PrimersPairStatistics calc(forward, reverse);
-    error = calc.getFirstError();
-    return error.isEmpty();
+    message = calc.getFirstError();
+    return message.isEmpty();
 }
 
 double PrimerStatistics::getMeltingTemperature(const QByteArray &sequence) {
+    CHECK(validate(sequence), Primer::INVALID_TM);
     PrimerStatisticsCalculator calc(sequence);
     return calc.getTm();
 }
 
+double PrimerStatistics::getMeltingTemperature(const QByteArray& initialPrimer, const QByteArray& alternativePrimer) {
+    if (PrimerStatistics::validate(initialPrimer)) {
+        return PrimerStatistics::getMeltingTemperature(initialPrimer);
+    }
+    if (PrimerStatistics::validate(alternativePrimer)) {
+        return PrimerStatistics::getMeltingTemperature(alternativePrimer);
+    }
+    return Primer::INVALID_TM;
+}
+
 double PrimerStatistics::getAnnealingTemperature(const QByteArray &product, const QByteArray &forwardPrimer, const QByteArray &reversePrimer) {
-    double primersTm = (getMeltingTemperature(forwardPrimer) + getMeltingTemperature(reversePrimer)) / 2;
+    CHECK(validate(product) == true, Primer::INVALID_TM);
+
+    double forwardTm = getMeltingTemperature(forwardPrimer, product.left(forwardPrimer.length()));
+    CHECK(forwardTm != Primer::INVALID_TM, Primer::INVALID_TM);
+    double reverseTm = getMeltingTemperature(reversePrimer, DNASequenceUtils::reverseComplement(product.right(reversePrimer.length())));
+    CHECK(reverseTm != Primer::INVALID_TM, Primer::INVALID_TM);
+
+    double primersTm = (forwardTm + reverseTm) / 2;
     double productTm = getMeltingTemperature(product);
     return 0.3 * primersTm + 0.7 * productTm - 14.9;
+}
+
+bool PrimerStatistics::validate(const QByteArray &primer) {
+    return validate(QString(primer));
+}
+
+bool PrimerStatistics::validate(QString primer) {
+    PrimerValidator pv(NULL, false);
+    int pos = 0;
+    return pv.validate(primer, pos) == QValidator::Acceptable;
+}
+
+
+QString PrimerStatistics::getDoubleStringValue(double value) {
+    QString result = QString::number(value, 'f', 2);
+    result.remove(QRegExp("\\.?0+$"));
+    return result;
 }
 
 /************************************************************************/
@@ -213,7 +268,8 @@ namespace {
 }
 
 PrimersPairStatistics::PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse)
-: forward(forward, PrimerStatisticsCalculator::Forward), reverse(reverse, PrimerStatisticsCalculator::Reverse)
+    : forward(forward, PrimerStatisticsCalculator::Forward),
+      reverse(reverse, PrimerStatisticsCalculator::Reverse)
 {
     HeteroDimersFinder dimersFinder(forward, reverse);
     dimersInfo = dimersFinder.getResult();

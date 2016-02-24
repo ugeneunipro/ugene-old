@@ -22,6 +22,9 @@
 #include <QPainter>
 #include <QStyleOption>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
+
 #include "PrimerLineEdit.h"
 
 namespace U2 {
@@ -29,7 +32,7 @@ namespace U2 {
 PrimerLineEdit::PrimerLineEdit(QWidget *parent)
 : QLineEdit(parent)
 {
-    setValidator(new PrimerValidator(QRegExp("[acgtACGT]+"), this));
+    setValidator(new PrimerValidator(this));
 }
 
 void PrimerLineEdit::setInvalidatedText(const QString &text) {
@@ -80,10 +83,13 @@ QRect PrimerLineEdit::placeHolderRect() const {
     return lineRect.adjusted(minLB, 0, -minRB, 0);
 }
 
-PrimerValidator::PrimerValidator(const QRegExp &rx, QObject *parent)
-: QRegExpValidator(rx, parent)
+PrimerValidator::PrimerValidator(QObject *parent, bool allowExtended)
+: QRegExpValidator(parent)
 {
-
+    const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(
+                allowExtended ? BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() : BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    QByteArray alphabetChars = alphabet->getAlphabetChars(true);
+    setRegExp(QRegExp(QString("[%1]+").arg(alphabetChars.constData())));
 }
 
 QValidator::State PrimerValidator::validate(QString &input, int &pos) const {

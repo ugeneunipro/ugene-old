@@ -25,16 +25,21 @@
 #include <QObject>
 #include "PrimerDimersFinder.h"
 
+
 namespace U2 {
 
 class PrimerStatistics : public QObject {
     Q_OBJECT
 public:
-    static bool checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &error);
+    static bool checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &message);
     static double getMeltingTemperature(const QByteArray &sequence);
+    static double getMeltingTemperature(const QByteArray& initialPrimer, const QByteArray& alternativePrimer);
     static double getAnnealingTemperature(const QByteArray &product, const QByteArray &forwardPrimer, const QByteArray &reversePrimer);
 
-    static QString generatePrimersPairReport(const QByteArray &forward, const QByteArray &reverse);
+    static bool validate(const QByteArray& primer);
+    static bool validate(QString primer);
+
+    static QString getDoubleStringValue(double value);
 };
 
 class PrimerStatisticsCalculator {

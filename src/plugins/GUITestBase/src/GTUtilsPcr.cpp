@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QLabel>
 #include <QTableView>
 
 #include <U2Core/AppContext.h>
@@ -76,6 +77,13 @@ QPoint GTUtilsPcr::getDetailsPoint(HI::GUITestOpStatus &os) {
     QPoint result = warning->geometry().center();
     result.setX(result.x()/2);
     return warning->parentWidget()->mapToGlobal(result);
+}
+
+QString GTUtilsPcr::getPrimerInfo(GUITestOpStatus &os, U2Strand::Direction direction) {
+    QLabel* primerInfo = GTWidget::findExactWidget<QLabel*>(os, "characteristicsLabel",
+                                                            GTWidget::findWidget(os, direction == U2Strand::Direct ? "forwardPrimerBox" : "reversePrimerBox"));
+    CHECK_SET_ERR_RESULT(primerInfo != NULL, "Cannot find primer info label", QString());
+    return primerInfo->text();
 }
 
 QWidget * GTUtilsPcr::primerBox(HI::GUITestOpStatus &os, U2Strand::Direction direction) {

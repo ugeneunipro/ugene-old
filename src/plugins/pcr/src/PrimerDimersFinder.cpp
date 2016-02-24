@@ -44,7 +44,7 @@ QString DimerFinderResult::getShortReport() const {
 static QMap<QByteArray, qreal> initEnergyMap() {
     QMap<QByteArray, qreal> initializedEnergyMap;
 
-    /*The pairwise dG° values for DNA are taken from article:
+    /*The pairwise dG values for DNA are taken from article:
     Breslauer, K.,J., Frank, R., Blocker, H., and Marky, L.A. (1986) Predicting DNA duplex
     stability from the base sequence, Proc. Natl. Acad. Sci. USA 83:3746-3750.*/
 
@@ -263,3 +263,4 @@ QString HeteroDimersFinder::getDimersOverlapping(int dimerFormationPos) {
 }
 
 } // U2
+

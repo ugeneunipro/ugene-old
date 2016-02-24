@@ -26,6 +26,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/L10n.h>
 
+#include "Primer.h"
 #include "PrimerStatistics.h"
 
 #include "InSilicoPcrTask.h"
@@ -41,7 +42,8 @@ InSilicoPcrTaskSettings::InSilicoPcrTaskSettings()
 }
 
 InSilicoPcrProduct::InSilicoPcrProduct()
-: ta(0.0), forwardPrimerMatchLength(0), reversePrimerMatchLength(0)
+    : forwardPrimerMatchLength(0),
+      reversePrimerMatchLength(0)
 {
 
 }
@@ -72,6 +74,7 @@ FindAlgorithmTaskSettings InSilicoPcrTask::getFindPatternSettings(U2Strand::Dire
     result.searchRegion.length = settings.sequence.length();
     result.patternSettings = FindAlgorithmPatternSettings_Subst;
     result.strand = FindAlgorithmStrand_Both;
+    result.useAmbiguousBases = true;
 
     if (U2Strand::Direct == direction) {
         result.pattern = settings.forwardPrimer;
@@ -179,17 +182,21 @@ QByteArray InSilicoPcrTask::getSequence(const U2Region &region, U2Strand::Direct
 }
 
 QString InSilicoPcrTask::generateReport() const {
-    PrimersPairStatistics calc(settings.forwardPrimer, settings.reversePrimer);
     QString spaces;
     for (int i=0; i<150; i++) {
         spaces += "&nbsp;";
     }
-    return tr("Products found: %1").arg(results.size()) +
-           "<br>" +
-           spaces +
-           "<br>" +
-           tr("Primers details:") +
-           calc.generateReport();
+    if (PrimerStatistics::validate(settings.forwardPrimer) && PrimerStatistics::validate(settings.reversePrimer)) {
+        PrimersPairStatistics calc(settings.forwardPrimer, settings.reversePrimer);
+        return tr("Products found: %1").arg(results.size()) +
+                "<br>" +
+                spaces +
+                "<br>" +
+                tr("Primers details:") +
+                calc.generateReport();
+    }
+
+    return tr("Products found: %1 <br><br>Degenerated alphabet was used.").arg(results.size());
 }
 
 InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &leftPrimer, const U2Region &product, const U2Region &rightPrimer, U2Strand::Direction direction) const {
@@ -201,7 +208,9 @@ InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &leftPrimer, con
 
     InSilicoPcrProduct result;
     result.region = product;
-    result.ta = PrimerStatistics::getAnnealingTemperature(productSequence, settings.forwardPrimer, settings.reversePrimer);
+    result.ta = PrimerStatistics::getAnnealingTemperature(productSequence,
+                                                          direction == U2Strand::Direct ? settings.forwardPrimer : settings.reversePrimer,
+                                                          direction == U2Strand::Direct ? settings.reversePrimer : settings.forwardPrimer);
     result.forwardPrimerMatchLength = leftPrimer.length;
     result.reversePrimerMatchLength = rightPrimer.length;
     result.forwardPrimer = settings.forwardPrimer;
@@ -209,6 +218,7 @@ InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &leftPrimer, con
     if (U2Strand::Complementary == direction) {
         qSwap(result.forwardPrimer, result.reversePrimer);
     }
+
     return result;
 }
 

@@ -52,7 +52,8 @@ void EditPrimerDialog::init() {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467823");
 
-    primerEdit->setValidator(new QRegExpValidator(QRegExp("[acgtACGT]+")));
+    primerEdit->setValidator(new PrimerValidator(this));
+
     connect(primerEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
 
     connect(primerEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_validate()));

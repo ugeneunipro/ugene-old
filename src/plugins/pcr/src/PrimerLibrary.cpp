@@ -177,17 +177,24 @@ void PrimerLibrary::removePrimer(const Primer &primer, U2OpStatus &os) {
 }
 
 void PrimerLibrary::addRawPrimer(Primer primer, U2OpStatus &os) {
-    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGC();
-    primer.tm = calc.getTm();
+    setTmAndGcOfPrimer(primer);
     addPrimer(primer, os);
 }
 
 void PrimerLibrary::updateRawPrimer(Primer primer, U2OpStatus &os) {
-    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGC();
-    primer.tm = calc.getTm();
+    setTmAndGcOfPrimer(primer);
     updatePrimer(primer, os);
+}
+
+void PrimerLibrary::setTmAndGcOfPrimer(Primer &primer) {
+    if (PrimerStatistics::validate(primer.sequence)) {
+        PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
+        primer.gc = calc.getGC();
+        primer.tm = calc.getTm();
+    } else {
+        primer.gc = Primer::INVALID_GC;
+        primer.tm = Primer::INVALID_TM;
+    }
 }
 
 } // U2

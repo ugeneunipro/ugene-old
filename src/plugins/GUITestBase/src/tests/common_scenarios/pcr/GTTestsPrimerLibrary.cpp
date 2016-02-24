@@ -26,6 +26,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsPrimerLibrary.h"
 #include "GTUtilsProject.h"
@@ -672,6 +673,64 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
     const QString fourthData = GTUtilsPrimerLibrary::getPrimerSequence(os, "primerToImport10");
     CHECK_SET_ERR("GACGCTAGCATCGACTAGCA" == fourthData, QString("An unexpected primer '%1' data: expect %2, got %3").arg("primerToImport10").arg("GACGCTAGCATCGACTAGCA").arg(fourthData));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    // Degenerated primers in the primer library
+    // 1. Open primer library
+    GTUtilsPrimerLibrary::openLibrary(os);
+    GTUtilsPrimerLibrary::clearLibrary(os);
+
+    // 2. Create the forward primer "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT"
+    GTUtilsPrimerLibrary::addPrimer(os, "test_0014_forward", "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT");
+
+    // 3. Create the reverse primer "AAGCGCGCGAACAGAAGCGAGAAGCGAACT"
+    GTUtilsPrimerLibrary::addPrimer(os, "test_0014_reverse", "AAGCGCGCGAACAGAAGCGAGAAGCGAACT");
+
+    // 4. Edit the reverse primer. New value: "AAGCGNNNNNNNNNNNNNNNNNNNNNR"
+    GTUtilsPrimerLibrary::clickPrimer(os, 1);
+
+    AddPrimerDialogFiller::Parameters parameters;
+    parameters.primer = "AAGCGNNNNNNNNNNNNNNNNNNNNNR";
+    parameters.name = "test_0014_reverse_edit";
+    GTUtilsDialog::waitForDialog(os, new AddPrimerDialogFiller(os, parameters));
+
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Edit);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+    // Find the product with the degenerated primers from the library
+    // 1. Open primer library
+    GTUtilsPrimerLibrary::openLibrary(os);
+    GTUtilsPrimerLibrary::clearLibrary(os);
+
+    // 2. Create the forward primer "GGGCCAAACAGGATATCTGTGGTAAGCAGT"
+    GTUtilsPrimerLibrary::addPrimer(os, "test_0015_forward", "GGGCCAAACAGGATATCTGTGGTAAGCAGT");
+
+    // 3. Create the reverse primer "AAGCGNNNNNNNNNNNNNNNNNNNNNR"
+    GTUtilsPrimerLibrary::addPrimer(os, "test_0015_reverse", "AAGCGNNNNNNNNNNNNNNNNNNNNNR");
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Close);
+
+    // 4. Open "_common_data/fasta/begin-end.fa"
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/pcr/begin-end.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 5. Set the primers from the library
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+    GTUtilsDialog::waitForDialog(os, new PrimerLibrarySelectorFiller(os, 0, true));
+    GTWidget::click(os, GTUtilsPcr::browseButton(os, U2Strand::Direct));
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PrimerLibrarySelectorFiller(os, 1, true));
+    GTWidget::click(os, GTUtilsPcr::browseButton(os, U2Strand::Complementary));
+
+    // 4. Find the product
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected: 3 results were found
+    CHECK_SET_ERR(3 == GTUtilsPcr::productsCount(os), "Wrong results count");
 }
 
 } // GUITest_common_scenarios_primer_library

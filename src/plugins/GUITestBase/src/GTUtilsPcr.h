@@ -42,6 +42,7 @@ public:
     static QString getResultRegion(HI::GUITestOpStatus &os, int number);
     static QPoint getResultPoint(HI::GUITestOpStatus &os, int number);
     static QPoint getDetailsPoint(HI::GUITestOpStatus &os);
+    static QString getPrimerInfo(HI::GUITestOpStatus &os, U2Strand::Direction direction);
     static QWidget * primerBox(HI::GUITestOpStatus &os, U2Strand::Direction direction);
     static void clearPcrDir(HI::GUITestOpStatus &os);
 

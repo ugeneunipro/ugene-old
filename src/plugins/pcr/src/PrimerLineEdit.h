@@ -43,7 +43,7 @@ private:
 
 class PrimerValidator : public QRegExpValidator {
 public:
-    PrimerValidator(const QRegExp &rx, QObject *parent);
+    PrimerValidator(QObject* parent, bool allowExtended = true);
     State validate(QString &input, int &pos) const;
 };
 

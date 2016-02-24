@@ -60,6 +60,7 @@ signals:
 
 private:
     static void initPrimerUdr(U2OpStatus &os);
+    static void setTmAndGcOfPrimer(Primer& primer);
 
     PrimerLibrary(DbiConnection *connection);
 

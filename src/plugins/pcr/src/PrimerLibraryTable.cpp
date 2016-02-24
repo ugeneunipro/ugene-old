@@ -131,9 +131,9 @@ QVariant PrimerLibraryModel::displayData(const QModelIndex &index) const {
         case 0:
             return primer.name;
         case 1:
-            return PrimerGroupBox::getDoubleStringValue(primer.gc);
+            return primer.gc != Primer::INVALID_GC ? PrimerStatistics::getDoubleStringValue(primer.gc) : tr("N/A");
         case 2:
-            return PrimerGroupBox::getDoubleStringValue(primer.tm);
+            return primer.tm != Primer::INVALID_TM ? PrimerStatistics::getDoubleStringValue(primer.tm) : tr("N/A");
         case 3:
             return primer.sequence.length();
         case 4:

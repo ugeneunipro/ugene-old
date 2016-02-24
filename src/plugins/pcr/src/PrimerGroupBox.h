@@ -26,26 +26,41 @@
 
 namespace U2 {
 
+class ADVSequenceObjectContext;
+class AnnotatedDNAView;
+class FindAlgorithmTask;
+class U2SequenceObject;
+
 class PrimerGroupBox : public QWidget, public Ui::PrimerGroupBox {
     Q_OBJECT
 public:
     PrimerGroupBox(QWidget *parent);
+    void setAnnotatedDnaView(AnnotatedDNAView* dnaView);
 
     QByteArray getPrimer() const;
     uint getMismatches() const;
-
-    static QString getDoubleStringValue(double value);
 
 signals:
     void si_primerChanged();
 
 private slots:
-    void sl_onPrimerChanged(const QString &sequence);
+    void sl_onPrimerChanged(const QString &primer);
     void sl_translate();
     void sl_browse();
 
+    void sl_findPrimerTaskStateChanged();
+    void sl_focusChanged();
+
 private:
     static QString getTmString(const QString &sequence);
+
+    void findPrimerAlternatives(const QString& primer);
+    void cancelFindPrimerTask();
+
+    void updateStatistics(const QString &primer);
+
+    FindAlgorithmTask* findPrimerTask;
+    AnnotatedDNAView*   annotatedDnaView;
 };
 
 } // U2

@@ -21,6 +21,7 @@
 
 #include <U2Core/U2IdTypes.h>
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -463,6 +464,100 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     //Expected: there are only 2 primers annotations in the exported document.
     CHECK_SET_ERR(NULL == GTUtilsAnnotationsTreeView::findItem(os, "middle", GTGlobals::FindOptions(false)), "Unexpected annotation 2");
     CHECK_SET_ERR(NULL == GTUtilsAnnotationsTreeView::findItem(os, "center", GTGlobals::FindOptions(false)), "Unexpected annotation 3");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    // The temperature label for one primer
+    GTUtilsPcr::clearPcrDir(os);
+
+    // 1. Open "_common_data/fasta/pcr_test.fa"
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 2. Open the PCR OP
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+    // 3. Enter the primer "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT"
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT");
+    GTGlobals::sleep();
+
+    // Expected: the temperature label contains the correct temperature, because the sequence has only one suitable region
+    CHECK_SET_ERR(!GTUtilsPcr::getPrimerInfo(os, U2Strand::Direct).contains("N/A"), "The temperature is not configured")
+
+    // 4. Clear the primer line edit
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "");
+    GTGlobals::sleep();
+
+    // Expected: the temperature label is empty
+    CHECK_SET_ERR(GTUtilsPcr::getPrimerInfo(os, U2Strand::Direct).isEmpty(), "The temperature was not updated");
+
+    // 5. Enter the primer "TTCGGTS"
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "TTCGGTS");
+    // Expected: the temperature is N/A, because the sequence contains a few regions that correspond to the primer
+    CHECK_SET_ERR(GTUtilsPcr::getPrimerInfo(os, U2Strand::Direct).contains("N/A"), "The temperature is not configured");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+    // The warning messages for the primer pair
+    GTUtilsPcr::clearPcrDir(os);
+
+    // 1. Open "_common_data/fasta/begin-end.fa"
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/pcr/begin-end.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 2. Open the PCR OP
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+    // 3. Enter the forward primer "KGGCCAHACAGRATATCTSTGGTAAGCAGT"
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "KGGCCAHACAGRATATCTSTGGTAAGCAGT");
+
+    // Expected: the temperature is defined
+    CHECK_SET_ERR(!GTUtilsPcr::getPrimerInfo(os, U2Strand::Direct).contains("N/A"), "The temperature is not configured");
+
+    // 4. Clear the reverse primer "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNR"
+    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNR");
+    GTGlobals::sleep();
+
+    // Expected: the temperature is N/A, the primer pair info contains the message about non-ACGTN symbols
+    CHECK_SET_ERR(GTUtilsPcr::getPrimerInfo(os, U2Strand::Complementary).contains("N/A"), "The temperature is configured");
+
+    QLabel* warningLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "warningLabel"));
+    CHECK_SET_ERR(warningLabel != NULL, "Cannot find warningLabel");
+    CHECK_SET_ERR(warningLabel->text().contains("ACGTN"), "Incorrect warning message");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    // Find the product with degenerated primers
+    GTUtilsPcr::clearPcrDir(os);
+
+    // 1. Open "_common_data/fasta/pcr_test.fa"
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 2. Open the PCR OP
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+    // 3. Enter the forward primer "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT"
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "TTNGGTGATGWCGGTGAAARCCTCTGACMCATGCAGCT");
+    GTGlobals::sleep();
+
+    // Expected: the temperature label contains the correct temperature, because the sequence has only one suitable region
+    CHECK_SET_ERR(!GTUtilsPcr::getPrimerInfo(os, U2Strand::Direct).contains("N/A"), "The temperature is not configured");
+
+    // 4. Enter the reverse primer "GBGNCCTTGGATGACAATVGGTTCCAAGRCTC"
+    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "GBGNCCTTGGATGACAATVGGTTCCAAGRCTC");
+    GTGlobals::sleep();
+
+    // Expected: the temperature label contains the correct temperature, because the sequence has only one suitable region
+    CHECK_SET_ERR(!GTUtilsPcr::getPrimerInfo(os, U2Strand::Complementary).contains("N/A"), "The temperature is not configured");
+
+    // 5. Find product
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected: one product is found
+    CHECK_SET_ERR(1 == GTUtilsPcr::productsCount(os), "Wrong results count");
+    CHECK_SET_ERR("9 - 1196" == GTUtilsPcr::getResultRegion(os, 0), "Wrong result");
 }
 
 } // GUITest_common_scenarios_in_silico_pcr
