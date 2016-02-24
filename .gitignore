@@ -8,5 +8,28 @@ Makefile
 Makefile.Release
 Makefile.Debug
 
+# Linux generated files
+*.[oa]
+*.so
+*.so.*
+
+# Doxygen generated files
+/html
+
+# VS project files
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj*
+*.tmp
+
+# MacOS generated files
+.DS_Store
+.qmake.stash
+*.xcodeproj/
+
 # Generated ugene shell launcher
 ugene
+
+# Jetbrains tools (CLion, etc..)
+.idea
