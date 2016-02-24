@@ -147,6 +147,7 @@
 #include "project_view/ProjectViewImpl.h"
 #include "shtirlitz/Shtirlitz.h"
 #include "task_view/TaskViewController.h"
+#include "update/UgeneUpdater.h"
 #include "welcome_page/WelcomePageController.h"
 
 using namespace U2;
@@ -495,6 +496,7 @@ int main(int argc, char **argv)
     MainWindowImpl* mw = new MainWindowImpl();
     appContext->setMainWindow(mw);
     mw->prepare();
+    QObject::connect(UgeneUpdater::getInstance(), SIGNAL(si_update()), mw, SLOT(sl_exitAction()));
 
     AppSettingsGUI* appSettingsGUI = new AppSettingsGUIImpl();
     appContext->setAppSettingsGUI(appSettingsGUI);
@@ -738,7 +740,7 @@ int main(int argc, char **argv)
 
     QList<Task*> tasks;
 
-    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool() && qgetenv("UGENE_GUI_TEST").toInt() != 1) {
+    if (UgeneUpdater::isEnabled() && qgetenv("UGENE_GUI_TEST").toInt() != 1) {
         tasks << new CheckUpdatesTask(true);
 
         TmpDirChecker* tempDirChecker = new TmpDirChecker;
@@ -958,6 +960,7 @@ int main(int argc, char **argv)
         ff.remove(iniFile);
     }
 
+    UgeneUpdater::onClose();
     CrashHandler::shutdown();
 
     return rc;

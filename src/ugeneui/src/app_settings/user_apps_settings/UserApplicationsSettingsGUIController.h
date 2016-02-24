@@ -55,8 +55,9 @@ private:
 class UserApplicationsSettingsPageState : public AppSettingsGUIPageState {
     Q_OBJECT
 public:
-    UserApplicationsSettingsPageState() : openLastProjectFlag(false),
-        askToSaveProject(0), enableStatistics(false), tabbedWindowLayout(false), resetSettings(false) {}
+    UserApplicationsSettingsPageState()
+        : openLastProjectFlag(false), askToSaveProject(0), enableStatistics(false),
+        tabbedWindowLayout(false), resetSettings(false), updatesEnabled(true) {}
 
     QString translFile;
     QString style;
@@ -65,6 +66,7 @@ public:
     bool enableStatistics;
     bool tabbedWindowLayout;
     bool resetSettings;
+    bool updatesEnabled;
 };
 
 

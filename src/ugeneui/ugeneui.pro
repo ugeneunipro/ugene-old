@@ -38,6 +38,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/shtirlitz/StatisticalReportController.h \
            src/task_view/TaskStatusBar.h \
            src/task_view/TaskViewController.h \
+           src/update/UgeneUpdater.h \
            src/utils/MultilingualHtmlView.h \
            src/welcome_page/WelcomePageController.h \
            src/welcome_page/WelcomePageMdi.h \
@@ -99,6 +100,7 @@ SOURCES += src/Main.cpp \
            src/shtirlitz/StatisticalReportController.cpp \
            src/task_view/TaskStatusBar.cpp \
            src/task_view/TaskViewController.cpp \
+           src/update/UgeneUpdater.cpp \
            src/utils/MultilingualHtmlView.cpp \
            src/welcome_page/WelcomePageController.cpp \
            src/welcome_page/WelcomePageMdi.cpp \

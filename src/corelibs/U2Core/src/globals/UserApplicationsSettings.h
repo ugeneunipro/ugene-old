@@ -87,6 +87,12 @@ public:
     QString getFileStorageDir() const;
     void setFileStorageDir(const QString &newPath);
 
+    bool updatesEnabled() const;
+    void setUpdatesEnabled(bool value);
+
+    bool isUpdateSkipped(const QString &versionString) const;
+    void skipUpdate(const QString &versionString);
+
 signals:
     void si_temporaryPathChanged();
     void si_windowLayoutChanged();

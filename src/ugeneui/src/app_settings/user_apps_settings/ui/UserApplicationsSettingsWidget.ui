@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>424</height>
+    <height>449</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -132,6 +132,22 @@
        <widget class="QCheckBox" name="enableStatisticsEdit">
         <property name="text">
          <string>Enable statistical reports collecting</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="updatesBox">
+     <property name="title">
+      <string>Updates</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="updatesCheckBox">
+        <property name="text">
+         <string>Check for updates when UGENE starts</string>
         </property>
        </widget>
       </item>

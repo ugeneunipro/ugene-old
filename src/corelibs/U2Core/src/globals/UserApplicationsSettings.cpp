@@ -63,6 +63,8 @@ namespace U2 {
 #define WINDOW_LAYOUT  QString("tabbed_windows")
 #define RESET_SETTINGS_FLAG QString("reset_settings")
 #define FILE_STORAGE_DIR    QString("file_storage_dir")
+#define UPDATES_ENABLED     QString("check_updates")
+#define SKIP_UPDATE_PREFIX  QString("skip_update_")
 
 //TODO: create a special ENV header to keep all env-vars ugene depends
 #define UGENE_SKIP_TMP_DIR_CLEANUP "UGENE_SKIP_TMP_DIR_CLEANUP"
@@ -264,6 +266,22 @@ QString UserAppsSettings::getFileStorageDir() const {
 
 void UserAppsSettings::setFileStorageDir(const QString &newPath) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + FILE_STORAGE_DIR, newPath);
+}
+
+bool UserAppsSettings::updatesEnabled() const {
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + UPDATES_ENABLED, true).toBool();
+}
+
+void UserAppsSettings::setUpdatesEnabled(bool value) {
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + UPDATES_ENABLED, value);
+}
+
+bool UserAppsSettings::isUpdateSkipped(const QString &versionString) const {
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + SKIP_UPDATE_PREFIX + versionString, false).toBool();
+}
+
+void UserAppsSettings::skipUpdate(const QString &versionString) {
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + SKIP_UPDATE_PREFIX + versionString, true);
 }
 
 }//namespace

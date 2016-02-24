@@ -22,27 +22,55 @@
 #ifndef _U2_CHECK_UPDATES_TASKS_H_
 #define _U2_CHECK_UPDATES_TASKS_H_
 
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Task.h>
 #include <U2Core/Version.h>
 
-namespace U2 {
+class QMessageBox;
+class QPushButton;
 
-#define ASK_VESRION_SETTING QString("user_apps/ask_update")
+namespace U2 {
 
 class CheckUpdatesTask : public Task {
     Q_OBJECT
 public slots:
     void sl_registerInTaskScheduler();
 public:
+    enum Answer {Update, DoNothing, Skip};
+
     CheckUpdatesTask(bool startUp = false);
     void run();
     ReportResult report();
 
+private:
     Version siteVersion;
     bool    runOnStartup;
     bool    startError;
 };
 
+class UpdateMessage : public QObject {
+public:
+    UpdateMessage(const QString &newVersion);
+    CheckUpdatesTask::Answer getAnswer() const;
+
+private:
+    QObjectScopedPointer<QMessageBox> dialog;
+    QPushButton *updateButton;
+    QPushButton *postponeButton;
+};
+
+class VersionMessage : public QObject {
+public:
+    VersionMessage(const Version &newVersion);
+    CheckUpdatesTask::Answer getAnswer() const;
+
+private:
+    QString getMessageText(const Version &thisVersion, const Version &newVersion) const;
+
+private:
+    QObjectScopedPointer<QMessageBox> dialog;
+    QPushButton *updateButton;
+};
 
 }//namespace
 

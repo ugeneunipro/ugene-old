@@ -58,6 +58,7 @@
 #include "ShutdownTask.h"
 #include "TmpDirChangeDialogController.h"
 #include "ToolBarManager.h"
+#include "update/UgeneUpdater.h"
 #include "shtirlitz/Shtirlitz.h"
 
 namespace U2 {
@@ -387,7 +388,7 @@ void MainWindowImpl::runClosingTask() {
 
         if(getQMainWindow()) {
             if(msgBox->clickedButton() == closeButton) {
-                //QCoreApplication::exit();
+                UgeneUpdater::onClose();
                 exit(0);
             }
         }

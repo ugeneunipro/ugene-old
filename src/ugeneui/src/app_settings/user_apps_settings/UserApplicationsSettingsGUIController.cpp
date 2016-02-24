@@ -82,6 +82,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
     state->resetSettings = s->resetSettings();
+    state->updatesEnabled = s->updatesEnabled();
     return state;
 }
 
@@ -94,6 +95,7 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     st->setResetSettings(state->resetSettings);
+    st->setUpdatesEnabled(state->updatesEnabled);
 
     if (0 != state->style.compare(st->getVisualStyle(), Qt::CaseInsensitive)) {
         QStyle* style = QStyleFactory::create(state->style);
@@ -146,6 +148,7 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     askToSaveProject->setCurrentIndex(askToSaveProject->findData(state->askToSaveProject));
 
     resetSettingsBox->setChecked(state->resetSettings);
+    updatesCheckBox->setChecked(state->updatesEnabled);
 }
 
 AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& /*err*/) const {
@@ -157,6 +160,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& /
     state->enableStatistics = enableStatisticsEdit->isChecked();
     state->tabbedWindowLayout = tabbedButton->isChecked();
     state->resetSettings = resetSettingsBox->isChecked();
+    state->updatesEnabled = updatesCheckBox->isChecked();
 
     return state;
 }

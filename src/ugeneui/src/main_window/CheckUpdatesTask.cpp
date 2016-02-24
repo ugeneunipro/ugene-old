@@ -30,11 +30,11 @@
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
-#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Remote/SynchHttp.h>
+
+#include "update/UgeneUpdater.h"
 
 #include "CheckUpdatesTask.h"
 
@@ -92,52 +92,97 @@ Task::ReportResult CheckUpdatesTask::report() {
 
     Version thisVersion = Version::appVersion();
 
-    if(runOnStartup) {
-        if (siteVersion > thisVersion) {
-            QString message = tr("Newer version available. You can download it from our site.");
-            QObjectScopedPointer<QMessageBox> box = new QMessageBox(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton,
-                AppContext::getMainWindow()->getQMainWindow());
-            box->addButton(QMessageBox::Cancel);
-            QPushButton *siteButton = box->addButton(tr("Visit web site"), QMessageBox::ActionRole);
-            QPushButton *dontAsk = box->addButton(tr("Don't ask again"), QMessageBox::ActionRole);
-
-            box->exec();
-            CHECK(!box.isNull(), ReportResult_Finished);
-
-            if (box->clickedButton() == siteButton) {
-                GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
-            } else if(box->clickedButton() == dontAsk) {
-                AppContext::getSettings()->setValue(ASK_VESRION_SETTING, false);
-            }
+    Answer answer = DoNothing;
+    if (runOnStartup) {
+        if (siteVersion > thisVersion && !UgeneUpdater::isUpdateSkipped(siteVersion)) {
+            UpdateMessage message(siteVersion.text);
+            answer = message.getAnswer();
         }
-    } else {    
-        QString message = "<table><tr><td>"+tr("Your version:") + "</td><td><b>" + thisVersion.text + "</b></td></tr>";
-        message += "<tr><td>" + tr("Latest version:") + "</td><td><b>" + siteVersion.text + "</b></td></tr></table>";
-        bool needUpdate = thisVersion != siteVersion;
-        if (!needUpdate) {
-            message += "<p>" + tr("You have the latest version");
-        }
-        
-        QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-        QObjectScopedPointer<QMessageBox> box = new QMessageBox(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, p);
-        box->addButton(QMessageBox::Ok);
-        QAbstractButton* updateButton = NULL;
-        
-        if (needUpdate) {
-            updateButton = box->addButton(tr("Visit web site"), QMessageBox::ActionRole);
-        }
-        box->exec();
-        CHECK(!box.isNull(), ReportResult_Finished);
-
-        if (box->clickedButton() == updateButton) {
-            GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
-        }
+    } else {
+        VersionMessage message(siteVersion);
+        answer = message.getAnswer();
     }
-    return ReportResult_Finished;    
+
+    switch (answer) {
+        case Update:
+            UgeneUpdater::getInstance()->update();
+            break;
+        case Skip:
+            UgeneUpdater::skipUpdate(siteVersion);
+            break;
+        case DoNothing:
+        default:
+            break;
+    }
+    return ReportResult_Finished;
 }
 
 void CheckUpdatesTask::sl_registerInTaskScheduler(){
     AppContext::getTaskScheduler()->registerTopLevelTask(this);
+}
+
+/************************************************************************/
+/* UpdateMessage */
+/************************************************************************/
+UpdateMessage::UpdateMessage(const QString &newVersion) {
+    QWidget *parent = AppContext::getMainWindow()->getQMainWindow();
+    const QString message = tr("UGENE %1 is available for downloading. Would you like to download and install it?").arg(newVersion);
+    const QString title = tr("New Updates");
+
+    dialog = new QMessageBox(QMessageBox::Question, title, message, QMessageBox::NoButton, parent);
+
+    updateButton = dialog->addButton(tr("Update now"), QMessageBox::ActionRole);
+    postponeButton = dialog->addButton(tr("Ask later"), QMessageBox::ActionRole);
+    dialog->addButton(tr("Skip this update"), QMessageBox::ActionRole);
+}
+
+CheckUpdatesTask::Answer UpdateMessage::getAnswer() const {
+    dialog->exec();
+    CHECK(!dialog.isNull(), CheckUpdatesTask::DoNothing);
+
+    if (updateButton == dialog->clickedButton()) {
+        return CheckUpdatesTask::Update;
+    }
+    if (postponeButton == dialog->clickedButton()) {
+        return CheckUpdatesTask::DoNothing;
+    }
+    return CheckUpdatesTask::Skip;
+}
+
+/************************************************************************/
+/* VersionMessage */
+/************************************************************************/
+VersionMessage::VersionMessage(const Version &newVersion) {
+    QWidget *parent = AppContext::getMainWindow()->getQMainWindow();
+    const QString message = getMessageText(Version::appVersion(), newVersion);
+    const QString title = tr("Version Information");
+
+    dialog = new QMessageBox(QMessageBox::Information, title, message, QMessageBox::NoButton, parent);
+    dialog->addButton(QMessageBox::Ok);
+    updateButton = NULL;
+    if (Version::appVersion() < newVersion) {
+        updateButton = dialog->addButton(tr("Update Now"), QMessageBox::ActionRole);
+    }
+}
+
+CheckUpdatesTask::Answer VersionMessage::getAnswer() const {
+    dialog->exec();
+    CHECK(!dialog.isNull(), CheckUpdatesTask::DoNothing);
+
+    if (dialog->clickedButton() == updateButton) {
+        return CheckUpdatesTask::Update;
+    }
+    return CheckUpdatesTask::DoNothing;
+}
+
+QString VersionMessage::getMessageText(const Version &thisVersion, const Version &newVersion) const {
+    QString message = "<table><tr><td>%1</td><td><b>%2</b></td></tr>"
+                      "<tr><td>%3</td><td><b>%4</b></td></tr></table>";
+    message = message.arg(tr("Your version:")).arg(thisVersion.text).arg(tr("Latest version:")).arg(newVersion.text);
+    if (thisVersion >= newVersion) {
+        message += "<p>" + tr("You have the latest version") + "</p>";
+    }
+    return message;
 }
 
 } //namespace
