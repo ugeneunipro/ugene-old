@@ -42,31 +42,26 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private:
-    void generateMouseMeassage();
-    void appendTreeWidgetInfo(QWidget* parent);
-    void appendAdditionalWidgetInfo(QWidget* w);
-    void appendMouseButtonInfo();
-    QString getWidgetText(QWidget* w);
+    void generateMouseMessage(QMouseEvent* m);
+    QString getTreeWidgetInfo(QMouseEvent* m, QWidget* parent);
+    QString getAdditionalWidgetInfo(QMouseEvent* m, QWidget* w);
+    QString getMouseButtonInfo(QMouseEvent* m);
+    QString getWidgetText(QMouseEvent* m, QWidget* w);
 
-    void generateKeyMessage();
-    void appendModifiersInfo();
+    void generateKeyMessage(QKeyEvent *k);
+    QString getKeyModifiersInfo(QKeyEvent *k);
 
-    void appendDialogInfo();
-    void filterMessages();
-    void filterMouseMessages();
-    void filterKeyboardMessages();
+    QString getDialogInfo();
+    void filterMouseMessages(QString message);
+    void filterKeyboardMessages(QKeyEvent *k, QString message);
 
     QMutex guard;
     QMap<QEvent::Type, QString> typeMap;
-    QMap<Qt::KeyboardModifier, QString> modMap;
     QMap<Qt::Key, QString> keys;
-    QMouseEvent* m;
-    QKeyEvent* k;
-    QString message;
     QString prevMessage;
     QString buffer;
     int counter;
-    QPoint windowSize;
+    QPoint prevWindowSize;
 };
 
 }   // namespace U2

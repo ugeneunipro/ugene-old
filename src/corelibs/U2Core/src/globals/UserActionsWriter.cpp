@@ -48,41 +48,39 @@ bool UserActionsWriter::eventFilter(QObject *obj, QEvent *event) {
     QMutexLocker locker(&guard);
     Q_UNUSED(locker);
 
-    k = dynamic_cast<QKeyEvent *>(event);
-    m = dynamic_cast<QMouseEvent *>(event);
-
-    appendDialogInfo();
-
-    if (NULL != m &&
-            (event->type() == QEvent::MouseButtonPress ||
-             event->type() == QEvent::MouseButtonRelease ||
-             event->type() == QEvent::MouseButtonDblClick)) {
-        message.clear();
-        generateMouseMeassage();
+    if (event->type() == QEvent::MouseButtonPress ||
+         event->type() == QEvent::MouseButtonRelease ||
+         event->type() == QEvent::MouseButtonDblClick) {
+        QMouseEvent* m = dynamic_cast<QMouseEvent *>(event);
+        generateMouseMessage(m);
         return false;
-    } else if (NULL != k) {
-        message.clear();
-        generateKeyMessage();
+    } else if (event->type() == QEvent::KeyPress ||
+               event->type() == QEvent::KeyRelease) {
+        QKeyEvent* k = dynamic_cast<QKeyEvent *>(event);
+        generateKeyMessage(k);
         return false;
     } else {
         return QObject::eventFilter(obj, event);
     }
 }
 
-void UserActionsWriter::generateMouseMeassage(){
+void UserActionsWriter::generateMouseMessage(QMouseEvent* m){
     CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
 
+    QString message("");
+    message.append(getDialogInfo());
+    message.prepend(typeMap.value(m->type()) + QString(" "));
     //button type
-    appendMouseButtonInfo();
+    message.append(getMouseButtonInfo(m));
 
     QMainWindow* mainWindow = AppContext::getMainWindow()->getQMainWindow();
     CHECK_EXT(mainWindow, userActLog.error(QString("Main window is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
 
     //window size info
     QPoint p = mainWindow->mapFromGlobal(mainWindow->geometry().bottomRight());
-    if (p != windowSize) {
-        windowSize = p;
-        userActLog.trace(QString("WINDOW SIZE: %1x%2").arg(windowSize.x()).arg(windowSize.y()));
+    if (p != prevWindowSize) {
+        prevWindowSize = p;
+        userActLog.trace(QString("WINDOW SIZE: %1x%2").arg(prevWindowSize.x()).arg(prevWindowSize.y()));
     }
 
     //coordinates
@@ -99,7 +97,7 @@ void UserActionsWriter::generateMouseMeassage(){
         if (className == "QWidget") {
             QWidget* parent = qobject_cast<QWidget*>(w->parent());
             if (parent) {
-                appendTreeWidgetInfo(parent);
+                message.append(getTreeWidgetInfo(m, parent));
                 w = parent;
             }
         } else {
@@ -108,35 +106,36 @@ void UserActionsWriter::generateMouseMeassage(){
         message.append(" ");
 
         //additional information
-        appendAdditionalWidgetInfo(w);
+        message.append(getAdditionalWidgetInfo(m, w));
 
     } else {
         message.append("Widget under corsor is NULL");
     }
-    filterMessages();
+    filterMouseMessages(message);
 }
 
-void UserActionsWriter::appendMouseButtonInfo(){
-    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
+QString UserActionsWriter::getMouseButtonInfo(QMouseEvent* m){
+    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
     switch (m->button()) {
     case Qt::RightButton: {
-        message.append("Right_button ");
+        return QString("Right_button ");
         break;
     }
     case Qt::LeftButton: {
-        message.append("Left_button ");
+        return QString("Left_button ");
         break;
     }
     default: {
-       message.append("Other_button ");
+       return QString("Other_button ");
     }
     }
 }
 
-void UserActionsWriter::appendTreeWidgetInfo(QWidget *parent){
-    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
-    CHECK_EXT(parent, userActLog.error(QString("argument is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
+QString UserActionsWriter::getTreeWidgetInfo(QMouseEvent* m, QWidget *parent){
+    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
+    CHECK_EXT(parent, userActLog.error(QString("Widget is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
 
+    QString message("");
     message.append("CLASS_NAME: ").append(parent->metaObject()->className());
     QTreeWidget* tree = qobject_cast<QTreeWidget*>(parent);
     if (tree) {
@@ -153,15 +152,17 @@ void UserActionsWriter::appendTreeWidgetInfo(QWidget *parent){
             message.append(" LIST_ITEM: " + item->text());
         }
     }
+    return message;
 }
 
-void UserActionsWriter::appendAdditionalWidgetInfo(QWidget *w){
-    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
-    CHECK_EXT(w, userActLog.error(QString("argument is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
+QString UserActionsWriter::getAdditionalWidgetInfo(QMouseEvent* m, QWidget *w){
+    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
+    CHECK_EXT(w, userActLog.error(QString("Widget is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
 
-    QString text = getWidgetText(w);
+    QString text = getWidgetText(m, w);
     QString objectName = w->objectName();
     QString tooltip = w->toolTip();
+    QString message("");
 
     if (!text.isEmpty() && (text != "...")) {
         message.append("TEXT: " + text);
@@ -174,10 +175,12 @@ void UserActionsWriter::appendAdditionalWidgetInfo(QWidget *w){
     if (spin) {
         message.append(" " + spin->text());
     }
+    return message;
 }
 
-QString UserActionsWriter::getWidgetText(QWidget* w){
-    CHECK_EXT(w, userActLog.error(QString("argument is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "Widget is NULL");
+QString UserActionsWriter::getWidgetText(QMouseEvent* m, QWidget* w){
+    CHECK_EXT(m, userActLog.error(QString("MouseEvent is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
+    CHECK_EXT(w, userActLog.error(QString("Widget is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
 
     QString text("");
 
@@ -215,13 +218,15 @@ QString UserActionsWriter::getWidgetText(QWidget* w){
     return text;
 }
 
-void UserActionsWriter::generateKeyMessage() {
+void UserActionsWriter::generateKeyMessage(QKeyEvent *k) {
     CHECK_EXT(NULL != k, userActLog.error(QString("key event is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
 
     QString text = k->text();
     QString s = keys.value(Qt::Key(k->key()));
 
-    appendModifiersInfo();
+    QString message("");
+    message.append(getDialogInfo());
+    message.append(getKeyModifiersInfo(k));
 
     if (!s.isEmpty()) {
         message.append(QString("%1").arg(s));
@@ -231,21 +236,11 @@ void UserActionsWriter::generateKeyMessage() {
         message.append(QString("Undefined key, code: %1").arg(k->key()));
     }
 
-    filterMessages();
+    filterKeyboardMessages(k, message);
 }
 
-void UserActionsWriter::filterMessages() {
-    if (NULL != m) {
-        filterMouseMessages();
-    } else if (NULL != k) {
-        filterKeyboardMessages();
-    }
-}
+void UserActionsWriter::filterMouseMessages(QString message) {
 
-void UserActionsWriter::filterMouseMessages() {
-    CHECK_EXT(NULL != m, userActLog.error(QString("mouse event is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
-
-    message.prepend(typeMap.value(m->type()) + QString(" "));
     if (message != prevMessage) {
         if (!buffer.isEmpty()) {
             userActLog.trace(QString("Typed string. Length=%1").arg(buffer.length()));
@@ -273,7 +268,7 @@ void UserActionsWriter::filterMouseMessages() {
     }
 }
 
-void UserActionsWriter::filterKeyboardMessages() {
+void UserActionsWriter::filterKeyboardMessages(QKeyEvent *k, QString message) {
     CHECK_EXT(NULL != k, userActLog.error(QString("key event is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
 
     message.prepend(typeMap.value(k->type()) + QString(" "));
@@ -315,7 +310,8 @@ void UserActionsWriter::filterKeyboardMessages() {
     }
 }
 
-void UserActionsWriter::appendDialogInfo() {
+QString UserActionsWriter::getDialogInfo() {
+    QString message("");
     QDialog *dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
     if (NULL != dialog) {
         message.append(QString("DIALOG: \"%1\" ").arg(dialog->windowTitle()));
@@ -324,31 +320,33 @@ void UserActionsWriter::appendDialogInfo() {
             message.append("MESSAGEBOX_TEXT: ").append(messageBox->text()).append(" ");
         }
     }
+    return message;
 }
 
-void UserActionsWriter::appendModifiersInfo() {
-    CHECK_EXT(NULL != k, userActLog.error(QString("key event is NULL %1:%2").arg(__FILE__).arg(__LINE__)), );
+QString UserActionsWriter::getKeyModifiersInfo(QKeyEvent *k) {
+    CHECK_EXT(NULL != k, userActLog.error(QString("key event is NULL %1:%2").arg(__FILE__).arg(__LINE__)), "");
 
     Qt::KeyboardModifiers m = k->modifiers();
     if (m.testFlag(Qt::ShiftModifier) && k->key() != Qt::Key_Shift) {
-        message.append(QString("shift + "));
+        return QString("shift + ");
     }
     if (m.testFlag(Qt::AltModifier)&& k->key() != Qt::Key_Alt) {
-        message.append(QString("alt + "));
+        return QString("alt + ");
     }
     if (m.testFlag(Qt::ControlModifier) && k->key() != Qt::Key_Control) {
-        message.append(QString("ctrl + "));
+        return QString("ctrl + ");
     }
     if (m.testFlag(Qt::MetaModifier) && k->key() != Qt::Key_Meta) {
-        message.append(QString("meta + "));
+        return QString("meta + ");
     }
     if (m.testFlag(Qt::GroupSwitchModifier) && k->key() != Qt::Key_Mode_switch) {
-        message.append(QString("switch + "));
+        return QString("switch + ");
     }
+    return QString("");
 }
 
 UserActionsWriter::UserActionsWriter() {
-    windowSize = QPoint(0, 0);
+    prevWindowSize = QPoint(0, 0);
     counter = 0;
     buffer = "";
 
@@ -357,10 +355,6 @@ UserActionsWriter::UserActionsWriter() {
     typeMap.insert(QEvent::MouseButtonDblClick, "mouse_double_click");
     typeMap.insert(QEvent::KeyPress, "press");
     typeMap.insert(QEvent::KeyRelease, "release");
-
-    modMap.insert(Qt::ShiftModifier, "Shift");
-    modMap.insert(Qt::ControlModifier, "Ctrl");
-    modMap.insert(Qt::AltModifier, "Alt");
 
     keys.insert(Qt::Key_Return, "enter");
     keys.insert(Qt::Key_Escape, "esc");
