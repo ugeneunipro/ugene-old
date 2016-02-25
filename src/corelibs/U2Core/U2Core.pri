@@ -63,5 +63,3 @@ unix_not_mac(){
         }
     }
 }
-
-HEADERS += ../../include/U2Core/U2*.h
