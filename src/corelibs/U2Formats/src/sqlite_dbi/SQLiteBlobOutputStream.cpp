@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <sqlite3.h>
+#include <3rdparty/sqlite3/sqlite3.h>
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UdrSchema.h>

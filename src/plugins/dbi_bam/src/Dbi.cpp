@@ -33,7 +33,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 
-#include <sqlite3.h>
+#include <3rdparty/sqlite3/sqlite3.h>
 
 namespace U2 {
 namespace BAM {
