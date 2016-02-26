@@ -52,6 +52,8 @@ struct U2CORE_EXPORT TaskResourceUsage {
     int resourceUse;
     bool prepareStageLock;
     bool locked;
+    /* Leave it empty for default message */
+    QString errorMessage;
 };
 
 class TaskScheduler;

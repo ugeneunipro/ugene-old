@@ -385,8 +385,13 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
         bool resourceAcquired = appRes->tryAcquire(taskRes.resourceUse);
         if (!resourceAcquired) {
             if (appRes->maxTaskUse() < taskRes.resourceUse) {
-                task->setError(tr("Not enough resources for the task, resource name: '%1' max: %2%3 requested: %4%5")
-                    .arg(appRes->name).arg(appRes->maxTaskUse()).arg(appRes->suffix).arg(taskRes.resourceUse).arg(appRes->suffix));
+                QString error = tr("Not enough resources for the task, resource name: '%1' max: %2%3 requested: %4%5")
+                    .arg(appRes->name).arg(appRes->maxTaskUse()).arg(appRes->suffix).arg(taskRes.resourceUse).arg(appRes->suffix);
+                if (!taskRes.errorMessage.isEmpty()) {
+                    coreLog.error(error);
+                    error = taskRes.errorMessage;
+                }
+                task->setError(error);
             }
             errorString = tr("Waiting for resource '%1', count: %2%3").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->suffix);
             break;

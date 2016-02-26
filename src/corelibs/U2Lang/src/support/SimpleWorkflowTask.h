@@ -54,8 +54,9 @@ public:
 };
 
 /**
-    Runs workflow in a separate process and handles in-out parameters
-    The result is output document
+    Runs workflow in a separate process and handles in-out parameters.
+    The result is output document.
+    If problems occur during the workflow execution, only the first error is detected and warnings are skipped.
 */
 class U2LANG_EXPORT SimpleInOutWorkflowTask : public DocumentProviderTask {
     Q_OBJECT

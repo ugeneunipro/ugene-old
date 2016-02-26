@@ -89,7 +89,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
-
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 
 namespace U2 {
 
@@ -312,6 +312,23 @@ GUI_TEST_CLASS_DEFINITION(test_5079) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //Expected state : the tab is successfully updated. No error in log.
     CHECK_SET_ERR(!l.hasError(), "unexpected errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_5082) {
+    GTLogTracer l;
+    // 1. Open "_common_data/clustal/big.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 2. Align it with MUSCLE.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Align" << "Align with MUSCLE..."));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    // Expected: Error notification appears with a correct human readable error. There is a error in log wit memory requirements.
+    GTUtilsNotifications::waitForNotification(os, true, "There is not enough memory to align these sequences with MUSCLE.");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(l.checkMessage("Not enough resources for the task, resource name:"), "No default error in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_5128) {

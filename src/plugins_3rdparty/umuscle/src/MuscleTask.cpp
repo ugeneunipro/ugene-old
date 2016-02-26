@@ -72,7 +72,7 @@ void MuscleTaskSettings::reset() {
 }
 
 MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
-:Task(tr("MUSCLE alignment"), TaskFlags_FOSCOE), config(_config), inputMA(ma)
+:Task(tr("MUSCLE alignment"), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), config(_config), inputMA(ma)
 {
     GCOUNTER( cvar, tvar, "MuscleTask" );
     config.nThreads = (config.nThreads == 0) ? AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount():config.nThreads;

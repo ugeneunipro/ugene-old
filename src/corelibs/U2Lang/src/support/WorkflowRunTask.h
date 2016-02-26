@@ -94,6 +94,10 @@ private slots:
     void sl_outputProgressAndState();
 
 private:
+    QString getFirstError() const;
+    void logErrors() const;
+
+private:
     QMap<ActorId, ActorId> rmap;
     QList<Link*> flows;
 

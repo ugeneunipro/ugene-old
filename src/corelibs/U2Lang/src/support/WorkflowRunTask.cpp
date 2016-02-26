@@ -182,13 +182,41 @@ int WorkflowRunTask::getMsgPassed(const Link* l) {
 
 Task::ReportResult WorkflowRunTask::report() {
     propagateSubtaskError();
-    if(hasError() && AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_ERROR_OPTION)) {
-        coreLog.info(QString("%1%2%1").arg(ERROR_KEYWORD).arg(getError()));
+    if (AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_ERROR_OPTION)) {
+        logErrors();
     }
     if(AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_PROGRESS_OPTION)) {
         sl_outputProgressAndState();
     }
     return ReportResult_Finished;
+}
+
+QString WorkflowRunTask::getFirstError() const {
+    foreach (WorkflowMonitor *monitor, monitors) {
+        foreach (const Problem &problem, monitor->getProblems()) {
+            if (Problem::U2_ERROR == problem.type) {
+                return problem.message;
+            }
+        }
+    }
+    return "";
+}
+
+namespace {
+    void logError(const QString &error) {
+        coreLog.info(QString("%1%2%1").arg(ERROR_KEYWORD).arg(error));
+    }
+}
+
+void WorkflowRunTask::logErrors() const {
+    if (hasError()) {
+        logError(getError());
+    } else {
+        const QString firstError = getFirstError();
+        if (!firstError.isEmpty()) {
+            logError(firstError);
+        }
+    }
 }
 
 /*******************************************
