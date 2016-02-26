@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 
 #ifdef _WIN32
 #define drand48() ((double)rand() / RAND_MAX)

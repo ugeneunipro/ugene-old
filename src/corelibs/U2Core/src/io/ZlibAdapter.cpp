@@ -25,12 +25,7 @@
 
 #include "ZlibAdapter.h"
 
-//using 3rd-party zlib (not included in ugene bundle) on *nix
-#if defined(Q_OS_UNIX)
-#include <zlib.h>
-#else
-#include "zlib.h"
-#endif
+#include <3rdparty/zlib/zlib.h>
 
 #include <assert.h>
 

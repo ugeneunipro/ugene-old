@@ -1,4 +1,4 @@
-#include <zlib.h>
+#include <3rdparty/zlib/zlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

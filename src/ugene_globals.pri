@@ -4,8 +4,6 @@ UGENE_GLOBALS_DEFINED=1
 
 DEFINES+=U2_DISTRIBUTION_INFO=$${U2_DISTRIBUTION_INFO}
 DEFINES+=UGENE_VERSION=$${UGENE_VERSION}
-DEFINES+=UGENE_MIN_VERSION_SQLITE=$${UGENE_MIN_VERSION_SQLITE}
-DEFINES+=UGENE_MIN_VERSION_MYSQL=$${UGENE_MIN_VERSION_MYSQL}
 DEFINES+=UGENE_VER_MAJOR=$${UGENE_VER_MAJOR}
 DEFINES+=UGENE_VER_MINOR=$${UGENE_VER_MINOR}
 DEFINES+=UGENE_VER_PATCH=$${UGENE_VER_PATCH}
@@ -131,16 +129,17 @@ defineTest( unix_not_mac ) {
 }
 
 
-#By default, UGENE uses bundled zlib (libs_3rdparty/zlib) on windows and mac os.
-#On any OS it can be forced using the following variable
-
-# UGENE_USE_BUNDLED_ZLIB = 1
+# By default, UGENE uses bundled zlib (libs_3rdparty/zlib).
+# To switch to OS default version set UGENE_USE_BUNDLED_ZLIB = 0
 
 defineTest( use_bundled_zlib ) {
     contains( UGENE_USE_BUNDLED_ZLIB, 1 ) : return (true)
     contains( UGENE_USE_BUNDLED_ZLIB, 0 ) : return (false)
-    unix_not_mac() : return (false)
     return (true)
+}
+
+use_bundled_zlib() {
+    DEFINES+=UGENE_USE_BUNDLED_ZLIB
 }
 
 #Variable enabling exclude list for ugene modules

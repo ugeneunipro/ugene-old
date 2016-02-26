@@ -22,12 +22,7 @@
 #ifndef _U2_BAM_BGZF_WRITER_H_
 #define _U2_BAM_BGZF_WRITER_H_
 
-//using 3rd-party zlib (not included in ugene bundle) on *nix
-#if defined(Q_OS_UNIX)
-#include <zlib.h>
-#else
-#include "zlib.h"
-#endif
+#include <3rdparty/zlib/zlib.h>
 
 #include <U2Core/IOAdapter.h>
 #include "VirtualOffset.h"

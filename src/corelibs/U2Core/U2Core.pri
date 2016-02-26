@@ -8,9 +8,11 @@ UGENE_RELATIVE_DESTDIR = ''
 QT += network xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-DEFINES+= QT_FATAL_ASSERT BUILDING_U2CORE_DLL
+DEFINES+=UGENE_MIN_VERSION_SQLITE=$${UGENE_MIN_VERSION_SQLITE}
+DEFINES+=UGENE_MIN_VERSION_MYSQL=$${UGENE_MIN_VERSION_MYSQL}
+DEFINES+=QT_FATAL_ASSERT BUILDING_U2CORE_DLL
+
 use_bundled_zlib() {
-    INCLUDEPATH += ../../libs_3rdparty/zlib/src
     LIBS += -lzlib
 } else {
     LIBS += -lz
@@ -20,8 +22,6 @@ unix: QMAKE_CXXFLAGS += -Wno-char-subscripts
 
 LIBS += -L../../_release
 LIBS += -lugenedb
-
-INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 
 !debug_and_release|build_pass {
 
