@@ -94,7 +94,6 @@ const QString ToolsMenu::HMMER_SEARCH2 = "HMMER_SEARCH2";
 
 const QString ToolsMenu::DOTPLOT = "DOTPLOT";
 const QString ToolsMenu::GENERATE_SEQUENCE = "GENERATE_SEQUENCE";
-const QString ToolsMenu::EXPERT_DISCOVERY = "EXPERT_DISCOVERY";
 const QString ToolsMenu::QUERY_DESIGNER = "QUERY_DESIGNER";
 const QString ToolsMenu::WORKFLOW_DESIGNER = "WORKFLOW_DESIGNER";
 
@@ -207,7 +206,6 @@ void ToolsMenu::init() {
     subMenuAction[TOOLS] << DOTPLOT;
     subMenuAction[TOOLS] << GENERATE_SEQUENCE;
     subMenuAction[TOOLS] << LINE;
-    subMenuAction[TOOLS] << EXPERT_DISCOVERY;
     subMenuAction[TOOLS] << QUERY_DESIGNER;
     subMenuAction[TOOLS] << WORKFLOW_DESIGNER;
     subMenuAction[TOOLS] << GUI_TEST_RUNNER;

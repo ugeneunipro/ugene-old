@@ -102,7 +102,6 @@ public:
 
     static const QString DOTPLOT;
     static const QString GENERATE_SEQUENCE;
-    static const QString EXPERT_DISCOVERY;
     static const QString QUERY_DESIGNER;
     static const QString WORKFLOW_DESIGNER;
     static const QString GUI_TEST_RUNNER;
