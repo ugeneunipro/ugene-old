@@ -555,7 +555,7 @@ static QMap<QString, int> getNumMap(const QList<GObject*> &objects, U2OpStatus &
     return result;
 }
 
-static void writeObjectsWithSamtools(samfile_t *out, const QList<GObject*> &objects, U2OpStatus &os) {
+static void writeObjectsWithSamtools(samfile_t *out, const QList<GObject*> &objects, U2OpStatus &os, const U2Region &desiredRegion) {
     foreach (GObject *obj, objects) {
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(obj);
         SAFE_POINT_EXT(NULL != assemblyObj, os.setError("NULL assembly object"), );
@@ -568,8 +568,11 @@ static void writeObjectsWithSamtools(samfile_t *out, const QList<GObject*> &obje
 
         U2DataId assemblyId = assemblyObj->getEntityRef().entityId;
         qint64 maxPos = dbi->getMaxEndPos(assemblyId, os);
-        U2Region wholeAssembly(0, maxPos + 1);
-        QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(dbi->getReads(assemblyId, wholeAssembly, os, true));
+        U2Region region(0, maxPos + 1);
+        if (desiredRegion != U2_REGION_MAX) {
+            region = desiredRegion;
+        }
+        QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(dbi->getReads(assemblyId, region, os, true));
         CHECK_OP(os, );
 
         ReadsContext ctx(assemblyObj->getGObjectName(), getNumMap(objects, os));
@@ -593,7 +596,7 @@ void BAMUtils::writeDocument(Document *doc, U2OpStatus &os) {
         os);
 }
 
-void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, const DocumentFormatId &formatId, U2OpStatus &os) {
+void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, const DocumentFormatId &formatId, U2OpStatus &os, const U2Region &desiredRegion) {
     CHECK_EXT(!objects.isEmpty(), os.setError("No assembly objects"), );
 
     QByteArray url = urlStr.getURLString().toLocal8Bit();
@@ -620,7 +623,7 @@ void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, 
     bam_header_destroy(header);
     CHECK_EXT(NULL != out, os.setError(QString("Can not open file for writing: %1").arg(url.constData())), );
 
-    writeObjectsWithSamtools(out, objects, os);
+    writeObjectsWithSamtools(out, objects, os, desiredRegion);
     samclose(out);
 }
 

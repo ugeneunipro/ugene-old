@@ -33,6 +33,7 @@
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/DetView.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorTreeViewer.h>
@@ -2775,6 +2776,62 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
     QTreeWidgetItem* commentItem = GTUtilsAnnotationsTreeView::findItem(os, "comment");
     QString qualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Original database", commentItem);
     CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4423_1) {
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath), 
+            regionToExtract(region), format(format) {}
+        void run(HI::GUITestOpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
+            CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
+            GTLineEdit::setText(os, startLineEdit, QString::number(regionToExtract.startPos));
+
+            QLineEdit *endLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", dialog));
+            CHECK_SET_ERR(NULL != endLineEdit, "endLineEdit widget is NULL");
+            GTLineEdit::setText(os, endLineEdit, QString::number(regionToExtract.endPos()));
+
+            QLineEdit* filepathLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "filepathLineEdit", dialog));
+            CHECK_SET_ERR(NULL != filepathLineEdit, "filepathLineEdit widget is NULL");
+            GTLineEdit::setText(os, filepathLineEdit, filepath);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        QString filepath;
+        U2Region regionToExtract;
+        QString format;
+    };
+
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    Scenario *sc = new Scenario(sandBoxDir + "/test_4423_1.sam", U2Region(228, 1488), "SAM");
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_1.ugenedb"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTGlobals::sleep();
+
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+
+    QString textFromLabel = coveredRegionsLabel->text();
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4423_2) {
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4423_3) {
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4434) {

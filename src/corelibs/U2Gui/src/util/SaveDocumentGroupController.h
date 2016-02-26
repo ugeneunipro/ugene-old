@@ -70,6 +70,8 @@ public:
     DocumentFormat* getFormatToSave() const;
     
     QString getDefaultFileName() const {return conf.defaultFileName;}
+
+    void setFileName(const QString &newFileName);
     
 private slots:
     void sl_fileNameChanged(const QString& v);

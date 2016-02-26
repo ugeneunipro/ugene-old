@@ -82,6 +82,7 @@
 #include "AssemblyRuler.h"
 #include "ExportCoverageDialog.h"
 #include "ExportCoverageTask.h"
+#include "ExtractAssemblyRegionDialog.h"
 #include "ZoomableAssemblyOverview.h"
 
 namespace U2 {
@@ -93,11 +94,11 @@ const double AssemblyBrowser::ZOOM_MULT = 1.25;
 const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 
 AssemblyBrowser::AssemblyBrowser(QString viewName, AssemblyObject * o) :
-GObjectView(AssemblyBrowserFactory::ID, viewName), ui(0),
-gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
+GObjectView(AssemblyBrowserFactory::ID, viewName), ui(NULL),
+gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(NULL), yOffsetInAssembly(NULL), coverageReady(false),
 cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
-zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
-exportToSamAction(0), setReferenceAction(0), loadReferenceTask(0)
+zoomInAction(NULL), zoomOutAction(NULL), posSelectorAction(NULL), posSelector(NULL), showCoordsOnRulerAction(NULL), saveScreenShotAction(NULL),
+exportToSamAction(NULL), setReferenceAction(NULL), extractAssemblyRegionAction(NULL), loadReferenceTask(NULL)
 {
     GCOUNTER( cvar, tvar, "AssemblyBrowser" );
     initFont();
@@ -338,6 +339,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addAction(readHintEnabledAction);
         tb->addSeparator();
         tb->addAction(setReferenceAction);
+        tb->addAction(extractAssemblyRegionAction);
         tb->addAction(saveScreenShotAction);
     }
     GObjectView::buildStaticToolbar(tb);
@@ -355,6 +357,7 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
         m->addAction(zoomOutAction);
         m->addAction(saveScreenShotAction);
         m->addAction(exportToSamAction);
+        m->addAction(extractAssemblyRegionAction);
         m->addAction(setReferenceAction);
     }
     GObjectView::buildStaticMenu(m);
@@ -676,6 +679,10 @@ void AssemblyBrowser::setupActions() {
     setReferenceAction = new QAction(QIcon(":core/images/set_reference.png"), tr("Set reference"), this);
     setReferenceAction->setObjectName("setReferenceAction");
     connect(setReferenceAction, SIGNAL(triggered()), SLOT(sl_setReference()));
+
+    extractAssemblyRegionAction = new QAction(QIcon(":core/images/extract_assembly_region.png"), tr("Extract assembly region"), this);
+    extractAssemblyRegionAction->setObjectName("ExtractAssemblyRegion");
+    connect(extractAssemblyRegionAction, SIGNAL(triggered()), SLOT(sl_extractAssemblyRegion()));
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
@@ -1067,6 +1074,23 @@ void AssemblyBrowser::sl_setReference() {
             tr("An error occurred while setting reference to \"%1\". You have more than one sequence object selected in the Project View. Please select only one object and try again.").arg(gobject->getGObjectName()),
             QMessageBox::Ok);
     }
+}
+
+void AssemblyBrowser::sl_extractAssemblyRegion() {
+    GUrl url(U2DbiUtils::ref2Url(model->getDbiConnection().dbi->getDbiRef()));
+    U2Region visibleRegion = getVisibleBasesRegion();
+    QString extractedFragmentFilename = url.dirPath() + "/" + url.baseFileName() + "_" + QString::number(visibleRegion.startPos + 1) 
+        + "_" + QString::number(visibleRegion.endPos()) + "." + url.completeFileSuffix();
+    U2OpStatusImpl os;
+    ExtractAssemblyRegionTaskSettings ts(extractedFragmentFilename, model->getModelLength(os), gobject);
+    ts.regionToExtract = visibleRegion;
+    QObjectScopedPointer<ExtractAssemblyRegionDialog> dlg = new ExtractAssemblyRegionDialog(ui, &ts);
+    int result = dlg->exec();
+    CHECK(!dlg.isNull(), );
+    if (result != QDialog::Accepted) {
+        return;
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(new ExtractAssemblyRegionAndOpenViewTask(ts));
 }
 
 void AssemblyBrowser::sl_onReferenceLoaded() {

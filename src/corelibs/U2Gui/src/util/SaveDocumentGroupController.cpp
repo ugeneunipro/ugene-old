@@ -78,6 +78,10 @@ DocumentFormat* SaveDocumentGroupController::getFormatToSave() const {
     return AppContext::getDocumentFormatRegistry()->getFormatById(id);
 }
 
+void SaveDocumentGroupController::setFileName(const QString &newFileName) {
+    conf.fileNameEdit->setText(newFileName);
+}
+
 void SaveDocumentGroupController::sl_saveButtonClicked() {
     //prepare filters
     QString filter = DialogUtils::prepareDocumentsFileFilter(getFormatToSave()->getFormatId(), false);

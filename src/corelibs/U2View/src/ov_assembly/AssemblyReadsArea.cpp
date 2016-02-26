@@ -115,7 +115,7 @@ void AssemblyReadsArea::createMenu() {
     exportReadAction = exportMenu->addAction("Current read");
     connect(exportReadAction, SIGNAL(triggered()), SLOT(sl_onExportRead()));
 
-    QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
+    QAction * exportVisibleReads = exportMenu->addAction("Visible reads as sequences");
     connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
     QAction * exportConsensus = exportMenu->addAction("Consensus");

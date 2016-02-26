@@ -25,6 +25,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/U2Type.h>
+#include <U2Core/U2Region.h>
 
 namespace U2 {
 
@@ -36,6 +37,8 @@ public:
     GObject *clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
 
     static U2EntityRef dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap());
+    static U2EntityRef dbi2dbiExtractRegion(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os,
+        const U2Region &desiredRegion = U2_REGION_MAX, const QVariantMap &hints = QVariantMap());
 };
 
 }//namespace

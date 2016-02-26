@@ -35,6 +35,8 @@ HEADERS += src/LicenseDialog.h \
            src/ov_assembly/ExportCoverageDialog.h \
            src/ov_assembly/ExportCoverageTask.h \
            src/ov_assembly/ExportReadsDialog.h \
+           src/ov_assembly/ExtractAssemblyRegionDialog.h \
+           src/ov_assembly/ExtractAssemblyRegionTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/Clipboard/SubalignmentToClipboardTask.h \
@@ -188,6 +190,7 @@ HEADERS += src/LicenseDialog.h \
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportCoverageDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
+         src/ov_assembly/ui/ExtractAssemblyRegionDialog.ui \
          src/ov_msa/ui/CreateSubalignmentDialog.ui \
          src/ov_msa/ui/ColorSchemaDialog.ui \
          src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
@@ -257,6 +260,8 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_assembly/ExportCoverageDialog.cpp \
            src/ov_assembly/ExportCoverageTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
+           src/ov_assembly/ExtractAssemblyRegionDialog.cpp \
+           src/ov_assembly/ExtractAssemblyRegionTask.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
            src/ov_msa/Clipboard/SubalignmentToClipboardTask.cpp \

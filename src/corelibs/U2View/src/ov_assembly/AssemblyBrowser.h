@@ -161,6 +161,7 @@ private slots:
     void sl_referenceChanged();
     void sl_trackRemoved(VariantTrackObject *obj);
     void sl_setReference();
+    void sl_extractAssemblyRegion();
     void sl_onReferenceLoaded();
 
 private:
@@ -219,6 +220,7 @@ private:
     QAction * saveScreenShotAction;
     QAction * exportToSamAction;
     QAction * setReferenceAction;
+    QAction * extractAssemblyRegionAction;
 
     Task * loadReferenceTask;
 

@@ -25,11 +25,14 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/DocumentModel.h>
 
 namespace U2 {
 
 class Document;
 class GObject;
+class AssemblyObject;
 
 class U2FORMATS_EXPORT BAMUtils : public QObject {
     Q_OBJECT
@@ -68,7 +71,7 @@ public:
 
     static void writeDocument(Document *doc, U2OpStatus &os);
 
-    static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
+    static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os, const U2Region &desiredRegion = U2_REGION_MAX);
 
     static bool isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
 

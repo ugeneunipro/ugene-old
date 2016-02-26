@@ -177,5 +177,6 @@
         <file>images/hide_all_views.png</file>
         <file>images/show_all_views.png</file>
         <file>images/wrap_sequence.png</file>
+        <file>images/extract_assembly_region.png</file>
     </qresource>
 </RCC>

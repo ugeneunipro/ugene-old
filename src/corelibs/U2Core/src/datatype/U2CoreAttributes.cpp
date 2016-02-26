@@ -34,4 +34,12 @@ const QString U2BaseAttributeName::max_prow("max_prow_attribute");
 const QString U2BaseAttributeName::count_reads("count_reads_attribute");
 const QString U2BaseAttributeName::coverage_statistics("coverageStat");
 
+const QStringList U2BaseAttributeName::getReadsRelatedAttributes() {
+    QStringList result;
+    result.append(count_reads);
+    result.append(coverage_statistics);
+    result.append(max_prow);
+    return result;
+}
+
 } // U2

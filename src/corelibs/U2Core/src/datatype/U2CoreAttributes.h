@@ -83,6 +83,8 @@ public:
     /** Coverage statistics */
     static const QString coverage_statistics;
 
+    static const QStringList getReadsRelatedAttributes();
+
 };
 
 } // U2
