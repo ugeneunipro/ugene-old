@@ -330,13 +330,13 @@ QString GUITestLauncher::getScreenRecorderString(QString testName){
 #elif defined Q_OS_WIN
     result = QString("ffmpeg -f dshow -i video=\"UScreenCapture\" -r 5 %1").arg(getVideoPath(testName.replace(':', '_')));
 #endif
+    uiLog.trace("going to record video: " + result);
     return result;
 }
 
 QString GUITestLauncher::getVideoPath(const QString &testName){
     QDir().mkpath(QDir::currentPath() + "/videos");
     QString result = QDir::currentPath() + "/videos/" + testName + ".avi";
-    uiLog.trace("going to record video: " + result);
     return result;
 }
 
