@@ -196,7 +196,8 @@ QString InSilicoPcrTask::generateReport() const {
                 calc.generateReport();
     }
 
-    return tr("Products found: %1 <br><br>Degenerated alphabet was used.").arg(results.size());
+    return tr("Products found: %1. <br><br>"
+              "The detailed information about primers is not available as primers or sequence contain a character from the Extended DNA alphabet.").arg(results.size());
 }
 
 InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &leftPrimer, const U2Region &product, const U2Region &rightPrimer, U2Strand::Direction direction) const {

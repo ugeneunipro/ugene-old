@@ -38,11 +38,11 @@ bool PrimerStatistics::checkPcrPrimersPair(const QByteArray &forward, const QByt
     bool forwardIsValid = validate(forward);
     bool reverseIsValid = validate(reverse);
     if (!forwardIsValid && !reverseIsValid) {
-        message = tr("Primers contain non-ACGTN symbols");
+        message = tr("The primers contain a character from the Extended DNA alphabet.");
     } else if (!forwardIsValid) {
-        message = tr("Forward primer contains non-ACGTN symbol");
+        message = tr("The forward primer contains a character from the Extended DNA alphabet.");
     } else if (!reverseIsValid) {
-        message = tr("Reverse primer contains non-ACGTN symbol");
+        message = tr("The reverse primer contains a character from the Extended DNA alphabet.");
     }
     if (!message.isEmpty()) {
         return false;
