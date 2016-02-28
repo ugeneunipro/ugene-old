@@ -170,14 +170,14 @@ void ImportAnnotationsToCsvFiller::commonScenario()
 
     if (columnSeparator) {
         QRadioButton* columnSeparator = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "columnSeparatorRadioButton", dialog));
-        columnSeparator->setChecked(true);
+        GTRadioButton::click(os, columnSeparator);
 
         QLineEdit *separatorEdit = GTWidget::findExactWidget<QLineEdit *>(os, "separatorEdit", dialog);
-        GTLineEdit::setText(os, separatorEdit, "");
+        GTLineEdit::setText(os, separatorEdit, separator);
 
-        GTClipboard::setText(os, separator);
-        GTWidget::click(os, separatorEdit);
-        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+//        GTClipboard::setText(os, separator);
+//        GTWidget::click(os, separatorEdit);
+//        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
     } else {
         QRadioButton* scriptRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "scriptRadioButton", dialog));
         scriptRadioButton->setChecked(true);

@@ -26,6 +26,7 @@
 #include <primitives/GTComboBox.h>
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTGroupBox.h>
+#include <utils/GTThread.h>
 
 #include <U2Core/Log.h>
 
@@ -140,6 +141,7 @@ void CreateDocumentFiller::commonScenario()
         }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+    GTThread::waitForMainThread(os);
 }
 
 #undef GT_METHOD_NAME

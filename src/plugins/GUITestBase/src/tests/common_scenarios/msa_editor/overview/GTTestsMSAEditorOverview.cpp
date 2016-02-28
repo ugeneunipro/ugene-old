@@ -489,7 +489,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Calculation method"
                                                       << "Highlighting"));
     GTMenu::showContextMenu(os, overviewGraph);
-    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::Highlighting);
     GTGlobals::sleep(1000);
 //    Expected state: graph didn't change.
 
