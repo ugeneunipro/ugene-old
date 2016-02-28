@@ -680,7 +680,7 @@ void AssemblyBrowser::setupActions() {
     setReferenceAction->setObjectName("setReferenceAction");
     connect(setReferenceAction, SIGNAL(triggered()), SLOT(sl_setReference()));
 
-    extractAssemblyRegionAction = new QAction(QIcon(":core/images/extract_assembly_region.png"), tr("Extract assembly region"), this);
+    extractAssemblyRegionAction = new QAction(QIcon(":core/images/extract_assembly_region.png"), tr("Export assembly region"), this);
     extractAssemblyRegionAction->setObjectName("ExtractAssemblyRegion");
     connect(extractAssemblyRegionAction, SIGNAL(triggered()), SLOT(sl_extractAssemblyRegion()));
 }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Extract Assembly Region</string>
+   <string>Export Assembly Region</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

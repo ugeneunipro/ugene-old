@@ -112,18 +112,23 @@ void AssemblyReadsArea::createMenu() {
     QMenu * exportMenu = readMenu->addMenu(tr("Export"));
     exportMenu->menuAction()->setObjectName("Export");
 
+	QAction *exportCoverage = exportMenu->addAction(tr("Coverage"));
+	exportCoverage->setObjectName("Export coverage");
+	connect(exportCoverage, SIGNAL(triggered()), browser, SLOT(sl_exportCoverage()));
+
+	QAction * exportConsensus = exportMenu->addAction("Consensus");
+	connect(exportConsensus, SIGNAL(triggered()), ui->getConsensusArea(), SLOT(sl_exportConsensus()));
+
+	exportMenu->addSeparator();
+
     exportReadAction = exportMenu->addAction("Current read");
     connect(exportReadAction, SIGNAL(triggered()), SLOT(sl_onExportRead()));
 
     QAction * exportVisibleReads = exportMenu->addAction("Visible reads as sequences");
     connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
-    QAction * exportConsensus = exportMenu->addAction("Consensus");
-    connect(exportConsensus, SIGNAL(triggered()), ui->getConsensusArea(), SLOT(sl_exportConsensus()));
-
-    QAction *exportCoverage = exportMenu->addAction(tr("Coverage"));
-    exportCoverage->setObjectName("Export coverage");
-    connect(exportCoverage, SIGNAL(triggered()), browser, SLOT(sl_exportCoverage()));
+	QAction * exportAssemblyRegion = exportMenu->addAction("Assembly region");
+	connect(exportAssemblyRegion, SIGNAL(triggered()), browser, SLOT(sl_extractAssemblyRegion()));
 
     readMenu->addSeparator();
 
