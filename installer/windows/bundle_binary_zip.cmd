@@ -25,7 +25,11 @@ mkdir "%OUTPUT_DIR%\plugins"
 mkdir %SYMBOLS_DIR%
 
 REM copy includes
-xcopy /E %INSTALL_DIR%\includes\* %OUTPUT_DIR%
+copy %U_ROOT%\LICENSE.txt %OUTPUT_DIR%
+copy %U_ROOT%\LICENSE.3rd_party.txt %OUTPUT_DIR%
+copy %PATH_TO_VS_BIN%\msvcp120.dll %OUTPUT_DIR%
+copy %PATH_TO_VS_BIN%\msvcr120.dll %OUTPUT_DIR%
+xcopy /E %PATH_TO_INCLUDE_LIBS%\* %OUTPUT_DIR%
 REM copy Qt libraries
 copy %PATH_TO_QT_LIBS%\Qt5Core.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Gui.dll %OUTPUT_DIR%
@@ -59,9 +63,6 @@ copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qtiff.dll %OUTPUT_DIR%\imageforma
 mkdir "%OUTPUT_DIR%\platforms"
 copy %PATH_TO_QT_LIBS%\..\plugins\platforms\qwindows.dll %OUTPUT_DIR%\platforms\
 
-REM copy external tools if exists
-xcopy /E /Y %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
-
 REM copy executables
 call %INSTALL_DIR%\copy_executable.cmd ugeneui
 call %INSTALL_DIR%\copy_executable.cmd ugenecl
@@ -72,8 +73,6 @@ echo. > %OUTPUT_DIR%\UGENE.ini
 REM copy translations
 copy %RELEASE_DIR%\transl_en.qm %OUTPUT_DIR%
 copy %RELEASE_DIR%\transl_ru.qm %OUTPUT_DIR%
-copy %RELEASE_DIR%\transl_cs.qm %OUTPUT_DIR%
-copy %RELEASE_DIR%\transl_zh.qm %OUTPUT_DIR%
 
 REM copy data
 xcopy /I /S %U_ROOT%\data %OUTPUT_DIR%\data
