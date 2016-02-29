@@ -63,6 +63,9 @@ copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qtiff.dll %OUTPUT_DIR%\imageforma
 mkdir "%OUTPUT_DIR%\platforms"
 copy %PATH_TO_QT_LIBS%\..\plugins\platforms\qwindows.dll %OUTPUT_DIR%\platforms\
 
+REM copy external tools if exists
+xcopy /E /Y %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
+
 REM copy executables
 call %INSTALL_DIR%\copy_executable.cmd ugeneui
 call %INSTALL_DIR%\copy_executable.cmd ugenecl

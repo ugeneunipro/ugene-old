@@ -159,7 +159,11 @@ SetRegView 64
 
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
-    File "includes\*.*"
+    File "..\..\LICENSE.txt"
+    File "..\..\LICENSE.3rd_party.txt"
+    File "${PATH_TO_VS_BIN}\msvcp120.dll"
+    File "${PATH_TO_VS_BIN}\msvcr120.dll"
+    File "${PATH_TO_INCLUDE_LIBS}\*.*"
     File "${PATH_TO_QT_LIBS}\Qt5Core.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Gui.dll"
     File "${PATH_TO_QT_LIBS}\Qt5Multimedia.dll"
@@ -203,9 +207,6 @@ SetRegView 64
     File /r /x .svn "..\..\src\_release\tools\*.*"
     !endif
 
-    SetOutPath $INSTDIR\plugins
-    File /r /x .svn "includes\plugins\*.*"
-
     !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
@@ -245,10 +246,6 @@ SetRegView 64
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
 
-
-    SetOutPath $INSTDIR\tools
-    File /r /x .svn "includes\tools\*.*"
-    
     SetOutPath $INSTDIR
     
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
