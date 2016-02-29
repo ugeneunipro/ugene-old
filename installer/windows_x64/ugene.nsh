@@ -207,6 +207,7 @@ SetRegView 64
     File /r /x .svn "..\..\src\_release\tools\*.*"
     !endif
 
+    SetOutPath $INSTDIR\plugins
     !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
