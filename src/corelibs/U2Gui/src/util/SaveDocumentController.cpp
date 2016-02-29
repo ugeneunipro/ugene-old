@@ -135,10 +135,6 @@ void SaveDocumentController::addFormat(const QString &id, const QString &name, c
     initFormatComboBox();
 }
 
-void SaveDocumentController::setBasePath(const QString &path) {
-    setPath(path + "." + formatsInfo.getFirstExtensionByName(currentFormat));
-}
-
 QString SaveDocumentController::getSaveFileName() const {
     QString filePath = conf.fileNameEdit->text();
     if (filePath.startsWith(HOME_DIR_IDENTIFIER)) {
