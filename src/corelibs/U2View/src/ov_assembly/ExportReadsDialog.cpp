@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -38,7 +32,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "ExportReadsDialog.h"
 
@@ -51,16 +45,25 @@ ExportReadsDialog::ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> 
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    documentFormatComboBox->addItems(formats);
-    initFilePath();
+    SaveDocumentControllerConfig conf;
+    conf.defaultDomain = "ExportReadsDialog";
+    conf.fileNameEdit = filepathLineEdit;
+    conf.fileDialogButton = filepathToolButton;
+    conf.formatCombo = documentFormatComboBox;
+    conf.parentWidget = this;
+    conf.saveTitle = tr("Select file to save");
 
-    connect(filepathToolButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
-    connect(documentFormatComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
+    const QString ugeneDataDir = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath();
+    LastUsedDirHelper lod("ExportReadsDialog", ugeneDataDir);
+    const QString filePath = lod.dir + "/exported_reads";
+    conf.defaultFileName = GUrlUtils::rollFileName(filePath, "_", QSet<QString>());
+
+    saveController = new SaveDocumentController(conf, formats, this);
     setMaximumHeight(layout()->minimumSize().height());
 }
 
 void ExportReadsDialog::accept() {
-    if(filepathLineEdit->text().isEmpty()) {
+    if (saveController->getSaveFileName().isEmpty()) {
         QMessageBox::critical(this, tr("Error!"), tr("Select destination file"));
         filepathLineEdit->setFocus(Qt::OtherFocusReason);
         return;
@@ -68,37 +71,10 @@ void ExportReadsDialog::accept() {
     QDialog::accept();
 }
 
-void ExportReadsDialog::sl_selectFile() {
-    LastUsedDirHelper lod("ExportReadsDialog");
-    const QString filter = DialogUtils::prepareDocumentsFileFilter(documentFormatComboBox->currentText(), false, QStringList());
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save"), lod, filter);
-    if (lod.url.isEmpty()) {
-        return;
-    }
-    filepathLineEdit->setText(lod.url);
-}
-
-void ExportReadsDialog::sl_formatChanged(const QString &newFormat) {
-    filepathLineEdit->setText(GUrlUtils::rollFileName(GUrlUtils::changeFileExt(filepathLineEdit->text(), newFormat).getURLString(), "_"));
-}
-
-void ExportReadsDialog::initFilePath() {
-    const QString ugeneDataDir = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath();
-    LastUsedDirHelper lod("ExportReadsDialog", ugeneDataDir);
-
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(documentFormatComboBox->currentText());
-    CHECK(NULL != format, );
-    const QStringList extensions = format->getSupportedDocumentFileExtensions();
-    CHECK(!extensions.isEmpty(), );
-
-    const QString filePath = lod.dir + QDir::separator() + "exported_reads" + "." + extensions.first();
-    filepathLineEdit->setText(GUrlUtils::rollFileName(filePath, "_", QSet<QString>()));
-}
-
 ExportReadsDialogModel ExportReadsDialog::getModel() const {
     ExportReadsDialogModel ret;
-    ret.filepath = filepathLineEdit->text();
-    ret.format = documentFormatComboBox->currentText();
+    ret.filepath = saveController->getSaveFileName();
+    ret.format = saveController->getFormatIdToSave();
     ret.addToProject = addToProjectCheckBox->isChecked();
     return ret;
 }

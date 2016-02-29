@@ -19,26 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-
-#include <QtGui/QKeyEvent>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QDir>
+#include <QKeyEvent>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/DocumentFormatUtils.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "EditSequenceDialogController.h"
 #include "ui/ui_EditSequenceDialog.h"
@@ -66,13 +60,16 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
 //////////////////////////////////////////////////////////////////////////
 //EditSequenceDialogController
 EditSequenceDialogController::EditSequenceDialogController(const EditSequencDialogConfig &cfg, QWidget *p)
-    : QDialog(p), filter(""), pos(1), config(cfg)
+    : QDialog(p),
+      filter(""),
+      pos(1),
+      saveController(NULL),
+      config(cfg)
 {
     ui = new Ui_EditSequenceDialog;
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467556");
 
-    connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     addSeqpasterWidget();
     w->disableCustomSettings();
     w->setPreferredAlphabet(cfg.alphabet);
@@ -104,18 +101,13 @@ EditSequenceDialogController::EditSequenceDialogController(const EditSequencDial
         setWindowTitle(tr("Replace sequence"));
         ui->splitRB->setEnabled(false);
         ui->split_separateRB->setEnabled(false);
-        //ui->insertPositionSpin->setEnabled(false);
         ui->insertPositionBox->setEnabled(false);
         w->selectText();
     }
 
-    connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
+    initSaveController();
 
-    ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
-    ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
-    connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
-    sl_indexChanged(0);
-
+    connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled()));
     connect(ui->startPosToolButton, SIGNAL(clicked()), this, SLOT(sl_startPositionliClicked()));
     connect(ui->endPosToolButton, SIGNAL(clicked()), this, SLOT(sl_endPositionliClicked()));
 
@@ -139,13 +131,14 @@ void EditSequenceDialogController::accept(){
     }
 
     if(!modifyCurrentDocument()){
-        QFileInfo fi(ui->filepathEdit->text());
+        const QString url = saveController->getSaveFileName();
+        QFileInfo fi(url);
         QDir dirToSave(fi.dir());
         if (!dirToSave.exists()){
             QMessageBox::critical(this, this->windowTitle(), tr("Directory to save is not exists"));
             return;
         }
-        if(ui->filepathEdit->text().isEmpty()){
+        if(url.isEmpty()){
             QMessageBox::critical(this, this->windowTitle(), tr("Entered path is empty"));
             return;
         }
@@ -165,14 +158,6 @@ void EditSequenceDialogController::addSeqpasterWidget(){
 
 }
 
-void EditSequenceDialogController::sl_browseButtonClicked(){
-    LastUsedDirHelper h;
-
-    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
-    ui->filepathEdit->setText(h.url);
-    sl_indexChanged(ui->formatBox->currentIndex());
-}
-
 int EditSequenceDialogController::getPosToInsert() const {
     return pos;
 }
@@ -190,27 +175,16 @@ U1AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::get
     }
 }
 
-void EditSequenceDialogController::sl_indexChanged( int index){
-    DocumentFormatId currentId = (ui->formatBox->itemData(index)).toString();
-    filter = DialogUtils::prepareDocumentsFileFilter(currentId, false);
-    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId);
-    QString newExt = df->getSupportedDocumentFileExtensions().first();
-    QString filepath = ui->filepathEdit->text();
-    if (filepath.isEmpty()){
-        return;
-    }
-    QFileInfo fi(filepath);
-    ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "." + newExt);
-}
+void EditSequenceDialogController::sl_mergeAnnotationsToggled() {
+    const QString fastaFormatName = DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::FASTA);
+    CHECK(!fastaFormatName.isEmpty(), );
 
-void EditSequenceDialogController::sl_mergeAnnotationsToggled( bool state){
-    Q_UNUSED(state);
-    if(ui->mergeAnnotationsBox->isChecked()){
-        ui->formatBox->removeItem(ui->formatBox->findText("FASTA"));
-    }else{
-        ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
+    if (ui->mergeAnnotationsBox->isChecked()) {
+        ui->formatBox->removeItem(ui->formatBox->findText(fastaFormatName));
+    } else {
+        ui->formatBox->addItem(fastaFormatName);
     }
-    sl_indexChanged(ui->formatBox->findText("Genbank"));
+    ui->formatBox->model()->sort(0);
 }
 
 DNASequence EditSequenceDialogController::getNewSequence() const {
@@ -221,12 +195,11 @@ GUrl EditSequenceDialogController::getDocumentPath() const {
     if (modifyCurrentDocument()) {
         return GUrl();
     } else {
-        return GUrl(ui->filepathEdit->text());
+        return GUrl(saveController->getSaveFileName());
     }
 }
 
-EditSequenceDialogController::~EditSequenceDialogController()
-{
+EditSequenceDialogController::~EditSequenceDialogController() {
     delete ui;
 }
 
@@ -238,12 +211,27 @@ bool EditSequenceDialogController::recalculateQualifiers() const {
     return ui->recalculateQualsCheckBox->isChecked();
 }
 
-U2::DocumentFormatId EditSequenceDialogController::getDocumentFormatId() const {
-    return ui->formatBox->itemData(ui->formatBox->currentIndex()).toString();
+DocumentFormatId EditSequenceDialogController::getDocumentFormatId() const {
+    return saveController->getFormatIdToSave();
 }
 
 bool EditSequenceDialogController::modifyCurrentDocument() const {
     return !ui->saveToAnotherBox->isChecked();
+}
+
+void EditSequenceDialogController::initSaveController() {
+    SaveDocumentControllerConfig conf;
+    conf.defaultFormatId = BaseDocumentFormats::FASTA;
+    conf.fileDialogButton = ui->browseButton;
+    conf.fileNameEdit = ui->filepathEdit;
+    conf.formatCombo = ui->formatBox;
+    conf.parentWidget = this;
+    conf.saveTitle = tr("Select file to save...");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::FASTA
+                                                                      << BaseDocumentFormats::PLAIN_GENBANK;
+
+    saveController = new SaveDocumentController(conf, formats, this);
 }
 
 void EditSequenceDialogController::sl_startPositionliClicked(){
@@ -257,19 +245,17 @@ void EditSequenceDialogController::sl_endPositionliClicked(){
 void EditSequenceDialogController::sl_beforeSlectionClicked(){
     SAFE_POINT(!config.selectionRegions.isEmpty(), "No selection", );
     U2Region containingregion = U2Region::containingRegion(config.selectionRegions);
-    ui->insertPositionSpin->setValue(containingregion.startPos+1);
+    ui->insertPositionSpin->setValue(containingregion.startPos + 1);
 }
 
 void EditSequenceDialogController::sl_afterSlectionClicked(){
     SAFE_POINT(!config.selectionRegions.isEmpty(), "No selection", );
     U2Region containingregion = U2Region::containingRegion(config.selectionRegions);
-    ui->insertPositionSpin->setValue(containingregion.endPos()+1);
+    ui->insertPositionSpin->setValue(containingregion.endPos() + 1);
 }
 
 void EditSequenceDialogController::sl_enterPressed(){
     accept();
 }
 
-
 } // U2
-

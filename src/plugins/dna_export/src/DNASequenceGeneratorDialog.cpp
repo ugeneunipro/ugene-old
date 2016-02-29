@@ -26,12 +26,12 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "DNASequenceGenerator.h"
@@ -53,7 +53,9 @@ static QMap<char, qreal> initContent() {
 
 QMap<char, qreal> DNASequenceGeneratorDialog::content = initContent();
 
-DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) {
+DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p)
+    : QDialog(p),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467800");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
@@ -64,19 +66,7 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     referenceButton->setChecked(true);
     sl_refButtonToggled(true);
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.supportedObjectTypes << GObjectTypes::SEQUENCE << GObjectTypes::MULTIPLE_ALIGNMENT;
-    conf.dfc.allowPartialTypeMapping = true;
-    conf.parentWidget = this;
-    conf.fileNameEdit = outputEdit;
-    conf.formatCombo = formatCombo;
-    conf.fileDialogButton = outputButton;
-    conf.defaultFormatId = BaseDocumentFormats::FASTA;
-    //conf.defaultFileName = defaultFileName;
-    conf.saveTitle = tr("Save sequences");
-    saveGroupContoller = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
     generateButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
@@ -86,7 +76,6 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(referenceButton, SIGNAL(toggled(bool)), SLOT(sl_refButtonToggled(bool)));
     connect(seedCheckBox, SIGNAL(stateChanged (int)), SLOT(sl_stateChanged(int)));
-
 }
 
 void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
@@ -95,6 +84,25 @@ void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
     } else {
         seedSpinBox->setEnabled(false);
     }
+}
+
+void DNASequenceGeneratorDialog::initSaveController(){
+    SaveDocumentControllerConfig config;
+    config.defaultFormatId = BaseDocumentFormats::FASTA;
+    config.fileDialogButton = outputButton;
+    config.fileNameEdit = outputEdit;
+    config.formatCombo = formatCombo;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save sequences");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::SEQUENCE
+                                           << GObjectTypes::MULTIPLE_ALIGNMENT;
+    formatConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    formatConstraints.allowPartialTypeMapping = true;
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 void DNASequenceGeneratorDialog::sl_browseReference() {
@@ -116,9 +124,9 @@ void DNASequenceGeneratorDialog::sl_generate() {
     cfg.numSeqs = seqNumSpin->value();
     cfg.useRef = referenceButton->isChecked();
     cfg.refUrl = inputEdit->text();
-    cfg.outUrl = outputEdit->text();
+    cfg.outUrl = saveController->getSaveFileName();
     cfg.sequenceName = "Sequence ";
-    cfg.format = saveGroupContoller->getFormatToSave();
+    cfg.formatId = saveController->getFormatIdToSave();
     cfg.content = content;
     cfg.window = windowSpinBox->value();
     if(seedCheckBox->isChecked()) {

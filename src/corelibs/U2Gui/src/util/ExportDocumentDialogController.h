@@ -22,20 +22,16 @@
 #ifndef _U2_EXPORT_DOCUMENT_DIALOG_CONTROLLER_H_
 #define _U2_EXPORT_DOCUMENT_DIALOG_CONTROLLER_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
 #include <U2Core/DocumentModel.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
 
 class Ui_ExportDocumentDialog;
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
 class U2GUI_EXPORT ExportDocumentDialogController : public QDialog {
     Q_OBJECT
@@ -57,8 +53,9 @@ public:
 
 private:
     void initSaveController(const QList<GObject *> &objects, const QString &fileUrl);
+    static DocumentFormatConstraints getAcceptableConstraints(const QList<GObject *> &objects);
 
-    SaveDocumentGroupController* saveController;
+    SaveDocumentController* saveController;
     Ui_ExportDocumentDialog* ui;
     // the following fields are used to determine whether the object was used for
     // creating a Document from single GObeject or another Document

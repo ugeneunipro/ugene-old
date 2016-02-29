@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>485</width>
-    <height>452</height>
+    <height>577</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -600,6 +600,38 @@
     <hint type="destinationlabel">
      <x>290</x>
      <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ClustalWSupportRunDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>556</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ClustalWSupportRunDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>556</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>288</y>
     </hint>
    </hints>
   </connection>

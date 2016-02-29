@@ -23,17 +23,18 @@
 #include <QScopedPointer>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Core/QObjectScopedPointer.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "ConstructMoleculeDialog.h"
 #include "CreateFragmentDialog.h"
@@ -42,7 +43,9 @@
 namespace U2 {
 
 ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragmentList,  QWidget* p )
-: QDialog(p), fragments(fragmentList)
+    : QDialog(p),
+      fragments(fragmentList),
+      saveController(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467743");
@@ -56,14 +59,11 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
         fragmentListWidget->addItem(fragItem);
     }
 
+    initSaveController();
 
-    LastUsedDirHelper lod;
-    GUrl url = GUrlUtils::rollFileName(lod.dir + "/new_mol.gb", DocumentUtils::getNewDocFileNameExcludesHint());
-    filePathEdit->setText(url.getURLString());
     fragmentListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     molConstructWidget->setColumnWidth(1, molConstructWidget->width()*0.5);
 
-    connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowseButtonClicked()));
     connect(fragmentListWidget, SIGNAL( itemDoubleClicked ( QListWidgetItem* ) ),  SLOT(sl_onTakeButtonClicked()));
     connect(takeButton, SIGNAL(clicked()), SLOT(sl_onTakeButtonClicked()));
     connect(takeAllButton, SIGNAL(clicked()), SLOT(sl_onTakeAllButtonClicked()));
@@ -96,7 +96,7 @@ void ConstructMoleculeDialog::accept()
     LigateFragmentsTaskConfig cfg;
     cfg.checkOverhangs = !makeBluntBox->isChecked();
     cfg.makeCircular = makeCircularBox->isChecked();
-    cfg.docUrl = filePathEdit->text();
+    cfg.docUrl = saveController->getSaveFileName();
     cfg.openView = openViewBox->isChecked();
     cfg.saveDoc = saveImmediatlyBox->isChecked();
     cfg.annotateFragments = annotateFragmentsBox->isChecked();
@@ -105,17 +105,6 @@ void ConstructMoleculeDialog::accept()
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
     QDialog::accept();
-}
-
-
-void ConstructMoleculeDialog::sl_onBrowseButtonClicked()
-{
-    LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Set new molecule file name"), lod.dir, tr("Genbank (*.gb )"));
-    if (!lod.url.isEmpty()) {
-        GUrl result = lod.url;
-        filePathEdit->setText(result.getURLString());
-    }
 }
 
 void ConstructMoleculeDialog::sl_onTakeButtonClicked()
@@ -281,6 +270,23 @@ void ConstructMoleculeDialog::update()
         }
     }
 
+}
+
+void ConstructMoleculeDialog::initSaveController() {
+    LastUsedDirHelper lod;
+
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = lod.dir + "/new_mol.gb";
+    config.defaultFormatId = BaseDocumentFormats::PLAIN_GENBANK;
+    config.fileDialogButton = browseButton;
+    config.fileNameEdit = filePathEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Set new molecule file name");
+    config.rollOutProjectUrls = true;
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_GENBANK;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
 void ConstructMoleculeDialog::sl_makeCircularBoxClicked()

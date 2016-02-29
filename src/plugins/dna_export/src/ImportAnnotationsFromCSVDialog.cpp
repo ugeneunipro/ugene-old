@@ -25,9 +25,11 @@
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -35,9 +37,8 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/ScriptEditorDialog.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "CSVColumnConfigurationDialog.h"
@@ -58,8 +59,8 @@ namespace U2 {
 #define SKIP_LINES_PREFIX   QString("skip_lines_prefix")
 
 ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
-: QDialog (w)
-{
+    : QDialog (w),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467577");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
@@ -76,16 +77,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     connect(columnSeparatorRadioButton, SIGNAL(toggled(bool)), SLOT(sl_separatorRadioToggled(bool)));
     connect(scriptRadioButton, SIGNAL(toggled(bool)), SLOT(sl_scriptRadioToggled(bool)));
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.supportedObjectTypes += GObjectTypes::ANNOTATION_TABLE;
-    conf.fileDialogButton = saveFileButton;
-    conf.fileNameEdit = saveFileName;
-    conf.saveTitle = tr("Save imported annotations to");
-    conf.parentWidget = this;
-    conf.formatCombo = saveFormatCombo;
-
-    saveGroupController = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
     sl_separatorChanged(separatorEdit->text());
     sl_prefixToSkipChanged(prefixToSkipEdit->text());
@@ -200,8 +192,8 @@ void ImportAnnotationsFromCSVDialog::toTaskConfig(ImportAnnotationsFromCSVTaskCo
     assert(result() == QDialog::Accepted);
     toParsingConfig(config.parsingOptions);
     config.csvFile = readFileName->text();
-    config.df = saveGroupController->getFormatToSave();
-    config.dstFile = saveGroupController->getSaveFileName();
+    config.formatId = saveController->getFormatIdToSave();
+    config.dstFile = saveController->getSaveFileName();
     config.addToProject = addToProjectCheck->isChecked();
 }
 
@@ -241,6 +233,22 @@ void ImportAnnotationsFromCSVDialog::sl_removeQuotesToggled(bool) {
 
 void ImportAnnotationsFromCSVDialog::sl_linesToSkipChanged(int) {
     guessSeparator(true);
+}
+
+void ImportAnnotationsFromCSVDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.fileDialogButton = saveFileButton;
+    config.fileNameEdit = saveFileName;
+    config.formatCombo = saveFormatCombo;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save imported annotations to");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::ANNOTATION_TABLE;
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    formatConstraints.formatsToExclude << BaseDocumentFormats::VECTOR_NTI_SEQUENCE;
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 void ImportAnnotationsFromCSVDialog::sl_guessSeparatorClicked() {
@@ -379,17 +387,13 @@ bool ImportAnnotationsFromCSVDialog::checkSeparators(bool silent) {
 }
 
 QString ImportAnnotationsFromCSVDialog::checkOutputGroup() {
-    QString outFile = saveGroupController->getSaveFileName();
+    QString outFile = saveController->getSaveFileName();
     if (outFile.isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Output file name is not set!"));
         saveFileName->setFocus();
         return QString();
     }
-    if (saveGroupController->getFormatToSave() == NULL) {
-        QMessageBox::critical(this, L10N::errorTitle(), tr("Output file format is not set!"));
-        saveFormatCombo->setFocus();
-        return QString();
-    }
+
     return outFile;
 }
 

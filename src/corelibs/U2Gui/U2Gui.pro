@@ -73,7 +73,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/RangeSelector.h \
            src/util/RegionSelector.h \
            src/util/RemovePartFromSequenceDialogController.h \
-           src/util/SaveDocumentGroupController.h \
+           src/util/SaveDocumentController.h \
            src/util/ScaleBar.h \
            src/util/ScriptEditorDelegate.h \
            src/util/ScriptEditorDialog.h \
@@ -214,7 +214,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/RangeSelector.cpp \
            src/util/RegionSelector.cpp \
            src/util/RemovePartFromSequenceDialogController.cpp \
-           src/util/SaveDocumentGroupController.cpp \
+           src/util/SaveDocumentController.cpp \
            src/util/ScaleBar.cpp \
            src/util/ScriptEditorDelegate.cpp \
            src/util/ScriptEditorDialog.cpp \

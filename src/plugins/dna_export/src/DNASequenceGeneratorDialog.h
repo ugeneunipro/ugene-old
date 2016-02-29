@@ -25,23 +25,26 @@
 #include "ui_DNASequenceGeneratorDialog.h"
 #include "ui_BaseContentDialog.h"
 
-
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
 class DNASequenceGeneratorDialog : public QDialog, public Ui_DNASequenceGeneratorDialog {
     Q_OBJECT
 public:
     DNASequenceGeneratorDialog(QWidget* p=NULL);
+
 private slots:
     void sl_browseReference();
     void sl_configureContent();
     void sl_generate();
     void sl_refButtonToggled(bool checked);
     void sl_stateChanged(int state);
+
 private:
-    SaveDocumentGroupController* saveGroupContoller;
+    void initSaveController();
+
+    SaveDocumentController* saveController;
     static QMap<char, qreal> content;
     QPushButton* generateButton;
     QPushButton* cancelButton;

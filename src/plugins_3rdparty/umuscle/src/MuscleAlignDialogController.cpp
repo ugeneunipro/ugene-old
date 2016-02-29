@@ -19,18 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DocumentUtils.h>
@@ -38,11 +32,10 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "MuscleAlignDialogController.h"
-
-/* TRANSLATOR U2::MuscleAlignDialogController */    
 
 namespace U2 {
 
@@ -135,17 +128,19 @@ void MuscleAlignDialogController::sl_onPresetChanged(int newPreset) {
 ////////////////////////////////////////
 //MuscleAlignWithExtFileSpecifyDialogController
 MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDialogController(QWidget* w, MuscleTaskSettings& _settings)
-: QDialog(w), settings(_settings)
+    : QDialog(w),
+      settings(_settings),
+      saveController(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467769");
+
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    //this->adjustSize();
-    //add input and output files 
+
+    initSaveController();
 
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
-    connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 
     //we don`t know length of MA, need check this at task
     rangeStartSB->setValue(0);
@@ -154,16 +149,17 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
     connect(confBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onPresetChanged(int)));
     initPresets();
     foreach(const MuscleAlignPreset* p, presets.qlist) {
-    confBox->addItem(p->name);
+        confBox->addItem(p->name);
     }
     const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
     assert(!aminoTs.empty());
     foreach(DNATranslation* t, aminoTs) {
-    translationTableBox->addItem(t->getTranslationName());
+        translationTableBox->addItem(t->getTranslationName());
     }
 }
+
 void MuscleAlignWithExtFileSpecifyDialogController::sl_inputPathButtonClicked() {
     LastUsedDirHelper lod;
     lod.url = U2FileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir,
@@ -174,19 +170,18 @@ void MuscleAlignWithExtFileSpecifyDialogController::sl_inputPathButtonClicked() 
     inputFileLineEdit->setText(lod.url);
 }
 
-void MuscleAlignWithExtFileSpecifyDialogController::sl_outputPathButtonClicked() {
-    LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
-    if (lod.url.isEmpty()) {
-        return;
-    }
-    outputFileLineEdit->setText(lod.url);
-    buildMultipleAlignmentUrl(lod.url);
-}
+void MuscleAlignWithExtFileSpecifyDialogController::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    config.fileDialogButton = outputFilePathButton;
+    config.fileNameEdit = outputFileLineEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save an multiple alignment file");
+    config.rollOutProjectUrls = true;
 
-void MuscleAlignWithExtFileSpecifyDialogController::buildMultipleAlignmentUrl(const GUrl &alnUrl) {
-    GUrl url = GUrlUtils::rollFileName(alnUrl.dirPath() + "/" + alnUrl.baseFileName()+ ".aln", DocumentUtils::getNewDocFileNameExcludesHint());
-    outputFileLineEdit->setText(url.getURLString());
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::CLUSTAL_ALN;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
 void MuscleAlignWithExtFileSpecifyDialogController::accept() {
@@ -230,16 +225,16 @@ void MuscleAlignWithExtFileSpecifyDialogController::accept() {
     }
     if(inputFileLineEdit->text().isEmpty()){
         QMessageBox::information(this, tr("Kalign with Align"),
-            tr("Input file is not set!") );
-        }else if(outputFileLineEdit->text().isEmpty()){
-            QMessageBox::information(this, tr("Kalign with Align"),
-                tr("Output file is not set!") );
-        }
-        else{
-            settings.outputFilePath=outputFileLineEdit->text();
-            settings.inputFilePath=inputFileLineEdit->text();
-            QDialog::accept();
-            }
+                                 tr("Input file is not set!") );
+    }else if(saveController->getSaveFileName().isEmpty()){
+        QMessageBox::information(this, tr("Kalign with Align"),
+                                 tr("Output file is not set!") );
+    }
+    else{
+        settings.outputFilePath = saveController->getSaveFileName();
+        settings.inputFilePath = inputFileLineEdit->text();
+        QDialog::accept();
+    }
 }
 
 void MuscleAlignWithExtFileSpecifyDialogController::sl_onPresetChanged(int newPreset) {//???

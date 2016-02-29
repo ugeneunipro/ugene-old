@@ -52,13 +52,14 @@
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Settings.h>
+#include <U2Core/TaskWatchdog.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Core/TaskWatchdog.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
@@ -68,11 +69,11 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/GroupHeaderImageWidget.h>
 #include <U2Gui/GroupOptionsWidget.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OptionsPanelWidget.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Algorithm/MSAColorScheme.h>
@@ -874,7 +875,7 @@ void MSAEditor::resetCollapsibleModel() {
 }
 
 void MSAEditor::sl_exportHighlighted(){
-    QObjectScopedPointer<ExportHighligtningDialogController> d = new ExportHighligtningDialogController(ui, (QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    QObjectScopedPointer<ExportHighligtingDialogController> d = new ExportHighligtingDialogController(ui, (QWidget*)AppContext::getMainWindow()->getQMainWindow());
     d->exec();
     CHECK(!d.isNull(), );
 

@@ -22,18 +22,16 @@
 #ifndef _U2_REMOVE_PART_FROM_SEQUENCE_CONTROLLER_H_
 #define _U2_REMOVE_PART_FROM_SEQUENCE_CONTROLLER_H_
 
+#include <QDialog>
+
 #include <U2Core/U2Region.h>
 #include <U2Core/U1AnnotationUtils.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-
 class Ui_RemovePartFromSequenceDialog;
 
-namespace U2{
+namespace U2 {
+
+class SaveDocumentController;
 
 class U2GUI_EXPORT RemovePartFromSequenceDialogController : public QDialog {
     Q_OBJECT
@@ -51,15 +49,16 @@ public:
     DocumentFormatId getDocumentFormatId() const;
 
 private slots:
-    void sl_browseButtonClicked();
-    void sl_indexChanged(int);
     void sl_mergeAnnotationsToggled(bool);
 
 private:
+    void initSaveController(const QString &docUrl);
+
     QString filter;
     U2Region toDelete;
     U2Region source;
     Ui_RemovePartFromSequenceDialog* ui;
+    SaveDocumentController *saveController;
 };
 
 }//ns

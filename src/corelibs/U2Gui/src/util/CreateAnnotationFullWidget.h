@@ -56,7 +56,6 @@ public:
     void setAnnotationName(const QString &name);
     void setLocation(const U2Location &location);
 
-    QString getNewTablePath() const;
     QString getAnnotationTypeString() const;
     QString getGroupName() const;
     QString getAnnotationName() const;
@@ -79,6 +78,7 @@ public:
     GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints);
 
     void countDescriptionUsage() const;
+    void fillSaveDocumentControllerConfig(SaveDocumentControllerConfig &config) const;
 
 private slots:
     void sl_regionChanged();

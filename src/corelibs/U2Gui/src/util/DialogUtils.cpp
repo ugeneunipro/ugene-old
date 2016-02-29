@@ -62,18 +62,6 @@ QString DialogUtils::prepareDocumentsFileFilterByObjType(const GObjectType& t, b
     return FormatUtils::prepareDocumentsFileFilterByObjType(t, any);
 }
 
-QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
-    QMap<QString, QString> filters;
-    filters[ "PNG - Portable Network Graphics (*.png)" ] = "png";
-    filters[ "JPG/JPEG format (*.jpg)" ] = "jpg";
-    filters[ "TIF - Tagged Image File format (*.tiff)" ] = "tiff";
-
-    LastUsedDirHelper lod("image");
-    QString selectedFilter;
-    lod.url = U2FileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
-    return QPair<QString, QString>(lod.url, filters.value(selectedFilter));
-}
-
 void DialogUtils::setWizardMinimumSize(QWizard *wizard) {
     QSize bestSize;
     foreach (int pageId, wizard->pageIds()) {

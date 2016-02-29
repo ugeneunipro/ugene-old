@@ -22,19 +22,20 @@
 #ifndef _U2_DISTANCE_MATRIX_MSA_PROFILE_DIALOG_H_
 #define _U2_DISTANCE_MATRIX_MSA_PROFILE_DIALOG_H_
 
-#include "ui/ui_DistanceMatrixMSAProfileDialog.h"
+#include <QHash>
+#include <QSet>
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 
-#include <QtCore/QHash>
-#include <QtCore/QSet>
+#include "ui/ui_DistanceMatrixMSAProfileDialog.h"
 
 namespace U2 {
 
 class MSAEditor;
 class MSADistanceAlgorithm;
+class SaveDocumentController;
 
 class DistanceMatrixMSAProfileDialog : public QDialog, public Ui_DistanceMatrixMSAProfileDialog {
     Q_OBJECT
@@ -42,15 +43,20 @@ class DistanceMatrixMSAProfileDialog : public QDialog, public Ui_DistanceMatrixM
 public:
     DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* ctx);
 
-    virtual void accept();
+    void accept();
 
 private slots:
-
-    void sl_selectFile();
-    void sl_formatChanged(bool);
+    void sl_formatSelected();
+    void sl_formatChanged(const QString &newFormatId);
 
 private:
+    void initSaveController();
+
     MSAEditor* ctx;
+    SaveDocumentController *saveController;
+
+    static const QString HTML;
+    static const QString CSV;
 };
 
 enum DistanceMatrixMSAProfileOutputFormat {

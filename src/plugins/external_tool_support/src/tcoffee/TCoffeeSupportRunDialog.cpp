@@ -19,16 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
 
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -36,6 +29,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "TCoffeeSupportRunDialog.h"
@@ -45,23 +39,19 @@ namespace U2 {
 ////////////////////////////////////////
 //TCoffeeSupportRunDialog
 TCoffeeSupportRunDialog::TCoffeeSupportRunDialog(TCoffeeSupportTaskSettings& _settings, QWidget* _parent) :
-        QDialog(_parent), settings(_settings)
+    QDialog(_parent), settings(_settings)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467798");
+
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     inputGroupBox->setVisible(false);
     this->adjustSize();
-    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
-
 }
 
-void TCoffeeSupportRunDialog::sl_align(){
+void TCoffeeSupportRunDialog::accept(){
     if(gapOpenCheckBox->isChecked()) {
         settings.gapOpenPenalty = gapOpenSpinBox->value();
     }
@@ -71,26 +61,24 @@ void TCoffeeSupportRunDialog::sl_align(){
     if(maxNumberIterRefinementCheckBox->isChecked()){
         settings.numIterations = maxNumberIterRefinementSpinBox->value();
     }
-    accept();
+    QDialog::accept();
 }
 ////////////////////////////////////////
 //TCoffeeWithExtFileSpecifySupportRunDialog
 TCoffeeWithExtFileSpecifySupportRunDialog::TCoffeeWithExtFileSpecifySupportRunDialog(TCoffeeSupportTaskSettings& _settings, QWidget* _parent) :
-        QDialog(_parent), settings(_settings)
+    QDialog(_parent),
+    settings(_settings),
+    saveController(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467798");
+
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    //this->adjustSize();
-    connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
-    connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
-    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+    initSaveController();
 
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(alignButton, SIGNAL(clicked()), this, SLOT(sl_align()));
+    connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
 }
 
 void TCoffeeWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
@@ -103,22 +91,21 @@ void TCoffeeWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
     inputFileLineEdit->setText(lod.url);
 }
 
-void TCoffeeWithExtFileSpecifySupportRunDialog::sl_outputPathButtonClicked() {
-    LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
-    if (lod.url.isEmpty()) {
-        return;
-    }
-    outputFileLineEdit->setText(lod.url);
-    buildMultipleAlignmentUrl(lod.url);
+void TCoffeeWithExtFileSpecifySupportRunDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    config.fileDialogButton = outputFilePathButton;
+    config.fileNameEdit = outputFileLineEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save an multiple alignment file");
+    config.rollOutProjectUrls = true;
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::CLUSTAL_ALN;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
-void TCoffeeWithExtFileSpecifySupportRunDialog::buildMultipleAlignmentUrl(const GUrl &alnUrl) {
-    GUrl url = GUrlUtils::rollFileName(alnUrl.dirPath() + "/" + alnUrl.baseFileName()+ ".aln", DocumentUtils::getNewDocFileNameExcludesHint());
-    outputFileLineEdit->setText(url.getURLString());
-}
-
-void TCoffeeWithExtFileSpecifySupportRunDialog::sl_align(){
+void TCoffeeWithExtFileSpecifySupportRunDialog::accept(){
     if(gapOpenCheckBox->isChecked()) {
         settings.gapOpenPenalty = gapOpenSpinBox->value();
     }
@@ -130,17 +117,16 @@ void TCoffeeWithExtFileSpecifySupportRunDialog::sl_align(){
     }
     if(inputFileLineEdit->text().isEmpty()){
         QMessageBox::information(this, tr("Kalign with Align"),
-            tr("Input file is not set!") );
-        }else if(outputFileLineEdit->text().isEmpty()){
-            QMessageBox::information(this, tr("Kalign with Align"),
-                tr("Output file is not set!") );
-        }
-        else{
-            settings.outputFilePath=outputFileLineEdit->text();
-            settings.inputFilePath=inputFileLineEdit->text();
-            QDialog::accept();
-            }
-
+                                 tr("Input file is not set!") );
+    }else if(saveController->getSaveFileName().isEmpty()){
+        QMessageBox::information(this, tr("Kalign with Align"),
+                                 tr("Output file is not set!") );
+    }
+    else{
+        settings.outputFilePath = saveController->getSaveFileName();
+        settings.inputFilePath = inputFileLineEdit->text();
+        QDialog::accept();
+    }
 }
 
 }//namespace

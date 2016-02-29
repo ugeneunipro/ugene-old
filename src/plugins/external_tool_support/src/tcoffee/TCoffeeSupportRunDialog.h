@@ -22,23 +22,25 @@
 #ifndef _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 #define _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 
+#include <QDialog>
+
 #include <U2Gui/DialogUtils.h>
-#include <ui/ui_TCoffeeSupportRunDialog.h>
+
 #include "TCoffeeSupportTask.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "ui/ui_TCoffeeSupportRunDialog.h"
 
 namespace U2 {
+
+class SaveDocumentController;
 
 class TCoffeeSupportRunDialog : public QDialog, public Ui_TCoffeeSupportRunDialog {
     Q_OBJECT
 public:
     TCoffeeSupportRunDialog(TCoffeeSupportTaskSettings& settings, QWidget* parent);
+
 private slots:
-    void sl_align();
+    void accept();
+
 private:
     TCoffeeSupportTaskSettings&        settings;
 };
@@ -47,13 +49,16 @@ class TCoffeeWithExtFileSpecifySupportRunDialog : public QDialog, public Ui_TCof
     Q_OBJECT
 public:
     TCoffeeWithExtFileSpecifySupportRunDialog(TCoffeeSupportTaskSettings& settings, QWidget* parent);
+
 private slots:
-    void sl_align();
+    void accept();
     void sl_inputPathButtonClicked();
-    void sl_outputPathButtonClicked();
+
 private:
+    void initSaveController();
+
     TCoffeeSupportTaskSettings&     settings;
-    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
+    SaveDocumentController *        saveController;
 };
 
 }//namespace

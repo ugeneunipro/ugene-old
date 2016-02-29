@@ -22,23 +22,25 @@
 #ifndef _U2_ACE_IMPORT_DIALOG_H_
 #define _U2_ACE_IMPORT_DIALOG_H_
 
-#include "ui_AceImportDialog.h"
-
 #include <U2Formats/AceImporter.h>
 
+#include "ui_AceImportDialog.h"
+
 namespace U2 {
+
+class SaveDocumentController;
 
 class AceImportDialog : public ImportDialog, public Ui_AceImportDialog {
     Q_OBJECT
 public:
     AceImportDialog(const QVariantMap& settings);
 
-private slots:
-    void sl_selectFileClicked();
-
 protected:
     bool isValid();
     void applySettings();
+    void initSaveController();
+
+    SaveDocumentController *saveController;
 
     static const QString EXTENSION;
 };

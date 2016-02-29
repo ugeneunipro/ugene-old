@@ -34,7 +34,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "ExportSequencesDialog.h"
 
@@ -44,27 +44,17 @@ namespace U2 {
 
 ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool allowTranslation,
     bool allowBackTranslation, const QString& defaultFileName, const QString &sourceFileBaseName,
-    const DocumentFormatId& id, QWidget* p )
-    : QDialog( p ), sequenceName( sourceFileBaseName )
-{
+    const DocumentFormatId& defaultFormatId, QWidget* p )
+    : QDialog(p),
+      sequenceName(sourceFileBaseName),
+      saveController(NULL),
+      defaultFileName(defaultFileName) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467507");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.supportedObjectTypes += GObjectTypes::SEQUENCE;
-    conf.parentWidget = this;
-    conf.fileNameEdit = fileNameEdit;
-    conf.formatCombo = formatCombo;
-    conf.fileDialogButton = fileButton;
-    conf.defaultFormatId = id;
-    conf.defaultFileName = defaultFileName;
-    conf.saveTitle = tr("Export Sequences");
-    conf.objectName = QString( );
-    saveGroupContoller = new SaveDocumentGroupController(conf, this);
+    initSaveController(defaultFormatId);
 
     multiMode = m;
     strand = TriState_Yes;
@@ -97,7 +87,6 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
 
     if (!multiMode) {
         saveModeBox->setEnabled(false);
-        //saveModeBox->setHidden(true);
     }
 
     if (!allowBackTranslation) {
@@ -165,29 +154,46 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
         }
     }
 
-    formatId = id;
+    formatId = defaultFormatId;
     QPushButton* exportButton = buttonBox->button(QDialogButtonBox::Ok);
     connect(exportButton, SIGNAL(clicked()), SLOT(sl_exportClicked()));
     connect(translateButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
     connect(translationTableButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
-    connect(formatCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_formatChanged(int)));
 
     int height = layout()->minimumSize().height();
     setMaximumHeight(height);
 }
 
-
-void ExportSequencesDialog::sl_formatChanged(int) {
-    QString text = saveGroupContoller->getFormatIdToSave();
+void ExportSequencesDialog::sl_formatChanged(const QString &newFormatId) {
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
     SAFE_POINT(NULL != dfr, "Invalid document format registry", );
-    if (dfr->getFormatById(text)->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
+    if (dfr->getFormatById(newFormatId)->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
         withAnnotationsBox->setEnabled(true);
         withAnnotationsBox->setChecked(true);
     } else {
         withAnnotationsBox->setEnabled(false);
         withAnnotationsBox->setChecked(false);
     }
+}
+
+void ExportSequencesDialog::initSaveController(const DocumentFormatId &defaultFormatId) {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = defaultFileName;
+    config.defaultFormatId = defaultFormatId;
+    config.fileDialogButton = fileButton;
+    config.fileNameEdit = fileNameEdit;
+    config.formatCombo = formatCombo;
+    config.parentWidget = this;
+    config.saveTitle = tr("Export Sequences");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::SEQUENCE;
+    formatConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
+
+    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
 }
 
 void ExportSequencesDialog::updateModel() {
@@ -199,15 +205,15 @@ void ExportSequencesDialog::updateModel() {
     merge = mergeButton->isChecked();
     mergeGap = merge ? mergeSpinBox->value() : 0;
 
-    file = fileNameEdit->text();
+    file = saveController->getSaveFileName();
     QFileInfo fi(file);
     if( fi.isRelative() ) {
         // save it in root sequence directory
-        file = QFileInfo(saveGroupContoller->getDefaultFileName()).absoluteDir().absolutePath() + "/" + file;
+        file = QFileInfo(defaultFileName).absoluteDir().absolutePath() + "/" + file;
     }
     sequenceName = ( customSeqNameBox->isChecked( ) ) ? sequenceNameEdit->text( ) : QString( );
 
-    formatId = saveGroupContoller->getFormatIdToSave();
+    formatId = saveController->getFormatIdToSave();
     useSpecificTable = translationTableButton->isChecked();
     if (translate) {
         translationTable = tableID[translationTableCombo->currentIndex()];
@@ -223,9 +229,8 @@ void ExportSequencesDialog::updateModel() {
     withAnnotations = withAnnotationsBox->isChecked() && withAnnotationsBox->isEnabled();
 }
 
-
 void ExportSequencesDialog::sl_exportClicked() {
-    if (fileNameEdit->text().isEmpty()) {
+    if (saveController->getSaveFileName().isEmpty()) {
         QMessageBox::warning(this, L10N::warningTitle(), tr("File is empty"));
         fileNameEdit->setFocus();
         return;

@@ -22,9 +22,9 @@
 #ifndef _U2_EXTRACT_ASSEMBLY_TASK_H_
 #define _U2_EXTRACT_ASSEMBLY_TASK_H_
 
-#include <U2Core/U2Region.h>
-#include <U2Formats/SQLiteDbi.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2Region.h>
 
 namespace U2 {
 
@@ -34,7 +34,7 @@ class ExtractAssemblyRegionTask;
 
 struct ExtractAssemblyRegionTaskSettings {
     ExtractAssemblyRegionTaskSettings(QString fileUrl, int assemblyLength, AssemblyObject *o) : fileUrl(fileUrl), regionToExtract(U2_REGION_MAX),
-        fileFormat(SQLiteDbiFactory::ID), assemblyLength(assemblyLength), obj(o), addToProject(false) {};
+        fileFormat(BaseDocumentFormats::UGENEDB), assemblyLength(assemblyLength), obj(o), addToProject(false) {}
     QString fileUrl;
     U2Region regionToExtract;
     DocumentFormatId fileFormat;

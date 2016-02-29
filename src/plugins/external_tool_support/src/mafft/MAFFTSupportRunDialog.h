@@ -22,24 +22,25 @@
 #ifndef _U2_MAFFT_SUPPORT_RUN_DIALOG_H
 #define _U2_MAFFT_SUPPORT_RUN_DIALOG_H
 
-#include <U2Gui/DialogUtils.h>
-#include <ui/ui_MAFFTSupportRunDialog.h>
-#include "MAFFTSupportTask.h"
+#include <QDialog>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include <U2Gui/DialogUtils.h>
+
+#include "MAFFTSupportTask.h"
+#include "ui/ui_MAFFTSupportRunDialog.h"
 
 namespace U2 {
+
+class SaveDocumentController;
 
 class MAFFTSupportRunDialog : public QDialog, public Ui_MAFFTSupportRunDialog {
     Q_OBJECT
 public:
     MAFFTSupportRunDialog(MAFFTSupportTaskSettings& settings, QWidget* parent);
+
 private slots:
-    void sl_align();
+    void accept();
+
 private:
     MAFFTSupportTaskSettings&        settings;
 };
@@ -48,13 +49,17 @@ class MAFFTWithExtFileSpecifySupportRunDialog : public QDialog, public Ui_MAFFTS
     Q_OBJECT
 public:
     MAFFTWithExtFileSpecifySupportRunDialog(MAFFTSupportTaskSettings& settings, QWidget* parent);
+
 private slots:
-    void sl_align();
+    void accept();
     void sl_inputPathButtonClicked();
-    void sl_outputPathButtonClicked();
+
 private:
+    void initSaveController();
+
     MAFFTSupportTaskSettings&     settings;
-    void buildMultipleAlignmentUrl(const GUrl &alnUrl);};
+    SaveDocumentController *      saveController;
+};
 
 }//namespace
 #endif // _U2_MAFFT_SUPPORT_RUN_DIALOG_H

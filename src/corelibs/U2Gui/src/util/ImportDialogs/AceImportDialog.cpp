@@ -19,12 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -38,6 +33,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "AceImportDialog.h"
@@ -47,31 +43,20 @@ namespace U2 {
 const QString AceImportDialog::EXTENSION = ".ugenedb";
 
 AceImportDialog::AceImportDialog(const QVariantMap& _settings) :
-    ImportDialog(_settings) {
+    ImportDialog(_settings),
+    saveController(NULL)
+{
     setupUi(this);
     new HelpButton(this, buttonBox, "17467699");
 
     QString src = settings.value(AceImporter::SRC_URL).toString();
     leSource->setText(src);
 
-    if (!src.isEmpty()) {
-        leDest->setText(src + EXTENSION);
-    }
-
-    connect(tbDest, SIGNAL(clicked()), SLOT(sl_selectFileClicked()));
-}
-
-void AceImportDialog::sl_selectFileClicked() {
-    GUrl sourceFile(leSource->text());
-    QString fileFilter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::UGENEDB, true);
-    QString newDest = U2FileDialog::getSaveFileName(this, tr("Destination UGENEDB file"), sourceFile.dirPath(), fileFilter, NULL, QFileDialog::DontConfirmOverwrite);
-    if (!newDest.isEmpty()) {
-        leDest->setText(newDest);
-    }
+    initSaveController();
 }
 
 bool AceImportDialog::isValid() {
-    GUrl destUrl(leDest->text());
+    GUrl destUrl(saveController->getSaveFileName());
 
     if (destUrl.isEmpty()) {
         leDest->setFocus(Qt::OtherFocusReason);
@@ -129,7 +114,23 @@ bool AceImportDialog::isValid() {
 }
 
 void AceImportDialog::applySettings() {
-    settings.insert(AceImporter::DEST_URL, leDest->text());
+    settings.insert(AceImporter::DEST_URL, saveController->getSaveFileName());
+}
+
+void AceImportDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    if (!leSource->text().isEmpty()) {
+        config.defaultFileName = leSource->text() + EXTENSION;
+    }
+    config.defaultFormatId = BaseDocumentFormats::UGENEDB;
+    config.fileDialogButton = tbDest;
+    config.fileNameEdit = leDest;
+    config.parentWidget = this;
+    config.saveTitle = tr("Destination UGENEDB file");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::UGENEDB;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
 }   // namespace U2

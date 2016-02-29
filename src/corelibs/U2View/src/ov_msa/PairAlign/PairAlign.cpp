@@ -19,9 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
+#include <QString>
+#include <QStringList>
+#include <QVariant>
 
 #include <QHBoxLayout>
 #include <QLayout>
@@ -35,6 +35,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
@@ -49,8 +50,8 @@
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
-#include <U2Gui/U2FileDialog.h>
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
@@ -73,7 +74,7 @@ PairAlign::PairAlign(MSAEditor* _msa)
     : msa(_msa), pairwiseAlignmentWidgetsSettings(_msa->getPairwiseAlignmentWidgetsSettings()),
     distanceCalcTask(NULL), settingsWidget(NULL),
     showHideSequenceWidget(NULL), showHideSettingsWidget(NULL), showHideOutputWidget(NULL),
-    savableTab(this, GObjectViewUtils::findViewByName(_msa->getName())),
+    saveController(NULL), savableTab(this, GObjectViewUtils::findViewByName(_msa->getName())),
     showSequenceWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showSequenceWidget),
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
@@ -94,6 +95,7 @@ PairAlign::PairAlign(MSAEditor* _msa)
     secondSequenceLayout->addWidget(secondSeqSelectorWC);
 
     initLayout();
+    initSaveController();
     connectSignals();
     initParameters();
 
@@ -146,13 +148,30 @@ void PairAlign::initParameters() {
         "font: bold;");
     updateWarningMessage();
 
-    sl_outputFileChanged("");
     sl_alignmentChanged();
 }
 
 void PairAlign::updateWarningMessage() {
     QString alphabetName = msa->getMSAObject()->getAlphabet()->getName();
     lblMessage->setText(tr("Pairwise alignment is not available for alignments with \"%1\" alphabet.").arg(alphabetName));
+}
+
+void PairAlign::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = getDefaultFilePath();
+    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    config.fileDialogButton = outputFileSelectButton;
+    config.fileNameEdit = outputFileLineEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save file");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::CLUSTAL_ALN;
+
+    saveController = new SaveDocumentController(config, formats, this);
+}
+
+QString PairAlign::getDefaultFilePath() {
+    return GUrlUtils::getDefaultDataPath() + "/" + PairwiseAlignmentTaskSettings::DEFAULT_NAME;
 }
 
 void PairAlign::connectSignals() {
@@ -162,8 +181,8 @@ void PairAlign::connectSignals() {
     connect(algorithmListComboBox,      SIGNAL(currentIndexChanged(QString)),       SLOT(sl_algorithmSelected(QString)));
     connect(inNewWindowCheckBox,        SIGNAL(clicked(bool)),                      SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
     connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
-    connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_selectFileButtonClicked()));
-    connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged(QString)));
+    connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_checkState()));
+    connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged()));
 
     connect(firstSeqSelectorWC,         SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
     connect(secondSeqSelectorWC,        SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
@@ -224,7 +243,7 @@ void PairAlign::checkState() {
     pairwiseAlignmentWidgetsSettings->secondSequenceId = secondSeqSelectorWC->sequenceId();
     pairwiseAlignmentWidgetsSettings->algorithmName = algorithmListComboBox->currentText();
     pairwiseAlignmentWidgetsSettings->inNewWindow = inNewWindowCheckBox->isChecked();
-    pairwiseAlignmentWidgetsSettings->resultFileName = outputFileLineEdit->text();
+    pairwiseAlignmentWidgetsSettings->resultFileName = saveController->getSaveFileName();
     pairwiseAlignmentWidgetsSettings->showSequenceWidget = showSequenceWidget;
     pairwiseAlignmentWidgetsSettings->showAlgorithmWidget = showAlgorithmWidget;
     pairwiseAlignmentWidgetsSettings->showOutputWidget = showOutputWidget;
@@ -309,14 +328,6 @@ void PairAlign::sl_inNewWindowCheckBoxChangeState(bool newState) {
     checkState();
 }
 
-void PairAlign::sl_selectFileButtonClicked() {
-    QString fileName = U2FileDialog::getSaveFileName(NULL, tr("Save file"), "", tr("Clustal format (*.aln)"));
-    if (false == fileName.isEmpty()) {
-        outputFileLineEdit->setText(fileName);
-    }
-    checkState();
-}
-
 void PairAlign::sl_alignButtonPressed() {
     firstSequenceSelectionOn = false;
     secondSequenceSelectionOn = false;
@@ -341,8 +352,8 @@ void PairAlign::sl_alignButtonPressed() {
     PairwiseAlignmentTaskSettings settings;
     settings.algorithmName = algorithmListComboBox->currentText();
 
-    if (!outputFileLineEdit->text().isEmpty()) {
-        settings.resultFileName = GUrl(outputFileLineEdit->text());
+    if (!saveController->getSaveFileName().isEmpty()) {
+        settings.resultFileName = GUrl(saveController->getSaveFileName());
     } else {
         settings.resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
                                        "/" + PairwiseAlignmentTaskSettings::DEFAULT_NAME);
@@ -384,11 +395,11 @@ void PairAlign::sl_alignButtonPressed() {
     checkState();
 }
 
-void PairAlign::sl_outputFileChanged(const QString& newText) {
-    if (newText.isEmpty()) {
-        outputFileLineEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath()
-            + QDir::separator() + PairwiseAlignmentTaskSettings::DEFAULT_NAME));
+void PairAlign::sl_outputFileChanged() {
+    if (saveController->getSaveFileName().isEmpty()) {
+        saveController->setPath(getDefaultFilePath());
     }
+    checkState();
 }
 
 void PairAlign::sl_distanceCalculated() {

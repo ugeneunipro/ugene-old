@@ -28,6 +28,7 @@
 namespace U2 {
 
 class Document;
+class SaveDocumentController;
 
 class ExportPrimersDialog : public QDialog, private Ui_ExportPrimersDialog {
     Q_OBJECT
@@ -36,8 +37,6 @@ public:
 
 private slots:
     void sl_updateState();
-    void sl_formatChanged();
-    void sl_fileBrowse();
     void sl_connect();
     void sl_connectionCompleted();
     void sl_documentAdded(Document *document);
@@ -48,11 +47,13 @@ private slots:
 private:
     void init();
     void initDatabases();
+    void initSaveController();
     void connectSignals();
     void connectProjectSignals();
     bool isFileMode() const;
 
     QList<Primer> primers;
+    SaveDocumentController *saveController;
 
     static const QString LOCAL_FILE;
     static const QString SHARED_DB;

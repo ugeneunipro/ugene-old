@@ -19,16 +19,17 @@
 * MA 02110-1301, USA.
 */
 
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-
-#include "ExtractAssemblyRegionDialog.h"
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/U2OpStatusUtils.h>
+
 #include <U2View/AssemblyModel.h>
 
-#include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
+#include <U2Gui/SaveDocumentController.h>
+
+#include "ExtractAssemblyRegionDialog.h"
 
 namespace U2 {
 
@@ -36,18 +37,8 @@ ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAss
 , settings(settings), sel(NULL) {
     setupUi(this);
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.supportedObjectTypes += GObjectTypes::ASSEMBLY;
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.fileDialogButton = filepathToolButton;
-    conf.fileNameEdit = filepathLineEdit;
-    conf.formatCombo = documentFormatComboBox;
-    conf.parentWidget = this;
-    conf.saveTitle = tr("Export consensus");
-    conf.defaultFileName = settings->fileUrl;
-    saveController = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
-    U2OpStatus2Log os;
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), settings->regionToExtract);
     sel.addRegion(settings->regionToExtract);
     regionSelector = new RegionSelector(this, settings->assemblyLength, false, &sel, false, presets);
@@ -65,9 +56,26 @@ void ExtractAssemblyRegionDialog::sl_regionChanged(const U2Region& newRegion) {
     if (prevPath.contains(QString::number(prevRegion.startPos) + "_" + QString::number(prevRegion.endPos()))) {
         QString newRegionString = QString::number(newRegion.startPos + 1) + "_" + QString::number(newRegion.endPos());
         prevPath.replace(QString::number(prevRegion.startPos) + "_" + QString::number(prevRegion.endPos()), newRegionString);
-        saveController->setFileName(prevPath);
+        saveController->setPath(prevPath);
         settings->regionToExtract = newRegion;
     }
+}
+
+void ExtractAssemblyRegionDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = settings->fileUrl;
+    config.defaultFormatId = settings->fileFormat;
+    config.fileDialogButton = filepathToolButton;
+    config.fileNameEdit = filepathLineEdit;
+    config.formatCombo = documentFormatComboBox;
+    config.parentWidget = this;
+    config.saveTitle = tr("Export Assembly Region");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::ASSEMBLY;
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 void ExtractAssemblyRegionDialog::accept() {

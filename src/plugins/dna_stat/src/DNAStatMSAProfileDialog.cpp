@@ -19,12 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QFile>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -32,8 +28,7 @@
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
@@ -42,49 +37,49 @@
 
 namespace U2 {
 
-DNAStatMSAProfileDialog::DNAStatMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
+const QString DNAStatMSAProfileDialog::HTML = "html";
+const QString DNAStatMSAProfileDialog::CSV = "csv";
+
+DNAStatMSAProfileDialog::DNAStatMSAProfileDialog(QWidget* p, MSAEditor* _c)
+    : QDialog(p),
+      ctx(_c),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467665");
 
-    connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
-    connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
-    connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
-
+    initSaveController();
 }
 
-void DNAStatMSAProfileDialog::sl_selectFile() {
-    LastUsedDirHelper h("plugin_dna_stat");
-    QString filter;
-    if (csvRB->isChecked()) {
-        filter = tr("CSV files") + " (*.csv)";
+void DNAStatMSAProfileDialog::sl_formatSelected() {
+    saveController->setFormat(csvRB->isChecked() ? CSV : HTML);
+}
+
+void DNAStatMSAProfileDialog::sl_formatChanged(const QString &newFormat) {
+    if (HTML == newFormat) {
+        htmlRB->setChecked(true);
     } else {
-        filter = tr("HTML files") + " (*.html)";
+        csvRB->setChecked(true);
     }
-    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save report to.."), h.dir, filter);
-    if (h.url.isEmpty()) {
-        return;
-    }
-    fileEdit->setText(h.url);
 }
 
-void DNAStatMSAProfileDialog::sl_formatChanged(bool) {
-    QString t = fileEdit->text();
-    if (t.isEmpty()) {
-        return;
-    }
-    QString ext = ".html";
-    if (csvRB->isChecked()) {
-        ext = ".csv";
-    }
-    if (t.endsWith(ext)) {
-        return;
-    }
-    QFileInfo fi(t);
-    QString dir = fi.absoluteDir().absolutePath();
-    if (!(dir.endsWith('/') || dir.endsWith('\\'))) {
-        dir.append('/');
-    }
-    fileEdit->setText(dir + fi.baseName() + ext);
+void DNAStatMSAProfileDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = "plugin_dna_stat";
+    config.defaultFormatId = HTML;
+    config.fileDialogButton = fileButton;
+    config.fileNameEdit = fileEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file to save report to..");
+
+    SaveDocumentController::SimpleFormatsInfo formats;
+    formats.addFormat(HTML, HTML.toUpper(), QStringList() << HTML);
+    formats.addFormat(CSV, CSV.toUpper(), QStringList() << CSV);
+
+    saveController = new SaveDocumentController(config, formats, this);
+
+    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
+    connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatSelected()));
+    connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatSelected()));
 }
 
 void DNAStatMSAProfileDialog::accept() {
@@ -101,7 +96,7 @@ void DNAStatMSAProfileDialog::accept() {
     s.stripUnused = !unusedCB->isChecked();
     s.countGapsInConsensusNumbering = !skipGapPositionsCB->isChecked();
     if (saveBox->isChecked()) {
-        s.outURL = fileEdit->text();
+        s.outURL = saveController->getSaveFileName();
         if (s.outURL.isEmpty()) {
             QMessageBox::critical(this, tr("Error"), tr("File URL is empty"));
             return;

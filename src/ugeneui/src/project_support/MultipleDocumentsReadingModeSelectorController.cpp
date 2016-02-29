@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDir>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -30,17 +32,16 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "MultipleDocumentsReadingModeSelectorController.h"
 
 namespace U2{
 
 struct GUrlLess {
-        bool operator()(GUrl a, GUrl b) const {
-            return a.getURLString() < b.getURLString();
-        }
+    bool operator()(GUrl a, GUrl b) const {
+        return a.getURLString() < b.getURLString();
+    }
 }; 
 
 bool MultipleDocumentsReadingModeSelectorController::adjustReadingMode(QVariantMap& props, QList<GUrl>& urls, const QMap<QString, qint64>& headerSequenceLengths){	
@@ -48,20 +49,6 @@ bool MultipleDocumentsReadingModeSelectorController::adjustReadingMode(QVariantM
 
     MultipleDocumentsReadingModeDialog d(urls, QApplication::activeWindow());
     return d.setupGUI(urls, props, headerSequenceLengths);    
-}
-
-void MultipleDocumentsReadingModeDialog::sl_onChooseDirPath(){
-    QString fileFormats;
-    fileFormats += extension4MergedDocument.toUpper() + " format (*." + extension4MergedDocument + ");;";
- 
-    fileFormats.append("All files (*)");
-
-    LastUsedDirHelper helper("SaveMergeDocumentsAsOneDocument");
-    helper.url = U2FileDialog::getSaveFileName(this, tr("Select file to save new document"), helper.dir, fileFormats, 
-        NULL, QFileDialog::DontConfirmOverwrite);
-    if(!helper.url.isEmpty()){
-        newDocUrl->setText(helper.url);
-    }
 }
 
 bool MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths){
@@ -103,16 +90,30 @@ bool MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(const F
 }
 
 
-MultipleDocumentsReadingModeDialog::MultipleDocumentsReadingModeDialog(const QList<GUrl>& _urls,QWidget* parent /* = 0 */):QDialog(parent),  urls(_urls){}
+MultipleDocumentsReadingModeDialog::MultipleDocumentsReadingModeDialog(const QList<GUrl>& _urls,QWidget* parent)
+    : QDialog(parent),
+      saveController(NULL),
+      urls(_urls) {
 
-void MultipleDocumentsReadingModeDialog::setupNewUrl(){
-    GUrl url = urls.at(0);
-    QString urlStr = url.getURLString(); 
-    int startFileName = urlStr.lastIndexOf(url.fileName());
-    urlStr.remove(startFileName, url.fileName().size());
+}
 
-    QString randomFileName = GUrlUtils::rollFileName(urlStr + QString("merged_document") + "." + extension4MergedDocument , DocumentUtils::getNewDocFileNameExcludesHint()) ;
-    newDocUrl->setText(randomFileName);
+QString MultipleDocumentsReadingModeDialog::setupNewUrl() {
+    QString urlStr = newDocUrl->text();
+    if (urlStr.isEmpty()) {
+        GUrl url = urls.at(0);
+        urlStr = url.getURLString();
+    }
+    QFileInfo fi(urlStr);
+    urlStr = fi.dir().path();
+
+    QString extension4MergedDocument;
+    if (mergeMode->isChecked()) {
+        extension4MergedDocument = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getSupportedDocumentFileExtensions().first();
+    } else if (join2alignmentMode->isChecked()) {
+        extension4MergedDocument = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
+    }
+
+    return urlStr + "/merged_document." + extension4MergedDocument;
 }
 
 bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMap& props, const QMap<QString, qint64>& headerSequenceLengths){
@@ -123,9 +124,9 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
     // doesn't matter from what position, because excluded fileName all path of documents are the same
     CHECK(!urls.isEmpty(), false);
 
-    connect(separateMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged(bool)));
-    connect(mergeMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged(bool)));
-    connect(join2alignmentMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged(bool)));
+    connect(separateMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged()));
+    connect(mergeMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged()));
+    connect(join2alignmentMode, SIGNAL(toggled(bool)), SLOT(sl_optionChanged()));
     connect(upperButton, SIGNAL(clicked()), SLOT(sl_onMoveUp()));
     connect(bottomButton, SIGNAL(clicked()), SLOT(sl_onMoveDown()));
 
@@ -142,7 +143,7 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
         return false;
     }
 
-    if(separateMode->isChecked() || newDocUrl->text().isEmpty()){
+    if(separateMode->isChecked() || saveController->getSaveFileName().isEmpty()){
         return true;
     }
 
@@ -167,7 +168,7 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
         props[ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat] = BaseDocumentFormats::CLUSTAL_ALN;
         props[DocumentReadingMode_SequenceAsAlignmentHint] = true;
     }
-    props[ProjectLoaderHint_MultipleFilesMode_URLDocument] = newDocUrl->text();
+    props[ProjectLoaderHint_MultipleFilesMode_URLDocument] = saveController->getSaveFileName();
     props[ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag] = saveBox->isChecked();
     props[ProjectLoaderHint_MultipleFilesMode_Flag] = true;
     
@@ -179,16 +180,10 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
 
     props[ProjectLoaderHint_MultipleFilesMode_URLsDocumentConsistOf] =  urlsStr;
 
-    
-
     _urls.clear();
-    _urls << GUrl(newDocUrl->text());
+    _urls << GUrl(saveController->getSaveFileName());
     
     return true;
-}
-
-void MultipleDocumentsReadingModeDialog::setupOrderingMergeDocuments(){
-    
 }
 
 QString MultipleDocumentsReadingModeDialog::findUrlByFileName(const QString& fileName){
@@ -202,7 +197,7 @@ QString MultipleDocumentsReadingModeDialog::findUrlByFileName(const QString& fil
     return "";
 }
 
-void MultipleDocumentsReadingModeDialog::sl_optionChanged(bool ){
+void MultipleDocumentsReadingModeDialog::sl_optionChanged() {
     bool isNewDocInfoAvailable = !separateMode->isChecked();
 
     saveBox->setEnabled(isNewDocInfoAvailable);
@@ -213,19 +208,50 @@ void MultipleDocumentsReadingModeDialog::sl_optionChanged(bool ){
     newDocUrl->setEnabled(isNewDocInfoAvailable);
 
     bool mergeInfoAvailable = mergeMode->isChecked();
-    fileGap->setEnabled(mergeInfoAvailable );
-    mergeModeLabel->setEnabled(mergeInfoAvailable );
+    fileGap->setEnabled(mergeInfoAvailable);
+    mergeModeLabel->setEnabled(mergeInfoAvailable);
 
-    if(mergeMode->isChecked()){
-        extension4MergedDocument = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getSupportedDocumentFileExtensions().first();
-    }
-    else if(join2alignmentMode->isChecked()){
-        extension4MergedDocument = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
-    }
-    else{
+    if (mergeMode->isChecked()) {
+        delete saveController;
+        initSequenceSaveController();
+    } else if (join2alignmentMode->isChecked()) {
+        delete saveController;
+        initMsaSaveController();
+    } else {
         return;
     }
-    setupNewUrl();
+}
+
+void MultipleDocumentsReadingModeDialog::initSequenceSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = "SaveMergeDocumentsAsOneDocument";
+    config.defaultFileName = setupNewUrl();
+    config.defaultFormatId = BaseDocumentFormats::PLAIN_GENBANK;
+    config.fileDialogButton = toolButton;
+    config.fileNameEdit = newDocUrl;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file to save new document");
+    config.rollOutProjectUrls = true;
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_GENBANK;
+
+    saveController = new SaveDocumentController(config, formats, this);
+}
+
+void MultipleDocumentsReadingModeDialog::initMsaSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = "SaveMergeDocumentsAsOneDocument";
+    config.defaultFileName = setupNewUrl();
+    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    config.fileDialogButton = toolButton;
+    config.fileNameEdit = newDocUrl;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file to save new document");
+    config.rollOutProjectUrls = true;
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::CLUSTAL_ALN;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
 void MultipleDocumentsReadingModeDialog::sl_onMoveUp(){
@@ -276,8 +302,4 @@ void MultipleDocumentsReadingModeDialog::deleteAllNumPrefix(){
     }
 }
 
-MultipleDocumentsReadingModeDialog::~MultipleDocumentsReadingModeDialog(){
-    
 }
-
-};

@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -42,6 +36,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "HMMBuildDialogController.h"
@@ -51,8 +46,10 @@
 
 namespace U2 {
 HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAlignment& _ma, QWidget* p) 
-:QDialog(p), ma(_ma), profileName(_pn)
-{
+    : QDialog(p),
+      ma(_ma),
+      profileName(_pn),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467762");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
@@ -64,15 +61,15 @@ HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAl
         msaFileLabel->setHidden(true);
     }
 
+    initSaveController();
+
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
     connect(msaFileButton, SIGNAL(clicked()), SLOT(sl_msaFileClicked()));
-    connect(resultFileButton, SIGNAL(clicked()), SLOT(sl_resultFileClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     
     task = NULL;
-
 }
 
 void HMMBuildDialogController::sl_msaFileClicked() {
@@ -85,15 +82,6 @@ void HMMBuildDialogController::sl_msaFileClicked() {
     }
 
     msaFileEdit->setText(QFileInfo(lod.url).absoluteFilePath());
-}
-
-void HMMBuildDialogController::sl_resultFileClicked() {
-    LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Select file with HMM profile"), lod, HMMIO::getHMMFileFilter());
-    if (lod.url.isEmpty()) {
-        return;
-    }
-    resultFileEdit->setText(QFileInfo(lod.url).absoluteFilePath());
 }
 
 void HMMBuildDialogController::sl_okClicked() {
@@ -112,7 +100,7 @@ void HMMBuildDialogController::sl_okClicked() {
         errMsg = tr("Incorrect alignment file!");
         msaFileEdit->setFocus();
     }
-    QString outFile = resultFileEdit->text();
+    QString outFile = saveController->getSaveFileName();
     if (outFile.isEmpty() && errMsg.isEmpty()) {
         errMsg = tr("Incorrect HMM file!");
         resultFileEdit->setFocus();
@@ -185,6 +173,20 @@ void HMMBuildDialogController::sl_onProgressChanged() {
     statusLabel->setText(tr("Progress: %1%").arg(task->getProgress()));
 }
 
+void HMMBuildDialogController::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = HMMIO::HMM_ID;
+    config.defaultFormatId = HMMIO::HMM_ID;
+    config.fileDialogButton = resultFileButton;
+    config.fileNameEdit = resultFileEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file with HMM profile");
+
+    SaveDocumentController::SimpleFormatsInfo formats;
+    formats.addFormat(HMMIO::HMM_ID, tr("HMM models"), QStringList(HMMIO::HMM_EXT));
+
+    saveController = new SaveDocumentController(config, formats, this);
+}
 
 
 //////////////////////////////////////////////////////////////////////////
