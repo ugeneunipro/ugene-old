@@ -120,14 +120,10 @@ void editItemName(HI::GUITestOpStatus &os, const QString &newItemName, GTGlobals
     switch (invokeMethod) {
     case GTGlobals::UseKey:
         GTMouseDriver::click(os);
-#ifdef Q_OS_MAC
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-#else
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-#endif // Q_OS_MAC
         break;
     case GTGlobals::UseMouse:
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__edit_menu" << "Rename", GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Rename", GTGlobals::UseMouse));
         GTMouseDriver::click(os, Qt::RightButton);
         GTGlobals::sleep(300);
         break;

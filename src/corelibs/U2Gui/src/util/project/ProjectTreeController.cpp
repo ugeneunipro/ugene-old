@@ -65,7 +65,7 @@ namespace U2 {
 
 ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeControllerModeSettings &settings, QObject *parent)
     : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), filterModel(NULL), previousItemDelegate(NULL),
-    proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL), renameInProgress(false)
+    proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL)
 {
     Project *project = AppContext::getProject();
     SAFE_POINT(NULL != project, "NULL project", );
@@ -533,7 +533,8 @@ void ProjectTreeController::sl_onUnloadSelectedDocuments() {
 
 void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {
     QMenu m;
-    m.addSeparator();
+    QAction* separator = m.addSeparator();
+    separator->setObjectName(PROJECT_MENU_SEPARATOR_1);
 
     ProjectView *pv = AppContext::getProjectView();
 
@@ -556,22 +557,6 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {
          }
     }
 
-    QMenu *editMenu = new QMenu(tr("Edit"), &m);
-    editMenu->menuAction()->setObjectName(ACTION_PROJECT__EDIT_MENU);
-     if(pv != NULL && renameAction->isEnabled()){
-         editMenu->addAction(renameAction);
-     }
-    if (addReadonlyFlagAction->isEnabled()) {
-        editMenu->addAction(addReadonlyFlagAction);
-    }
-    if (removeReadonlyFlagAction->isEnabled()) {
-        editMenu->addAction(removeReadonlyFlagAction);
-    }
-
-    if (!editMenu->actions().isEmpty()) {
-        m.addMenu(editMenu);
-    }
-
     if (emptyRecycleBinAction->isEnabled()) {
         m.addAction(emptyRecycleBinAction);
     }
@@ -579,9 +564,21 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {
     if (restoreSelectedItemsAction->isEnabled()) {
         m.addAction(restoreSelectedItemsAction);
     }
+
     if (removeSelectedItemsAction->isEnabled()) {
         removeSelectedItemsAction->setObjectName(ACTION_PROJECT__REMOVE_SELECTED);
         m.addAction(removeSelectedItemsAction);
+    }
+
+    if (pv != NULL && renameAction->isEnabled()) {
+        m.addAction(renameAction);
+    }
+
+    if (addReadonlyFlagAction->isEnabled()) {
+        m.addAction(addReadonlyFlagAction);
+    }
+    if (removeReadonlyFlagAction->isEnabled()) {
+        m.addAction(removeReadonlyFlagAction);
     }
 
     emit si_onPopupMenuRequested(m);
@@ -629,7 +626,6 @@ void ProjectTreeController::sl_onRename() {
 
     const QModelIndex selectedIndex = NULL == proxyModel ? selection.first() : proxyModel->mapToSource(selection.first());
     CHECK(ProjectViewModel::DOCUMENT != ProjectViewModel::itemType(selectedIndex), );
-    renameInProgress = true;
 
     tree->edit(selectedIndex);
 }
@@ -902,14 +898,6 @@ void ProjectTreeController::sl_onLoadingDocumentProgressChanged() {
     updateLoadingState(doc);
 }
 
-bool isHotkeyPressed(int key) {
-#ifdef Q_OS_MAC
-    return key == Qt::Key_Return || key == Qt::Key_Enter;
-#else
-    return key == Qt::Key_F2;
-#endif // Q_OS_MAC
-}
-
 bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
     QTreeView *tree = dynamic_cast<QTreeView*>(o);
     CHECK(NULL != tree, false);
@@ -919,12 +907,7 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
         CHECK(NULL != kEvent, false);
         int key = kEvent->key();
         bool hasSelection = !documentSelection.isEmpty() || !objectSelection.isEmpty() || !folderSelection.isEmpty();
-        if (!renameInProgress && isHotkeyPressed(key) && hasSelection) {
-            if (renameAction->isEnabled()) {
-                sl_onRename();
-            }
-            return true;
-        } else if ((key == Qt::Key_Return || key == Qt::Key_Enter) && hasSelection) {
+        if ((key == Qt::Key_Return || key == Qt::Key_Enter) && hasSelection) {
             if (!objectSelection.isEmpty()) {
                 GObject *obj = objectSelection.getSelectedObjects().last();
                 QModelIndex idx = model->getIndexForObject(obj);
@@ -938,11 +921,8 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
                 Document *doc = documentSelection.getSelectedDocuments().last();
                 emit si_returnPressed(doc);
             }
-            renameInProgress = false;
             return true;
         }
-    } else if (QEvent::FocusOut == e->type() && renameInProgress) {
-        renameInProgress = false;
     }
 
     return false;
@@ -980,6 +960,7 @@ void ProjectTreeController::setupActions() {
     renameAction = new QAction(tr("Rename..."), this);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_onRename()));
     renameAction->setObjectName("Rename");
+    renameAction->setShortcut(QKeySequence(Qt::Key_F2));
 
     removeSelectedItemsAction = new QAction(QIcon(":core/images/remove_selected_documents.png"), tr("Remove selected items"), this);
     removeSelectedItemsAction->setShortcut(QKeySequence::Delete);

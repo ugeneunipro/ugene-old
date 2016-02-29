@@ -90,8 +90,7 @@ class QMainWindow;
 #define ACTION_PROJECT__CREATE_FOLDER               "action_project__create_folder"
 #define ACTION_PROJECT__SAVE_DOCUMENT               "action_prpject__save_document"
 
-#define ACTION_PROJECT__EDIT_MENU                   "action_project__edit_menu"
-
+#define PROJECT_MENU_SEPARATOR_1                    "project_menu_separator_1"
 #define ACTION_DOCUMENT__LOCK                       "action_document_lock"
 #define ACTION_DOCUMENT__UNLOCK                     "action_document_unlock"
 

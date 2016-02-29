@@ -212,7 +212,7 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
     if (sub != NULL) {
         sub->setObjectName(ACTION_PROJECT__EXPORT_MENU);
         sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION);
-        QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__EDIT_MENU);
+        QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), PROJECT_MENU_SEPARATOR_1);
         m.insertMenu(beforeAction, sub);
     }
 }

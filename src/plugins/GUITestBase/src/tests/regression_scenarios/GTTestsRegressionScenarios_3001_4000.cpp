@@ -319,7 +319,11 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
 
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
-    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__edit_menu", PopupChecker::NotExists));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<< "Rename", PopupChecker::NotExists));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<< ACTION_DOCUMENT__LOCK, PopupChecker::NotExists));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<< ACTION_DOCUMENT__UNLOCK, PopupChecker::NotExists));
     GTMouseDriver::click(os, Qt::RightButton);
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__remove_selected_action", PopupChecker::NotExists));
     GTMouseDriver::click(os, Qt::RightButton);

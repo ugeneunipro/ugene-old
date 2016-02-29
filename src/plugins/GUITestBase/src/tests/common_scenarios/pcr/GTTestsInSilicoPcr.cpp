@@ -523,7 +523,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     QLabel* warningLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "warningLabel"));
     CHECK_SET_ERR(warningLabel != NULL, "Cannot find warningLabel");
-    CHECK_SET_ERR(warningLabel->text().contains("ACGTN"), "Incorrect warning message");
+    CHECK_SET_ERR(warningLabel->text().contains("The primers contain a character from the Extended DNA alphabet."), "Incorrect warning message");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0013) {

@@ -2992,7 +2992,7 @@ GUI_TEST_CLASS_DEFINITION( test_2415 ) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
 
     // 3. Click the menu {Edit -> Rename}.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU << "Rename"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Rename"));
     GTMouseDriver::click(os, Qt::RightButton);
 
     // 4. Enter the new name: "name".
@@ -3586,8 +3586,7 @@ GUI_TEST_CLASS_DEFINITION( test_2542 ) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Lock the document
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__edit_menu"
-        << "action_document_lock"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_document_lock"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
     GTMouseDriver::click(os, Qt::RightButton);
 
