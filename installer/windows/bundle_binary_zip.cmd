@@ -27,8 +27,8 @@ mkdir %SYMBOLS_DIR%
 REM copy includes
 copy %U_ROOT%\LICENSE.txt %OUTPUT_DIR%
 copy %U_ROOT%\LICENSE.3rd_party.txt %OUTPUT_DIR%
-copy %PATH_TO_VS_BIN%\msvcp120.dll %OUTPUT_DIR%
-copy %PATH_TO_VS_BIN%\msvcr120.dll %OUTPUT_DIR%
+copy "%PATH_TO_VS_BIN%\msvcp120.dll" %OUTPUT_DIR%
+copy "%PATH_TO_VS_BIN%\msvcr120.dll" %OUTPUT_DIR%
 xcopy /E %PATH_TO_INCLUDE_LIBS%\* %OUTPUT_DIR%
 REM copy Qt libraries
 copy %PATH_TO_QT_LIBS%\Qt5Core.dll %OUTPUT_DIR%
