@@ -173,7 +173,7 @@ void ImportAnnotationsToCsvFiller::commonScenario()
         GTRadioButton::click(os, columnSeparator);
 
         QLineEdit *separatorEdit = GTWidget::findExactWidget<QLineEdit *>(os, "separatorEdit", dialog);
-        GTLineEdit::setText(os, separatorEdit, separator);
+        GTLineEdit::setText(os, separatorEdit, separator, false, true);
 
 //        GTClipboard::setText(os, separator);
 //        GTWidget::click(os, separatorEdit);

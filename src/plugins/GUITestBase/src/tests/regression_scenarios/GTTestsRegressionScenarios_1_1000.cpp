@@ -1459,6 +1459,7 @@ GUI_TEST_CLASS_DEFINITION(test_0775){
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "1..2,5..10,15..20"));
     //GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 20));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 //    2. Open "Region selection" dialog {Ctrl+a} fill it with next data:
 //        {Multiple range selection} checked
 //        {Multi region:} 1..2,5..10,15..20

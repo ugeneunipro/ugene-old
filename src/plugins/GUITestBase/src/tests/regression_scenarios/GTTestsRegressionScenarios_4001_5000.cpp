@@ -711,6 +711,7 @@ GUI_TEST_CLASS_DEFINITION(test_4072) {
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, p);
     GTMouseDriver::release(os);
+    GTGlobals::sleep(1000);
 
     CHECK_SET_ERR(hNameScroll->isVisible(), "Scroll bar at the botton of name list area is invisible");
 
