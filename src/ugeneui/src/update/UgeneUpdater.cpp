@@ -114,7 +114,9 @@ bool UgeneUpdater::hasMaintenanceTool() const {
 }
 
 void UgeneUpdater::startMaintenanceTool() const {
-    QProcess::startDetached(getMaintenanceToolPath());
+    QStringList arguments;
+    arguments << "--updater";
+    QProcess::startDetached(getMaintenanceToolPath(), arguments);
 }
 
 } // U2
