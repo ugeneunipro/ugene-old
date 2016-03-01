@@ -210,7 +210,15 @@ void BioStruct3DViewContext::sl_windowClosing(MWMDIWindow* w) {
 }
 
 bool BioStruct3DViewContext::checkGl() {
-    if (!QGLFormat::hasOpenGL()) {
+    bool isGlValid = false;
+
+#if (QT_VERSION < 0x053000)
+    isGlValid = QGLFormat::hasOpenGL();
+#else
+    validGL = QOpenGLContext::openGLModuleHandle() != NULL;
+#endif
+
+    if (!isGlValid) {
         const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
         SAFE_POINT(notificationStack != NULL, "NotificatoinStack is NULL", false);
         notificationStack->addNotification(tr("Unfortunately, your system does not have OpenGL Support.\n"

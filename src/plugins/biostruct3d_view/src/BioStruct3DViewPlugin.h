@@ -70,6 +70,8 @@ protected slots:
     void sl_close3DView();
     virtual void sl_windowClosing(MWMDIWindow*);
 
+private:
+    bool checkGl();
 };
 
 } //namespace
