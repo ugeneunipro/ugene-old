@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_PLUGINDESCRIPTOR_H_
+#define _U2_PLUGINDESCRIPTOR_H_
+
 #include <U2Core/global.h>
 #include <U2Core/Version.h>
 #include <U2Core/GUrl.h>
@@ -98,4 +101,6 @@ public:
 
 
 } //namespace
+
+#endif
 
