@@ -110,7 +110,7 @@ QPoint GTUtilsProjectTreeView::getItemCenter(HI::GUITestOpStatus &os, QTreeView 
 
     QRect r = treeView->visualRect(itemIndex);
 
-    return treeView->mapToGlobal(r.center());
+    return treeView->viewport()->mapToGlobal(r.center());
 }
 #undef GT_METHOD_NAME
 
