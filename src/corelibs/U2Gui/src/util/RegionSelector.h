@@ -62,9 +62,9 @@ public:
     void setMaxLength(qint64 length);
     void setCustomRegion(const U2Region& value);
     void setSequenceSelection(DNASequenceSelection* selection);
-    void updateSelectedRegion(const U2Region &selectedRegion);
     void setWholeRegionSelected();
     void setCircularSelectionAvailable(bool allowCircSelection);
+    void setCurrentPreset(const QString &presetName);
     void reset();
 
     void showErrorMessage();

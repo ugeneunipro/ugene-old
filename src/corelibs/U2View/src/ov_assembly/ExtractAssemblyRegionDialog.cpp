@@ -33,7 +33,7 @@
 namespace U2 {
 
 ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAssemblyRegionTaskSettings *settings) : QDialog(p)
-, settings(settings), sel(NULL) {
+, settings(settings) {
     setupUi(this);
 
     SaveDocumentGroupControllerConfig conf;
@@ -45,12 +45,12 @@ ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAss
     conf.parentWidget = this;
     conf.saveTitle = tr("Export consensus");
     conf.defaultFileName = settings->fileUrl;
+    conf.defaultFormatId = settings->fileFormat;
     saveController = new SaveDocumentGroupController(conf, this);
 
-    U2OpStatus2Log os;
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), settings->regionToExtract);
-    sel.addRegion(settings->regionToExtract);
-    regionSelector = new RegionSelector(this, settings->assemblyLength, false, &sel, false, presets);
+    regionSelector = new RegionSelector(this, settings->assemblyLength, false, NULL, false, presets);
+    regionSelector->setCurrentPreset(tr("Visible"));
     regionSelectorWidget->layout()->addWidget(regionSelector);
 
     setMaximumHeight(layout()->minimumSize().height());

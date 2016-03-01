@@ -166,6 +166,10 @@ void RegionSelector::setCircularSelectionAvailable(bool allowCircSelection) {
     isCircularSelectionAvailable = allowCircSelection;
 }
 
+void RegionSelector::setCurrentPreset(const QString &presetName) {
+    comboBox->setCurrentText(presetName);
+}
+
 void RegionSelector::reset() {
     comboBox->setCurrentIndex(comboBox->findText(defaultItemText));
 }

@@ -28,7 +28,6 @@
 
 #include "ui/ui_ExtractAssemblyRegionDialog.h"
 
-#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2Region.h>
 #include <U2Formats/SQLiteDbi.h>
 
@@ -49,7 +48,6 @@ private:
     SaveDocumentGroupController * saveController;
     RegionSelector * regionSelector;
     ExtractAssemblyRegionTaskSettings *settings;
-    DNASequenceSelection sel;
 };
 
 } // namespace
