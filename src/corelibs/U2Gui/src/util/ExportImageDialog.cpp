@@ -223,7 +223,7 @@ void ExportImageDialog::init() {
         new HelpButton(this, ui->buttonBox, "17467652");
         break;
     case SequenceView:
-        new HelpButton(this, ui->buttonBox, "");
+        new HelpButton(this, ui->buttonBox, "17468747");
         break;
     case AssemblyView:
         new HelpButton(this, ui->buttonBox, "17467688");
