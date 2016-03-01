@@ -22,22 +22,18 @@
 #ifndef _U2_DNASTAT_MSA_PROFILE_DIALOG_H_
 #define _U2_DNASTAT_MSA_PROFILE_DIALOG_H_
 
-#include <QHash>
-#include <QSet>
-
-#include <U2Core/global.h>
-#include <U2Core/MAlignment.h>
-#include <U2Core/Task.h>
-#include <U2Core/global.h>
-#include <U2Core/Task.h>
-#include <U2Core/MAlignment.h>
-
 #include "ui/ui_DNAStatMSAProfileDialog.h"
+
+#include <U2Core/global.h>
+#include <U2Core/Task.h>
+#include <U2Core/MAlignment.h>
+
+#include <QtCore/QHash>
+#include <QtCore/QSet>
 
 namespace U2 {
 
 class MSAEditor;
-class SaveDocumentController;
 
 class DNAStatMSAProfileDialog : public QDialog, public Ui_DNAStatMSAProfileDialog {
     Q_OBJECT
@@ -45,20 +41,15 @@ class DNAStatMSAProfileDialog : public QDialog, public Ui_DNAStatMSAProfileDialo
 public:
     DNAStatMSAProfileDialog(QWidget* p, MSAEditor* ctx);
 
-    void accept();
+    virtual void accept();
 
 private slots:
-    void sl_formatSelected();
-    void sl_formatChanged(const QString &newFormat);
+
+    void sl_selectFile();
+    void sl_formatChanged(bool);
 
 private:
-    void initSaveController();
-
     MSAEditor* ctx;
-    SaveDocumentController *saveController;
-
-    static const QString HTML;
-    static const QString CSV;
 };
 
 enum DNAStatMSAProfileOutputFormat {

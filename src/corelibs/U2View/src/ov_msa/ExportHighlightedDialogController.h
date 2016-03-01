@@ -19,20 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_HIGHLIGHTING_DIALOG_CONTROLLER_H_
-#define _U2_EXPORT_HIGHLIGHTING_DIALOG_CONTROLLER_H_
+#ifndef _U2_EXPORT_HIGHLIGHTNING_DIALOG_CONTROLLER_H_
+#define _U2_EXPORT_HIGHLIGHTNING_DIALOG_CONTROLLER_H_
+
+#include <ui/ui_ExportHighlightedDialog.h>
 
 #include "MSAEditor.h"
-#include "ui/ui_ExportHighlightedDialog.h"
 
 namespace U2 {
 
-class SaveDocumentController;
-
-class ExportHighligtingDialogController : public QDialog , Ui_ExportHighlightedDialog{
+class ExportHighligtningDialogController : public QDialog , Ui_ExportHighlightedDialog{
     Q_OBJECT
 public:
-    ExportHighligtingDialogController(MSAEditorUI *msaui_, QWidget* p);
+    ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p);
 
     virtual void accept();
     void lockKeepGaps();
@@ -46,13 +45,10 @@ public:
     GUrl url;
 
 private slots:
+    void sl_fileButtonClicked();
     void endPosValueChanged();
-
 private:
-    void initSaveController();
-
     MSAEditorUI *msaui;
-    SaveDocumentController *saveController;
 };
 
 }

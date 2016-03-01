@@ -258,7 +258,6 @@ public:
         rawData.clear();
         minDataCheckResult = FormatDetection_VeryLowSimilarity;
         allowPartialTypeMapping = false;
-        formatsToExclude.clear();
     }
     void addFlagToSupport(DocumentFormatFlag f) {flagsToSupport |= f;}
     void addFlagToExclude(DocumentFormatFlag f) {flagsToExclude |= f;}
@@ -272,7 +271,6 @@ public:
     QByteArray              rawData;
     FormatDetectionScore    minDataCheckResult;
     bool                    allowPartialTypeMapping;
-    QSet<DocumentFormatId>  formatsToExclude;
 };
 
 class DocumentImportersRegistry;

@@ -39,9 +39,9 @@ namespace U2 {
 const QString ExportCoverageSettings::HISTOGRAM = QObject::tr("Histogram");
 const QString ExportCoverageSettings::PER_BASE = QObject::tr("Per base");
 const QString ExportCoverageSettings::BEDGRAPH = QObject::tr("Bedgraph");
-const QString ExportCoverageSettings::HISTOGRAM_EXTENSION = "histogram";
-const QString ExportCoverageSettings::PER_BASE_EXTENSION = "txt";
-const QString ExportCoverageSettings::BEDGRAPH_EXTENSION = "bedgraph";
+const QString ExportCoverageSettings::HISTOGRAM_EXTENSION = ".histogram";
+const QString ExportCoverageSettings::PER_BASE_EXTENSION = ".txt";
+const QString ExportCoverageSettings::BEDGRAPH_EXTENSION = ".bedgraph";
 const QString ExportCoverageSettings::COMPRESSED_EXTENSION = ".gz";
 
 const QByteArray ExportCoverageTask::SEPARATOR = "\t";

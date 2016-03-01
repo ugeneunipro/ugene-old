@@ -29,7 +29,6 @@
 namespace U2 {
 
 class MSAEditor;
-class SaveDocumentController;
 
 class MSAExportConsensusTab : public QWidget, private Ui_ExportConsensusWidget {
     Q_OBJECT
@@ -39,16 +38,14 @@ public:
     void showHint(bool showHint);
 
 private slots:
+    void sl_browseClicked();
     void sl_exportClicked();
+    void sl_formatChanged();
     void sl_consensusChanged(const QString& algoId);
-
 private:
-    void initSaveController();
-    QString getDefaultFilePath() const;
-
+    void checkEmptyFilepath() const;
     MSAEditor *msa;
     U2SavableWidget savableWidget;
-    SaveDocumentController *saveController;
 };
 
 } // namespace

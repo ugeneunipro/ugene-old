@@ -19,8 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -31,7 +37,8 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "ExportChromatogramDialog.h"
 #include "ExportUtils.h"
@@ -40,10 +47,7 @@
 
 namespace U2 {
 
-ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileUrl) :
-    QDialog(p),
-    saveController(NULL)
-{
+ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileUrl): QDialog(p) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467600");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
@@ -51,35 +55,35 @@ ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileU
 
     addToProjectFlag = true;
 
-    initSaveController(fileUrl);
+    QString newUrl = GUrlUtils::getNewLocalUrlByExtention(fileUrl, "chromatogram", ".scf", "_copy");
+    fileNameEdit->setText(newUrl);
+    formatCombo->addItem(BaseDocumentFormats::SCF.toUpper());
+    connect(fileButton, SIGNAL(clicked()), SLOT(sl_onBrowseClicked()));
 }
 
-void ExportChromatogramDialog::initSaveController(const GUrl &fileUrl) {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = GUrlUtils::getNewLocalUrlByExtention(fileUrl, "chromatogram", ".scf", "_copy");
-    config.defaultFormatId = BaseDocumentFormats::SCF;
-    config.formatCombo = formatCombo;
-    config.fileDialogButton = fileButton;
-    config.fileNameEdit = fileNameEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select a file");
+void ExportChromatogramDialog::sl_onBrowseClicked() {
+    LastUsedDirHelper lod;
+    QString filter;
 
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::SCF;
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Select a file"), lod.dir, "*.scf");
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    fileNameEdit->setText( lod.url );
 
-    saveController = new SaveDocumentController(config, formats, this);
 }
+
 
 void ExportChromatogramDialog::accept() {
-    if (saveController->getSaveFileName().isEmpty()) {
+    if (fileNameEdit->text().isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
 
-    url = saveController->getSaveFileName();
+    url = fileNameEdit->text();
     addToProjectFlag = addToProjectBox->isChecked();
     reversed = reverseBox->isChecked();
     complemented = complementBox->isChecked();
-    format = saveController->getFormatIdToSave();
 
     QDialog::accept();
 }

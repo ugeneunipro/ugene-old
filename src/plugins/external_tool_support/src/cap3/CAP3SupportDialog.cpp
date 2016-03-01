@@ -19,12 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "CAP3SupportDialog.h"
@@ -35,9 +40,7 @@ namespace U2 {
 //CAP3SupportDialog
 
 CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent)
-    : QDialog(parent),
-      settings(s),
-      saveController(NULL)
+: QDialog(parent), settings(s)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467783");
@@ -45,14 +48,16 @@ CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     tabWidget->setCurrentIndex(0);
-
-    initSaveController();
+    QString outputUrl;
+    outputPathLineEdit->setText(outputUrl);
 
     connect(addButton, SIGNAL(clicked()), SLOT(sl_onAddButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
     connect(removeAllButton, SIGNAL(clicked()), SLOT(sl_onRemoveAllButtonClicked()));
+    connect(specifyOutputPathButton, SIGNAL(clicked()), SLOT(sl_onSpecifyOutputPathButtonClicked()));
 
     initSettings();
+
 }
 
 void CAP3SupportDialog::initSettings() {
@@ -77,19 +82,6 @@ void CAP3SupportDialog::initSettings() {
     clippingRangeBox->setValue(settings.clippingRange);
 }
 
-void CAP3SupportDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFormatId = BaseDocumentFormats::ACE;
-    config.fileDialogButton = specifyOutputPathButton;
-    config.fileNameEdit = outputPathLineEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Set Result Contig File Name");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::ACE;
-
-    saveController = new SaveDocumentController(config, formats, this);
-}
-
 void CAP3SupportDialog::accept()
 {
     if (seqList->count() == 0) {
@@ -103,7 +95,7 @@ void CAP3SupportDialog::accept()
         settings.inputFiles.append( seqList->item(i)->text() );
     }
 
-    QString outputPath = saveController->getSaveFileName();
+    QString outputPath = outputPathLineEdit->text();
     if (outputPath.isEmpty() ) {
         QMessageBox::information(this, windowTitle(),
             tr("Result contig file name is not set!") );
@@ -153,19 +145,38 @@ void CAP3SupportDialog::sl_onAddButtonClicked()
         seqList->addItem(f);
     }
 
-    GUrl url(seqList->item(0)->text());
-    saveController->setPath(url.dirPath() + "/" + url.baseFileName() + ".cap.ace");
+
+    GUrl url( seqList->item(0)->text());
+    outputPathLineEdit->setText(url.dirPath() + "/" + url.baseFileName() + ".cap.ace" );
+
 }
 
 void CAP3SupportDialog::sl_onRemoveButtonClicked()
 {
     int currentRow = seqList->currentRow();
     seqList->takeItem(currentRow);
+
 }
 
 void CAP3SupportDialog::sl_onRemoveAllButtonClicked()
 {
     seqList->clear();
 }
+
+void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
+{
+
+    LastUsedDirHelper lod;
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set Result Contig File Name"), lod.dir, tr("ACE format (*.ace)"));
+    if (!lod.url.isEmpty()) {
+        GUrl result = lod.url;
+        if (result.lastFileSuffix().isEmpty()) {
+            result = QString( "%1.ace" ).arg( result.getURLString() );
+        }
+        outputPathLineEdit->setText(result.getURLString());
+    }
+
+}
+
 
 }//namespace

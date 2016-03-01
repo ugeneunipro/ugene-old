@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>300</height>
+    <height>232</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -245,38 +245,6 @@
     <hint type="destinationlabel">
      <x>356</x>
      <y>79</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>TCoffeeSupportRunDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>224</x>
-     <y>279</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>224</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>TCoffeeSupportRunDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>224</x>
-     <y>279</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>224</x>
-     <y>149</y>
     </hint>
    </hints>
   </connection>

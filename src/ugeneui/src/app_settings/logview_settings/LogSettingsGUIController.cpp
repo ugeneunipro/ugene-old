@@ -19,16 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include <QColorDialog>
-#include <QHeaderView>
-#include <QMessageBox>
-#include <QToolButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QColorDialog>
+#include <QtGui/QHeaderView>
+#include <QtGui/QMessageBox>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QToolButton>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/LogCache.h>
 
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "LogSettingsGUIController.h"
@@ -70,11 +77,9 @@ const QString LogSettingsPageController::helpPageId = QString("17467522");
 LogSettingsPageWidget::LogSettingsPageWidget() {
     setupUi( this );
     tableWidget->verticalHeader()->setVisible(false);
-
-    initSaveController();
-
     connect(tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), SLOT(sl_currentCellChanged(int, int, int, int)));
     connect(fileOutCB, SIGNAL(stateChanged(int)), SLOT(sl_outFileStateChanged(int)));
+    connect(browseFileButton, SIGNAL(clicked()), SLOT(sl_browseFileClicked()));
 
 #ifdef Q_OS_MAC
     // Layout fix for mac: the font size is bigger than in another systems.
@@ -162,7 +167,7 @@ void LogSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     colorCB->setChecked(settings.enableColor);
     dateFormatEdit->setText(settings.logPattern);
     fileOutCB->setChecked(settings.toFile);
-    saveController->setPath(settings.outputFile);
+    outFileEdit->setText(settings.outputFile);
 
     sl_outFileStateChanged(settings.toFile ? Qt::Checked : Qt::Unchecked);
 }
@@ -190,17 +195,17 @@ AppSettingsGUIPageState* LogSettingsPageWidget::getState(QString& err) const {
         settings.addCategory(logCat);
     }
 
-    if(fileOutCB->isChecked() != settings.toFile || settings.outputFile != saveController->getSaveFileName()){
+    if(fileOutCB->isChecked() != settings.toFile || settings.outputFile != outFileEdit->text() ){
         LogCacheExt *lce = qobject_cast<LogCacheExt *>(LogCache::getAppGlobalInstance());
         if(fileOutCB->isChecked()){
-            lce->setFileOutputEnabled(saveController->getSaveFileName());
+            lce->setFileOutputEnabled(outFileEdit->text());
         }else{
             lce->setFileOutputDisabled();
         }
     }
 
     if (fileOutCB->isChecked()){
-        QString logFile(saveController->getSaveFileName());
+        QString logFile(outFileEdit->text());
         QFileInfo lf(logFile);
         QFile file(logFile);
         bool writeble = file.open(QIODevice::WriteOnly);
@@ -217,7 +222,7 @@ AppSettingsGUIPageState* LogSettingsPageWidget::getState(QString& err) const {
     settings.enableColor = colorCB->isChecked();
     settings.logPattern = dateFormatEdit->text();
     settings.toFile = fileOutCB->isChecked();
-    settings.outputFile = saveController->getSaveFileName();
+    settings.outputFile = outFileEdit->text();
     
     return state;
 }
@@ -291,25 +296,14 @@ void LogSettingsPageWidget::sl_outFileStateChanged(int state){
     
 }
 
+void LogSettingsPageWidget::sl_browseFileClicked(){
+    outFileEdit->setText(U2FileDialog::getSaveFileName());
+}
+
 void LogSettingsPageWidget::updateColorLabel(QLabel* l, const QString& color) {
     QString style = "{color: "+color+"; text-decoration: none;};";
     l->setText("<style> a "+style+" a:visited "+style+" a:hover "+style+"</style>"
-               + "<a href=\".\">" + tr("Sample text") + "</a>");
-}
-
-void LogSettingsPageWidget::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFormatId = "log";
-    config.fileDialogButton = browseFileButton;
-    config.fileNameEdit = outFileEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Save to...");
-    config.rollFileName = false;
-
-    SaveDocumentController::SimpleFormatsInfo formats;
-    formats.addFormat("log", "log plain text", QStringList() << "log" << "txt");
-
-    saveController = new SaveDocumentController(config, formats, this);
+                + "<a href=\".\">" + tr("Sample text") + "</a>");
 }
 
 } //namespace

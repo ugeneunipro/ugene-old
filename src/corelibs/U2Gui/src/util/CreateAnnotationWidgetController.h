@@ -38,7 +38,6 @@ namespace U2 {
 class AnnotationTableObject;
 class CreateAnnotationWidget;
 class GObjectComboBoxController;
-class SaveDocumentController;
 class ShowHideSubgroupWidget;
 
 class U2GUI_EXPORT CreateAnnotationModel {
@@ -123,6 +122,7 @@ signals:
     void si_usePatternNamesStateChanged();
 
 private slots:
+    void sl_onNewDocClicked();
     void sl_onLoadObjectsClicked();
     void sl_groupName();
     void sl_setPredefinedGroupName();
@@ -137,17 +137,13 @@ private slots:
 private:
     void updateModel(bool forValidation);
     void createWidget(AnnotationWidgetMode layoutMode);
-    static QString defaultDir();
-    void initSaveController();
 
     CreateAnnotationModel       model;
     GObjectComboBoxController * occ;
     CreateAnnotationWidget *    w;
-    SaveDocumentController *    saveController;
     
     static const QString GROUP_NAME_AUTO;
     static const QString DESCRIPTION_QUALIFIER_KEY;
-    static const QString SETTINGS_LASTDIR;
 };
 
 } // namespace U2

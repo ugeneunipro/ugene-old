@@ -51,6 +51,8 @@ public:
 
     static QString prepareDocumentsFileFilterByObjType(const GObjectType& t, bool any);
 
+    static QPair<QString, QString> selectFileForScreenShot(QWidget * parent);
+
     static void setWizardMinimumSize(QWizard *wizard);
 };
 

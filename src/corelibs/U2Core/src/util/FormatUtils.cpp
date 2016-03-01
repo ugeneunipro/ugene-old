@@ -120,20 +120,8 @@ QString FormatUtils::getShortMonthName( int num )
 }
 
 static QString getAllFilesFilter() {
-    return QObject::tr("All files") + " ( * )";
-}
-
-QString FormatUtils::prepareFileFilter(const QMap<QString, QStringList> &formatNamesWithExtensions, bool allowAnyFiles, const QStringList &extraExtensions) {
-    QStringList filters;
-    foreach (const QString &formatName, formatNamesWithExtensions.keys()) {
-        filters << prepareFileFilter(formatName, formatNamesWithExtensions[formatName], false, extraExtensions);
-    }
-
-    if (allowAnyFiles) {
-        filters << getAllFilesFilter();
-    }
-
-    return filters.join(";;");
+    // UGENE-1248
+    return "*";
 }
 
 QString FormatUtils::prepareFileFilter(const QString& name, const QStringList& exts, bool any, const QStringList& extra) {
@@ -148,7 +136,7 @@ QString FormatUtils::prepareFileFilter(const QString& name, const QStringList& e
     }
     line+=" )";
     if (any) {
-        line += ";;" + getAllFilesFilter();
+        line += ";;" + QObject::tr("All files") + " ( "+getAllFilesFilter()+" )";
     }
     return line;
 }
@@ -187,7 +175,7 @@ QString FormatUtils::prepareDocumentsFileFilter(bool any, const QStringList& ext
 
     result.sort();
     if (any) {
-        result.prepend(getAllFilesFilter());
+        result.prepend(QObject::tr("All files") + " ( " + getAllFilesFilter() + " )");
     }
     return result.join(";;");
 }
@@ -206,7 +194,7 @@ QString FormatUtils::prepareDocumentsFileFilter(const DocumentFormatConstraints&
     }
     result.sort();
     if (any) {
-        result.prepend(getAllFilesFilter());
+        result.prepend(QObject::tr("All files") + " (" + getAllFilesFilter() + " )");
     }
     return result.join(";;");
 }

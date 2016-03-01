@@ -22,23 +22,21 @@
 #ifndef _U2_QD_RUN_DIALOG_H_
 #define _U2_QD_RUN_DIALOG_H_
 
+#include <ui/ui_RunQueryDialog.h>
+#include <ui/ui_QDDialog.h>
+
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
-
 #include <U2Gui/RegionSelector.h>
-
-#include "ui/ui_RunQueryDialog.h"
-#include "ui/ui_QDDialog.h"
 
 namespace U2 {
 
-class AnnotationTableObject;
-class Document;
-class DocumentProviderTask;
-class QDScheduler;
 class QDScheme;
-class SaveDocumentController;
+class Document;
+class QDScheduler;
 class SaveDocumentTask;
+class AnnotationTableObject;
+class DocumentProviderTask;
 
 class QDRunDialogTask : public Task {
     Q_OBJECT
@@ -69,19 +67,11 @@ class QDRunDialog : public QDialog, public Ui_RunQueryDlg {
     Q_OBJECT
 public:
     QDRunDialog(QDScheme* _scheme, QWidget* parent, const QString& defaultIn = QString(), const QString& defaultOut = QString());
-
 private slots:
     void sl_run();
-    void sl_selectInputFile();
-    void sl_outputFileChanged();
-
+    void sl_selectFile();
 private:
-    void initSaveController(const QString &defaultOut);
-
     QDScheme* scheme;
-    SaveDocumentController *saveController;
-
-    static const QString OUTPUT_FILE_DIR_DOMAIN;
 };
 
 class ADVSequenceObjectContext;

@@ -22,19 +22,20 @@
 #ifndef _U2_SITECON_BUILD_DIALOG_CONTROLLER_H_
 #define _U2_SITECON_BUILD_DIALOG_CONTROLLER_H_
 
-#include <QDialog>
-
-#include <U2Core/MAlignment.h>
-#include <U2Core/Task.h>
-
+#include <ui/ui_SiteconBuildDialog.h>
 #include "SiteconAlgorithm.h"
-#include "ui/ui_SiteconBuildDialog.h"
+#include <U2Core/Task.h>
+#include <U2Core/MAlignment.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 
 class LoadDocumentTask;
 class SiteconPlugin;
-class SaveDocumentController;
 
 class SiteconBuildDialogController : public QDialog, public Ui_SiteconBuildDialog {
     Q_OBJECT
@@ -47,19 +48,17 @@ public slots:
 
 private slots:
     void sl_inFileButtonClicked();
+    void sl_outFileButtonClicked();
     void sl_okButtonClicked();
 
     void sl_onStateChanged();
     void sl_onProgressChanged();
 
 private:
-    void initSaveController();
-
     Task* task;
     SiteconPlugin* plug;
     QPushButton* okButton;
     QPushButton* cancelButton;
-    SaveDocumentController *saveController;
 };
 
 class SiteconBuildTask : public Task {

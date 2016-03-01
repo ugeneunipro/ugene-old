@@ -19,76 +19,92 @@
  * MA 02110-1301, USA.
  */
 
-#include <QPushButton>
-
-#include <U2Core/BaseDocumentFormats.h>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "BlastDBCmdDialog.h"
 
 namespace U2 {
 
 BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWidget *_parent) :
-    QDialog(_parent),
-    saveController(NULL),
-    settings(_settings)
+        QDialog(_parent), settings(_settings)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467795");
-
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Fetch"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     fetchButton = buttonBox->button(QDialogButtonBox::Ok);
     dbSelector = new BlastDBSelectorWidgetController(this);
     dbSelectorWidget->layout()->addWidget(dbSelector);
+    connect(browseOutputButton, SIGNAL(clicked()), SLOT(sl_onSelectOutputFileButtonClick()));
+    connect(dbSelector, SIGNAL(si_dbChanged()), SLOT(sl_dbSelectorDataChanged()));
+    connect(queryIdEdit, SIGNAL(textChanged( const QString& )), SLOT(sl_onQueryLineEditTextChanged()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    connect(fetchButton, SIGNAL(clicked()), SLOT(sl_BlastDBCmd()));
 
-    initSaveController();
+    update();
 
-    connect(dbSelector, SIGNAL(si_dbChanged()), SLOT(sl_update()));
-    connect(queryIdEdit, SIGNAL(textChanged( const QString& )), SLOT(sl_update()));
-    connect(browseOutputButton, SIGNAL(clicked(bool)), SLOT(sl_update()));
-
-    sl_update();
 }
 
-void BlastDBCmdDialog::accept(){
+
+void BlastDBCmdDialog::sl_BlastDBCmd(){
     if (!dbSelector->validateDatabaseDir()) {
         return;
     }
     settings.query = queryIdEdit->text();
     settings.databasePath = dbSelector->getDatabasePath();
-    settings.outputPath = saveController->getSaveFileName();
+    settings.outputPath = outputPathLineEdit->text();
     settings.isNuclDatabase = dbSelector->isNuclDatabase();
     settings.addToProject = addToProjectBox->isChecked();
 
     accept();
 }
 
-void BlastDBCmdDialog::sl_update() {
-    bool outputPathIsSet = !saveController->getSaveFileName().isEmpty();
+void BlastDBCmdDialog::sl_dbSelectorDataChanged() {
+    update();
+}
+
+void BlastDBCmdDialog::sl_onSelectOutputFileButtonClick()
+{
+    LastUsedDirHelper lod;
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set a result FASTA file name"), lod.dir);
+    if (!lod.url.isEmpty()) {
+        GUrl result = lod.url;
+        if (result.lastFileSuffix().isEmpty()) {
+            result = QString( "%1.fa" ).arg( result.getURLString() );
+        }
+        outputPathLineEdit->setText(result.getURLString());
+    }
+    update();
+}
+
+void BlastDBCmdDialog::update()
+{
+    bool outputPathIsSet = !outputPathLineEdit->text().isEmpty();
     bool queryIsSet = !queryIdEdit->text().isEmpty();
 
     fetchButton->setEnabled(dbSelector->isInputDataValid() && outputPathIsSet && queryIsSet);
+
+
 }
 
-void BlastDBCmdDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFormatId = BaseDocumentFormats::FASTA;
-    config.fileDialogButton = browseOutputButton;
-    config.fileNameEdit = outputPathLineEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Set a result FASTA file name");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::FASTA;
-
-    saveController = new SaveDocumentController(config, formats, this);
+void BlastDBCmdDialog::sl_onQueryLineEditTextChanged()
+{
+    update();
 }
 
-void BlastDBCmdDialog::setQueryId( const QString& queryId ) {
+void BlastDBCmdDialog::setQueryId( const QString& queryId )
+{
     queryIdEdit->setText(queryId);
 }
 

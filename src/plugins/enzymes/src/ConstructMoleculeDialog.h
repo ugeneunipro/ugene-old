@@ -22,22 +22,20 @@
 #ifndef _U2_CONSTRUCT_MOLECULE_DIALOG_H_
 #define _U2_CONSTRUCT_MOLECULE_DIALOG_H_
 
-#include <QList>
+#include <QtCore/QList>
+#include <ui/ui_ConstructMoleculeDialog.h>
 
 #include "CloningUtilTasks.h"
-#include "ui/ui_ConstructMoleculeDialog.h"
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class ConstructMoleculeDialog : public QDialog, public Ui_ConstructMoleculeDialog {
     Q_OBJECT
 public:
     ConstructMoleculeDialog(const QList<DNAFragment>& fragments, QWidget* parent);
     virtual void accept();
-
 private slots:
+    void sl_onBrowseButtonClicked();
     void sl_onTakeButtonClicked();
     void sl_onTakeAllButtonClicked();
     void sl_onAddFromProjectButtonClicked();
@@ -55,11 +53,8 @@ protected:
 
 private:
     void update();
-    void initSaveController();
-
     QList<DNAFragment> fragments;
     QList<int> selected;
-    SaveDocumentController *saveController;
 };
 
 

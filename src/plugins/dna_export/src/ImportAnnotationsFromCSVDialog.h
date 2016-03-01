@@ -22,18 +22,19 @@
 #ifndef _U2_IMPORT_ANNOTATIONS_FROM_CSV_DIALOG_H_
 #define _U2_IMPORT_ANNOTATIONS_FROM_CSV_DIALOG_H_
 
+#include <ui/ui_ImportAnnotationsFromCSVDialog.h>
+
 #include "CSVColumnConfiguration.h"
-#include "ui/ui_ImportAnnotationsFromCSVDialog.h"
 
 class QTreeWidgetItem;
 
 namespace U2 {
 
-class CSVParsingConfig;
+class SaveDocumentGroupController;
 class ImportAnnotationsFromCSVTaskConfig;
-class SaveDocumentController;
+class CSVParsingConfig;
 
-class ImportAnnotationsFromCSVDialog : public QDialog, private Ui_ImportAnnotationsFromCSVDialog {
+class ImportAnnotationsFromCSVDialog : public QDialog, Ui_ImportAnnotationsFromCSVDialog {
     Q_OBJECT
 public:
     ImportAnnotationsFromCSVDialog(QWidget* w);
@@ -43,6 +44,7 @@ public:
 
 public slots:
     virtual void accept();
+
 
 private slots:
     void sl_readFileClicked();
@@ -59,14 +61,13 @@ private slots:
     void sl_linesToSkipChanged(int);
 
 private:
-    void initSaveController();
-
     // returns input file name if no errors found or empty string
     QString checkInputGroup(bool silentFail);
     // returns output file name if no errors found or empty string
     QString checkOutputGroup();
 
     bool checkSeparators(bool silentFail);
+
 
     void prepareColumnsConfig(int numColumnsHint);
     QTableWidgetItem* createHeaderItem(int column) const;
@@ -77,7 +78,7 @@ private:
     void guessSeparator(bool silentFail);
     void preview(bool silentFail);
 
-    SaveDocumentController* saveController;
+    SaveDocumentGroupController* saveGroupController;
     QList<ColumnConfig>          columnsConfig;
 
     // script text used to parse separator

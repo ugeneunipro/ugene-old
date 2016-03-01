@@ -26,14 +26,13 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "AddNewDocumentDialogImpl.h"
 #include "DocumentFormatComboboxController.h"
@@ -46,8 +45,7 @@ namespace U2 {
 #define SETTINGS_LASTDIR        "add_new_document/last_dir"
 
 AddNewDocumentDialogImpl::AddNewDocumentDialogImpl(QWidget* p, AddNewDocumentDialogModel& m, const DocumentFormatConstraints& c) 
-    : QDialog(p),
-      model(m)
+: QDialog(p), model(m)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467599");
@@ -55,39 +53,21 @@ AddNewDocumentDialogImpl::AddNewDocumentDialogImpl(QWidget* p, AddNewDocumentDia
         model.format = AppContext::getSettings()->getValue(SETTINGS_LASTFORMAT, QString("")).toString();
     }
     
+    documentURLEdit->setText(model.url);
     formatController = new DocumentFormatComboboxController(this, documentTypeCombo, c, model.format);
     model.successful = false;
     
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    SaveDocumentControllerConfig conf;
-    conf.defaultFileName = model.url;
-    conf.defaultFormatId = model.format;
-    conf.fileDialogButton = documentURLButton;
-    conf.fileNameEdit = documentURLEdit;
-    conf.formatCombo = documentTypeCombo;
-    conf.parentWidget = this;
-    conf.saveTitle = tr("Save File");
-    conf.defaultDomain = SETTINGS_LASTDIR;
-    conf.compressCheckbox = gzipCheckBox;
+    connect(documentURLButton, SIGNAL(clicked()), SLOT(sl_documentURLButtonClicked()));
+    QPushButton *createButton = buttonBox->button(QDialogButtonBox::Ok);
+    connect(createButton, SIGNAL(clicked()), SLOT(sl_createButtonClicked()));
+    connect(documentURLEdit, SIGNAL(editingFinished()), SLOT(sl_documentURLEdited()));
+    connect(documentTypeCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_typeComboCurrentChanged(int)));
+    connect(gzipCheckBox, SIGNAL(toggled(bool)), SLOT(sl_gzipChecked(bool)));
 
-    saveController = new SaveDocumentController(conf, formatController->getFormatsInCombo(), this);
-}
-
-void AddNewDocumentDialogImpl::accept() {
-    model.format = formatController->getActiveFormatId();
-    model.url = saveController->getSaveFileName();
-    if (model.url.isEmpty()) {
-        QMessageBox::critical(this, tr("Invalid Document Location"), tr("Document location is empty"));
-        documentURLEdit->setFocus();
-        return;
-    }
-    model.io = gzipCheckBox->isChecked() ? BaseIOAdapters::GZIPPED_LOCAL_FILE : BaseIOAdapters::LOCAL_FILE;
-    model.successful = true;
-    AppContext::getSettings()->setValue(SETTINGS_LASTFORMAT, model.format);
-    AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(model.url).absoluteDir().absolutePath());
-    QDialog::accept();
+    updateState();
 }
 
 void AddNewDocumentDialogController::run(QWidget* p, AddNewDocumentDialogModel& m, const DocumentFormatConstraints& c) {
@@ -106,4 +86,106 @@ void AddNewDocumentDialogController::run(QWidget* p, AddNewDocumentDialogModel& 
     assert(proj->findDocumentByURL(m.url) == NULL);
 }
 
-}   // namespace U2
+void AddNewDocumentDialogImpl::updateState() {
+    bool ready = formatController->hasSelectedFormat();
+    
+    if (ready) {
+        const QString& url = currentURL();
+        ready = !url.isEmpty() && QFileInfo(url).absoluteDir().exists();
+        if (ready) {
+            Project* p = AppContext::getProject();
+            ready = p->findDocumentByURL(url) == NULL;
+        }
+    }
+    
+    //createButton->setDisabled(!ready);
+}
+
+
+QString AddNewDocumentDialogImpl::currentURL() {
+	QString url = documentURLEdit->text();
+	if (url.isEmpty()) {
+		return url;
+	}
+	bool extOk = false;
+	QString extraExt = ".gz";
+	if (url.endsWith(extraExt)) {
+		url.chop(extraExt.size());
+	}
+
+	DocumentFormatId fid = formatController->getActiveFormatId();
+	DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
+	if (df) {
+		foreach(QString ext, df->getSupportedDocumentFileExtensions()) {
+			if (url.endsWith(ext)) {
+				extOk = true;
+				break;
+			}
+		}
+		if (!extOk) {
+			url+="."+df->getSupportedDocumentFileExtensions().first();
+		}
+	}
+	if (gzipCheckBox->isChecked()) {
+		url += extraExt;
+	}
+	documentURLEdit->setText(url);
+	
+	QFileInfo fi(url);
+	return fi.absoluteFilePath();
+}
+
+void AddNewDocumentDialogImpl::sl_documentURLButtonClicked() {
+	QString url = currentURL();
+    if (url.isEmpty()) {
+		url = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString("")).toString();
+    }
+    QString filter = DialogUtils::prepareDocumentsFileFilter(formatController->getActiveFormatId(), false);
+	QString name = U2FileDialog::getSaveFileName(this, tr("Save file"), url, filter);
+	if (!name.isEmpty()) {
+		documentURLEdit->setText(name);	
+		AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath());
+		updateState();
+	}
+}
+
+void AddNewDocumentDialogImpl::sl_createButtonClicked() {
+	model.format = formatController->getActiveFormatId();
+	assert(!model.format.isEmpty());
+	model.url = currentURL();
+	model.io = gzipCheckBox->isChecked() ? BaseIOAdapters::GZIPPED_LOCAL_FILE : BaseIOAdapters::LOCAL_FILE;
+	model.successful = true;
+	AppContext::getSettings()->setValue(SETTINGS_LASTFORMAT, model.format);
+	accept();
+}
+
+
+
+void AddNewDocumentDialogImpl::sl_documentURLEdited() {
+	updateState();
+}
+
+void AddNewDocumentDialogImpl::sl_typeComboCurrentChanged(int i) {
+    Q_UNUSED(i);
+	QString url = documentURLEdit->text();
+	if (!url.isEmpty()) {
+		/* chop obsolete extensions */
+		if (gzipCheckBox->isChecked() && url.endsWith(".gz")) {
+			url.chop(3);
+		}
+		int dot = url.lastIndexOf('.');
+		if (dot > 0) {
+			url.chop(url.size() - dot);
+		}
+		documentURLEdit->setText(url);
+	}
+
+	updateState();
+}
+
+void AddNewDocumentDialogImpl::sl_gzipChecked(bool on) {
+    Q_UNUSED(on);
+	updateState();
+}
+
+}//namespace

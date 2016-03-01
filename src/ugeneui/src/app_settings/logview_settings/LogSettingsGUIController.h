@@ -22,19 +22,21 @@
 #ifndef _U2_LOG_SETTINGS_WIDGET_IMPL_H_
 #define _U2_LOG_SETTINGS_WIDGET_IMPL_H_
 
-#include <QLabel>
-#include <QTableWidgetItem>
-#include <QUrl>
+#include <ui/ui_LogSettingsWidget.h>
 
 #include <LogSettings.h>
-
 #include <U2Gui/AppSettingsGUI.h>
 
-#include "ui/ui_LogSettingsWidget.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QTableWidgetItem>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTableWidgetItem>
+#endif
+#include <QtCore/QUrl>
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class LogSettingsPageController : public AppSettingsGUIPageController {
     Q_OBJECT
@@ -47,7 +49,7 @@ public:
 
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
 
-    const QString& getHelpPageId() const {return helpPageId;}
+    const QString& getHelpPageId() const {return helpPageId;};
 
 private:
     LogSettingsHolder* target;
@@ -78,12 +80,10 @@ private slots:
     void sl_catItemStateChanged(QTableWidgetItem *item);
     void sl_changeColor(const QString& v);
     void sl_outFileStateChanged(int state);
+    void sl_browseFileClicked();
 
 private:
     void updateColorLabel(QLabel* l, const QString& color);
-    void initSaveController();
-
-    SaveDocumentController *saveController;
 };
 
 class LogSettingsTopLineWidget : public QWidget {

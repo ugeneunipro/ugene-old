@@ -19,25 +19,25 @@
 * MA 02110-1301, USA.
 */
 
+#include "ExtractAssemblyRegionTask.h"
+
+#include <U2View/AssemblyModel.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/BAMUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 
-#include <U2View/AssemblyModel.h>
-
-#include "ExtractAssemblyRegionTask.h"
 
 namespace U2 {
 

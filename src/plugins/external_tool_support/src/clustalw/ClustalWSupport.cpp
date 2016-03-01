@@ -106,7 +106,7 @@ void ClustalWSupport::sl_runWithExtFileSpecify(){
     clustalWRunDialog->exec();
     CHECK(!clustalWRunDialog.isNull(), );
 
-    if(clustalWRunDialog->result() != QDialog::Accepted){
+    if(clustalWRunDialog->exec() != QDialog::Accepted){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());

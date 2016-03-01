@@ -22,28 +22,28 @@
 #ifndef _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/Task.h>
-#include <U2Core/global.h>
-
 #include "ui/ui_CreateSubalignmentDialog.h"
+
+#include <U2Core/global.h>
+#include <U2Core/Task.h>
+#include <U2Core/MAlignmentObject.h>
 
 namespace U2{
 
-class SaveDocumentController;
+class SaveDocumentGroupController;
 
-class U2VIEW_EXPORT CreateSubalignmentDialogController : public QDialog, private Ui_CreateSubalignmentDialog {
+class U2VIEW_EXPORT CreateSubalignmentDialogController : public QDialog, Ui_CreateSubalignmentDialog {
     Q_OBJECT
 public:
     CreateSubalignmentDialogController( MAlignmentObject *_mobj, const QRect& selection, QWidget *p = NULL);
 
     void accept();
 
-    bool getAddToProjFlag();
+    bool getAddToProjFlag(){return addToProjBox->isChecked();};
     QString getSavePath();
     DocumentFormatId getFormatId();
-    U2Region getRegion();
-    QStringList getSelectedSeqNames();
+    U2Region getRegion(){return window;};
+    QStringList getSelectedSeqNames(){return selectedNames;};
 
 private slots:
     void sl_allButtonClicked();
@@ -51,13 +51,12 @@ private slots:
     void sl_noneButtonClicked();
 
 private:
-    void initSaveController();
     void selectSeqNames();
 
     MAlignmentObject *mobj;
     U2Region window;
     QStringList selectedNames;
-    SaveDocumentController* saveController;
+    SaveDocumentGroupController* saveContoller;
 };
 
 

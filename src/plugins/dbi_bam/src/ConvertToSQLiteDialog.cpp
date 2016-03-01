@@ -24,13 +24,11 @@
 #include <QTextEdit>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Task.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2SafePoints.h>
@@ -38,7 +36,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "BAMDbiPlugin.h"
@@ -49,13 +47,7 @@
 namespace U2 {
 namespace BAM {
 
-static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
-
-ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam)
-    : QDialog(QApplication::activeWindow()),
-      saveController(NULL),
-      sourceUrl(_sourceUrl),
-      bamInfo(_bamInfo) {
+ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
     new HelpButton(this, ui.buttonBox, "17467668");
     ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
@@ -72,8 +64,6 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
         + "; font: bold;" );
     ui.indexNotAvailableLabel->setStyleSheet( warningMessageStyleSheet );
     ui.referenceWarningLabel->setStyleSheet( warningMessageStyleSheet );
-
-    initSaveController();
 
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
     connect(ui.refUrlButton, SIGNAL(clicked()), SLOT(sl_refUrlButtonClicked()));
@@ -111,6 +101,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     }
     QPushButton* okButton = ui.buttonBox->button(QDialogButtonBox::Ok);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
+    ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_assemblyCheckChanged(QTableWidgetItem*)));
@@ -306,21 +297,6 @@ bool ConvertToSQLiteDialog::checkReferencesState() {
     return true;
 }
 
-void ConvertToSQLiteDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = DIR_HELPER_DOMAIN;
-    config.defaultFileName = sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb";
-    config.defaultFormatId = BaseDocumentFormats::UGENEDB;
-    config.fileDialogButton = ui.destinationUrlButton;
-    config.fileNameEdit = ui.destinationUrlEdit;
-    config.parentWidget = this;
-    config.saveTitle = BAMDbiPlugin::tr("Destination UGENEDB File");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::UGENEDB;
-
-    saveController = new SaveDocumentController(config, formats, this);
-}
-
 namespace {
     bool checkWritePermissions(const QString &fileUrl) {
         QDir dir = QFileInfo(fileUrl).dir();
@@ -333,7 +309,7 @@ namespace {
 }
 
 void ConvertToSQLiteDialog::accept() {
-    destinationUrl = GUrl(saveController->getSaveFileName());
+    destinationUrl = GUrl(ui.destinationUrlEdit->text());
     bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
     if(destinationUrl.isEmpty()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
@@ -393,6 +369,21 @@ void ConvertToSQLiteDialog::accept() {
             QDialog::accept();
         }
 
+    }
+}
+
+static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
+void ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
+    QString dir = sourceUrl.dirPath() + "/" + sourceUrl.baseFileName();
+        QString returnedValue;
+    #ifdef Q_OS_MAC
+        if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+            returnedValue = U2FileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite | QFileDialog::DontUseNativeDialog);
+        } else
+    #endif
+    returnedValue = U2FileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
+    if(!returnedValue.isEmpty()) {
+        ui.destinationUrlEdit->setText(returnedValue);
     }
 }
 

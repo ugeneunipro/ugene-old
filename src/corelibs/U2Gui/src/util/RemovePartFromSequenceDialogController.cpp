@@ -28,15 +28,12 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ModifySequenceObjectTask.h>
-#include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/DocumentFormatUtils.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "RemovePartFromSequenceDialogController.h"
@@ -46,27 +43,30 @@ namespace U2{
 
 RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U2Region _toDelete, 
                                                                                U2Region _source, 
-                                                                               const QString & docUrl,
-                                                                               QWidget *p)
-    : QDialog(p),
-      toDelete(_toDelete),
-      source(_source),
-      ui(new Ui_RemovePartFromSequenceDialog),
-      saveController(NULL)
+                                                                               const QString & docUrl, QWidget *p)
+    :QDialog(p), filter(""), toDelete(_toDelete), source(_source)
 {
+    ui = new Ui_RemovePartFromSequenceDialog;
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467556");
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Remove"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     
-    initSaveController(docUrl);
-
+    QFileInfo fi(docUrl);
+    ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "_new" + "." + fi.completeSuffix());
+    
+    connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     SharedAnnotationData ad(new AnnotationData);
     ad->location->regions << toDelete;
     ui->removeLocationEdit->setText(U1AnnotationUtils::buildLocationString(ad));
 
+    connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
+
+    ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
+    ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
     connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
+    sl_indexChanged(0);
 }
 
 void RemovePartFromSequenceDialogController::accept() {
@@ -93,7 +93,16 @@ void RemovePartFromSequenceDialogController::accept() {
         return;
     }
 
+    //this->close();
     QDialog::accept();
+}
+
+void RemovePartFromSequenceDialogController::sl_browseButtonClicked(){
+    LastUsedDirHelper h;
+    
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
+    ui->filepathEdit->setText(h.url);
+    sl_indexChanged(ui->formatBox->currentIndex());
 }
 
 U1AnnotationUtils::AnnotationStrategyForResize RemovePartFromSequenceDialogController::getStrategy(){
@@ -113,53 +122,50 @@ bool RemovePartFromSequenceDialogController::recalculateQualifiers() const {
     return ui->recalculateQualsCheckBox->isChecked();
 }
 
-void RemovePartFromSequenceDialogController::sl_mergeAnnotationsToggled( bool ) {
-    const QString fastaFormatName = DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::FASTA);
-    CHECK(!fastaFormatName.isEmpty(), );
-
-    if (ui->mergeAnnotationsBox->isChecked()) {
-        ui->formatBox->removeItem(ui->formatBox->findText(fastaFormatName));
-    } else {
-        ui->formatBox->addItem(fastaFormatName);
+void RemovePartFromSequenceDialogController::sl_indexChanged( int index){
+    DocumentFormatId currentId = (ui->formatBox->itemData(index)).toString();
+    filter = DialogUtils::prepareDocumentsFileFilter(currentId, false);
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId);
+    QString newExt = df->getSupportedDocumentFileExtensions().first();
+    QString filepath = ui->filepathEdit->text();
+    if (filepath.isEmpty()){
+        return;
     }
-    ui->formatBox->model()->sort(0);
+    QFileInfo fi(filepath);
+    ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "." + newExt);
 }
 
-void RemovePartFromSequenceDialogController::initSaveController(const QString &docUrl) {
-    const QFileInfo fi(docUrl);
-
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "_new" + "." + fi.completeSuffix();
-    config.defaultFormatId = BaseDocumentFormats::FASTA;
-    config.fileDialogButton = ui->browseButton;
-    config.fileNameEdit = ui->filepathEdit;
-    config.formatCombo = ui->formatBox;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save...");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::FASTA
-                                                                      << BaseDocumentFormats::PLAIN_GENBANK;
-
-    saveController = new SaveDocumentController(config, formats, this);
+void RemovePartFromSequenceDialogController::sl_mergeAnnotationsToggled( bool ){
+    if(ui->mergeAnnotationsBox->isChecked()){
+        ui->formatBox->removeItem(ui->formatBox->findText("FASTA"));
+    }else{
+        ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
+    }
+    sl_indexChanged(ui->formatBox->findText("Genbank"));
 }
 
-bool RemovePartFromSequenceDialogController::modifyCurrentDocument() const {
+bool RemovePartFromSequenceDialogController::modifyCurrentDocument() const
+{
     return !ui->saveToAnotherBox->isChecked();
 }
 
-QString RemovePartFromSequenceDialogController::getNewDocumentPath() const {
-    return saveController->getSaveFileName();
+QString RemovePartFromSequenceDialogController::getNewDocumentPath() const
+{
+    return ui->filepathEdit->text();
 }
 
-bool RemovePartFromSequenceDialogController::mergeAnnotations() const {
+bool RemovePartFromSequenceDialogController::mergeAnnotations() const
+{
     return (ui->mergeAnnotationsBox->isChecked() && !modifyCurrentDocument());
 }
 
-DocumentFormatId RemovePartFromSequenceDialogController::getDocumentFormatId() const {
-    return saveController->getFormatIdToSave();
+DocumentFormatId RemovePartFromSequenceDialogController::getDocumentFormatId() const
+{
+    return ui->formatBox->itemData(ui->formatBox->currentIndex()).toString();
 }
 
-RemovePartFromSequenceDialogController::~RemovePartFromSequenceDialogController() {
+RemovePartFromSequenceDialogController::~RemovePartFromSequenceDialogController()
+{
     delete ui;
 }
 

@@ -23,24 +23,18 @@
 #define _U2_CLUSTALO_SUPPORT_RUN_DIALOG_H
 
 #include <QDialog>
-
 #include <U2Gui/DialogUtils.h>
-
+#include <ui/ui_ClustalOSupportRunDialog.h>
 #include "ClustalOSupportTask.h"
-#include "ui/ui_ClustalOSupportRunDialog.h"
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class ClustalOSupportRunDialog : public QDialog, public Ui_ClustalOSupportRunDialog {
     Q_OBJECT
 public:
     ClustalOSupportRunDialog(const MAlignment& ma, ClustalOSupportTaskSettings& settings, QWidget* parent);
-
 private slots:
-    void accept();
-
+    void sl_align();
 private:
     MAlignment                      ma;
     ClustalOSupportTaskSettings&    settings;
@@ -51,16 +45,13 @@ class ClustalOWithExtFileSpecifySupportRunDialog : public QDialog, public Ui_Clu
     Q_OBJECT
 public:
     ClustalOWithExtFileSpecifySupportRunDialog(ClustalOSupportTaskSettings& settings, QWidget* parent);
-
 private slots:
-    void accept();
+    void sl_align();
     void sl_inputPathButtonClicked();
-
+    void sl_outputPathButtonClicked();
 private:
-    void initSaveController();
-
     ClustalOSupportTaskSettings&    settings;
-    SaveDocumentController *        saveController;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
 };
 
 }//namespace

@@ -19,25 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include "ExportSequences2MSADialog.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
-
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Core/L10n.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
-#include "ExportSequences2MSADialog.h"
+
+#define SETTINGS_ROOT QString("dna_export/")
 
 namespace U2 {
 
-ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl)
-    : QDialog(p),
-      saveController(NULL) {
+ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467508");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
@@ -47,37 +51,32 @@ ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& 
     addToProjectFlag = true;
     useGenbankHeader = false;
 
-    initSaveController(defaultUrl);
+    SaveDocumentGroupControllerConfig conf;
+    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    conf.dfc.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    conf.fileDialogButton = fileButton;
+    conf.formatCombo = formatCombo;
+    conf.fileNameEdit = fileNameEdit;
+    conf.parentWidget = this;
+    conf.defaultFileName = defaultUrl;
+    conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    saveContoller = new SaveDocumentGroupController(conf, this);
+
 }
 
+
 void ExportSequences2MSADialog::accept() {
-    if (saveController->getSaveFileName().isEmpty()) {
+    if (fileNameEdit->text().isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
 
-    url = saveController->getSaveFileName();
-    format = saveController->getFormatIdToSave();
+    url = saveContoller->getSaveFileName();
+    format = saveContoller->getFormatIdToSave();
     addToProjectFlag = addToProjectBox->isChecked();
     useGenbankHeader = genbankBox->isChecked();
 
     QDialog::accept();
-}
-
-void ExportSequences2MSADialog::initSaveController(const QString &defaultUrl) {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = defaultUrl;
-    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;;
-    config.fileDialogButton = fileButton;
-    config.fileNameEdit = fileNameEdit;
-    config.formatCombo = formatCombo;
-    config.parentWidget = this;
-
-    DocumentFormatConstraints formatConstraints;
-    formatConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
-    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-
-    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 void ExportSequences2MSADialog::setOkButtonText(const QString& text) const {

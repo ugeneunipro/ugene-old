@@ -29,8 +29,6 @@
 
 namespace U2 {
 
-class SaveDocumentController;
-
 class ExportCoverageDialog : public QDialog, public Ui_ExportCoverageDialog {
     Q_OBJECT
 public:
@@ -43,14 +41,15 @@ public slots:
     void accept();
 
 private slots:
+    void sl_browseFiles();
+    void sl_compressToggled(bool isChecked);
     void sl_formatChanged(const QString &format);
 
 private:
     void initLayout();
     void init(QString assemblyName);
+    void connectSignals();
     bool checkPermissions() const;
-
-    SaveDocumentController * saveController;
 
     static const QString DIR_HELPER_NAME;
 };

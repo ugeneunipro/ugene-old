@@ -19,28 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include "ExportMSA2MSADialog.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
-
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Core/L10n.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
-#include "ExportMSA2MSADialog.h"
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
+
 
 namespace U2 {
 
-ExportMSA2MSADialog::ExportMSA2MSADialog(const QString& defaultFileName, const DocumentFormatId& defaultFormatId, bool wholeAlignmentOnly, QWidget* p)
-    : QDialog(p),
-      saveController(NULL) {
+ExportMSA2MSADialog::ExportMSA2MSADialog(const QString& defaultFileName, const DocumentFormatId& f, bool wholeAlignmentOnly, QWidget* p):  QDialog(p) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467510");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
@@ -48,7 +51,17 @@ ExportMSA2MSADialog::ExportMSA2MSADialog(const QString& defaultFileName, const D
 
     addToProjectFlag = true;
 
-    initSaveController(defaultFileName, defaultFormatId);
+    SaveDocumentGroupControllerConfig conf;
+    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    conf.dfc.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    conf.fileDialogButton = fileButton;
+    conf.formatCombo = formatCombo;
+    conf.fileNameEdit = fileNameEdit;
+    conf.parentWidget = this;
+    conf.defaultFileName = defaultFileName;
+    conf.defaultFormatId = f;
+    conf.saveTitle = tr("Export alignment");
+    saveContoller = new SaveDocumentGroupController(conf, this);
 
     const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
@@ -67,11 +80,12 @@ ExportMSA2MSADialog::ExportMSA2MSADialog(const QString& defaultFileName, const D
 
     int height = layout()->minimumSize().height();
     setMaximumHeight(height);
+
 }
 
 void ExportMSA2MSADialog::updateModel(){
-    formatId = saveController->getFormatIdToSave();
-    file = saveController->getSaveFileName();
+    formatId = saveContoller->getFormatIdToSave();
+    file = saveContoller->getSaveFileName();
     translationTable = tableID[translationCombo->currentIndex()];
     addToProjectFlag = addDocumentButton->isChecked();
     exportWholeAlignment = wholeRangeButton->isChecked();
@@ -79,7 +93,7 @@ void ExportMSA2MSADialog::updateModel(){
 
 
 void ExportMSA2MSADialog::sl_exportClicked() {
-    if (saveController->getSaveFileName().isEmpty()) {
+    if (fileNameEdit->text().isEmpty()) {
         QMessageBox::warning(this, L10N::warningTitle(), tr("File is empty"));
         fileNameEdit->setFocus();
         return;
@@ -88,21 +102,4 @@ void ExportMSA2MSADialog::sl_exportClicked() {
     accept();
 }
 
-void ExportMSA2MSADialog::initSaveController(const QString& defaultFileName, const DocumentFormatId& defaultFormatId) {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = defaultFileName;
-    config.defaultFormatId = defaultFormatId;
-    config.fileDialogButton = fileButton;
-    config.fileNameEdit = fileNameEdit;
-    config.formatCombo = formatCombo;
-    config.parentWidget = this;
-    config.saveTitle = tr("Export alignment");
-
-    DocumentFormatConstraints formatConstraints;
-    formatConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
-    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-
-    saveController = new SaveDocumentController(config, formatConstraints, this);
-}
-
-}   // namespace
+}//namespace

@@ -19,8 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
@@ -36,7 +42,6 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "SiteconBuildDialogController.h"
@@ -50,9 +55,8 @@
 namespace U2 {
 
 SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QWidget* w) 
-    : QDialog(w),
-      plug(pl),
-      saveController(NULL) {
+: QDialog(w), plug(pl)
+{
     task = NULL;
     setupUi(this);
     new HelpButton(this, buttonBox, "17467759");
@@ -62,13 +66,14 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
     weightAlgCombo->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + WEIGHT_ALG, 1).toInt());
     calibrationSeqLenBox->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + CALIBRATION_LEN).toInt());
 
-    initSaveController();
-
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_inFileButtonClicked()));
+    connect(outputButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
+
 }
+
 
 void SiteconBuildDialogController::sl_inFileButtonClicked() {
     LastUsedDirHelper lod;
@@ -78,6 +83,15 @@ void SiteconBuildDialogController::sl_inFileButtonClicked() {
         return;
     }
     inputEdit->setText(QFileInfo(lod.url).absoluteFilePath());
+}
+
+void SiteconBuildDialogController::sl_outFileButtonClicked() {
+    LastUsedDirHelper lod(SiteconIO::SITECON_ID);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save model to..."), lod, SiteconIO::getFileFilter(false));
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    outputEdit->setText(QFileInfo(lod.url).absoluteFilePath());
 }
 
 void SiteconBuildDialogController::sl_okButtonClicked() {
@@ -102,7 +116,7 @@ void SiteconBuildDialogController::sl_okButtonClicked() {
        errMsg = tr("Illegal alignment file");
        inputEdit->setFocus();
    }
-   QString outFile = saveController->getSaveFileName();
+   QString outFile = outputEdit->text();
    if (outFile.isEmpty()) {
        errMsg = tr("Illegal SITECON model file");
        outputEdit->setFocus();
@@ -155,23 +169,8 @@ void SiteconBuildDialogController::sl_onProgressChanged() {
     statusLabel->setText(tr("Running... State :%1 Progress: %2").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
 }
 
-void SiteconBuildDialogController::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = SiteconIO::SITECON_ID;
-    config.defaultFormatId = SiteconIO::SITECON_ID;
-    config.fileDialogButton = outputButton;
-    config.fileNameEdit = outputEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save model to...");
-
-    SaveDocumentController::SimpleFormatsInfo formats;
-    formats.addFormat(SiteconIO::SITECON_ID, tr("Sitecon models"), QStringList(SiteconIO::SITECON_EXT));
-
-    saveController = new SaveDocumentController(config, formats, this);
-}
-
 void SiteconBuildDialogController::reject() {
-    if (task != NULL) {
+    if (task!=NULL) {
         task->cancel();
     }
     QDialog::reject();

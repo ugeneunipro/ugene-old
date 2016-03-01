@@ -22,15 +22,16 @@
 #ifndef _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_
 #define _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_
 
-#include <QDialog>
-
 #include <U2Core/GUrl.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 class Ui_AssemblyToSamDialog;
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class U2VIEW_EXPORT ConvertAssemblyToSamDialog : public QDialog {
     Q_OBJECT
@@ -43,15 +44,13 @@ public:
 
 private slots:
     void sl_onSetDbPathButtonClicked();
+    void sl_onSetSamPathButtonClicked();
     void accept();
     void reject();
 
 private:
-    void buildSamUrl(const GUrl &dbUrl);
-    void initSaveController();
-
     Ui_AssemblyToSamDialog *ui;
-    SaveDocumentController *saveController;
+    void buildSamUrl(const GUrl &dbUrl);
 
     static GUrl dbFileUrl;
 };

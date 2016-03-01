@@ -22,18 +22,18 @@
 #ifndef _U2_MUSCLE_ALIGN_DIALOG_CONTROLLER_H_
 #define _U2_MUSCLE_ALIGN_DIALOG_CONTROLLER_H_
 
-#include <QDialog>
+#include "MuscleTask.h"
 
 #include <U2Core/GAutoDeleteList.h>
-
+#include <ui/ui_MuscleAlignDialog.h>
 #include <U2Gui/DialogUtils.h>
-
-#include "MuscleTask.h"
-#include "ui/ui_MuscleAlignDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class MuscleAlignPreset {
 public:
@@ -107,14 +107,13 @@ public slots:
 private slots:
     void sl_onPresetChanged(int current);
     void sl_inputPathButtonClicked();
-
+    void sl_outputPathButtonClicked();
 private:
     void initPresets();
-    void initSaveController();
-
     MuscleTaskSettings&                 settings;
     GAutoDeleteList<MuscleAlignPreset>  presets;
-    SaveDocumentController *            saveController;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
+
 };
 
 

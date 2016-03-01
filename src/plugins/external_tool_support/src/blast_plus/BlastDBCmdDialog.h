@@ -23,33 +23,29 @@
 #define _U2_BLAST_DB_CMD_DIALOG_H
 
 #include <QDialog>
-
 #include <U2Gui/DialogUtils.h>
-
+#include <ui/ui_BlastDBCmdDialog.h>
 #include "BlastDBCmdSupportTask.h"
-#include "ui/ui_BlastDBCmdDialog.h"
 #include "utils/BlastDBSelectorWidgetController.h"
 
 namespace U2 {
-
-class SaveDocumentController;
 
 class BlastDBCmdDialog : public QDialog, public Ui_BlastDBCmdDialog {
     Q_OBJECT
 public:
     BlastDBCmdDialog( BlastDBCmdSupportTaskSettings& settings, QWidget* parent);
     void setQueryId(const QString& queryId);
-
 private slots:
-    void accept();
-    void sl_update();
-
+    void sl_onSelectOutputFileButtonClick();
+    void sl_onQueryLineEditTextChanged();
+    void sl_BlastDBCmd();
+    void sl_dbSelectorDataChanged();
 private:
-    void initSaveController();
+    void update();
 
     BlastDBSelectorWidgetController *dbSelector;
-    SaveDocumentController *saveController;
     BlastDBCmdSupportTaskSettings&    settings;
+    QPushButton* cancelButton;
     QPushButton* fetchButton;
 };
 

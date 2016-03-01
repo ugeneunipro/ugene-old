@@ -34,7 +34,6 @@
 namespace U2 {
 
 class GObjectComboBoxControllerConstraints;
-class SaveDocumentControllerConfig;
 class ShowHideSubgroupWidget;
 
 class CreateAnnotationWidget : public QWidget {
@@ -66,6 +65,7 @@ public:
     virtual void setAnnotationName(const QString &name) = 0;
     virtual void setLocation(const U2Location &location) = 0;
 
+    virtual QString getNewTablePath() const = 0;
     virtual QString getAnnotationTypeString() const = 0;
     virtual QString getGroupName() const = 0;
     virtual QString getAnnotationName() const = 0;
@@ -89,10 +89,10 @@ public:
     virtual GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints) = 0;
 
     virtual void countDescriptionUsage() const = 0;
-    virtual void fillSaveDocumentControllerConfig(SaveDocumentControllerConfig &config) const = 0;
 
 signals:
     void si_selectExistingTableRequest();
+    void si_selectNewTableRequest();
     void si_selectGroupNameMenuRequest();
     void si_groupNameEdited();
     void si_annotationNameEdited();
@@ -100,6 +100,7 @@ signals:
 
 protected slots:
     void sl_selectExistingTableRequest();
+    void sl_selectNewTableRequest();
     void sl_selectGroupNameMenuRequest();
     void sl_groupNameEdited();
     void sl_annotationNameEdited();

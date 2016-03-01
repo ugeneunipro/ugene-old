@@ -146,7 +146,7 @@ void ClustalOSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
         SAFE_POINT(alignMenu != NULL, "alignMenu", );
         foreach(GObjectViewAction* a, actions) {
-            a->addToMenuWithOrder(alignMenu);
+                a->addToMenuWithOrder(alignMenu);
         }
 }
 

@@ -56,10 +56,12 @@ ImportAnnotationsFromCSVTask::ImportAnnotationsFromCSVTask(ImportAnnotationsFrom
 : Task(tr("Import annotations from CSV"), TaskFlags_NR_FOSCOE),
 config(_config), readTask(NULL), writeTask(NULL), addTask(NULL)
 {
+    assert(config.df != NULL);
     GCOUNTER(cvar,tvar,"ImportAnnotationsFromCSVTask");
     readTask = new ReadCSVAsAnnotationsTask(config.csvFile, config.parsingOptions);
     addSubTask(readTask);
 }
+
 
 static void adjustRelations(AnnotationTableObject *ao) {
     if (!ao->findRelatedObjectsByType(GObjectTypes::SEQUENCE).isEmpty()) {
@@ -164,16 +166,11 @@ QMap<QString, QList<SharedAnnotationData> > ImportAnnotationsFromCSVTask::prepar
 }
 
 Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, QList<SharedAnnotationData> > &groups) {
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(config.formatId);
-    CHECK(NULL != format, NULL);
-
     IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
-
     U2OpStatus2Log os;
-    Document *result = format->createNewLoadedDocument(iof, config.dstFile, os);
+    Document *result = config.df->createNewLoadedDocument(iof, config.dstFile, os);
     CHECK_OP(os, NULL);
-
     AnnotationTableObject* ao = new AnnotationTableObject("Annotations", result->getDbiRef());
     foreach (const QString &groupName, groups.keys()) {
         ao->addAnnotations(groups[groupName], groupName);

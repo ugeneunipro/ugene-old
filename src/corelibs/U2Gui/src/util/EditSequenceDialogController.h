@@ -27,15 +27,12 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/GUrl.h>
-
 #include <U2Gui/SeqPasterWidgetController.h>
 #include <U2Gui/DialogUtils.h>
 
 class Ui_EditSequenceDialog;
 
 namespace U2 {
-
-class SaveDocumentController;
 
 enum EditSequenceDialogMode {
     EditSequenceMode_Replace,
@@ -73,7 +70,6 @@ class U2GUI_EXPORT EditSequenceDialogController : public QDialog {
 public:
     EditSequenceDialogController(const EditSequencDialogConfig &cfg, QWidget *p = NULL);
     ~EditSequenceDialogController();
-
     void accept();
 
     DNASequence getNewSequence() const;
@@ -85,7 +81,9 @@ public:
     DocumentFormatId getDocumentFormatId() const;
 
 private slots:
-    void sl_mergeAnnotationsToggled();
+    void sl_browseButtonClicked();
+    void sl_indexChanged(int);
+    void sl_mergeAnnotationsToggled(bool);
     void sl_startPositionliClicked();
     void sl_endPositionliClicked();
     void sl_beforeSlectionClicked();
@@ -95,12 +93,10 @@ private slots:
 private:
     void addSeqpasterWidget();
     bool modifyCurrentDocument() const;
-    void initSaveController();
 
     QString filter;
     int pos;
     SeqPasterWidgetController *w;
-    SaveDocumentController *saveController;
     EditSequencDialogConfig config;
     Ui_EditSequenceDialog* ui;
 

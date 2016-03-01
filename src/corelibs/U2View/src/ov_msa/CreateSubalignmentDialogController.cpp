@@ -19,39 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
+#include "CreateSubalignmentDialogController.h"
 
-#include <U2Algorithm/CreateSubalignmentTask.h>
-
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GUrlUtils.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/TmpDirChecker.h>
+#include <U2Core/AddDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/TmpDirChecker.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/HelpButton.h>
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Algorithm/CreateSubalignmentTask.h>
 
-#include "CreateSubalignmentDialogController.h"
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/LastUsedDirHelper.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Core/BaseDocumentFormats.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
+
 
 namespace U2{
 
 CreateSubalignmentDialogController::CreateSubalignmentDialogController(MAlignmentObject *_mobj, const QRect& selection, QWidget *p)
-: QDialog(p), mobj(_mobj), saveController(NULL){
+: QDialog(p), mobj(_mobj), saveContoller(NULL){
     setupUi(this);
     new HelpButton(this, buttonBox, "17467651");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Extract"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
+    connect(browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     connect(allButton, SIGNAL(clicked()), SLOT(sl_allButtonClicked()));
     connect(noneButton, SIGNAL(clicked()), SLOT(sl_noneButtonClicked()));
     connect(invertButton, SIGNAL(clicked()), SLOT(sl_invertButtonClicked()));
@@ -65,9 +74,24 @@ CreateSubalignmentDialogController::CreateSubalignmentDialogController(MAlignmen
     sequencesTableWidget->verticalHeader()->setHidden( true );
     sequencesTableWidget->horizontalHeader()->setHidden( true );
     sequencesTableWidget->setShowGrid(false);
+#if (QT_VERSION < 0x050000) //Qt 5
+    sequencesTableWidget->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
+#else
     sequencesTableWidget->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+#endif
 
-    initSaveController();
+    SaveDocumentGroupControllerConfig conf;
+    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    conf.dfc.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    conf.fileDialogButton = browseButton;
+    conf.formatCombo = formatCombo;
+    conf.fileNameEdit = filepathEdit;
+    conf.parentWidget = this;
+    conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    conf.defaultFileName = GUrlUtils::getNewLocalUrlByFormat(_mobj->getDocument()->getURLString(), _mobj->getGObjectName(), conf.defaultFormatId, "_subalign");
+
+    saveContoller = new SaveDocumentGroupController(conf, this);
 
     int startSeq = -1;
     int endSeq = -1;
@@ -100,28 +124,20 @@ CreateSubalignmentDialogController::CreateSubalignmentDialogController(MAlignmen
         sequencesTableWidget->setCellWidget(i, 0, cb);
         sequencesTableWidget->setRowHeight(i, 15);
     }
+
 }
 
 QString CreateSubalignmentDialogController::getSavePath(){
-    if(NULL == saveController) {
+    if(NULL == saveContoller) {
         return QString();
     }
-    return saveController->getSaveFileName();
-}
-
+    return saveContoller->getSaveFileName();
+};
 DocumentFormatId CreateSubalignmentDialogController::getFormatId() {
-    if(NULL == saveController) {
+    if(NULL == saveContoller) {
         return DocumentFormatId();
     }
-    return saveController->getFormatIdToSave();
-}
-
-U2Region CreateSubalignmentDialogController::getRegion() {
-    return window;
-}
-
-QStringList CreateSubalignmentDialogController::getSelectedSeqNames() {
-    return selectedNames;
+    return saveContoller->getFormatIdToSave();
 }
 
 void CreateSubalignmentDialogController::sl_allButtonClicked(){
@@ -145,25 +161,8 @@ void CreateSubalignmentDialogController::sl_noneButtonClicked(){
     }
 }
 
-void CreateSubalignmentDialogController::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = GUrlUtils::getNewLocalUrlByFormat(mobj->getDocument()->getURLString(), mobj->getGObjectName(), BaseDocumentFormats::CLUSTAL_ALN, "_subalign");
-    config.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
-    config.fileDialogButton = browseButton;
-    config.fileNameEdit = filepathEdit;
-    config.formatCombo = formatCombo;
-    config.parentWidget = this;
-
-    DocumentFormatConstraints formatConstraints;
-    formatConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
-    formatConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-
-    saveController = new SaveDocumentController(config, formatConstraints, this);
-}
-
 void CreateSubalignmentDialogController::accept(){
-    QFileInfo fi(saveController->getSaveFileName());
+    QFileInfo fi(filepathEdit->text());
     QDir dirToSave(fi.dir());
     if (!dirToSave.exists()){
         QMessageBox::critical(this, this->windowTitle(), tr("Directory to save does not exist"));
@@ -173,7 +172,7 @@ void CreateSubalignmentDialogController::accept(){
         QMessageBox::critical(this, this->windowTitle(), tr("No write permission to '%1' directory").arg(dirToSave.absolutePath()));
         return;
     }
-    if(saveController->getSaveFileName().isEmpty()){
+    if(filepathEdit->text().isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), tr("No path specified"));
         return;
     }
@@ -213,10 +212,6 @@ void CreateSubalignmentDialogController::accept(){
 
     this->close();
     QDialog::accept();
-}
-
-bool CreateSubalignmentDialogController::getAddToProjFlag() {
-    return addToProjBox->isChecked();
 }
 
 void CreateSubalignmentDialogController::selectSeqNames(){

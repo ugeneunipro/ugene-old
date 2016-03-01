@@ -22,12 +22,15 @@
 #ifndef _U2_CREATE_DOCUMENT_FROM_TEXT_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_DOCUMENT_FROM_TEXT_DIALOG_CONTROLLER_H_
 
-#include <QDialog>
-
-#include <U2Core/DocumentModel.h>
 #include <U2Core/global.h>
-
+#include <U2Core/DocumentModel.h>
 #include <U2Gui/DialogUtils.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include "SeqPasterWidgetController.h"
 
@@ -35,26 +38,25 @@ class Ui_CreateDocumentFromTextDialog;
 
 namespace U2 {
 
-class SaveDocumentController;
-
 class U2GUI_EXPORT CreateDocumentFromTextDialogController : public QDialog {
     Q_OBJECT
 public:
     CreateDocumentFromTextDialogController(QWidget* p = NULL);
     ~CreateDocumentFromTextDialogController();
 
-    void accept();
+    virtual void accept();
+    virtual void reject();
 
 private slots:
-    void sl_filepathTextChanged();
+    void sl_browseButtonClicked();
+    void sl_indexChanged(int index);
+    void sl_filepathTextChanged(const QString &text);
     
 private:
     void addSeqPasterWidget();
     QList<DNASequence> prepareSequences() const;
-    void initSaveController();
     
     SeqPasterWidgetController *w;
-    SaveDocumentController *saveController;
     QString filter;
     Ui_CreateDocumentFromTextDialog* ui;
 };

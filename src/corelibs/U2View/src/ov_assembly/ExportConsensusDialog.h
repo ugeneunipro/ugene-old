@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-class SaveDocumentController;
+class SaveDocumentGroupController;
 class RegionSelector;
 
 class ExportConsensusDialog : public QDialog, Ui_ExportConsensusDialog {
@@ -46,11 +46,9 @@ public:
     const ExportConsensusTaskSettings & getSettings() const { return settings; }
 
 private:
-    void initSaveController();
-
     ExportConsensusTaskSettings settings;
-    SaveDocumentController*     saveController;
-    RegionSelector*             regionSelector;
+    SaveDocumentGroupController * saveController;
+    RegionSelector * regionSelector;
 };
 
 } // namespace

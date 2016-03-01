@@ -26,17 +26,15 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
-#include <U2Core/TaskWatchdog.h>
 #include <U2Core/U2IdTypes.h>
 #include <U2Core/UserApplicationsSettings.h>
-
-#include <U2Formats/DocumentFormatUtils.h>
+#include <U2Core/TaskWatchdog.h>
 
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2FileDialog.h>
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
@@ -49,41 +47,67 @@
 namespace U2 {
 
 MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
-    : msa(msa_),
-      savableWidget(this, GObjectViewUtils::findViewByName(msa_->getName())),
-      saveController(NULL)
+    : msa(msa_), savableWidget(this, GObjectViewUtils::findViewByName(msa_->getName()))
 {
     setupUi(this);
 
     hintLabel->setStyleSheet("color: green; font: bold;");
 
-    initSaveController();
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
+        + msa->getMSAObject()->getGObjectName() + "_consensus.txt");
+
+    formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_TEXT)->getFormatName(), BaseDocumentFormats::PLAIN_TEXT);
 
     MSAEditorConsensusArea *consensusArea = msa->getUI()->getConsensusArea();
     showHint(true);
 
+    sl_consensusChanged(consensusArea->getConsensusAlgorithm()->getId());
+
+    connect(browseBtn, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(exportBtn, SIGNAL(clicked()), SLOT(sl_exportClicked()));
+    connect(formatCb, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged()));
     connect(consensusArea, SIGNAL(si_consensusAlgorithmChanged(const QString &)), SLOT(sl_consensusChanged(const QString &)));
 
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
-    sl_consensusChanged(consensusArea->getConsensusAlgorithm()->getId());
+}
+
+void MSAExportConsensusTab::sl_browseClicked() {
+    LastUsedDirHelper h;
+    DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
+    QString fileName = U2FileDialog::getSaveFileName(NULL, tr("Save file"), h.dir, DialogUtils::prepareDocumentsFileFilter(id, false));
+    if (!fileName.isEmpty()) {
+        pathLe->setText(fileName);
+    }
 }
 
 void MSAExportConsensusTab::sl_exportClicked(){
-    if (saveController->getSaveFileName().isEmpty()) {
-        saveController->setPath(getDefaultFilePath());
-    }
-
+    checkEmptyFilepath();
     ExportMSAConsensusTaskSettings settings;
-    settings.format = saveController->getFormatIdToSave();
+    settings.format = formatCb->itemData(formatCb->currentIndex()).toString();
     settings.keepGaps = keepGapsChb->isChecked() || keepGapsChb->isHidden();
     settings.msa = msa;
     settings.name = msa->getMSAObject()->getGObjectName() + "_consensus";
-    settings.url = saveController->getSaveFileName();
 
+    settings.url = pathLe->text();
     Task *t = new ExportMSAConsensusTask(settings);
     TaskWatchdog::trackResourceExistence(msa->getMSAObject(), t, tr("A problem occurred during export consensus. The multiple alignment is no more available."));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+void MSAExportConsensusTab::sl_formatChanged(){
+    if (pathLe->text().isEmpty()) {
+        return;
+    }
+
+    DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    DocumentFormat *df = dfr->getFormatById(id);
+    SAFE_POINT(df, "Cant get document format by id", );
+    QString fileExt = df->getSupportedDocumentFileExtensions().first();
+    GUrl url =  pathLe->text();
+    pathLe->setText(QDir::toNativeSeparators(QString( QString("%1") + QDir::separator() + QString("%2.%3") )
+        .arg(url.dirPath()).arg(url.baseFileName()).arg(fileExt)));
 }
 
 void MSAExportConsensusTab::showHint( bool showHint ){
@@ -99,47 +123,38 @@ void MSAExportConsensusTab::showHint( bool showHint ){
 void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
     MSAConsensusAlgorithmFactory *consAlgorithmFactory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(algoId);
     SAFE_POINT(consAlgorithmFactory != NULL, "Fetched consensus algorithm factory is NULL", );
-
-    if (consAlgorithmFactory->isSequenceLikeResult()) {
-        if (formatCb->count() == 1 ) { //only text
-            formatCb->addItem(DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::PLAIN_GENBANK));
-            formatCb->addItem(DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::FASTA));
-            formatCb->model()->sort(0);
+    if(consAlgorithmFactory->isSequenceLikeResult()){
+        if(formatCb->count() == 1 ){ //only text
+            DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+            formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getFormatName(), BaseDocumentFormats::PLAIN_GENBANK);
+            formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::FASTA)->getFormatName(), BaseDocumentFormats::FASTA);
             showHint(false);
-        } else {
+        }else{
             SAFE_POINT(formatCb->count() == 3, "Count of supported 'text' formats is not equal three", );
         }
-    } else {
-        if (formatCb->count() == 3 ) { //all possible formats
-            formatCb->setCurrentText(DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::PLAIN_TEXT));
-            formatCb->removeItem(formatCb->findText(DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::FASTA)));
-            formatCb->removeItem(formatCb->findText(DocumentFormatUtils::getFormatNameById(BaseDocumentFormats::PLAIN_GENBANK)));
+    }else{
+        if(formatCb->count() == 3 ){ //all possible formats
+            formatCb->setCurrentIndex(formatCb->findData(BaseDocumentFormats::PLAIN_TEXT));
+            formatCb->removeItem(formatCb->findData(BaseDocumentFormats::FASTA));
+            formatCb->removeItem(formatCb->findData(BaseDocumentFormats::PLAIN_GENBANK));
             showHint(true);
-        } else {
+        }else{
             SAFE_POINT(formatCb->count() == 1, "Count of supported 'text' formats is not equal one", );
         }
     }
 }
 
-void MSAExportConsensusTab::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = getDefaultFilePath();
-    config.defaultFormatId = BaseDocumentFormats::PLAIN_TEXT;
-    config.fileDialogButton = browseBtn;
-    config.fileNameEdit = pathLe;
-    config.formatCombo = formatCb;
-    config.parentWidget = this;
-    config.saveTitle = tr("Save file");
+void MSAExportConsensusTab::checkEmptyFilepath() const {
+    if(pathLe->text().isEmpty()) {
+        DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
+        DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+        DocumentFormat *df = dfr->getFormatById(id);
+        SAFE_POINT(df, "Cant get document format by id", );
+        QString fileExt = df->getSupportedDocumentFileExtensions().first();
 
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_TEXT
-                                                                      << BaseDocumentFormats::PLAIN_GENBANK
-                                                                      << BaseDocumentFormats::FASTA;
-
-    saveController = new SaveDocumentController(config, formats, this);
-}
-
-QString MSAExportConsensusTab::getDefaultFilePath() const {
-    return GUrlUtils::getDefaultDataPath() + "/" + msa->getMSAObject()->getGObjectName() + "_consensus.txt";
+        pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
+            + msa->getMSAObject()->getGObjectName() + "_consensus." + fileExt);
+    }
 }
 
 }

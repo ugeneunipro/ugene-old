@@ -40,8 +40,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TaskSignalMapper.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/QDScheduler.h>
 
@@ -50,7 +50,6 @@
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
@@ -71,72 +70,72 @@ namespace U2 {
 /*  Dialog for run from designer window                                 */
 /************************************************************************/
 
-const QString QDRunDialog::OUTPUT_FILE_DIR_DOMAIN = "qd_run_dialog/output_file";
-
 QDRunDialog::QDRunDialog(QDScheme* _scheme, QWidget* parent, const QString& defaultIn, const QString& defaultOut)
-    : QDialog(parent),
-      scheme(_scheme),
-      saveController(NULL)
-{
+: QDialog(parent), scheme(_scheme) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467440");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     inFileEdit->setText(defaultIn);
-    initSaveController(defaultOut);
-
-    connect(tbInFile, SIGNAL(clicked()), SLOT(sl_selectInputFile()));
-    connect(outFileEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_outputFileChanged()));
-    connect(outFileEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_outputFileChanged()));
+    outFileEdit->setText(defaultOut);
+    connect(tbInFile, SIGNAL(clicked()), SLOT(sl_selectFile()));
+    connect(tbOutFile, SIGNAL(clicked()), SLOT(sl_selectFile()));
 
     QPushButton* runBtn = buttonBox->button(QDialogButtonBox::Ok);
     connect(runBtn, SIGNAL(clicked()), SLOT(sl_run()));
+
 }
 
-void QDRunDialog::sl_selectInputFile() {
+void QDRunDialog::sl_selectFile() {
+    QToolButton* tb = qobject_cast<QToolButton*>(sender());
+    assert(tb);
+    QLineEdit* edit = NULL;
+    if (tb==tbInFile) {
+        edit = inFileEdit;
+    } else {
+        assert(tb==tbOutFile);
+        edit = outFileEdit;
+    }
+
+    QString title;
+    QString fileFilter;
+    if (edit==inFileEdit) {
+        title = tr("Select input file");
+        fileFilter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+    } else {
+        title = tr("Select output file");
+        fileFilter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, true, QStringList());
+    }
+
     LastUsedDirHelper dir;
-    if (!inFileEdit->text().isEmpty()) {
-        QFileInfo fi(inFileEdit->text());
+    if (!edit->text().isEmpty()) {
+        QFileInfo fi(edit->text());
         dir.url = fi.absoluteFilePath();
         dir.dir = fi.absolutePath();
     }
 
-    QString fileFilter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
-    dir.url = U2FileDialog::getOpenFileName(this, tr("Select input file"), dir, fileFilter);
+    if (edit==inFileEdit) {
+        dir.url = U2FileDialog::getOpenFileName(this, title, dir, fileFilter);
+    } else {
+        dir.url = U2FileDialog::getSaveFileName(this, title, dir, fileFilter);
+    }
 
     if (!dir.url.isEmpty()) {
-        inFileEdit->setText(dir.url);
+        edit->setText(dir.url);
         QueryViewController* view = qobject_cast<QueryViewController*>(parentWidget());
-        SAFE_POINT(NULL != view, "View is NULL", );
-        view->setDefaultInFile(dir.url);
+        assert(view);
+        if (edit==inFileEdit) {
+            view->setDefaultInFile(dir.url);
+        } else {
+            view->setDefaultOutFile(dir.url);
+        }
     }
 }
 
-void QDRunDialog::sl_outputFileChanged() {
-    QueryViewController* view = qobject_cast<QueryViewController*>(parentWidget());
-    SAFE_POINT(NULL != view, "View is NULL", );
-    view->setDefaultOutFile(saveController->getSaveFileName());
-}
-
-void QDRunDialog::initSaveController(const QString &defaultOut) {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = OUTPUT_FILE_DIR_DOMAIN;
-    config.defaultFileName = defaultOut;
-    config.defaultFormatId = BaseDocumentFormats::PLAIN_GENBANK;
-    config.fileDialogButton = tbOutFile;
-    config.fileNameEdit = outFileEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select output file");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_GENBANK;
-
-    saveController = new SaveDocumentController(config, formats, this);
-}
-
 void QDRunDialog::sl_run() {
-    const QString inUri = inFileEdit->text();
-    const QString outUri = saveController->getSaveFileName();
+    const QString& inUri = inFileEdit->text();
+    const QString& outUri = outFileEdit->text();
 
     if (inUri.isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("The sequence is not specified!"));

@@ -19,10 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QDateTime>
-#include <QFile>
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/QDateTime>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
@@ -34,7 +39,8 @@
 #include <U2Core/TextUtils.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
@@ -43,13 +49,7 @@
 
 namespace U2 {
 
-const QString DistanceMatrixMSAProfileDialog::HTML = "html";
-const QString DistanceMatrixMSAProfileDialog::CSV = "csv";
-
-DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* _c)
-    : QDialog(p),
-      ctx(_c),
-      saveController(NULL) {
+DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467666");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
@@ -67,27 +67,45 @@ DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEd
             groupStatisticsCheck->setEnabled(false);
     }
 
-    initSaveController();
+    connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
+    connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
+    connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
+
 }
 
-void DistanceMatrixMSAProfileDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = "plugin_dna_stat";
-    config.defaultFormatId = HTML;
-    config.fileDialogButton = fileButton;
-    config.fileNameEdit = fileEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save report to..");
+void DistanceMatrixMSAProfileDialog::sl_selectFile() {
+    LastUsedDirHelper h("plugin_dna_stat");
+    QString filter;
+    if (csvRB->isChecked()) {
+        filter = tr("CSV files") + " (*.csv)";
+    } else {
+        filter = tr("HTML files") + " (*.html)";
+    }
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save report to.."), h.dir, filter);
+    if (h.url.isEmpty()) {
+        return;
+    }
+    fileEdit->setText(h.url);
+}
 
-    SaveDocumentController::SimpleFormatsInfo formats;
-    formats.addFormat(HTML, HTML.toUpper(), QStringList() << HTML);
-    formats.addFormat(CSV, CSV.toUpper(), QStringList() << CSV);
-
-    saveController = new SaveDocumentController(config, formats, this);
-
-    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
-    connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatSelected()));
-    connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatSelected()));
+void DistanceMatrixMSAProfileDialog::sl_formatChanged(bool) {
+    QString t = fileEdit->text();
+    if (t.isEmpty()) {
+        return;
+    }
+    QString ext = ".html";
+    if (csvRB->isChecked()) {
+        ext = ".csv";
+    }
+    if (t.endsWith(ext)) {
+        return;
+    }
+    QFileInfo fi(t);
+    QString dir = fi.absoluteDir().absolutePath();
+    if (!(dir.endsWith('/') || dir.endsWith('\\'))) {
+        dir.append('/');
+    }
+    fileEdit->setText(dir + fi.baseName() + ext);
 }
 
 void DistanceMatrixMSAProfileDialog::accept() {
@@ -106,7 +124,7 @@ void DistanceMatrixMSAProfileDialog::accept() {
     s.ctx = ctx;
 
     if (saveBox->isChecked()) {
-        s.outURL = saveController->getSaveFileName();
+        s.outURL = fileEdit->text();
         if (s.outURL.isEmpty()) {
             QMessageBox::critical(this, tr("Error"), tr("File URL is empty"));
             return;
@@ -115,18 +133,6 @@ void DistanceMatrixMSAProfileDialog::accept() {
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(new DistanceMatrixMSAProfileTask(s));
     QDialog::accept();
-}
-
-void DistanceMatrixMSAProfileDialog::sl_formatSelected() {
-    saveController->setFormat(csvRB->isChecked() ? CSV : HTML);
-}
-
-void DistanceMatrixMSAProfileDialog::sl_formatChanged(const QString &newFormatId) {
-    if (HTML == newFormatId) {
-        htmlRB->setChecked(true);
-    } else {
-        csvRB->setChecked(true);
-    }
 }
 
 

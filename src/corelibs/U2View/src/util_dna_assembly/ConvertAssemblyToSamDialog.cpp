@@ -19,16 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ConvertAssemblyToSamDialog.h"
@@ -39,18 +43,21 @@ namespace U2 {
 GUrl ConvertAssemblyToSamDialog::dbFileUrl;
 
 ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString dbPath)
-    : QDialog(parent),
-      ui(new Ui_AssemblyToSamDialog),
-      saveController(NULL)
+: QDialog(parent)
 {
+    ui = new Ui_AssemblyToSamDialog;
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467782");
-
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Convert"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    initSaveController();
+    QPushButton* convertButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = ui->buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(ui->setDbPathButton, SIGNAL(clicked()), SLOT(sl_onSetDbPathButtonClicked()));
+    connect(ui->setSamPathButton, SIGNAL(clicked()), SLOT(sl_onSetSamPathButtonClicked()));
+    connect(convertButton, SIGNAL(clicked()), SLOT(accept()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
 
     if ("" != dbPath) {
         ui->dbPathEdit->setText(dbPath);
@@ -64,13 +71,14 @@ ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString 
         ui->dbPathEdit->setText(dbFileUrl.getURLString());
         buildSamUrl(dbFileUrl);
     }
+
 }
 
 void ConvertAssemblyToSamDialog::accept() {
     if (ui->dbPathEdit->text().isEmpty()) {
         QMessageBox::information(this, tr("Data base to SAM converter"),
             tr("Data base file url is not set!") );
-    } else if (saveController->getSaveFileName().isEmpty()) {
+    } else if (ui->samPathEdit->text().isEmpty()) {
         QMessageBox::information(this, tr("Data base to SAM converter"),
             tr("SAM file url is not set!") );
     } else {
@@ -89,22 +97,8 @@ void ConvertAssemblyToSamDialog::reject() {
 }
 
 void ConvertAssemblyToSamDialog::buildSamUrl(const GUrl &dbUrl) {
-    GUrl url = GUrlUtils::rollFileName(dbUrl.dirPath() + "/" + dbUrl.baseFileName() + ".sam", DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrl url = GUrlUtils::rollFileName(dbUrl.dirPath() + "/" + dbUrl.baseFileName()+ ".sam", DocumentUtils::getNewDocFileNameExcludesHint());
     ui->samPathEdit->setText(url.getURLString());
-}
-
-void ConvertAssemblyToSamDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFormatId = BaseDocumentFormats::SAM;
-    config.fileDialogButton = ui->setSamPathButton;
-    config.fileNameEdit = ui->samPathEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Set a result SAM file name");
-    config.rollOutProjectUrls = true;
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::SAM;
-
-    saveController = new SaveDocumentController(config, formats, this);
 }
 
 void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
@@ -120,12 +114,24 @@ void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
     buildSamUrl(lod.url);
 }
 
+void ConvertAssemblyToSamDialog::sl_onSetSamPathButtonClicked() {
+    LastUsedDirHelper lod;
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set a result SAM file name"), lod.dir);
+    if (!lod.url.isEmpty()) {
+        GUrl result = lod.url;
+        if (result.lastFileSuffix().isEmpty()) {
+            result = QString( "%1.sam" ).arg( result.getURLString() );
+        }
+        ui->samPathEdit->setText(result.getURLString());
+    }
+}
+
 const GUrl ConvertAssemblyToSamDialog::getDbFileUrl() {
     return ui->dbPathEdit->text();
 }
 
 const GUrl ConvertAssemblyToSamDialog::getSamFileUrl() {
-    return saveController->getSaveFileName();
+    return ui->samPathEdit->text();
 }
 
 } // U2

@@ -22,15 +22,18 @@
 #ifndef _U2_EXPORT_SEQUENCES_DIALOG_H_
 #define _U2_EXPORT_SEQUENCES_DIALOG_H_
 
-#include <QDialog>
-
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportSequencesDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
+#include <ui/ui_ExportSequencesDialog.h>
 
 namespace U2 {
 
-class SaveDocumentController;
+class SaveDocumentGroupController;
 
 class ExportSequencesDialog : public QDialog, Ui_ExportSequencesDialog {
     Q_OBJECT
@@ -67,13 +70,10 @@ public:
 private slots:
     void sl_exportClicked();
     void sl_translationTableEnabler();
-    void sl_formatChanged(const QString &newFormatId);
+    void sl_formatChanged(int);
 
 private:
-    void initSaveController(const DocumentFormatId &defaultFormatId);
-
-    SaveDocumentController* saveController;
-    const QString defaultFileName;
+    SaveDocumentGroupController* saveGroupContoller;
     QList<QString> tableID;
 };
 

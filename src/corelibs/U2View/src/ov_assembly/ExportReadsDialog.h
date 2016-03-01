@@ -22,15 +22,16 @@
 #ifndef _U2_EXPORT_READS_DIALOG_H__
 #define _U2_EXPORT_READS_DIALOG_H__
 
-#include <QDialog>
-
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportReadsDialog.h"
+#include <ui/ui_ExportReadsDialog.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
-
-class SaveDocumentController;
 
 struct ExportReadsDialogModel {
     QString filepath;
@@ -43,13 +44,16 @@ class ExportReadsDialog : public QDialog, Ui_ExportReadsDialog {
 public:
     ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> & formats);
 
-    void accept();
+    virtual void accept();
 
     ExportReadsDialogModel getModel() const;
 
-private:
-    SaveDocumentController * saveController;
+private slots:
+    void sl_selectFile();
+    void sl_formatChanged(const QString &newFormat);
 
+private:
+    void initFilePath();
 }; // ExportReadsDialog
 
 } // U2

@@ -28,20 +28,20 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/PluginModel.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/LicenseDialog.h>
 
@@ -56,8 +56,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     msa(mobj->getMAlignment()),
     settings(_settings),
     settingsWidget(NULL),
-    ui(new Ui_CreatePhyTree),
-    saveController(NULL)
+    ui(new Ui_CreatePhyTree)
 {
     ui->setupUi(this);
 
@@ -73,11 +72,13 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     PhyTreeGeneratorRegistry *registry = AppContext::getPhyTreeGeneratorRegistry();
     ui->algorithmBox->addItems(registry->getNameList());
 
-    initSaveController(mobj);
-
+    connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(ui->algorithmBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_comboIndexChaged(int)));
     connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
     connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
+
+    QString url = GUrlUtils::getNewLocalUrlByExtention(mobj->getDocument()->getURLString(), mobj->getGObjectName(), ".nwk", "");
+    ui->fileNameEdit->setText(url);
 
     const QString defaultAlgorithm = "PHYLIP Neighbor Joining";
     int defaultIndex = ui->algorithmBox->findText(defaultAlgorithm);
@@ -99,6 +100,24 @@ void CreatePhyTreeDialogController::accept() {
     CHECK(checkMemory(), );
 
     QDialog::accept();
+}
+
+void CreatePhyTreeDialogController::sl_browseClicked() {
+    GUrl oldUrl = ui->fileNameEdit->text();
+    QString path;
+    LastUsedDirHelper lod;
+    if (oldUrl.isEmpty()) {
+        path = lod.dir;
+    } else {
+        path = oldUrl.getURLString();
+    }
+    GUrl newUrl = U2FileDialog::getSaveFileName(this, tr("Choose file name"), path, "Newick format (*.nwk)");
+
+    if (newUrl.isEmpty()) {
+        return;
+    }
+    ui->fileNameEdit->setText(newUrl.getURLString());
+    lod.url = newUrl.getURLString();
 }
 
 void CreatePhyTreeDialogController::sl_comboIndexChaged(int) {
@@ -142,7 +161,7 @@ bool CreatePhyTreeDialogController::checkLicense() {
 }
 
 bool CreatePhyTreeDialogController::checkFileName() {
-    const QString fileName = saveController->getSaveFileName();
+    const QString fileName = ui->fileNameEdit->text();
     if (fileName.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
         ui->fileNameEdit->setFocus();
@@ -187,20 +206,6 @@ bool CreatePhyTreeDialogController::checkMemory() {
     }
 
     return true;
-}
-
-void CreatePhyTreeDialogController::initSaveController(const MAlignmentObject *mobj) {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = GUrlUtils::getNewLocalUrlByExtention(mobj->getDocument()->getURLString(), mobj->getGObjectName(), ".nwk", "");
-    config.defaultFormatId = BaseDocumentFormats::NEWICK;
-    config.fileDialogButton = ui->browseButton;
-    config.fileNameEdit = ui->fileNameEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Choose file name");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::NEWICK;
-
-    saveController = new SaveDocumentController(config, formats, this);
 }
 
 }   // namespace U2

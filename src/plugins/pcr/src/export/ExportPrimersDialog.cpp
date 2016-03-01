@@ -32,7 +32,6 @@
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/ProjectService.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -43,8 +42,8 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/SharedConnectionsDialog.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ExportPrimersDialog.h"
@@ -72,6 +71,29 @@ void ExportPrimersDialog::sl_updateState() {
     fileContainer->setVisible(isFileMode());
     databaseContainer->setVisible(!isFileMode());
     folderContainer->setEnabled(0 < cbDatabase->count());
+}
+
+void ExportPrimersDialog::sl_formatChanged() {
+    const QString newFilePath = GUrlUtils::changeFileExt(GUrl(leFilePath->text()), cbFormat->currentText()).getURLString();
+    leFilePath->setText(newFilePath);
+}
+
+void ExportPrimersDialog::sl_fileBrowse() {
+    LastUsedDirHelper dirHelper("ExportPrimersDialog");
+    const QString filter = FormatUtils::prepareDocumentsFileFilter(cbFormat->currentText(), true);
+
+    QFileDialog::Options additionalOptions;
+    Q_UNUSED(additionalOptions);
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        additionalOptions = QFileDialog::DontUseNativeDialog;
+    }
+#endif
+
+    const QString filePath = U2FileDialog::getSaveFileName(this, tr("Export to"), dirHelper.dir + GUrl(leFilePath->text()).fileName(), filter, NULL, additionalOptions);
+    CHECK(!filePath.isEmpty(), );
+
+    leFilePath->setText(filePath);
 }
 
 void ExportPrimersDialog::sl_connect() {
@@ -132,7 +154,7 @@ void ExportPrimersDialog::accept() {
     GUIUtils::setWidgetWarning(leFolder, false);
 
     U2OpStatusImpl os;
-    GUrlUtils::validateLocalFileUrl(GUrl(saveController->getSaveFileName()), os);
+    GUrlUtils::validateLocalFileUrl(GUrl(leFilePath->text()), os);
     if (LOCAL_FILE == cbExport->currentText() && os.isCoR()) {
         GUIUtils::setWidgetWarning(leFilePath, true);
         return;
@@ -150,7 +172,7 @@ void ExportPrimersDialog::accept() {
 
     Task *exportTask = NULL;
     if (LOCAL_FILE == cbExport->currentText()) {
-        exportTask = new ExportPrimersToLocalFileTask(primers, saveController->getFormatIdToSave(), saveController->getSaveFileName());
+        exportTask = new ExportPrimersToLocalFileTask(primers, cbFormat->currentText(), leFilePath->text());
     } else {
         exportTask = new ExportPrimersToDatabaseTask(primers, cbDatabase->itemData(cbDatabase->currentIndex()).value<U2DbiRef>(), leFolder->text());
     }
@@ -163,7 +185,34 @@ void ExportPrimersDialog::init() {
     cbExport->addItem(LOCAL_FILE);
     cbExport->addItem(SHARED_DB);
 
-    initSaveController();
+    DocumentFormatConstraints constr;
+    constr.supportedObjectTypes.insert(GObjectTypes::SEQUENCE);
+    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
+    constr.addFlagToExclude(DocumentFormatFlag_Hidden);
+    if (primers.size() > 1) {
+        constr.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    }
+
+    const QList<DocumentFormatId> formatIds = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
+    foreach (const DocumentFormatId &formatId, formatIds) {
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+        if (Q_UNLIKELY(NULL == format)) {
+            coreLog.error(L10N::nullPointerError("document format '%1'").arg(formatId));
+            Q_ASSERT(false);
+            continue;
+        }
+
+        cbFormat->addItem(formatId);
+    }
+    cbFormat->setCurrentIndex(cbFormat->findText(BaseDocumentFormats::PLAIN_GENBANK));
+
+    DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById(cbFormat->currentText());
+    SAFE_POINT(NULL != currentFormat, L10N::nullPointerError("current format"), );
+    const QStringList extensions = currentFormat->getSupportedDocumentFileExtensions();
+    SAFE_POINT(!extensions.isEmpty(), QString("'%1' format extenations list is empty").arg(cbFormat->currentText()), );
+    leFilePath->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator() + "primers" + "." + extensions.first());
+
     initDatabases();
 }
 
@@ -178,31 +227,10 @@ void ExportPrimersDialog::initDatabases() {
     }
 }
 
-void ExportPrimersDialog::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = "ExportPrimersDialog";
-    config.defaultFileName = GUrlUtils::getDefaultDataPath() + "/primers.gb";
-    config.defaultFormatId = BaseDocumentFormats::PLAIN_GENBANK;
-    config.fileDialogButton = tbFileBrowse;
-    config.fileNameEdit = leFilePath;
-    config.formatCombo = cbFormat;
-    config.parentWidget = this;
-    config.saveTitle = tr("Export to");
-
-    DocumentFormatConstraints constraints;
-    constraints.supportedObjectTypes.insert(GObjectTypes::SEQUENCE);
-    constraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    constraints.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
-    constraints.addFlagToExclude(DocumentFormatFlag_Hidden);
-    if (primers.size() > 1) {
-        constraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    }
-
-    saveController = new SaveDocumentController(config, constraints, this);
-}
-
 void ExportPrimersDialog::connectSignals() {
     connect(cbExport, SIGNAL(currentIndexChanged(int)), SLOT(sl_updateState()));
+    connect(cbFormat, SIGNAL(currentIndexChanged(int)), SLOT(sl_formatChanged()));
+    connect(tbFileBrowse, SIGNAL(clicked()), SLOT(sl_fileBrowse()));
     connect(tbConnect, SIGNAL(clicked()), SLOT(sl_connect()));
     connect(tbFolderBrowse, SIGNAL(clicked()), SLOT(sl_folderBrowse()));
     if (NULL != AppContext::getProject()) {

@@ -19,36 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H_
-#define _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H_
-
-#include <QDialog>
+#ifndef _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H__
+#define _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H__
 
 #include "ExportConsensusVariationsTask.h"
-#include "ui/ui_ExportConsensusDialog.h"
+#include <ui/ui_ExportConsensusDialog.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 
+class SaveDocumentGroupController;
 class RegionSelector;
-class SaveDocumentController;
 
-class ExportConsensusVariationsDialog : public QDialog, private Ui_ExportConsensusDialog {
+class ExportConsensusVariationsDialog : public QDialog, Ui_ExportConsensusDialog {
     Q_OBJECT
 public:
     ExportConsensusVariationsDialog(QWidget * p, const ExportConsensusVariationsTaskSettings & settings, const U2Region & visibleRegion);
 
     virtual void accept();
 
-    const ExportConsensusVariationsTaskSettings & getSettings() const;
+    const ExportConsensusVariationsTaskSettings & getSettings() const { return settings; }
 
 private:
-    void initSaveController();
-
     ExportConsensusVariationsTaskSettings settings;
-    SaveDocumentController * saveController;
+    SaveDocumentGroupController * saveController;
     RegionSelector * regionSelector;
 };
 
 } // namespace
 
-#endif // _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H_
+#endif // _U2_EXPORT_CONSENSUS_VARIATIONS_DIALOG_H__

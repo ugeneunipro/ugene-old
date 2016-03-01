@@ -22,14 +22,16 @@
 #ifndef _GB2_UHMM3_BUILD_DLG_IMPL_H_
 #define _GB2_UHMM3_BUILD_DLG_IMPL_H_
 
-#include <QDialog>
-
 #include "uHMM3BuildTask.h"
-#include "ui/ui_UHMM3BuildDialog.h"
+#include <ui/ui_UHMM3BuildDialog.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
-
-class SaveDocumentController;
 
 struct UHMM3BuildDialogModel {
     UHMM3BuildTaskSettings  buildSettings;
@@ -56,10 +58,10 @@ private:
     QString checkModel(); /* return error or empty string */
     void setSignalsAndSlots();
     void initialize();
-    void initSaveController();
     
 private slots:
     void sl_maOpenFileButtonClicked();
+    void sl_outHmmFileButtonClicked();
     void sl_buildButtonClicked();
     void sl_cancelButtonClicked();
     void sl_fastMCRadioButtonChanged( bool checked );
@@ -70,7 +72,6 @@ private slots:
     
 private:
     UHMM3BuildDialogModel   model;
-    SaveDocumentController *saveController;
     
 }; // UHMM3BuildDialogImpl
 

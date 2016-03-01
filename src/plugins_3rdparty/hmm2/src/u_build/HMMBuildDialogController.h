@@ -22,20 +22,25 @@
 #ifndef _U2_HMMBUILD_DIALOG_CONTROLLER_H_
 #define _U2_HMMBUILD_DIALOG_CONTROLLER_H_
 
-#include <QDialog>
+#include "uhmmbuild.h"
+
+#include <ui/ui_HMMBuildDialog.h>
 
 #include <U2Core/MAlignment.h>
 #include <U2Core/Task.h>
 
-#include "uhmmbuild.h"
-#include "ui/ui_HMMBuildDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 struct plan7_s;
 
 namespace U2 {
 
 class LoadDocumentTask;
-class SaveDocumentController;
+
 
 class HMMBuildDialogController : public QDialog, public Ui_HMMBuildDialog {
     Q_OBJECT
@@ -47,20 +52,20 @@ public slots:
 
 private slots:
     void sl_msaFileClicked();
+    void sl_resultFileClicked();
     void sl_okClicked();
 
     void sl_onStateChanged();
     void sl_onProgressChanged();
 
-private:
-    void initSaveController();
 
+private:
     MAlignment  ma;
     QString     profileName;
     Task*       task;
     QPushButton* okButton;
     QPushButton* cancelButton;
-    SaveDocumentController *saveController;
+
 };
 
 

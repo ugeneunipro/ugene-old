@@ -19,28 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include <QDir>
-#include <QPushButton>
+#include "ExportDocumentDialogController.h"
+#include "SaveDocumentGroupController.h"
+#include "ui/ui_ExportDocumentDialog.h"
+
+#include "U2Gui/DialogUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DocumentUtils.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <QtCore/QDir>
 #include <U2Gui/HelpButton.h>
-
-#include "ExportDocumentDialogController.h"
-#include "SaveDocumentController.h"
-#include "ui/ui_ExportDocumentDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 namespace U2{
 
 ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWidget *p)
-    : QDialog(p),
-      saveController(NULL),
-      sourceDoc(d),
-      sourceObject(NULL)
+    : QDialog(p), sourceDoc(d), sourceObject(NULL)
 {
     ui = new Ui_ExportDocumentDialog();
     ui->setupUi(this);
@@ -49,6 +50,7 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     initSaveController(sourceDoc->getObjects(), sourceDoc->getURLString());
+    ui->fileNameEdit->setText(saveController->getDefaultFileName());
 }
 
 ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, QWidget *parent, const QString &initUrl) :
@@ -58,53 +60,49 @@ ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, 
     sourceObject(object)
 {
     ui->setupUi(this);
-
-    QList<GObject *> objectList = QList<GObject *>() << sourceObject;
+    QList<GObject *> objectList;
+    objectList.append(sourceObject);
     initSaveController(objectList, initUrl);
-
+    QString fileName = saveController->getDefaultFileName();
+    if(-1 == fileName.lastIndexOf(".")) {
+        fileName.append("." + saveController->getFormatToSave()
+            ->getSupportedDocumentFileExtensions().first());
+    }
+    ui->fileNameEdit->setText(fileName);
     new HelpButton(this, ui->buttonBox, "17467503");
 }
 
-void ExportDocumentDialogController::initSaveController(const QList<GObject *> &objects, const QString &fileUrl) {
-    SaveDocumentControllerConfig config;
-    config.defaultFileName = fileUrl;
-    config.fileDialogButton = ui->browseButton;
-    config.fileNameEdit = ui->fileNameEdit;
-    config.formatCombo = ui->formatCombo;
-    config.compressCheckbox= ui->compressCheck;
-    config.parentWidget = this;
-    config.rollOutProjectUrls = true;
-    config.rollSuffix = "_copy";
-
-    const DocumentFormatConstraints formatConstraints = getAcceptableConstraints(objects);
-    saveController = new SaveDocumentController(config, formatConstraints, this);
-}
-
-DocumentFormatConstraints ExportDocumentDialogController::getAcceptableConstraints(const QList<GObject *> &objects) {
-    DocumentFormatConstraints formatConstraints;
-
+void ExportDocumentDialogController::initSaveController(const QList<GObject *> &objects,
+    const QString &fileUrl)
+{
+    SaveDocumentGroupControllerConfig conf;
+    //UGENE-1458
     QMap<GObjectType, int> objPerTypeMap;
     foreach (GObject* obj, objects) {
-        GObjectType objectType = obj->getGObjectType();
-        formatConstraints.supportedObjectTypes += objectType;
-        if (objPerTypeMap.contains(objectType)) {
-            objPerTypeMap[objectType] += 1;
-        } else {
-            objPerTypeMap.insert(objectType, 1);
+        GObjectType tp = obj->getGObjectType();
+        conf.dfc.supportedObjectTypes += tp;
+        if(objPerTypeMap.contains(tp)){
+            objPerTypeMap[tp] += 1;
+        }else{
+            objPerTypeMap.insert(tp, 1);
         }
     }
-
     int maxObjs = 1;
-    foreach (int val, objPerTypeMap){
+    foreach(int val, objPerTypeMap){ 
         maxObjs = qMax(maxObjs, val);
     }
-
-    if (maxObjs > 1) {
-        formatConstraints.addFlagToExclude(DocumentFormatFlag_OnlyOneObject);
+    if (maxObjs > 1){
+        conf.dfc.addFlagToExclude(DocumentFormatFlag_OnlyOneObject);
     }
-    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-
-    return formatConstraints;
+    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    conf.fileDialogButton = ui->browseButton;
+    conf.fileNameEdit = ui->fileNameEdit;
+    conf.formatCombo = ui->formatCombo;
+    conf.parentWidget = this; 
+    const QString fileName = GUrlUtils::rollFileName(fileUrl, "_copy",
+        DocumentUtils::getNewDocFileNameExcludesHint());
+    conf.defaultFileName = fileName;
+    saveController = new SaveDocumentGroupController(conf, this);
 }
 
 QString ExportDocumentDialogController::getDocumentURL() const {

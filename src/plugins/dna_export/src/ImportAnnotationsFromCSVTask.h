@@ -30,6 +30,8 @@
 
 namespace U2 {
 
+class DocumentFormat;
+
 // FIXME: implement splitToken as a default value for parsing script (i.e line.split(<separator>))
 class CSVParsingConfig {
 public:
@@ -48,12 +50,12 @@ public:
 
 class ImportAnnotationsFromCSVTaskConfig {
 public:
-    ImportAnnotationsFromCSVTaskConfig() : addToProject(true) {}
+    ImportAnnotationsFromCSVTaskConfig() : addToProject(true), df(NULL) {}
 
     QString             csvFile;
     QString             dstFile;
     bool                addToProject;
-    DocumentFormatId    formatId;
+    DocumentFormat*     df;
 
     CSVParsingConfig parsingOptions;
 };

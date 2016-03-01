@@ -22,9 +22,15 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
-#include <QDialog>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include "imageExport/ImageExportTask.h"
+#include <U2Gui/LastUsedDirHelper.h>
 
 class Ui_ImageExportForm;
 class QRadioButton;
@@ -33,7 +39,6 @@ class QButtonGroup;
 
 namespace U2 {
 
-class SaveDocumentController;
 
 class U2GUI_EXPORT ExportImageDialog : public QDialog {
     Q_OBJECT
@@ -68,30 +73,33 @@ public slots:
     void accept();
 
 private slots:
-    void sl_onFormatsBoxItemChanged(const QString& format);
+    void sl_onBrowseButtonClick();
+    void sl_onFormatsBoxItemChanged(const QString& text);
 
     void sl_showMessage(const QString& message);
     void sl_disableExport(bool disable);
 
 private:
     void init();
-    void initSaveController();
     void setSizeControlsEnabled(bool enabled);
-    QStringList getFormats();
-    QStringList getRasterFormats();
-    QStringList getSvgAndPdfFormats();
+    void setFormats();
+    void setRasterFormats();
+    void setSvgAndPdfFormats();
+    void removeOutputFileNameExtention(const QString& ext);
 
     static bool isVectorGraphicFormat(const QString &formatName);
     static bool isLossyFormat(const QString &formatName);
 
-    SaveDocumentController *saveController;
+private:
     ImageExportController*  exportController;
     ImageScalingPolicy      scalingPolicy;
 
+    QList<QString>      supportedFormats;
     QString filename;
     QString origFilename;
     QString format;
 
+    LastUsedDirHelper lod;
     Ui_ImageExportForm* ui;
     InvokedFrom source;
 }; // class ExportImageDialog

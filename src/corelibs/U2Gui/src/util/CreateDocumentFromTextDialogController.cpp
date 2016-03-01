@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileInfo>
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -35,8 +34,9 @@
 #include <U2Formats/GenbankPlainTextFormat.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
-#include <U2Gui/SaveDocumentController.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "CreateDocumentFromTextDialogController.h"
 #include "CreateSequenceFromTextAndOpenViewTask.h"
@@ -44,46 +44,55 @@
 
 namespace U2{
 
-CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(QWidget* p)
-    : QDialog(p),
-      saveController(NULL) {
+CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(QWidget* p): QDialog(p) {
     ui = new Ui_CreateDocumentFromTextDialog();
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467502");
 
-    initSaveController();
+    //TODO: use format name here 
+    ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
+    ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    connect(ui->filepathEdit, SIGNAL(textChanged(QString)), SLOT(sl_filepathTextChanged()));
+    connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
+    connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
+    connect(ui->filepathEdit, SIGNAL(textChanged ( const QString &)), this, SLOT(sl_filepathTextChanged(const QString &)));
     ui->nameEdit->setText("Sequence");
+
+    sl_indexChanged(0);
 
     addSeqPasterWidget();
 }
 
-void CreateDocumentFromTextDialogController::accept() {
+void CreateDocumentFromTextDialogController::sl_browseButtonClicked(){
+    LastUsedDirHelper h;
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
+    ui->filepathEdit->setText(QDir::toNativeSeparators(h.url));
+    sl_indexChanged(ui->formatBox->currentIndex());   
+}
+
+void CreateDocumentFromTextDialogController::accept(){
     QString validationError = w->validate();
     if(!validationError.isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), validationError);
         return;
     }
-
-    const QString url = saveController->getSaveFileName();
-    QFileInfo fi(url);
+    QFileInfo fi(ui->filepathEdit->text());
 
     if(fi.baseName().isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), tr("Filename is empty"));
         return;
     }
 
-    if(url.isEmpty()){
+    if(ui->filepathEdit->text().isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), tr("No path specified"));
         return;
     }
 
     U2OpStatus2Log os;
-    QString fullPath = GUrlUtils::prepareFileLocation(url, os);
+    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), os);
 
     if (fullPath.isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), os.getError());
@@ -96,10 +105,16 @@ void CreateDocumentFromTextDialogController::accept() {
     }    
 
     CHECK_OP(os, );
+    GUrl url(fullPath);
 
-    Task *task = new CreateSequenceFromTextAndOpenViewTask(prepareSequences(), saveController->getFormatIdToSave(), GUrl(fullPath), ui->saveImmediatelyBox->isChecked());
+    Task *task = new CreateSequenceFromTextAndOpenViewTask(prepareSequences(), ui->formatBox->currentData().toString(), url);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     QDialog::accept();
+}
+
+void CreateDocumentFromTextDialogController::reject(){
+    QDialog::reject();
+    this->close();
 }
 
 void CreateDocumentFromTextDialogController::addSeqPasterWidget(){
@@ -118,30 +133,34 @@ QList<DNASequence> CreateDocumentFromTextDialogController::prepareSequences() co
     return sequences;
 }
 
-void CreateDocumentFromTextDialogController::initSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultFormatId = BaseDocumentFormats::FASTA;
-    config.fileDialogButton = ui->browseButton;
-    config.fileNameEdit = ui->filepathEdit;
-    config.formatCombo = ui->formatBox;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save...");
-
-    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::FASTA
-                                                                      << BaseDocumentFormats::PLAIN_GENBANK;
-
-    saveController = new SaveDocumentController(config, formats, this);
+void CreateDocumentFromTextDialogController::sl_indexChanged( int index ){
+    DocumentFormatId currentId = (ui->formatBox->itemData(index)).toString();
+    filter = DialogUtils::prepareDocumentsFileFilter(currentId, false);
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId);
+    QString newExt = df->getSupportedDocumentFileExtensions().first();
+    QString filepath = ui->filepathEdit->text();
+    if (filepath.isEmpty()){
+        return;
+    }
+    QFileInfo fi(filepath);
+    QString abspath = fi.absoluteDir().absolutePath();
+    if(abspath.at(abspath.size()-1) == QChar('/')){
+        ui->filepathEdit->setText(abspath + fi.baseName() + "." + newExt);
+    }else{
+        ui->filepathEdit->setText(abspath + "/" + fi.baseName() + "." + newExt);
+    }
 }
 
-CreateDocumentFromTextDialogController::~CreateDocumentFromTextDialogController() {
+CreateDocumentFromTextDialogController::~CreateDocumentFromTextDialogController()
+{
     delete ui;
 }
 
-void CreateDocumentFromTextDialogController::sl_filepathTextChanged() {
-    QFileInfo newFile(saveController->getSaveFileName());
-    if (ui->nameEdit->text() != newFile.baseName()) {
+void CreateDocumentFromTextDialogController::sl_filepathTextChanged( const QString &text ){
+    QFileInfo newFile(text);
+    if(ui->nameEdit->text() != newFile.baseName()){
         newFile.baseName().isEmpty() ? ui->nameEdit->setText("Sequence") : ui->nameEdit->setText(newFile.baseName());
     }
 }
 
-}   // namespace U2
+}//ns

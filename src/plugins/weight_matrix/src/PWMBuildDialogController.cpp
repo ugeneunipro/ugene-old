@@ -19,8 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
@@ -47,7 +53,6 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "PWMBuildDialogController.h"
@@ -59,9 +64,8 @@
 namespace U2 {
 
 PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
-    : QDialog(w),
-      saveController(NULL),
-      logoArea(NULL) {
+: QDialog(w), logoArea(NULL)
+{
     task = NULL;
     setupUi(this);
     new HelpButton(this, buttonBox, "17467786");
@@ -73,13 +77,13 @@ PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 
     this->resize(this->width(), this->minimumHeight());
 
-    initFrequencySaveController();
-
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_inFileButtonClicked()));
+    connect(outputButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
     connect(weightButton, SIGNAL(toggled(bool)), SLOT(sl_matrixTypeChanged(bool)));
+
 }
 
 
@@ -157,14 +161,6 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     }
 }
 
-void PWMBuildDialogController::sl_formatChanged(const QString &newFormatId) {
-    if (WeightMatrixIO::FREQUENCY_MATRIX_ID == newFormatId) {
-        frequencyButton->setChecked(true);
-    } else {
-        weightButton->setChecked(true);
-    }
-}
-
 void PWMBuildDialogController::reportError(const QString &message) {
     QMessageBox::warning(this, L10N::errorTitle(), message);
 }
@@ -186,13 +182,45 @@ void PWMBuildDialogController::replaceLogo(const MAlignment& ma) {
     }
 }
 
-void PWMBuildDialogController::sl_matrixTypeChanged(bool matrixType) {
-    delete saveController;
-    if (matrixType) {
-        initWeightSaveController();
+void PWMBuildDialogController::sl_outFileButtonClicked() {
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    if (frequencyButton->isChecked()) {
+        lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save frequency matrix to..."), lod, WeightMatrixIO::getPFMFileFilter(false));
     } else {
-        initFrequencySaveController();
+        lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save weight matrix to..."), lod, WeightMatrixIO::getPWMFileFilter(false));
     }
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    outputEdit->setText(QFileInfo(lod.url).absoluteFilePath());
+}
+
+void PWMBuildDialogController::sl_matrixTypeChanged(bool matrixType) {
+    QStringList nameParts = outputEdit->text().split(".");
+    if (matrixType) {
+        for (int i = nameParts.length() - 1; i >= 0; --i) {
+            if (nameParts[i] == WeightMatrixIO::FREQUENCY_MATRIX_EXT) {
+                nameParts[i] = WeightMatrixIO::WEIGHT_MATRIX_EXT;
+                break;
+            }
+        }
+    } else {
+        for (int i = nameParts.length() - 1; i >= 0; --i) {
+            if (nameParts[i] == WeightMatrixIO::WEIGHT_MATRIX_EXT) {
+                nameParts[i] = WeightMatrixIO::FREQUENCY_MATRIX_EXT;
+                break;
+            }
+        }
+    }
+    QString name = nameParts.join(".");
+    if (QFile::exists(name)) {
+        if (QMessageBox::No == QMessageBox::question(this, tr("Overwrite existing file"),
+            tr("File with this name already exists.\nDo you want to write over this file?"), QMessageBox::Yes | QMessageBox::No)) {
+            emit sl_outFileButtonClicked();
+            return;
+        }
+    }
+    outputEdit->setText(name);
 }
 
 void PWMBuildDialogController::sl_okButtonClicked() {
@@ -205,6 +233,8 @@ void PWMBuildDialogController::sl_okButtonClicked() {
 
     PMBuildSettings s;
 
+    QString errMsg;
+
     QString inFile = inputEdit->text();
     if (inFile.isEmpty() || !QFile::exists(inFile)) {
         statusLabel->setText(tr("Illegal input file name"));
@@ -212,7 +242,7 @@ void PWMBuildDialogController::sl_okButtonClicked() {
         return;
     }
 
-    QString outFile = saveController->getSaveFileName();
+    QString outFile = outputEdit->text();
     if (outFile.isEmpty()) {
         statusLabel->setText(tr("Illegal output file name"));
         outputEdit->setFocus();
@@ -251,6 +281,7 @@ void PWMBuildDialogController::sl_okButtonClicked() {
     cancelButton->setText(tr("Cancel"));
 }
 
+
 void PWMBuildDialogController::sl_onStateChanged() {
     Task* t = qobject_cast<Task*>(sender());
     assert(task!=NULL);
@@ -267,7 +298,7 @@ void PWMBuildDialogController::sl_onStateChanged() {
         lastURL = "";
     } else {
         statusLabel->setText(tr("Build finished successfuly"));
-        lastURL = saveController->getSaveFileName();
+        lastURL = outputEdit->text();
     }
     okButton->setText(tr("Start"));
     cancelButton->setText(tr("Close"));
@@ -277,42 +308,6 @@ void PWMBuildDialogController::sl_onStateChanged() {
 void PWMBuildDialogController::sl_onProgressChanged() {
     assert(task==sender());
     statusLabel->setText(tr("Running state %1 progress %2%").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
-}
-
-void PWMBuildDialogController::initFrequencySaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = SETTINGS_ROOT + WeightMatrixIO::FREQUENCY_MATRIX_ID;
-    config.defaultFormatId = WeightMatrixIO::FREQUENCY_MATRIX_ID;
-    config.fileDialogButton = outputButton;
-    config.fileNameEdit = outputEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save frequency matrix to...");
-
-    SaveDocumentController::SimpleFormatsInfo formats;
-    formats.addFormat(WeightMatrixIO::FREQUENCY_MATRIX_ID, tr("Frequency matrices"), QStringList() << WeightMatrixIO::FREQUENCY_MATRIX_EXT);
-    formats.addFormat(WeightMatrixIO::WEIGHT_MATRIX_ID, tr("Weight matrices"), QStringList() << WeightMatrixIO::WEIGHT_MATRIX_EXT);
-
-    saveController = new SaveDocumentController(config, formats, this);
-    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
-    saveController->setFormat(WeightMatrixIO::FREQUENCY_MATRIX_ID);
-}
-
-void PWMBuildDialogController::initWeightSaveController() {
-    SaveDocumentControllerConfig config;
-    config.defaultDomain = SETTINGS_ROOT + WeightMatrixIO::WEIGHT_MATRIX_ID;
-    config.defaultFormatId = WeightMatrixIO::WEIGHT_MATRIX_ID;
-    config.fileDialogButton = outputButton;
-    config.fileNameEdit = outputEdit;
-    config.parentWidget = this;
-    config.saveTitle = tr("Select file to save weight matrix to...");
-
-    SaveDocumentController::SimpleFormatsInfo formats;
-    formats.addFormat(WeightMatrixIO::FREQUENCY_MATRIX_ID, tr("Frequency matrices"), QStringList() << WeightMatrixIO::FREQUENCY_MATRIX_EXT);
-    formats.addFormat(WeightMatrixIO::WEIGHT_MATRIX_ID, tr("Weight matrices"), QStringList() << WeightMatrixIO::WEIGHT_MATRIX_EXT);
-
-    saveController = new SaveDocumentController(config, formats, this);
-    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
-    saveController->setFormat(WeightMatrixIO::WEIGHT_MATRIX_ID);
 }
 
 void PWMBuildDialogController::reject() {

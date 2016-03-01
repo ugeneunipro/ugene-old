@@ -22,7 +22,12 @@
 #ifndef _U2_EXPORT_CHROMATOGRAM_DIALOG_H_
 #define _U2_EXPORT_CHROMATOGRAM_DIALOG_H_
 
-#include <QDialog>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include <U2Core/global.h>
 
@@ -31,25 +36,27 @@
 namespace U2 {
 
 class GUrl;
-class SaveDocumentController;
+class SaveDocumentGroupController;
 
 class ExportChromatogramDialog : public QDialog, Ui_ExportChromatogramDialog {
     Q_OBJECT
 public:
     ExportChromatogramDialog(QWidget* p, const GUrl& fileName);
 
-    void accept();
+    virtual void accept();
 
+public:
     QString url;
     DocumentFormatId format;
     bool addToProjectFlag;
     bool reversed;
     bool complemented;
 
-private:
-    void initSaveController(const GUrl &fileUrl);
+private slots:
+    void sl_onBrowseClicked();
 
-    SaveDocumentController *saveController;
+private:
+    SaveDocumentGroupController* saveController;
 };
 
 }//namespace
