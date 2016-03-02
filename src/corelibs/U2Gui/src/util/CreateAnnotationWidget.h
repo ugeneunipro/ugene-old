@@ -27,9 +27,9 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include "CreateAnnotationWidgetController.h"
-#include "ui/ui_CreateAnnotationFullWidget.h"
-#include "ui/ui_CreateAnnotationNormalWidget.h"
-#include "ui/ui_CreateAnnotationOptionsPanelWidget.h"
+#include "ui_CreateAnnotationFullWidget.h"
+#include "ui_CreateAnnotationNormalWidget.h"
+#include "ui_CreateAnnotationOptionsPanelWidget.h"
 
 namespace U2 {
 

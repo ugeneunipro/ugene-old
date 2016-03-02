@@ -35,7 +35,7 @@ class QPushButton;
 
 namespace U2 {
 
-class FolderNameDialog : public QDialog, public Ui::FolderNameDialog {
+class FolderNameDialog : public QDialog, public Ui_FolderNameDialog {
     Q_OBJECT
 public:
     FolderNameDialog(const QString &name, QWidget *parent);

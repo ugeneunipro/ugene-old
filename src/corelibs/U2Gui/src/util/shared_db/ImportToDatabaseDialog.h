@@ -31,10 +31,7 @@
 
 #include <U2Core/ImportToDatabaseOptions.h>
 
-namespace Ui {
-class ImportToDatabaseDialog;
-}
-
+class Ui_ImportToDatabaseDialog;
 class QTreeWidgetItem;
 
 namespace U2 {
@@ -43,7 +40,6 @@ class Document;
 class GObject;
 class ProjectTreeController;
 class Task;
-
 class ImportToDatabaseDialog : public QDialog {
     Q_OBJECT
 
@@ -110,7 +106,7 @@ private:
     void setObjectTooltip(QTreeWidgetItem* item);
     void setDocumentTooltip(QTreeWidgetItem* item);
 
-    Ui::ImportToDatabaseDialog* ui;
+    Ui_ImportToDatabaseDialog* ui;
     Document* dbConnection;
     QString baseFolder;
 

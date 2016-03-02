@@ -47,7 +47,7 @@
 
 #include "DownloadRemoteFileDialog.h"
 #include "OpenViewTask.h"
-#include "ui/ui_DownloadRemoteFileDialog.h"
+#include "ui_DownloadRemoteFileDialog.h"
 
 static const QString SAVE_DIR("downloadremotefiledialog/savedir");
 static const QString HINT_STYLE_SHEET = "color:green; font:bold";

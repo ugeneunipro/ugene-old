@@ -21,7 +21,7 @@
 
 #include "ScriptEditorWidget.h"
 
-#include "ui/ui_BreakpointConditionEditDialog.h"
+#include "ui_BreakpointConditionEditDialog.h"
 #include "BreakpointConditionEditDialog.h"
 #include <U2Gui/HelpButton.h>
 

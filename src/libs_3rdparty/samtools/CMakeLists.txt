@@ -5,6 +5,12 @@ include_directories(src)
 include_directories(src/samtools)
 include_directories(../../include)
 
+add_definitions(
+        -D_FILE_OFFSET_BITS=64
+        -D_LARGEFILE64_SOURCE
+        -D_USE_KNETFILE
+)
+
 file(GLOB_RECURSE SRCS src/*.cpp)
 file(GLOB_RECURSE HDRS src/*.h)
 

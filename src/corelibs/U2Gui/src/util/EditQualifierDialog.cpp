@@ -31,7 +31,7 @@
 #include <U2Gui/HelpButton.h>
 #include <QPushButton>
 
-#include <ui/ui_EditQualifierDialog.h>
+#include <ui_EditQualifierDialog.h>
 #include "EditQualifierDialog.h"
 
 namespace U2 {

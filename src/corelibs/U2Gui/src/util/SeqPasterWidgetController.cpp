@@ -30,7 +30,7 @@
 #include <U2Formats/FastaFormat.h>
 
 #include "SeqPasterWidgetController.h"
-#include "ui/ui_SeqPasterWidget.h"
+#include "ui_SeqPasterWidget.h"
 
 namespace U2{
 

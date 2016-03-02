@@ -23,7 +23,7 @@
 #define _U2_CREATE_ANNOTATION_FULL_WIDGET_H_
 
 #include "CreateAnnotationWidget.h"
-#include "ui/ui_CreateAnnotationFullWidget.h"
+#include "ui_CreateAnnotationFullWidget.h"
 
 namespace U2 {
 

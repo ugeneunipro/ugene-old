@@ -31,7 +31,7 @@
 
 #include <U2Core/ImportToDatabaseOptions.h>
 
-#include "ui/ui_CommonImportOptionsDialog.h"
+#include "ui_CommonImportOptionsDialog.h"
 
 namespace U2 {
 

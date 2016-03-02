@@ -47,7 +47,7 @@
 
 #include "EditConnectionDialog.h"
 #include "SharedConnectionsDialog.h"
-#include "ui/ui_SharedConnectionsDialog.h"
+#include "ui_SharedConnectionsDialog.h"
 
 
 static const char * NON_INITED_DB_MB_TITLE = "UGENE Shared Database Setup";

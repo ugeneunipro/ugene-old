@@ -40,7 +40,7 @@
 
 #include "CreateDocumentFromTextDialogController.h"
 #include "CreateSequenceFromTextAndOpenViewTask.h"
-#include "ui/ui_CreateDocumentFromTextDialog.h"
+#include "ui_CreateDocumentFromTextDialog.h"
 
 namespace U2{
 

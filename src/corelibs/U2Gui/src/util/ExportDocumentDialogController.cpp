@@ -21,7 +21,7 @@
 
 #include "ExportDocumentDialogController.h"
 #include "SaveDocumentGroupController.h"
-#include "ui/ui_ExportDocumentDialog.h"
+#include "ui_ExportDocumentDialog.h"
 
 #include "U2Gui/DialogUtils.h"
 

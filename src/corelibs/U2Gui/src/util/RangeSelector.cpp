@@ -36,7 +36,7 @@
 
 #include "GenbankLocationValidator.h"
 
-#include "ui/ui_RangeSelectionDialog.h"
+#include "ui_RangeSelectionDialog.h"
 #include "RangeSelector.h"
 
 namespace U2 {

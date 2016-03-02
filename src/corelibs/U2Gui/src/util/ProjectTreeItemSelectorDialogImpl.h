@@ -22,7 +22,7 @@
 #ifndef _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_IMPL_H_
 #define _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_IMPL_H_
 
-#include "ui/ui_ProjectTreeItemSelectorDialogBase.h"
+#include "ui_ProjectTreeItemSelectorDialogBase.h"
 
 namespace U2 {
 
@@ -31,7 +31,7 @@ class ProjectTreeControllerModeSettings;
 class Document;
 class GObject;
 
-class ProjectTreeItemSelectorDialogImpl: public QDialog, public Ui::ProjectTreeItemSelectorDialogBase {
+class ProjectTreeItemSelectorDialogImpl: public QDialog, public Ui_ProjectTreeItemSelectorDialogBase {
     Q_OBJECT
 public:
     ~ProjectTreeItemSelectorDialogImpl();

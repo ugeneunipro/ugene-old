@@ -30,7 +30,7 @@
 #endif
 
 #include <U2Core/global.h>
-#include "ui/ui_AuthenticationWidget.h"
+#include "ui_AuthenticationWidget.h"
 
 namespace U2 {
 

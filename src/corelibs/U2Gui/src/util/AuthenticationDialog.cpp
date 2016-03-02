@@ -29,7 +29,7 @@
 #include <U2Gui/HelpButton.h>
 #include "AuthenticationDialog.h"
 #include "AuthenticationWidget.h"
-#include "ui/ui_AuthenticationDialog.h"
+#include "ui_AuthenticationDialog.h"
 
 namespace U2 {
 

@@ -35,7 +35,7 @@
 
 #include "DownloadRemoteFileDialog.h"
 #include "SearchGenbankSequenceDialogController.h"
-#include "ui/ui_SearchGenbankSequenceDialog.h"
+#include "ui_SearchGenbankSequenceDialog.h"
 
 namespace U2 {
 

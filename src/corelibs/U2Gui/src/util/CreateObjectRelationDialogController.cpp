@@ -20,7 +20,7 @@
  */
 
 #include "CreateObjectRelationDialogController.h"
-#include <ui/ui_CreateObjectRelationDialog.h>
+#include <ui_CreateObjectRelationDialog.h>
 
 #include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/DNASequenceObject.h>

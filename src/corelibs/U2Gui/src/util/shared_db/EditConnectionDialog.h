@@ -31,9 +31,7 @@
 
 #include <U2Core/U2DbiUtils.h>
 
-namespace Ui {
-class EditConnectionDialog;
-}
+class Ui_EditConnectionDialog;
 
 namespace U2 {
 
@@ -62,7 +60,7 @@ private:
     void removeCredentials() const;
     bool checkFields();
 
-    Ui::EditConnectionDialog *ui;
+    Ui_EditConnectionDialog *ui;
 
     static const QString DEFAULT_PORT;
 };

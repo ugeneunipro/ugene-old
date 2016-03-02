@@ -23,7 +23,7 @@
 #define _U2_CREATE_ANNOTATION_OPTIONS_PANEL_WIDGET_H_
 
 #include "CreateAnnotationWidget.h"
-#include "ui/ui_CreateAnnotationOptionsPanelWidget.h"
+#include "ui_CreateAnnotationOptionsPanelWidget.h"
 
 namespace U2 {
 

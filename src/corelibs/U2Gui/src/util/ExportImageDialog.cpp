@@ -39,7 +39,7 @@
 
 #include "ExportImageDialog.h"
 #include "imageExport/WidgetScreenshotExportTask.h"
-#include "ui/ui_ExportImageDialog.h"
+#include "ui_ExportImageDialog.h"
 
 static const QString IMAGE_DIR = "image";
 static const char *DIALOG_ACCEPT_ERROR_TITLE = "Unable to save file";

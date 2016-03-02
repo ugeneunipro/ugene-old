@@ -23,7 +23,7 @@
 #define _U2_ADD_NEW_DOCUMENT_DIALOG_IMPL_H_
 
 #include "AddNewDocumentDialogController.h"
-#include <ui/ui_AddNewDocumentDialog.h>
+#include <ui_AddNewDocumentDialog.h>
 
 namespace U2 {
 

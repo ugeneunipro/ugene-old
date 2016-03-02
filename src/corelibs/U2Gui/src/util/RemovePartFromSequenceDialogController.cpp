@@ -37,7 +37,7 @@
 #include <U2Gui/U2FileDialog.h>
 
 #include "RemovePartFromSequenceDialogController.h"
-#include "ui/ui_RemovePartFromSequenceDialog.h"
+#include "ui_RemovePartFromSequenceDialog.h"
 
 namespace U2{
 
