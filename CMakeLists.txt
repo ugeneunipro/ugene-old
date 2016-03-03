@@ -19,11 +19,22 @@ add_definitions(
         -DUGENE_VER_MAJOR=${UGENE_VER_MAJOR}
         -DUGENE_VER_MINOR=${UGENE_VER_MINOR}
         -DUGENE_VER_PATCH=${UGENE_VER_PATCH}
+
+        -DUGENE_USE_BUNDLED_ZLIB
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
+
+add_subdirectory(src/libs_3rdparty/breakpad)
+add_subdirectory(src/libs_3rdparty/samtools)
 add_subdirectory(src/libs_3rdparty/sqlite3)
 add_subdirectory(src/libs_3rdparty/zlib)
+
 add_subdirectory(src/corelibs/U2Core)
+add_subdirectory(src/corelibs/U2Algorithm)
+add_subdirectory(src/corelibs/U2Formats)
+add_subdirectory(src/corelibs/U2Private)
