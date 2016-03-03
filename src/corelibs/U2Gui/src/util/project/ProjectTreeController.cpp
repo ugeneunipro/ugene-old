@@ -961,6 +961,8 @@ void ProjectTreeController::setupActions() {
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_onRename()));
     renameAction->setObjectName("Rename");
     renameAction->setShortcut(QKeySequence(Qt::Key_F2));
+    renameAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    tree->addAction(renameAction);
 
     removeSelectedItemsAction = new QAction(QIcon(":core/images/remove_selected_documents.png"), tr("Remove selected items"), this);
     removeSelectedItemsAction->setShortcut(QKeySequence::Delete);
