@@ -2782,15 +2782,15 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
 GUI_TEST_CLASS_DEFINITION(test_4423_1) {
     class Scenario : public CustomScenario {
     public:
-        Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath), 
+        Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath),
             regionToExtract(region), format(format) {}
         void run(HI::GUITestOpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
-			QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
-			CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
-			GTComboBox::setIndexWithText(os, docFormatCB, format);
+            QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
+            CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
+            GTComboBox::setIndexWithText(os, docFormatCB, format);
 
             QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
             CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
@@ -2817,137 +2817,137 @@ GUI_TEST_CLASS_DEFINITION(test_4423_1) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
-	//    2. Select region to extract and import extracted file to project
+    //    2. Select region to extract and import extracted file to project
     Scenario *sc = new Scenario(sandBoxDir + "/test_4423_1.bam", U2Region(228, 1488), "BAM File");
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_1.ugenedb"));
     QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
     GTWidget::click(os, button);
     GTGlobals::sleep();
-	//	  3. Check expected coverage values
+    //	  3. Check expected coverage values
     CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
     CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
 
     QString textFromLabel = coveredRegionsLabel->text();
-	CHECK_SET_ERR(textFromLabel.contains("229"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("222"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("215"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("194"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("192"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("190"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("229"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("222"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("215"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("194"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("192"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("190"), "expected coverage value not found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4423_2) {
-	class Scenario : public CustomScenario {
-	public:
-		Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath),
-			regionToExtract(region), format(format) {}
-		void run(HI::GUITestOpStatus &os) {
-			QWidget *dialog = QApplication::activeModalWidget();
-			CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath),
+            regionToExtract(region), format(format) {}
+        void run(HI::GUITestOpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
-			QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
-			CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
-			GTComboBox::setIndexWithText(os, docFormatCB, format);
+            QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
+            CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
+            GTComboBox::setIndexWithText(os, docFormatCB, format);
 
-			QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
-			CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
-			GTLineEdit::setText(os, startLineEdit, QString::number(regionToExtract.startPos));
+            QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
+            CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
+            GTLineEdit::setText(os, startLineEdit, QString::number(regionToExtract.startPos));
 
-			QLineEdit *endLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", dialog));
-			CHECK_SET_ERR(NULL != endLineEdit, "endLineEdit widget is NULL");
-			GTLineEdit::setText(os, endLineEdit, QString::number(regionToExtract.endPos()));
+            QLineEdit *endLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", dialog));
+            CHECK_SET_ERR(NULL != endLineEdit, "endLineEdit widget is NULL");
+            GTLineEdit::setText(os, endLineEdit, QString::number(regionToExtract.endPos()));
 
-			QLineEdit* filepathLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "filepathLineEdit", dialog));
-			CHECK_SET_ERR(NULL != filepathLineEdit, "filepathLineEdit widget is NULL");
-			GTLineEdit::setText(os, filepathLineEdit, filepath);
+            QLineEdit* filepathLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "filepathLineEdit", dialog));
+            CHECK_SET_ERR(NULL != filepathLineEdit, "filepathLineEdit widget is NULL");
+            GTLineEdit::setText(os, filepathLineEdit, filepath);
 
-			GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-		}
-	private:
-		QString filepath;
-		U2Region regionToExtract;
-		QString format;
-	};
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        QString filepath;
+        U2Region regionToExtract;
+        QString format;
+    };
 
-	//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
-	GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
-	GTUtilsTaskTreeView::waitTaskFinished(os);
-	GTGlobals::sleep();
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 
-	//    2. Select region to extract and import extracted file to project
-	Scenario *sc = new Scenario(sandBoxDir + "/test_4423_2.sam", U2Region(4500, 300), "SAM");
-	GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
-	GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_2.ugenedb"));
-	QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
-	GTWidget::click(os, button);
-	GTGlobals::sleep();
-	//	  3. Check expected coverage values
-	CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
-	CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+    //    2. Select region to extract and import extracted file to project
+    Scenario *sc = new Scenario(sandBoxDir + "/test_4423_2.sam", U2Region(4500, 300), "SAM");
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_2.ugenedb"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTGlobals::sleep();
+    //	  3. Check expected coverage values
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
 
-	QString textFromLabel = coveredRegionsLabel->text();
-	CHECK_SET_ERR(textFromLabel.contains("157"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("65"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("55"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("53"), "expected coverage value not found");
+    QString textFromLabel = coveredRegionsLabel->text();
+    CHECK_SET_ERR(textFromLabel.contains("157"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("65"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("55"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("53"), "expected coverage value not found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4423_3) {
-	class Scenario : public CustomScenario {
-	public:
-		Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath),
-			regionToExtract(region), format(format) {}
-		void run(HI::GUITestOpStatus &os) {
-			QWidget *dialog = QApplication::activeModalWidget();
-			CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(const QString &filepath, const U2Region &region, const QString &format) : CustomScenario(), filepath(filepath),
+            regionToExtract(region), format(format) {}
+        void run(HI::GUITestOpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
 
-			QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
-			CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
-			GTComboBox::setIndexWithText(os, docFormatCB, format);
+            QComboBox *docFormatCB = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "documentFormatComboBox", dialog));
+            CHECK_SET_ERR(NULL != docFormatCB, "docFormatCB widget is NULL");
+            GTComboBox::setIndexWithText(os, docFormatCB, format);
 
-			QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
-			CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
-			GTLineEdit::setText(os, startLineEdit, QString::number(regionToExtract.startPos));
+            QLineEdit *startLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", dialog));
+            CHECK_SET_ERR(NULL != startLineEdit, "startLineEdit widget is NULL");
+            GTLineEdit::setText(os, startLineEdit, QString::number(regionToExtract.startPos));
 
-			QLineEdit *endLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", dialog));
-			CHECK_SET_ERR(NULL != endLineEdit, "endLineEdit widget is NULL");
-			GTLineEdit::setText(os, endLineEdit, QString::number(regionToExtract.endPos()));
+            QLineEdit *endLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", dialog));
+            CHECK_SET_ERR(NULL != endLineEdit, "endLineEdit widget is NULL");
+            GTLineEdit::setText(os, endLineEdit, QString::number(regionToExtract.endPos()));
 
-			QLineEdit* filepathLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "filepathLineEdit", dialog));
-			CHECK_SET_ERR(NULL != filepathLineEdit, "filepathLineEdit widget is NULL");
-			GTLineEdit::setText(os, filepathLineEdit, filepath);
+            QLineEdit* filepathLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "filepathLineEdit", dialog));
+            CHECK_SET_ERR(NULL != filepathLineEdit, "filepathLineEdit widget is NULL");
+            GTLineEdit::setText(os, filepathLineEdit, filepath);
 
-			GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-		}
-	private:
-		QString filepath;
-		U2Region regionToExtract;
-		QString format;
-	};
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        QString filepath;
+        U2Region regionToExtract;
+        QString format;
+    };
 
-	//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
-	GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
-	GTUtilsTaskTreeView::waitTaskFinished(os);
-	GTGlobals::sleep();
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 
-	//    2. Select region to extract and import extracted file to project
-	Scenario *sc = new Scenario(sandBoxDir + "/test_4423_3.ugenedb", U2Region(6500, 900), "UGENE Database");
-	GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
-	GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_3.ugenedb"));
-	QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
-	GTWidget::click(os, button);
-	GTGlobals::sleep();
-	//	  3. Check expected coverage values
-	CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
-	CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+    //    2. Select region to extract and import extracted file to project
+    Scenario *sc = new Scenario(sandBoxDir + "/test_4423_3.ugenedb", U2Region(6500, 900), "UGENE Database");
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ExtractAssemblyRegionDialog", QDialogButtonBox::Ok, sc));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4423_3.ugenedb"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTGlobals::sleep();
+    //	  3. Check expected coverage values
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
 
-	QString textFromLabel = coveredRegionsLabel->text();
-	CHECK_SET_ERR(textFromLabel.contains("330"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("253"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("193"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("187"), "expected coverage value not found");
-	CHECK_SET_ERR(textFromLabel.contains("186"), "expected coverage value not found");
+    QString textFromLabel = coveredRegionsLabel->text();
+    CHECK_SET_ERR(textFromLabel.contains("330"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("253"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("193"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("187"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("186"), "expected coverage value not found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4434) {
@@ -3701,7 +3701,8 @@ GUI_TEST_CLASS_DEFINITION(test_4674_1) {
     // 5. Click Undo one more time
     // Expected state: message box appears
     // 6. Confirm the modification
-    // Expected state: the connection with the tree is broken, the aligned sequence is removed
+    // Expected state: the connection with the tree is broken,
+    // the aligned sequence is removed after the second Undo (the first reverts the reorder of alignment)
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -3720,20 +3721,21 @@ GUI_TEST_CLASS_DEFINITION(test_4674_1) {
     int seqNumber = GTUtilsMsaEditor::getSequencesCount(os);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["z"], Qt::CTRL);
-    GTGlobals::sleep();
+    GTUtilsMsaEditor::undo(os);
+    GTThread::waitForMainThread(os);
 
     MSAEditorTreeViewerUI* ui = qobject_cast<MSAEditorTreeViewerUI*>( GTUtilsPhyTree::getTreeViewerUi(os) );
     CHECK_SET_ERR(ui != NULL, "Cannot find the tree");
     CHECK_SET_ERR(ui->isCurTreeViewerSynchronized(), "The connection with the tree is lost");
-    CHECK_SET_ERR(seqNumber == GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone");
+    CHECK_SET_ERR(seqNumber == GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone 1");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["z"], Qt::CTRL);
-    GTGlobals::sleep();
+    GTUtilsMsaEditor::undo(os);
+    GTUtilsMsaEditor::undo(os);
+    GTThread::waitForMainThread(os);
 
     CHECK_SET_ERR(!ui->isCurTreeViewerSynchronized(), "The connection with the tree is still there");
-    CHECK_SET_ERR(seqNumber != GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone");
+    CHECK_SET_ERR(seqNumber != GTUtilsMsaEditor::getSequencesCount(os), "Undo was not undone 2");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4674_2) {
@@ -4478,12 +4480,12 @@ GUI_TEST_CLASS_DEFINITION(test_4764_1) {
 
     //3. Select region with edited sequences, one of sequences should starts with gap
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5,5), QPoint(16, 9));
-    
+
     //4. Copy this subalignment
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy formatted"));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
     GTGlobals::sleep();
-    
+
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     MSAEditor* editor = mw->findChild<MSAEditor*>();
     QWidget *nameListWidget = editor->getUI()->getEditorNameList();
@@ -4521,7 +4523,7 @@ GUI_TEST_CLASS_DEFINITION(test_4764_2) {
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     MSAEditor* editor = mw->findChild<MSAEditor*>();
     QWidget *sequenceAreaWidget = editor->getUI()->getSequenceArea();
-    
+
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(15, 0));
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Copy/Paste" << "Copy selection"));
     GTWidget::click(os, sequenceAreaWidget, Qt::RightButton);
