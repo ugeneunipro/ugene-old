@@ -182,14 +182,14 @@ void GTUtilsDocument::loadDocument(HI::GUITestOpStatus &os, const QString &docum
 
 #define GT_METHOD_NAME "lockDocument"
 void GTUtilsDocument::lockDocument(HI::GUITestOpStatus &os, const QString &documentName) {
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Lock document for editing"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Lock document for editing"));
     GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "unlockDocument"
 void GTUtilsDocument::unlockDocument(HI::GUITestOpStatus &os, const QString &documentName) {
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Edit" << "Unlock document for editing"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Unlock document for editing"));
     GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
 }
 #undef GT_METHOD_NAME
