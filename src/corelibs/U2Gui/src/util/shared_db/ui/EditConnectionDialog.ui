@@ -122,7 +122,7 @@
   <customwidget>
    <class>U2::AuthenticationWidget</class>
    <extends>QWidget</extends>
-   <header>../../src/util/AuthenticationWidget.h</header>
+   <header>./util/AuthenticationWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
