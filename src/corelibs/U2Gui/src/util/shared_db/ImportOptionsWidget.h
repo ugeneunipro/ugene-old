@@ -31,9 +31,7 @@
 
 #include "U2Core/ImportToDatabaseOptions.h"
 
-namespace Ui {
-class ImportOptionsWidget;
-}
+class Ui_ImportOptionsWidget;
 
 namespace U2 {
 
@@ -50,7 +48,7 @@ public:
     ImportToDatabaseOptions getOptions() const;
 
 private:
-    Ui::ImportOptionsWidget* ui;
+    Ui_ImportOptionsWidget* ui;
 };
 
 }   // namespace U2

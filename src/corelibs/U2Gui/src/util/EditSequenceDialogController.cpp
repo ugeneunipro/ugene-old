@@ -41,7 +41,7 @@
 #include <U2Gui/U2FileDialog.h>
 
 #include "EditSequenceDialogController.h"
-#include "ui/ui_EditSequenceDialog.h"
+#include "ui_EditSequenceDialog.h"
 
 namespace U2{
 

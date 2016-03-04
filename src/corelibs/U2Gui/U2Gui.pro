@@ -117,37 +117,37 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/shared_db/ImportToDatabaseDialog.h \
            src/util/shared_db/ItemToImportEditDialog.h \
            src/util/shared_db/SharedConnectionsDialog.h
-FORMS += src/util/ui/AddNewDocumentDialog.ui \
-         src/util/ui/AuthenticationDialog.ui \
-         src/util/ui/AuthenticationWidget.ui \
-         src/util/ui/BreakpointConditionEditDialog.ui \
-         src/util/ui/CreateAnnotationDialog.ui \
-         src/util/ui/CreateAnnotationFullWidget.ui \
-         src/util/ui/CreateAnnotationNormalWidget.ui \
-         src/util/ui/CreateAnnotationOptionsPanelWidget.ui \
-         src/util/ui/CreateDocumentFromTextDialog.ui \
-         src/util/ui/CreateObjectRelationDialog.ui \
-         src/util/ui/DownloadRemoteFileDialog.ui \
-         src/util/ui/EditQualifierDialog.ui \
-         src/util/ui/EditSequenceDialog.ui \
-         src/util/ui/ExportAnnotationsDialog.ui \
-         src/util/ui/ExportDocumentDialog.ui \
-         src/util/ui/ExportImageDialog.ui \
-         src/util/ui/FolderNameDialog.ui \
-         src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
-         src/util/ui/ProjectTreeItemSelectorDialogBase.ui \
-         src/util/ui/RangeSelectionDialog.ui \
-         src/util/ui/RemovePartFromSequenceDialog.ui \
-         src/util/ui/ScriptEditorDialog.ui \
-         src/util/ui/SearchGenbankSequenceDialog.ui \
-         src/util/ui/SeqPasterWidget.ui \
-         src/util/ImportDialogs/ui/AceImportDialog.ui \
-         src/util/shared_db/ui/CommonImportOptionsDialog.ui \
-         src/util/shared_db/ui/EditConnectionDialog.ui \
-         src/util/shared_db/ui/ImportOptionsWidget.ui \
-         src/util/shared_db/ui/ImportToDatabaseDialog.ui \
-         src/util/shared_db/ui/ItemToImportEditDialog.ui \
-         src/util/shared_db/ui/SharedConnectionsDialog.ui
+FORMS += src/util/AddNewDocumentDialog.ui \
+         src/util/AuthenticationDialog.ui \
+         src/util/AuthenticationWidget.ui \
+         src/util/BreakpointConditionEditDialog.ui \
+         src/util/CreateAnnotationDialog.ui \
+         src/util/CreateAnnotationFullWidget.ui \
+         src/util/CreateAnnotationNormalWidget.ui \
+         src/util/CreateAnnotationOptionsPanelWidget.ui \
+         src/util/CreateDocumentFromTextDialog.ui \
+         src/util/CreateObjectRelationDialog.ui \
+         src/util/DownloadRemoteFileDialog.ui \
+         src/util/EditQualifierDialog.ui \
+         src/util/EditSequenceDialog.ui \
+         src/util/ExportAnnotationsDialog.ui \
+         src/util/ExportDocumentDialog.ui \
+         src/util/ExportImageDialog.ui \
+         src/util/project/FolderNameDialog.ui \
+         src/util/MultipartDocFormatConfiguratorWidget.ui \
+         src/util/ProjectTreeItemSelectorDialogBase.ui \
+         src/util/RangeSelectionDialog.ui \
+         src/util/RemovePartFromSequenceDialog.ui \
+         src/util/ScriptEditorDialog.ui \
+         src/util/SearchGenbankSequenceDialog.ui \
+         src/util/SeqPasterWidget.ui \
+         src/util/ImportDialogs/AceImportDialog.ui \
+         src/util/shared_db/CommonImportOptionsDialog.ui \
+         src/util/shared_db/EditConnectionDialog.ui \
+         src/util/shared_db/ImportOptionsWidget.ui \
+         src/util/shared_db/ImportToDatabaseDialog.ui \
+         src/util/shared_db/ItemToImportEditDialog.ui \
+         src/util/shared_db/SharedConnectionsDialog.ui
 SOURCES += src/MainWindow.cpp \
            src/Notification.cpp \
            src/NotificationWidget.cpp \

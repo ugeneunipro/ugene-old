@@ -31,9 +31,8 @@
 
 #include <U2Core/ImportToDatabaseOptions.h>
 
-namespace Ui {
-class ItemToImportEditDialog;
-}
+class Ui_ItemToImportEditDialog;
+
 
 namespace U2 {
 
@@ -49,7 +48,7 @@ public:
 
 private:
     void init(const QString &item, const QString &folder, const ImportToDatabaseOptions &options);
-    Ui::ItemToImportEditDialog *ui;
+    Ui_ItemToImportEditDialog *ui;
 };
 
 }   // namespace U2

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 project(U2Core)
 
-set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOMOC_MOC_OPTIONS -nn) # do not display notes.
@@ -9,8 +8,9 @@ set(CMAKE_AUTOMOC_MOC_OPTIONS -nn) # do not display notes.
 find_package(Qt5 REQUIRED Core Gui Widgets)
 
 add_definitions(
-    -DUGENE_MIN_VERSION_SQLITE=${UGENE_MIN_VERSION_SQLITE}
-    -DUGENE_MIN_VERSION_MYSQL=${UGENE_MIN_VERSION_MYSQL}
+        -DBUILDING_U2CORE_DLL
+        -DUGENE_MIN_VERSION_SQLITE=${UGENE_MIN_VERSION_SQLITE}
+        -DUGENE_MIN_VERSION_MYSQL=${UGENE_MIN_VERSION_MYSQL}
 )
 
 include_directories(src)

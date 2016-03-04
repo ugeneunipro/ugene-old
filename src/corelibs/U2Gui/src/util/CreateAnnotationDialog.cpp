@@ -41,7 +41,7 @@
 #endif
 
 #include <U2Gui/HelpButton.h>
-#include "ui/ui_CreateAnnotationDialog.h"
+#include "ui_CreateAnnotationDialog.h"
 
 namespace U2 {
 

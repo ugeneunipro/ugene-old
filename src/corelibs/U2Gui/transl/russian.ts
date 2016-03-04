@@ -37,22 +37,22 @@
 <context>
     <name>AceImportDialog</name>
     <message>
-        <location filename="../src/util/ImportDialogs/ui/AceImportDialog.ui" line="14"/>
+        <location filename="../src/util/ImportDialogs/AceImportDialog.ui" line="14"/>
         <source>Import ACE File</source>
         <translation>Импорт ACE файла</translation>
     </message>
     <message>
-        <location filename="../src/util/ImportDialogs/ui/AceImportDialog.ui" line="28"/>
+        <location filename="../src/util/ImportDialogs/AceImportDialog.ui" line="28"/>
         <source>Source URL:</source>
         <translation>Источник:</translation>
     </message>
     <message>
-        <location filename="../src/util/ImportDialogs/ui/AceImportDialog.ui" line="52"/>
+        <location filename="../src/util/ImportDialogs/AceImportDialog.ui" line="52"/>
         <source>Destination URL:</source>
         <translation>Назначение:</translation>
     </message>
     <message>
-        <location filename="../src/util/ImportDialogs/ui/AceImportDialog.ui" line="62"/>
+        <location filename="../src/util/ImportDialogs/AceImportDialog.ui" line="62"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -60,27 +60,27 @@
 <context>
     <name>AddNewDocumentDialog</name>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="20"/>
+        <location filename="../src/util/AddNewDocumentDialog.ui" line="20"/>
         <source>Add New Document</source>
         <translation>Новый документ</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="39"/>
+        <location filename="../src/util/AddNewDocumentDialog.ui" line="39"/>
         <source>Document format</source>
         <translation>Формат документа</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="46"/>
+        <location filename="../src/util/AddNewDocumentDialog.ui" line="46"/>
         <source>Document location</source>
         <translation>Расположение документа</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="56"/>
+        <location filename="../src/util/AddNewDocumentDialog.ui" line="56"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="71"/>
+        <location filename="../src/util/AddNewDocumentDialog.ui" line="71"/>
         <source>Compress file</source>
         <translation>Сжать файл</translation>
     </message>
@@ -88,7 +88,7 @@
 <context>
     <name>AuthenticationDialog</name>
     <message>
-        <location filename="../src/util/ui/AuthenticationDialog.ui" line="23"/>
+        <location filename="../src/util/AuthenticationDialog.ui" line="23"/>
         <source>Authetication</source>
         <translation>Аутентификация</translation>
     </message>
@@ -96,22 +96,22 @@
 <context>
     <name>AuthenticationWidget</name>
     <message>
-        <location filename="../src/util/ui/AuthenticationWidget.ui" line="14"/>
+        <location filename="../src/util/AuthenticationWidget.ui" line="14"/>
         <source>Authentication</source>
         <translation>Аутентификация</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AuthenticationWidget.ui" line="33"/>
+        <location filename="../src/util/AuthenticationWidget.ui" line="33"/>
         <source>Login:</source>
         <translation>Логин:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AuthenticationWidget.ui" line="40"/>
+        <location filename="../src/util/AuthenticationWidget.ui" line="40"/>
         <source>Password:</source>
         <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AuthenticationWidget.ui" line="47"/>
+        <location filename="../src/util/AuthenticationWidget.ui" line="47"/>
         <source>Remember me</source>
         <translation>Запомнить меня</translation>
     </message>
@@ -119,27 +119,27 @@
 <context>
     <name>BreakpointConditionEditDialog</name>
     <message>
-        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="14"/>
+        <location filename="../src/util/BreakpointConditionEditDialog.ui" line="14"/>
         <source>Breakpoint Condition</source>
         <translation>Состояние точки остановки</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="26"/>
+        <location filename="../src/util/BreakpointConditionEditDialog.ui" line="26"/>
         <source>When the breakpoint location is reached, the expression is evaluated and&lt;br&gt;the breakpoint is hit only if the expression is true or has changed.</source>
         <translation>Когда выполнение дойдет до точки остановки, выражение будет вычислено &lt;br&gt; и точка остановки сработает в зависимости от условия: если выражение истинно или изменилось.</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="36"/>
+        <location filename="../src/util/BreakpointConditionEditDialog.ui" line="36"/>
         <source>Condition</source>
         <translation>Условие</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="48"/>
+        <location filename="../src/util/BreakpointConditionEditDialog.ui" line="48"/>
         <source>Is true</source>
         <translation>Истинно</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="61"/>
+        <location filename="../src/util/BreakpointConditionEditDialog.ui" line="61"/>
         <source>Has changed</source>
         <translation>Изменено</translation>
     </message>
@@ -147,7 +147,7 @@
 <context>
     <name>CommonImportOptionsDialog</name>
     <message>
-        <location filename="../src/util/shared_db/ui/CommonImportOptionsDialog.ui" line="14"/>
+        <location filename="../src/util/shared_db/CommonImportOptionsDialog.ui" line="14"/>
         <source>Database Import Default Options</source>
         <translation>Параметры по умолчанию для импорта базы данных</translation>
     </message>
@@ -155,7 +155,7 @@
 <context>
     <name>CreateAnnotationDialog</name>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationDialog.ui" line="20"/>
+        <location filename="../src/util/CreateAnnotationDialog.ui" line="20"/>
         <source>Create Annotation</source>
         <translation>Создание аннотации</translation>
     </message>
@@ -163,115 +163,115 @@
 <context>
     <name>CreateAnnotationFullWidget</name>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="20"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="20"/>
         <source>Create Annotations</source>
         <translation>Создание аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="51"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="51"/>
         <source>Annotation type:</source>
         <translation>Тип аннотации:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="103"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="103"/>
         <source>Annotation name</source>
         <translation>Имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="110"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="110"/>
         <source>Use names of patterns as annotations names. In case the patterns are in FASTA format</source>
         <translation>Использовать имена паттернов в качестве имен для аннотаций. Для случая если паттерны заданы в формате FASTA</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="113"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="113"/>
         <source>Use pattern names</source>
         <translation>Использовать имена паттернов</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="120"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="120"/>
         <source>Group name</source>
         <translation>Имя группы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="127"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="127"/>
         <source>Predefined group names</source>
         <translation>Стандартные имена групп</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="130"/>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="309"/>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="388"/>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="426"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="130"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="309"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="388"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="426"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="144"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="144"/>
         <source>by type</source>
         <translation>по типу</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="154"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="154"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="161"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="161"/>
         <source>auto</source>
         <translation>авто</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="176"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="176"/>
         <source>Location</source>
         <translation>Позиция</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="208"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="208"/>
         <source>Simple format</source>
         <translation>Простой формат</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="234"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="234"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="246"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="246"/>
         <source>Complement</source>
         <translation>Комплементарная</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="281"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="281"/>
         <source>GenBank/EMBL format</source>
         <translation>Формат GenBank/EMBL</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="299"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="299"/>
         <source>Annotation location in GenBank format</source>
         <translation>Местоположение аннотации (в формате GenBank)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="306"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="306"/>
         <source>Add/remove complement flag</source>
         <translation>Добавить/снять флаг комплементарности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="353"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="353"/>
         <source>Choose a file to store the annotations</source>
         <translation>Выбрать файл для сохранения аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="374"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="374"/>
         <source>Use auto-annotations table</source>
         <translation>Использовать таблицу автоаннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="406"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="406"/>
         <source>Existing table</source>
         <translation>Существующая таблица</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationFullWidget.ui" line="416"/>
+        <location filename="../src/util/CreateAnnotationFullWidget.ui" line="416"/>
         <source>Create new table</source>
         <translation>Новая таблица</translation>
     </message>
@@ -279,95 +279,95 @@
 <context>
     <name>CreateAnnotationNormalWidget</name>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="20"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="20"/>
         <source>Create Annotations</source>
         <translation>Создание аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="38"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="38"/>
         <source>Choose a file to store the annotations</source>
         <translation>Выбрать файл для сохранения аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="50"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="50"/>
         <source>Existing table</source>
         <translation>Существующая таблица</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="67"/>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="95"/>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="147"/>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="188"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="67"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="95"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="147"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="188"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="78"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="78"/>
         <source>Create new table</source>
         <translation>Новая таблица</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="102"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="102"/>
         <source>Use auto-annotations table</source>
         <translation>Использовать таблицу автоаннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="130"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="130"/>
         <source>by type</source>
         <translation>по типу</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="137"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="137"/>
         <source>auto</source>
         <translation>авто</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="144"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="144"/>
         <source>Add/remove complement flag</source>
         <translation>Добавить/снять флаг комплементарности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="158"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="158"/>
         <source>Location</source>
         <translation>Позиция</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="168"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="168"/>
         <source>Use names of patterns as annotations names. In case the patterns are in FASTA format</source>
         <translation>Использовать имена паттернов в качестве имен для аннотаций. Для случая если паттерны заданы в формате FASTA</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="171"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="171"/>
         <source>Use pattern name</source>
         <translation>Использовать имя паттерна</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="178"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="178"/>
         <source>Annotation location in GenBank format</source>
         <translation>Местоположение аннотации (в формате GenBank)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="185"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="185"/>
         <source>Predefined group names</source>
         <translation>Стандартные имена групп</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="199"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="199"/>
         <source>Group name</source>
         <translation>Имя группы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="206"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="206"/>
         <source>Annotation name</source>
         <translation>Имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="213"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="213"/>
         <source>Annotation type</source>
         <translation>Тип аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationNormalWidget.ui" line="220"/>
+        <location filename="../src/util/CreateAnnotationNormalWidget.ui" line="220"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
@@ -375,95 +375,95 @@
 <context>
     <name>CreateAnnotationOptionsPanelWidget</name>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="14"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="14"/>
         <source>Form</source>
         <translation>Форма</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="32"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="32"/>
         <source>Choose a file to store the annotations</source>
         <translation>Выбрать файл для сохранения аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="44"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="44"/>
         <source>Existing table:</source>
         <translation>Существующая таблица:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="63"/>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="95"/>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="148"/>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="215"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="63"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="95"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="148"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="215"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="76"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="76"/>
         <source>Create new table:</source>
         <translation>Новая таблица:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="104"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="104"/>
         <source>Use auto-annotations table</source>
         <translation>Использовать таблицу автоаннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="129"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="129"/>
         <source>Group name:</source>
         <translation>Имя группы:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="138"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="138"/>
         <source>auto</source>
         <translation>авто</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="145"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="145"/>
         <source>Predefined group names</source>
         <translation>Стандартные имена групп</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="161"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="161"/>
         <source>Annotation type:</source>
         <translation>Тип аннотации:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="175"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="175"/>
         <source>Annotation name:</source>
         <translation>Имя аннотации:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="187"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="187"/>
         <source>by type</source>
         <translation>по типу</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="196"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="196"/>
         <source>Location:</source>
         <translation>Позиция:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="205"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="205"/>
         <source>Annotation location in GenBank format</source>
         <translation>Местоположение аннотации (в формате GenBank)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="212"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="212"/>
         <source>Add/remove complement flag</source>
         <translation>Добавить/снять флаг комплементарности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="228"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="228"/>
         <source>Description:</source>
         <translation>Описание:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="238"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="238"/>
         <source>Use names of patterns as annotations names. In case the patterns are in FASTA format</source>
         <translation>Использовать имена паттернов в качестве имен для аннотаций. Для случая если паттерны заданы в формате FASTA</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationOptionsPanelWidget.ui" line="241"/>
+        <location filename="../src/util/CreateAnnotationOptionsPanelWidget.ui" line="241"/>
         <source>Use pattern name</source>
         <translation>Использовать имя паттерна</translation>
     </message>
@@ -471,32 +471,32 @@
 <context>
     <name>CreateDocumentFromTextDialog</name>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="14"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="14"/>
         <source>Create Document</source>
         <translation>Создание документа</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="22"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="22"/>
         <source>Document location:</source>
         <translation>Расположение документа:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="32"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="32"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="39"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="39"/>
         <source>Document format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="49"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="49"/>
         <source>Sequence name:</source>
         <translation>Имя последовательности:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="65"/>
+        <location filename="../src/util/CreateDocumentFromTextDialog.ui" line="65"/>
         <source>Save file immediately</source>
         <translation>Записать файл на диск</translation>
     </message>
@@ -504,12 +504,12 @@
 <context>
     <name>CreateObjectRelationDialog</name>
     <message>
-        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="14"/>
+        <location filename="../src/util/CreateObjectRelationDialog.ui" line="14"/>
         <source>Edit Object Relations</source>
         <translation>Редактирование связи объекта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="20"/>
+        <location filename="../src/util/CreateObjectRelationDialog.ui" line="20"/>
         <source>Associate object with:</source>
         <translation>Связь:</translation>
     </message>
@@ -517,42 +517,42 @@
 <context>
     <name>DownloadRemoteFileDialog</name>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="26"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="26"/>
         <source>Fetch Data from Remote Database</source>
         <translation>Получить данные из удаленной базы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="43"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="43"/>
         <source>Resource ID:</source>
         <translation>Идентификатор:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="66"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="66"/>
         <source>Database:</source>
         <translation>База данных:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="79"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="79"/>
         <source>Save to directory:</source>
         <translation>Сохранить в директорию:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="104"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="104"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="123"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="123"/>
         <source>Output format:</source>
         <translation>Выходной формат:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="135"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="135"/>
         <source>Some entries in the NCBI databases contain features without a sequence. You can download both sequence and features by checking this parameter. Note that some sequences are rather big.</source>
         <translation>Некоторые составляющие в базе данных NCBI содержат аннотации без последовательностей. Вы можете скачать и последовательности и аннотации при помощи этого параметра.</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="138"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.ui" line="138"/>
         <source>Force download the appropriate sequence</source>
         <translation>Принудительно скачать соответствующую последовательность</translation>
     </message>
@@ -564,42 +564,42 @@
 <context>
     <name>EditConnectionDialog</name>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="23"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="23"/>
         <source>Connection Settings</source>
         <translation>Настройки соединения</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="31"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="31"/>
         <source>Connection name:</source>
         <translation>Имя соединения:</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="38"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="38"/>
         <source>default</source>
         <translation>по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="52"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="52"/>
         <source>Database location</source>
         <translation>Адрес базы данных</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="61"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="61"/>
         <source>Host:</source>
         <translation>Хост:</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="71"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="71"/>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="85"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="85"/>
         <source>Database:</source>
         <translation>База данных:</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/EditConnectionDialog.ui" line="98"/>
+        <location filename="../src/util/shared_db/EditConnectionDialog.ui" line="98"/>
         <source>Authentication data</source>
         <translation>Данные аутентификации</translation>
     </message>
@@ -607,17 +607,17 @@
 <context>
     <name>EditQualifierDialog</name>
     <message>
-        <location filename="../src/util/ui/EditQualifierDialog.ui" line="14"/>
+        <location filename="../src/util/EditQualifierDialog.ui" line="14"/>
         <source>Edit Qualifier</source>
         <translation>Редактировать квалификатор</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditQualifierDialog.ui" line="22"/>
+        <location filename="../src/util/EditQualifierDialog.ui" line="22"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditQualifierDialog.ui" line="34"/>
+        <location filename="../src/util/EditQualifierDialog.ui" line="34"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -625,112 +625,112 @@
 <context>
     <name>EditSequenceDialog</name>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="22"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="22"/>
         <source>Annotations region resolving mode</source>
         <translation>Способ обработки аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="28"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="28"/>
         <source>Expand affected annotation</source>
         <translation>Развернуть затронутую аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="38"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="38"/>
         <source>Remove affected annotation</source>
         <translation>Удалить затронутую аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="45"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="45"/>
         <source>Split (join annotation parts)</source>
         <translation>Расщепление (соединить части аннотации)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="52"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="52"/>
         <source>Split (separate annotations parts)</source>
         <translation>Расщепление (разъединить части аннотации)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="64"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="64"/>
         <source>Recalculate values of qualifiers</source>
         <translation>Пересчитать значения квалификаторов</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="76"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="76"/>
         <source>Position to insert</source>
         <translation>Позиция для вставки</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="82"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="82"/>
         <source>Press to insert before the start of the sequence</source>
         <translation>Нажмите для вставки в начало последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="85"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="85"/>
         <source>start</source>
         <translation>начало</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="99"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="99"/>
         <source>Press to insert to the end of the sequence</source>
         <translation>Нажмите для вставки в конец последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="102"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="102"/>
         <source>end</source>
         <translation>конец</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="122"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="122"/>
         <source>Selection</source>
         <translation>Участок</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="128"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="128"/>
         <source>Press to insert before the selection</source>
         <translation>Нажмите для вставки до участка</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="131"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="131"/>
         <source>before</source>
         <translation>до</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="138"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="138"/>
         <source>Press to insert after the selection</source>
         <translation>Нажмите для вставки после участка</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="141"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="141"/>
         <source>after</source>
         <translation>после</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="148"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="148"/>
         <source>To change the regsion select it on a sequence</source>
         <translation>Чтобы изменить регион выделите его в последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="169"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="169"/>
         <source>Save to new file</source>
         <translation>Сохранить в новый файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="183"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="183"/>
         <source>Document location:</source>
         <translation>Расположение документа:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="193"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="193"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="200"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="200"/>
         <source>Document format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="212"/>
+        <location filename="../src/util/EditSequenceDialog.ui" line="212"/>
         <source>Merge annotations to this file</source>
         <translation>Сохранить связанные аннотации</translation>
     </message>
@@ -738,32 +738,32 @@
 <context>
     <name>ExportDocumentDialog</name>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="14"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="14"/>
         <source>Export Document</source>
         <translation>Экспорт документа</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="25"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="25"/>
         <source>Save to file</source>
         <translation>Сохранить в файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="42"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="42"/>
         <source>File format</source>
         <translation>Формат файла</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="35"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="35"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="62"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="62"/>
         <source>Add to project</source>
         <translation>Добавить в проект</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="52"/>
+        <location filename="../src/util/ExportDocumentDialog.ui" line="52"/>
         <source>Compress file</source>
         <translation>Сжать файл</translation>
     </message>
@@ -771,12 +771,12 @@
 <context>
     <name>FolderNameDialog</name>
     <message>
-        <location filename="../src/util/ui/FolderNameDialog.ui" line="20"/>
+        <location filename="../src/util/FolderNameDialog.ui" line="20"/>
         <source>Dialog</source>
         <translation>Диалог</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/FolderNameDialog.ui" line="26"/>
+        <location filename="../src/util/FolderNameDialog.ui" line="26"/>
         <source>Enter the folder name:</source>
         <translation>Введите имя папки:</translation>
     </message>
@@ -784,17 +784,17 @@
 <context>
     <name>ImageExportForm</name>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="20"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="20"/>
         <source>Export Image</source>
         <translation>Экспорт изображения</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="105"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="105"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="78"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="78"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -803,43 +803,43 @@
         <translation type="vanished">Настройки экспорта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="56"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="56"/>
         <source>Export to file</source>
         <translation>Экспортировать в файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="124"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="124"/>
         <source>Format</source>
         <translation>Формат</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="237"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="237"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="316"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="316"/>
         <source>Width</source>
         <translation>Ширина</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="296"/>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="344"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="296"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="344"/>
         <source>px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="397"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="397"/>
         <source>Hint</source>
         <translation>Подсказка</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="268"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="268"/>
         <source>Height</source>
         <translation>Высота</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportImageDialog.ui" line="158"/>
+        <location filename="../src/util/ExportImageDialog.ui" line="158"/>
         <source>Quality</source>
         <translation>Качество</translation>
     </message>
@@ -847,62 +847,62 @@
 <context>
     <name>ImportOptionsWidget</name>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="14"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="14"/>
         <source>Import to the Database Options</source>
         <translation>Параметры импорта в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="22"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="22"/>
         <source>Destination folder:</source>
         <translation>Назначение:</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="34"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="34"/>
         <source>Files and folders options</source>
         <translation>Параметры файлов и папок</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="40"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="40"/>
         <source>Process directories recursively</source>
         <translation>Обработать каталоги рекурсивно</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="47"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="47"/>
         <source>Keep folders structure</source>
         <translation>Сохранить структуру папок</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="54"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="54"/>
         <source>Create a subfolder for the top level folder</source>
         <translation>Создать подпапку для папки верхнего уровня</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="61"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="61"/>
         <source>Create a subfolder for each file</source>
         <translation>Создать подпапку для каждого файла</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="68"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="68"/>
         <source>Import unrecognized files</source>
         <translation>Импортировать неизвестные файлы</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="91"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="91"/>
         <source>Multi-sequence files import policy</source>
         <translation>Параметры импорта файлов, содержащих несколько последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="97"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="97"/>
         <source>Import as separate sequences</source>
         <translation>Импортировать как отдельные последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="107"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="107"/>
         <source>Merge into a single sequence</source>
         <translation>Соединить в одну последовательность</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="132"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="132"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -915,37 +915,37 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Число неизвестных символов &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(&apos;N &apos;для нуклеотидных или &apos;X&apos; для амино)&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; между частями:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt; {3C?} {4.0/?} {3.?} {40/?} {1&quot;?} {2&apos;?} {8.25p?} {400;?} {0p?} {0p?} {0p?} {0p?} {0;?} {0p?} {10p?} {10p?} {10p?}</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="146"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="146"/>
         <source> bases</source>
         <translation>символов</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="161"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="161"/>
         <source>Join into alignment</source>
         <translation>Соедить в выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="184"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="184"/>
         <source>Import ACE files as</source>
         <translation>Импортировать ACE файлы как</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="190"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="190"/>
         <source>Multiple sequence alignment</source>
         <translation>Множественное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="203"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="203"/>
         <source>Short reads assembly</source>
         <translation>Сборка коротких ридов</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="219"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="219"/>
         <source>Documents and objects options</source>
         <translation>Настройки документов и объектов</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportOptionsWidget.ui" line="225"/>
+        <location filename="../src/util/shared_db/ImportOptionsWidget.ui" line="225"/>
         <source>Create a subfolder for each document</source>
         <translation>Создать подпапку для каждого документа</translation>
     </message>
@@ -953,42 +953,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ImportToDatabaseDialog</name>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="14"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="14"/>
         <source>Import to the Database</source>
         <translation>Импорт в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="35"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="35"/>
         <source>Item to import</source>
         <translation>Импортировать элемент</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="40"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="40"/>
         <source>Import to</source>
         <translation>Импортировать в</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="50"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="50"/>
         <source>Add files</source>
         <translation>Добавить файлы</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="57"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="57"/>
         <source>Add folder</source>
         <translation>Добавить папку</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="64"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="64"/>
         <source>Add objects</source>
         <translation>Добавить объекты</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="84"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="84"/>
         <source>General options</source>
         <translation>Основные параметры</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ImportToDatabaseDialog.ui" line="91"/>
+        <location filename="../src/util/shared_db/ImportToDatabaseDialog.ui" line="91"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -996,12 +996,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ItemToImportEditDialog</name>
     <message>
-        <location filename="../src/util/shared_db/ui/ItemToImportEditDialog.ui" line="14"/>
+        <location filename="../src/util/shared_db/ItemToImportEditDialog.ui" line="14"/>
         <source>Edit The Item To Import</source>
         <translation>Выбрать элемент для импорта</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/ItemToImportEditDialog.ui" line="22"/>
+        <location filename="../src/util/shared_db/ItemToImportEditDialog.ui" line="22"/>
         <source>Item to import:</source>
         <translation>Импортировать элемент:</translation>
     </message>
@@ -1009,22 +1009,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MultipartDocFormatConfiguratorWidget</name>
     <message>
-        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="19"/>
+        <location filename="../src/util/MultipartDocFormatConfiguratorWidget.ui" line="19"/>
         <source>Create annotation</source>
         <translation>Создать аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="25"/>
+        <location filename="../src/util/MultipartDocFormatConfiguratorWidget.ui" line="25"/>
         <source>Separate sequences</source>
         <translation>Разделить последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="32"/>
+        <location filename="../src/util/MultipartDocFormatConfiguratorWidget.ui" line="32"/>
         <source>Merge sequences</source>
         <translation>Объединить последовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="41"/>
+        <location filename="../src/util/MultipartDocFormatConfiguratorWidget.ui" line="41"/>
         <source>Gap length:</source>
         <translation>Длина пробела:</translation>
     </message>
@@ -1032,7 +1032,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ProjectTreeItemSelectorDialogBase</name>
     <message>
-        <location filename="../src/util/ui/ProjectTreeItemSelectorDialogBase.ui" line="14"/>
+        <location filename="../src/util/ProjectTreeItemSelectorDialogBase.ui" line="14"/>
         <source>Select Item</source>
         <translation>Выбор элемента</translation>
     </message>
@@ -1140,47 +1140,47 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>RangeSelectionDialog</name>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="14"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="14"/>
         <source>Region Selection</source>
         <translation>Выбор региона</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="31"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="31"/>
         <source>    Region:</source>
         <translation>Регион:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="41"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="41"/>
         <source>Single Range Selection</source>
         <translation>Выбор одного региона</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="51"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="51"/>
         <source>Multiple Range Selection</source>
         <translation>Выбор составного региона</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="70"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="70"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="86"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="86"/>
         <source>    Multi Region:</source>
         <translation>Составной регион:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="96"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="96"/>
         <source>Input Format: 1..10,50..60</source>
         <translation>Входной формат: 1..10,50..60</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="116"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="116"/>
         <source>Min</source>
         <translation>Мин</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="123"/>
+        <location filename="../src/util/RangeSelectionDialog.ui" line="123"/>
         <source>Max</source>
         <translation>Макс</translation>
     </message>
@@ -1206,57 +1206,57 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>RemovePartFromSequenceDialog</name>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="40"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="40"/>
         <source>Region to remove</source>
         <translation>Удаляемый регион</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="128"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="128"/>
         <source>Annotations region resolving mode</source>
         <translation>Способ обработки аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="32"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="32"/>
         <source>Remove Subsequence</source>
         <translation>Удаление подпоследовательности</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="134"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="134"/>
         <source>Crop corresponding annotation</source>
         <translation>Обрезать соответствующую аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="144"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="144"/>
         <source>Remove corresponding annotation</source>
         <translation>Удалить соответствующую аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="68"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="68"/>
         <source>Save to new file</source>
         <translation>Сохранить в новый файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="80"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="80"/>
         <source>Merge annotations to this file</source>
         <translation>Сохранить связанные аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="89"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="89"/>
         <source>Document location:</source>
         <translation>Расположение документа:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="99"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="99"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="106"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="106"/>
         <source>Document format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="156"/>
+        <location filename="../src/util/RemovePartFromSequenceDialog.ui" line="156"/>
         <source>Recalculate values of qualifiers</source>
         <translation>Пересчитать значения квалификаторов</translation>
     </message>
@@ -1264,47 +1264,47 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>ScriptEditorDialog</name>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="20"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="20"/>
         <source>Used script</source>
         <translation>Используемый скрипт</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="30"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="30"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="55"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="55"/>
         <source>Script text</source>
         <translation>Текст скрипта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="67"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="67"/>
         <source>Check syntax</source>
         <translation>Проверить синтаксис</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="74"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="74"/>
         <source>Save as...</source>
         <translation>Сохранить как...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="88"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="88"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="81"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="81"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="14"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="14"/>
         <source>Script Editor</source>
         <translation>Редактор скрипта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="108"/>
+        <location filename="../src/util/ScriptEditorDialog.ui" line="108"/>
         <source>Line:</source>
         <translation>Строка:</translation>
     </message>
@@ -1312,52 +1312,52 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>SearchGenbankSequenceDialog</name>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="20"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="20"/>
         <source>NCBI Sequence Search</source>
         <translation>NCBI поиск</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="39"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="39"/>
         <source>Database:</source>
         <translation>База данных:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="64"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="64"/>
         <source>Search query:</source>
         <translation>Поисковый запрос:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="102"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="102"/>
         <source>History...</source>
         <translation>История...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="111"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="111"/>
         <source>Results:</source>
         <translation>Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="128"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="128"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="133"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="133"/>
         <source>Desc</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="138"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="138"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="148"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="148"/>
         <source>Result limit:</source>
         <translation>Количество результатов:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="181"/>
+        <location filename="../src/util/SearchGenbankSequenceDialog.ui" line="181"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
@@ -1365,32 +1365,32 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>SeqPasterWidget</name>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="14"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="14"/>
         <source>Create annotation</source>
         <translation>Создать аннотацию</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="32"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="32"/>
         <source>Paste data here</source>
         <translation>Вставьте текст</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="52"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="52"/>
         <source>Custom settings</source>
         <translation>Дополнительные настройки</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="67"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="67"/>
         <source>Alphabet:</source>
         <translation>Алфавит:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="77"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="77"/>
         <source>Skip unknown symbols</source>
         <translation>Пропускать неизвестные символы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="87"/>
+        <location filename="../src/util/SeqPasterWidget.ui" line="87"/>
         <source>Replace unknown symbols with</source>
         <translation>Заменять незивестные символы на</translation>
     </message>
@@ -1398,32 +1398,32 @@ The items cannot be recovered once deleted.</source>
 <context>
     <name>SharedConnectionsDialog</name>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="17"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="17"/>
         <source>Shared Databases Connections</source>
         <translation>Подключения к базам данных</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="43"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="43"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="56"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="56"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="69"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="69"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="101"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="101"/>
         <source>Connect</source>
         <translation>Подключиться</translation>
     </message>
     <message>
-        <location filename="../src/util/shared_db/ui/SharedConnectionsDialog.ui" line="114"/>
+        <location filename="../src/util/shared_db/SharedConnectionsDialog.ui" line="114"/>
         <source>Disconnect</source>
         <translation>Отключиться</translation>
     </message>
@@ -1955,32 +1955,32 @@ complement(5..15)</translation>
 <context>
     <name>U2::ExportAnnotationsDialog</name>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="14"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="14"/>
         <source>Export Annotations</source>
         <translation>Экспорт аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="25"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="25"/>
         <source>Export to file</source>
         <translation>Экспортировать в файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="37"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="37"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="49"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="49"/>
         <source>File format</source>
         <translation>Формат файла</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="58"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="58"/>
         <source>Save sequences under annotations</source>
         <translation>Сохранить последовательности аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ExportAnnotationsDialog.ui" line="65"/>
+        <location filename="../src/util/ExportAnnotationsDialog.ui" line="65"/>
         <source>Save sequence names</source>
         <translation>Сохранить имена последовательностей</translation>
     </message>

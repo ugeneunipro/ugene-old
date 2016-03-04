@@ -31,9 +31,8 @@
 
 #include <U2Core/global.h>
 
-namespace Ui {
-class SharedConnectionsDialog;
-}
+class Ui_SharedConnectionsDialog;
+
 
 class QListWidgetItem;
 class QModelIndex;
@@ -98,7 +97,7 @@ private:
     bool checkDbShouldBeUpgraded(const U2DbiRef &ref);
     void checkDbConnectionDuplicate(const QString &shortDbiUrl, const QString &userName, const QString &allowedDuplicateName = QString());
 
-    Ui::SharedConnectionsDialog *ui;
+    Ui_SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
     QMap<QListWidgetItem*, Task*> upgradeTasks;
 

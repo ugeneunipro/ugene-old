@@ -21,6 +21,8 @@ add_definitions(
         -DUGENE_VER_PATCH=${UGENE_VER_PATCH}
 
         -DUGENE_USE_BUNDLED_ZLIB
+
+        -DQT_FATAL_ASSERT
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
@@ -37,4 +39,6 @@ add_subdirectory(src/libs_3rdparty/zlib)
 add_subdirectory(src/corelibs/U2Core)
 add_subdirectory(src/corelibs/U2Algorithm)
 add_subdirectory(src/corelibs/U2Formats)
+add_subdirectory(src/corelibs/U2Lang)
 add_subdirectory(src/corelibs/U2Private)
+add_subdirectory(src/corelibs/U2Gui)

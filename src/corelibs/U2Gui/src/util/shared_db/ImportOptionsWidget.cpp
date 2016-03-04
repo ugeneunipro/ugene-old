@@ -25,7 +25,7 @@
 #include <U2Formats/AceImporter.h>
 
 #include "ImportOptionsWidget.h"
-#include "ui/ui_ImportOptionsWidget.h"
+#include "ui_ImportOptionsWidget.h"
 
 namespace U2 {
 

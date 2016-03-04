@@ -40,7 +40,7 @@
 
 #include "ScriptEditorDialog.h"
 #include "ScriptEditorWidget.h"
-#include "ui/ui_ScriptEditorDialog.h"
+#include "ui_ScriptEditorDialog.h"
 
 namespace U2 {
 

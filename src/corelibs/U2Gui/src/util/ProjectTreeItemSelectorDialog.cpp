@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p, const ProjectTreeControllerModeSettings& s) 
+ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p, const ProjectTreeControllerModeSettings& s)
     : QDialog(p)
 {
     setupUi(this);
