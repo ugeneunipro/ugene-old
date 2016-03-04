@@ -25,6 +25,8 @@
 
 #include <U2Designer/PropertyWidget.h>
 
+#include <U2View/AssemblyNavigationWidget.h>
+
 #include "GTTestsAssemblyBrowser.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "utils/GTUtilsApp.h"
@@ -55,6 +57,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExtractAssemblyRegionDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -748,6 +751,77 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/COI.aln"));
     GTUtilsNotifications::waitForNotification(os, true, "does not contain sequences");
     GTWidget::click(os, GTAction::button(os, "setReferenceAction"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_1) {
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //    2. Select region to extract and import extracted file to project
+    GTUtilsDialog::waitForDialog(os, new ExtractAssemblyRegionDialogFiller(os, sandBoxDir + "/test_26_1.bam", U2Region(228, 1488), "BAM File"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_26_1.ugenedb"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //	  3. Check expected coverage values
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+
+    QString textFromLabel = coveredRegionsLabel->text();
+    CHECK_SET_ERR(textFromLabel.contains("229"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("222"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("215"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("194"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("192"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("190"), "expected coverage value not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_2) {
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //    2. Select region to extract and import extracted file to project
+    GTUtilsDialog::waitForDialog(os, new ExtractAssemblyRegionDialogFiller(os, sandBoxDir + "/test_26_2.sam", U2Region(4500, 300), "SAM"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_26_2.ugenedb"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //	  3. Check expected coverage values
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+
+    QString textFromLabel = coveredRegionsLabel->text();
+    CHECK_SET_ERR(textFromLabel.contains("157"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("65"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("55"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("53"), "expected coverage value not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_3) {
+    //    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //    2. Select region to extract and import extracted file to project
+    GTUtilsDialog::waitForDialog(os, new ExtractAssemblyRegionDialogFiller(os, sandBoxDir + "/test_26_3.ugenedb", U2Region(6500, 900), "UGENE Database"));
+    QAbstractButton* button = GTAction::button(os, "ExtractAssemblyRegion");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //	  3. Check expected coverage values
+    CoveredRegionsLabel *coveredRegionsLabel = qobject_cast<CoveredRegionsLabel *>(GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(coveredRegionsLabel != NULL, "cannot convert widget to CoveredRegionsLabel");
+
+    QString textFromLabel = coveredRegionsLabel->text();
+    CHECK_SET_ERR(textFromLabel.contains("330"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("253"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("193"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("187"), "expected coverage value not found");
+    CHECK_SET_ERR(textFromLabel.contains("186"), "expected coverage value not found");
 }
 
 } // namespace GUITest_Assembly_browser

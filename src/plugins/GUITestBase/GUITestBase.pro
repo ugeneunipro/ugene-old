@@ -69,6 +69,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_assembly/ExtractAssemblyRegionDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -352,6 +353,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_assembly/ExtractAssemblyRegionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \

@@ -1130,9 +1130,6 @@ void GUITestBasePlugin::registerTests(UGUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4391);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_4400);
-    REGISTER_TEST(GUITest_regression_scenarios::test_4423_1);
-    REGISTER_TEST(GUITest_regression_scenarios::test_4423_2);
-    REGISTER_TEST(GUITest_regression_scenarios::test_4423_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_4434);
     REGISTER_TEST(GUITest_regression_scenarios::test_4439);
     REGISTER_TEST(GUITest_regression_scenarios::test_4440);
@@ -2349,6 +2346,9 @@ if(QSysInfo::WordSize == 64){
     REGISTER_TEST(GUITest_Assembly_browser::test_0023);
     REGISTER_TEST(GUITest_Assembly_browser::test_0024);
     REGISTER_TEST(GUITest_Assembly_browser::test_0025);
+    REGISTER_TEST(GUITest_Assembly_browser::test_0026_1);
+    REGISTER_TEST(GUITest_Assembly_browser::test_0026_2);
+    REGISTER_TEST(GUITest_Assembly_browser::test_0026_3);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
