@@ -24,7 +24,7 @@
 
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
-#include <ui/ui_GUITestingWindow.h>
+#include <ui_GUITestingWindow.h>
 
 
 #if (QT_VERSION < 0x050000) //Qt 5

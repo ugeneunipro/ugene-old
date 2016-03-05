@@ -18,7 +18,6 @@ include_directories(../U2Private/src)
 
 file(GLOB_RECURSE SRCS src/*.cpp)
 file(GLOB_RECURSE HDRS src/*.h)
-file(GLOB_RECURSE UIS src/*.ui)
 
 qt5_add_resources(RCC_SRCS src/U2Gui.qrc)
 

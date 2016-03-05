@@ -31,7 +31,7 @@ SOURCES += src/GTest.cpp \
 TRANSLATIONS += transl/english.ts \
                 transl/russian.ts
 
-FORMS += GUITestingWindow.ui
+FORMS += src/gui_tests/GUITestingWindow.ui
 
 if(exclude_list_enabled()|!exists( ../../libs_3rdparty/QSpec/QSpec.pro )) {
 
