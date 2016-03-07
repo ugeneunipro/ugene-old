@@ -22,7 +22,7 @@
 #ifndef _U2_SITECON_BUILD_DIALOG_CONTROLLER_H_
 #define _U2_SITECON_BUILD_DIALOG_CONTROLLER_H_
 
-#include <ui/ui_SiteconBuildDialog.h>
+#include <ui_SiteconBuildDialog.h>
 #include "SiteconAlgorithm.h"
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>

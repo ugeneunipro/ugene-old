@@ -59,7 +59,7 @@ public:
 };
 
 
-class BioStruct3DSettingsDialog : public QDialog, private Ui::SettingsDialog
+class BioStruct3DSettingsDialog : public QDialog, private Ui_SettingsDialog
 {
     Q_OBJECT
 

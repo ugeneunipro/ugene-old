@@ -27,7 +27,7 @@
 namespace U2 {
 
 NewBreakpointDialog::NewBreakpointDialog(const QStringList &elementsNames, QWidget *parent,
-    Qt::WindowFlags f) : QDialog(parent, f), ui(new Ui::NewBreakpointDialog())
+    Qt::WindowFlags f) : QDialog(parent, f), ui(new Ui_NewBreakpointDialog())
 {
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17468145");

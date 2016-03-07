@@ -22,7 +22,7 @@
 #ifndef _U2_RESOURCE_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_RESOURCE_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_ResourceSettingsWidget.h>
+#include <ui_ResourceSettingsWidget.h>
 
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/AppSettingsGUI.h>

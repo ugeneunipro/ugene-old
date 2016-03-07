@@ -29,7 +29,7 @@
 #else
 #include <QtWidgets/QDialog>
 #endif
-#include <ui/ui_ExportMSA2SequencesDialog.h>
+#include <ui_ExportMSA2SequencesDialog.h>
 
 namespace U2 {
 

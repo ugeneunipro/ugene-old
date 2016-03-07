@@ -26,7 +26,7 @@
 
 #include "ExtractAssemblyRegionTask.h"
 
-#include "ui/ui_ExtractAssemblyRegionDialog.h"
+#include "ui_ExtractAssemblyRegionDialog.h"
 
 #include <U2Core/U2Region.h>
 #include <U2Formats/SQLiteDbi.h>

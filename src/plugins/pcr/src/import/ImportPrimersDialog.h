@@ -26,7 +26,7 @@
 
 #include <U2Core/ProjectTreeControllerModeSettings.h>
 
-#include "ui/ui_ImportPrimersDialog.h"
+#include "ui_ImportPrimersDialog.h"
 
 namespace U2 {
 

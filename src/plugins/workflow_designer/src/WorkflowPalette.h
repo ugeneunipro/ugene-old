@@ -25,7 +25,7 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 
-#include <ui/ui_PaletteWidget.h>
+#include <ui_PaletteWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>

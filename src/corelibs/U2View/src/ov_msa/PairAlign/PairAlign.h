@@ -22,7 +22,7 @@
 #ifndef _U2_PAIR_ALIGN_H
 #define _U2_PAIR_ALIGN_H
 
-#include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
+#include "ui_PairwiseAlignmentOptionsPanelWidget.h"
 #include "../MsaOpSavableTab.h"
 #include "../SequenceSelectorWidgetController.h"
 

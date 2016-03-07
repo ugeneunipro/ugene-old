@@ -22,7 +22,7 @@
 #ifndef _U2_BLAST_DBSELECTOR_WIDGET_CONTROLLER_H_
 #define _U2_BLAST_DBSELECTOR_WIDGET_CONTROLLER_H_
 
-#include <ui/ui_BlastDBSelectorWidget.h>
+#include <ui_BlastDBSelectorWidget.h>
 
 namespace U2 {
 

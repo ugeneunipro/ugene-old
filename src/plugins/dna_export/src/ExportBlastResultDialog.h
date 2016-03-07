@@ -29,7 +29,7 @@
 #else
 #include <QtWidgets/QDialog>
 #endif
-#include <ui/ui_ExportBlastResultDialog.h>
+#include <ui_ExportBlastResultDialog.h>
 
 namespace U2 {
 

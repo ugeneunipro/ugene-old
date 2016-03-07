@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class SelectModelsDialog : public QDialog, public Ui::SelectModelsDialog
+class SelectModelsDialog : public QDialog, public Ui_SelectModelsDialog
 {
     Q_OBJECT
 

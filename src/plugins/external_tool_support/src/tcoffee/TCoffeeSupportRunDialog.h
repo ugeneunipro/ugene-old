@@ -23,7 +23,7 @@
 #define _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 
 #include <U2Gui/DialogUtils.h>
-#include <ui/ui_TCoffeeSupportRunDialog.h>
+#include <ui_TCoffeeSupportRunDialog.h>
 #include "TCoffeeSupportTask.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>

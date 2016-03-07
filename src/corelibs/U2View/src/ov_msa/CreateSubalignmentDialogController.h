@@ -22,7 +22,7 @@
 #ifndef _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 
-#include "ui/ui_CreateSubalignmentDialog.h"
+#include "ui_CreateSubalignmentDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>

@@ -23,7 +23,7 @@
 #define _SEND_REPORT_DIALOG_H_
 
 
-#include <ui/ui_SendReportDialog.h>
+#include <ui_SendReportDialog.h>
 
 class QEventLoop;
 class QNetworkReply;

@@ -22,7 +22,7 @@
 #ifndef _U2_DOT_PLOT_FILES_DIALOG_H_
 #define _U2_DOT_PLOT_FILES_DIALOG_H_
 
-#include <ui/ui_DotPlotFilesDialog.h>
+#include <ui_DotPlotFilesDialog.h>
 
 namespace U2 {
 class ADVSequenceObjectContext;

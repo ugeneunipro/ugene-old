@@ -22,7 +22,7 @@
 #ifndef _U2_DNASTAT_MSA_PROFILE_DIALOG_H_
 #define _U2_DNASTAT_MSA_PROFILE_DIALOG_H_
 
-#include "ui/ui_DNAStatMSAProfileDialog.h"
+#include "ui_DNAStatMSAProfileDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>

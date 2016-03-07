@@ -31,7 +31,7 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportChromatogramDialog.h"
+#include "ui_ExportChromatogramDialog.h"
 
 namespace U2 {
 

@@ -24,7 +24,7 @@
 
 #include <U2Designer/OutputDirectoryWidget.h>
 
-#include <ui/ui_StartupDialog.h>
+#include <ui_StartupDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-class StartupDialog : public QDialog, public Ui::StartupDialog {
+class StartupDialog : public QDialog, public Ui_StartupDialog {
     Q_OBJECT
 public:
     StartupDialog(QWidget *parent);

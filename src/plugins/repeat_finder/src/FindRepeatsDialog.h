@@ -22,7 +22,7 @@
 #ifndef _U2_FIND_REPEATS_DIALOG_H_
 #define _U2_FIND_REPEATS_DIALOG_H_
 
-#include <ui/ui_FindRepeatsDialog.h>
+#include <ui_FindRepeatsDialog.h>
 
 #include <U2Core/U2Region.h>
 

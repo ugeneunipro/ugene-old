@@ -22,7 +22,7 @@
 #ifndef _U2_ANNOT_HIGHLIGHT_SETTINGS_H_
 #define _U2_ANNOT_HIGHLIGHT_SETTINGS_H_
 
-#include <ui/ui_AnnotHighlightSettings.h>
+#include <ui_AnnotHighlightSettings.h>
 
 #include <QtGui/QtGui>
 

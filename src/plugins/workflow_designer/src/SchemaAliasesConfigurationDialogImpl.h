@@ -23,7 +23,7 @@
 #define _U2_WCFG_SCHEMA_ALIASES_DIALOG_CONTROLLER_H_
 
 #include <U2Lang/Schema.h>
-#include <ui/ui_SchemaAliasesConfigurationDialog.h>
+#include <ui_SchemaAliasesConfigurationDialog.h>
 
 namespace U2 {
 namespace Workflow {

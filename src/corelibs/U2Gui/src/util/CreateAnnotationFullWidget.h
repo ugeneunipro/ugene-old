@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class CreateAnnotationFullWidget : public CreateAnnotationWidget, private Ui::CreateAnnotationFullWidget {
+class CreateAnnotationFullWidget : public CreateAnnotationWidget, private Ui_CreateAnnotationFullWidget {
     Q_OBJECT
 public:
     CreateAnnotationFullWidget(QWidget *parent = NULL);

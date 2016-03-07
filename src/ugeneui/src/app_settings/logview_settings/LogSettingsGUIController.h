@@ -22,7 +22,7 @@
 #ifndef _U2_LOG_SETTINGS_WIDGET_IMPL_H_
 #define _U2_LOG_SETTINGS_WIDGET_IMPL_H_
 
-#include <ui/ui_LogSettingsWidget.h>
+#include <ui_LogSettingsWidget.h>
 
 #include <LogSettings.h>
 #include <U2Gui/AppSettingsGUI.h>

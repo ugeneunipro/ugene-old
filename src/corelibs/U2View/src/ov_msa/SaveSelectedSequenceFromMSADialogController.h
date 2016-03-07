@@ -31,7 +31,7 @@
 #include <QtWidgets/QDialog>
 #endif
 
-#include <ui/ui_SaveSelectedSequenceFromMSADialog.h>
+#include <ui_SaveSelectedSequenceFromMSADialog.h>
 
 namespace U2{
 

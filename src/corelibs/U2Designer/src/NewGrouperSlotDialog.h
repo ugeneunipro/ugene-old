@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-class NewGrouperSlotDialog : public QDialog, public Ui::NewGrouperSlotDialog {
+class NewGrouperSlotDialog : public QDialog, public Ui_NewGrouperSlotDialog {
     Q_OBJECT
 public:
     NewGrouperSlotDialog(QWidget *parent, QList<Descriptor> &inSlots, QStringList &names);
@@ -59,28 +59,28 @@ public:
 /************************************************************************/
 /* Action dialogs */
 /************************************************************************/
-class AnnsActionDialog : public ActionDialog, public Ui::AnnsActionDialog {
+class AnnsActionDialog : public ActionDialog, public Ui_AnnsActionDialog {
     Q_OBJECT
 public:
     AnnsActionDialog(QWidget *parent, GrouperSlotAction *action, QStringList mergeSeqSlots);
     virtual GrouperSlotAction getAction() const;
 };
 
-class SequeceActionDialog : public ActionDialog, public Ui::SequeceActionDialog {
+class SequeceActionDialog : public ActionDialog, public Ui_SequeceActionDialog {
     Q_OBJECT
 public:
     SequeceActionDialog(QWidget *parent, GrouperSlotAction *action);
     virtual GrouperSlotAction getAction() const;
 };
 
-class MsaActionDialog : public ActionDialog, public Ui::MsaActionDialog {
+class MsaActionDialog : public ActionDialog, public Ui_MsaActionDialog {
     Q_OBJECT
 public:
     MsaActionDialog(QWidget *parent, GrouperSlotAction *action);
     virtual GrouperSlotAction getAction() const;
 };
 
-class StringActionDialog : public ActionDialog, public Ui::StringActionDialog {
+class StringActionDialog : public ActionDialog, public Ui_StringActionDialog {
     Q_OBJECT
 public:
     StringActionDialog(QWidget *parent, GrouperSlotAction *action);

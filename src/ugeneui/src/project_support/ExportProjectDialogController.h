@@ -22,7 +22,7 @@
 #ifndef _U2_EXPORT_PROJECT_DIALOG_CONTROLLER_
 #define _U2_EXPORT_PROJECT_DIALOG_CONTROLLER_
 
-#include <ui/ui_ExportProjectDialog.h>
+#include <ui_ExportProjectDialog.h>
 
 #include <U2Core/AppContext.h>
 

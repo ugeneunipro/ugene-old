@@ -23,7 +23,7 @@
 #define _U2_BUILD_INDEX_DIALOG_H_
 
 #include <U2Core/GUrl.h>
-#include <ui/ui_BuildIndexFromRefDialog.h>
+#include <ui_BuildIndexFromRefDialog.h>
 
 #include <QtCore/QVariant>
 
@@ -32,7 +32,7 @@ namespace U2 {
 class DnaAssemblyAlgRegistry;
 class DnaAssemblyAlgorithmBuildIndexWidget;
 
-class BuildIndexDialog : public QDialog, private Ui::BuildIndexFromRefDialog    {
+class BuildIndexDialog : public QDialog, private Ui_BuildIndexFromRefDialog    {
     Q_OBJECT
 
 public:

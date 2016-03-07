@@ -26,7 +26,7 @@
 
 #include "ov_phyltree/TreeSettings.h"
 
-#include "ui/ui_TreeOptionsWidget.h"
+#include "ui_TreeOptionsWidget.h"
 
 namespace U2 {
 

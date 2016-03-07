@@ -23,13 +23,13 @@
 #define _REMOTE_SERVICE_SETTINGS_UI_H_
 
 #include <U2Remote/ProtocolUI.h>
-#include "ui/ui_RemoteServiceSupportUI.h"
+#include "ui_RemoteServiceSupportUI.h"
 
 namespace U2 {
 
 class RemoteServiceMachineSettings;
 
-class RemoteServiceSettingsUI : public ProtocolUI, public Ui::RemoteServiceSupportUI
+class RemoteServiceSettingsUI : public ProtocolUI, public Ui_RemoteServiceSupportUI
 {
     Q_OBJECT
 public:

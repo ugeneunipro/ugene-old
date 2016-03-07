@@ -24,7 +24,7 @@
 
 #include <U2Core/global.h>
 
-#include <ui/ui_ImportSchemaDialog.h>
+#include <ui_ImportSchemaDialog.h>
 
 namespace U2 {
 

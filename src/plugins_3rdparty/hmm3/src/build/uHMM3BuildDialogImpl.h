@@ -23,7 +23,7 @@
 #define _GB2_UHMM3_BUILD_DLG_IMPL_H_
 
 #include "uHMM3BuildTask.h"
-#include <ui/ui_UHMM3BuildDialog.h>
+#include <ui_UHMM3BuildDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>

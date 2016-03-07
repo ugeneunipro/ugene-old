@@ -22,7 +22,7 @@
 #ifndef _U2_GA_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_GA_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_GenomeAlignerSettingsWidget.h>
+#include <ui_GenomeAlignerSettingsWidget.h>
 
 #include <U2Gui/AppSettingsGUI.h>
 

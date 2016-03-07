@@ -23,7 +23,7 @@
 #define _U2_CONSTRUCT_MOLECULE_DIALOG_H_
 
 #include <QtCore/QList>
-#include <ui/ui_ConstructMoleculeDialog.h>
+#include <ui_ConstructMoleculeDialog.h>
 
 #include "CloningUtilTasks.h"
 

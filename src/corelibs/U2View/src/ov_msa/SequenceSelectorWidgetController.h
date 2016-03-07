@@ -22,7 +22,7 @@
 #ifndef _U2_SEQUENCE_SELECT_WIDGET_CONTROLLER
 #define _U2_SEQUENCE_SELECT_WIDGET_CONTROLLER
 
-#include "ui/ui_SequenceSelectorWidget.h"
+#include "ui_SequenceSelectorWidget.h"
 
 #include <U2View/MSAEditor.h>
 

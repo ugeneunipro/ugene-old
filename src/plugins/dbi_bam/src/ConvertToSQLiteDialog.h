@@ -67,7 +67,7 @@ private:
     bool checkReferencesState();
 
 private:
-    Ui::ConvertToSQLiteDialog ui;
+    Ui_ConvertToSQLiteDialog ui;
 
     GUrl destinationUrl;
     GUrl sourceUrl;

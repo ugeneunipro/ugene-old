@@ -30,7 +30,7 @@ class StructuralAlignmentTask;
 class BioStruct3DObject;
 class BioStruct3DSubsetEditor;
 
-class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog
+class StructuralAlignmentDialog : public QDialog, public Ui_StructuralAlignmentDialog
 {
     Q_OBJECT
 

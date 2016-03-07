@@ -22,10 +22,10 @@
 #ifndef _U2_BWA_SETTINGS_WIDGET_H_
 #define _U2_BWA_SETTINGS_WIDGET_H_
 
-#include "ui/ui_BwaSettings.h"
-#include "ui/ui_BwaMemSettings.h"
-#include "ui/ui_BwaSwSettings.h"
-#include "ui/ui_BwaBuildSettings.h"
+#include "ui_BwaSettings.h"
+#include "ui_BwaMemSettings.h"
+#include "ui_BwaSwSettings.h"
+#include "ui_BwaBuildSettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
 class BwaIndexAlgorithmWarningReporter : public QObject {

@@ -26,7 +26,7 @@
 #include <U2Lang/Dataset.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowDebugStatus.h>
-#include <ui/ui_WorkflowEditorWidget.h>
+#include <ui_WorkflowEditorWidget.h>
 
 #include <QtGui/QShortcutEvent>
 

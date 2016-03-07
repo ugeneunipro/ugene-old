@@ -25,7 +25,7 @@
 #include <QDialog>
 
 #include "ExportCoverageTask.h"
-#include "ui/ui_ExportCoverageDialog.h"
+#include "ui_ExportCoverageDialog.h"
 
 namespace U2 {
 

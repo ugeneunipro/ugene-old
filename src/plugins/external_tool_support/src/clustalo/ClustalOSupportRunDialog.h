@@ -24,7 +24,7 @@
 
 #include <QDialog>
 #include <U2Gui/DialogUtils.h>
-#include <ui/ui_ClustalOSupportRunDialog.h>
+#include <ui_ClustalOSupportRunDialog.h>
 #include "ClustalOSupportTask.h"
 
 namespace U2 {

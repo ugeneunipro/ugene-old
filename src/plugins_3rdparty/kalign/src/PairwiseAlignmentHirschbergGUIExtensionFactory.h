@@ -22,7 +22,7 @@
 #ifndef _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_GUI_EXTENSION_FACTORY_H_
 #define _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_GUI_EXTENSION_FACTORY_H_
 
-#include "ui/ui_PairwiseAlignmentHirschbergOptionsPanelMainWidget.h"
+#include "ui_PairwiseAlignmentHirschbergOptionsPanelMainWidget.h"
 
 #include <U2View/AlignmentAlgorithmGUIExtension.h>
 

@@ -51,7 +51,7 @@ private:
     DirectoryOptions *options;
 };
 
-class DirectoryOptions : public QWidget, public Ui::DirectoryOptions {
+class DirectoryOptions : public QWidget, public Ui_DirectoryOptions {
     Q_OBJECT
 public:
     DirectoryOptions(QWidget *parent = NULL);

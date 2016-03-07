@@ -22,7 +22,7 @@
 #ifndef _U2_WEIGHT_MATRIX_BUILD_DIALOG_CONTROLLER_H_
 #define _U2_WEIGHT_MATRIX_BUILD_DIALOG_CONTROLLER_H_
 
-#include <ui/ui_PWMBuildDialog.h>
+#include <ui_PWMBuildDialog.h>
 
 #include "WeightMatrixPlugin.h"
 #include "WeightMatrixAlgorithm.h"

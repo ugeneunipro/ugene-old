@@ -24,7 +24,7 @@
 
 #include <U2Core/GUrl.h>
 
-#include <ui/ui_AssemblyToRefDialog.h>
+#include <ui_AssemblyToRefDialog.h>
 
 #include <QtCore/QVariant>
 #include <QtCore/QStringList>
@@ -57,7 +57,7 @@ public:
 };
 
 
-class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog {
+class DnaAssemblyDialog : public QDialog, private Ui_AssemblyToRefDialog {
     Q_OBJECT
 
 public:

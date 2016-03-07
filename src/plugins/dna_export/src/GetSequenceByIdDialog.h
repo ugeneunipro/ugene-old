@@ -22,7 +22,7 @@
 #ifndef GET_SEQUENCE_BY_ID_
 #define GET_SEQUENCE_BY_ID_
 
-#include "ui/ui_GetSequenceByIdDialog.h"
+#include "ui_GetSequenceByIdDialog.h"
 
 namespace U2 {
 

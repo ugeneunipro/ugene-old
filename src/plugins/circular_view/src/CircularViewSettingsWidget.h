@@ -24,7 +24,7 @@
 
 #include <U2Gui/U2SavableWidget.h>
 
-#include "ui/ui_CircularViewSettingsWidget.h"
+#include "ui_CircularViewSettingsWidget.h"
 
 namespace U2 {
 

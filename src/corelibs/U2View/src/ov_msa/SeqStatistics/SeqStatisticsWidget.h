@@ -24,7 +24,7 @@
 
 #include "../MsaOpSavableTab.h"
 
-#include "ui/ui_MSADistancesColumnSettingsWidget.h"
+#include "ui_MSADistancesColumnSettingsWidget.h"
 
 namespace U2 {
 

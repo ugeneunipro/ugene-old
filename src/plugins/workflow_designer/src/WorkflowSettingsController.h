@@ -22,7 +22,7 @@
 #ifndef _U2_W_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_W_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_WorkflowSettingsWidget.h>
+#include <ui_WorkflowSettingsWidget.h>
 
 #include <U2Gui/AppSettingsGUI.h>
 

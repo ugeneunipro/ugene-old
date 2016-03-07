@@ -24,7 +24,7 @@
 
 #include <U2Gui/U2SavableWidget.h>
 
-#include "ui/ui_ExportConsensusWidget.h"
+#include "ui_ExportConsensusWidget.h"
 
 namespace U2 {
 

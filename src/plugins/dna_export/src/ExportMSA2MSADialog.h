@@ -24,7 +24,7 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportMSA2MSADialog.h"
+#include "ui_ExportMSA2MSADialog.h"
 
 namespace U2 {
 

@@ -24,7 +24,7 @@
 
 #include "uhmmcalibrate.h"
 
-#include <ui/ui_HMMCalibrateDialog.h>
+#include <ui_HMMCalibrateDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>

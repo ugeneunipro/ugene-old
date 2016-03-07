@@ -36,7 +36,7 @@
 #include <U2Gui/U2FileDialog.h>
 
 #include "ConvertAssemblyToSamDialog.h"
-#include "ui/ui_AssemblyToSamDialog.h"
+#include "ui_AssemblyToSamDialog.h"
 
 namespace U2 {
 

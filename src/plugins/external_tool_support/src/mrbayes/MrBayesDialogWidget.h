@@ -27,7 +27,7 @@
 
 #include <U2View/CreatePhyTreeWidget.h>
 
-#include "ui/ui_MrBayesDialog.h"
+#include "ui_MrBayesDialog.h"
 
 namespace U2 {
 

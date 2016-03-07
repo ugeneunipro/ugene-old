@@ -28,7 +28,7 @@
 #else
 #include <QtWidgets/QDialog>
 #endif
-#include <ui/ui_CAP3SupportDialog.h>
+#include <ui_CAP3SupportDialog.h>
 
 namespace U2 {
 

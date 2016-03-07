@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-class PrimerLibraryWidget : public QWidget, private Ui::PrimerLibraryWidget {
+class PrimerLibraryWidget : public QWidget, private Ui_PrimerLibraryWidget {
     Q_OBJECT
 public:
     PrimerLibraryWidget(QWidget *parent);

@@ -23,7 +23,7 @@
 #define _U2_PAIRWISE_ALIGNMENT_SMITH_WATERMAN_GUI_EXTENSION_H_
 
 #include "SWAlgorithmTask.h"
-#include "ui/ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.h"
+#include "ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.h"
 
 #include <U2View/AlignmentAlgorithmGUIExtension.h>
 

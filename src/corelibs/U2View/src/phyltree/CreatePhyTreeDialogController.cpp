@@ -47,7 +47,7 @@
 
 #include "CreatePhyTreeDialogController.h"
 #include "CreatePhyTreeWidget.h"
-#include "ui/ui_CreatePhyTreeDialog.h"
+#include "ui_CreatePhyTreeDialog.h"
 
 namespace U2 {
 

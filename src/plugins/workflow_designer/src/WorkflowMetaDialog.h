@@ -22,7 +22,7 @@
 #ifndef _U2_WMETADIALOG_H_
 #define _U2_WMETADIALOG_H_
 
-#include "ui/ui_WorkflowMetaDialog.h"
+#include "ui_WorkflowMetaDialog.h"
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Schema.h>

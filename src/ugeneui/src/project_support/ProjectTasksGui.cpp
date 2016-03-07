@@ -54,7 +54,7 @@
 #include "ProjectLoaderImpl.h"
 #include "ProjectServiceImpl.h"
 #include "ProjectTasksGui.h"
-#include "ui/ui_SaveProjectDialog.h"
+#include "ui_SaveProjectDialog.h"
 
 namespace U2 {
 

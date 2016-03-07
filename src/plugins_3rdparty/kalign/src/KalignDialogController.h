@@ -25,7 +25,7 @@
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/DialogUtils.h>
 
-#include <ui/ui_KalignDialog.h>
+#include <ui_KalignDialog.h>
 #include "KalignTask.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

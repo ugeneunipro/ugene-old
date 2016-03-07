@@ -31,7 +31,7 @@ class AnnotatedDNAView;
 class FindAlgorithmTask;
 class U2SequenceObject;
 
-class PrimerGroupBox : public QWidget, public Ui::PrimerGroupBox {
+class PrimerGroupBox : public QWidget, public Ui_PrimerGroupBox {
     Q_OBJECT
 public:
     PrimerGroupBox(QWidget *parent);

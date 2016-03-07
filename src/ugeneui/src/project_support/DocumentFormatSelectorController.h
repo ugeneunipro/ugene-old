@@ -22,7 +22,7 @@
 #ifndef _U2_DOCUMENT_FORMAT_SELECTOR_CONTROLLER_
 #define _U2_DOCUMENT_FORMAT_SELECTOR_CONTROLLER_
 
-#include <ui/ui_DocumentFormatSelectorDialog.h>
+#include <ui_DocumentFormatSelectorDialog.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>

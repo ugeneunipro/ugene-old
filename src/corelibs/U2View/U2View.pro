@@ -187,45 +187,45 @@ HEADERS += src/LicenseDialog.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
            src/util_smith_waterman/SubstMatrixDialog.h
-FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
-         src/ov_assembly/ui/ExportCoverageDialog.ui \
-         src/ov_assembly/ui/ExportReadsDialog.ui \
-         src/ov_assembly/ui/ExtractAssemblyRegionDialog.ui \
-         src/ov_msa/ui/CreateSubalignmentDialog.ui \
-         src/ov_msa/ui/ColorSchemaDialog.ui \
-         src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
-         src/ov_msa/ui/CreateMSAScheme.ui \
-         src/ov_msa/ui/DeleteGapsDialog.ui \
-         src/ov_msa/ui/ExportConsensusWidget.ui \
-         src/ov_msa/ui/ExportHighlightedDialog.ui \
-         src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
-         src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
-         src/ov_msa/ui/MSAExportSettings.ui \
-         src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
-         src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
-         src/ov_msa/ui/SelectSubalignmentDialog.ui \
-         src/ov_msa/ui/SequenceSelectorWidget.ui \
-         src/ov_msa/ui/TreeOptionsWidget.ui \
-         src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
-         src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
+FORMS += src/ov_assembly/ExportConsensusDialog.ui \
+         src/ov_assembly/ExportCoverageDialog.ui \
+         src/ov_assembly/ExportReadsDialog.ui \
+         src/ov_assembly/ExtractAssemblyRegionDialog.ui \
+         src/ov_msa/CreateSubalignmentDialog.ui \
+         src/ov_msa/ColorSchemaDialog.ui \
+         src/ov_msa/ColorSchemaSettingsWidget.ui \
+         src/ov_msa/CreateMSAScheme.ui \
+         src/ov_msa/DeleteGapsDialog.ui \
+         src/ov_msa/ExportConsensus/ExportConsensusWidget.ui \
+         src/ov_msa/ExportHighlightedDialog.ui \
+         src/ov_msa/General/GeneralTabOptionsPanelWidget.ui \
+         src/ov_msa/SeqStatistics/MSADistancesColumnSettingsWidget.ui \
+         src/ov_msa/Export/MSAExportSettings.ui \
+         src/ov_msa/PairAlign/PairwiseAlignmentOptionsPanelWidget.ui \
+         src/ov_msa/SaveSelectedSequenceFromMSADialog.ui \
+         src/ov_msa/SelectSubalignmentDialog.ui \
+         src/ov_msa/SequenceSelectorWidget.ui \
+         src/ov_msa/TreeOptions/TreeOptionsWidget.ui \
+         src/ov_sequence/annot_highlight/AnnotHighlightSettings.ui \
+         src/ov_sequence/find_pattern/FindPatternForm.ui \
          src/ov_sequence/image_export/SequenceImageExportSettingsWidget.ui \
-         src/ov_sequence/ui/CreateRulerDialog.ui \
-         src/ov_sequence/ui/EditAnnotationDialog.ui \
-         src/ov_sequence/ui/SaveGraphCutoffsDialog.ui \
-         src/ov_sequence/ui/SearchQualifierDialog.ui \
-         src/phyltree/ui/BranchSettingsDialog.ui \
-         src/phyltree/ui/CreatePhyTreeDialog.ui \
-         src/phyltree/ui/PhyTreeDisplayOptionsWidget.ui \
-         src/phyltree/ui/TextSettingsDialog.ui \
-         src/phyltree/ui/TreeSettingsDialog.ui \
-         src/ui/LicenseDialog.ui \
-         src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
-         src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
-         src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
-         src/util_dna_assembly/ui/GenomeAssemblyDialog.ui \
-         src/util_sec_struct_predict/ui/SecStructDialog.ui \
-         src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
-         src/util_smith_waterman/ui/SubstMatrixDialogBase.ui
+         src/ov_sequence/CreateRulerDialog.ui \
+         src/ov_sequence/EditAnnotationDialog.ui \
+         src/ov_sequence/SaveGraphCutoffsDialog.ui \
+         src/ov_sequence/SearchQualifierDialog.ui \
+         src/phyltree/BranchSettingsDialog.ui \
+         src/phyltree/CreatePhyTreeDialog.ui \
+         src/phyltree/PhyTreeDisplayOptionsWidget.ui \
+         src/phyltree/TextSettingsDialog.ui \
+         src/phyltree/TreeSettingsDialog.ui \
+         src/LicenseDialog.ui \
+         src/util_dna_assembly/AssemblyToRefDialog.ui \
+         src/util_dna_assembly/AssemblyToSamDialog.ui \
+         src/util_dna_assembly/BuildIndexFromRefDialog.ui \
+         src/util_dna_assembly/GenomeAssemblyDialog.ui \
+         src/util_sec_struct_predict/SecStructDialog.ui \
+         src/util_smith_waterman/SmithWatermanDialogBase.ui \
+         src/util_smith_waterman/SubstMatrixDialogBase.ui
 SOURCES += src/LicenseDialog.cpp \
            src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
@@ -334,7 +334,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/ADVSequenceObjectContext.cpp \
            src/ov_sequence/ADVSequenceWidget.cpp \
            src/ov_sequence/ADVSingleSequenceWidget.cpp \
-           src/ov_sequence/ADVSplitWidget.cpp \
            src/ov_sequence/ADVSyncViewManager.cpp \
            src/ov_sequence/ADVUtils.cpp \
            src/ov_sequence/AnnotatedDNAView.cpp \

@@ -25,7 +25,7 @@
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
-#include <ui/ui_PWMSearchDialog.h>
+#include <ui_PWMSearchDialog.h>
 
 #include <QtCore/QList>
 #if (QT_VERSION < 0x050000) //Qt 5

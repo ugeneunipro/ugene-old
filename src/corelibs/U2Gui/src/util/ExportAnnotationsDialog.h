@@ -23,20 +23,12 @@
 #define _U2_EXPORT_ANNOTATIONS_DIALOG_H_
 
 #include <U2Core/global.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
 #include <QtWidgets/QDialog>
-#endif
 
 namespace U2 {
 
-namespace Ui {
+class Ui_ExportAnnotationsDialog;
 
-class ExportAnnotationsDialog;
-
-}
 
 class U2GUI_EXPORT ExportAnnotationsDialog : public QDialog {
     Q_OBJECT
@@ -61,7 +53,7 @@ public:
 
 private:
     QList<QString>                  supportedFormatsExts;
-    Ui::ExportAnnotationsDialog *   ui;
+    Ui_ExportAnnotationsDialog *   ui;
 };
 
 } // namespace U2

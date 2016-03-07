@@ -24,7 +24,7 @@
 
 #include <U2Core/AnnotationData.h>
 
-#include "ui/ui_EditAnnotationDialog.h"
+#include "ui_EditAnnotationDialog.h"
 
 namespace U2{
 

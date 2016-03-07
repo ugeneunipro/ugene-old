@@ -23,7 +23,7 @@
 #define _U2_MAFFT_SUPPORT_RUN_DIALOG_H
 
 #include <U2Gui/DialogUtils.h>
-#include <ui/ui_MAFFTSupportRunDialog.h>
+#include <ui_MAFFTSupportRunDialog.h>
 #include "MAFFTSupportTask.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5

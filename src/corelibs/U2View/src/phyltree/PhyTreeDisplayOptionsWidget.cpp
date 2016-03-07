@@ -23,7 +23,7 @@
 #include <U2Core/Settings.h>
 
 #include "PhyTreeDisplayOptionsWidget.h"
-#include "ui/ui_PhyTreeDisplayOptionsWidget.h"
+#include "ui_PhyTreeDisplayOptionsWidget.h"
 
 namespace U2 {
 

@@ -31,7 +31,7 @@
 #include <U2Gui/HelpButton.h>
 
 #include "SearchQualifierDialog.h"
-#include "ui/ui_SearchQualifierDialog.h"
+#include "ui_SearchQualifierDialog.h"
 
 namespace U2 {
 

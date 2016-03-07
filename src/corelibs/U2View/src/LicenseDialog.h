@@ -31,11 +31,11 @@
 #include <QtWidgets/QDialog>
 #endif
 
-#include <ui/ui_LicenseDialog.h>
+#include <ui_LicenseDialog.h>
 
 namespace U2 {
 
-class LicenseDialog : public QDialog, private Ui::LicenseDialog
+class LicenseDialog : public QDialog, private Ui_LicenseDialog
 {
     Q_OBJECT
 
@@ -46,7 +46,7 @@ public slots:
     void sl_accept();
 
 private:
-    Ui::LicenseDialog   *ui;
+    Ui_LicenseDialog   *ui;
     Plugin              *plugin;
 
 };

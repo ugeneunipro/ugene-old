@@ -17,7 +17,7 @@ public:
     ~ExcludeReasonDialog();
     QString getReason();
 private:
-    Ui::ExcludeReasonDialog *ui;
+    Ui_ExcludeReasonDialog *ui;
 };
 
 }

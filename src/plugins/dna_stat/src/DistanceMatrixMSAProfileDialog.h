@@ -22,7 +22,7 @@
 #ifndef _U2_DISTANCE_MATRIX_MSA_PROFILE_DIALOG_H_
 #define _U2_DISTANCE_MATRIX_MSA_PROFILE_DIALOG_H_
 
-#include "ui/ui_DistanceMatrixMSAProfileDialog.h"
+#include "ui_DistanceMatrixMSAProfileDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>

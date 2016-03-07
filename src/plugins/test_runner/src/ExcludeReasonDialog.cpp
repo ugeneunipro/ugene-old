@@ -5,7 +5,7 @@ namespace U2{
 
 ExcludeReasonDialog::ExcludeReasonDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ExcludeReasonDialog)
+    ui(new Ui_ExcludeReasonDialog)
 {
     ui->setupUi(this);
 }

@@ -25,7 +25,7 @@
 #include "MuscleTask.h"
 
 #include <U2Core/GAutoDeleteList.h>
-#include <ui/ui_MuscleAlignDialog.h>
+#include <ui_MuscleAlignDialog.h>
 #include <U2Gui/DialogUtils.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
