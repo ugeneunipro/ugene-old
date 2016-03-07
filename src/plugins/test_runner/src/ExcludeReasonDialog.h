@@ -3,13 +3,11 @@
 
 #include <QDialog>
 
-namespace Ui {
-class ExcludeReasonDialog;
-}
-namespace U2{
+class Ui_ExcludeReasonDialog;
 
-class ExcludeReasonDialog : public QDialog
-{
+namespace U2 {
+
+class ExcludeReasonDialog : public QDialog {
     Q_OBJECT
 
 public:
