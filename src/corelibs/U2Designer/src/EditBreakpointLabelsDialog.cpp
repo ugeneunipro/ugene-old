@@ -27,7 +27,7 @@
 #endif
 #include <QtGui/QKeyEvent>
 
-#include "ui/ui_EditBreakpointLabelsDialog.h"
+#include "ui_EditBreakpointLabelsDialog.h"
 #include "EditBreakpointLabelsDialog.h"
 #include <U2Gui/HelpButton.h>
 

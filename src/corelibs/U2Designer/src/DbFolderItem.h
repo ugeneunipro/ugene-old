@@ -24,11 +24,7 @@
 
 #include "UrlItem.h"
 
-namespace Ui {
-
-class DbFolderOptions;
-
-}
+class Ui_DbFolderOptions;
 
 namespace U2 {
 
@@ -63,7 +59,7 @@ signals:
     void si_dataChanged();
 
 private:
-    Ui::DbFolderOptions *ui;
+    Ui_DbFolderOptions *ui;
 };
 
 } // namespace U2

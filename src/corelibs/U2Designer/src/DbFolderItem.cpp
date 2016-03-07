@@ -24,7 +24,7 @@
 
 #include <U2Lang/SharedDbUrlUtils.h>
 
-#include "ui/ui_DbFolderOptions.h"
+#include "ui_DbFolderOptions.h"
 #include "DbFolderItem.h"
 
 namespace U2 {
@@ -73,7 +73,7 @@ bool DbFolderItem::isRecursive() const {
 /* DbFolderOptions */
 /************************************************************************/
 DbFolderOptions::DbFolderOptions(QWidget *parent)
-    : QWidget(parent), ui(new Ui::DbFolderOptions)
+    : QWidget(parent), ui(new Ui_DbFolderOptions)
 {
     ui->setupUi(this);
     connect(ui->recursiveBox, SIGNAL(clicked(bool)), SIGNAL(si_dataChanged()));
