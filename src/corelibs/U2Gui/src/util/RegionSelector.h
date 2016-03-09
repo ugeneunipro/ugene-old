@@ -26,13 +26,8 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QLineEdit>
-#endif
+#include <QDialog>
+#include <QLineEdit>
 
 class QComboBox;
 
@@ -66,6 +61,7 @@ public:
     void setCircularSelectionAvailable(bool allowCircSelection);
     void setCurrentPreset(const QString &presetName);
     void reset();
+    void removePreset(const QString &itemName);
 
     void showErrorMessage();
 

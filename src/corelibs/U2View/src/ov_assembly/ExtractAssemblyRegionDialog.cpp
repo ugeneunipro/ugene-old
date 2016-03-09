@@ -19,8 +19,10 @@
 * MA 02110-1301, USA.
 */
 
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
+#include <QDir>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include "ExtractAssemblyRegionDialog.h"
 
@@ -51,6 +53,7 @@ ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAss
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), settings->regionToExtract);
     regionSelector = new RegionSelector(this, settings->assemblyLength, false, NULL, false, presets);
     regionSelector->setCurrentPreset(tr("Visible"));
+    regionSelector->removePreset(RegionSelector::WHOLE_SEQUENCE);
     regionSelectorWidget->layout()->addWidget(regionSelector);
 
     setMaximumHeight(layout()->minimumSize().height());
@@ -58,14 +61,21 @@ ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAss
 }
 
 void ExtractAssemblyRegionDialog::sl_regionChanged(const U2Region& newRegion) {
-    QString prevPath = saveController->getSaveFileName();
+    QString filePath = saveController->getSaveFileName();
+    QFileInfo fi(filePath);
     U2Region prevRegion = settings->regionToExtract;
     prevRegion.startPos += 1;
     prevRegion.length -= 1;
-    if (prevPath.contains(QString::number(prevRegion.startPos) + "_" + QString::number(prevRegion.endPos()))) {
-        QString newRegionString = QString::number(newRegion.startPos + 1) + "_" + QString::number(newRegion.endPos());
-        prevPath.replace(QString::number(prevRegion.startPos) + "_" + QString::number(prevRegion.endPos()), newRegionString);
-        saveController->setFileName(prevPath);
+    QString stringToReplace = QString::number(prevRegion.startPos) + "_" + QString::number(prevRegion.endPos());
+    if (fi.baseName().contains(stringToReplace)) {
+        QString baseName = fi.baseName();
+        QString newLocation = QString::number(newRegion.startPos + 1) + "_" + QString::number(newRegion.endPos());
+        baseName.replace(stringToReplace, newLocation);
+        //QString cbasename = fi.completeBaseName();
+        //QString dirPath = filePath.left(filePath.length() - (fi.baseName().length() + fi.completeSuffix().length() + 1));
+        
+        filePath = fi.dir().path() + "/" + baseName + "." + fi.completeSuffix();
+        saveController->setFileName(filePath);
         settings->regionToExtract = newRegion;
     }
 }

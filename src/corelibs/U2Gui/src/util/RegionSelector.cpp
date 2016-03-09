@@ -174,6 +174,10 @@ void RegionSelector::reset() {
     comboBox->setCurrentIndex(comboBox->findText(defaultItemText));
 }
 
+void RegionSelector::removePreset(const QString &itemName) {
+    comboBox->removeItem(comboBox->findText(itemName));
+}
+
 void RegionSelector::showErrorMessage() {
     QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(QMessageBox::NoIcon, L10N::errorTitle(), tr("Invalid sequence region!"), QMessageBox::Ok);
 
