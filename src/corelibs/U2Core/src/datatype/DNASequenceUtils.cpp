@@ -25,6 +25,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "DNASequenceUtils.h"
@@ -100,7 +101,7 @@ QByteArray DNASequenceUtils::reverse(const QByteArray &sequence) {
 }
 
 QByteArray DNASequenceUtils::complement(const QByteArray &sequence) {
-    const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(sequence.data(), sequence.length());
     SAFE_POINT(NULL != alphabet, L10N::nullPointerError("DNA Alphabet"), "");
 
     DNATranslation *translator = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(alphabet);

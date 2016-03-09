@@ -560,5 +560,28 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     CHECK_SET_ERR("9 - 1196" == GTUtilsPcr::getResultRegion(os, 0), "Wrong result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    // Reverse-complement for the extended DNA alphabet
+    // 1. Open the PCT OP
+    // 2. Enter all symbols of extended DNA alphabet: "ACGTMRWSYKVHDBNX"
+    // 3. Click "Reverse-complement" button
+    // Expected state: the content of primer line edit is "XNVHDBMRSWYKACGT"
+    GTUtilsPcr::clearPcrDir(os);
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "ACGTMRWSYKVHDBNX");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "reverseComplementButton", GTUtilsPcr::primerBox(os, U2Strand::Direct)));
+
+    QLineEdit* primerLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "primerEdit", GTUtilsPcr::primerBox(os, U2Strand::Direct));
+    CHECK_SET_ERR(primerLineEdit != NULL, "Forward primerEdit is NULL");
+
+    CHECK_SET_ERR(primerLineEdit->text() == "XNVHDBMRSWYKACGT", "Incorrect reverse-complement primer translation");
+}
+
 } // GUITest_common_scenarios_in_silico_pcr
 } // U2
