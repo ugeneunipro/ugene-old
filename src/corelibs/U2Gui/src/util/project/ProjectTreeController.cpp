@@ -939,14 +939,14 @@ void ProjectTreeController::setupActions() {
     tree->addAction(importToDatabaseAction);
     connect(importToDatabaseAction, SIGNAL(triggered()), SLOT(sl_onImportToDatabase()));
 
-    loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
+    loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected document(s)"), this);
     loadSelectedDocumentsAction->setObjectName("action_load_selected_documents");
     loadSelectedDocumentsAction->setShortcuts(QList<QKeySequence>() << Qt::Key_Enter << Qt::Key_Return);
     loadSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     tree->addAction(loadSelectedDocumentsAction);
     connect(loadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onLoadSelectedDocuments()));
 
-    unloadSelectedDocumentsAction = new QAction( QIcon(":core/images/unload_document.png"), tr("Unload selected document"), this);
+    unloadSelectedDocumentsAction = new QAction( QIcon(":core/images/unload_document.png"), tr("Unload selected document(s)"), this);
     connect(unloadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onUnloadSelectedDocuments()));
 
     addReadonlyFlagAction = new QAction(tr("Lock document for editing"), this);
