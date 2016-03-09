@@ -106,7 +106,6 @@ void BioStruct3DViewContext::initViewContext(GObjectView* v) {
     QList<GObject *> targetBiostructs = GObjectUtils::findObjectsRelatedToObjectByRole(dna,
         GObjectTypes::BIOSTRUCTURE_3D, ObjectRole_Sequence, allBiostructs, UOF_LoadedOnly);
     CHECK(!targetBiostructs.isEmpty(), );
-    CHECK(checkGl(), );
 
     QList<ADVSequenceWidget*> seqWidgets = av->getSequenceWidgets();
     foreach(ADVSequenceWidget* w, seqWidgets) {
@@ -123,7 +122,6 @@ void BioStruct3DViewContext::initViewContext(GObjectView* v) {
 
 bool BioStruct3DViewContext::canHandle(GObjectView* v, GObject* o) {
     Q_UNUSED(v);
-    CHECK(checkGl(), false);
 
     bool res = qobject_cast<BioStruct3DObject*>(o) != NULL;
     return res;
@@ -131,8 +129,6 @@ bool BioStruct3DViewContext::canHandle(GObjectView* v, GObject* o) {
 
 void BioStruct3DViewContext::onObjectAdded(GObjectView* view, GObject* obj) {
     //todo: add sequence & all objects associated with sequence to the view?
-    CHECK(checkGl(), );
-
     BioStruct3DObject* obj3d = qobject_cast<BioStruct3DObject*>(obj);
     if (obj3d == NULL || view == NULL) {
         return;
@@ -207,19 +203,6 @@ void BioStruct3DViewContext::sl_windowClosing(MWMDIWindow* w) {
     }
 
     GObjectViewWindowContext::sl_windowClosing(w);
-}
-
-bool BioStruct3DViewContext::checkGl() {
-    if (QOpenGLContext::openGLModuleHandle() == NULL) {
-        const NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
-        SAFE_POINT(notificationStack != NULL, "NotificatoinStack is NULL", false);
-        notificationStack->addNotification(tr("Unfortunately, your system does not have OpenGL Support.\n"
-                                              "The 3D Structure Viewer is not available.\n"
-                                              "You may try to upgrade your system by updating the video card driver."),
-                                           Warning_Not);
-        return false;
-    }
-    return true;
 }
 
 

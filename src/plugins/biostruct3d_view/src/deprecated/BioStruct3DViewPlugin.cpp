@@ -123,20 +123,22 @@ void BioStruct3DViewContext::initViewContext(GObjectView* v) {
 
 bool BioStruct3DViewContext::canHandle(GObjectView* v, GObject* o) {
     Q_UNUSED(v);
-    CHECK(checkGl(), false);
 
     bool res = qobject_cast<BioStruct3DObject*>(o) != NULL;
+    if (res) {
+        CHECK(checkGl(), false);
+    }
     return res;
 }
 
 void BioStruct3DViewContext::onObjectAdded(GObjectView* view, GObject* obj) {
     //todo: add sequence & all objects associated with sequence to the view?
-    CHECK(checkGl(), );
 
     BioStruct3DObject* obj3d = qobject_cast<BioStruct3DObject*>(obj);
     if (obj3d == NULL || view == NULL) {
         return;
     }
+    CHECK(checkGl(), );
 
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     BioStruct3DSplitter* splitter = NULL;
