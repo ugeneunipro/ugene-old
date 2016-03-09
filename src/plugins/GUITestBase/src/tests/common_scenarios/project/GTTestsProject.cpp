@@ -122,6 +122,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 //     3) File path at tooltip for "1CF7.PDB" must be "_common_data/scenarios/sandbox/1CF7.PDB"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(10, 0));
     GTGlobals::sleep(2000);
     GTUtilsToolTip::checkExistingToolTip(os, "_common_data/scenarios/sandbox/1CF7.PDB");
 
@@ -165,6 +166,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(10, 0));
     GTGlobals::sleep(2000);
     GTUtilsToolTip::checkExistingToolTip(os, "samples/PDB/1CF7.PDB");
 }
@@ -300,6 +302,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine_copy1.gb"));
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(10, 0));
     GTGlobals::sleep();
 
     GTGlobals::sleep(2000);

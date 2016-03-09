@@ -1732,6 +1732,7 @@ GUI_TEST_CLASS_DEFINITION(test_1124){
             QListWidget* seqList = GTWidget::findExactWidget<QListWidget*>(os, "seqList", dialog);
             GTWidget::click(os, seqList);
             GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20,20));
+            GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(10, 0));
             GTGlobals::sleep(3000);
             //    Expected state: tooltip is presented.
             GTUtilsToolTip::checkExistingToolTip(os, "The quality scores for FASTA sequences can be provided in an additional file");
