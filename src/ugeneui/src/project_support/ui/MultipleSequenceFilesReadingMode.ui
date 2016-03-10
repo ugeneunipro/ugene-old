@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>302</height>
+    <width>682</width>
+    <height>364</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -254,22 +254,6 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>225</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>toolButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MultipleDocumentsReadingModeSelectorController</receiver>
-   <slot>sl_onChooseDirPath()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>506</x>
-     <y>139</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>516</x>
-     <y>131</y>
     </hint>
    </hints>
   </connection>

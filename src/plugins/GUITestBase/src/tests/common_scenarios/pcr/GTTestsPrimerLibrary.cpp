@@ -275,7 +275,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ExportPrimersDialogFiller::setExportTarget(os, ExportPrimersDialogFiller::LocalFile);
-            ExportPrimersDialogFiller::setFormat(os, "fasta");
+            ExportPrimersDialogFiller::setFormat(os, "FASTA");
             ExportPrimersDialogFiller::setFilePath(os, sandBoxDir + "pcrlib/test_0006/primers.fa");
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
         }
@@ -330,7 +330,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
             ExportPrimersDialogFiller::setExportTarget(os, ExportPrimersDialogFiller::LocalFile);
-            ExportPrimersDialogFiller::setFormat(os, "genbank");
+            ExportPrimersDialogFiller::setFormat(os, "Genbank");
             ExportPrimersDialogFiller::setFilePath(os, sandBoxDir + "pcrlib/test_0007/primers.gb");
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
         }

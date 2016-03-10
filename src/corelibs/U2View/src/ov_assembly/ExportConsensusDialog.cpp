@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportConsensusDialog.h"
+#include <QPushButton>
+#include <QMessageBox>
 
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 
@@ -27,21 +28,18 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Gui/RegionSelector.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/RegionSelector.h>
+#include <U2Gui/SaveDocumentController.h>
+
+#include "ExportConsensusDialog.h"
 
 namespace U2 {
 
 ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTaskSettings &settings_, const U2Region & visibleRegion)
-    : QDialog(p), settings(settings_)
+    : QDialog(p),
+      settings(settings_),
+      saveController(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467687");
@@ -51,17 +49,7 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     variationModeComboBox->hide();
     variationModeLabel->hide();
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.supportedObjectTypes += GObjectTypes::SEQUENCE;
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    conf.fileDialogButton = filepathToolButton;
-    conf.fileNameEdit = filepathLineEdit;
-    conf.formatCombo = documentFormatComboBox;
-    conf.parentWidget = this;
-    conf.saveTitle = tr("Export consensus");
-    conf.defaultFileName = settings.fileName;
-    saveController = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
     U2OpStatus2Log os;
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
@@ -70,8 +58,6 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     int insertPos = verticalLayout->count() - 3;
     verticalLayout->insertWidget(insertPos, regionSelector);
 
-    filepathLineEdit->setText(settings.fileName);
-    saveController->setSelectedFormatId(settings.formatId);
     sequenceNameLineEdit->setText(settings.seqObjName);
     addToProjectCheckBox->setChecked(settings.addToProject);
     regionSelector->setCustomRegion(settings.region);
@@ -87,7 +73,6 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     setMaximumHeight(layout()->minimumSize().height());
-
 }
 
 void ExportConsensusDialog::accept() {
@@ -125,6 +110,24 @@ void ExportConsensusDialog::accept() {
     }
 
     QDialog::accept();
+}
+
+void ExportConsensusDialog::initSaveController() {
+    SaveDocumentControllerConfig conf;
+    conf.fileDialogButton = filepathToolButton;
+    conf.fileNameEdit = filepathLineEdit;
+    conf.formatCombo = documentFormatComboBox;
+    conf.parentWidget = this;
+    conf.saveTitle = tr("Export consensus");
+    conf.defaultFileName = settings.fileName;
+    conf.defaultFormatId = settings.formatId;
+
+    DocumentFormatConstraints dfc;
+    dfc.supportedObjectTypes += GObjectTypes::SEQUENCE;
+    dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+
+    saveController = new SaveDocumentController(conf, dfc, this);
 }
 
 } // namespace

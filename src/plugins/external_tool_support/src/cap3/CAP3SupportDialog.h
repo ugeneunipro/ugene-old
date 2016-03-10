@@ -22,32 +22,32 @@
 #ifndef _U2_CAP3_SUPPORT_DIALOG_H_
 #define _U2_CAP3_SUPPORT_DIALOG_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <ui/ui_CAP3SupportDialog.h>
+#include <QDialog>
+
+#include "ui/ui_CAP3SupportDialog.h"
 
 namespace U2 {
 
 class CAP3SupportTaskSettings;
+class SaveDocumentController;
 
 class CAP3SupportDialog : public QDialog, public Ui_CAP3SupportDialog {
     Q_OBJECT
 public:
     CAP3SupportDialog(CAP3SupportTaskSettings& settings, QWidget* parent);
     void accept();
+
 private slots:
     void sl_onAddButtonClicked();
     void sl_onRemoveButtonClicked();
     void sl_onRemoveAllButtonClicked();
-    void sl_onSpecifyOutputPathButtonClicked();
-private:
-    CAP3SupportTaskSettings& settings;
 
+private:
     void initSettings();
+    void initSaveController();
+
+    CAP3SupportTaskSettings& settings;
+    SaveDocumentController *saveController;
 };
 
 

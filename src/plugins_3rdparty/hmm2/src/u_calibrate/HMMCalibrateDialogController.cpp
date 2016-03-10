@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -34,6 +28,7 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "HMMCalibrateDialogController.h"
@@ -43,8 +38,8 @@
 namespace U2 {
 
 HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w) 
-: QDialog(w)
-{
+    : QDialog(w),
+      saveController(NULL) {
     task = NULL;
     setupUi(this);
     new HelpButton(this, buttonBox, "17467763");
@@ -54,11 +49,10 @@ HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w)
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(hmmFileButton, SIGNAL(clicked()), SLOT(sl_hmmFileButtonClicked()));
-    connect(outFileButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
 
+    initSaveController();
 }
-
 
 void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
@@ -67,15 +61,6 @@ void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
         return;
     }
     hmmFileEdit->setText(QFileInfo(lod.url).absoluteFilePath());
-}
-
-void HMMCalibrateDialogController::sl_outFileButtonClicked() {
-    LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url= U2FileDialog::getSaveFileName(this, tr("Select file with HMM model"), lod, HMMIO::getHMMFileFilter());
-    if (lod.url.isEmpty()) {
-        return;
-    }
-    outFileEdit->setText(QFileInfo(lod.url).absoluteFilePath());
 }
 
 void HMMCalibrateDialogController::sl_okButtonClicked() {
@@ -113,7 +98,7 @@ void HMMCalibrateDialogController::sl_okButtonClicked() {
    }
 
    if (outputGroupBox->isChecked() && errMsg.isEmpty()) {
-        outFile = outFileEdit->text();        
+        outFile = saveController->getSaveFileName();
         if (outFile.isEmpty()) {
             errMsg = tr("Invalid output file name");
             outFileEdit->setFocus();
@@ -168,13 +153,26 @@ void HMMCalibrateDialogController::sl_onProgressChanged() {
     statusLabel->setText(tr("Progress: %1%").arg(task->getProgress()));
 }
 
+void HMMCalibrateDialogController::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = HMMIO::HMM_ID;
+    config.defaultFormatId = HMMIO::HMM_ID;
+    config.fileDialogButton = outFileButton;
+    config.fileNameEdit = outFileEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file with HMM model");
+
+    SaveDocumentController::SimpleFormatsInfo formats;
+    formats.addFormat(HMMIO::HMM_ID, tr("HMM models"), QStringList(HMMIO::HMM_EXT));
+
+    saveController = new SaveDocumentController(config, formats, this);
+}
+
 void HMMCalibrateDialogController::reject() {
     if (task!=NULL) {
         task->cancel();
     }
     QDialog::reject();
 }
-
-
 
 }//namespace

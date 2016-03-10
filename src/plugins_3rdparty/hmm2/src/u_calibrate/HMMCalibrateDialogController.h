@@ -22,18 +22,16 @@
 #ifndef _U2_HMMCALIBRATE_DIALOG_CONTROLLER_H_
 #define _U2_HMMCALIBRATE_DIALOG_CONTROLLER_H_
 
+#include <QDialog>
+
 #include "uhmmcalibrate.h"
-
-#include <ui/ui_HMMCalibrateDialog.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "ui/ui_HMMCalibrateDialog.h"
 
 namespace U2 {
+
+class SaveDocumentController;
 class Task;
+
 class HMMCalibrateDialogController : public QDialog, public Ui_HMMCalibrateDialog {
     Q_OBJECT
 
@@ -45,16 +43,18 @@ public slots:
 
 private slots:
     void sl_hmmFileButtonClicked();
-    void sl_outFileButtonClicked();
     void sl_okButtonClicked();
 
     void sl_onStateChanged();
     void sl_onProgressChanged();
 
 private:
+    void initSaveController();
+
     Task* task;
     QPushButton* okButton;
     QPushButton* cancelButton;
+    SaveDocumentController *saveController;
 };
 
 } //namespace

@@ -50,7 +50,7 @@ RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(HI::GUITe
     : Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(_format), saveNew(_saveNew), recalculateQuals(false)
 {
     QString __saveToFile = QDir::cleanPath(QDir::currentPath() + "/" + _saveToFile);
-    saveToFile = __saveToFile;
+    saveToFile = QDir::toNativeSeparators(__saveToFile);
     comboBoxItems[FASTA] = "FASTA";
     comboBoxItems[Genbank] = "Genbank";
 }

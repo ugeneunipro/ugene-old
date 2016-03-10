@@ -1397,7 +1397,7 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
 
     //2. Copy the whole sequence to the clipboard
     GTWidget::click(os, GTWidget::findWidget(os, "annotated_DNA_scrollarea"));
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os));
     GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
     GTGlobals::sleep(500);
 
@@ -2408,7 +2408,7 @@ GUI_TEST_CLASS_DEFINITION( test_2360 ) {
     // Expected state: Export dialog appears.
     // 4. Set "File format to use" to PHYLIP Sequantial.
     // 5. Click "Export".
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, 6));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, "PHYLIP Sequantial"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
     GTMouseDriver::click(os, Qt::RightButton);
 }
@@ -2951,7 +2951,7 @@ GUI_TEST_CLASS_DEFINITION( test_2410 ) {
 
     GTGlobals::sleep( );
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller( os, 166740, 166755 ) );
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller( os, 166740, 166755 ) );
 
     QWidget *sequenceWidget = GTWidget::findWidget( os, "ADV_single_sequence_widget_0" );
     CHECK_SET_ERR( NULL != sequenceWidget, "sequenceWidget is not present" );
@@ -5762,7 +5762,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910) {
     // 3. Select a "Multiple Range Selection" mode, enter the region: 10000..15000
     // 4. Click the "Go" button.
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "10000..15000"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "10000..15000"));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -5781,7 +5781,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_1) {
     // 3. Select a "Multiple Range Selection" mode, enter the region: 2000..5000,100000..110000
     // 4. Click the "Go" button.
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "2000..5000,100000..110000"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "2000..5000,100000..110000"));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
 

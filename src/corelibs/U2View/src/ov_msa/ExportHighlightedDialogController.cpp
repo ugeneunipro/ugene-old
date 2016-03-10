@@ -19,40 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
-
-#include <U2Gui/HelpButton.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/U2FileDialog.h>
+#include <QPushButton>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "ExportHighlightedDialogController.h"
 #include "ov_msa/MSAEditorSequenceArea.h"
 
 namespace U2{
 
-ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p ): QDialog(p), msaui(msaui_){
+ExportHighligtingDialogController::ExportHighligtingDialogController(MSAEditorUI *msaui_, QWidget* p )
+    : QDialog(p),
+      msaui(msaui_),
+      saveController(NULL)
+{
     setupUi(this);
     new HelpButton(this, buttonBox, "17467629");
+
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     CHECK(AppContext::getAppSettings(), );
     CHECK(AppContext::getAppSettings()->getUserAppsSettings(), );
     CHECK(msaui->getEditor(), );
     CHECK(msaui->getEditor()->getMSAObject(), );
-    fileNameEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msaui->getEditor()->getMSAObject()->getGObjectName() + "_highlighting.txt"));
 
-    connect(fileButton, SIGNAL(clicked()), SLOT(sl_fileButtonClicked()));
+    initSaveController();
+
     connect(endPosBox, SIGNAL(valueChanged(int)), SLOT(endPosValueChanged()));
 
     int alignLength = msaui->getEditor()->getMSAObject()->getLength();
@@ -76,10 +77,9 @@ ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditor
 
     startPosBox->setValue(startPos);
     endPosBox->setValue(endPos);
-
 }
 
-void ExportHighligtningDialogController::accept(){
+void ExportHighligtingDialogController::accept(){
     startPos = startPosBox->value();
     endPos = endPosBox->value();
     if(oneIndexRB->isChecked()){
@@ -87,32 +87,39 @@ void ExportHighligtningDialogController::accept(){
     }else{
         startingIndex = 0;
     }
-    if(fileNameEdit->text().isEmpty()){
+    if (saveController->getSaveFileName().isEmpty()){
         QMessageBox::warning(this, tr("Warning"), tr("Export to file URL is empty!"));
         return;
     }
     keepGaps = keepGapsBox->isChecked();
     dots = dotsBox->isChecked();
     transpose = transposeBox->isChecked();
-    url = GUrl(fileNameEdit->text());
+    url = GUrl(saveController->getSaveFileName());
 
     QDialog::accept();
 }
 
-void ExportHighligtningDialogController::sl_fileButtonClicked(){
-    LastUsedDirHelper h;
-
-    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir);
-    fileNameEdit->setText(h.url);
-}
-
-void ExportHighligtningDialogController::lockKeepGaps(){
+void ExportHighligtingDialogController::lockKeepGaps(){
     keepGapsBox->setChecked(true);
     keepGapsBox->setDisabled(true);
 }
 
-void ExportHighligtningDialogController::endPosValueChanged(){
+void ExportHighligtingDialogController::endPosValueChanged(){
     startPosBox->setMaximum(endPosBox->value() - 1);
+}
+
+void ExportHighligtingDialogController::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = GUrlUtils::getDefaultDataPath() + "/" + msaui->getEditor()->getMSAObject()->getGObjectName() + "_highlighting.txt";
+    config.defaultFormatId = BaseDocumentFormats::PLAIN_TEXT;
+    config.fileDialogButton = fileButton;
+    config.fileNameEdit = fileNameEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select file to save...");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_TEXT;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
 
 }

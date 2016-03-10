@@ -22,9 +22,11 @@
 #ifndef _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
 
-#include <U2Core/U2Region.h>
+#include <QDir>
 
-#include "utils/GTUtilsDialog.h"
+#include <utils/GTUtilsDialog.h>
+
+#include <U2Core/U2Region.h>
 
 namespace U2 {
 using namespace HI;
@@ -45,7 +47,7 @@ protected:
 class CircularViewExportImage : public Filler {
 public:
     CircularViewExportImage(HI::GUITestOpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
-        filePath(_filePath),
+        filePath(QDir::toNativeSeparators(_filePath)),
         comboValue(_comboValue),
         spinValue(_spinValue),
         exportedSequenceName(exportedSequenceName)

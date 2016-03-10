@@ -19,25 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios_3001_4000.h"
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QMenu>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QWebElement>
+#include <QWebFrame>
+#include <QWebView>
+#include <QWizard>
 
-#include "primitives/GTAction.h"
-#include <primitives/GTCheckBox.h>
-#include "system/GTClipboard.h"
-#include <primitives/GTComboBox.h>
-#include "system/GTFile.h"
+#include <GTGlobals.h>
+#include <base_dialogs/DefaultDialogFiller.h>
 #include <base_dialogs/GTFileDialog.h>
-#include "GTGlobals.h"
+#include <base_dialogs/MessageBoxFiller.h>
 #include <drivers/GTKeyboardDriver.h>
-#include "utils/GTKeyboardUtils.h"
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTAction.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTListWidget.h>
-#include "primitives/GTMenu.h"
-#include <drivers/GTMouseDriver.h>
+#include <primitives/GTMenu.h>
 #include <primitives/GTPlainTextEdit.h>
 #include <primitives/GTRadioButton.h>
-#include "api/GTSequenceReadingModeDialog.h"
-#include "api/GTSequenceReadingModeDialogUtils.h"
 #include <primitives/GTSlider.h>
 #include <primitives/GTSpinBox.h>
 #include <primitives/GTTabWidget.h>
@@ -45,16 +55,40 @@
 #include <primitives/GTToolbar.h>
 #include <primitives/GTTreeWidget.h>
 #include <primitives/GTWidget.h>
+#include <primitives/PopupChooser.h>
+#include <system/GTClipboard.h>
+#include <system/GTFile.h>
+#include <utils/GTKeyboardUtils.h>
 #include <utils/GTThread.h>
+#include <utils/GTThread.h>
+#include <utils/GTUtilsDialog.h>
+#include <utils/GTUtilsToolTip.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
+
+#include <U2Gui/ProjectViewModel.h>
+#include <U2Gui/ToolsMenu.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/AnnotationsTreeView.h>
+#include <U2View/AssemblyNavigationWidget.h>
+#include <U2View/DetView.h>
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorNameList.h>
+
+#include "../../workflow_designer/src/WorkflowViewItems.h"
 #include "GTDatabaseConfig.h"
-#include "GTUtilsAnnotationsTreeView.h"
+#include "GTTestsRegressionScenarios_3001_4000.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDashboard.h"
-#include "utils/GTUtilsDialog.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
@@ -63,8 +97,8 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
@@ -72,15 +106,11 @@
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
-#include "utils/GTUtilsToolTip.h"
-#include "utils/GTThread.h"
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
-
-#include <base_dialogs/DefaultDialogFiller.h>
+#include "api/GTSequenceReadingModeDialog.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
 #include "runnables/qt/EscapeClicker.h"
-#include <base_dialogs/MessageBoxFiller.h>
-#include "primitives/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
@@ -144,13 +174,13 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3SearchDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
@@ -159,40 +189,6 @@
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/U2ObjectDbi.h>
-
-#include <U2Gui/ProjectViewModel.h>
-#include <U2Gui/ToolsMenu.h>
-
-#include "../../workflow_designer/src/WorkflowViewItems.h"
-
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include <U2View/AnnotationsTreeView.h>
-#include <U2View/AssemblyNavigationWidget.h>
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorNameList.h>
-#include <U2View/DetView.h>
-
-#include <QDialogButtonBox>
-#include <QFileDialog>
-#include <QHeaderView>
-#include <QListWidget>
-#include <QMainWindow>
-#include <QMenu>
-#include <QPlainTextEdit>
-#include <QProgressBar>
-#include <QPushButton>
-#include <QTableWidget>
-#include <QWebElement>
-#include <QWebFrame>
-#include <QWebView>
-#include <QWizard>
-
 
 namespace U2 {
 
@@ -1118,7 +1114,7 @@ GUI_TEST_CLASS_DEFINITION(test_3170) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Select the region [301..350].
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 51, 102));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 
@@ -2158,7 +2154,7 @@ GUI_TEST_CLASS_DEFINITION(test_3321){
     QWidget* CircularViewAction = GTWidget::findWidget(os, "CircularViewAction", parent);
     GTWidget::click(os, CircularViewAction);
 //    Select region that contains zero position
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "1..10,5823..5833"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "1..10,5823..5833"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
     GTWidget::click(os, GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0"), Qt::RightButton);
     GTGlobals::sleep();
@@ -3826,7 +3822,7 @@ GUI_TEST_CLASS_DEFINITION(test_3603) {
     CHECK_SET_ERR(renderArea != NULL, "Render area is NULL");
     GTWidget::click(os, renderArea);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
 
     QLineEdit* start = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editStart"));
@@ -3926,7 +3922,7 @@ GUI_TEST_CLASS_DEFINITION(test_3610) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 199950));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 199950));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
@@ -5215,7 +5211,7 @@ GUI_TEST_CLASS_DEFINITION(test_3805){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 2. Save the initial content
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 51, 102));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
@@ -5232,7 +5228,7 @@ GUI_TEST_CLASS_DEFINITION(test_3805){
     //5. Reverse complement sequence
     GTMenu::clickMainMenuItem(os, QStringList() << "Actions" << "Edit" << "Reverse-complement sequence", GTGlobals::UseKey);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 51, 102));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
@@ -5363,7 +5359,7 @@ GUI_TEST_CLASS_DEFINITION(test_3821) {
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 2));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(1000);

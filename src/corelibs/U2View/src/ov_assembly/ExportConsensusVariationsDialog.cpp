@@ -19,24 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
+
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
-
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/RegionSelector.h>
-#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/SaveDocumentController.h>
 
 #include "ExportConsensusVariationsDialog.h"
 
@@ -54,17 +48,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     sequenceNameLabel->hide();
     sequenceNameLineEdit->hide();
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    conf.fileDialogButton = filepathToolButton;
-    conf.fileNameEdit = filepathLineEdit;
-    conf.formatCombo = documentFormatComboBox;
-    conf.parentWidget = this;
-    conf.saveTitle = tr("Export Consensus Variations");
-    conf.defaultFileName = settings.fileName;
-    saveController = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
     U2OpStatus2Log os;
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
@@ -74,7 +58,6 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     verticalLayout->insertWidget(insertPos, regionSelector);
 
     filepathLineEdit->setText(settings.fileName);
-    saveController->setSelectedFormatId(settings.formatId);
     sequenceNameLineEdit->setText(settings.seqObjName);
     addToProjectCheckBox->setChecked(settings.addToProject);
     regionSelector->setCustomRegion(settings.region);
@@ -138,6 +121,28 @@ void ExportConsensusVariationsDialog::accept() {
     }
 
     QDialog::accept();
+}
+
+const ExportConsensusVariationsTaskSettings &ExportConsensusVariationsDialog::getSettings() const {
+    return settings;
+}
+
+void ExportConsensusVariationsDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = settings.fileName;
+    config.defaultFormatId = settings.formatId;
+    config.fileDialogButton = filepathToolButton;
+    config.fileNameEdit = filepathLineEdit;
+    config.formatCombo = documentFormatComboBox;
+    config.parentWidget = this;
+    config.saveTitle = tr("Export Consensus Variations");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::VARIANT_TRACK;
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    formatConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 } // namespace

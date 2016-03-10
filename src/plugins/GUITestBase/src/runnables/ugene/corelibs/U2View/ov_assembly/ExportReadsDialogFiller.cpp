@@ -42,7 +42,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportReadsDialogFiller"
 
-ExportReadsDialogFiller::ExportReadsDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, const QString format, bool addToProject)
+ExportReadsDialogFiller::ExportReadsDialogFiller(HI::GUITestOpStatus &os, const QString &filePath, const QString &format, bool addToProject)
     : Filler(os, "ExportReadsDialog"),
       filePath(filePath),
       format(format),

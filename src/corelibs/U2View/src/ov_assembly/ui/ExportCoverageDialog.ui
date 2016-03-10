@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>276</height>
+    <width>420</width>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="gbFileOptions">
-     <property name="title">
-      <string/>
-     </property>
+    <widget class="QWidget" name="gbFileOptions" native="true">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="lblFilePath">
@@ -119,10 +116,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="gbAdditionalOptions">
-     <property name="title">
-      <string>Additional options</string>
-     </property>
+    <widget class="QWidget" name="gbAdditionalOptions" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="chbExportCoverage">

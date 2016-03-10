@@ -539,7 +539,7 @@ private:
 class U2VIEW_EXPORT ExportHighligtningTask : public Task {
     Q_OBJECT
 public:
-    ExportHighligtningTask(ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_);
+    ExportHighligtningTask(ExportHighligtingDialogController *dialog, MSAEditorSequenceArea *msaese_);
 
     void run();
     QString generateReport() const;

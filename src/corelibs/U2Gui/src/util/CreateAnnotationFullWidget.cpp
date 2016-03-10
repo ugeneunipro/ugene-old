@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GObjectComboBoxController.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2LongLongValidator.h>
 
 #include "CreateAnnotationFullWidget.h"
@@ -201,10 +202,6 @@ void CreateAnnotationFullWidget::setLocation(const U2Location &location) {
     leLocation->setText(getGenbankLocationString(location));
 }
 
-QString CreateAnnotationFullWidget::getNewTablePath() const {
-    return leNewTablePath->text();
-}
-
 QString CreateAnnotationFullWidget::getAnnotationTypeString() const {
     QListWidgetItem *currentItem = lwAnnotationType->currentItem();
     SAFE_POINT(NULL != currentItem, "Annotation type is not selected", "");
@@ -299,7 +296,6 @@ void CreateAnnotationFullWidget::init() {
 
 void CreateAnnotationFullWidget::connectSignals() {
     connect(tbBrowseExistingTable, SIGNAL(clicked()), SLOT(sl_selectExistingTableRequest()));
-    connect(tbBrowseNewTable, SIGNAL(clicked()), SLOT(sl_selectNewTableRequest()));
     connect(leGroupName, SIGNAL(textEdited(const QString &)), SLOT(sl_groupNameEdited()));
     connect(leGroupName, SIGNAL(textChanged(const QString &)), SLOT(sl_groupNameEdited()));
     connect(leAnnotationName, SIGNAL(textEdited(const QString &)), SLOT(sl_annotationNameEdited()));
@@ -320,6 +316,11 @@ void CreateAnnotationFullWidget::countDescriptionUsage() const {
     if (!leDescription->text().isEmpty()) {
         GCOUNTER(cvar, tvar, "CreateAnnotationFullWidget: description is used");
     }
+}
+
+void CreateAnnotationFullWidget::fillSaveDocumentControllerConfig(SaveDocumentControllerConfig &config) const {
+    config.fileNameEdit = leNewTablePath;
+    config.fileDialogButton = tbBrowseNewTable;
 }
 
 }   // namespace U2

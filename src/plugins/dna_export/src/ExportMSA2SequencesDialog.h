@@ -22,20 +22,17 @@
 #ifndef _U2_EXPORT_MSA2SEQ_DIALOG_H_
 #define _U2_EXPORT_MSA2SEQ_DIALOG_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <ui/ui_ExportMSA2SequencesDialog.h>
+#include "ui/ui_ExportMSA2SequencesDialog.h"
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
-class ExportMSA2SequencesDialog : public QDialog, Ui_ExportMSA2SequencesDialog {
+class ExportMSA2SequencesDialog : public QDialog, private Ui_ExportMSA2SequencesDialog {
     Q_OBJECT
 public:
     ExportMSA2SequencesDialog(QWidget* p);
@@ -49,7 +46,9 @@ public:
     bool                addToProjectFlag;
 
 private:
-    SaveDocumentGroupController* saveContoller;
+    void initSaveController();
+
+    SaveDocumentController* saveController;
 };
 
 }//namespace

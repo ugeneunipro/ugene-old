@@ -22,13 +22,9 @@
 #ifndef _U2_EXPORT_ANNOTATIONS_DIALOG_H_
 #define _U2_EXPORT_ANNOTATIONS_DIALOG_H_
 
-#include <U2Core/global.h>
+#include <QDialog>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include <U2Core/global.h>
 
 namespace U2 {
 
@@ -37,6 +33,8 @@ namespace Ui {
 class ExportAnnotationsDialog;
 
 }
+
+class SaveDocumentController;
 
 class U2GUI_EXPORT ExportAnnotationsDialog : public QDialog {
     Q_OBJECT
@@ -52,16 +50,14 @@ public:
     bool                            exportSequenceNames( ) const;
     void                            setExportSequenceVisible( bool value );
 
-private slots:
-    void                            sl_onChooseFileButtonClicked( );
-    void                            sl_onFormatChanged( const QString & );
-
-public:
     static const QString            CSV_FORMAT_ID;
 
 private:
+    void                            initSaveController(const QString &filename);
+
     QList<QString>                  supportedFormatsExts;
     Ui::ExportAnnotationsDialog *   ui;
+    SaveDocumentController *        saveController;
 };
 
 } // namespace U2

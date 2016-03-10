@@ -164,6 +164,10 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
         return false; // filtered by exclude flags
     }
 
+    if (c.formatsToExclude.contains(getFormatId())) {
+        return false; // format is explicetely excluded
+    }
+
     if (c.checkRawData && checkRawData(c.rawData).score < c.minDataCheckResult) {
         return false; //raw data is not matched
     }

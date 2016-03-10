@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "DocumentFormatUtils.h"
-
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -31,6 +29,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GenbankFeatures.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
@@ -40,6 +39,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
+
+#include "DocumentFormatUtils.h"
 
 namespace U2 {
 
@@ -315,5 +316,12 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     return so;
 }
 
+QString DocumentFormatUtils::getFormatNameById(const DocumentFormatId &formatId) {
+    DocumentFormatRegistry *registry = AppContext::getDocumentFormatRegistry();
+    SAFE_POINT(NULL != registry, L10N::nullPointerError("document format registry"), "");
+    DocumentFormat *format = registry->getFormatById(formatId);
+    SAFE_POINT(NULL != format, QString("Document format '%1' is not registered").arg(formatId), "");
+    return format->getFormatName();
+}
 
 } //namespace

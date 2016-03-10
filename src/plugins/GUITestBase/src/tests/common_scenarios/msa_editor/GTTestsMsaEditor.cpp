@@ -1879,7 +1879,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 // 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,-1,testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, "CLUSTALW", testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows"));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
@@ -2928,7 +2928,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029){
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Phaneroptera_falcata"));
         GTGlobals::sleep();
 
-        GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,42,44));
+        GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os,42,44));
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
         GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
         GTGlobals::sleep();
@@ -2967,7 +2967,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029_1){//DIFFERENCE:gaps are trimmed, FASTQ form
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseKey));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 
@@ -3555,7 +3555,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //Expected state: tree appeared
 }
 
-void test_0039_function(HI::GUITestOpStatus &os, int comboNum, QString extention){
+void test_0039_function(HI::GUITestOpStatus &os, const QString &comboText, QString extention){
     //1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, UGUITest::dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -3568,55 +3568,45 @@ void test_0039_function(HI::GUITestOpStatus &os, int comboNum, QString extention
     //    Amino translation: Standart genetic code
     //    Add document to project: checked
     GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, comboNum, UGUITest::testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, comboText, UGUITest::sandBoxDir + "COI_transl.aln"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
     GTMouseDriver::click(os,Qt::RightButton);
-    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //Expected state: transl.aln appeared in project
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extention));
-
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI_transl." + extention));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039){
-//    QMap<int,QString> extMap;
-//    extMap[0] = "aln";
-//    extMap[1] = "fa";
-//    extMap[2] = "msf";
-//    extMap[3] = "meg";
-//    extMap[4] = "nex";
-//    extMap[5] = "phy";
-//    extMap[6] = "phy";
-//    extMap[7] = "sto";
-    test_0039_function(os, 0, "aln");
+GUI_TEST_CLASS_DEFINITION(test_0039) {
+    test_0039_function(os, "CLUSTALW", "aln");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_1){
-    test_0039_function(os, 1, "fa");
+GUI_TEST_CLASS_DEFINITION(test_0039_1) {
+    test_0039_function(os, "FASTA", "fa");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_2){
-    test_0039_function(os, 2, "msf");
+GUI_TEST_CLASS_DEFINITION(test_0039_2) {
+    test_0039_function(os, "MSF", "msf");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_3){
-    test_0039_function(os, 3, "meg");
+GUI_TEST_CLASS_DEFINITION(test_0039_3) {
+    test_0039_function(os, "Mega", "meg");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_4){
-    test_0039_function(os, 4, "nex");
+GUI_TEST_CLASS_DEFINITION(test_0039_4) {
+    test_0039_function(os, "NEXUS", "nex");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_5){
-    test_0039_function(os, 5, "phy");
+GUI_TEST_CLASS_DEFINITION(test_0039_5) {
+    test_0039_function(os, "PHYLIP Interleaved", "phy");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_6){
-    test_0039_function(os, 6, "phy");
+GUI_TEST_CLASS_DEFINITION(test_0039_6) {
+    test_0039_function(os, "PHYLIP Sequential", "phy");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0039_7){
-    test_0039_function(os, 7, "sto");
+GUI_TEST_CLASS_DEFINITION(test_0039_7) {
+    test_0039_function(os, "Stockholm", "sto");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files

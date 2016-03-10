@@ -49,7 +49,7 @@ ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(HI::GUITestOpStatus &
         bool _columnSeparator, const QString &_separator, int _numberOfLines,
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& _roleParameters, GTGlobals::UseMethod method):
-Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format),
+Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(QDir::toNativeSeparators(_resultFile)), format(_format),
        addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator),
        numberOfLines(_numberOfLines), separator(_separator),
        skipAllLinesStartsWith(_skipAllLinesStartsWith), interpretMultipleAsSingle(_interpretMultipleAsSingle),

@@ -40,7 +40,7 @@ QString GUrlUtils::getUncompressedExtension(const GUrl& url) {
     if (ext == "gz") {
         QString completeSuffix = url.completeFileSuffix();
         QStringList suffixList = completeSuffix.split(".");
-        ext = suffixList.empty() ? QString() :  suffixList.first();
+        ext = (suffixList.size() < 2) ? QString() : suffixList[suffixList.size() - 2];
     }
     return ext;
 }

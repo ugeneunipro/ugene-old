@@ -695,7 +695,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024) {
     CHECK_SET_ERR(wgt != NULL, "ADVSequenceWidget is NULL");
     GTUtilsCv::cvBtn::click(os, wgt);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "150000..199950,1..50000"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "150000..199950,1..50000"));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
@@ -734,7 +734,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     ADVSingleSequenceWidget* wgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
     CHECK_SET_ERR(wgt != NULL, "ADVSequenceWidget is NULL");
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "560..743,1..180"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "560..743,1..180"));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
@@ -1869,7 +1869,6 @@ GUI_TEST_CLASS_DEFINITION(test_0057){
 //    In dialog select any value
     int labelsNum = GTUtilsSequenceView::getGraphLabels(os, graphView).size();
     CHECK_SET_ERR(labelsNum == 81, QString("unexpected labels number: %1").arg(labelsNum))
-    GTUtilsProject::closeProject(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0058){

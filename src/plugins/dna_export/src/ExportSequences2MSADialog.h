@@ -22,20 +22,17 @@
 #ifndef _U2_EXPORT_SEQ2MSA_DIALOG_H_
 #define _U2_EXPORT_SEQ2MSA_DIALOG_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <ui/ui_ExportSequences2MSADialog.h>
+#include "ui/ui_ExportSequences2MSADialog.h"
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
-class ExportSequences2MSADialog : public QDialog, Ui_ExportSequences2MSADialog {
+class ExportSequences2MSADialog : public QDialog, private Ui_ExportSequences2MSADialog {
     Q_OBJECT
 public:
     ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl = QString() );
@@ -45,7 +42,6 @@ public:
 
     virtual void accept();
 
-
 public:
     QString url;
     DocumentFormatId format;
@@ -53,9 +49,10 @@ public:
     bool    useGenbankHeader;
 
 private:
-    SaveDocumentGroupController* saveContoller;
-    QPushButton* okButton;
+    void initSaveController(const QString &defaultUrl);
 
+    SaveDocumentController* saveController;
+    QPushButton* okButton;
 };
 
 }//namespace

@@ -22,18 +22,18 @@
 #ifndef _U2_EXTRACT_ASSEMBLY_REGION_DIALOG_H_
 #define _U2_EXTRACT_ASSEMBLY_REGION_DIALOG_H_
 
-#include <QtWidgets/QDialog>
-
-#include "ExtractAssemblyRegionTask.h"
-
-#include "ui/ui_ExtractAssemblyRegionDialog.h"
+#include <QDialog>
 
 #include <U2Core/U2Region.h>
+
 #include <U2Formats/SQLiteDbi.h>
+
+#include "ExtractAssemblyRegionTask.h"
+#include "ui/ui_ExtractAssemblyRegionDialog.h"
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 class RegionSelector;
 
 class ExtractAssemblyRegionDialog : public QDialog, public Ui_ExtractAssemblyRegionDialog {
@@ -42,10 +42,14 @@ public:
     ExtractAssemblyRegionDialog(QWidget * p, ExtractAssemblyRegionTaskSettings* settings);
 
     virtual void accept();
+
 private slots:
     void sl_regionChanged(const U2Region& newRegion);
+
 private:
-    SaveDocumentGroupController * saveController;
+    void initSaveController();
+
+    SaveDocumentController * saveController;
     RegionSelector * regionSelector;
     ExtractAssemblyRegionTaskSettings *settings;
 };

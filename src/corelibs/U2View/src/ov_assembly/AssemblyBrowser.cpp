@@ -59,6 +59,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/Notification.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
@@ -95,7 +96,7 @@ const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 
 AssemblyBrowser::AssemblyBrowser(QString viewName, AssemblyObject * o) :
 GObjectView(AssemblyBrowserFactory::ID, viewName), ui(NULL),
-gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
+gobject(o), model(NULL), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(NULL), zoomOutAction(NULL), posSelectorAction(NULL), posSelector(NULL), showCoordsOnRulerAction(NULL), saveScreenShotAction(NULL),
 exportToSamAction(NULL), setReferenceAction(NULL), extractAssemblyRegionAction(NULL), loadReferenceTask(NULL)

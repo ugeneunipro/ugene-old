@@ -22,28 +22,28 @@
 #ifndef _U2_WEIGHT_MATRIX_BUILD_DIALOG_CONTROLLER_H_
 #define _U2_WEIGHT_MATRIX_BUILD_DIALOG_CONTROLLER_H_
 
-#include <ui/ui_PWMBuildDialog.h>
+#include <QDialog>
 
-#include "WeightMatrixPlugin.h"
-#include "WeightMatrixAlgorithm.h"
-#include <U2Core/Task.h>
-#include <U2Core/MAlignment.h>
+#include <U2Algorithm/PWMConversionAlgorithm.h>
+
 #include <U2Core/DNASequence.h>
+#include <U2Core/MAlignment.h>
 #include <U2Core/PFMatrix.h>
 #include <U2Core/PWMatrix.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <U2Algorithm/PWMConversionAlgorithm.h>
+#include <U2Core/Task.h>
+
 #include <U2View/AlignmentLogo.h>
+
+#include "WeightMatrixAlgorithm.h"
+#include "WeightMatrixPlugin.h"
+#include "ui/ui_PWMBuildDialog.h"
 
 namespace U2 {
 
 class LoadDocumentTask;
 class PWMBuildSettings;
 class PWMModel;
+class SaveDocumentController;
 
 class PWMBuildDialogController : public QDialog, public Ui_PWMBuildDialog {
     Q_OBJECT
@@ -57,7 +57,7 @@ public slots:
 
 private slots:
     void sl_inFileButtonClicked();
-    void sl_outFileButtonClicked();
+    void sl_formatChanged(const QString &newFormatId);
     void sl_okButtonClicked();
     void sl_matrixTypeChanged(bool);
 
@@ -65,10 +65,12 @@ private slots:
     void sl_onProgressChanged();
 
 private:
+    void initFrequencySaveController();
+    void initWeightSaveController();
     void reportError(const QString &message);
 
-private:
     Task* task;
+    SaveDocumentController *saveController;
     AlignmentLogoRenderArea* logoArea;
     QPushButton* okButton;
     QPushButton* cancelButton;

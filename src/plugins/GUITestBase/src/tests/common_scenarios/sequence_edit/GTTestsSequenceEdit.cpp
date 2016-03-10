@@ -65,7 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 50));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
@@ -104,7 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 3. Fill the next field in dialog:
 //     {Range:} 1..50
 //
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 50));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
@@ -202,7 +202,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
@@ -271,7 +271,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1");
     CHECK_SET_ERR(dummyTest != NULL, "There is no annotation DUMMY_1");
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 2, 2));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 2, 2));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep();
 
@@ -299,7 +299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 13));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 10, 13));
 
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTGlobals::sleep();
@@ -319,7 +319,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 11));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 11));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));

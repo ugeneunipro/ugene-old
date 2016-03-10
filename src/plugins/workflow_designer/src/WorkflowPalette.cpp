@@ -25,6 +25,7 @@
 #include <QButtonGroup>
 #include <QContextMenuEvent>
 #include <QDir>
+#include <QDrag>
 #include <QHeaderView>
 #include <QItemDelegate>
 #include <QMenu>
@@ -37,9 +38,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
-#include <U2Core/Settings.h>
-
 #include <U2Core/QObjectScopedPointer.h>
+#include <U2Core/Settings.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>

@@ -46,10 +46,6 @@ void CreateAnnotationWidget::sl_selectExistingTableRequest() {
     emit si_selectExistingTableRequest();
 }
 
-void CreateAnnotationWidget::sl_selectNewTableRequest() {
-    emit si_selectNewTableRequest();
-}
-
 void CreateAnnotationWidget::sl_selectGroupNameMenuRequest() {
     emit si_selectGroupNameMenuRequest();
 }

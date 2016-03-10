@@ -1009,7 +1009,7 @@ GUI_TEST_CLASS_DEFINITION(test_0681) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/681", "seq.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 9));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 9));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
 
@@ -1456,8 +1456,8 @@ GUI_TEST_CLASS_DEFINITION(test_0775){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "1..2,5..10,15..20"));
-    //GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 20));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, "1..2,5..10,15..20"));
+    //GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 10, 20));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 //    2. Open "Region selection" dialog {Ctrl+a} fill it with next data:
@@ -3300,7 +3300,7 @@ GUI_TEST_CLASS_DEFINITION(test_0981_2) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 2));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
     GTGlobals::sleep(1000);

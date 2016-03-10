@@ -19,24 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSequencesDialogFiller.h"
-#include <primitives/GTWidget.h>
-#include <primitives/GTLineEdit.h>
-#include <primitives/GTComboBox.h>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QPushButton>
+
 #include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
 #include <primitives/GTRadioButton.h>
 #include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
-#endif
+#include "ExportSequencesDialogFiller.h"
 
 namespace U2 {
 
@@ -54,6 +49,14 @@ ExportSelectedRegionFiller::ExportSelectedRegionFiller(HI::GUITestOpStatus &_os,
     }
 
     path = __path;
+}
+
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(GUITestOpStatus &os, const QString &filePath)
+    : Filler(os, "U2__ExportSequencesDialog"),
+      translate(false),
+      saveAllAminoFrames(true) {
+    path = QFileInfo(filePath).dir().path() + "/";
+    name = QFileInfo(filePath).fileName();
 }
 
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(HI::GUITestOpStatus &os, CustomScenario *customScenario)
@@ -118,7 +121,7 @@ ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFi
     /*if (__path.at(__path.count() - 1) != '/') {
     __path += '/';
     }*/
-    path = __path;
+    path = QDir::toNativeSeparators(__path);
 
     comboBoxItems[Fasta] = "FASTA";
     comboBoxItems[Fastq] = "FASTQ";

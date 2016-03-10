@@ -19,24 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "EditSequenceDialogFiller.h"
-#include <drivers/GTMouseDriver.h>
-#include <drivers/GTKeyboardDriver.h>
-#include <primitives/GTWidget.h>
-#include <primitives/GTLineEdit.h>
-#include <primitives/GTRadioButton.h>
-#include <primitives/GTComboBox.h>
-#include <primitives/GTCheckBox.h>
-#include <primitives/GTPlainTextEdit.h>
-#include <primitives/GTSpinBox.h>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QGroupBox>
+#include <QPushButton>
 
 #include <base_dialogs/MessageBoxFiller.h>
+#include <drivers/GTKeyboardDriver.h>
+#include <drivers/GTMouseDriver.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTLineEdit.h>
+#include <primitives/GTPlainTextEdit.h>
+#include <primitives/GTRadioButton.h>
+#include <primitives/GTSpinBox.h>
+#include <primitives/GTWidget.h>
 
-#include <QtCore/QDir>
-#include <QApplication>
-#include <QPushButton>
-#include <QDialogButtonBox>
-#include <QGroupBox>
+#include "EditSequenceDialogFiller.h"
 
 namespace U2 {
 using namespace HI;
@@ -52,6 +52,7 @@ InsertSequenceFiller::InsertSequenceFiller(HI::GUITestOpStatus &_os, const QStri
     if (!documentLocation.isEmpty()) {
         documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + documentLocation);
     }
+    documentLocation = QDir::toNativeSeparators(documentLocation);
     comboBoxItems[FASTA] = "FASTA";
     comboBoxItems[Genbank] = "Genbank";
     mergeAnnotations = _mergeAnnotations;

@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
 class ExportMSA2MSADialog : public QDialog, Ui_ExportMSA2MSADialog {
     Q_OBJECT
@@ -46,7 +46,9 @@ private slots:
     void sl_exportClicked();
 
 private:
-    SaveDocumentGroupController* saveContoller;
+    void initSaveController(const QString &defaultFileName, const DocumentFormatId &defaultFormatId);
+
+    SaveDocumentController* saveController;
     QList<QString> tableID;
 };
 

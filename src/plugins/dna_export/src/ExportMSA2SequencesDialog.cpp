@@ -19,29 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportMSA2SequencesDialog.h"
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentGroupController.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/SaveDocumentController.h>
 
-#define SETTINGS_ROOT QString("dna_export/")
+#include "ExportMSA2SequencesDialog.h"
 
 namespace U2 {
 
-ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p): QDialog(p) {
+ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p)
+    : QDialog(p),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467509");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
@@ -50,32 +46,37 @@ ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p): QDialog(p) {
     trimGapsFlag = false;
     addToProjectFlag = true;
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.supportedObjectTypes+=GObjectTypes::SEQUENCE;
-    conf.fileDialogButton = fileButton;
-    conf.formatCombo = formatCombo;
-    conf.fileNameEdit = fileNameEdit;
-    conf.parentWidget = this;
-    conf.defaultFormatId = BaseDocumentFormats::FASTA;
-    saveContoller = new SaveDocumentGroupController(conf, this);
-
+    initSaveController();
 }
 
 void ExportMSA2SequencesDialog::accept() {
-    if (fileNameEdit->text().isEmpty()) {
+    if (saveController->getSaveFileName().isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
 
-    url = saveContoller->getSaveFileName();
-    format = saveContoller->getFormatIdToSave();
+    url = saveController->getSaveFileName();
+    format = saveController->getFormatIdToSave();
     trimGapsFlag = trimGapsRB->isChecked();
     addToProjectFlag = addToProjectBox->isChecked();
 
     QDialog::accept();
 }
 
+void ExportMSA2SequencesDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFormatId = BaseDocumentFormats::FASTA;
+    config.fileDialogButton = fileButton;
+    config.fileNameEdit = fileNameEdit;
+    config.formatCombo = formatCombo;
+    config.parentWidget = this;
 
-}//namespace
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::SEQUENCE;
+    formatConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
+}
+
+}   // namespace U2

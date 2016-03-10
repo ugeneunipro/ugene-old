@@ -22,47 +22,35 @@
 #ifndef _U2_PAIR_ALIGN_H
 #define _U2_PAIR_ALIGN_H
 
+#include <QList>
+#include <QString>
+#include <QStringList>
+#include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QToolButton>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <QVBoxLayout>
+
+#include <U2Gui/SuggestCompleter.h>
+
 #include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
 #include "../MsaOpSavableTab.h"
 #include "../SequenceSelectorWidgetController.h"
 
-#include <QtCore/QList>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#include <QtGui/QToolButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QVBoxLayout>
-#endif
-
-#include <U2Gui/SuggestCompleter.h>
-
 namespace U2 {
 
+class AlignmentAlgorithm;
+class AlignmentAlgorithmMainWidget;
 class MAlignment;
 class MAlignmentModInfo;
 class MSADistanceAlgorithm;
 class MSAEditor;
-class AlignmentAlgorithm;
-class AlignmentAlgorithmMainWidget;
 class PairwiseAlignmentTaskSettings;
+class SaveDocumentController;
 class ShowHideSubgroupWidget;
 
 class U2VIEW_EXPORT PairAlign : public QWidget, public Ui_PairwiseAlignmentOptionsPanelWidget {
@@ -72,22 +60,12 @@ class U2VIEW_EXPORT PairAlign : public QWidget, public Ui_PairwiseAlignmentOptio
 public:
     PairAlign(MSAEditor* _msa);
 
-private:
-    void initLayout();
-    void initParameters();
-    void connectSignals();
-    void checkState();
-    void updatePercentOfSimilarity();
-    bool checkSequenceNames();
-    AlignmentAlgorithm* getAlgorithmById(const QString& algorithmId);
-
 private slots:
     void sl_algorithmSelected(const QString& algorithmName);
     void sl_subwidgetStateChanged(const QString& id);
     void sl_inNewWindowCheckBoxChangeState(bool newState);
-    void sl_selectFileButtonClicked();
     void sl_alignButtonPressed();
-    void sl_outputFileChanged(const QString& newText);
+    void sl_outputFileChanged();
 
     void sl_distanceCalculated();
     void sl_alignComplete();
@@ -96,7 +74,16 @@ private slots:
     void sl_alignmentChanged();
 
 private:
+    void initLayout();
+    void initParameters();
+    void connectSignals();
+    void checkState();
+    void updatePercentOfSimilarity();
+    bool checkSequenceNames();
+    AlignmentAlgorithm* getAlgorithmById(const QString& algorithmId);
     void updateWarningMessage();
+    void initSaveController();
+    static QString getDefaultFilePath();
 
     MSAEditor* msa;
     PairwiseAlignmentWidgetsSettings * pairwiseAlignmentWidgetsSettings;
@@ -111,6 +98,7 @@ private:
     SequenceSelectorWidgetController *firstSeqSelectorWC;
     SequenceSelectorWidgetController *secondSeqSelectorWC;
 
+    SaveDocumentController *saveController;
     MsaOpSavableTab savableTab;
 
     bool showSequenceWidget;

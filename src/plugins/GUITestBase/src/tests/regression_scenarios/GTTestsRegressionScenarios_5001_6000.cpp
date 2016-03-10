@@ -89,6 +89,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 
 namespace U2 {
@@ -175,6 +176,37 @@ GUI_TEST_CLASS_DEFINITION(test_5012_2) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_5018) {
+#ifdef Q_OS_WIN
+    const QString homePlaceholder = "%HOME_DIR%";
+#else
+    const QString homePlaceholder = "~";
+#endif
+
+//    1. Ensure that there is no "test_5018.fa" file in the home dir.
+    const QString homePath = QDir::homePath();
+    if (GTFile::check(os, homePath + "/test_5018.fa")) {
+        QFile(homePath + "/test_5018.fa").remove();
+        CHECK_SET_ERR(!GTFile::check(os, homePath + "/test_5018.fa"), "File can't be removed");
+    }
+
+//    2. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Call context menu on the sequence object in the Project View, select {Export/Import -> Export sequences...} item.
+//    4. Set output path to "~/test_5018.fa" for *nix and "%HOME_DIR%\test_5018.fa" for Windows. Accept the dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList() << "Export/Import" << "Export sequences..."));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, homePlaceholder + "/test_5018.fa"));
+    GTUtilsProjectTreeView::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: "test_5018.fa" appears in the home dir.
+    CHECK_SET_ERR(GTFile::check(os, homePath + "/test_5018.fa"), "File was not created");
+    QFile(homePath + "/test_5018.fa").remove();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_5027_1) {

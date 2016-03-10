@@ -24,6 +24,7 @@
 #include <U2Core/Counter.h>
 
 #include <U2Gui/GObjectComboBoxController.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include "CreateAnnotationOptionsPanelWidget.h"
@@ -124,10 +125,6 @@ void CreateAnnotationOptionsPanelWidget::setLocation(const U2Location &location)
     leLocation->setText(getGenbankLocationString(location));
 }
 
-QString CreateAnnotationOptionsPanelWidget::getNewTablePath() const {
-    return leNewTablePath->text();
-}
-
 QString CreateAnnotationOptionsPanelWidget::getAnnotationTypeString() const {
     return cbAnnotationType->currentText();
 }
@@ -198,6 +195,11 @@ void CreateAnnotationOptionsPanelWidget::countDescriptionUsage() const {
     }
 }
 
+void CreateAnnotationOptionsPanelWidget::fillSaveDocumentControllerConfig(SaveDocumentControllerConfig &config) const {
+    config.fileNameEdit = leNewTablePath;
+    config.fileDialogButton = tbBrowseNewTable;
+}
+
 void CreateAnnotationOptionsPanelWidget::initLayout() {
     ShowHideSubgroupWidget *saveShowHideWidget = new ShowHideSubgroupWidget("save_params", tr("Save annotation(s) to"), saveAnnotationsInnerWidget, false);
     mainLayout->insertWidget(0, saveShowHideWidget);
@@ -212,7 +214,6 @@ void CreateAnnotationOptionsPanelWidget::init() {
 
 void CreateAnnotationOptionsPanelWidget::connectSignals() {
     connect(tbBrowseExistingTable, SIGNAL(clicked()), SIGNAL(si_selectExistingTableRequest()));
-    connect(tbBrowseNewTable, SIGNAL(clicked()), SIGNAL(si_selectNewTableRequest()));
     connect(tbSelectGroupName, SIGNAL(clicked()), SIGNAL(si_selectGroupNameMenuRequest()));
     connect(tbDoComplement, SIGNAL(clicked()), SLOT(sl_complementLocation()));
     connect(leGroupName, SIGNAL(textEdited(const QString &)), SIGNAL(si_groupNameEdited()));

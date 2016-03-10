@@ -19,20 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "uHMM3BuildDialogImpl.h"
@@ -49,7 +44,6 @@ void UHMM3BuildDialogImpl::setSignalsAndSlots() {
     QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
     connect( maOpenFileButton, SIGNAL( clicked() ), SLOT( sl_maOpenFileButtonClicked() ) );
-    connect( outHmmfileToolButton, SIGNAL( clicked() ), SLOT( sl_outHmmFileButtonClicked() ) );
     connect( okButton, SIGNAL( clicked() ), SLOT( sl_buildButtonClicked() ) );
     connect( cancelButton, SIGNAL( clicked() ), SLOT( sl_cancelButtonClicked() ) );
     connect( mcFastRadioButton, SIGNAL( toggled( bool ) ), SLOT( sl_fastMCRadioButtonChanged( bool ) ) );
@@ -69,11 +63,28 @@ void UHMM3BuildDialogImpl::initialize() {
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
+    initSaveController();
     setModelValues(); // build settings are default here
     setSignalsAndSlots();
 }
 
-UHMM3BuildDialogImpl::UHMM3BuildDialogImpl( const MAlignment & ma, QWidget * p ) : QDialog( p ) {
+void UHMM3BuildDialogImpl::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = HMM_FILES_DIR_ID;
+    config.defaultFormatId = UHMMFormat::UHHMER_FORMAT_ID;
+    config.fileDialogButton = outHmmfileToolButton;
+    config.fileNameEdit = outHmmfileEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Select hmm file to create");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << UHMMFormat::UHHMER_FORMAT_ID;
+
+    saveController = new SaveDocumentController(config, formats, this);
+}
+
+UHMM3BuildDialogImpl::UHMM3BuildDialogImpl( const MAlignment & ma, QWidget * p )
+    : QDialog(p),
+      saveController(NULL) {
     initialize();
     model.alignment = ma;
     model.alignmentUsing = !model.alignment.isEmpty();
@@ -83,7 +94,6 @@ UHMM3BuildDialogImpl::UHMM3BuildDialogImpl( const MAlignment & ma, QWidget * p )
         maLoadFromFileLabel->hide();
         maOpenFileButton->hide();
     }
-
 }
 
 void UHMM3BuildDialogImpl::setModelValues() {
@@ -110,15 +120,6 @@ void UHMM3BuildDialogImpl::sl_maOpenFileButtonClicked() {
         helper, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if( !helper.url.isEmpty() ) {
         maLoadFromFileEdit->setText( helper.url );
-    }
-}
-
-void UHMM3BuildDialogImpl::sl_outHmmFileButtonClicked() {
-    LastUsedDirHelper helper( HMM_FILES_DIR_ID );
-    helper.url = U2FileDialog::getSaveFileName( this, tr( "Select hmm file to create" ),
-        helper, DialogUtils::prepareDocumentsFileFilterByObjType( UHMMObject::UHMM_OT, true) );
-    if( !helper.url.isEmpty() ) {
-        outHmmfileEdit->setText( helper.url );
     }
 }
 
@@ -174,7 +175,7 @@ void UHMM3BuildDialogImpl::getModelValues() {
         assert( false );
     }
     
-    model.buildSettings.outFile = outHmmfileEdit->text();
+    model.buildSettings.outFile = saveController->getSaveFileName();
     model.inputFile = maLoadFromFileEdit->text();
 }
 

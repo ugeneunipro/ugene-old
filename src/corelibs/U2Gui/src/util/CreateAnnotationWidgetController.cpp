@@ -58,6 +58,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include "CreateAnnotationFullWidget.h"
@@ -66,10 +67,7 @@
 #include "CreateAnnotationWidgetController.h"
 #include "GObjectComboBoxController.h"
 
-#define SETTINGS_LASTDIR "create_annotation/last_dir"
-
 namespace U2 {
-/* TRANSLATOR U2::CreateAnnotationWidgetController */
 
 CreateAnnotationModel::CreateAnnotationModel()
     : defaultIsNewDoc(false),
@@ -96,12 +94,14 @@ AnnotationTableObject * CreateAnnotationModel::getAnnotationObject() const {
 
 const QString CreateAnnotationWidgetController::GROUP_NAME_AUTO = QObject::tr("<auto>");
 const QString CreateAnnotationWidgetController::DESCRIPTION_QUALIFIER_KEY = "note";
+const QString CreateAnnotationWidgetController::SETTINGS_LASTDIR = "create_annotation/last_dir";
 
 CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateAnnotationModel& m,
                                                                    QObject* p,
                                                                    AnnotationWidgetMode layoutMode) :
     QObject(p),
-    model(m)
+    model(m),
+    saveController(NULL)
 {
     this->setObjectName("CreateAnnotationWidgetController");
     assert(AppContext::getProject()!=NULL);
@@ -120,7 +120,6 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
 
     commonWidgetUpdate(model);
 
-    connect(w, SIGNAL(si_selectNewTableRequest()), SLOT(sl_onNewDocClicked()));
     connect(w, SIGNAL(si_selectExistingTableRequest()), SLOT(sl_onLoadObjectsClicked()));
     connect(w, SIGNAL(si_selectGroupNameMenuRequest()), SLOT(sl_groupName()));
     connect(w, SIGNAL(si_groupNameEdited()), SLOT(sl_groupNameEdited()));
@@ -154,27 +153,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     w->setLocationVisible(!model.hideLocation);
     w->setAnnotationNameVisible(!model.hideAnnotationName);
 
-    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString(""), true).toString();
-    if (dir.isEmpty() || !QDir(dir).exists()) {
-        dir = QDir::homePath();
-        Project* prj = AppContext::getProject();
-        if (prj != NULL) {
-            const QString& prjUrl = prj->getProjectURL();
-            if (!prjUrl.isEmpty()) {
-                QFileInfo fi(prjUrl);
-                const QDir& prjDir = fi.absoluteDir();
-                dir = prjDir.absolutePath();
-            }
-        }
-    }
-    dir += "/";
-    QString baseName = "MyDocument";
-    QString ext = ".gb";
-    QString url = dir + baseName + ext;
-    for (int i=1; QFileInfo(url).exists() || AppContext::getProject()->findDocumentByURL(url)!= NULL; i++) {
-        url = dir + baseName +"_"+QString::number(i) + ext;
-    }
-    w->setNewTablePath(url);
+    initSaveController();
 
     if (model.annotationObjectRef.isValid()) {
         occ->setSelectedObject(model.annotationObjectRef);
@@ -213,15 +192,6 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     }
 }
 
-void CreateAnnotationWidgetController::sl_onNewDocClicked() {
-    QString openUrl = QFileInfo(w->getNewTablePath()).absoluteDir().absolutePath();
-    QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, false);
-    QString name = U2FileDialog::getSaveFileName(NULL, tr("Save file"), openUrl, filter);
-    if (!name.isEmpty()) {
-        w->setNewTablePath(name);
-        AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath(), true);
-    }
-}
 class PTCAnnotationObjectFilter: public PTCObjectRelationFilter {
 public:
     PTCAnnotationObjectFilter(const GObjectRelation& _rel, bool _allowUnloaded, QObject* p = NULL)
@@ -266,7 +236,7 @@ QString CreateAnnotationWidgetController::validate() {
         if (AppContext::getProject()->findDocumentByURL(model.newDocUrl)!=NULL) {
             return tr("Document is already added to the project: '%1'").arg(model.newDocUrl);
         }
-        QString dirUrl = QFileInfo(w->getNewTablePath()).absoluteDir().absolutePath();
+        QString dirUrl = QFileInfo(saveController->getSaveFileName()).absoluteDir().absolutePath();
         QDir dir(dirUrl);
         if (!dir.exists()) {
             return tr("Illegal folder: %1").arg(dirUrl);
@@ -332,7 +302,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
         if (!forValidation){
             model.annotationObjectRef = GObjectReference();
         }
-        model.newDocUrl = w->getNewTablePath();
+        model.newDocUrl = saveController->getSaveFileName();
     }
 }
 
@@ -351,6 +321,40 @@ void CreateAnnotationWidgetController::createWidget(CreateAnnotationWidgetContro
         w = NULL;
         FAIL("Unexpected widget type",);
     }
+}
+
+QString CreateAnnotationWidgetController::defaultDir() {
+    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString(""), true).toString();
+    if (dir.isEmpty() || !QDir(dir).exists()) {
+        dir = QDir::homePath();
+        Project* prj = AppContext::getProject();
+        if (prj != NULL) {
+            const QString& prjUrl = prj->getProjectURL();
+            if (!prjUrl.isEmpty()) {
+                QFileInfo fi(prjUrl);
+                const QDir& prjDir = fi.absoluteDir();
+                dir = prjDir.absolutePath();
+            }
+        }
+    }
+    return dir;
+}
+
+void CreateAnnotationWidgetController::initSaveController() {
+    SaveDocumentControllerConfig conf;
+    conf.defaultFormatId = BaseDocumentFormats::PLAIN_GENBANK;
+    conf.defaultDomain = SETTINGS_LASTDIR;
+    conf.defaultFileName = defaultDir() + "/MyDocument.gb";
+    conf.parentWidget = w;
+    conf.saveTitle = tr("Save File");
+    conf.rollOutProjectUrls = true;
+    w->fillSaveDocumentControllerConfig(conf);
+
+    QList<DocumentFormatId> formats;
+    formats << BaseDocumentFormats::PLAIN_GENBANK;
+
+    delete saveController;
+    saveController = new SaveDocumentController(conf, formats, this);
 }
 
 bool CreateAnnotationWidgetController::prepareAnnotationObject() {

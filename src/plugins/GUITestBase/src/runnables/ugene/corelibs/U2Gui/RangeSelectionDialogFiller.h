@@ -27,14 +27,14 @@
 namespace U2 {
 using namespace HI;
 
-    class selectSequenceRegionDialogFiller : public Filler {
+    class SelectSequenceRegionDialogFiller : public Filler {
     public:
         enum RangeType {Single, Multiple};
-        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len);
-        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os);
-        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal);
-        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range);
-        selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin = true);
+        SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len);
+        SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os);
+        SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal);
+        SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range);
+        SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin = true);
 
         void commonScenario();
     private:

@@ -30,6 +30,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
@@ -37,7 +38,7 @@
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/DnaAssemblyUtils.h>
@@ -59,9 +60,10 @@ bool DnaAssemblyDialog::samOutput = false;
 #define MATE_DOWNSTREAM         "Downstream"
 
 DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUrls, const QString& refSeqUrl)
-: QDialog(p),
-  assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()),
-  customGUI(NULL)
+    : QDialog(p),
+      assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()),
+      customGUI(NULL),
+      saveController(NULL)
 {
     setupUi(this);
     QMap<QString,QString> helpPagesMap;
@@ -93,18 +95,14 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     shortReadsTable->installEventFilter(this);
     QHeaderView* header = shortReadsTable->header();
     header->setStretchLastSection( false );
-#if (QT_VERSION < 0x050000) //Qt 5
-    header->setClickable( false );
-    header->setResizeMode( 0, QHeaderView::Stretch );
-#else
     header->setSectionsClickable( false );
     header->setSectionResizeMode( 0, QHeaderView::Stretch );
-#endif
+
+    initSaveController();
 
     sl_onAlgorithmChanged(methodNamesBox->currentText());
     connect(addShortreadsButton, SIGNAL(clicked()), SLOT(sl_onAddShortReadsButtonClicked()) );
     connect(removeShortReadsButton, SIGNAL(clicked()), SLOT(sl_onRemoveShortReadsButtonClicked()));
-    connect(setResultFileNameButton, SIGNAL(clicked()), SLOT(sl_onSetResultFileNameButtonClicked()));
     connect(addRefButton, SIGNAL(clicked()), SLOT(sl_onAddRefButtonClicked()) );
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
     connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
@@ -136,19 +134,11 @@ void DnaAssemblyDialog::updateState() {
 
 void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
     LastUsedDirHelper lod;
-    QStringList fileNames;
-#ifdef Q_OS_MAC
-    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        fileNames = U2FileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir, QString(), 0, QFileDialog::DontUseNativeDialog );
-    } else
-#endif
-    fileNames = U2FileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
+    QStringList fileNames = U2FileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
     }
     lod.url = fileNames.at(fileNames.count() - 1);
-
-    QList<QTreeWidgetItem*> items;
 
     foreach(const QString& f, fileNames) {
         ShortReadsTableItem* item = new ShortReadsTableItem(shortReadsTable, f);
@@ -160,11 +150,6 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
 void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     LastUsedDirHelper lod;
     QString filter;
-#ifdef Q_OS_MAC
-    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
-    } else
-#endif
 
     lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
     if (lod.url.isEmpty()) {
@@ -172,9 +157,8 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     }
 
     refSeqEdit->setText(lod.url);
-    if(resultFileNameEdit->text().isEmpty()){
-            buildResultUrl(lod.url);
-    }
+    buildResultUrl(lod.url);
+
     if (NULL != customGUI) {
         QString error;
         if (!customGUI->buildIndexUrl(lod.url, prebuiltIndex, error)) {
@@ -209,7 +193,7 @@ void DnaAssemblyDialog::accept() {
     if (refSeqEdit->text().isEmpty()) {
         QMessageBox::information(this, tr("DNA Assembly"),
             tr("Reference sequence url is not set!") );
-    } else if (resultFileNameEdit->text().isEmpty() ) {
+    } else if (saveController->getSaveFileName().isEmpty() ) {
         QMessageBox::information(this, tr("DNA Assembly"),
             tr("Result alignment file name is not set!") );
     } else if (shortReadsTable->topLevelItemCount() == 0 ) {
@@ -262,6 +246,32 @@ void DnaAssemblyDialog::accept() {
     }
 }
 
+void DnaAssemblyDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFormatId = samOutput ? BaseDocumentFormats::SAM : BaseDocumentFormats::UGENEDB;
+    config.fileDialogButton = setResultFileNameButton;
+    config.fileNameEdit = resultFileNameEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Set result alignment file name");
+
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << BaseDocumentFormats::SAM
+                                                                      << BaseDocumentFormats::UGENEDB;
+
+    saveController = new SaveDocumentController(config, formats, this);
+
+    connect(saveController, SIGNAL(si_formatChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
+}
+
+void DnaAssemblyDialog::buildResultUrl(const QString &refUrl) {
+    if (saveController->getSaveFileName().isEmpty()) {
+        const QString formatId = saveController->getFormatIdToSave();
+        const QFileInfo refinfo(refUrl);
+        const QString path = refinfo.path() + "/" + refinfo.completeBaseName();
+        saveController->setPath(path);
+        saveController->setFormat(formatId);
+    }
+}
+
 const GUrl DnaAssemblyDialog::getRefSeqUrl() {
     return refSeqEdit->text();
 }
@@ -291,15 +301,6 @@ void DnaAssemblyDialog::sl_onRemoveShortReadsButtonClicked() {
 
 }
 
-void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
-    LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Set result alignment file name"), lod.dir);
-    if (!lod.url.isEmpty()) {
-        GUrl result = lod.url;
-        buildResultUrl(result);
-    }
-}
-
 void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString &text) {
     methodName = text;
     updateState();
@@ -307,14 +308,11 @@ void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString &text) {
 
 void DnaAssemblyDialog::sl_onSamBoxClicked() {
     samOutput = samBox->isChecked();
-
-    if (!refSeqEdit->text().isEmpty()) {
-        buildResultUrl(resultFileNameEdit->text(), true);
-    }
+    saveController->setFormat(samOutput ? BaseDocumentFormats::SAM : BaseDocumentFormats::UGENEDB);
 }
 
 const QString DnaAssemblyDialog::getResultFileName() {
-    return resultFileNameEdit->text();
+    return saveController->getSaveFileName();
 }
 
 bool DnaAssemblyDialog::isPaired() const {
@@ -404,25 +402,6 @@ void DnaAssemblyDialog::addGuiExtension() {
     }
 }
 
-void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl, bool ignoreExtension ) {
-    QByteArray extension;
-    SAMFormat sf;
-    QStringList extensions = sf.getSupportedDocumentFileExtensions();
-    if(extensions.contains(refUrl.completeFileSuffix()) && !ignoreExtension){
-        samOutput = true;
-        samBox->setChecked(true);
-    }
-
-    if (samOutput) {
-        extension = "sam";
-    } else {
-        extension = "ugenedb";
-    }
-    QString tmpUrl = QString(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".%1").arg(extension.constData());
-
-    resultFileNameEdit->setText(tmpUrl);
-}
-
 bool DnaAssemblyDialog::eventFilter( QObject * obj, QEvent * event ) {
     if (obj == shortReadsTable) {
         if (event->type() == QEvent::KeyPress) {
@@ -447,6 +426,10 @@ void DnaAssemblyDialog::sl_onLibraryTypeChanged()
         ShortReadsTableItem* item = static_cast<ShortReadsTableItem*> (shortReadsTable->topLevelItem(i));
         item->setLibraryType( libraryComboBox->currentIndex() == 0 ? LIBRARY_TYPE_SINGLE : LIBRARY_TYPE_PAIRED );
     }
+}
+
+void DnaAssemblyDialog::sl_formatChanged(const QString &newFormat) {
+    samBox->setChecked(BaseDocumentFormats::SAM == newFormat);
 }
 
 DnaAssemblyToRefTaskSettings DnaAssemblyGUIUtils::getSettings(DnaAssemblyDialog *dialog) {

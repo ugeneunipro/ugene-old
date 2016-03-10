@@ -18,29 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include "DistanceMatrixDialogFiller.h"
 
-#include <primitives/GTWidget.h>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QGroupBox>
+#include <QPushButton>
+
+#include <GTGlobals.h>
+#include <primitives/GTCheckBox.h>
+#include <primitives/GTComboBox.h>
+#include <primitives/GTGroupBox.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTRadioButton.h>
-#include <primitives/GTComboBox.h>
-#include <primitives/GTCheckBox.h>
-#include <primitives/GTGroupBox.h>
-#include "GTGlobals.h"
+#include <primitives/GTWidget.h>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGroupBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGroupBox>
-#endif
-namespace U2{
+#include "DistanceMatrixDialogFiller.h"
+
+namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::DistanceMatrixDialogFiller"
 
@@ -62,7 +57,7 @@ DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(HI::GUITestOpStatus &os, 
     excludeGaps(true),
     saveToFile(true),
     format(_format),
-    path(_path)
+    path(QDir::toNativeSeparators(_path))
 {
 
 }

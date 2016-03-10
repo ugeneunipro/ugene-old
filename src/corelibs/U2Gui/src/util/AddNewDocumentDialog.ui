@@ -101,5 +101,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>AddNewDocumentDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

@@ -58,12 +58,12 @@ public:
                                         const QString & dir = QString(),
                                         QFileDialog::Options options = QFileDialog::ShowDirsOnly);
 
-    static QString getSaveFileName (QWidget * parent = 0,
-                                    const QString & caption = QString(),
-                                    const QString & dir = QString(),
-                                    const QString & filter = QString(),
-                                    QString * selectedFilter = 0,
-                                    QFileDialog::Options options = 0);
+    static QString getSaveFileName(QWidget * parent = 0,
+                                   const QString & caption = QString(),
+                                   const QString & dir = QString(),
+                                   const QString & filter = QString(),
+                                   QString * selectedFilter = 0,
+                                   QFileDialog::Options options = 0);
 
 private:
     static void activateWindow();

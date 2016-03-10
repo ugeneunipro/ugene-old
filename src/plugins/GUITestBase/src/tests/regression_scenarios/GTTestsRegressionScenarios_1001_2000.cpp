@@ -1241,14 +1241,14 @@ GUI_TEST_CLASS_DEFINITION(test_1065_2) {
 //    Expected state: SAM importing task successfully finish, the Assembly Viewer opens.
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/1065_2"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "1065_2.ugenedb"));
     AlignShortReadsFiller::Parameters p(testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fa",
                                         testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fq",
                                         AlignShortReadsFiller::Parameters::Bowtie);
     p.prebuiltIndex = true;
     p.useDefaultResultPath = false;
     p.resultDir = sandBoxDir;
-    p.resultFileName = "1065_2";
+    p.resultFileName = "1065_2.sam";
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &p));
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
@@ -1274,13 +1274,13 @@ GUI_TEST_CLASS_DEFINITION(test_1065_3) {
 //    Expected state: SAM importing task successfully finish, the Assembly Viewer opens.
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/1065_3"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "1065_3.ugenedb"));
     AlignShortReadsFiller::Parameters p(testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fa",
                                         testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fq",
                                         AlignShortReadsFiller::Parameters::Bowtie);
     p.useDefaultResultPath = false;
     p.resultDir = sandBoxDir;
-    p.resultFileName = "1065_3";
+    p.resultFileName = "1065_3.sam";
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &p));
     GTMenu::clickMainMenuItem(os, QStringList() << "Tools" << "NGS data analysis" << "Map reads to reference...");
@@ -2186,7 +2186,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
     GTGlobals::sleep(500);
 
 //3) Select any region of the sequence
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 100, 200));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 100, 200));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 
@@ -2421,7 +2421,7 @@ GUI_TEST_CLASS_DEFINITION(test_1212){
 //    2. Do "Select->Sequence Region..."
 //    3. In single selection mode enter any region
 //    4. Press "Go" and UGENE hangs up/crashes
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"100..200"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os,"100..200"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 //    Expected: region is selected
@@ -2436,7 +2436,7 @@ GUI_TEST_CLASS_DEFINITION(test_1212_1){
 //    2. Do "Select->Sequence Region..."
 //    3. In single selection mode enter any region
 //    4. Press "Go" and UGENE hangs up/crashes
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"1..199950"));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os,"1..199950"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 //    Expected: region is selected
@@ -4588,7 +4588,7 @@ GUI_TEST_CLASS_DEFINITION(test_1446){
 //    2) Use context menu for COI.aln in project tree view {Export/Import->Export nucleic alignment to amino}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,  QStringList() << "action_project__export_import_menu_action"
                                                       << "action_project__export_to_amino_action"));
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, -1, sandBoxDir + "test_1446.aln"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, "CLUSTALW", sandBoxDir + "test_1446.aln"));
     GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -6612,7 +6612,7 @@ GUI_TEST_CLASS_DEFINITION( test_1654 ) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 15));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 15));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 
@@ -6679,7 +6679,7 @@ GUI_TEST_CLASS_DEFINITION( test_1660 ) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 15));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 15));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 

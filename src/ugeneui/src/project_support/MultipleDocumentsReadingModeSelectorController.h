@@ -23,45 +23,49 @@
 #define _U2_MULTIPLE_SEQUENCE_FILES_SELECTOR_H_
 
 #include <QDialog>
+#include <QList>
 #include <QVariant>
-#include <QtCore/QList>
 
-#include <U2Core/GUrl.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrl.h>
 
 #include "ui/ui_MultipleSequenceFilesReadingMode.h"
 
-namespace U2{
+namespace U2 {
+
+class SaveDocumentController;
 
 class MultipleDocumentsReadingModeSelectorController {
 public:	
     static bool adjustReadingMode(QVariantMap& , QList<GUrl>& urls,const QMap<QString, qint64>& headerSequenceLengths);
-    static bool mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths);    
+    static bool mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths);
 private:
     MultipleDocumentsReadingModeSelectorController();
 };
 
 class MultipleDocumentsReadingModeDialog : public QDialog, public Ui_MultipleDocumentsReadingModeSelectorController{
-Q_OBJECT
+    Q_OBJECT
 public:
-    MultipleDocumentsReadingModeDialog(const QList<GUrl>& urls, QWidget* parent = 0); 
-    ~MultipleDocumentsReadingModeDialog();
+    MultipleDocumentsReadingModeDialog(const QList<GUrl>& urls, QWidget* parent = 0);
+
     bool setupGUI(QList<GUrl>& urls, QVariantMap& hintsDocuments, const QMap<QString, qint64>& headerSequenceLengths);
-    void setupOrderingMergeDocuments();
+
 private slots:
-   void sl_onMoveUp();
-   void sl_onMoveDown();
-   void sl_onChooseDirPath();
-   void sl_optionChanged(bool);
+    void sl_onMoveUp();
+    void sl_onMoveDown();
+    void sl_optionChanged();
+
 private:
-   void setupNewUrl();
-   QString deleteNumPrefix(QString);
-   void deleteAllNumPrefix();
-   void changeNumPrefix();
-   QString findUrlByFileName(const QString& fileName);
-private:
+    void initSequenceSaveController();
+    void initMsaSaveController();
+    QString setupNewUrl();
+    QString deleteNumPrefix(QString);
+    void deleteAllNumPrefix();
+    void changeNumPrefix();
+    QString findUrlByFileName(const QString& fileName);
+
+    SaveDocumentController *saveController;
     QList<GUrl> urls;
-    QString extension4MergedDocument;
 };
 
 }

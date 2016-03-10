@@ -3065,7 +3065,7 @@ void MSAEditorSequenceArea::cancelShiftTracking() {
     editor->getMSAObject()->releaseState();
 }
 
-ExportHighligtningTask::ExportHighligtningTask(ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_)
+ExportHighligtningTask::ExportHighligtningTask(ExportHighligtingDialogController *dialog, MSAEditorSequenceArea *msaese_)
     : Task(tr("Export highlighting"), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)
 {
     msaese = msaese_;

@@ -19,22 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSequences2MSADialogFiller.h"
-#include <primitives/GTWidget.h>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QPushButton>
+
 #include <primitives/GTCheckBox.h>
 #include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
+#include <primitives/GTWidget.h>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include "ExportSequences2MSADialogFiller.h"
 
 namespace U2 {
 
@@ -43,11 +38,11 @@ ExportSequenceAsAlignmentFiller::ExportSequenceAsAlignmentFiller(HI::GUITestOpSt
                                 ExportSequenceAsAlignmentFiller::FormatToUse _format, bool addDocumentToProject, GTGlobals::UseMethod method):
 Filler(_os, "U2__ExportSequences2MSADialog"), name(_name), useMethod(method), format(_format), addToProject(addDocumentToProject) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (__path.at(__path.count() - 1) != '/') {
-        __path += '/';
+    if (__path.at(__path.count() - 1) != QDir::separator()) {
+        __path += QDir::separator();
     }
 
-    path = __path;
+    path = QDir::toNativeSeparators(__path);
 
     comboBoxItems[Clustalw] = "CLUSTALW";
     comboBoxItems[Fasta] = "FASTA";

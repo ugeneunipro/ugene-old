@@ -36,10 +36,11 @@
 
 namespace U2 {
 
-CreateSequenceFromTextAndOpenViewTask::CreateSequenceFromTextAndOpenViewTask(const QList<DNASequence> &sequences, const QString &formatId, const GUrl &saveToPath) :
+CreateSequenceFromTextAndOpenViewTask::CreateSequenceFromTextAndOpenViewTask(const QList<DNASequence> &sequences, const QString &formatId, const GUrl &saveToPath, bool saveImmediately) :
     Task(tr("Create sequence from raw data"), TaskFlags_NR_FOSE_COSC),
     sequences(sequences),
     saveToPath(saveToPath),
+    saveImmediately(saveImmediately),
     openProjectTask(NULL),
     importedSequences(0),
     document(NULL)
@@ -76,7 +77,7 @@ QList<Task *> CreateSequenceFromTextAndOpenViewTask::onSubTaskFinished(Task *sub
         if (importedSequences == sequences.size()) {
             addDocument();
             CHECK_OP(stateInfo, res);
-            if (!saveToPath.isEmpty()) {
+            if (saveImmediately && !saveToPath.isEmpty()) {
                 res << new SaveDocumentTask(document);
             }
             res << new OpenViewTask(document);

@@ -32,14 +32,13 @@ class GObject;
 class Document;
 class MAlignment;
 class DNAAlphabet;
-class DocumentFormat;
 class LoadDocumentTask;
 class SaveDocumentTask;
 
 class DNASequenceGeneratorConfig {
 public:
     DNASequenceGeneratorConfig()
-        : addToProj(false), saveDoc(true), format(NULL), alphabet(NULL), length(0), numSeqs(1), useRef(true), window(0), seed(0) {}
+        : addToProj(false), saveDoc(true), alphabet(NULL), length(0), numSeqs(1), useRef(true), window(0), seed(0) {}
 
     const DNAAlphabet* getAlphabet() const { assert(alphabet); return alphabet; }
 
@@ -57,7 +56,7 @@ public:
 
     QString getOutUrlString() const { return outUrl; }
 
-    DocumentFormat* getDocumentFormat() const { return format; }
+    const DocumentFormatId & getDocumentFormatId() const { return formatId; }
 
     bool addToProj;
     bool saveDoc;
@@ -66,7 +65,7 @@ public:
     // output sequence base name
     QString sequenceName;
     // output document format
-    DocumentFormat* format;
+    DocumentFormatId formatId;
     // output sequence alphabet
     const DNAAlphabet* alphabet;
     // output sequence length

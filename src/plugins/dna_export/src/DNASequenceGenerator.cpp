@@ -254,7 +254,7 @@ QList<Task*> DNASequenceGeneratorTask::onGenerateTaskFinished( ) {
         IOAdapterUtils::url2io( cfg.getOutUrlString( ) ) );
 
     if (cfg.saveDoc) {
-        DocumentFormat *format = cfg.getDocumentFormat( );
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(cfg.getDocumentFormatId());
         Document* doc = format->createNewLoadedDocument(iof, cfg.getOutUrlString(), stateInfo);
         CHECK_OP( stateInfo, resultTasks );
         const QSet<QString> &supportedFormats = format->getSupportedObjectTypes( );

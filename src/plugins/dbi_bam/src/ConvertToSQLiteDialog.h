@@ -22,17 +22,17 @@
 #ifndef _U2_BAM_CONVERT_TO_SQLITE_DIALOG_H_
 #define _U2_BAM_CONVERT_TO_SQLITE_DIALOG_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <QtCore/QList>
+#include <QDialog>
+#include <QList>
+
 #include <U2Core/GUrl.h>
+
 #include "ui_ConvertToSQLiteDialog.h"
 
 namespace U2 {
+
+QT_FORWARD_DECLARE_CLASS(SaveDocumentController)
+
 namespace BAM {
 
 QT_FORWARD_DECLARE_CLASS(BAMInfo)
@@ -47,11 +47,11 @@ public:
     QString getReferenceUrl()const;
     bool        addToProject() const;
     void        hideAddToProjectOption();
+
 public slots:
     virtual void accept();
 
 private slots:
-    void on_destinationUrlButton_clicked();
     void sl_assemblyCheckChanged(QTableWidgetItem * item);
     void sl_bamInfoButtonClicked();
     void sl_refUrlButtonClicked();
@@ -65,15 +65,14 @@ private:
     void hideReferenceMessage();
     bool referenceFromFile();
     bool checkReferencesState();
+    void initSaveController();
 
-private:
     Ui::ConvertToSQLiteDialog ui;
+    SaveDocumentController *saveController;
 
     GUrl destinationUrl;
     GUrl sourceUrl;
     BAMInfo &bamInfo;
-
-    bool askIfDestFileExist;
 };
 
 } // namespace BAM

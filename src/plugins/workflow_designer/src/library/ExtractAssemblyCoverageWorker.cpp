@@ -184,7 +184,7 @@ void ExtractAssemblyCoverageWorkerFactory::init() {
         const Descriptor thresholdDesc(THRESHOLD_ATTR_ID,
                                        ExtractAssemblyCoverageWorker::tr("Threshold"),
                                        ExtractAssemblyCoverageWorker::tr("The minimum coverage value to export."));
-        attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, "assembly_coverage" + ExportCoverageSettings::BEDGRAPH_EXTENSION);
+        attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, "assembly_coverage." + ExportCoverageSettings::BEDGRAPH_EXTENSION);
 
         Attribute *formatAttribute = new Attribute(formatDesc, BaseTypes::NUM_TYPE(), false, ExportCoverageSettings::Bedgraph);
         formatAttribute->addRelation(new ExtractAssemblyCoverageFileExtensionRelation(BaseAttributes::URL_OUT_ATTRIBUTE().getId()));
@@ -199,10 +199,10 @@ void ExtractAssemblyCoverageWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::BEDGRAPH, QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1), true);
+        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::BEDGRAPH, QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION, true);
         DelegateTags tags;
         tags.set("filter", filter);
-        tags.set("extensions", QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1) << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1) + ExportCoverageSettings::COMPRESSED_EXTENSION);
+        tags.set("extensions", QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION << ExportCoverageSettings::BEDGRAPH_EXTENSION + ExportCoverageSettings::COMPRESSED_EXTENSION);
         delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(tags, "", false, false, true, NULL);
 
         QVariantMap formats;
@@ -291,7 +291,7 @@ QVariant ExtractAssemblyCoverageFileExtensionRelation::getAffectResult(const QVa
         urlStr.chop(ExportCoverageSettings::COMPRESSED_EXTENSION.size());
     }
 
-    const QString currentExtension = urlStr.mid(urlStr.lastIndexOf('.'));
+    const QString currentExtension = urlStr.mid(urlStr.lastIndexOf('.') + 1);
     if (currentExtension == ExportCoverageSettings::HISTOGRAM_EXTENSION ||
             currentExtension == ExportCoverageSettings::PER_BASE_EXTENSION ||
             currentExtension == ExportCoverageSettings::BEDGRAPH_EXTENSION) {
@@ -305,8 +305,8 @@ QVariant ExtractAssemblyCoverageFileExtensionRelation::getAffectResult(const QVa
 void ExtractAssemblyCoverageFileExtensionRelation::updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const {
     const ExportCoverageSettings::Format newFormat = static_cast<ExportCoverageSettings::Format>(influencingValue.toInt());
     if (NULL != dependentTags) {
-        dependentTags->set("extensions", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat).mid(1) << ExportCoverageSettings::getFormatExtension(newFormat).mid(1) + ExportCoverageSettings::COMPRESSED_EXTENSION);
-        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::getFormat(newFormat) + " coverage files", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat).mid(1));
+        dependentTags->set("extensions", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat) << ExportCoverageSettings::getFormatExtension(newFormat) + ExportCoverageSettings::COMPRESSED_EXTENSION);
+        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::getFormat(newFormat) + " coverage files", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat));
         dependentTags->set("filter", filter);
     }
 }

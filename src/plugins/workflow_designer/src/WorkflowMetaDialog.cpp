@@ -25,28 +25,35 @@
 #include <U2Designer/DesignerUtils.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/SaveDocumentController.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/WorkflowUtils.h>
 
+#include "WorkflowDocument.h"
 #include "WorkflowMetaDialog.h"
 
 namespace U2 {
 
-WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta): QDialog(p), meta(meta) {
+#define LAST_DIR QString("workflowview/lastdir")
+
+WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta)
+    : QDialog(p),
+      meta(meta),
+      saveController(NULL) {
     setupUi(this);
     new HelpButton(this, buttonBox, "17467906");
 
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     okButton = buttonBox->button(QDialogButtonBox::Ok);
 
-    connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowse()));
+    initSaveController();
+
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onSave()));
     connect(urlEdit, SIGNAL(textChanged(const QString & )), SLOT(sl_onURLChanged(const QString& )));
     connect(urlEdit, SIGNAL(textEdited (const QString & )), SLOT(sl_onURLChanged(const QString& )));
 
-    urlEdit->setText(meta.url);
     okButton->setDisabled(meta.url.isEmpty());
     nameEdit->setText(meta.name);
     commentEdit->setText(meta.comment);
@@ -54,7 +61,7 @@ WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta): QDial
 
 void WorkflowMetaDialog::sl_onSave() {
     assert(!WorkflowUtils::WD_FILE_EXTENSIONS.isEmpty());
-    QString url = urlEdit->text();
+    QString url = saveController->getSaveFileName();
     bool endsWithWDExt = false;
     foreach( const QString & ext, WorkflowUtils::WD_FILE_EXTENSIONS ) {
         assert(!ext.isEmpty());
@@ -75,20 +82,20 @@ void WorkflowMetaDialog::sl_onURLChanged(const QString & text) {
     okButton->setDisabled(text.isEmpty());
 }
 
-#define LAST_DIR QString("workflowview/lastdir")
+void WorkflowMetaDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultDomain = LAST_DIR;
+    config.defaultFileName = meta.url;
+    config.defaultFormatId = WorkflowDocFormat::FORMAT_ID;
+    config.fileDialogButton = browseButton;
+    config.fileNameEdit = urlEdit;
+    config.parentWidget = this;
+    config.saveTitle = tr("Save workflow to file");
+    config.rollFileName = false;
 
-void WorkflowMetaDialog::sl_onBrowse() {
-    QString url = urlEdit->text();
-    if (url.isEmpty()) {
-        url = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
-    }
-    QString filter = DesignerUtils::getSchemaFileFilter(false);
-    url = U2FileDialog::getSaveFileName(0, tr("Save workflow to file"), url, filter);
-    if (!url.isEmpty()) {
-        AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
-        urlEdit->setText(url);
-    }
+    const QList<DocumentFormatId> formats = QList<DocumentFormatId>() << WorkflowDocFormat::FORMAT_ID;
+
+    saveController = new SaveDocumentController(config, formats, this);
 }
-
 
 }//namespace

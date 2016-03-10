@@ -823,7 +823,7 @@ GUI_TEST_CLASS_DEFINITION(test_4095) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //GTCA
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 4));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
@@ -1252,9 +1252,9 @@ GUI_TEST_CLASS_DEFINITION(test_4121) {
             CHECK_SET_ERR(cbFormat != NULL, "cbFormat not found");
 
             if (isRawPresent) {
-                CHECK_SET_ERR(cbFormat->findText("raw") != -1, "raw format is present");
+                CHECK_SET_ERR(cbFormat->findText("Raw sequence") != -1, "raw format is not present");
             } else {
-                CHECK_SET_ERR(cbFormat->findText("raw") == -1, "raw format is present");
+                CHECK_SET_ERR(cbFormat->findText("Raw sequence") == -1, "raw format is present");
             }
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
@@ -2197,7 +2197,7 @@ GUI_TEST_CLASS_DEFINITION(test_4302_1) {
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     //2. Select any region
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, 1, 4));
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
     //3. Open main menu "Actions"

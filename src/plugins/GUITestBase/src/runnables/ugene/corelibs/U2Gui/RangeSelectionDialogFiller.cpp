@@ -39,7 +39,7 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len) : Filler(_os, "RangeSelectionDialog")
+SelectSequenceRegionDialogFiller::SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int *_len) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = true;
@@ -51,7 +51,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os) : Filler(_os, "RangeSelectionDialog")
+SelectSequenceRegionDialogFiller::SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = true;
@@ -63,7 +63,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal) : Filler(_os, "RangeSelectionDialog")
+SelectSequenceRegionDialogFiller::SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _minVal, int _maxVal) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = false;
@@ -75,7 +75,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
     multipleRange = QString();
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range) : Filler(_os, "RangeSelectionDialog")
+SelectSequenceRegionDialogFiller::SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, const QString &range) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Multiple;
     selectAll = false;
@@ -87,7 +87,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
     multipleRange = range;
 }
 
-selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin) : Filler(_os, "RangeSelectionDialog")
+SelectSequenceRegionDialogFiller::SelectSequenceRegionDialogFiller(HI::GUITestOpStatus &_os, int _length, bool selectFromBegin) : Filler(_os, "RangeSelectionDialog")
 {
     rangeType = Single;
     selectAll = false;
@@ -100,7 +100,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(HI::GUITestOp
 }
 
 #define GT_METHOD_NAME "commonScenario"
-void selectSequenceRegionDialogFiller::commonScenario()
+void SelectSequenceRegionDialogFiller::commonScenario()
 {
     GTGlobals::sleep(500);
     QWidget *dialog = QApplication::activeModalWidget();

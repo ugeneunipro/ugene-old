@@ -19,51 +19,47 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportMSA2MSADialogFiller.h"
-#include <primitives/GTWidget.h>
+#include <QApplication>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QPushButton>
+
+#include <primitives/GTComboBox.h>
 #include <primitives/GTLineEdit.h>
 #include <primitives/GTRadioButton.h>
-#include <primitives/GTComboBox.h>
+#include <primitives/GTWidget.h>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QComboBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#endif
+#include "ExportMSA2MSADialogFiller.h"
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(HI::GUITestOpStatus &_os, int _formatVal, QString _path) : Filler(_os, "U2__ExportMSA2MSADialog"),
-    formatVal(_formatVal),
-    path(_path){}
+ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(GUITestOpStatus &os, const QString &formatName, const QString &path)
+    : Filler(os, "U2__ExportMSA2MSADialog"),
+      formatName(formatName),
+      path(path) {
+
+}
 
 #define GT_METHOD_NAME "commonScenario"
-void ExportMSA2MSADialogFiller::commonScenario()
-{
+void ExportMSA2MSADialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    if(!path.isEmpty()){
-        QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-        GTLineEdit::setText(os, fileNameEdit,path);
+    if (!path.isEmpty()) {
+        GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "fileNameEdit", dialog), path);
     }
-    if(formatVal>=0){
-        QComboBox* formatCombo = dialog->findChild<QComboBox*>("formatCombo");
-        GTComboBox::setCurrentIndex(os, formatCombo, formatVal);
+
+    if (!formatName.isEmpty()) {
+        GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "formatCombo", dialog), formatName, true, GTGlobals::UseMouse);
     }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

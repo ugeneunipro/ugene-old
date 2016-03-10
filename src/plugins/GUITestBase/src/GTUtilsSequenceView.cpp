@@ -107,7 +107,7 @@ void GTUtilsSequenceView::getSequenceAsString(HI::GUITestOpStatus &os, QString &
     QWidget *mdiSequenceWidget = mdiWindow->findChild<ADVSingleSequenceWidget*>();
     GTWidget::click(os, mdiSequenceWidget);
 
-    Runnable *filler = new selectSequenceRegionDialogFiller(os);
+    Runnable *filler = new SelectSequenceRegionDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTKeyboardUtils::selectAll(os);
@@ -131,7 +131,7 @@ QString GTUtilsSequenceView::getSequenceAsString(HI::GUITestOpStatus &os, int nu
 
     GTWidget::click(os, getSeqWidgetByNumber(os, number));
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << "Copy sequence"));
@@ -151,7 +151,7 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(HI::GUITestOpStatus &os,
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    Runnable *filler = new selectSequenceRegionDialogFiller(os, length);
+    Runnable *filler = new SelectSequenceRegionDialogFiller(os, length);
     GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
@@ -179,7 +179,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(HI::GUITestOpStatus &os, i
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    Runnable *filler = new selectSequenceRegionDialogFiller(os, length, false);
+    Runnable *filler = new SelectSequenceRegionDialogFiller(os, length, false);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTKeyboardUtils::selectAll(os);
@@ -214,7 +214,7 @@ int GTUtilsSequenceView::getLengthOfSequence(HI::GUITestOpStatus &os)
     GTMouseDriver::click(os);
 
     int length = -1;
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, &length));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, &length));
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
@@ -253,7 +253,7 @@ void GTUtilsSequenceView::selectSequenceRegion(HI::GUITestOpStatus &os, int from
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, from, to));
+    GTUtilsDialog::waitForDialog(os, new SelectSequenceRegionDialogFiller(os, from, to));
 
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);

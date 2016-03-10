@@ -22,29 +22,25 @@
 #ifndef _U2_EXPORT_BLAST_RESULT_DIALOG_H_
 #define _U2_EXPORT_BLAST_RESULT_DIALOG_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-#include <ui/ui_ExportBlastResultDialog.h>
+#include "ui/ui_ExportBlastResultDialog.h"
 
 namespace U2 {
 
-class SaveDocumentGroupController;
+class SaveDocumentController;
 
-class ExportBlastResultDialog : public QDialog, Ui_ExportBlastResultDialog {
+class ExportBlastResultDialog : public QDialog, private Ui_ExportBlastResultDialog {
     Q_OBJECT
 public:
-    ExportBlastResultDialog(QWidget* p, const QString& defaultUrl = QString() );
+    ExportBlastResultDialog(QWidget* p, const QString& defaultUrl = QString());
 
     void setOkButtonText(const QString& text) const;
     void setFileLabelText(const QString& text) const;
 
     virtual void accept();
-
 
 public:
     QString url;
@@ -55,8 +51,9 @@ public:
     bool    addRefFlag;
 
 private:
-    SaveDocumentGroupController* saveContoller;
+    void initSaveController(const QString &defaultUrl);
 
+    SaveDocumentController* saveController;
 };
 
 }//namespace

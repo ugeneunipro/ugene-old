@@ -22,20 +22,17 @@
 #ifndef _U2_SAVE_SELECTED_SEQUENCES_DIALOG_CONTROLLER
 #define _U2_SAVE_SELECTED_SEQUENCES_DIALOG_CONTROLLER
 
+#include <QDialog>
+
 #include <U2Core/global.h>
-#include <U2Gui/SaveDocumentGroupController.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "ui/ui_SaveSelectedSequenceFromMSADialog.h"
 
-#include <ui/ui_SaveSelectedSequenceFromMSADialog.h>
+namespace U2 {
 
-namespace U2{
+class SaveDocumentController;
 
-class SaveSelectedSequenceFromMSADialogController : public QDialog, Ui_SaveSelectedSequenceFromMSADialog {
+class SaveSelectedSequenceFromMSADialogController : public QDialog, private Ui_SaveSelectedSequenceFromMSADialog {
     Q_OBJECT
 public:
     SaveSelectedSequenceFromMSADialogController(QWidget* p);
@@ -48,7 +45,9 @@ public:
     bool                addToProjectFlag;
 
 private:
-    SaveDocumentGroupController* saveContoller;
+    void initSaveController();
+
+    SaveDocumentController* saveController;
 };
 
 }

@@ -26,8 +26,6 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 
-#include <U2Formats/SQLiteDbi.h>
-
 namespace U2 {
 
 class AssemblyObject;

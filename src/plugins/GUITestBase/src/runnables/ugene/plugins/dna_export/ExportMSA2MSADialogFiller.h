@@ -22,19 +22,22 @@
 #ifndef _U2_GT_RUNNABLES_EXPORT_MSA2MSA_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_EXPORT_MSA2MSA_DIALOG_FILLER_H_
 
-#include "utils/GTUtilsDialog.h"
+#include <utils/GTUtilsDialog.h>
 
 namespace U2 {
 using namespace HI;
 
-    class ExportMSA2MSADialogFiller : public Filler {
-    public:
-        ExportMSA2MSADialogFiller(HI::GUITestOpStatus &_os, int _formatVal = -1, QString _path="");
-        void commonScenario();
-    private:
-        int formatVal;
-        QString path;
-    };
+class ExportMSA2MSADialogFiller : public Filler {
+public:
+    ExportMSA2MSADialogFiller(HI::GUITestOpStatus &os, const QString &formatName = "", const QString &path = "");
+
+    void commonScenario();
+
+private:
+    const QString formatName;
+    const QString path;
+};
+
 }
 
 #endif

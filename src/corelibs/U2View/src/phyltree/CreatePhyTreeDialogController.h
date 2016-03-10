@@ -35,6 +35,7 @@ namespace U2 {
 
 class MAlignmentObject;
 class CreatePhyTreeWidget;
+class SaveDocumentController;
 
 class U2VIEW_EXPORT CreatePhyTreeDialogController : public QDialog {
     Q_OBJECT
@@ -44,7 +45,6 @@ public:
 
 private slots:
     void accept();
-    void sl_browseClicked();
     void sl_comboIndexChaged(int index);
     void sl_onStoreSettings();
     void sl_onRestoreDefault();
@@ -54,12 +54,14 @@ private:
     bool checkFileName();
     bool checkSettings();
     bool checkMemory();
+    void initSaveController(const MAlignmentObject *mobj);
 
     MAlignment msa;
     CreatePhyTreeSettings& settings;
     QList<CreatePhyTreeWidget*> childWidgets;
     CreatePhyTreeWidget *settingsWidget;
     Ui_CreatePhyTree* ui;
+    SaveDocumentController *saveController;
 };
 
 }   // namespace U2

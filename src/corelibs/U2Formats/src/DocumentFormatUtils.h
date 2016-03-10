@@ -22,10 +22,10 @@
 #ifndef _U2_DOCUMENT_FORMAT_UTILS_H_
 #define _U2_DOCUMENT_FORMAT_UTILS_H_
 
+#include <QStringList>
+
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2Region.h>
-
-#include <QtCore/QStringList>
 
 namespace U2 {
 
@@ -84,6 +84,8 @@ public:
                                                                QByteArray& mergedSequence,
                                                                const QVector<U2Region>& mergedMapping,
                                                                U2OpStatus& os);
+
+    static QString getFormatNameById(const DocumentFormatId &formatId);
 };
 
 }//namespace

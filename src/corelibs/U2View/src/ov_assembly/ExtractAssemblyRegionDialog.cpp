@@ -27,10 +27,13 @@
 #include "ExtractAssemblyRegionDialog.h"
 
 #include <U2Core/U2OpStatusUtils.h>
+
 #include <U2View/AssemblyModel.h>
 
-#include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
+#include <U2Gui/SaveDocumentController.h>
+
+#include "ExtractAssemblyRegionDialog.h"
 
 namespace U2 {
 
@@ -38,17 +41,7 @@ ExtractAssemblyRegionDialog::ExtractAssemblyRegionDialog(QWidget * p, ExtractAss
 , settings(settings) {
     setupUi(this);
 
-    SaveDocumentGroupControllerConfig conf;
-    conf.dfc.supportedObjectTypes += GObjectTypes::ASSEMBLY;
-    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.fileDialogButton = filepathToolButton;
-    conf.fileNameEdit = filepathLineEdit;
-    conf.formatCombo = documentFormatComboBox;
-    conf.parentWidget = this;
-    conf.saveTitle = tr("Export consensus");
-    conf.defaultFileName = settings->fileUrl;
-    conf.defaultFormatId = settings->fileFormat;
-    saveController = new SaveDocumentGroupController(conf, this);
+    initSaveController();
 
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), settings->regionToExtract);
     regionSelector = new RegionSelector(this, settings->assemblyLength, false, NULL, false, presets);
@@ -71,13 +64,28 @@ void ExtractAssemblyRegionDialog::sl_regionChanged(const U2Region& newRegion) {
         QString baseName = fi.baseName();
         QString newLocation = QString::number(newRegion.startPos + 1) + "_" + QString::number(newRegion.endPos());
         baseName.replace(stringToReplace, newLocation);
-        //QString cbasename = fi.completeBaseName();
-        //QString dirPath = filePath.left(filePath.length() - (fi.baseName().length() + fi.completeSuffix().length() + 1));
         
         filePath = fi.dir().path() + "/" + baseName + "." + fi.completeSuffix();
-        saveController->setFileName(filePath);
+        saveController->setPath(filePath);
         settings->regionToExtract = newRegion;
     }
+}
+
+void ExtractAssemblyRegionDialog::initSaveController() {
+    SaveDocumentControllerConfig config;
+    config.defaultFileName = settings->fileUrl;
+    config.defaultFormatId = settings->fileFormat;
+    config.fileDialogButton = filepathToolButton;
+    config.fileNameEdit = filepathLineEdit;
+    config.formatCombo = documentFormatComboBox;
+    config.parentWidget = this;
+    config.saveTitle = tr("Export Assembly Region");
+
+    DocumentFormatConstraints formatConstraints;
+    formatConstraints.supportedObjectTypes << GObjectTypes::ASSEMBLY;
+    formatConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+
+    saveController = new SaveDocumentController(config, formatConstraints, this);
 }
 
 void ExtractAssemblyRegionDialog::accept() {

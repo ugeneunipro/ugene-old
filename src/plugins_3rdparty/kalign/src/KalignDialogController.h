@@ -22,19 +22,18 @@
 #ifndef _U2_KALIGN_ALIGN_DIALOG_CONTROLLER_H_
 #define _U2_KALIGN_ALIGN_DIALOG_CONTROLLER_H_
 
+#include <QDialog>
+
 #include <U2Core/GAutoDeleteList.h>
+
 #include <U2Gui/DialogUtils.h>
 
-#include <ui/ui_KalignDialog.h>
 #include "KalignTask.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "ui/ui_KalignDialog.h"
 
 namespace U2 {
+
+class SaveDocumentController;
 
 class KalignDialogController : public QDialog, public Ui_KalignDialog {
     Q_OBJECT
@@ -43,6 +42,7 @@ public:
     KalignDialogController(QWidget* w, const MAlignment& ma, KalignTaskSettings& settings);
     bool translateToAmino();
     QString getTranslationId();
+
 public slots:
     void accept();
 
@@ -50,8 +50,6 @@ private:
     void setupUiExt(); 
     MAlignment                          ma;
     KalignTaskSettings&                 settings;
-//    Ui_KalignDialog* ui;
-
 };
 
 class KalignAlignWithExtFileSpecifyDialogController : public QDialog, public Ui_KalignDialog {
@@ -65,12 +63,13 @@ public slots:
 
 private slots:
     void sl_inputPathButtonClicked();
-    void sl_outputPathButtonClicked();
 
 private:
+    void initSaveController();
+
     KalignTaskSettings&                 settings;
-    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
-    };
+    SaveDocumentController *            saveController;
+};
 
 
 }//namespace
