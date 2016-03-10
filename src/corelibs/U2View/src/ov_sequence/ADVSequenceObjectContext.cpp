@@ -211,37 +211,36 @@ void ADVSequenceObjectContext::sl_onAnnotationRelationChange() {
     }
 }
 
-QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
-    QMenu* m = NULL, *frames = NULL;
-    if (translations) {
-        m = new QMenu(tr("Amino translation"));
-        frames = new QMenu(tr("Translation frames"));
-        frames->menuAction()->setObjectName("Translation frames");
+QMenu * ADVSequenceObjectContext::createGeneticCodeMenu() {
+    CHECK(NULL != translations, NULL);
+    QMenu *menu = new QMenu(tr("Select genetic code"));
+    menu->setIcon(QIcon(":core/images/tt_switch.png"));
+    menu->menuAction()->setObjectName("AminoTranslationAction");
 
-        SAFE_POINT(visibleFrames != NULL, "ADVSequenceObjectContext: visibleFrames is NULL ?!", m);
-        foreach(QAction* a, visibleFrames->actions()) {
-            frames->addAction(a);
-        }
-        frames->addSeparator();
-
-        connect(frames->addAction(QString("Show direct only")), SIGNAL(triggered()), SLOT(sl_showDirectOnly()));
-        connect(frames->addAction(QString("Show complementary only")), SIGNAL(triggered()), SLOT(sl_showComplOnly()));
-        connect(frames->addAction(QString("Show all")), SIGNAL(triggered()), SLOT(sl_showShowAll()));
-
-        if (view != NULL){
-            m->addAction(view->getShowCodonTableAction());
-        }
-        m->addMenu(frames);
-        m->addSeparator();
-
-        m->setIcon(QIcon(":core/images/tt_switch.png"));
-        foreach(QAction* a, translations->actions()) {
-            m->addAction(a);
-        }
-
-        m->menuAction()->setObjectName("AminoTranslationAction");
+    foreach (QAction *a, translations->actions()) {
+        menu->addAction(a);
     }
-    return m;
+    return menu;
+}
+
+QMenu * ADVSequenceObjectContext::createTranslationFramesMenu(QAction *showTranslationAction) {
+    SAFE_POINT(visibleFrames != NULL, "ADVSequenceObjectContext: visibleFrames is NULL ?!", NULL);
+    QMenu *menu = new QMenu(tr("Show/hide amino acid translations"));
+    menu->setIcon(QIcon(":core/images/show_trans.png"));
+    menu->menuAction()->setObjectName("Translation frames");
+
+    menu->addAction(showTranslationAction);
+    menu->addSeparator();
+
+    menu->addAction(tr("Show direct only"), this, SLOT(sl_showDirectOnly()));
+    menu->addAction(tr("Show complementary only"), this, SLOT(sl_showComplOnly()));
+    menu->addAction(tr("Show all"), this, SLOT(sl_showShowAll()));
+    menu->addSeparator();
+
+    foreach(QAction* a, visibleFrames->actions()) {
+        menu->addAction(a);
+    }
+    return menu;
 }
 
 void ADVSequenceObjectContext::setAminoTranslation(const QString& tid) {

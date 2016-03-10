@@ -58,14 +58,6 @@ private:
     QColor getColor(DNACodonGroup gr);
 };
 
-class CodonTableAction : public ADVSequenceWidgetAction {
-    Q_OBJECT
-public:
-    CodonTableAction(CodonTableView *_view);
-    ~CodonTableAction() {}
-    CodonTableView *view;
-};
-
 } // namespace
 
 #endif // _U2_CODON_TABLE_H_

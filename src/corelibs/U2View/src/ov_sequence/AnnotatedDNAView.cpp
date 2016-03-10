@@ -25,6 +25,7 @@
 #include <QScrollArea>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <limits>
 
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
@@ -88,6 +89,10 @@
 #include "AutoAnnotationUtils.h"
 #include "GraphMenu.h"
 
+#ifdef max
+#undef max
+#endif
+
 namespace U2 {
 
 AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects)
@@ -111,10 +116,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     codonTableView = new CodonTableView(this);
     connect(this, SIGNAL(si_focusChanged(ADVSequenceWidget*,ADVSequenceWidget*)),
             codonTableView, SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*,ADVSequenceWidget*)));
-    showCodonTableAction = new CodonTableAction(codonTableView);
-    showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_B));
-    showCodonTableAction->setShortcutContext(Qt::WindowShortcut);
-
+    createCodonTableAction();
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
     posSelectorAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
@@ -1098,6 +1100,15 @@ void AnnotatedDNAView::seqWidgetMove(const QPoint &pos) {
 
 void AnnotatedDNAView::finishSeqWidgetMove() {
     replacedSeqWidget = NULL;
+}
+
+void AnnotatedDNAView::createCodonTableAction() {
+    QAction *showCodonTableAction = new ADVGlobalAction(this, QIcon(":core/images/codon_table.png"), tr("Show codon table"), std::numeric_limits<int>::max() - 1, ADVGlobalActionFlag_AddToToolbar);
+    showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_B));
+    showCodonTableAction->setShortcutContext(Qt::WindowShortcut);
+    connect(showCodonTableAction, SIGNAL(triggered()), codonTableView, SLOT(sl_setVisible()));
+    showCodonTableAction->setObjectName("Codon table");
+    showCodonTableAction->setCheckable(true);
 }
 
 void AnnotatedDNAView::sl_onDocumentLoadedStateChanged() {

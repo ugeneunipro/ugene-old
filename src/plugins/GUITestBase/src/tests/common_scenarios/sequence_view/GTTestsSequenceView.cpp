@@ -149,10 +149,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
     QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
 
-    QAbstractButton* b0 = GTAction::button(os,"translation_action", w0);
-    QAbstractButton* b1 = GTAction::button(os,"translation_action", w1);
-    QAbstractButton* b2 = GTAction::button(os,"translation_action", w2);
-    QAbstractButton* b3 = GTAction::button(os,"translation_action", w3);
+    QWidget *b0 = GTWidget::findWidget(os, "translationsMenuToolbarButton", w0, GTGlobals::FindOptions(false));
+    QWidget *b1 = GTWidget::findWidget(os, "translationsMenuToolbarButton", w1, GTGlobals::FindOptions(false));
+    QWidget *b2 = GTWidget::findWidget(os, "translationsMenuToolbarButton", w2);
+    QWidget *b3 = GTWidget::findWidget(os, "translationsMenuToolbarButton", w3);
     GTGlobals::sleep(3000);
 
     CHECK_SET_ERR(b0 == NULL, "b0 is not NULL");
@@ -181,12 +181,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleViewButton);
-    GTGlobals::sleep();
-
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAbstractButton* complement = GTAction::button(os, "complement_action");
@@ -198,11 +192,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
-
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
 
     GTGlobals::sleep();
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
@@ -225,12 +216,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleViewButton);
-    GTGlobals::sleep();
-
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAbstractButton* complement = GTAction::button(os, "complement_action");
@@ -242,11 +227,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
 
     GTGlobals::sleep();
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
@@ -263,12 +245,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleViewButton);
-    GTGlobals::sleep();
-
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAbstractButton* complement = GTAction::button(os, "complement_action");
@@ -280,11 +256,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
 
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
@@ -292,10 +265,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, toggleViewButton);
-    GTGlobals::sleep();
-
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
@@ -1099,8 +1068,6 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){
 
 #define GET_ACTIONS QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
 CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL"); \
-GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Translation frames", GTGlobals::UseKey); \
-activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
 QAction* direct1 = GTMenu::getMenuItem(os, activePopupMenu, "1 direct translation frame", true); \
 QAction* direct2 = GTMenu::getMenuItem(os, activePopupMenu, "2 direct translation frame", true); \
 QAction* direct3 = GTMenu::getMenuItem(os, activePopupMenu, "3 direct translation frame", true); \
@@ -1113,9 +1080,9 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Click "Amino translations" button on mdi toolbar
-    QWidget* aminoToolbarButton = GTWidget::findWidget(os, "AminoToolbarButton");
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show direct only"));
-    GTWidget::click(os, aminoToolbarButton);
+    QWidget *translationsMenuToolbarButton = GTWidget::findWidget(os, "translationsMenuToolbarButton");
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Show direct only"));
+    GTWidget::click(os, translationsMenuToolbarButton);
 //    Check "Show direct only"
     class DirectPopupChecker : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
@@ -1135,11 +1102,11 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
         }
     };
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new DirectPopupChecker));
-    GTWidget::click(os, aminoToolbarButton);
+    GTWidget::click(os, translationsMenuToolbarButton);
 
     //    Check "Show complementary only"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show complementary only"));
-    GTWidget::click(os, aminoToolbarButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Show complementary only"));
+    GTWidget::click(os, translationsMenuToolbarButton);
 
     class ComplPopupChecker : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
@@ -1159,11 +1126,11 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
         }
     };
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new ComplPopupChecker));
-    GTWidget::click(os, aminoToolbarButton);
+    GTWidget::click(os, translationsMenuToolbarButton);
 
     //    Check "Show all"
-    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Translation frames"<<"Show all"));
-    GTWidget::click(os, aminoToolbarButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, QStringList()<<"Show all"));
+    GTWidget::click(os, translationsMenuToolbarButton);
 
     class AllPopupChecker : public CustomScenario {
         void run(HI::GUITestOpStatus &os) {
@@ -1183,7 +1150,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
         }
     };
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new AllPopupChecker));
-    GTWidget::click(os, aminoToolbarButton);
+    GTWidget::click(os, translationsMenuToolbarButton);
 }
 #undef GET_ACTIONS
 
@@ -1703,13 +1670,15 @@ GUI_TEST_CLASS_DEFINITION(test_0052_1){
     GTGlobals::sleep(1000);
     QImage image1 = GTWidget::getImage(os, det);
 
-    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "translation_action"));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
     GTGlobals::sleep(2000);
     GTWidget::click(os, det);
     GTGlobals::sleep(1000);
     QImage image2 = GTWidget::getImage(os, det);
 
-    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "translation_action"));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
     GTGlobals::sleep(2000);
     GTWidget::click(os, det);
     GTGlobals::sleep(1000);
@@ -2264,7 +2233,8 @@ GUI_TEST_CLASS_DEFINITION(test_0068) {
     GTWidget::click(os, wrapButton);
     U2Region visibleRange = GTUtilsSequenceView::getVisibleRange(os);
 
-    GTWidget::click(os, GTAction::button(os, "translation_action"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "translation_action"));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
     CHECK_SET_ERR(visibleRange != GTUtilsSequenceView::getVisibleRange(os), "Visible range was not changed on translation show/hide");
 
     GTWidget::click(os, GTAction::button(os, "complement_action"));

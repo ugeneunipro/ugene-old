@@ -155,8 +155,6 @@ public:
 
     const CodonTableView* getCodonTableView() const {return codonTableView; }
 
-    CodonTableAction* getShowCodonTableAction() const {return showCodonTableAction; }
-
 protected:
     virtual QWidget* createWidget();
     virtual bool onObjectRemoved(GObject* o);
@@ -232,6 +230,7 @@ private:
     void importDocAnnotations(Document* doc);
     void seqWidgetMove(const QPoint& pos);
     void finishSeqWidgetMove();
+    void createCodonTableAction();
 
     void reverseComplementSequence(bool reverse = true, bool complement = true);
 
@@ -243,7 +242,6 @@ private:
     QVBoxLayout*        scrolledWidgetLayout;
 
     CodonTableView*     codonTableView;
-    CodonTableAction*   showCodonTableAction;
 
     QAction*            createAnnotationAction;
     QAction*            findPatternAction;

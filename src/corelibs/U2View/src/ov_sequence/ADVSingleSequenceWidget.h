@@ -172,6 +172,7 @@ private:
     QToolButton* addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar, int position = -1) const;
     void addRulersMenu(QMenu& m);
     void addSelectMenu(QMenu& m);
+    void setupGeneticCodeMenu(ADVSequenceObjectContext *seqCtx);
 
     /** Used by several other functions to set new selected region */
     void setSelectedRegion(const U2Region& region);

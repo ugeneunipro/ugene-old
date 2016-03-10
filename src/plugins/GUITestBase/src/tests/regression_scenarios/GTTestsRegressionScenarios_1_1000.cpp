@@ -1304,8 +1304,8 @@ GUI_TEST_CLASS_DEFINITION(test_0746) {
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not enabled");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
     GTGlobals::sleep();
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not enabled");

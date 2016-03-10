@@ -105,7 +105,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
-    QMenu* m = ctx->createTranslationsMenu();
+    QMenu* m = ctx->createGeneticCodeMenu();
     foreach(QAction* a, m->actions()) {
         transCombo->addItem(a->text(), qVariantFromValue<QAction*>(a));
         if (a->isChecked()) transCombo->setCurrentIndex(transCombo->count()-1);

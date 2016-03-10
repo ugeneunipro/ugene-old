@@ -100,6 +100,9 @@ protected:
 
     int numShiftsInOneLine;
     int currentShiftsCounter;
+
+private:
+    void setupTranslationsMenu();
 };
 
 class DetViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {

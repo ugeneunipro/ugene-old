@@ -1092,11 +1092,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
-
     QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
     CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
     GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
@@ -1107,12 +1102,9 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
-
-    }
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     Runnable *filler = new CreateDocumentFiller(os,
@@ -1135,11 +1127,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
-
     QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
     CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
     GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
@@ -1150,12 +1137,9 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
-
-    }
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     Runnable *filler = new CreateDocumentFiller(os,
@@ -1178,12 +1162,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
-    GTGlobals::sleep();
-
     QWidget* toolbar = GTWidget::findWidget(os, "views_tool_bar_result");
     CHECK_SET_ERR(toolbar != NULL, "Cannot find views_tool_bar_result");
     GTWidget::click(os, GTWidget::findWidget(os, "show_hide_details_view", toolbar));
@@ -1194,12 +1172,9 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
-    GTGlobals::sleep();
-    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
-
-    }
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "translation_action", PopupChecker::IsEnabled));
+    GTWidget::click(os, GTWidget::findWidget(os, "translationsMenuToolbarButton"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0016) {
 //    Create a sequence from text in FASTA format (UGENE-1564): single sequence, data starts with sequence header

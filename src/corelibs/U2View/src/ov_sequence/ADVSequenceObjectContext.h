@@ -71,7 +71,8 @@ public:
     QSet<AnnotationTableObject *> getAutoAnnotationObjects() const { return autoAnnotations; }
     QList<GObject*> getAnnotationGObjects() const;
 
-    QMenu* createTranslationsMenu();
+    QMenu * createGeneticCodeMenu();
+    QMenu * createTranslationFramesMenu(QAction *showTranslationAction);
     void setAminoTranslation(const QString& tid);
 
     void addAnnotationObject(AnnotationTableObject *obj);

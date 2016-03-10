@@ -64,8 +64,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     showComplementAction->setObjectName("complement_action");
     connect(showComplementAction, SIGNAL(triggered(bool)), SLOT(sl_showComplementToggle(bool)));
 
-    showTranslationAction = new QAction(tr("Show amino translations"), this);
-    showTranslationAction->setIcon(QIcon(":core/images/show_trans.png"));
+    showTranslationAction = new QAction(tr("Show/hide translations"), this);
     showTranslationAction->setObjectName("translation_action");
     connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
@@ -97,7 +96,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
         addActionToLocalToolbar(showComplementAction);
     }
     if (hasAmino) {
-        addActionToLocalToolbar(showTranslationAction);
+        setupTranslationsMenu();
     }
 
     verticalScrollBar = new GScrollBar(Qt::Vertical, this);
@@ -537,6 +536,14 @@ void DetView::updateVerticalScrollBarPosition() {
     verticalScrollBar->setSliderPosition(qMin( verticalScrollBar->maximum(),
                                                currentShiftsCounter + numShiftsInOneLine* int(visibleRange.startPos / detArea->getSymbolsPerLine())));
     connect(verticalScrollBar, SIGNAL(valueChanged(int)), SLOT(sl_verticalSrcollBarMoved(int)));
+}
+
+void DetView::setupTranslationsMenu() {
+    QMenu *translationsMenu = ctx->createTranslationFramesMenu(showTranslationAction);
+    CHECK(NULL != translationsMenu, );
+    QToolButton *button = addActionToLocalToolbar(translationsMenu->menuAction());
+    button->setPopupMode(QToolButton::InstantPopup);
+    button->setObjectName("translationsMenuToolbarButton");
 }
 
 /************************************************************************/

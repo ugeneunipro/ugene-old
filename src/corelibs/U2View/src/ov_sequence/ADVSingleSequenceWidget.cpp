@@ -195,13 +195,7 @@ void ADVSingleSequenceWidget::init() {
     buttonTabOrederedNames->append(selectRangeAction1->objectName());
 
     if (seqCtx->getAminoTT() != NULL) {
-        QMenu* ttMenu = seqCtx->createTranslationsMenu();
-        tbMenues.append(ttMenu);
-        QToolButton* button = detView->addActionToLocalToolbar(ttMenu->menuAction());
-        detView->addAction(ctx->getShowCodonTableAction());
-        SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
-        button->setPopupMode(QToolButton::InstantPopup);
-        button->setObjectName("AminoToolbarButton");
+        setupGeneticCodeMenu(seqCtx);
     } else {
         ttButton = NULL;
     }
@@ -559,6 +553,16 @@ void ADVSingleSequenceWidget::addRulersMenu(QMenu& m) {
     QAction* aBefore = GUIUtils::findActionAfter(m.actions(), ADV_MENU_SECTION2_SEP);
     m.insertMenu(aBefore, rulersM);
     m.insertSeparator(aBefore)->setObjectName("SECOND_SEP");
+}
+
+void ADVSingleSequenceWidget::setupGeneticCodeMenu(ADVSequenceObjectContext *seqCtx) {
+    QMenu *ttMenu = seqCtx->createGeneticCodeMenu();
+    CHECK(NULL != ttMenu, );
+    tbMenues.append(ttMenu);
+    QToolButton *button = detView->addActionToLocalToolbar(ttMenu->menuAction());
+    SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
+    button->setPopupMode(QToolButton::InstantPopup);
+    button->setObjectName("AminoToolbarButton");
 }
 
 bool ADVSingleSequenceWidget::isWidgetOnlyObject(GObject* o) const {
