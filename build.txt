@@ -4,11 +4,12 @@ Prerequisites
 
 Make sure the Qt (>= 5.2.1) development libraries are installed:
 
-* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
-* In Fedora:        `yum install qt-devel`
-* In Arch Linux:    `pacman -S qt`
-* In Mac OS X: download from Qt official site (http://www.qt.io/download/)
-* In Windows: download from Qt official site (http://www.qt.io/download/)
+* Ubuntu 16.04: `sudo apt-get install qt5-default qttools5-dev-tools qtscript5-dev libqt5svg5-dev libqt5webkit5-dev libprocps4-dev`
+* Ubuntu 14.04: `sudo apt-get install qt5-default qttools5-dev-tools qtscript5-dev libqt5svg5-dev libqt5webkit5-dev libprocps3-dev`
+* Fedora:       `sudo yum install qt-devel`
+* Arch Linux:   `sudo pacman -S qt`
+* Mac OS X: download from Qt official site (http://www.qt.io/download/)
+* Windows: download from Qt official site (http://www.qt.io/download/)
 
 ===================================
 For Windows users:
@@ -31,18 +32,19 @@ To build with nmake.exe:
 ===================================
 For *nix users:
 ===================================
-0) installation paths may be corrected in ugene_globals.pri
+0) installation paths may be set up in ugene_globals.pri
 
-1) for 32 bit: qmake -r
-   for 64 bit: qmake CONFIG+=x64 -r
+1) qmake -r
 
-2) make
+2) make -j 4
 
-3) make install
+3) sudo make install
 
-Note: usually, 'make' builds the release version of UGENE which is correctly installed with 'make install'.
-However, on certain platforms default target is the debug one. To ensure that release version will be built,
-use 'make release' or 'make all' targets.
+4) ugene -ui
+
+Note: usually, 'make' builds a release version of UGENE.
+However, on certain platforms default target is debug. 
+To enforce release build use 'make release' or 'make all'.
 
 Some more information you can see in installer/_common_data/README file.
 
