@@ -67,8 +67,8 @@ void ExtractAssemblyRegionDialog::sl_regionChanged(const U2Region& newRegion) {
         
         filePath = fi.dir().path() + "/" + baseName + "." + fi.completeSuffix();
         saveController->setPath(filePath);
-        settings->regionToExtract = newRegion;
     }
+    settings->regionToExtract = newRegion;
 }
 
 void ExtractAssemblyRegionDialog::initSaveController() {
