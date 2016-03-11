@@ -22,7 +22,7 @@
 #ifndef _SEND_SELECTION_DIALOG_H_
 #define _SEND_SELECTION_DIALOG_H_
 
-#include "ui/ui_RemoteBLASTDialog.h"
+#include "ui_RemoteBLASTDialog.h"
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>

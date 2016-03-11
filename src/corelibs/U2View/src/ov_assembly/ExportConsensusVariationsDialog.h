@@ -25,14 +25,14 @@
 #include <QDialog>
 
 #include "ExportConsensusVariationsTask.h"
-#include "ui/ui_ExportConsensusDialog.h"
+#include <ui_ExportConsensusDialog.h>
 
 namespace U2 {
 
 class RegionSelector;
 class SaveDocumentController;
 
-class ExportConsensusVariationsDialog : public QDialog, private Ui_ExportConsensusDialog {
+class ExportConsensusVariationsDialog : public QDialog, Ui_ExportConsensusDialog {
     Q_OBJECT
 public:
     ExportConsensusVariationsDialog(QWidget * p, const ExportConsensusVariationsTaskSettings & settings, const U2Region & visibleRegion);

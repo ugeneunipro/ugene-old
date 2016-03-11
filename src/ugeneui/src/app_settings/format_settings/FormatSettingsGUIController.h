@@ -22,7 +22,7 @@
 #ifndef _U2_FORMAT_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_FORMAT_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_FormatSettingsWidget.h>
+#include <ui_FormatSettingsWidget.h>
 
 #include <U2Core/FormatSettings.h>
 

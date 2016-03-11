@@ -31,7 +31,7 @@ namespace U2 {
 
 ImportOptionsWidget::ImportOptionsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ImportOptionsWidget)
+    ui(new Ui_ImportOptionsWidget)
 {
     ui->setupUi(this);
 }

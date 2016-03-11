@@ -4,24 +4,24 @@
 <context>
     <name>AnnsActionDialog</name>
     <message>
-        <location filename="../src/ui/AnnsActionDialog.ui" line="14"/>
+        <location filename="../src/AnnsActionDialog.ui" line="14"/>
         <source>New Annotations Action</source>
         <translation>New Annotations Action</translation>
     </message>
     <message>
-        <location filename="../src/ui/AnnsActionDialog.ui" line="34"/>
+        <location filename="../src/AnnsActionDialog.ui" line="34"/>
         <source>Merge into one annotation table</source>
         <translation>Merge into one annotation table</translation>
     </message>
     <message>
-        <location filename="../src/ui/AnnsActionDialog.ui" line="53"/>
+        <location filename="../src/AnnsActionDialog.ui" line="53"/>
         <source>Shift annotations using
 this merge sequence slot:</source>
         <translation>Shift annotations using
 this merge sequence slot:</translation>
     </message>
     <message>
-        <location filename="../src/ui/AnnsActionDialog.ui" line="64"/>
+        <location filename="../src/AnnsActionDialog.ui" line="64"/>
         <source>Filter duplicated annotations</source>
         <translation>Filter duplicated annotations</translation>
     </message>
@@ -29,27 +29,27 @@ this merge sequence slot:</translation>
 <context>
     <name>BreakpointHitCountDialog</name>
     <message>
-        <location filename="../src/ui/BreakpointHitCountDialog.ui" line="26"/>
+        <location filename="../src/BreakpointHitCountDialog.ui" line="26"/>
         <source>Breakpoint Hit Count</source>
         <translation>Breakpoint Hit Count</translation>
     </message>
     <message>
-        <location filename="../src/ui/BreakpointHitCountDialog.ui" line="50"/>
+        <location filename="../src/BreakpointHitCountDialog.ui" line="50"/>
         <source>When the breakpoint is h&amp;it:</source>
         <translation>When the breakpoint is h&amp;it:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BreakpointHitCountDialog.ui" line="89"/>
+        <location filename="../src/BreakpointHitCountDialog.ui" line="89"/>
         <source>Current hit count:</source>
         <translation>Current hit count:</translation>
     </message>
     <message>
-        <location filename="../src/ui/BreakpointHitCountDialog.ui" line="96"/>
+        <location filename="../src/BreakpointHitCountDialog.ui" line="96"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../src/ui/BreakpointHitCountDialog.ui" line="43"/>
+        <location filename="../src/BreakpointHitCountDialog.ui" line="43"/>
         <source>A breakpoint is hit when the breakpoint location is reached and the condition is&lt;br&gt;satisfied. The hit count is the number of times the breakpoint has been hit.</source>
         <translation>A breakpoint is hit when the breakpoint location is reached and the condition is&lt;br&gt;satisfied. The hit count is the number of times the breakpoint has been hit.</translation>
     </message>
@@ -57,17 +57,17 @@ this merge sequence slot:</translation>
 <context>
     <name>CreateDirectoryDialog</name>
     <message>
-        <location filename="../src/ui/CreateDirectoryDialog.ui" line="14"/>
+        <location filename="../src/CreateDirectoryDialog.ui" line="14"/>
         <source>Create a directory</source>
         <translation>Create a directory</translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateDirectoryDialog.ui" line="43"/>
+        <location filename="../src/CreateDirectoryDialog.ui" line="43"/>
         <source>Parent directory:</source>
         <translation>Parent directory:</translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateDirectoryDialog.ui" line="63"/>
+        <location filename="../src/CreateDirectoryDialog.ui" line="63"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -75,37 +75,37 @@ this merge sequence slot:</translation>
 <context>
     <name>DatasetWidget</name>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="20"/>
+        <location filename="../src/DatasetWidget.ui" line="20"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="40"/>
+        <location filename="../src/DatasetWidget.ui" line="40"/>
         <source>Add file(s)</source>
         <translation>Add file(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="62"/>
+        <location filename="../src/DatasetWidget.ui" line="62"/>
         <source>Add directory</source>
         <translation>Add directory</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="84"/>
+        <location filename="../src/DatasetWidget.ui" line="84"/>
         <source>Add data from shared databases</source>
         <translation>Add data from shared databases</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="116"/>
+        <location filename="../src/DatasetWidget.ui" line="116"/>
         <source>Up url(s)</source>
         <translation>Up url(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="141"/>
+        <location filename="../src/DatasetWidget.ui" line="141"/>
         <source>Down url(s)</source>
         <translation>Down url(s)</translation>
     </message>
     <message>
-        <location filename="../src/ui/DatasetWidget.ui" line="166"/>
+        <location filename="../src/DatasetWidget.ui" line="166"/>
         <source>Delete urls(s)</source>
         <translation>Delete urls(s)</translation>
     </message>
@@ -113,12 +113,12 @@ this merge sequence slot:</translation>
 <context>
     <name>DbFolderOptions</name>
     <message>
-        <location filename="../src/ui/DbFolderOptions.ui" line="32"/>
+        <location filename="../src/DbFolderOptions.ui" line="32"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/DbFolderOptions.ui" line="50"/>
+        <location filename="../src/DbFolderOptions.ui" line="50"/>
         <source>Recursive</source>
         <translation>Recursive</translation>
     </message>
@@ -126,22 +126,22 @@ this merge sequence slot:</translation>
 <context>
     <name>DirectoryOptions</name>
     <message>
-        <location filename="../src/ui/DirectoryOptions.ui" line="32"/>
+        <location filename="../src/DirectoryOptions.ui" line="32"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/DirectoryOptions.ui" line="46"/>
+        <location filename="../src/DirectoryOptions.ui" line="46"/>
         <source>Exclude mask</source>
         <translation>Exclude mask</translation>
     </message>
     <message>
-        <location filename="../src/ui/DirectoryOptions.ui" line="75"/>
+        <location filename="../src/DirectoryOptions.ui" line="75"/>
         <source>Inсlude mask</source>
         <translation>Inсlude mask</translation>
     </message>
     <message>
-        <location filename="../src/ui/DirectoryOptions.ui" line="112"/>
+        <location filename="../src/DirectoryOptions.ui" line="112"/>
         <source>Recursive</source>
         <translation>Recursive</translation>
     </message>
@@ -149,22 +149,22 @@ this merge sequence slot:</translation>
 <context>
     <name>EditBreakpointLabelsDialog</name>
     <message>
-        <location filename="../src/ui/EditBreakpointLabelsDialog.ui" line="60"/>
+        <location filename="../src/EditBreakpointLabelsDialog.ui" line="60"/>
         <source>O&amp;r choose among existing labels</source>
         <translation>O&amp;r choose among existing labels</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditBreakpointLabelsDialog.ui" line="53"/>
+        <location filename="../src/EditBreakpointLabelsDialog.ui" line="53"/>
         <source>&amp;Add</source>
         <translation>&amp;Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditBreakpointLabelsDialog.ui" line="26"/>
+        <location filename="../src/EditBreakpointLabelsDialog.ui" line="26"/>
         <source>Edit Breakpoint Labels</source>
         <translation>Edit Breakpoint Labels</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditBreakpointLabelsDialog.ui" line="34"/>
+        <location filename="../src/EditBreakpointLabelsDialog.ui" line="34"/>
         <source>T&amp;ype a new label</source>
         <translation>T&amp;ype a new label</translation>
     </message>
@@ -172,27 +172,27 @@ this merge sequence slot:</translation>
 <context>
     <name>EditFloatMarkerWidget</name>
     <message>
-        <location filename="../src/ui/EditFloatMarkerWidget.ui" line="14"/>
+        <location filename="../src/EditFloatMarkerWidget.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFloatMarkerWidget.ui" line="20"/>
+        <location filename="../src/EditFloatMarkerWidget.ui" line="20"/>
         <source>Interval:</source>
         <translation>Interval:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFloatMarkerWidget.ui" line="42"/>
+        <location filename="../src/EditFloatMarkerWidget.ui" line="42"/>
         <source>..</source>
         <translation>..</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFloatMarkerWidget.ui" line="64"/>
+        <location filename="../src/EditFloatMarkerWidget.ui" line="64"/>
         <source>Less than:</source>
         <translation>Less than:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFloatMarkerWidget.ui" line="94"/>
+        <location filename="../src/EditFloatMarkerWidget.ui" line="94"/>
         <source>Greater than:</source>
         <translation>Greater than:</translation>
     </message>
@@ -200,29 +200,29 @@ this merge sequence slot:</translation>
 <context>
     <name>EditIntegerMarkerWidget</name>
     <message>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="20"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="20"/>
         <source>Interval:</source>
         <translation>Interval:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="26"/>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="67"/>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="97"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="26"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="67"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="97"/>
         <source>radioButtonsGroup</source>
         <translation>radioButtonsGroup</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="45"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="45"/>
         <source>..</source>
         <translation>..</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="64"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="64"/>
         <source>Less than:</source>
         <translation>Less than:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="94"/>
+        <location filename="../src/EditIntegerMarkerWidget.ui" line="94"/>
         <source>Greater than:</source>
         <translation>Greater than:</translation>
     </message>
@@ -230,17 +230,17 @@ this merge sequence slot:</translation>
 <context>
     <name>EditMarkerDialog</name>
     <message>
-        <location filename="../src/ui/EditMarkerDialog.ui" line="14"/>
+        <location filename="../src/EditMarkerDialog.ui" line="14"/>
         <source>Edit Marker</source>
         <translation>Edit Marker</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerDialog.ui" line="28"/>
+        <location filename="../src/EditMarkerDialog.ui" line="28"/>
         <source>Marker name:</source>
         <translation>Marker name:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerDialog.ui" line="35"/>
+        <location filename="../src/EditMarkerDialog.ui" line="35"/>
         <source>NewMarker</source>
         <translation>NewMarker</translation>
     </message>
@@ -248,42 +248,42 @@ this merge sequence slot:</translation>
 <context>
     <name>EditMarkerGroupDialog</name>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="14"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="14"/>
         <source>Edit Marker Group</source>
         <translation>Edit Marker Group</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="22"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="22"/>
         <source>Marker group name:</source>
         <translation>Marker group name:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="29"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="29"/>
         <source>NewMarkerGroup</source>
         <translation>NewMarkerGroup</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="36"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="36"/>
         <source>Marker group type:</source>
         <translation>Marker group type:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="46"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="46"/>
         <source>Parameter:</source>
         <translation>Parameter:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="60"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="60"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="80"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="80"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditMarkerGroupDialog.ui" line="87"/>
+        <location filename="../src/EditMarkerGroupDialog.ui" line="87"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
@@ -291,35 +291,35 @@ this merge sequence slot:</translation>
 <context>
     <name>EditStringMarkerWidget</name>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="14"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="20"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="20"/>
         <source>Starts with</source>
         <translation>Starts with</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="26"/>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="39"/>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="52"/>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="65"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="26"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="39"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="52"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="65"/>
         <source>buttonGroup</source>
         <translation>buttonGroup</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="36"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="36"/>
         <source>Ends with</source>
         <translation>Ends with</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="49"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="49"/>
         <source>Contains</source>
         <translation>Contains</translation>
     </message>
     <message>
-        <location filename="../src/ui/EditStringMarkerWidget.ui" line="62"/>
+        <location filename="../src/EditStringMarkerWidget.ui" line="62"/>
         <source>Regular expression</source>
         <translation>Regular expression</translation>
     </message>
@@ -327,32 +327,32 @@ this merge sequence slot:</translation>
 <context>
     <name>GrouperEditorWidget</name>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="14"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="22"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="22"/>
         <source>Group slot</source>
         <translation>Group slot</translation>
     </message>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="39"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="39"/>
         <source>Group operation</source>
         <translation>Group operation</translation>
     </message>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="60"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="60"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="80"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="80"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../src/ui/GrouperEditorWidget.ui" line="87"/>
+        <location filename="../src/GrouperEditorWidget.ui" line="87"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
@@ -360,22 +360,22 @@ this merge sequence slot:</translation>
 <context>
     <name>MarkerEditorWidget</name>
     <message>
-        <location filename="../src/ui/MarkerEditorWidget.ui" line="14"/>
+        <location filename="../src/MarkerEditorWidget.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/MarkerEditorWidget.ui" line="22"/>
+        <location filename="../src/MarkerEditorWidget.ui" line="22"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/MarkerEditorWidget.ui" line="42"/>
+        <location filename="../src/MarkerEditorWidget.ui" line="42"/>
         <source>Edit</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/MarkerEditorWidget.ui" line="49"/>
+        <location filename="../src/MarkerEditorWidget.ui" line="49"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
@@ -383,22 +383,22 @@ this merge sequence slot:</translation>
 <context>
     <name>MsaActionDialog</name>
     <message>
-        <location filename="../src/ui/MsaActionDialog.ui" line="26"/>
+        <location filename="../src/MsaActionDialog.ui" line="26"/>
         <source>New Alignment Action</source>
         <translation>New Alignment Action</translation>
     </message>
     <message>
-        <location filename="../src/ui/MsaActionDialog.ui" line="34"/>
+        <location filename="../src/MsaActionDialog.ui" line="34"/>
         <source>Merge into one alignment</source>
         <translation>Merge into one alignment</translation>
     </message>
     <message>
-        <location filename="../src/ui/MsaActionDialog.ui" line="50"/>
+        <location filename="../src/MsaActionDialog.ui" line="50"/>
         <source>Alignment name</source>
         <translation>Alignment name</translation>
     </message>
     <message>
-        <location filename="../src/ui/MsaActionDialog.ui" line="60"/>
+        <location filename="../src/MsaActionDialog.ui" line="60"/>
         <source>Filter duplicated rows</source>
         <translation>Filter duplicated rows</translation>
     </message>
@@ -406,17 +406,17 @@ this merge sequence slot:</translation>
 <context>
     <name>NewBreakpointDialog</name>
     <message>
-        <location filename="../src/ui/NewBreakpointDialog.ui" line="20"/>
+        <location filename="../src/NewBreakpointDialog.ui" line="20"/>
         <source>New Breakpoint</source>
         <translation>New Breakpoint</translation>
     </message>
     <message>
-        <location filename="../src/ui/NewBreakpointDialog.ui" line="28"/>
+        <location filename="../src/NewBreakpointDialog.ui" line="28"/>
         <source>Break execution when it reaches this element in the workflow</source>
         <translation>Break execution when it reaches this element in the workflow</translation>
     </message>
     <message>
-        <location filename="../src/ui/NewBreakpointDialog.ui" line="35"/>
+        <location filename="../src/NewBreakpointDialog.ui" line="35"/>
         <source>&amp;Element: </source>
         <translation>&amp;Element: </translation>
     </message>
@@ -424,17 +424,17 @@ this merge sequence slot:</translation>
 <context>
     <name>NewGrouperSlotDialog</name>
     <message>
-        <location filename="../src/ui/NewGrouperSlotDialog.ui" line="32"/>
+        <location filename="../src/NewGrouperSlotDialog.ui" line="32"/>
         <source>Setup New Data Merge Action</source>
         <translation>Setup New Data Merge Action</translation>
     </message>
     <message>
-        <location filename="../src/ui/NewGrouperSlotDialog.ui" line="43"/>
+        <location filename="../src/NewGrouperSlotDialog.ui" line="43"/>
         <source>Source data slot</source>
         <translation>Source data slot</translation>
     </message>
     <message>
-        <location filename="../src/ui/NewGrouperSlotDialog.ui" line="60"/>
+        <location filename="../src/NewGrouperSlotDialog.ui" line="60"/>
         <source>Name of new slot with merged data</source>
         <translation>Name of new slot with merged data</translation>
     </message>
@@ -442,28 +442,28 @@ this merge sequence slot:</translation>
 <context>
     <name>OutputFileDialog</name>
     <message>
-        <location filename="../src/ui/OutputFileDialog.ui" line="14"/>
+        <location filename="../src/OutputFileDialog.ui" line="14"/>
         <source>Save file/directory</source>
         <translation>Save file/directory</translation>
     </message>
     <message>
-        <location filename="../src/ui/OutputFileDialog.ui" line="31"/>
+        <location filename="../src/OutputFileDialog.ui" line="31"/>
         <source>Create directory</source>
         <translation>Create directory</translation>
     </message>
     <message>
-        <location filename="../src/ui/OutputFileDialog.ui" line="63"/>
-        <location filename="../src/ui/OutputFileDialog.ui" line="82"/>
+        <location filename="../src/OutputFileDialog.ui" line="63"/>
+        <location filename="../src/OutputFileDialog.ui" line="82"/>
         <source>Save to file system</source>
         <translation>Save to file system</translation>
     </message>
     <message>
-        <location filename="../src/ui/OutputFileDialog.ui" line="126"/>
+        <location filename="../src/OutputFileDialog.ui" line="126"/>
         <source>Directory:</source>
         <translation>Directory:</translation>
     </message>
     <message>
-        <location filename="../src/ui/OutputFileDialog.ui" line="146"/>
+        <location filename="../src/OutputFileDialog.ui" line="146"/>
         <source>File name:</source>
         <translation>File name:</translation>
     </message>
@@ -573,43 +573,43 @@ Set up the directory:</translation>
 <context>
     <name>SequeceActionDialog</name>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="32"/>
+        <location filename="../src/SequenceActionDialog.ui" line="32"/>
         <source>New Sequence Action</source>
         <translation>New Sequence Action</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="40"/>
+        <location filename="../src/SequenceActionDialog.ui" line="40"/>
         <source>Merge into one sequence</source>
         <translation>Merge into one sequence</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="46"/>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="102"/>
+        <location filename="../src/SequenceActionDialog.ui" line="46"/>
+        <location filename="../src/SequenceActionDialog.ui" line="102"/>
         <source>buttonGroup</source>
         <translation>buttonGroup</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="62"/>
+        <location filename="../src/SequenceActionDialog.ui" line="62"/>
         <source>Merged sequence name</source>
         <translation>Merged sequence name</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="72"/>
+        <location filename="../src/SequenceActionDialog.ui" line="72"/>
         <source>Gap size</source>
         <translation>Gap size</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="99"/>
+        <location filename="../src/SequenceActionDialog.ui" line="99"/>
         <source>Merge into alignment</source>
         <translation>Merge into alignment</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="118"/>
+        <location filename="../src/SequenceActionDialog.ui" line="118"/>
         <source>Alignment name</source>
         <translation>Alignment name</translation>
     </message>
     <message>
-        <location filename="../src/ui/SequenceActionDialog.ui" line="128"/>
+        <location filename="../src/SequenceActionDialog.ui" line="128"/>
         <source>Filter duplicated sequences</source>
         <translation>Filter duplicated sequences</translation>
     </message>
@@ -617,17 +617,17 @@ Set up the directory:</translation>
 <context>
     <name>StringActionDialog</name>
     <message>
-        <location filename="../src/ui/StringActionDialog.ui" line="26"/>
+        <location filename="../src/StringActionDialog.ui" line="26"/>
         <source>New String Action</source>
         <translation>New String Action</translation>
     </message>
     <message>
-        <location filename="../src/ui/StringActionDialog.ui" line="37"/>
+        <location filename="../src/StringActionDialog.ui" line="37"/>
         <source>Merge strings into one string</source>
         <translation>Merge strings into one string</translation>
     </message>
     <message>
-        <location filename="../src/ui/StringActionDialog.ui" line="53"/>
+        <location filename="../src/StringActionDialog.ui" line="53"/>
         <source>Separator</source>
         <translation>Separator</translation>
     </message>

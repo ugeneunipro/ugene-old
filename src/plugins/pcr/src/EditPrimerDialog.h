@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class EditPrimerDialog : public QDialog, private Ui::EditPrimerDialog {
+class EditPrimerDialog : public QDialog, private Ui_EditPrimerDialog {
     Q_OBJECT
 public:
     EditPrimerDialog(QWidget *parent);

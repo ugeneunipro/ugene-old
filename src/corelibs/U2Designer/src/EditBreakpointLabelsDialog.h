@@ -23,21 +23,11 @@
 #define _EDIT_BREAKPOINT_LABELS_DIALOG_H_
 
 #include <U2Core/global.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
 #include <QtWidgets/QDialog>
-#endif
 
 
 class QKeyEvent;
-
-namespace Ui {
-
-class EditBreakpointLabelsDialog;
-
-}
+class Ui_EditBreakpointLabelsDialog;
 
 namespace U2 {
 
@@ -71,7 +61,7 @@ private:
 
     QStringList callingBreakpointLabels;
     QStringList newLabelsAdded;
-    Ui::EditBreakpointLabelsDialog *ui;
+    Ui_EditBreakpointLabelsDialog *ui;
 };
 
 } // namespace U2

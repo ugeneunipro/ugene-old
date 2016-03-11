@@ -23,12 +23,11 @@
 #define _U2_SITECON_BUILD_DIALOG_CONTROLLER_H_
 
 #include <QDialog>
-
 #include <U2Core/MAlignment.h>
 #include <U2Core/Task.h>
 
 #include "SiteconAlgorithm.h"
-#include "ui/ui_SiteconBuildDialog.h"
+#include "ui_SiteconBuildDialog.h"
 
 namespace U2 {
 

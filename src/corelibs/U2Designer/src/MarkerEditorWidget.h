@@ -30,7 +30,7 @@ namespace U2 {
 
 class Marker;
 
-class MarkerEditorWidget: public QWidget, public Ui::MarkerEditorWidget {
+class MarkerEditorWidget: public QWidget, public Ui_MarkerEditorWidget {
     Q_OBJECT
 public:
     MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget *parent = NULL);

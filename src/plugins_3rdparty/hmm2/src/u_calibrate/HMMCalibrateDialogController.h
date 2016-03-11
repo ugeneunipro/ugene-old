@@ -23,9 +23,9 @@
 #define _U2_HMMCALIBRATE_DIALOG_CONTROLLER_H_
 
 #include <QDialog>
-
 #include "uhmmcalibrate.h"
-#include "ui/ui_HMMCalibrateDialog.h"
+
+#include <ui_HMMCalibrateDialog.h>
 
 namespace U2 {
 

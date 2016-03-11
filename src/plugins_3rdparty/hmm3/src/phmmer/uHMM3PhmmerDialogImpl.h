@@ -27,7 +27,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <phmmer/uhmm3phmmer.h>
-#include <ui/ui_UHMM3PhmmerDialog.h>
+#include <ui_UHMM3PhmmerDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>

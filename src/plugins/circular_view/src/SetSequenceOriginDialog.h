@@ -22,7 +22,7 @@
 #ifndef _U2_SEQUENCE_ORIGIN_DIALOG_H_
 #define _U2_SEQUENCE_ORIGIN_DIALOG_H_
 
-#include <ui/ui_SetSequenceOriginDialog.h>
+#include <ui_SetSequenceOriginDialog.h>
 
 namespace U2 {
 

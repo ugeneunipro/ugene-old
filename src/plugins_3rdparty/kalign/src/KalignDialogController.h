@@ -29,7 +29,7 @@
 #include <U2Gui/DialogUtils.h>
 
 #include "KalignTask.h"
-#include "ui/ui_KalignDialog.h"
+#include "ui_KalignDialog.h"
 
 namespace U2 {
 

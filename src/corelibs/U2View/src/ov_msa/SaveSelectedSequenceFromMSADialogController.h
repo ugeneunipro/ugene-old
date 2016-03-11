@@ -26,10 +26,8 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_SaveSelectedSequenceFromMSADialog.h"
-
+#include <ui_SaveSelectedSequenceFromMSADialog.h>
 namespace U2 {
-
 class SaveDocumentController;
 
 class SaveSelectedSequenceFromMSADialogController : public QDialog, private Ui_SaveSelectedSequenceFromMSADialog {

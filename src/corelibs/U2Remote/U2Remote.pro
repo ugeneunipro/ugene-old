@@ -18,9 +18,9 @@ HEADERS += src/DistributedComputingUtil.h \
            src/SerializeUtils.h \
            src/SynchHttp.h \
            src/TaskDistributor.h
-FORMS += src/ui/RemoteMachineMonitorDialog.ui \
-         src/ui/RemoteMachineScanDialog.ui \
-         src/ui/RemoteMachineSettingsDialog.ui
+FORMS += src/RemoteMachineMonitorDialog.ui \
+         src/RemoteMachineScanDialog.ui \
+         src/RemoteMachineSettingsDialog.ui
 SOURCES += src/DistributedComputingUtil.cpp \
            src/PingTask.cpp \
            src/ProtocolInfo.cpp \

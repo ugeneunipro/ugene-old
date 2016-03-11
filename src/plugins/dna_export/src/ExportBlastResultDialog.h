@@ -26,7 +26,7 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportBlastResultDialog.h"
+#include <ui_ExportBlastResultDialog.h>
 
 namespace U2 {
 

@@ -24,7 +24,7 @@
 
 #include "DNAFragment.h"
 
-#include <ui/ui_EditFragmentDialog.h>
+#include <ui_EditFragmentDialog.h>
 
 namespace U2 {
 

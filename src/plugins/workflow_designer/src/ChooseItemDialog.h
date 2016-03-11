@@ -24,7 +24,7 @@
 
 #include <U2Core/global.h>
 
-#include <ui/ui_ChooseItemDialog.h>
+#include <ui_ChooseItemDialog.h>
 #include <U2Lang/ActorModel.h>
 
 namespace U2 {

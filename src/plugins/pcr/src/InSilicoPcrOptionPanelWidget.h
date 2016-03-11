@@ -33,7 +33,7 @@ class AnnotatedDNAView;
 class InSilicoPcrTask;
 class PrimerGroupBox;
 
-class InSilicoPcrOptionPanelWidget : public QWidget, public Ui::InSilicoPcrOptionPanelWidget {
+class InSilicoPcrOptionPanelWidget : public QWidget, public Ui_InSilicoPcrOptionPanelWidget {
     Q_OBJECT
 public:
     InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView);

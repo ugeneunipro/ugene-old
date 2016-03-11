@@ -24,7 +24,7 @@
 
 #include <QDialog>
 #include <U2Gui/DialogUtils.h>
-#include <ui/ui_FormatDBSupportRunDialog.h>
+#include <ui_FormatDBSupportRunDialog.h>
 #include "FormatDBSupportTask.h"
 
 namespace U2 {

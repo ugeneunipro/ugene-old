@@ -35,7 +35,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Core/DNASequenceObject.h>
 
-#include <ui/ui_UHMM3SearchDialog.h>
+#include <ui_UHMM3SearchDialog.h>
 #include <search/uHMM3SearchTask.h>
 
 namespace U2 {

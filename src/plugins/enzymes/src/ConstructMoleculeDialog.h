@@ -25,7 +25,7 @@
 #include <QList>
 
 #include "CloningUtilTasks.h"
-#include "ui/ui_ConstructMoleculeDialog.h"
+#include "ui_ConstructMoleculeDialog.h"
 
 namespace U2 {
 

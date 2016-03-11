@@ -22,7 +22,7 @@
 #ifndef _U2_ORFDIALOG_H_
 #define _U2_ORFDIALOG_H_
 
-#include "ui/ui_ORFDialogUI.h"
+#include "ui_ORFDialogUI.h"
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>

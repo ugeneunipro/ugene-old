@@ -42,7 +42,7 @@ const QString EditConnectionDialog::DEFAULT_PORT = "3306";
 
 EditConnectionDialog::EditConnectionDialog(QWidget *parent, const QString &dbiUrl, const QString &userName, const QString &connectionName) :
     QDialog(parent),
-    ui(new Ui::EditConnectionDialog)
+    ui(new Ui_EditConnectionDialog)
 {
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467872");

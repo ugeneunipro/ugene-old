@@ -22,7 +22,7 @@
 #ifndef _U2_STATISTICAL_REPORT_CONTROLLER_H_
 #define _U2_STATISTICAL_REPORT_CONTROLLER_H_
 
-#include "ui/ui_StatisticalReport.h"
+#include "ui_StatisticalReport.h"
 
 namespace U2 {
 

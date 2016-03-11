@@ -25,11 +25,10 @@
 #include <QDialog>
 
 #include <U2Core/GAutoDeleteList.h>
-
 #include <U2Gui/DialogUtils.h>
 
 #include "MuscleTask.h"
-#include "ui/ui_MuscleAlignDialog.h"
+#include "ui_MuscleAlignDialog.h"
 
 namespace U2 {
 

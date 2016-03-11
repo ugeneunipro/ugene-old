@@ -22,8 +22,8 @@
 #ifndef _U2_PROJECT_SUPPORT_H_
 #define _U2_PROJECT_SUPPORT_H_
 
-#include "ui/ui_CreateNewProjectWidget.h"
-#include "ui/ui_SaveProjectDialog.h"
+#include "ui_CreateNewProjectWidget.h"
+#include "ui_SaveProjectDialog.h"
 
 #include <U2Core/ProjectModel.h>
 #include <U2Core/ProjectService.h>
@@ -141,7 +141,7 @@ private:
 
 //TODO: merge project dir & project name fields
 
-class SaveProjectDialogController : public QDialog, public Ui::SaveProjectDialog {
+class SaveProjectDialogController : public QDialog, public Ui_SaveProjectDialog {
     Q_OBJECT
 public:
     SaveProjectDialogController(QWidget *p);
@@ -149,7 +149,7 @@ public slots:
     void sl_clicked(QAbstractButton *button);
 };
 
-class ProjectDialogController : public QDialog, public Ui::CreateNewProjectDialog {
+class ProjectDialogController : public QDialog, public Ui_CreateNewProjectDialog {
     Q_OBJECT
 public:
     enum Mode {New_Project, Save_Project};

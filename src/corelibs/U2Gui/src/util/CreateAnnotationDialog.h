@@ -26,9 +26,7 @@
 
 #include <U2Core/global.h>
 
-namespace Ui {
-class CreateAnnotationDialog;
-}
+class Ui_CreateAnnotationDialog;
 
 namespace U2 {
 
@@ -48,7 +46,7 @@ private slots:
 private:
     CreateAnnotationModel& model;
     CreateAnnotationWidgetController* annWidgetController;
-    Ui::CreateAnnotationDialog *ui;
+    Ui_CreateAnnotationDialog *ui;
 };
 
 } // namespace

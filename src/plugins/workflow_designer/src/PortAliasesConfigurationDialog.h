@@ -24,7 +24,7 @@
 
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/Schema.h>
-#include <ui/ui_PortAliasesConfigurationDialog.h>
+#include <ui_PortAliasesConfigurationDialog.h>
 
 namespace U2 {
 namespace Workflow {

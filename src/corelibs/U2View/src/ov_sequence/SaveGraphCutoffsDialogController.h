@@ -22,7 +22,7 @@
 #ifndef _U2_SAVE_GRAPH_CUTOFFS_DIALOG_H_
 #define _U2_SAVE_GRAPH_CUTOFFS_DIALOG_H_
 
-#include <ui/ui_SaveGraphCutoffsDialog.h>
+#include <ui_SaveGraphCutoffsDialog.h>
 
 #include <U2View/ADVGraphModel.h>
 #include <U2View/ADVSequenceObjectContext.h>

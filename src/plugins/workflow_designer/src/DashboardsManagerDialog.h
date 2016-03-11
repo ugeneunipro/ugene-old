@@ -30,7 +30,7 @@ namespace U2 {
 
 class ScanDashboardsDirTask;
 
-class DashboardsManagerDialog : public QDialog, public Ui::DashboardsManagerDialog {
+class DashboardsManagerDialog : public QDialog, public Ui_DashboardsManagerDialog {
     Q_OBJECT
 public:
     DashboardsManagerDialog(ScanDashboardsDirTask *task, QWidget *parent);

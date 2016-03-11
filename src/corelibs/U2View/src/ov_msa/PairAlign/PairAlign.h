@@ -37,7 +37,7 @@
 
 #include <U2Gui/SuggestCompleter.h>
 
-#include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
+#include "ui_PairwiseAlignmentOptionsPanelWidget.h"
 #include "../MsaOpSavableTab.h"
 #include "../SequenceSelectorWidgetController.h"
 

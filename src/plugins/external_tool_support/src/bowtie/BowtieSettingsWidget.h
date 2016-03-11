@@ -22,8 +22,8 @@
 #ifndef _U2_BOWTIE_SETTINGS_WIDGET_H_
 #define _U2_BOWTIE_SETTINGS_WIDGET_H_
 
-#include "ui/ui_BowtieSettings.h"
-#include "ui/ui_BowtieBuildSettings.h"
+#include "ui_BowtieSettings.h"
+#include "ui_BowtieBuildSettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
 namespace U2 {

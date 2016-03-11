@@ -24,7 +24,7 @@
 
 #include "BaseSettingsDialog.h"
 #include "ov_phyltree/TreeSettings.h"
-#include <ui/ui_BranchSettingsDialog.h>
+#include "ui_BranchSettingsDialog.h"
 
 namespace U2 {
 

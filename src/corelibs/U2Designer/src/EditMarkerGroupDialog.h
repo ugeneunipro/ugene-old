@@ -39,7 +39,7 @@ class MarkerListCfgModel;
 /************************************************************************/
 /* EditMarkerGroupDialog */
 /************************************************************************/
-class EditMarkerGroupDialog : public QDialog, public Ui::EditMarkerGroupDialog {
+class EditMarkerGroupDialog : public QDialog, public Ui_EditMarkerGroupDialog {
     Q_OBJECT
 public:
     EditMarkerGroupDialog(bool isNew, Marker *marker, Workflow::MarkerGroupListCfgModel *allModel, QWidget *parent);
@@ -99,7 +99,7 @@ private:
 /************************************************************************/
 class EditTypedMarkerWidget;
 
-class EditMarkerDialog : public QDialog, public Ui::EditMarkerDialog {
+class EditMarkerDialog : public QDialog, public Ui_EditMarkerDialog {
     Q_OBJECT
 public:
     EditMarkerDialog(bool isNew, const QString &type, const QString &name, const QVariantList &values, QWidget *parent);
@@ -129,7 +129,7 @@ protected:
     QVariantList values;
 };
 
-class EditIntegerMarkerWidget: public EditTypedMarkerWidget, public Ui::EditIntegerMarkerWidget {
+class EditIntegerMarkerWidget: public EditTypedMarkerWidget, public Ui_EditIntegerMarkerWidget {
     Q_OBJECT
 public:
     EditIntegerMarkerWidget(bool isNew, const QVariantList &values, QWidget *parent);
@@ -137,7 +137,7 @@ public:
     virtual QVariantList getValues();
 };
 
-class EditFloatMarkerWidget: public EditTypedMarkerWidget, public Ui::EditFloatMarkerWidget {
+class EditFloatMarkerWidget: public EditTypedMarkerWidget, public Ui_EditFloatMarkerWidget {
     Q_OBJECT
 public:
     EditFloatMarkerWidget(bool isNew, const QVariantList &values, QWidget *parent);
@@ -145,7 +145,7 @@ public:
     virtual QVariantList getValues();
 };
 
-class EditStringMarkerWidget: public EditTypedMarkerWidget, public Ui::EditStringMarkerWidget {
+class EditStringMarkerWidget: public EditTypedMarkerWidget, public Ui_EditStringMarkerWidget {
     Q_OBJECT
 public:
     EditStringMarkerWidget(bool isNew, const QVariantList &values, QWidget *parent);

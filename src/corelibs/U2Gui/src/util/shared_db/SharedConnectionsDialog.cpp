@@ -81,7 +81,7 @@ const QString SharedConnectionsDialog::SETTINGS_RECENT = "/shared_database/recen
 
 SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SharedConnectionsDialog)
+    ui(new Ui_SharedConnectionsDialog)
 {
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17467872");

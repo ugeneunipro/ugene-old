@@ -22,6 +22,7 @@ Makefile.Debug
 *.suo
 *.vcxproj*
 *.tmp
+*.sln
 
 # MacOS generated files
 .DS_Store

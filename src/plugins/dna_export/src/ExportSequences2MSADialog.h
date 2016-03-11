@@ -26,7 +26,7 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportSequences2MSADialog.h"
+#include <ui_ExportSequences2MSADialog.h>
 
 namespace U2 {
 

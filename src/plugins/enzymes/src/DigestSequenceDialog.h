@@ -39,7 +39,7 @@
 #include <U2Gui/MainWindow.h>
 
 #include "EnzymesQuery.h"
-#include "ui/ui_DigestSequenceDialog.h"
+#include "ui_DigestSequenceDialog.h"
 
 namespace U2 {
 

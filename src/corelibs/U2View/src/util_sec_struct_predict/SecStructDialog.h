@@ -23,7 +23,7 @@
 #define _U2_EXPORT_SEC_STRUCT_DIALOG_H_
 
 #include <U2Core/AnnotationData.h>
-#include <ui/ui_SecStructDialog.h>
+#include <ui_SecStructDialog.h>
 
 namespace U2 {
 
@@ -32,7 +32,7 @@ class SecStructPredictTask;
 class SecStructPredictAlgRegistry;
 class Task;
 
-class U2VIEW_EXPORT SecStructDialog : public QDialog, private Ui::SecStructDialog {
+class U2VIEW_EXPORT SecStructDialog : public QDialog, private Ui_SecStructDialog {
     Q_OBJECT
 public:
     SecStructDialog(ADVSequenceObjectContext* ctx, QWidget *p = NULL);

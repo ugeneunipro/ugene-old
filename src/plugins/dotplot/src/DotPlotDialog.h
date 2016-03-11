@@ -22,7 +22,7 @@
 #ifndef _U2_DOT_PLOT_DIALOG_H_
 #define _U2_DOT_PLOT_DIALOG_H_
 
-#include <ui/ui_DotPlotDialog.h>
+#include <ui_DotPlotDialog.h>
 
 #include <U2Algorithm/RepeatFinderSettings.h>
 #if (QT_VERSION < 0x050000) //Qt 5

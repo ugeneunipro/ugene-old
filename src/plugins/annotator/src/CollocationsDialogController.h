@@ -24,7 +24,7 @@
 
 #include "CollocationsSearchAlgorithm.h"
 
-#include <ui/ui_FindAnnotationCollocationsDialog.h>
+#include <ui_FindAnnotationCollocationsDialog.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/AnnotationData.h>

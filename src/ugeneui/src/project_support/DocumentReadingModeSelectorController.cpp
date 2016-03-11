@@ -31,7 +31,7 @@
 #include <U2Core/QObjectScopedPointer.h>
 
 #include "DocumentReadingModeSelectorController.h"
-#include "ui/ui_SequenceReadingModeSelectorDialog.h"
+#include "ui_SequenceReadingModeSelectorDialog.h"
 
 namespace U2{
 

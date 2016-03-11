@@ -22,7 +22,7 @@
 #ifndef _U2_NETWORK_SETTINGS_WIDGET_IMPL_H_
 #define _U2_NETWORK_SETTINGS_WIDGET_IMPL_H_
 
-#include <ui/ui_NetworkSettingsWidget.h>
+#include <ui_NetworkSettingsWidget.h>
 
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/AppSettingsGUI.h>

@@ -30,7 +30,7 @@
 #endif
 #include <QtGui/QIntValidator>
 
-#include "ui/ui_BreakpointHitCountDialog.h"
+#include "ui_BreakpointHitCountDialog.h"
 #include "BreakpointHitCountDialog.h"
 #include <U2Gui/HelpButton.h>
 

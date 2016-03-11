@@ -25,11 +25,9 @@
 #include <QStringList>
 #include <QVariant>
 
+#include <ui_AssemblyToRefDialog.h>
+
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
-
-#include <U2Core/GUrl.h>
-
-#include "ui/ui_AssemblyToRefDialog.h"
 
 namespace U2 {
 
@@ -56,7 +54,7 @@ public:
 };
 
 
-class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog {
+class DnaAssemblyDialog : public QDialog, private Ui_AssemblyToRefDialog {
     Q_OBJECT
 
 public:

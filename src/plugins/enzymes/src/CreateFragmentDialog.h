@@ -24,7 +24,7 @@
 
 #include "DNAFragment.h"
 #include <U2Gui/RegionSelector.h>
-#include <ui/ui_CreateFragmentDialog.h>
+#include <ui_CreateFragmentDialog.h>
 
 namespace U2 {
 

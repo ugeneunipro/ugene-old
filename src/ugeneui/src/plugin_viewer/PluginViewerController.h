@@ -21,7 +21,7 @@
 
 #ifndef _U2_PLUGIN_VIEWER_CONTROLLER_H_
 
-#include "ui/ui_PluginViewerWidget.h"
+#include "ui_PluginViewerWidget.h"
 
 #include <U2Core/PluginModel.h>
 #include <U2Gui/MainWindow.h>
@@ -85,7 +85,7 @@ private:
 	PlugViewServiceItem* getCurrentServiceItem() const;
     PlugViewPluginItem* getCurrentPluginItem() const;
 
-    Ui::PluginViewWidget ui;
+    Ui_PluginViewWidget ui;
     
     MWMDIWindow* mdiWindow;
     

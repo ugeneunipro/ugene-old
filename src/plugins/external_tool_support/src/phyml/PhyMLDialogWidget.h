@@ -22,7 +22,7 @@
 #ifndef _U2_PHYML_DIALOGWIDGET_H
 #define _U2_PHYML_DIALOGWIDGET_H
 
-#include "ui/ui_PhyMLDialog.h"
+#include "ui_PhyMLDialog.h"
 
 #include "PhyMLSupport.h"
 

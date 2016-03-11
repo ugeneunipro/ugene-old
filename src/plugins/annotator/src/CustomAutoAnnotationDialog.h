@@ -24,7 +24,7 @@
 
 
 
-#include <ui/ui_CustomAutoAnnotationDialog.h>
+#include <ui_CustomAutoAnnotationDialog.h>
 
 namespace U2 {
 

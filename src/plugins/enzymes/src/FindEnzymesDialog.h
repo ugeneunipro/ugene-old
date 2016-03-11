@@ -25,8 +25,8 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/RegionSelector.h>
 
-#include <ui/ui_EnzymesSelectorWidget.h>
-#include <ui/ui_FindEnzymesDialog.h>
+#include <ui_EnzymesSelectorWidget.h>
+#include <ui_FindEnzymesDialog.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 

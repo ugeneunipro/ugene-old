@@ -28,7 +28,7 @@
 #include <U2Core/Task.h>
 
 #include "uhmmbuild.h"
-#include "ui/ui_HMMBuildDialog.h"
+#include "ui_HMMBuildDialog.h"
 
 struct plan7_s;
 

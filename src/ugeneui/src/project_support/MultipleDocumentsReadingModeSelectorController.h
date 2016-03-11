@@ -29,7 +29,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrl.h>
 
-#include "ui/ui_MultipleSequenceFilesReadingMode.h"
+#include "ui_MultipleSequenceFilesReadingMode.h"
 
 namespace U2 {
 

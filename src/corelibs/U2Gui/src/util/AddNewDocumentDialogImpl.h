@@ -30,7 +30,7 @@ namespace U2 {
 class DocumentFormatComboboxController;
 class SaveDocumentController;
 
-class AddNewDocumentDialogImpl : public QDialog, public Ui::AddNewDocumentDialog {
+class AddNewDocumentDialogImpl : public QDialog, public Ui_AddNewDocumentDialog {
     Q_OBJECT
     AddNewDocumentDialogImpl(QWidget* p, AddNewDocumentDialogModel& m, const DocumentFormatConstraints& c);
     friend class AddNewDocumentDialogController;

@@ -22,7 +22,7 @@
 #ifndef _DIST_BUILD_SARRAY_WIDGET_H_
 #define _DIST_BUILD_SARRAY_WIDGET_H_
 
-#include "ui/ui_BuildSuffixArraySettings.h"
+#include "ui_BuildSuffixArraySettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
 namespace U2{

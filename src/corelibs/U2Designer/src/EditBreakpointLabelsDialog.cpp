@@ -27,7 +27,7 @@
 #endif
 #include <QtGui/QKeyEvent>
 
-#include "ui/ui_EditBreakpointLabelsDialog.h"
+#include "ui_EditBreakpointLabelsDialog.h"
 #include "EditBreakpointLabelsDialog.h"
 #include <U2Gui/HelpButton.h>
 
@@ -41,7 +41,7 @@ EditBreakpointLabelsDialog::EditBreakpointLabelsDialog(const QStringList &existi
       applienceControlsForLabels(),
       callingBreakpointLabels(initCallingBreakpointLabels),
       newLabelsAdded(),
-      ui(new Ui::EditBreakpointLabelsDialog())
+      ui(new Ui_EditBreakpointLabelsDialog())
 {
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "17468146");

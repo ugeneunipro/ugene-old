@@ -23,7 +23,7 @@
 #define _U2_GALAXY_CONFIG_CONFIGURATION_DIALOG_H_
 
 #include <U2Lang/Schema.h>
-#include <ui/ui_GalaxyConfigConfigurationDialog.h>
+#include <ui_GalaxyConfigConfigurationDialog.h>
 
 namespace U2 {
 namespace Workflow {
