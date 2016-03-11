@@ -24,7 +24,7 @@
 
 #include "uhmmsearch.h"
 
-#include <ui/ui_HMMSearchDialog.h>
+#include <ui_HMMSearchDialog.h>
 
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>

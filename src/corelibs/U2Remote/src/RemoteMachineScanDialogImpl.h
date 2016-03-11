@@ -31,13 +31,13 @@
 #endif
 
 #include <U2Remote/RemoteMachine.h>
-#include <ui/ui_RemoteMachineScanDialog.h>
+#include <ui_RemoteMachineScanDialog.h>
 
 namespace U2 {
 
 typedef QList< RemoteMachineSettings * > RemoteMachineScanDialogModel;
 
-class RemoteMachineScanDialogImpl : public QDialog, public Ui::RemoteMachineScanDialog {
+class RemoteMachineScanDialogImpl : public QDialog, public Ui_RemoteMachineScanDialog {
     Q_OBJECT
 public:
     static const int SCAN_UPDATE_TIME = 500; /* 0.5 seconds */

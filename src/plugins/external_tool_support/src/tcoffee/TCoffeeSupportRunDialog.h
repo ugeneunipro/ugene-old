@@ -25,9 +25,8 @@
 #include <QDialog>
 
 #include <U2Gui/DialogUtils.h>
-
 #include "TCoffeeSupportTask.h"
-#include "ui/ui_TCoffeeSupportRunDialog.h"
+#include "ui_TCoffeeSupportRunDialog.h"
 
 namespace U2 {
 

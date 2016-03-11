@@ -24,7 +24,8 @@
 
 #include <QDialog>
 
-#include "ui/ui_CAP3SupportDialog.h"
+#include <qglobal.h>
+#include <ui_CAP3SupportDialog.h>
 
 namespace U2 {
 

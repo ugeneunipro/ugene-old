@@ -24,7 +24,7 @@
 
 #include <U2View/CreatePhyTreeWidget.h>
 
-#include "ui/ui_NeighborJoinWidget.h"
+#include "ui_NeighborJoinWidget.h"
 
 namespace U2 {
 
@@ -39,7 +39,7 @@ public:
     static QList<QString> getConsensusModelTypes();
 };
 
-class NeighborJoinWidget : public CreatePhyTreeWidget, public Ui::NeighborJoinWidget {
+class NeighborJoinWidget : public CreatePhyTreeWidget, public Ui_NeighborJoinWidget {
     Q_OBJECT
 public:
     NeighborJoinWidget(const MAlignment &ma, QWidget *parent = NULL);

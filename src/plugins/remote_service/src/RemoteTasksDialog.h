@@ -28,7 +28,7 @@
 #else
 #include <QtWidgets/QDialog>
 #endif
-#include "ui/ui_TaskStatisticsDialog.h"
+#include "ui_TaskStatisticsDialog.h"
 #include "RemoteServiceMachine.h"
 
 namespace U2 {
@@ -38,7 +38,7 @@ class FetchRemoteTaskResultTask;
 class DeleteRemoteDataTask;
 struct RemoteTaskInfo;
 
-class RemoteTasksDialog : public QDialog, public Ui::RemoteTasksDialog
+class RemoteTasksDialog : public QDialog, public Ui_RemoteTasksDialog
 {
     Q_OBJECT
 public:

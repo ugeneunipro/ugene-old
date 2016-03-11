@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-class PrimersDetailsDialog : public QDialog, private Ui::PrimersDetailsDialog {
+class PrimersDetailsDialog : public QDialog, private Ui_PrimersDetailsDialog {
 public:
     PrimersDetailsDialog(QWidget *parent, const QString &details);
 };

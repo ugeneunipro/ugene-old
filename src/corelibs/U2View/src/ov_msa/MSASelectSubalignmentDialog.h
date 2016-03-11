@@ -22,7 +22,7 @@
 #ifndef _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
 #define _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
 
-#include "ui/ui_SelectSubalignmentDialog.h"
+#include "ui_SelectSubalignmentDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/MAlignmentObject.h>

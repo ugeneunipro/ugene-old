@@ -22,7 +22,7 @@
 #ifndef _U2_ABOUT_DIALOG_CONTROLLER_
 #define _U2_ABOUT_DIALOG_CONTROLLER_
 
-#include <ui/ui_AboutDialog.h>
+#include <ui_AboutDialog.h>
 
 #include <QtCore/QBasicTimer>
 #include <QtCore/QPointer>

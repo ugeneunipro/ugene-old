@@ -22,7 +22,7 @@
 #ifndef _U2_CREATE_SCRIPT_WORKER_DIALOG_H_
 #define _U2_CREATE_SCRIPT_WORKER_DIALOG_H_
 
-#include "ui/ui_CreateScriptBlockDialog.h"
+#include "ui_CreateScriptBlockDialog.h"
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Designer/DelegateEditors.h>

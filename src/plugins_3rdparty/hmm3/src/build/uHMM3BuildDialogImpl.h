@@ -23,9 +23,8 @@
 #define _GB2_UHMM3_BUILD_DLG_IMPL_H_
 
 #include <QDialog>
-
 #include "uHMM3BuildTask.h"
-#include "ui/ui_UHMM3BuildDialog.h"
+#include <ui_UHMM3BuildDialog.h>
 
 namespace U2 {
 

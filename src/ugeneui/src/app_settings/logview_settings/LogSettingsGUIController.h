@@ -30,7 +30,7 @@
 
 #include <U2Gui/AppSettingsGUI.h>
 
-#include "ui/ui_LogSettingsWidget.h"
+#include "ui_LogSettingsWidget.h"
 
 namespace U2 {
 

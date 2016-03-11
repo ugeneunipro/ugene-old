@@ -26,7 +26,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Gui/RegionSelector.h>
 
-#include <ui/ui_SiteconSearchDialog.h>
+#include <ui_SiteconSearchDialog.h>
 
 #include <QtCore/QList>
 #if (QT_VERSION < 0x050000) //Qt 5

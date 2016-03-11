@@ -32,7 +32,7 @@ class U2Region;
 class BioStruct3DObject;
 class BioStruct3DReference;
 
-class BioStruct3DSubsetEditor : public QWidget, public Ui::BioStruct3DSubsetEditor
+class BioStruct3DSubsetEditor : public QWidget, public Ui_BioStruct3DSubsetEditor
 {
     Q_OBJECT
 

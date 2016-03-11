@@ -28,7 +28,7 @@
 #include "FindPatternWidgetSavableTab.h"
 
 #include "FindPatternTask.h"
-#include "ui/ui_FindPatternForm.h"
+#include "ui_FindPatternForm.h"
 
 namespace U2 {
 

@@ -32,7 +32,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 
-#include "ui/ui_DNAStatMSAProfileDialog.h"
+#include "ui_DNAStatMSAProfileDialog.h"
 
 namespace U2 {
 

@@ -26,7 +26,7 @@
 
 #include "RF_SArray_TandemFinder.h"
 
-#include "ui/ui_FindTandemsDialog.h"
+#include "ui_FindTandemsDialog.h"
 
 class QToolButton;
 

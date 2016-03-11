@@ -23,7 +23,7 @@
 #define _U2_SMITH_WATERMAN_DIALOG_IMPL_H_
 
 #include "SmithWatermanDialog.h"
-#include <ui/ui_SmithWatermanDialogBase.h>
+#include <ui_SmithWatermanDialogBase.h>
 
 #include <QDialog>
 #include <QCloseEvent>
@@ -43,7 +43,7 @@ class QCheckBox;
 
 namespace U2 {
 
-class SmithWatermanDialog: public QDialog, public Ui::SmithWatermanDialogBase {
+class SmithWatermanDialog: public QDialog, public Ui_SmithWatermanDialogBase {
     Q_OBJECT
 public:
     SmithWatermanDialog(QWidget* p,

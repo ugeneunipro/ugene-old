@@ -23,7 +23,7 @@
 #define _U2_PHYLTREE_TEXT_SETTINGS_DIALOG_H_
 
 #include "BaseSettingsDialog.h"
-#include <ui/ui_TextSettingsDialog.h>
+#include <ui_TextSettingsDialog.h>
 #include "ov_phyltree/TreeSettings.h"
 
 namespace U2 {

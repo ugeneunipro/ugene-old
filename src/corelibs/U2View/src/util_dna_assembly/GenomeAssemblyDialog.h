@@ -32,7 +32,7 @@
 #include <QtWidgets/QWidget>
 #endif
 
-#include <ui/ui_GenomeAssemblyDialog.h>
+#include <ui_GenomeAssemblyDialog.h>
 
 namespace U2 {
 

@@ -64,7 +64,7 @@ private:
 
     void showInvalidInputMessage(QWidget *field, QString fieldLabel);
 private:
-    Ui::Primer3Dialog ui;
+    Ui_Primer3Dialog ui;
 
     CreateAnnotationWidgetController *createAnnotationWidgetController;
     U2Region selection;

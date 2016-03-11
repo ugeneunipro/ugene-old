@@ -40,7 +40,7 @@ namespace U2 {
 const QString ExportAnnotationsDialog::CSV_FORMAT_ID( "csv" );
 
 ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidget *parent )
-    : QDialog( parent ), ui( new Ui::ExportAnnotationsDialog( ) )
+    : QDialog( parent ), ui( new Ui_ExportAnnotationsDialog( ) )
 {
     ui->setupUi( this );
     new HelpButton(this, ui->buttonBox, "17467578");    

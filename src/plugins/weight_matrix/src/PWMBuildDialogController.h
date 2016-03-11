@@ -36,7 +36,7 @@
 
 #include "WeightMatrixAlgorithm.h"
 #include "WeightMatrixPlugin.h"
-#include "ui/ui_PWMBuildDialog.h"
+#include "ui_PWMBuildDialog.h"
 
 namespace U2 {
 

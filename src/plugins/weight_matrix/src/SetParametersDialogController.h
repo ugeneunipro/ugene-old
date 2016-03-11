@@ -22,7 +22,7 @@
 #ifndef _U2_WEIGHT_MATRIX_SET_PARAMETERS_DIALOG_CONTROLLER_H_
 #define _U2_WEIGHT_MATRIX_SET_PARAMETERS_DIALOG_CONTROLLER_H_
 
-#include <ui/ui_SetDefaultParametersDialog.h>
+#include <ui_SetDefaultParametersDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>

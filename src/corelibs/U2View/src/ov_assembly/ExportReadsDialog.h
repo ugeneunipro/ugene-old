@@ -26,7 +26,7 @@
 
 #include <U2Core/global.h>
 
-#include "ui/ui_ExportReadsDialog.h"
+#include <ui_ExportReadsDialog.h>
 
 namespace U2 {
 

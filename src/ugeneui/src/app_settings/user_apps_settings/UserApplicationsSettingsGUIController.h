@@ -22,7 +22,7 @@
 #ifndef _U2_USER_APP_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_USER_APP_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_UserApplicationsSettingsWidget.h>
+#include <ui_UserApplicationsSettingsWidget.h>
 
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/AppSettingsGUI.h>

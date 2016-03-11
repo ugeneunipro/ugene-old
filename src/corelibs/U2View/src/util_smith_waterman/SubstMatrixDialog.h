@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-class U2VIEW_EXPORT SubstMatrixDialog: public QDialog, public Ui::SubstMatrixDialogBase {
+class U2VIEW_EXPORT SubstMatrixDialog: public QDialog, public Ui_SubstMatrixDialogBase {
     Q_OBJECT
 public:
     SubstMatrixDialog(const SMatrix& m, QWidget* parent);

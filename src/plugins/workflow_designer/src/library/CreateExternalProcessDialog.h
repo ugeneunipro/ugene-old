@@ -22,7 +22,7 @@
 #ifndef CreateExternalProcessDialog_h__
 #define CreateExternalProcessDialog_h__
 
-#include "ui/ui_ExternalProcessWorkerDialog.h"
+#include "ui_ExternalProcessWorkerDialog.h"
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Attribute.h>
 #include <U2Lang/ConfigurationEditor.h>
@@ -67,7 +67,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
-    Ui::CreateExternalProcessWorkerDialog ui;
+    Ui_CreateExternalProcessWorkerDialog ui;
     ExternalProcessConfig *initialCfg;
     ExternalProcessConfig *cfg;
     bool editing;

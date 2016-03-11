@@ -22,7 +22,7 @@
 #ifndef _U2_TMP_DIR_CHANGE_DIALOG_CONTROLLER_
 #define _U2_TMP_DIR_CHANGE_DIALOG_CONTROLLER_
 
-#include <ui/ui_TmpDirChangeDialog.h>
+#include <ui_TmpDirChangeDialog.h>
 
 
 #if (QT_VERSION < 0x050000) //Qt 5

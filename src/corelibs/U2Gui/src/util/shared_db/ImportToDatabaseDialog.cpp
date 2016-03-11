@@ -56,7 +56,7 @@ const QString ImportToDatabaseDialog::OBJECTS_AND_DOCUMENTS = QObject::tr("Docum
 
 ImportToDatabaseDialog::ImportToDatabaseDialog(Document *dbConnection, const QString &defaultFolder, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ImportToDatabaseDialog),
+    ui(new Ui_ImportToDatabaseDialog),
     dbConnection(dbConnection),
     baseFolder(U2DbiUtils::makeFolderCanonical(defaultFolder))
 {

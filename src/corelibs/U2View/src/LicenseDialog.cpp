@@ -31,7 +31,7 @@
 namespace U2 {
 
 LicenseDialog::LicenseDialog(Plugin *_plugin, QWidget *parent) :
-    QDialog(parent), ui(new Ui::LicenseDialog), plugin(_plugin)
+    QDialog(parent), ui(new Ui_LicenseDialog), plugin(_plugin)
 {
     ui->setupUi(this);
     //Opening license file

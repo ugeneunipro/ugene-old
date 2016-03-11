@@ -12,17 +12,17 @@
 <context>
     <name>RemoteMachineMonitorDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="14"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="14"/>
         <source>Remote machine monitor</source>
         <translation>Диспетчер удаленных машин</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="20"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="20"/>
         <source>Remote machine list</source>
         <translation>Список удаленных машин</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="23"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="23"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -37,65 +37,65 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Зеленая &lt;/span&gt;&lt;a name=&quot;result_box&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;о&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;тметка на статусе означает успешное соединение, красная отметка означает неудачное соединение. Знак вопроса означает, что соединение с этим сервисом еще не протестировано. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="32"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="32"/>
         <source>Url</source>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="37"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="37"/>
         <source>Server Name</source>
         <translation>Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="42"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="42"/>
         <source>Ping</source>
         <translation>Пинг</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="47"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="47"/>
         <source>Auth</source>
         <translation>Автор</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="57"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="60"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="57"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="60"/>
         <source>Add new UGENE remote service machine</source>
         <translation>Добавить новую удаленную машину</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="63"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="63"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="73"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="76"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="73"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="76"/>
         <source>Remove UGENE remote service machine from list</source>
         <translation>Удалить машину из списка</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="79"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="79"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="89"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="92"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="89"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="92"/>
         <source>Modify settings of existing UGENE remote service machine</source>
         <translation>Изменить настройки удаленной машины</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="95"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="95"/>
         <source>Modify...</source>
         <translation>Изменить...</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="105"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="105"/>
         <source>Test connection with selected remote machine</source>
         <translation>Тестирование подключения к выбранной машине</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="108"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="108"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -110,48 +110,48 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Первый этапом была отправлена команда PING на удаленный сервис, после этого была отправлена аутентификационная информация и начата сессия. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="116"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="116"/>
         <source>Test Connection</source>
         <translation>Тестирование подключения</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="126"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="126"/>
         <source>Show user remote tasks statistics</source>
         <translation>Показать удаленные задачи</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="129"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="129"/>
         <source>Activate User Tasks dialog, to check finished and ongoing tasks status, retrieve results or delete remote tasks.</source>
         <translation>Активируйте диалог пользовательских задач для проверки состояния готовых и текущих задач, получения результатов или удаления задач.</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="132"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="132"/>
         <source>Show User Tasks</source>
         <translation>Показать задачи</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="156"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="159"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="156"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="159"/>
         <source>Add available public machines to the list</source>
         <translation>Добавить доступные задачи в список</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="162"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="162"/>
         <source>Get Public Machines</source>
         <translation>Найти публичные машины</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="182"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="182"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="208"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="208"/>
         <source>Events log</source>
         <translation>События</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="189"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="189"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -159,32 +159,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RemoteMachineScanDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="14"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="14"/>
         <source>Scan remote machine</source>
         <translation>Сканировать удаленные машины</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="24"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="24"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="29"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="29"/>
         <source>Host</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="34"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="34"/>
         <source>Protocol</source>
         <translation>Протокол</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="57"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="57"/>
         <source>Add selected</source>
         <translation>Добавить выбранные</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="64"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="64"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -192,17 +192,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RemoteMachineSettingsDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="20"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="20"/>
         <source>Remote machine configuration</source>
         <translation>Конфигурация удалённой машины</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="54"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="54"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="61"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="61"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>

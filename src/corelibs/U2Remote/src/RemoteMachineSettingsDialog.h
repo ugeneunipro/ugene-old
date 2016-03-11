@@ -31,11 +31,11 @@
 #include <QtWidgets/QDialog>
 #endif
 
-#include <ui/ui_RemoteMachineSettingsDialog.h>
+#include <ui_RemoteMachineSettingsDialog.h>
 
 namespace U2 {
 
-class RemoteMachineSettingsDialog : public QDialog, public Ui::RemoteMachineSettingsDialog {
+class RemoteMachineSettingsDialog : public QDialog, public Ui_RemoteMachineSettingsDialog {
     Q_OBJECT
 public:
     RemoteMachineSettingsDialog(QWidget* parent, const RemoteMachineSettingsPtr& settings = RemoteMachineSettingsPtr());

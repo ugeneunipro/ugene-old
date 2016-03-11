@@ -22,7 +22,7 @@
 #ifndef _U2_CSV_COLUMN_CONFIGURATION_DIALOG_H_
 #define _U2_CSV_COLUMN_CONFIGURATION_DIALOG_H_
 
-#include <ui/ui_CSVColumnConfigurationDialog.h>
+#include <ui_CSVColumnConfigurationDialog.h>
 #include "CSVColumnConfiguration.h"
 
 namespace U2 {

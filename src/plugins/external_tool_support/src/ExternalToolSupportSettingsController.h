@@ -24,7 +24,7 @@
 
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Core/ExternalToolRegistry.h>
-#include <ui/ui_ETSSettingsWidget.h>
+#include <ui_ETSSettingsWidget.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>

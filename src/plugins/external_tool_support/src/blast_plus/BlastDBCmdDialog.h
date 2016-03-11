@@ -25,9 +25,8 @@
 #include <QDialog>
 
 #include <U2Gui/DialogUtils.h>
-
+#include <ui_BlastDBCmdDialog.h>
 #include "BlastDBCmdSupportTask.h"
-#include "ui/ui_BlastDBCmdDialog.h"
 #include "utils/BlastDBSelectorWidgetController.h"
 
 namespace U2 {

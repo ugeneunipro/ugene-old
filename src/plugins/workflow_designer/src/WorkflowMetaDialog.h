@@ -25,7 +25,7 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Schema.h>
 
-#include "ui/ui_WorkflowMetaDialog.h"
+#include "ui_WorkflowMetaDialog.h"
 
 namespace U2 {
 

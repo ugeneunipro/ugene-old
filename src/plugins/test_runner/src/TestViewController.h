@@ -23,7 +23,7 @@
 #define _U2_TEST_VIEW_CONTROLLER_H_
 
 #include <U2Gui/MainWindow.h>
-#include <ui/ui_TestView.h>
+#include <ui_TestView.h>
 #include <U2Core/CMDLineRegistry.h>
 
 #include <QtCore/QTime>
@@ -47,7 +47,7 @@ class TestRunnerService;
 class TestRunnerTask;
 class TestViewReporter;
 
-class TestViewController : public MWMDIWindow, Ui::TestView {
+class TestViewController : public MWMDIWindow, Ui_TestView {
     Q_OBJECT
 public:
     TestViewController(TestRunnerService* s, bool cmd = false);

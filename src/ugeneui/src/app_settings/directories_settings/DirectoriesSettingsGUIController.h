@@ -22,7 +22,7 @@
 #ifndef _U2_DIRECTORIES_SETTINGS_GUI_CONTROLLER_H_
 #define _U2_DIRECTORIES_SETTINGS_GUI_CONTROLLER_H_
 
-#include "ui/ui_DirectoriesSettingsWidget.h"
+#include "ui_DirectoriesSettingsWidget.h"
 
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/AppSettingsGUI.h>

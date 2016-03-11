@@ -23,18 +23,9 @@
 #define _NEW_BREAKPOINT_DIALOG_H_
 
 #include <U2Core/global.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
 #include <QtWidgets/QDialog>
-#endif
 
-namespace Ui {
-
-class NewBreakpointDialog;
-
-}
+class Ui_NewBreakpointDialog;
 
 namespace U2 {
 
@@ -52,7 +43,7 @@ private slots:
     void sl_announceNewBreakpoint();
 
 private:
-    Ui::NewBreakpointDialog *ui;
+    Ui_NewBreakpointDialog *ui;
 };
 
 } // namespace U2

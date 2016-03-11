@@ -22,7 +22,7 @@
 #ifndef _DELETE_GAPS_DIALOG_
 #define _DELETE_GAPS_DIALOG_
 
-#include "ui/ui_DeleteGapsDialog.h"
+#include "ui_DeleteGapsDialog.h"
 
 
 namespace U2 {

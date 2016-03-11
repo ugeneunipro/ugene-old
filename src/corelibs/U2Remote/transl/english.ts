@@ -12,17 +12,17 @@
 <context>
     <name>RemoteMachineMonitorDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="14"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="14"/>
         <source>Remote machine monitor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="20"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="20"/>
         <source>Remote machine list</source>
         <translation>Remote machine list</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="23"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="23"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -37,65 +37,65 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The green &lt;/span&gt;&lt;a name=&quot;result_box&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;t&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ick in the status means succes, red cross - fail. The question sign means that the connection with these service has not been tested yet. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="32"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="32"/>
         <source>Url</source>
         <translation>Url</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="37"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="37"/>
         <source>Server Name</source>
         <translation>Server Name</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="42"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="42"/>
         <source>Ping</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="47"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="47"/>
         <source>Auth</source>
         <translation>Auth</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="57"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="60"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="57"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="60"/>
         <source>Add new UGENE remote service machine</source>
         <translation>Add new UGENE remote service machine</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="63"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="63"/>
         <source>Add...</source>
         <translation>Add...</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="73"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="76"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="73"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="76"/>
         <source>Remove UGENE remote service machine from list</source>
         <translation>Remove UGENE remote service machine from list</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="79"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="79"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="89"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="92"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="89"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="92"/>
         <source>Modify settings of existing UGENE remote service machine</source>
         <translation>Modify settings of existing UGENE remote service machine</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="95"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="95"/>
         <source>Modify...</source>
         <translation>Modify...</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="105"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="105"/>
         <source>Test connection with selected remote machine</source>
         <translation>Test connection with selected remote machine</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="108"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="108"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -110,48 +110,48 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;First a PING command is sent to remote service, then an authentification information is sent (AUTH command) and active session is started. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="116"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="116"/>
         <source>Test Connection</source>
         <translation>Test Connection</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="126"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="126"/>
         <source>Show user remote tasks statistics</source>
         <translation>Show user remote tasks statistics</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="129"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="129"/>
         <source>Activate User Tasks dialog, to check finished and ongoing tasks status, retrieve results or delete remote tasks.</source>
         <translation>Activate User Tasks dialog, to check finished and ongoing tasks status, retrieve results or delete remote tasks.</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="132"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="132"/>
         <source>Show User Tasks</source>
         <translation>Show User Tasks</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="156"/>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="159"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="156"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="159"/>
         <source>Add available public machines to the list</source>
         <translation>Add available public machines to the list</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="162"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="162"/>
         <source>Get Public Machines</source>
         <translation>Get Public Machines</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="182"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="182"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="189"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="189"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="208"/>
+        <location filename="../src/RemoteMachineMonitorDialog.ui" line="208"/>
         <source>Events log</source>
         <translation>Events log</translation>
     </message>
@@ -159,32 +159,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RemoteMachineScanDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="14"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="14"/>
         <source>Scan remote machine</source>
         <translation>Scan remote machine</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="24"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="24"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="29"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="29"/>
         <source>Host</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="34"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="34"/>
         <source>Protocol</source>
         <translation>Protocol</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="57"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="57"/>
         <source>Add selected</source>
         <translation>Add selected</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineScanDialog.ui" line="64"/>
+        <location filename="../src/RemoteMachineScanDialog.ui" line="64"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -192,17 +192,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RemoteMachineSettingsDialog</name>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="20"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="20"/>
         <source>Remote machine configuration</source>
         <translation>Remote machine configuration</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="54"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="54"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteMachineSettingsDialog.ui" line="61"/>
+        <location filename="../src/RemoteMachineSettingsDialog.ui" line="61"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>

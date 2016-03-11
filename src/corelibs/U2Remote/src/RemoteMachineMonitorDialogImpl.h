@@ -25,7 +25,7 @@
 #include <U2Remote/RemoteMachine.h>
 #include <U2Remote/RemoteMachineMonitor.h>
 
-#include <ui/ui_RemoteMachineMonitorDialog.h>
+#include <ui_RemoteMachineMonitorDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
@@ -62,7 +62,7 @@ struct RemoteMachineItemInfo {
 
 }; // RemoteMachineMonitorItemInfo
 
-class RemoteMachineMonitorDialogImpl : public QDialog, Ui::RemoteMachineMonitorDialog {
+class RemoteMachineMonitorDialogImpl : public QDialog, Ui_RemoteMachineMonitorDialog {
     Q_OBJECT
 private:
     static const QString OK_BUTTON_RUN;

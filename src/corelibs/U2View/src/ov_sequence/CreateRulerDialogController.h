@@ -23,7 +23,7 @@
 #define _U2_CREATE_RULER_DIALOG_CONTROLLER_H_
 
 
-#include <ui/ui_CreateRulerDialog.h>
+#include <ui_CreateRulerDialog.h>
 
 #include <U2Core/U2Region.h>
 

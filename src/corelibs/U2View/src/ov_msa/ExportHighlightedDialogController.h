@@ -22,8 +22,9 @@
 #ifndef _U2_EXPORT_HIGHLIGHTING_DIALOG_CONTROLLER_H_
 #define _U2_EXPORT_HIGHLIGHTING_DIALOG_CONTROLLER_H_
 
+#include <ui_ExportHighlightedDialog.h>
+
 #include "MSAEditor.h"
-#include "ui/ui_ExportHighlightedDialog.h"
 
 namespace U2 {
 

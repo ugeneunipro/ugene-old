@@ -22,7 +22,7 @@
 #ifndef _U2_APPSETTINGS_DIALOG_CONTROLLER_H_
 #define _U2_APPSETTINGS_DIALOG_CONTROLLER_H_
 
-#include <ui/ui_AppSettingsDialog.h>
+#include <ui_AppSettingsDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidgetItem>

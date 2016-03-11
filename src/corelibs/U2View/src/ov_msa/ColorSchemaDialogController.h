@@ -26,9 +26,9 @@
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2View/ColorSchemaSettingsController.h>
 
-#include "ui/ui_ColorSchemaDialog.h"
-#include <ui/ui_ColorSchemaSettingsWidget.h>
-#include <ui/ui_CreateMSAScheme.h>
+#include "ui_ColorSchemaDialog.h"
+#include <ui_ColorSchemaSettingsWidget.h>
+#include <ui_CreateMSAScheme.h>
 
 #include <QtCore/QMap>
 

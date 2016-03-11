@@ -27,8 +27,8 @@
 
 #include <U2Gui/RegionSelector.h>
 
-#include "ui/ui_RunQueryDialog.h"
-#include "ui/ui_QDDialog.h"
+#include "ui_RunQueryDialog.h"
+#include "ui_QDDialog.h"
 
 namespace U2 {
 

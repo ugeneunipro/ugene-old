@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DISTRIBUTED_COMPUTING_UTIL_H
-#define _U2_DISTRIBUTED_COMPUTING_UTIL_H
+#ifndef _U2_REMOTE_MACHINE_TASKS_H_
+#define _U2_REMOTE_MACHINE_TASKS_H_
 
 #include <QtCore/QObject>
 
@@ -101,4 +101,4 @@ namespace U2 {
 
 } // U2
 
-#endif // _U2_DISTRIBUTED_COMPUTING_UTIL_H
+#endif // _U2_REMOTE_MACHINE_TASKS_H_

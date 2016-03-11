@@ -48,7 +48,7 @@ namespace U2 {
 CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel& m) :
     QDialog(p),
     model(m),
-    ui(new Ui::CreateAnnotationDialog)
+    ui(new Ui_CreateAnnotationDialog)
 {
     ui->setupUi(this);
     annWidgetController = new CreateAnnotationWidgetController(m, this, CreateAnnotationWidgetController::Full);

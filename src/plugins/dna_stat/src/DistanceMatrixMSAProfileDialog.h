@@ -29,7 +29,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 
-#include "ui/ui_DistanceMatrixMSAProfileDialog.h"
+#include "ui_DistanceMatrixMSAProfileDialog.h"
 
 namespace U2 {
 

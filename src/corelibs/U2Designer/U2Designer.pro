@@ -48,26 +48,26 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/wizard/WidgetController.h \
            src/wizard/WizardController.h \
            src/wizard/WizardPageController.h
-FORMS += src/ui/AnnsActionDialog.ui \
-         src/ui/BreakpointHitCountDialog.ui \
-         src/ui/CreateDirectoryDialog.ui \
-         src/ui/DatasetWidget.ui \
-         src/ui/DbFolderOptions.ui \
-         src/ui/DirectoryOptions.ui \
-         src/ui/EditBreakpointLabelsDialog.ui \
-         src/ui/EditFloatMarkerWidget.ui \
-         src/ui/EditIntegerMarkerWidget.ui \
-         src/ui/EditMarkerDialog.ui \
-         src/ui/EditMarkerGroupDialog.ui \
-         src/ui/EditStringMarkerWidget.ui \
-         src/ui/GrouperEditorWidget.ui \
-         src/ui/MarkerEditorWidget.ui \
-         src/ui/MsaActionDialog.ui \
-         src/ui/NewBreakpointDialog.ui \
-         src/ui/NewGrouperSlotDialog.ui \
-         src/ui/OutputFileDialog.ui \
-         src/ui/SequenceActionDialog.ui \
-         src/ui/StringActionDialog.ui
+FORMS += src/AnnsActionDialog.ui \
+         src/BreakpointHitCountDialog.ui \
+         src/CreateDirectoryDialog.ui \
+         src/DatasetWidget.ui \
+         src/DbFolderOptions.ui \
+         src/DirectoryOptions.ui \
+         src/EditBreakpointLabelsDialog.ui \
+         src/EditFloatMarkerWidget.ui \
+         src/EditIntegerMarkerWidget.ui \
+         src/EditMarkerDialog.ui \
+         src/EditMarkerGroupDialog.ui \
+         src/EditStringMarkerWidget.ui \
+         src/GrouperEditorWidget.ui \
+         src/MarkerEditorWidget.ui \
+         src/MsaActionDialog.ui \
+         src/NewBreakpointDialog.ui \
+         src/NewGrouperSlotDialog.ui \
+         src/OutputFileDialog.ui \
+         src/SequenceActionDialog.ui \
+         src/StringActionDialog.ui
 SOURCES += src/BreakpointHitCountDialog.cpp \
            src/DatasetsController.cpp \
            src/DatasetsListWidget.cpp \

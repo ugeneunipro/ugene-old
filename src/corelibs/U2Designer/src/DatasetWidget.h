@@ -38,7 +38,7 @@ namespace U2 {
 class OptionsPopup;
 class URLListController;
 
-class URLListWidget : public QWidget, public Ui::DatasetWidget {
+class URLListWidget : public QWidget, public Ui_DatasetWidget {
     Q_OBJECT
 public:
     URLListWidget(URLListController *ctrl);

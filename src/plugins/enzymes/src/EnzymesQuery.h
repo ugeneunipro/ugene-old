@@ -24,7 +24,7 @@
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "FindEnzymesDialog.h"
-#include <ui/ui_EnzymesSelectorDialog.h>
+#include <ui_EnzymesSelectorDialog.h>
 
 #include <U2Lang/QDScheme.h>
 #include <U2Lang/QueryDesignerRegistry.h>

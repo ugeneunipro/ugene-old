@@ -24,7 +24,7 @@
 
 #include <U2Core/DocumentUtils.h>
 
-#include "ui/ui_DocumentProviderSelectorDialog.h"
+#include "ui_DocumentProviderSelectorDialog.h"
 
 class QRadioButton;
 class QToolButton;

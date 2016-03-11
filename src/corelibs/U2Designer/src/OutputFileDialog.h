@@ -22,8 +22,8 @@
 #ifndef _U2_OUTPUTFILEDIALOG_H_
 #define _U2_OUTPUTFILEDIALOG_H_
 
-#include <ui/ui_CreateDirectoryDialog.h>
-#include <ui/ui_OutputFileDialog.h>
+#include "ui_CreateDirectoryDialog.h"
+#include "ui_OutputFileDialog.h"
 
 namespace U2 {
 
@@ -32,7 +32,7 @@ class FSItem;
 class RFSTreeModel;
 class RunFileSystem;
 
-class OutputFileDialog : public QDialog, public Ui::OutputFileDialog {
+class OutputFileDialog : public QDialog, public Ui_OutputFileDialog {
     Q_OBJECT
 public:
     OutputFileDialog(RunFileSystem *rfs, bool saveDir, CompletionFiller *filler, QWidget *parent);
@@ -82,7 +82,7 @@ private:
     bool saveDir;
 };
 
-class CreateDirectoryDialog : public QDialog, public Ui::CreateDirectoryDialog {
+class CreateDirectoryDialog : public QDialog, public Ui_CreateDirectoryDialog {
     Q_OBJECT
 public:
     CreateDirectoryDialog(RunFileSystem *rfs, const QString &parentDir, QWidget *parent);

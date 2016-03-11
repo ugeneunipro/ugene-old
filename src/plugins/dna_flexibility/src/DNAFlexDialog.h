@@ -22,7 +22,7 @@
 #ifndef _U2_DNA_FLEX_DIALOG_H_
 #define _U2_DNA_FLEX_DIALOG_H_
 
-#include "ui/ui_DNAFlexDialog.h"
+#include "ui_DNAFlexDialog.h"
 
 #include "HighFlexSettings.h"
 

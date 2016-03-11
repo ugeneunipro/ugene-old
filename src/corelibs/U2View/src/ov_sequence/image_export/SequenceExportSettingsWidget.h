@@ -22,7 +22,7 @@
 #ifndef _U2_SEQUENCE_EXPORT_SETTINGS_WIDGET_H_
 #define _U2_SEQUENCE_EXPORT_SETTINGS_WIDGET_H_
 
-#include "ui/ui_SequenceImageExportSettingsWidget.h"
+#include "ui_SequenceImageExportSettingsWidget.h"
 #include "SequencePainter.h"
 
 

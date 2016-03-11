@@ -26,7 +26,7 @@
 
 #include <U2View/DnaAssemblyGUIExtension.h>
 
-#include "ui/ui_SpadesSettings.h"
+#include "ui_SpadesSettings.h"
 
 namespace U2 {
 

@@ -25,9 +25,9 @@
 #include <QDialog>
 
 #include <U2Gui/DialogUtils.h>
-
 #include "MAFFTSupportTask.h"
-#include "ui/ui_MAFFTSupportRunDialog.h"
+
+#include "ui_MAFFTSupportRunDialog.h"
 
 namespace U2 {
 

@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class PrimerLibrarySelector : public QDialog, Ui::PrimerLibrarySelector {
+class PrimerLibrarySelector : public QDialog, Ui_PrimerLibrarySelector {
     Q_OBJECT
 public:
     PrimerLibrarySelector(QWidget *parent);
