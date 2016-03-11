@@ -134,8 +134,10 @@ void ExternalToolJustValidateTask::run() {
             return;
         }
 
-        while (!externalToolProcess->waitForFinished(1000)) {
-            if (isCanceled()) {
+        int elapsedTime = 0;
+        while (!externalToolProcess->waitForFinished(CHECK_PERIOD_MS)) {
+            elapsedTime += CHECK_PERIOD_MS;
+            if (isCanceled() || elapsedTime >= TIMEOUT_MS) {
                 cancelProcess();
             }
         }

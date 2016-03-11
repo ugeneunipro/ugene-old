@@ -81,6 +81,8 @@ private:
     QString     lastOutLine;
 
     QProcess*   externalToolProcess;
+    static const int CHECK_PERIOD_MS = 1000;
+    static const int TIMEOUT_MS = 30000;
 };
 
 class ExternalToolSearchAndValidateTask : public ExternalToolValidateTask {
