@@ -35,7 +35,7 @@ LIBS += -L../../_release
 
 
 win32 {
-    DEF_FILE=src/sqlite3.def
+    DEF_FILE=$$PWD/src/sqlite3.def
 
     QMAKE_CXXFLAGS_WARN_ON = -W3
     QMAKE_CFLAGS_WARN_ON = -W3
